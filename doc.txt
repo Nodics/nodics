@@ -1,0 +1,72 @@
+=> Sequence of property ScriptLoader
+1. load configuration all module.js file
+2. load configuration all package.json file and keep it againsed module name
+3. Load configuration from default location '/config/common/properties.js'
+4. Load configuration from environment specific location '/config/env-<NODICS_ENV>/properties.js'
+5. Load configuration from external location
+
+=> How to add methods in Global Utils object
+console.log(COMMON.loadScripts());
+console.log(COMMON.Utils);
+
+COMMON.Utils.addMethod = function(){
+    return 'something';
+}
+
+console.log(COMMON.Utils.addMethod());
+
+=> COMMON.loadScripts.loadGlobalScripts();
+
+=> console.log(COMMON.Utils.newMethods());
+ //CONFIG.newPros = 'something';
+COMMON.Utils.newMethods = function(){
+    return 'this is new method';
+}
+
+//console.log();
+//console.log(CONFIG.commonProperty);
+//console.log(CONFIG.changeValue);
+//console.log(CONFIG.NODICS_ENV);
+//console.log('---', platform);
+//console.log(platform.ScriptLoader);
+
+=> Utils file structure
+module.exports = {
+    flag: false,
+
+    isValidNumber: function(){
+        return this.flag;
+    }
+}
+
+==> Data base connectivity options
+database: {
+    USER: {
+        URI: 'mongodb://localhost:27017/userTest',
+        poolSize: 3,
+        options: {
+            db: { 
+                native_parser: true 
+            },
+            server: { 
+                poolSize: 5 
+            },
+            replset: { 
+                rs_name: 'myReplicaSetName' 
+            },
+            user: 'myUserName',
+            pass: 'myPassword'
+        }
+    },
+    GATALOG: {
+        URI: 'mongodb://localhost:27017/catalogTest',
+        poolSize: 3
+    }
+}
+
+====>>>> Server startup steps
+- While loading configuration, Create API['moduleName'] global veriable
+- 
+1. Create Express object for all nodics module - each module will register express object at thier end
+2. Load Express configuration for each module
+3. Start all available Express modules as Node server

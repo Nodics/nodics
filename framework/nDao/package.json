@@ -1,0 +1,16 @@
+{
+  "name" : "ndao",
+  "index" : "4",
+  "description" : "This module is responsible to generate Service layer for all generated Dao",
+  "homepage" : "http://www.nodics.com/nodics/framework/ndao",
+  "keywords" : ["dao", "environment"],
+  "author" : "Himkar Dwivedi <himkar.dwivedi@nodics.com>",
+  "main" : "nodics.js",
+  "version" : "0.0.1",
+  "private": true,
+  "license" : "MIT License",
+  "repository" : {
+    "type": "git", 
+    "url": "https://himkar@bitbucket.org/bakwasteam/nodics.git"
+  }
+}

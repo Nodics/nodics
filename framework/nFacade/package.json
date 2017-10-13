@@ -1,0 +1,16 @@
+{
+  "name" : "nfacade",
+  "index" : "8",
+  "description" : "Nodics configuration module. It will hold all Database related configuration",
+  "homepage" : "http://www.nodics.com/nodics/framework/ndatabase",
+  "keywords" : ["config", "environment"],
+  "author" : "Himkar Dwivedi <himkar.dwivedi@nodics.com>",
+  "main" : "nodics.js",
+  "version" : "0.0.1",
+  "private": true,
+  "license" : "MIT License",
+  "repository" : {
+    "type": "git", 
+    "url": "https://himkar@bitbucket.org/bakwasteam/nodics.git"
+  }
+}

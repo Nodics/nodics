@@ -1,0 +1,37 @@
+{
+    "name": "nodics",
+    "index": "0",
+    "description": "Nodics, An Node based enterprise application solution",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "Nodics"
+    ],
+    "author": "Himkar Dwivedi <himkar.dwivedi@nodics.com>",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "MIT License",
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "https://himkar@bitbucket.org/bakwasteam/nodics.git"
+    },
+    "dependencies": {
+        "async": "^2.5.0",
+        "body-parser": "^1.17.2",
+        "chalk": "^2.1.0",
+        "cron": "^1.2.1",
+        "enum": "^2.4.0",
+        "eslint": "^4.8.0",
+        "express": "^4.15.4",
+        "glob": "*",
+        "lodash": "*",
+        "mongoose": "^4.11.7",
+        "mongoose-schema-extend": "0.2.0",
+        "properties-reader": "*",
+        "request": "^2.81.0",
+        "request-promise": "^4.2.1",
+        "string": "*",
+        "validator": "^8.0.0"
+    }
+}

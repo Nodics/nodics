@@ -1,0 +1,2 @@
+- Show how merge process happens and why its require
+- Detailed out use of nodics and custom module and why we need it
