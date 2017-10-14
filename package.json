@@ -29,9 +29,11 @@
         "mongoose": "^4.11.7",
         "mongoose-schema-extend": "0.2.0",
         "properties-reader": "*",
+        "recursive-copy": "^2.0.6",
         "request": "^2.81.0",
         "request-promise": "^4.2.1",
         "string": "*",
+        "through2": "^2.0.3",
         "validator": "^8.0.0"
     }
 }

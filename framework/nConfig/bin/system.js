@@ -27,7 +27,7 @@ module.exports = {
             if (!options.activeModules) {
                 options.activeModules = ['ALL'];
             } else {
-                options.activeModules = ['framework', 'ncommon', 'nconfig', 'user'].concat(optionsactiveModules);
+                options.activeModules = ['framework', 'ncommon', 'nconfig', 'user'].concat(options.activeModules);
             }
             if (process.argv) {
                 options.argv = process.argv;
@@ -39,7 +39,7 @@ module.exports = {
     subFolders: function(folder) {
         return fs.readdirSync(folder)
             .filter(subFolder => fs.statSync(path.join(folder, subFolder)).isDirectory())
-            .filter(subFolder => subFolder !== 'node_modules' && subFolder[0] !== '.')
+            .filter(subFolder => subFolder !== 'node_modules' && subFolder !== 'templates' && subFolder[0] !== '.')
             .map(subFolder => path.join(folder, subFolder));
     },
 
@@ -98,6 +98,10 @@ module.exports = {
                     console.error('Please update index property in package.json for module : ', moduleFile.name);
                     process.exit(1);
                 }
+                if (isNaN(moduleFile.index)) {
+                    console.error('Property index contain invalid value in package.json for module : ', moduleFile.name);
+                    process.exit(1);
+                }
                 let indexData = {};
                 indexData.index = moduleFile.index;
                 indexData.name = moduleFile.name;
@@ -107,7 +111,6 @@ module.exports = {
         });
         config.moduleIndex = this.sortModulesByIndex(moduleIndex);
         config.metaData = metaData;
-        console.log(config.moduleIndex);
     },
 
     loadFiles: function(config, fileName, frameworkFile) {
