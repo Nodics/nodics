@@ -1,5 +1,4 @@
 var FRAMEWORK = require('./framework');
-const user = require('./user');
 
 var startNodics = function(options) {
     FRAMEWORK.init(options);
