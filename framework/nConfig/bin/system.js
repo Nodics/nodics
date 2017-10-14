@@ -107,6 +107,7 @@ module.exports = {
         });
         config.moduleIndex = this.sortModulesByIndex(moduleIndex);
         config.metaData = metaData;
+        console.log(config.moduleIndex);
     },
 
     loadFiles: function(config, fileName, frameworkFile) {
