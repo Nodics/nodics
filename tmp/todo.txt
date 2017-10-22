@@ -1,3 +1,5 @@
+https://medium.com/adobe-io/how-to-combine-rest-api-calls-with-javascript-promises-in-node-js-or-openwhisk-d96cbc10f299
+
 1. Implement update if exist and create if not. - this  not required, let client handle this scenario - done
 2. extends some default properties like creation date, update date and code for all model - done
 3. add property in schema, if model and services needs to be created - done
@@ -41,3 +43,13 @@ All Priority TWO Task
 - Redis Cache System
 - Add Service to return sample request object for all the services.
 - Implement Jsdoc NPM to generate JavaScript Docs
+
+
+=> CronJob module
+- Work for timezone and running context - these both needs to be taken from user context, 
+which will be implemented with NAAMS - Nodics Authentication Authorization Management System
+- (5) Have TriggerType to make ranges configurable. Currently supports only expression
+- Priority needs to be updated
+- Cronjob update process - This process needs to be manage via NEMS - Nodics Event Management System
+- Run cronjob by service call - Done
+- Error handling on running call and onCompleted - Done

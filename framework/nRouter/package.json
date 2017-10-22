@@ -1,16 +1,22 @@
 {
-  "name" : "nrouter",
-  "index" : "10",
-  "description" : "This module is responsible to setup express routers for all modules",
-  "homepage" : "http://www.nodics.com/nodics/framework/nrouter",
-  "keywords" : ["controller", "environment"],
-  "author" : "Himkar Dwivedi <himkar.dwivedi@nodics.com>",
-  "main" : "nodics.js",
-  "version" : "0.0.1",
-  "private": true,
-  "license" : "MIT License",
-  "repository" : {
-    "type": "git", 
-    "url": "https://himkar@bitbucket.org/bakwasteam/nodics.git"
-  }
+    "name": "nrouter",
+    "index": "10",
+    "description": "Register routers for all defined items",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "Nodics",
+        "Framework",
+        "Routers"
+    ],
+    "author": "Nodics Framework <nodics.framework@gmail.com>",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GNU General Public License v3",
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics.git"
+    },
+    "dependencies": {}
 }

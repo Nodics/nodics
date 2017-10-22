@@ -1,17 +1,20 @@
 {
     "name": "user",
     "index": "110",
-    "publish": "true",
-    "description": "Nodics configuration module. It will hold all user's model and services",
-    "homepage": "http://www.nodics.com/nodics/user/",
-    "keywords": ["config", "environment"],
-    "author": "Himkar Dwivedi <himkar.dwivedi@nodics.com>",
+    "description": "Module user, process user related information",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "Nodics"
+    ],
+    "author": "Nodics Framework <nodics.framework@gmail.com>",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,
-    "license": "MIT License",
+    "license": "GNU General Public License v3",
+    "scripts": {},
     "repository": {
         "type": "git",
-        "url": "https://himkar@bitbucket.org/bakwasteam/nodics.git"
-    }
+        "url": "https://github.com/Nodics/nodics.git"
+    },
+    "dependencies": {}
 }

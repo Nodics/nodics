@@ -1,15 +1,21 @@
 {
-  "name" : "ncommon",
-  "index" : "2",
-  "description" : "Nodics configuration module. It will hold all common and environment specific configuration",
-  "homepage" : "http://www.nodics.com/nodics/framework/ncommon",
-  "keywords" : ["config", "environment"],
-  "author" : "Himkar Dwivedi <himkar.dwivedi@nodics.com>",
-  "contributors" : [],
-  "dependencies" : [],
-  "repository" : {"type": "git", "url": "git://github.com/documentcloud/underscore.git"},
-  "main" : "nodics.js",
-  "version" : "0.0.1",
-  "private": true,
-  "license" : "MIT License"
+    "name": "ncommon",
+    "index": "2",
+    "description": "Build common functionalities for Nodics",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "Nodics",
+        "common"
+    ],
+    "author": "Nodics Framework <nodics.framework@gmail.com>",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GNU General Public License v3",
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics.git"
+    },
+    "dependencies": {}
 }

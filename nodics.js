@@ -9,6 +9,6 @@ module.exports = {
         FRAMEWORK.startServers();
         CONFIG.SERVER_STATE = 'running';
 
-        console.log(util.inspect(DB, { showHidden: false, depth: 4 }));
+        //console.log(util.inspect(DB, { showHidden: false, depth: 4 }));
     }
 };

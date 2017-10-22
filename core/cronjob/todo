@@ -1,7 +1,0 @@
-- Work for timezone and running context - these both needs to be taken from user context, 
-which will be implemented with NAAMS - Nodics Authentication Authorization Management System
-- (5) Have TriggerType to make ranges configurable. Currently supports only expression
-- Priority needs to be updated
-- Cronjob update process - This process needs to be manage via NEMS - Nodics Event Management System
-- Run cronjob by service call - Done
-- Error handling on running call and onCompleted - Done

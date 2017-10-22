@@ -1,20 +1,20 @@
 {
     "name": "nodics",
     "index": "0",
-    "description": "Nodics, An Node based enterprise application solution",
+    "description": "Nodics, A Node based enterprise application solution",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "Nodics"
     ],
-    "author": "Himkar Dwivedi <himkar.dwivedi@nodics.com>",
+    "author": "Nodics Framework <nodics.framework@gmail.com>",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,
-    "license": "MIT License",
+    "license": "GNU General Public License v3",
     "scripts": {},
     "repository": {
         "type": "git",
-        "url": "https://himkar@bitbucket.org/bakwasteam/nodics.git"
+        "url": "https://github.com/Nodics/nodics.git"
     },
     "dependencies": {
         "async": "^2.5.0",

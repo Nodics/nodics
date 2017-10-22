@@ -1,0 +1,1 @@
+This module groups all core modules in Nodics framework

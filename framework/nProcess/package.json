@@ -1,16 +1,22 @@
 {
-  "name" : "nprocess",
-  "index" : "6",
-  "description" : "Nodics configuration module. It will hold all Database related configuration",
-  "homepage" : "http://www.nodics.com/nodics/framework/ndatabase",
-  "keywords" : ["config", "environment"],
-  "author" : "Himkar Dwivedi <himkar.dwivedi@nodics.com>",
-  "main" : "nodics.js",
-  "version" : "0.0.1",
-  "private": true,
-  "license" : "MIT License",
-  "repository" : {
-    "type": "git", 
-    "url": "https://himkar@bitbucket.org/bakwasteam/nodics.git"
-  }
+    "name": "nprocess",
+    "index": "6",
+    "description": "Generate Process configurations",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "Nodics",
+        "Framework",
+        "Process"
+    ],
+    "author": "Nodics Framework <nodics.framework@gmail.com>",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GNU General Public License v3",
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics.git"
+    },
+    "dependencies": {}
 }
