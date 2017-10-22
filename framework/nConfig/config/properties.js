@@ -24,7 +24,7 @@ module.exports = {
         - File format of external file will be :
         module.exports = {
             externalProperty: [
-                'himkar'
+                'nodics'
             ]
         }
     */

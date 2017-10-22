@@ -6,7 +6,7 @@ http://localhost:3005/nodics/cronjob
 	"clusterId": "0",
 	"priority": "10",
 	"cronjobtmp": [{
-		"name": "Himkar Dwivedi"
+		"name": "Nodics Framework"
 	}],
 	"triggers": [{
 		"triggerId": "testTrigger",

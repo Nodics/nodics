@@ -15,17 +15,17 @@ module.exports = {
                     unique: true,
                     required: true
                 },
-                creationDate: { 
-                    type: 'Date', 
-                    default: new Date(+new Date() + 7*24*60*60*1000)
+                creationDate: {
+                    type: 'Date',
+                    default: new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
                 },
-                updatedDate: { 
-                    type: 'Date', 
-                    default: new Date(+new Date() + 7*24*60*60*1000)
+                updatedDate: {
+                    type: 'Date',
+                    default: new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
                 },
                 testProperty: {
                     type: 'String',
-                    default: 'Dwivedi Himkar'
+                    default: 'Nodics Framework'
                 }
             }
         }

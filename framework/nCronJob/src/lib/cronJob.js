@@ -130,6 +130,6 @@ module.exports = function(definition, trigger, context, timeZone) {
     };
 
     this.getName = function() {
-        console.log('Himkar Dwivedi');
+        console.log('This function is for testing only');
     };
 };

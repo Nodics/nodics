@@ -1,3 +1,3 @@
 module.exports = {
-    externalProperty: 'Himkar Dwivedi'
-}
+    externalProperty: 'nodicsFramework'
+};

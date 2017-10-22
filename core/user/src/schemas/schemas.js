@@ -16,7 +16,7 @@ module.exports = {
                 lastName: "String",
                 name: {
                     type: "String",
-                    default: 'Himkar Dwivedi'
+                    default: 'Nodics Framework'
                 }
             }
         },
