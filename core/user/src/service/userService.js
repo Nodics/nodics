@@ -4,20 +4,7 @@ module.exports = {
     },
 
     getFullName: function(inputParam) {
-        let response = {};
-        DAO.daoName.getByCode(inputParam.req.params.code).then((userModel) => {
-            response.success = true;
-            response.code = 'SUC001';
-            response.msg = 'Finished Successfully';
-            response.result = userModel.firstName + ' ' + userModel.lastName;
-            inputParam.res.json(response);
-        }).catch((err) => {
-            response.success = false;
-            response.code = 'ERR001';
-            response.msg = "Body field can't be null";
-            response.error = err;
-            inputParam.res.json(response);
-        });
+
     },
 
     processNodeFirst: function(processRequest, processResponse, process) {
