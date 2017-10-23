@@ -23,30 +23,6 @@ module.exports = {
             .select(request.select || {})
             .exec(callback);
     },
-    /* 
-        getSync: function (request) {
-            console.log('Got get');
-            if (!request) {
-                request = {
-                    pageSize: 10,
-                    pageNumber: 0,
-                    query: {}
-                };
-            }
-            let database = SYSTEM.getDatabase('databaseName');
-            let skip = (request.pageSize || 10) * (request.pageNumber || 0);
-            let result = database.models.modelName.find(request.query || {});
-            .limit(request.pageSize || 10)
-             .skip(skip)
-             .sort(request.sort || {})
-             .select(request.select || {})
-             .exec((data) => {
-                 console.log('----------------- ', data);
-                 return data;
-             });
-            console.log('=================== ', result);
-            return result;
-        },*/
     getById: function(id, callback) {
         console.log('Got getById');
         if (!id) {

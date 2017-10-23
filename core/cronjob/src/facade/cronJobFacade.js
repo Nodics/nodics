@@ -15,23 +15,23 @@ module.exports = {
         return SERVICE.CronJobService.run(inputParam);
     },
 
-    start: function(cronJobName) {
+    start: function(inputParam) {
         return SERVICE.CronJobService.start(inputParam);
     },
 
-    stop: function(cronJobName) {
+    stop: function(inputParam) {
         return SERVICE.CronJobService.stop(inputParam);
     },
 
-    remove: function(cronJobName) {
+    remove: function(inputParam) {
         return SERVICE.CronJobService.remove(inputParam);
     },
 
-    pause: function(cronJobName) {
+    pause: function(inputParam) {
         return SERVICE.CronJobService.pause(inputParam);
     },
 
-    resume: function(cronJobName) {
+    resume: function(inputParam) {
         return SERVICE.CronJobService.resume(inputParam);
     }
 };

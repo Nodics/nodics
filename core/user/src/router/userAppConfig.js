@@ -1,7 +1,5 @@
-const bodyParser = require('body-parser');
-
 module.exports = {
-    cronjob: {
+    user: {
         initSession: function(app) {
             //console.log(' User initSession');
         },
@@ -11,9 +9,7 @@ module.exports = {
         initCache: function(app) {
             //console.log(' User initCache');
         },
-        initBodyParser: function(app) {
-            console.log(' ===================== CronJob');
-        },
+        initBodyParser: function(app) {},
         initHeaders: function(app) {
             //console.log(' User initHeaders');
         },

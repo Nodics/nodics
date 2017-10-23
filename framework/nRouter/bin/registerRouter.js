@@ -64,12 +64,17 @@ module.exports = {
     init: function() {
         let _self = this;
         console.log('### Starting Router registration process');
-        let appRoter = SYSTEM.loadFiles(CONFIG, '/src/router/router.js');
+        let commonRoter = SYSTEM.loadFiles(CONFIG, '/src/router/commonRouter.js');
         Object.keys(API).forEach(function(key) {
             let apiElement = API[key];
+            let moduleRoter = null;
             if (apiElement.app) {
+                let moduleName = apiElement.metaData.name.toLowerCase();
+                moduleRoter = SYSTEM.loadFiles(CONFIG, '/src/router/' + moduleName + 'Router.js');
                 _.each(DB, function(value, databaseName) {
-                    _self.registerForDatabase(databaseName, apiElement.app, appRoter.default, appRoter[key]);
+                    if (databaseName !== 'validators') {
+                        _self.registerForDatabase(databaseName, apiElement.app, commonRoter, moduleRoter);
+                    }
                 });
             }
         });

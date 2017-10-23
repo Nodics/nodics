@@ -10,9 +10,7 @@ module.exports = {
     initCache: function(app) {
         //console.log(' User initCache');
     },
-    initBodyParser: function(app) {
-        console.log(' ===================== User');
-    },
+    initBodyParser: function(app) {},
     initHeaders: function(app) {
         //console.log(' User initHeaders');
     },

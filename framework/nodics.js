@@ -20,10 +20,8 @@ module.exports.init = function(options) {
     cronjob.init();
     facades.init();
     controllers.init();
-    router.initRouters();
-
     SYSTEM.loadModules();
-
+    router.initRouters();
 };
 module.exports.startServers = function() {
     SYSTEM.startServers();

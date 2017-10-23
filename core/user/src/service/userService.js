@@ -4,7 +4,19 @@ module.exports = {
     },
 
     getFullName: function(inputParam) {
+        let requestBody = {
+            query: {
+                _id: '599ffb445c3fe417d02c6d4c'
+            }
+        };
 
+        let request = SERVICE.ModuleService.buildRequest('cronjob', 'POST', 'cronjob', requestBody);
+
+        SERVICE.ModuleService.fetch(request).then((response) => {
+            inputParam.res.json(response);
+        }).catch((error) => {
+            inputParam.res.json(error);
+        });
     },
 
     processNodeFirst: function(processRequest, processResponse, process) {

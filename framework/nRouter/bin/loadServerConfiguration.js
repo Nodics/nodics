@@ -2,22 +2,22 @@ module.exports = {
     init: function() {
         console.log('### Starting Server configuration load process.');
         if (!API) {
-            console.log('### Failed to start dao server configuration load process.');
+            console.log('### Failed to start server configuration load process.');
             process.exit(CONFIG.errorExitCode);
         }
         //Loading APP common config
-        let appConfig = SYSTEM.loadFiles(CONFIG, '/src/router/appConfig.js');
-        //Loop through all defined API and execute default and dao specific configuration loader
+        let commonConfig = SYSTEM.loadFiles(CONFIG, '/src/router/commonAppConfig.js');
         Object.keys(API).forEach(function(key) {
             let apiElement = API[key];
+            let moduleConfig = null;
             if (apiElement.app) {
-                if (appConfig.default) {
-                    SYSTEM.executeRouterConfig(apiElement.app, appConfig.default);
-                }
-                if (appConfig[key]) {
-                    SYSTEM.executeRouterConfig(apiElement.app, appConfig[key]);
+                SYSTEM.executeRouterConfig(apiElement.app, commonConfig);
+                let moduleName = apiElement.metaData.name.toLowerCase();
+                moduleConfig = SYSTEM.loadFiles(CONFIG, '/src/router/' + moduleName + 'AppConfig.js');
+                if (moduleConfig != null && moduleConfig) {
+                    SYSTEM.executeRouterConfig(apiElement.app, moduleConfig);
                 }
             }
         });
     }
-}
+};

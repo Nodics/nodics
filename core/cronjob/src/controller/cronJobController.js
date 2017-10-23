@@ -32,7 +32,7 @@ module.exports = {
             req: req,
             res: res
         };
-        if (req.body) {
+        if (!SYSTEM.isBlank(req.body)) {
             inputParam.jobName = req.body;
         } else {
             inputParam.jobName = req.params.jobName;

@@ -22,8 +22,7 @@ module.exports = {
         }
     },
     get: function(inputParam, callback) {
-        let request = {};
-        request = inputParam.req.body || {};
+        let request = inputParam.req.body || {};
         DAO.daoName.get(request).then((models) => {
             this.handleResponse(null, models, inputParam, callback);
         }).catch((error) => {

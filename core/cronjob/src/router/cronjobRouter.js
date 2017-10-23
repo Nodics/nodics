@@ -1,5 +1,4 @@
 module.exports = {
-
     createCronJobs: function(app) {
         app.route('/nodics/cronjob/create')
             .get(CONTROLLER.CronJobController.create);

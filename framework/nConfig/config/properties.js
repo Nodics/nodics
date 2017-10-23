@@ -38,6 +38,8 @@ module.exports = {
     // databaseUserURI = mongodb://hostA:27501,hostB:27501
     // databaseUserURI = mongodb://nonexistent.domain:27000
 
+    defaultContentType: 'application/json',
+
     database: {
         default: {
             URI: 'mongodb://localhost:27017/userTest',
@@ -57,7 +59,7 @@ module.exports = {
 
     server: {
         contextRoot: 'nodics',
-
+        runAsSingleModule: false,
         default: {
             httpServer: 'localhost',
             httpPort: 3000,
