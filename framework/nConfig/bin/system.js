@@ -134,7 +134,7 @@ module.exports = {
             let moduleAPI = API[moduleName];
             if (moduleAPI.app) {
                 const httpPort = SYSTEM.getServerPort(moduleName);
-                console.log('#### Starting App for module : ', httpPort);
+                console.log('#### Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
                 moduleAPI.app.listen(httpPort);
             }
         });

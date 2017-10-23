@@ -9,14 +9,18 @@ module.exports = {
                 return value;
             }
         });
+        if (!CONFIG.server.contextRoot) {
+            console.error('Please define a valid contextRoot, It comes under server object.');
+            process.exit(1);
+        }
 
-        let contextRoot = CONFIG.contextRoot;
+        let contextRoot = CONFIG.server.contextRoot;
         let modelName = daoName.toLowerCaseFirstChar();
+
         routerString = routerString.replaceAll("contextRoot", contextRoot);
         routerString = routerString.replaceAll("modelName", modelName);
         routerString = routerString.replaceAll("daoName", daoName + 'Dao');
         routerString = routerString.replaceAll("controllerName", daoName + 'Controller');
-        //console.log(routerString);
         return JSON.parse(routerString, function(key, value) {
             if (_(value).startsWith('function')) {
                 value = value.replace("function", key + ' = function');

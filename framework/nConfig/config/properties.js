@@ -54,9 +54,10 @@ module.exports = {
             }
         }
     },
-    contextRoot: 'nodics',
 
     server: {
+        contextRoot: 'nodics',
+
         default: {
             httpServer: 'localhost',
             httpPort: 3000,
