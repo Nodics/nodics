@@ -20,7 +20,7 @@ module.exports = {
 
     loadRouters: function(module) {
         if (API[module.name] && API[module.name].app) {
-            console.log('### Starting App Server initialization process for : ', module.name);
+            console.log('=> Starting App Server initialization process for : ', module.name);
             this.loadModuleRouterConfig(module, API[module.name].app);
             this.registerModuleRouters(module, API[module.name].app);
         }

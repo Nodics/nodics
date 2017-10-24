@@ -17,40 +17,40 @@ module.exports = {
     //saveOrUpdateById      - /user/id - put - done
     //saveOrUpdateByCode    - /user/code - put - done
     bindGettersOperations: function(app) {
-        app.route('/contextRoot/modelName')
+        app.route('/contextRoot/schemaName')
             .get(CONTROLLER.controllerName.get)
             .post(CONTROLLER.controllerName.get);
-        app.route('/contextRoot/modelName/id/:id')
+        app.route('/contextRoot/schemaName/id/:id')
             .get(CONTROLLER.controllerName.getById);
-        app.route('/contextRoot/modelName/code/:code')
+        app.route('/contextRoot/schemaName/code/:code')
             .get(CONTROLLER.controllerName.getByCode);
     },
 
     bindRemoveOperations: function(app) {
-        app.route('/contextRoot/modelName/id')
+        app.route('/contextRoot/schemaName/id')
             .delete(CONTROLLER.controllerName.removeById);
-        app.route('/contextRoot/modelName/id/:id')
+        app.route('/contextRoot/schemaName/id/:id')
             .delete(CONTROLLER.controllerName.removeById);
-        app.route('/contextRoot/modelName/code')
+        app.route('/contextRoot/schemaName/code')
             .delete(CONTROLLER.controllerName.removeByCode);
-        app.route('/contextRoot/modelName/code/:code')
+        app.route('/contextRoot/schemaName/code/:code')
             .delete(CONTROLLER.controllerName.removeByCode);
 
     },
 
     bindSaveOperations: function(app) {
-        app.route('/contextRoot/modelName')
+        app.route('/contextRoot/schemaName')
             .put(CONTROLLER.controllerName.save);
     },
 
     bindUpdateOperations: function(app) {
-        app.route('/contextRoot/modelName/update')
+        app.route('/contextRoot/schemaName/update')
             .post(CONTROLLER.controllerName.update);
 
     },
 
     bindSaveAndUpdateOperations: function(app) {
-        app.route('/contextRoot/modelName/saveOrUpdate')
+        app.route('/contextRoot/schemaName/saveOrUpdate')
             .put(CONTROLLER.controllerName.saveOrUpdate);
 
     }

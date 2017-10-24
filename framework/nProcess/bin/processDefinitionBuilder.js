@@ -27,6 +27,5 @@ module.exports = {
         this.buildDefaultHandler();
         this.buildProcessService();
         this.buildProcesses();
-        //console.log(PROCESSES);
     }
-}
+};

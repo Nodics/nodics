@@ -6,16 +6,17 @@ const moduleLoader = require('./bin/moduleLoader');
 module.exports = {
     init: function() {
         if (!CONFIG || !SYSTEM) {
-            console.error("System initialization error: configuration initializer failure.");
+            console.error("   ERROR: System initialization error: configuration initializer failure.");
             process.exit(1);
         }
         utilsLoader.loadUtils();
-        SYSTEM['loadModules'] = this.loadModules;
         enumLoader.loadEnums();
         classesLoader.loadClasses();
+
+        SYSTEM['loadModules'] = this.loadModules;
     },
 
     loadModules: function() {
         moduleLoader.init();
     }
-}
+};

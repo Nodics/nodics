@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 module.exports = {
     loadFacades: function(module) {
-        console.log('#### Staring process to load Facades for Module : ', module.name);
+        console.log('   INFO: Loading all module facades');
         let path = module.path + '/src/facade';
         SYSTEM.processFiles(path, "Facade.js", (file) => {
             let facadeName = SYSTEM.getFileNameWithoutExtension(file);
@@ -13,9 +13,9 @@ module.exports = {
                 if (facadeObject.options.isNew) {
                     FACADE[facadeName] = facadeObject;
                 } else {
-                    console.warn('Facade container doesn,t contain ' + facadeName + ' and isNew Property is false. hence ignoring file ', file);
+                    console.warn('   WARNING: Facade container doesn,t contain ' + facadeName + ' and isNew Property is false. hence ignoring file ', file);
                 }
             }
         });
     }
-}
+};

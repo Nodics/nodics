@@ -9,20 +9,22 @@ const facades = require('./nFacade');
 const controllers = require('./nController');
 const router = require('./nRouter');
 
-module.exports.init = function(options) {
-    config.init(options);
-    SYSTEM.executePreScripts();
-    common.init();
-    db.init();
-    dao.init();
-    services.init();
-    process.init();
-    cronjob.init();
-    facades.init();
-    controllers.init();
-    SYSTEM.loadModules();
-    router.initRouters();
-};
-module.exports.startServers = function() {
-    SYSTEM.startServers();
+module.exports = {
+    init: function(options) {
+        config.init(options);
+        SYSTEM.executePreScripts();
+        common.init();
+        db.init();
+        dao.init();
+        services.init();
+        process.init();
+        cronjob.init();
+        facades.init();
+        controllers.init();
+        SYSTEM.loadModules();
+        router.initRouters();
+    },
+    startServers: function() {
+        SYSTEM.startServers();
+    }
 };

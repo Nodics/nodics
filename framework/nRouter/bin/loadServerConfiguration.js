@@ -1,23 +1,44 @@
+const _ = require('lodash');
+
 module.exports = {
     init: function() {
-        console.log('### Starting Server configuration load process.');
-        if (!API) {
-            console.log('### Failed to start server configuration load process.');
-            process.exit(CONFIG.errorExitCode);
-        }
-        //Loading APP common config
+        console.log(' =>Starting server configuration');
+        let modules = NODICS.modules;
         let commonConfig = SYSTEM.loadFiles(CONFIG, '/src/router/commonAppConfig.js');
-        Object.keys(API).forEach(function(key) {
-            let apiElement = API[key];
-            let moduleConfig = null;
-            if (apiElement.app) {
-                SYSTEM.executeRouterConfig(apiElement.app, commonConfig);
-                let moduleName = apiElement.metaData.name.toLowerCase();
-                moduleConfig = SYSTEM.loadFiles(CONFIG, '/src/router/' + moduleName + 'AppConfig.js');
-                if (moduleConfig != null && moduleConfig) {
-                    SYSTEM.executeRouterConfig(apiElement.app, moduleConfig);
-                }
+        if (CONFIG.server.runAsSingleModule) {
+            if (!NODICS.modules.default || !NODICS.modules.default.app) {
+                console.error('   ERROR: Server configurations has not be initialized. Please verify.');
+                process.exit(CONFIG.errorExitCode);
             }
-        });
+            console.log('   INFO: Configuring Default App');
+            console.log('     INFO: Executing common configurations');
+            SYSTEM.executeRouterConfig(NODICS.modules.default.app, commonConfig);
+            _.each(modules, function(value, moduleName) {
+                if (value.metaData && value.metaData.publish) {
+                    let moduleConfig = SYSTEM.loadFiles(CONFIG, '/src/router/' + moduleName + 'AppConfig.js');
+                    if (moduleConfig != null && moduleConfig) {
+                        console.log('     INFO: Executing module configurations :', moduleName);
+                        SYSTEM.executeRouterConfig(NODICS.modules.default.app, moduleConfig);
+                    }
+                }
+            });
+        } else {
+            _.each(modules, function(value, moduleName) {
+                if (value.metaData && value.metaData.publish) {
+                    if (!value.app) {
+                        console.error('   ERROR: Server configurations has not be initialized for module : ', moduleName);
+                        process.exit(CONFIG.errorExitCode);
+                    }
+                    console.log('   INFO: Configuring App from module : ', moduleName);
+                    console.log('     INFO: Executing common configurations');
+                    SYSTEM.executeRouterConfig(value.app, commonConfig);
+                    let moduleConfig = SYSTEM.loadFiles(CONFIG, '/src/router/' + moduleName + 'AppConfig.js');
+                    if (moduleConfig != null && moduleConfig) {
+                        console.log('     INFO: Executing module configurations :', moduleName);
+                        SYSTEM.executeRouterConfig(value.app, moduleConfig);
+                    }
+                }
+            });
+        }
     }
 };

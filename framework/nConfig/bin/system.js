@@ -5,7 +5,7 @@ const fs = require('fs');
 module.exports = {
     prepareOptions: function(options) {
         if (!options) {
-            console.error('#### Please set NODICS_HOME into environment variable.')
+            console.error('   ERROR: Please set NODICS_HOME into environment variable.')
             options = {};
             options.SERVER_PATH = process.env.SERVER_PATH || process.cwd();
             options.NODICS_HOME = process.env.NODICS_HOME || path.resolve(process.cwd(), '..');
@@ -76,14 +76,17 @@ module.exports = {
     getModulesMetaData: function() {
         let _self = this;
         let config = CONFIG || {};
-        let api = API || {};
+        let modules = NODICS.modules || {};
         let moduleIndex = [];
         let metaData = {};
 
         var nodicsModulePath = [],
             serverModulePath = [];
+        //Get list of OOTB Active modules
         this.collectModulesList(config.NODICS_HOME, nodicsModulePath);
+        //Adding list of Custom Active modules
         this.collectModulesList(config.SERVER_PATH, serverModulePath);
+
         nodicsModulePath = nodicsModulePath.concat(serverModulePath);
         var counter = 0;
         nodicsModulePath.forEach(function(modulePath) {
@@ -93,13 +96,13 @@ module.exports = {
                 let moduleMetaData = {};
                 moduleMetaData.metaData = moduleFile;
                 moduleMetaData.modulePath = modulePath;
-                api[moduleFile.name] = moduleMetaData;
+                modules[moduleFile.name] = moduleMetaData;
                 if (!moduleFile.index) {
-                    console.error('Please update index property in package.json for module : ', moduleFile.name);
+                    console.error('   ERROR: Please update index property in package.json for module : ', moduleFile.name);
                     process.exit(1);
                 }
                 if (isNaN(moduleFile.index)) {
-                    console.error('Property index contain invalid value in package.json for module : ', moduleFile.name);
+                    console.error('   ERROR: Property index contain invalid value in package.json for module : ', moduleFile.name);
                     process.exit(1);
                 }
                 let indexData = {};
@@ -121,7 +124,7 @@ module.exports = {
             var value = moduleIndex[key][0];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
-                console.log('+++++  Loading file from : ' + filePath);
+                console.log('   INFO: Loading file from : ' + filePath);
                 var commonPropertyFile = require(filePath);
                 mergedFile = _.merge(mergedFile, commonPropertyFile);
             }
@@ -130,14 +133,36 @@ module.exports = {
     },
 
     startServers: function() {
-        Object.keys(API).forEach(function(moduleName) {
-            let moduleAPI = API[moduleName];
-            if (moduleAPI.app) {
-                const httpPort = SYSTEM.getServerPort(moduleName);
-                console.log('#### Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
-                moduleAPI.app.listen(httpPort);
+        if (CONFIG.server.runAsSingleModule) {
+            if (!NODICS.modules.default || !NODICS.modules.default.app) {
+                console.error('   ERROR: Server configurations has not be initialized. Please verify.');
+                process.exit(CONFIG.errorExitCode);
             }
-        });
+            const httpPort = SYSTEM.getServerPort('default');
+            console.log('=>  Starting Server for module : default on PORT : ', httpPort);
+            NODICS.modules.default.app.listen(httpPort);
+        } else {
+            let modules = NODICS.modules;
+            if (this.isBlank(NODICS.modules)) {
+                console.error('   ERROR: Please define valid active modules');
+                process.exit(1);
+            }
+            _.each(modules, function(value, moduleName) {
+                if (value.metaData && value.metaData.publish) {
+                    if (!value.app) {
+                        console.error('   ERROR: Server configurations has not be initialized for module : ', moduleName);
+                        process.exit(CONFIG.errorExitCode);
+                    }
+                    const httpPort = SYSTEM.getServerPort(moduleName);
+                    if (!httpPort) {
+                        console.error('   ERROR: Please define listening PORT for module: ', moduleName);
+                        process.exit(CONFIG.errorExitCode);
+                    }
+                    console.log('=>  Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
+                    value.app.listen(httpPort);
+                }
+            });
+        }
     },
 
     getAllMethods: function(envScripts) {
@@ -145,4 +170,8 @@ module.exports = {
             return typeof envScripts[prop] == 'function';
         });
     },
+
+    isBlank: function(value) {
+        return !Object.keys(value).length;
+    }
 };

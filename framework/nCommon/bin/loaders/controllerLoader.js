@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 module.exports = {
     loadControllers: function(module) {
-        console.log('#### Staring process to load Controllers for Module : ', module.name);
+        console.log('   INFO: Loading all module controllers');
         let path = module.path + '/src/controller';
         SYSTEM.processFiles(path, "Controller.js", (file) => {
             let controllerName = SYSTEM.getFileNameWithoutExtension(file);
@@ -13,9 +13,9 @@ module.exports = {
                 if (controllerObject.options.isNew) {
                     CONTROLLER[controllerName] = controllerObject;
                 } else {
-                    console.warn('Controller container doesn,t contain ' + controllerName + ' and isNew Property is false. hence ignoring file ', file);
+                    console.warn('   WARNING: Controller container doesn,t contain ' + controllerName + ' and isNew Property is false. hence ignoring file ', file);
                 }
             }
         });
     }
-}
+};

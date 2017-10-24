@@ -22,7 +22,7 @@ http://localhost:3005/nodics/cronjob
 // just for test
 */
 module.exports = {
-    //Database name
+    //Module Name
     cronjob: {
         email: {
             super: 'none',

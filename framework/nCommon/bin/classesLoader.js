@@ -3,7 +3,7 @@ var _ = require('lodash');
 module.exports = {
     loadClasses: function() {
         let classes = global.CLASSES = {};
-        console.log('#### Staring process to load Classes');
+        console.log('=> Staring Classes loader process');
 
         let _self = this;
         let moduleIndex = CONFIG.moduleIndex;
@@ -29,7 +29,7 @@ module.exports = {
 
     generalizeClasses: function() {
         let classesScripts = {};
-        console.log('####  Staring process to generalize classes');
+        console.log('   INFO: Generalizing defined classes');
         SYSTEM.loadFiles(CONFIG, '/src/lib/classes.js', classesScripts);
 
         var methods = SYSTEM.getAllMethods(classesScripts);

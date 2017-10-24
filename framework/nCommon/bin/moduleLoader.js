@@ -7,7 +7,7 @@ const router = require('./loaders/routerLoader');
 
 module.exports = {
     init: function() {
-        console.log('## Staring process to load Modules');
+        console.log('=> Staring process to load Modules');
         let _self = this;
         let moduleIndex = CONFIG.moduleIndex;
         Object.keys(moduleIndex).forEach(function(key) {
@@ -17,10 +17,12 @@ module.exports = {
     },
 
     loadModule: function(module) {
+        console.log(' =>Staring process for module : ', module.name);
         dao.loadDao(module);
         service.loadServices(module);
+        processDefinition.loadProcessDefinition(module);
         facade.loadFacades(module);
         controller.loadControllers(module);
-        router.loadRouters(module);
+        //router.loadRouters(module);
     }
 };

@@ -8,10 +8,10 @@ module.exports = {
         let system = global.SYSTEM = {};
         system['options'] = sys.prepareOptions(options);
         if (!SYSTEM.options) {
-            console.error("System initialization error: options cann't be null or empty");
+            console.error("    ERROR: System initialization error: options cann't be null or empty");
             process.exit(1);
         }
-        console.log('###   Initializing Nodics, Node based enterprise application solution   ###');
+        console.log('=>Initializing Nodics, Node based enterprise application solution   ###');
         console.log('---------------------------------------------------------------------------');
         console.log('SERVER_PATH : ', SYSTEM.options.SERVER_PATH);
         console.log('NODICS_HOME : ', SYSTEM.options.NODICS_HOME);

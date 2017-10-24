@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 module.exports = {
-    init: function () {
-        
+    init: function() {
+
     }
-}
+};

@@ -1,8 +1,6 @@
 const _ = require('lodash');
 
 module.exports = {
-    moduleName: 'mdulName',
-
     handleResponse: function(error, success, inputParam, callback) {
         let response = {};
         if (error) {

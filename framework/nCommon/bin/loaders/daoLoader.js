@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 module.exports = {
     loadDao: function(module) {
-        console.log('#### Staring process to load DAO for Module : ', module.name);
+        console.log('   INFO: Loading all module DAO');
         let path = module.path + '/src/dao';
         SYSTEM.processFiles(path, "Dao.js", (file) => {
             let daoName = SYSTEM.getFileNameWithoutExtension(file);
@@ -13,9 +13,9 @@ module.exports = {
                 if (doaObject.options.isNew) {
                     DAO[daoName] = doaObject;
                 } else {
-                    console.warn('Dao container doesn,t contain ' + daoName + ' and isNew Property is false. hence ignoring file ', file);
+                    console.warn('   WARNING: Dao container doesn,t contain ' + daoName + ' and isNew Property is false. hence ignoring file ', file);
                 }
             }
         });
     }
-}
+};
