@@ -105,7 +105,6 @@ module.exports = {
         global.NODICS = new Nodics();
         global.SYSTEM = {};
         let properties = {};
-        SYSTEM.SERVER_STATE = 'starting';
         properties.NODICS_HOME = options.NODICS_HOME;
         properties.NODICS_ENV = options.NODICS_ENV;
         properties.SERVER_PATH = options.SERVER_PATH;

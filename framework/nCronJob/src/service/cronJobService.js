@@ -192,12 +192,14 @@ module.exports = {
 
     startOnStartup: function() {
         if (CONFIG.get('startJobsOnStartup')) {
-            if (SYSTEM.SERVER_STATE === 'running') {
-                SERVICE.CronJobService.createCronJobs({}, (error, response) => {
-                    if (error) {
-                        console.log('Something went wrong while creating CronJobs');
+            if (NODICS.getServerState() === 'started') {
+                SERVICE.CronJobService.create({}, (response, inputParam) => {
+                    if (response.success === 'false') {
+                        console.log('   ERROR: Something went wrong while creating CronJobs : ', response);
                     } else {
-                        SERVICE.CronJobService.startCronJob('all');
+                        SERVICE.CronJobService.start({ jobName: 'all' }, (response, inputParam) => {
+                            console.log('   INFO: triggered cronjob start process : ', response);
+                        });
                     }
                 });
             } else {

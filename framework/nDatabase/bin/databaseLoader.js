@@ -1,32 +1,55 @@
 const _ = require('lodash');
-
+let mongoose = require('mongoose');
 module.exports = {
-    createDatabase: function(databaseName) {
-        var database = require('mongoose');
-        database.Promise = global.Promise;
-        if (CONFIG.get('database')[databaseName].options) {
-            database.connect(CONFIG.get('database')[databaseName].URI, CONFIG.get('database')[databaseName].options);
+    createConnection: function(dbConfig) {
+        console.log('   INFO: Creating database connection for URI : ', dbConfig.URI);
+        let connection = '';
+        mongoose.Promise = global.Promise;
+        if (dbConfig.options) {
+            connection = mongoose.createConnection(dbConfig.URI, dbConfig.options);
         } else {
-            database.connect(CONFIG.get('database')[databaseName].URI);
+            connection = mongoose.createConnection(dbConfig.URI);
         }
         //Register all posible event
-        database.connection.on('connected', function() {
-            console.log('   INFO: Mongoose default connection open to ' + CONFIG.get('database')[databaseName].URI);
+        connection.on('connected', function() {
+            console.log('   INFO: Mongoose default connection open to ' + dbConfig.URI);
         });
-        database.connection.on('error', function(err) {
-            console.log('   INFO: Mongoose default connection error: ' + err);
+        connection.on('error', function(error) {
+            console.log('   INFO: Mongoose default connection error: ' + error);
         });
-        database.connection.on('disconnected', function() {
+        connection.on('disconnected', function() {
             console.log('   INFO: Mongoose default connection disconnected');
         });
-        return database;
+        return connection;
     },
-    createDefaultDatabase: function() {
-        let dbConfig = SYSTEM.getDatabaseConfiguration('default');
-        var connection = this.createDatabase('default');
-        dbConfig.connection = connection;
-        dbConfig.Schema = connection.Schema;
-        NODICS.addDatabase('default', dbConfig);
+    createDatabase: function(moduleName) {
+        let dbConfig = SYSTEM.getDatabaseConfiguration(moduleName);
+        let masterDatabase = new CLASSES.Database();
+        let testDatabase = new CLASSES.Database();
+
+        masterDatabase.setName(moduleName);
+        masterDatabase.setURI(dbConfig.master.URI);
+        masterDatabase.setOptions(dbConfig.master.options);
+        masterDatabase.setConnection(this.createConnection(dbConfig.master));
+        masterDatabase.setSchema(mongoose.Schema);
+        if (dbConfig.test) {
+            testDatabase.setName(moduleName);
+            testDatabase.setURI(dbConfig.test.URI);
+            testDatabase.setOptions(dbConfig.test.options);
+            testDatabase.setConnection(this.createConnection(dbConfig.test));
+            testDatabase.setSchema(mongoose.Schema);
+        } else {
+            let testDB = NODICS.getDatabase().test;
+            if (!testDB) {
+                console.error('   ERROR: Default test database configuration not found. Please velidate database configuration');
+                process.exit(CONFIG.get('errorExitCode'));
+            }
+            testDatabase = testDB;
+        }
+        return {
+            master: masterDatabase,
+            test: testDatabase
+        };
     },
     createDatabases: function() {
         const _self = this;
@@ -34,22 +57,20 @@ module.exports = {
             process.exit(CONFIG.get('errorExitCode'));
         }
         let modules = NODICS.getModules();
-        this.createDefaultDatabase();
+        //Creating default data base instance
+        NODICS.addDatabase('default', this.createDatabase('default'));
+        //Creating databases for all modules, if configuration available
         _.each(modules, (value, moduleName) => {
             if (CONFIG.get('database')[moduleName]) {
                 console.log('   INFO: Creating database for module : ', moduleName);
-                let dbConfig = SYSTEM.getDatabaseConfiguration(moduleName);
-                var connection = _self.createDatabase(moduleName);
-                dbConfig.connection = connection;
-                dbConfig.Schema = connection.Schema;
-                NODICS.addDatabase(moduleName, dbConfig);
+                NODICS.addDatabase(moduleName, this.createDatabase(moduleName));
             } else {
                 console.warn('   WARNING: None database configuration found for module : ', moduleName);
             }
         });
     },
     init: function() {
-        console.log("=> Starting Database creating process");
+        console.log(" =>Starting Database creating process");
         this.createDatabases();
     }
 };

@@ -7,7 +7,7 @@ module.exports = {
         FRAMEWORK.init(options);
         SYSTEM.executePostScripts();
         FRAMEWORK.startServers();
-        SYSTEM.SERVER_STATE = 'running';
+        NODICS.setServerState('started');
         //console.log(NODICS.modules.cronjob);
         //console.log(NODICS.modules.user);
         //console.log(util.inspect(NODICS, { showHidden: false, depth: 3 }));

@@ -7,34 +7,42 @@ module.exports = {
         NODICS.setValidators(SYSTEM.loadFiles(CONFIG.getProperties(), '/src/schemas/validators.js'));
     },
 
+    createSchema: function(database, schema, moduleName, modelName, schemaDefinition) {
+        if (schemaDefinition.super === 'none') {
+            schema[modelName] = new database.getSchema()(schemaDefinition.definition);
+        } else {
+            let superSchema = schemaDefinition.super;
+            if (!schema[superSchema]) {
+                let rawSchema = JSON.parse(JSON.stringify(NODICS.getModule(moduleName).rawSchema));
+                this.resolveSchemaDependancy(moduleName, superSchema, rawSchema[superSchema]);
+            }
+            schema[modelName] = schema[superSchema].extend(schemaDefinition.definition);
+        }
+    },
+
     resolveSchemaDependancy: function(moduleName, modelName, schemaDefinition) {
         let flag = false;
-        let db = SYSTEM.getDatabase(moduleName);
-        let moduleObject = NODICS.getModule(moduleName);
-        if (!moduleObject.schemas) {
-            moduleObject.schemas = {};
-        }
+        let database = SYSTEM.getDatabase(moduleName);
+        let masterSchema = NODICS.getModule(moduleName).schemas.master;
+        let testSchema = NODICS.getModule(moduleName).schemas.test;
+
         if (SYSTEM.validateSchemaDefinition(modelName, schemaDefinition)) {
             process.exit(CONFIG.get('errorExitCode'));
         }
-        if (moduleObject.schemas[modelName]) {
+        if (masterSchema[modelName] && testSchema[modelName]) {
             return true;
         }
-        if (schemaDefinition.super === 'none') {
-            moduleObject.schemas[modelName] = new db.Schema(schemaDefinition.definition);
-            flag = true;
-        } else {
-            let superSchema = schemaDefinition.super;
-            if (!moduleObject.schemas[superSchema]) {
-                let rawSchema = JSON.parse(JSON.stringify(moduleObject.rawSchema));
-                this.resolveSchemaDependancy(moduleName, superSchema, rawSchema[superSchema]);
-            }
-            moduleObject.schemas[modelName] = moduleObject.schemas[superSchema].extend(schemaDefinition.definition);
+        if (!masterSchema[modelName]) {
+            this.createSchema(database.master, masterSchema, moduleName, modelName, schemaDefinition);
             flag = true;
         }
-
+        if (!testSchema[modelName]) {
+            this.createSchema(database.test, testSchema, moduleName, modelName, schemaDefinition);
+            flag = true;
+        }
         return flag;
     },
+
     traverseSchemas: function(moduleName, rawSchema) {
         let _self = this;
         let cloneSchema = JSON.parse(JSON.stringify(rawSchema));
@@ -48,7 +56,6 @@ module.exports = {
 
     extractRawSchema: function(moduleName, moduleObject) {
         let _self = this;
-        let db = SYSTEM.getDatabase(moduleName);
         let rawSchema = JSON.parse(JSON.stringify(moduleObject.rawSchema));
         let loop = true;
         let counter = 0;
@@ -64,6 +71,15 @@ module.exports = {
         let _self = this;
         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.rawSchema) {
+                if (!moduleObject.schemas) {
+                    moduleObject.schemas = {};
+                }
+                if (!moduleObject.schemas.master) {
+                    moduleObject.schemas.master = {};
+                }
+                if (!moduleObject.schemas.test) {
+                    moduleObject.schemas.test = {};
+                }
                 _self.extractRawSchema(moduleName, moduleObject);
             }
         });
@@ -90,19 +106,22 @@ module.exports = {
         console.log(' =>Starting interceptors loading process');
         let interceptorFiles = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/schemas/interceptors.js');
         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-            if (moduleObject.schemas && moduleObject.rawSchema) {
-                let schemas = moduleObject.schemas;
+            if (moduleObject.rawSchema) {
+                let masterSchema = moduleObject.schemas.master;
+                let testSchema = moduleObject.schemas.test;
                 _.each(moduleObject.rawSchema, function(value, key) {
                     if (value.model) {
                         let defaultFunctions = SYSTEM.getAllMethods(interceptorFiles.default);
                         defaultFunctions.forEach(function(operationName) {
-                            interceptorFiles.default[operationName](schemas[key]);
+                            interceptorFiles.default[operationName](masterSchema[key]);
+                            interceptorFiles.default[operationName](testSchema[key]);
                         });
                         let moduleInterceptors = interceptorFiles[moduleName];
                         if (moduleInterceptors) {
                             let moduleFunctions = SYSTEM.getAllMethods(moduleInterceptors);
                             moduleFunctions.forEach(function(operationName) {
-                                moduleInterceptors[operationName](schemas[key]);
+                                moduleInterceptors[operationName](masterSchema[key]);
+                                moduleInterceptors[operationName](testSchema[key]);
                             });
                         }
                     }
@@ -112,25 +131,36 @@ module.exports = {
     },
 
     createModelsForDatabase: function(moduleName, moduleObject) {
-        let db = SYSTEM.getDatabase(moduleName);
-        let schemas = moduleObject.schemas || {};
-        let rawSchema = moduleObject.rawSchema || {};
-        var models = {};
-        _.each(rawSchema, function(value, key) {
-            modelName = SYSTEM.createModelName(key);
+        let masterDB = NODICS.getDatabase(moduleName).master;
+        let testDB = NODICS.getDatabase(moduleName).test;
+        let masterSchema = moduleObject.schemas.master;
+        let testSchema = moduleObject.schemas.test;
+        _.each(moduleObject.rawSchema, function(value, key) {
             if (value.model) {
-                models[modelName] = db.connection.model(modelName, schemas[key]);
+                modelName = SYSTEM.createModelName(key);
+                console.log('   INFO: Creating model instance for : ', modelName);
+                if (value.model) {
+                    moduleObject.models.master[modelName] = masterDB.getConnection().model(modelName, masterSchema[key]);
+                    moduleObject.models.test[modelName] = testDB.getConnection().model(modelName, testSchema[key]);
+                }
             }
         });
-        moduleObject.models = models;
     },
-
-
 
     createModels: function() {
         let _self = this;
+        console.log(' =>Starting model generation process');
         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-            if (moduleObject.schemas) {
+            if (moduleObject.rawSchema) {
+                if (!moduleObject.models) {
+                    moduleObject.models = {};
+                }
+                if (!moduleObject.models.master) {
+                    moduleObject.models.master = {};
+                }
+                if (!moduleObject.models.test) {
+                    moduleObject.models.test = {};
+                }
                 _self.createModelsForDatabase(moduleName, moduleObject);
             }
         });

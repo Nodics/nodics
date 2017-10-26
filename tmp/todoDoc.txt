@@ -1,2 +1,71 @@
 - Show how merge process happens and why its require
 - Detailed out use of nodics and custom module and why we need it
+
+=> Database configuration changes
+    - Each database configuration has two parts in it.
+    - Configuration for master database
+    - Configuration for test database
+    
+    - Default definition is mandate to have it defined
+        default: {
+            master: { -- Master database for running application
+                URI: 'mongodb://localhost:27017/nodicsMaster',
+                options: {
+                    db: {
+                        native_parser: true
+                    },
+                    server: {
+                        poolSize: 5
+                    },
+                    replset: {
+                        rs_name: 'myReplicaSetName'
+                    }
+                }
+            },
+            test: { -- Test database for test cases execution
+                URI: 'mongodb://localhost:27017/nodicsTest',
+                options: {
+                    db: {
+                        native_parser: true
+                    },
+                    server: {
+                        poolSize: 5
+                    },
+                    replset: {
+                        rs_name: 'myReplicaSetName'
+                    }
+                }
+            }
+        }
+    - Module specific database configuration also can be done
+        [moduleName]: {
+            master: { -- Master database for running application
+                URI: 'mongodb://localhost:27017/[moduleName]Master',
+                options: {
+                    db: {
+                        native_parser: true
+                    },
+                    server: {
+                        poolSize: 5
+                    },
+                    replset: {
+                        rs_name: 'myReplicaSetName'
+                    }
+                }
+            },
+            test: { -- Test database for test cases execution
+                URI: 'mongodb://localhost:27017/[moduleName]Test',
+                options: {
+                    db: {
+                        native_parser: true
+                    },
+                    server: {
+                        poolSize: 5
+                    },
+                    replset: {
+                        rs_name: 'myReplicaSetName'
+                    }
+                }
+            }
+
+        }

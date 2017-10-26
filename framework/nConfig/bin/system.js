@@ -3,7 +3,6 @@ const path = require('path');
 const fs = require('fs');
 
 module.exports = {
-    currentTanent: 'default',
     prepareOptions: function(options) {
         if (!options) {
             console.error('   ERROR: Please set NODICS_HOME into environment variable.')

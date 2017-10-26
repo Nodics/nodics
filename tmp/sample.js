@@ -61,15 +61,30 @@
                 base: [Object]
             },
             schemas: {
-                email: [Object],
-                trigger: [Object],
-                base: [Object],
-                cronJob: [Object]
+                master: {
+                    email: [Object],
+                    trigger: [Object],
+                    cronJob: [Object],
+                    base: [Object]
+                },
+                test: {
+                    email: [Object],
+                    trigger: [Object],
+                    cronJob: [Object],
+                    base: [Object]
+                }
             },
             models: {
-                EmailModel: [Object],
-                TriggerModel: [Object],
-                CronJobModel: [Object]
+                master: {
+                    email: [Object],
+                    trigger: [Object],
+                    cronJob: [Object]
+                },
+                test: {
+                    email: [Object],
+                    trigger: [Object],
+                    cronJob: [Object]
+                }
             }
         },
         user: {

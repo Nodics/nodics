@@ -37,7 +37,7 @@ module.exports = function(definition, trigger, context, timeZone) {
                     _running = true;
                     SERVICE.JobHandlerService.handleJobTriggered(_definition, _cronJob);
                     try {
-                        if (SYSTEM.SERVER_STATE === 'running' && CONFIG.get('clusterId') === _definition.clusterId) {
+                        if (NODICS.getServerState() === 'started' && CONFIG.get('clusterId') === _definition.clusterId) {
                             eval(_definition.jobDetail.startNode + '(_definition, _cronJob)');
                         }
                     } catch (error) {
@@ -52,7 +52,7 @@ module.exports = function(definition, trigger, context, timeZone) {
             onComplete: function() {
                 if (!_paused) {
                     try {
-                        if (_running && SYSTEM.SERVER_STATE === 'running' && CONFIG.get('clusterId') === _definition.clusterId) {
+                        if (_running && NODICS.getServerState() === 'started' && CONFIG.get('clusterId') === _definition.clusterId) {
                             eval(_definition.jobDetail.endNode + '(_definition, _cronJob)');
                         }
                     } catch (error) {
@@ -81,6 +81,7 @@ module.exports = function(definition, trigger, context, timeZone) {
                 },
                 function() {
                     _cronJob.start();
+                    console.log('      triggered: ');
                 }
             ]);
         }
