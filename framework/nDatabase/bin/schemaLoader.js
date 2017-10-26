@@ -4,18 +4,18 @@ const util = require('util');
 module.exports = {
     deployValidators: function() {
         console.log(' =>Starting validators loading process');
-        NODICS.validators = SYSTEM.loadFiles(CONFIG, '/src/schemas/validators.js');
+        NODICS.setValidators(SYSTEM.loadFiles(CONFIG.getProperties(), '/src/schemas/validators.js'));
     },
 
     resolveSchemaDependancy: function(moduleName, modelName, schemaDefinition) {
         let flag = false;
         let db = SYSTEM.getDatabase(moduleName);
-        let moduleObject = NODICS.modules[moduleName];
+        let moduleObject = NODICS.getModule(moduleName);
         if (!moduleObject.schemas) {
             moduleObject.schemas = {};
         }
         if (SYSTEM.validateSchemaDefinition(modelName, schemaDefinition)) {
-            process.exit(CONFIG.errorExitCode);
+            process.exit(CONFIG.get('errorExitCode'));
         }
         if (moduleObject.schemas[modelName]) {
             return true;
@@ -62,7 +62,7 @@ module.exports = {
 
     createSchemas: function() {
         let _self = this;
-        _.each(NODICS.modules, (moduleObject, moduleName) => {
+        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.rawSchema) {
                 _self.extractRawSchema(moduleName, moduleObject);
             }
@@ -71,14 +71,14 @@ module.exports = {
 
     deploySchemas: function() {
         console.log(' =>Starting schemas loading process');
-        let mergedSchema = SYSTEM.loadFiles(CONFIG, '/src/schemas/schemas.js');
-        let modules = NODICS.modules;
+        let mergedSchema = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/schemas/schemas.js');
+        let modules = NODICS.getModules();
         Object.keys(mergedSchema).forEach(function(key) {
             if (key !== 'default') {
                 let moduleObject = modules[key];
                 if (!moduleObject) {
                     console.error('   ERROR: Module name : ', key, ' is not valid. Please define a valide module name in schema');
-                    process.exit(CONFIG.errorExitCode);
+                    process.exit(CONFIG.get('errorExitCode'));
                 }
                 moduleObject.rawSchema = _.merge(mergedSchema[key], mergedSchema.default);
             }
@@ -88,8 +88,8 @@ module.exports = {
 
     deployInterceptors: function() {
         console.log(' =>Starting interceptors loading process');
-        let interceptorFiles = SYSTEM.loadFiles(CONFIG, '/src/schemas/interceptors.js');
-        _.each(NODICS.modules, (moduleObject, moduleName) => {
+        let interceptorFiles = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/schemas/interceptors.js');
+        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.schemas && moduleObject.rawSchema) {
                 let schemas = moduleObject.schemas;
                 _.each(moduleObject.rawSchema, function(value, key) {
@@ -129,7 +129,7 @@ module.exports = {
 
     createModels: function() {
         let _self = this;
-        _.each(NODICS.modules, (moduleObject, moduleName) => {
+        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.schemas) {
                 _self.createModelsForDatabase(moduleName, moduleObject);
             }

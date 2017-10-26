@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 module.exports = {
+    currentTanent: 'default',
     prepareOptions: function(options) {
         if (!options) {
             console.error('   ERROR: Please set NODICS_HOME into environment variable.')
@@ -43,20 +44,21 @@ module.exports = {
             .map(subFolder => path.join(folder, subFolder));
     },
 
-    collectModulesList: function(folder, modulePathList) {
+    collectModulesList: function(properties, folder, modulePathList) {
+        let config = properties || CONFIG.getProperties();
         const hasPackageJson = fs.existsSync(path.join(folder, 'package.json'));
         if (hasPackageJson) {
             modulePathList.push(folder);
         }
         for (let subFolder of this.subFolders(folder)) {
-            if (subFolder !== CONFIG.SERVER_PATH) {
-                this.collectModulesList(subFolder, modulePathList);
+            if (subFolder !== config.SERVER_PATH) {
+                this.collectModulesList(config, subFolder, modulePathList);
             }
         }
     },
 
-    isModuleActive: function(moduleName) {
-        let config = CONFIG || {};
+    isModuleActive: function(properties, moduleName) {
+        let config = properties || CONFIG.getProperties();
         let flag = false;
         if (config.activeModules[0] === 'ALL') {
             flag = true;
@@ -73,30 +75,29 @@ module.exports = {
         return moduleIndex;
     },
 
-    getModulesMetaData: function() {
+    getModulesMetaData: function(properties) {
         let _self = this;
-        let config = CONFIG || {};
-        let modules = NODICS.modules || {};
+        let config = properties || CONFIG.getProperties();
+        let modules = NODICS.getModules();
         let moduleIndex = [];
         let metaData = {};
-
         var nodicsModulePath = [],
             serverModulePath = [];
         //Get list of OOTB Active modules
-        this.collectModulesList(config.NODICS_HOME, nodicsModulePath);
+        this.collectModulesList(properties, config.NODICS_HOME, nodicsModulePath);
         //Adding list of Custom Active modules
-        this.collectModulesList(config.SERVER_PATH, serverModulePath);
+        this.collectModulesList(properties, config.SERVER_PATH, serverModulePath);
 
         nodicsModulePath = nodicsModulePath.concat(serverModulePath);
         var counter = 0;
         nodicsModulePath.forEach(function(modulePath) {
             var moduleFile = require(modulePath + '/package.json');
-            if (_self.isModuleActive(moduleFile.name)) {
+            if (_self.isModuleActive(properties, moduleFile.name)) {
                 metaData[moduleFile.name] = moduleFile;
                 let moduleMetaData = {};
                 moduleMetaData.metaData = moduleFile;
                 moduleMetaData.modulePath = modulePath;
-                modules[moduleFile.name] = moduleMetaData;
+                NODICS.addModule(moduleMetaData);
                 if (!moduleFile.index) {
                     console.error('   ERROR: Please update index property in package.json for module : ', moduleFile.name);
                     process.exit(1);
@@ -114,6 +115,7 @@ module.exports = {
         });
         config.moduleIndex = this.sortModulesByIndex(moduleIndex);
         config.metaData = metaData;
+        //NODICS.setModules(modules);
     },
 
     loadFiles: function(config, fileName, frameworkFile) {
@@ -133,30 +135,30 @@ module.exports = {
     },
 
     startServers: function() {
-        if (CONFIG.server.runAsSingleModule) {
-            if (!NODICS.modules.default || !NODICS.modules.default.app) {
+        if (CONFIG.get('server').runAsSingleModule) {
+            if (!NODICS.getModules().default || !NODICS.getModules().default.app) {
                 console.error('   ERROR: Server configurations has not be initialized. Please verify.');
-                process.exit(CONFIG.errorExitCode);
+                process.exit(CONFIG.get('errorExitCode'));
             }
             const httpPort = SYSTEM.getServerPort('default');
             console.log('=>  Starting Server for module : default on PORT : ', httpPort);
-            NODICS.modules.default.app.listen(httpPort);
+            NODICS.getModules().default.app.listen(httpPort);
         } else {
-            let modules = NODICS.modules;
-            if (this.isBlank(NODICS.modules)) {
+            let modules = NODICS.getModules();
+            if (this.isBlank(NODICS.getModules())) {
                 console.error('   ERROR: Please define valid active modules');
-                process.exit(1);
+                process.exit(CONFIG.get('errorExitCode'));
             }
             _.each(modules, function(value, moduleName) {
                 if (value.metaData && value.metaData.publish) {
                     if (!value.app) {
                         console.error('   ERROR: Server configurations has not be initialized for module : ', moduleName);
-                        process.exit(CONFIG.errorExitCode);
+                        process.exit(CONFIG.get('errorExitCode'));
                     }
                     const httpPort = SYSTEM.getServerPort(moduleName);
                     if (!httpPort) {
                         console.error('   ERROR: Please define listening PORT for module: ', moduleName);
-                        process.exit(CONFIG.errorExitCode);
+                        process.exit(CONFIG.get('errorExitCode'));
                     }
                     console.log('=>  Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
                     value.app.listen(httpPort);

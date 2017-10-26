@@ -5,7 +5,7 @@ const moduleLoader = require('./bin/moduleLoader');
 
 module.exports = {
     init: function() {
-        if (!CONFIG || !SYSTEM) {
+        if (!CONFIG || !SYSTEM || !NODICS) {
             console.error("   ERROR: System initialization error: configuration initializer failure.");
             process.exit(1);
         }

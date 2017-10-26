@@ -33,7 +33,7 @@ module.exports = {
     },
 
     schemaWalkThrough: function(options, callback) {
-        _.each(NODICS.modules, (moduleObject, moduleName) => {
+        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.models) {
                 _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
                     if (schemaObject.model) {
@@ -50,7 +50,7 @@ module.exports = {
 
     modelsWalkThrough: function(options, callback) {
         if (options.moduleName) {
-            _.each(NODICS.modules[options.moduleName].rawSchema, (schemaObject, schemaName) => {
+            _.each(NODICS.getModules()[options.moduleName].rawSchema, (schemaObject, schemaName) => {
                 if (schemaObject.model) {
                     options.schemaName = schemaName;
                     options.schemaObject = schemaObject;
@@ -58,7 +58,7 @@ module.exports = {
                 }
             });
         } else {
-            _.each(NODICS.modules, (moduleObject, moduleName) => {
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
                 if (moduleObject.models) {
                     _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
                         if (schemaObject.model) {
@@ -83,7 +83,7 @@ module.exports = {
                 return value;
             }
         });
-        let contextRoot = CONFIG.server.contextRoot;
+        let contextRoot = CONFIG.get('server').contextRoot;
         commonDefinitionString = commonDefinitionString.replaceAll('moduleName', options.moduleName)
             .replaceAll('modelName', options.modelName + 'Model')
             .replaceAll('schemaName', options.schemaName)

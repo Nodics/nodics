@@ -6,7 +6,7 @@ module.exports = {
         console.log('=> Staring Classes loader process');
 
         let _self = this;
-        let moduleIndex = CONFIG.moduleIndex;
+        let moduleIndex = CONFIG.get('moduleIndex');
         Object.keys(moduleIndex).forEach(function(key) {
             var value = moduleIndex[key][0];
             _self.loadModuleClasses(value);
@@ -30,7 +30,7 @@ module.exports = {
     generalizeClasses: function() {
         let classesScripts = {};
         console.log('   INFO: Generalizing defined classes');
-        SYSTEM.loadFiles(CONFIG, '/src/lib/classes.js', classesScripts);
+        SYSTEM.loadFiles(CONFIG.getProperties(), '/src/lib/classes.js', classesScripts);
 
         var methods = SYSTEM.getAllMethods(classesScripts);
         methods.forEach(function(instance) {

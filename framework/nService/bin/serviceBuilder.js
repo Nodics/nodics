@@ -9,7 +9,7 @@ module.exports = {
 
     init: function() {
         global.SERVICE = {};
-        let serviceCommon = SYSTEM.loadFiles(CONFIG, '/src/service/common.js');
+        let serviceCommon = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/service/common.js');
         SYSTEM.schemaWalkThrough({ commonDefinition: serviceCommon }, this.generateServices);
     }
 };

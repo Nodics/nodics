@@ -191,8 +191,8 @@ module.exports = {
     },
 
     startOnStartup: function() {
-        if (CONFIG.startJobsOnStartup) {
-            if (CONFIG.SERVER_STATE === 'running') {
+        if (CONFIG.get('startJobsOnStartup')) {
+            if (SYSTEM.SERVER_STATE === 'running') {
                 SERVICE.CronJobService.createCronJobs({}, (error, response) => {
                     if (error) {
                         console.log('Something went wrong while creating CronJobs');
@@ -201,7 +201,7 @@ module.exports = {
                     }
                 });
             } else {
-                setTimeout(SERVICE.CronJobService.startOnStartup, CONFIG.cronJobStartWaitInterval);
+                setTimeout(SERVICE.CronJobService.startOnStartup, CONFIG.get('cronJobStartWaitInterval'));
             }
         }
     },

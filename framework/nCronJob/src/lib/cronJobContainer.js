@@ -37,7 +37,7 @@ module.exports = function() {
         if (!_jobPool[definition.name]) {
             let cronJobs = [];
             definition.triggers.forEach(function(value) {
-                if (value.isActive && CONFIG.clusterId === definition.clusterId) {
+                if (value.isActive && CONFIG.get('clusterId') === definition.clusterId) {
                     let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
                     tmpCronJob.validate();
                     tmpCronJob.init();

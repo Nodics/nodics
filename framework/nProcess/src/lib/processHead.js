@@ -28,7 +28,7 @@ module.exports = function(name, processDefinition, defaultNodes) {
 
         if (!_currentNode) {
             console.log('1Node link is broken for node : ', _startNode, ' for process : ', _processName);
-            process.exit(CONFIG.errorExitCode);
+            process.exit(CONFIG.get('errorExitCode'));
         }
         if (_processDefinition.handleError) {
             if (_nodeList[_processDefinition.handleError]) {

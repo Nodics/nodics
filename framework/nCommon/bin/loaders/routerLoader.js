@@ -2,6 +2,7 @@ const fs = require('fs');
 var _ = require('lodash');
 
 module.exports = {
+    //This router loader is not getting used anywhere
     loadModuleRouterConfig: function(module, app) {
         let configPath = module.path + '/src/router/appConfig.js';
         if (fs.existsSync(configPath)) {

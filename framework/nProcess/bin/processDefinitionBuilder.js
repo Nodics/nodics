@@ -2,17 +2,17 @@ const _ = require('lodash');
 
 module.exports = {
     buildDefaultHandler: function() {
-        global.PROCESS = SYSTEM.loadFiles(CONFIG, '/src/process/common.js');
+        global.PROCESS = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/process/common.js');
     },
 
     buildProcessService: function() {
         let process = global.PROCESS || {};
-        process['ProcessService'] = SYSTEM.loadFiles(CONFIG, '/src/process/processService.js');
+        process['ProcessService'] = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/process/processService.js');
     },
 
     buildProcesses: function() {
         _self = this;
-        let processDefinitions = SYSTEM.loadFiles(CONFIG, '/src/process/processDefinition.js');
+        let processDefinitions = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/process/processDefinition.js');
         let process = global.PROCESS || {};
         _.each(processDefinitions, function(value, key) {
             if (key !== 'defaultProcess') {

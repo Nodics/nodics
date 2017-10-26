@@ -1,5 +1,5 @@
 module.exports = {
     startJobsOnStartup: function() {
-        //SERVICE.CronJobService.startOnStartup();Himkar: Needs to un-comment
+        SERVICE.CronJobService.startOnStartup();
     }
 };

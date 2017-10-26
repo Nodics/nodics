@@ -11,7 +11,7 @@ module.exports = {
 
     init: function() {
         global.FACADE = {};
-        let facadeCommon = SYSTEM.loadFiles(CONFIG, '/src/facade/common.js');
+        let facadeCommon = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/facade/common.js');
         SYSTEM.schemaWalkThrough({ commonDefinition: facadeCommon }, this.generateFacades);
     }
 };

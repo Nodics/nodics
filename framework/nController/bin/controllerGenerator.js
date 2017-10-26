@@ -9,7 +9,7 @@ module.exports = {
 
     init: function() {
         global.CONTROLLER = {};
-        let controllerCommon = SYSTEM.loadFiles(CONFIG, '/src/controller/common.js');
+        let controllerCommon = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/controller/common.js');
         SYSTEM.schemaWalkThrough({ commonDefinition: controllerCommon }, this.generateControllers);
     }
 };

@@ -9,7 +9,7 @@ module.exports = {
     init: function() {
         console.log('=> Staring process to load Modules');
         let _self = this;
-        let moduleIndex = CONFIG.moduleIndex;
+        let moduleIndex = CONFIG.get('moduleIndex');
         Object.keys(moduleIndex).forEach(function(key) {
             var value = moduleIndex[key][0];
             _self.loadModule(value);

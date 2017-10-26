@@ -38,6 +38,9 @@ module.exports = {
     // databaseUserURI = mongodb://hostA:27501,hostB:27501
     // databaseUserURI = mongodb://nonexistent.domain:27000
 
+    // Tanent configuration tell system to group properties based on active tanents
+    activeTanent: 'test',
+
     defaultContentType: 'application/json',
 
     server: {
@@ -51,5 +54,4 @@ module.exports = {
             httpsPort: 3001,
         }
     },
-
 };

@@ -4,28 +4,28 @@ module.exports = {
         if (!dbName) {
             dbName = 'default';
         }
-        if (!CONFIG.database) {
+        if (!CONFIG.get('database')) {
             console.error('   ERROR: Databse configuration not found. Please configure in properties.js file.');
             flag = false;
         }
-        if (!CONFIG.database[dbName]) {
+        if (!CONFIG.get('database')[dbName]) {
             console.error('   ERROR: Default databse configuration not found. Please configure in properties.js file.');
             flag = false;
         }
         return flag;
     },
     getDatabase: function(moduleName) {
-        if (NODICS.dbs[moduleName]) {
-            return NODICS.dbs[moduleName];
+        if (NODICS.getDatabase(moduleName)) {
+            return NODICS.getDatabase(moduleName);
         } else {
-            return NODICS.dbs['default'];
+            return NODICS.getDatabase('default');
         }
     },
     getDatabaseConfiguration: function(moduleName) {
-        if (CONFIG.database[moduleName]) {
-            return CONFIG.database[moduleName];
+        if (CONFIG.get('database')[moduleName]) {
+            return CONFIG.get('database')[moduleName];
         } else {
-            return CONFIG.database.default;
+            return CONFIG.get('database').default;
         }
     },
 

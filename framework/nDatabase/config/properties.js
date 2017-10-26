@@ -14,6 +14,7 @@ module.exports = {
                 }
             }
         },
+        /*
         user: {
             URI: 'mongodb://localhost:27017/userTest',
             options: {
@@ -27,6 +28,6 @@ module.exports = {
                     rs_name: 'myReplicaSetName'
                 }
             }
-        }
+        }*/
     }
 };

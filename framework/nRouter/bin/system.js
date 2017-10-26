@@ -27,31 +27,31 @@ module.exports = {
     },
 
     getServerName: function(moduleName) {
-        let serverName = CONFIG.server.default.httpServer;
-        if (CCONFIG.server[moduleName] && ONFIG.server[moduleName].httpServer) {
-            serverName = CONFIG.server[moduleName].httpServer;
+        let serverName = CONFIG.get('server').default.httpServer;
+        if (CONFIG.get('server')[moduleName] && CONFIG.get('server')[moduleName].httpServer) {
+            serverName = CONFIG.get('server')[moduleName].httpServer;
         }
         return serverName;
     },
     getServerPort: function(moduleName) {
-        let serverPort = CONFIG.server.default.httpPort;
-        if (CONFIG.server[moduleName] && CONFIG.server[moduleName].httpPort) {
-            serverPort = CONFIG.server[moduleName].httpPort;
+        let serverPort = CONFIG.get('server').default.httpPort;
+        if (CONFIG.get('server')[moduleName] && CONFIG.get('server')[moduleName].httpPort) {
+            serverPort = CONFIG.get('server')[moduleName].httpPort;
         }
         return serverPort;
     },
 
     getSecureServerName: function(moduleName) {
-        let serverName = CONFIG.server.default.httpsServer;
-        if (CONFIG.server[moduleName] && CONFIG.server[moduleName].httpsServer) {
-            serverName = CONFIG.server[moduleName].httpsServer;
+        let serverName = CONFIG.get('server').default.httpsServer;
+        if (CONFIG.get('server')[moduleName] && CONFIG.get('server')[moduleName].httpsServer) {
+            serverName = CONFIG.get('server')[moduleName].httpsServer;
         }
         return serverName;
     },
     getSecureServerPort: function(moduleName) {
-        let serverPort = CONFIG.server.default.httpsPort;
-        if (CONFIG.server[moduleName] && CONFIG.server[moduleName].httpsPort) {
-            serverPort = CONFIG.server[moduleName].httpsPort;
+        let serverPort = CONFIG.get('server').default.httpsPort;
+        if (CONFIG.get('server')[moduleName] && CONFIG.get('server')[moduleName].httpsPort) {
+            serverPort = CONFIG.get('server')[moduleName].httpsPort;
         }
         return serverPort;
     }
