@@ -5,6 +5,10 @@ const moduleLoader = require('./bin/moduleLoader');
 
 module.exports = {
     init: function() {
+
+    },
+
+    loadCommon: function() {
         if (!CONFIG || !SYSTEM || !NODICS) {
             console.error("   ERROR: System initialization error: configuration initializer failure.");
             process.exit(1);
@@ -13,10 +17,8 @@ module.exports = {
         enumLoader.loadEnums();
         classesLoader.loadClasses();
 
-        SYSTEM['loadModules'] = this.loadModules;
-    },
-
-    loadModules: function() {
-        moduleLoader.init();
+        SYSTEM.loadModules = function() {
+            moduleLoader.init();
+        };
     }
 };

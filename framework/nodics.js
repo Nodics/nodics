@@ -9,18 +9,22 @@ const controllers = require('./nController');
 const router = require('./nRouter');
 
 module.exports = {
-    init: function(options) {
-        config.init(options);
+    init: function() {
+        //Application code goes here
+    },
+
+    loadFramework: function(options) {
+        config.loadConfig(options);
         SYSTEM.executePreScripts();
-        common.init();
-        db.init();
-        dao.init();
-        services.init();
-        process.init();
-        facades.init();
-        controllers.init();
+        common.loadCommon();
+        db.loadDatabase();
+        dao.loadDao();
+        services.loadService();
+        process.loadProcess();
+        facades.loadFacade();
+        controllers.loadController();
         SYSTEM.loadModules();
-        router.initRouters();
+        router.loadRouter();
     },
     startServers: function() {
         SYSTEM.startServers();

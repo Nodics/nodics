@@ -4,7 +4,11 @@ const scriptLoader = require('./bin/scriptLoader');
 const sys = require('./bin/system');
 
 module.exports = {
-    init: function(options) {
+    init: function() {
+
+    },
+
+    loadConfig: function(options) {
         let system = global.SYSTEM = {};
         system['options'] = sys.prepareOptions(options);
         if (!SYSTEM.options) {
@@ -20,15 +24,11 @@ module.exports = {
         propertyLoader.init();
         systemLoader.init();
 
-        SYSTEM['executePreScripts'] = this.executePreScripts;
-        SYSTEM['executePostScripts'] = this.executePostScripts;
-    },
-
-    executePreScripts: function() {
-        scriptLoader.executePreScripts();
-    },
-
-    executePostScripts: function() {
-        scriptLoader.executePostScripts();
-    },
+        SYSTEM.executePreScripts = function() {
+            scriptLoader.executePreScripts();
+        };
+        SYSTEM.executePostScripts = function() {
+            scriptLoader.executePostScripts();
+        };
+    }
 };

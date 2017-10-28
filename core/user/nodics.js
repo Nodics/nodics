@@ -1,5 +1,5 @@
 module.exports = {
-    init: function(options) {
-        //userService.init();
+    init: function() {
+        //console.log(' ==== > Module User');
     }
 };

@@ -18,11 +18,14 @@ module.exports = {
 
     loadModule: function(module) {
         console.log(' =>Staring process for module : ', module.name);
+        let moduleFile = require(module.path + '/nodics.js');
+        if (moduleFile.init) {
+            moduleFile.init();
+        }
         dao.loadDao(module);
         service.loadServices(module);
         processDefinition.loadProcessDefinition(module);
         facade.loadFacades(module);
         controller.loadControllers(module);
-        //router.loadRouters(module);
     }
 };

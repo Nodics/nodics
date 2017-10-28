@@ -3,8 +3,8 @@ const util = require('util');
 
 
 module.exports = {
-    startNodics: function(options) {
-        FRAMEWORK.init(options);
+    start: function(options) {
+        FRAMEWORK.loadFramework(options);
         SYSTEM.executePostScripts();
         FRAMEWORK.startServers();
         NODICS.setServerState('started');

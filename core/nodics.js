@@ -1,5 +1,5 @@
 module.exports = {
     init: function() {
-        //put Application specifically code here
+        //console.log(' ==== > Module Core');
     }
 };
