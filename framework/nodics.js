@@ -4,7 +4,6 @@ const db = require('./nDatabase');
 const dao = require('./nDao');
 const services = require('./nService');
 const process = require('./nProcess');
-const cronjob = require('./nCronJob');
 const facades = require('./nFacade');
 const controllers = require('./nController');
 const router = require('./nRouter');
@@ -18,7 +17,6 @@ module.exports = {
         dao.init();
         services.init();
         process.init();
-        cronjob.init();
         facades.init();
         controllers.init();
         SYSTEM.loadModules();

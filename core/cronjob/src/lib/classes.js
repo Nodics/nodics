@@ -1,4 +1,6 @@
 module.exports = {
+    /*
+    This code is just to test if classes generalization works fine
     generalizeCronJob: function() {
         CLASSES.CronJob.prototype.getMyName = function() {
             console.log('Hi This is Generalized one');
@@ -7,5 +9,5 @@ module.exports = {
         CLASSES.CronJob.getName = function() {
             console.log('Hi This is Generalized two');
         };
-    }
+    }*/
 };

@@ -98,6 +98,11 @@ module.exports = {
 
     loadModulesMetaData: function(properties) {
         sys.getModulesMetaData(properties);
+        process.stdout.write('   INFO: Modules : ');
+        _.each(properties.moduleIndex, (obj, key) => {
+            process.stdout.write(obj[0].name + ',');
+        });
+        console.log('');
     },
 
     setDefaultProperties: function(options) {
@@ -108,7 +113,7 @@ module.exports = {
         properties.NODICS_HOME = options.NODICS_HOME;
         properties.NODICS_ENV = options.NODICS_ENV;
         properties.SERVER_PATH = options.SERVER_PATH;
-        properties.activeModules = options.activeModules;
+        NODICS.setActiveModules(options.activeModules);
         if (options.argv) {
             properties.ARGV = options.argv;
         }

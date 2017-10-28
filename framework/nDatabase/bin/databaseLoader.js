@@ -65,7 +65,7 @@ module.exports = {
                 console.log('   INFO: Creating database for module : ', moduleName);
                 NODICS.addDatabase(moduleName, this.createDatabase(moduleName));
             } else {
-                console.warn('   WARNING: None database configuration found for module : ', moduleName);
+                console.warn('   WARNING: None database configuration found for module : ', moduleName, '\tHence running on Default configurarion');
             }
         });
     },

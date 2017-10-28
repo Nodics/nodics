@@ -31,6 +31,4 @@ module.exports = {
     executePostScripts: function() {
         scriptLoader.executePostScripts();
     },
-
-
-}
+};

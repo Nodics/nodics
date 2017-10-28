@@ -2,6 +2,7 @@ module.exports = function() {
     let _serverState = 'starting';
     let _activeTanent = 'default';
     let _activeChannel = 'master';
+    let _activeModules = [];
     let _nodics = {
         modules: {
 
@@ -12,6 +13,19 @@ module.exports = function() {
         validators: {
 
         }
+    };
+
+    this.setActiveModules = function(activeModules) {
+        _activeModules = activeModules;
+    };
+    this.getActiveModules = function() {
+        return _activeModules;
+    };
+    this.isModuleActive = function(moduleName) {
+        if (_activeModules.indexOf(moduleName) > -1) {
+            return true;
+        }
+        return false;
     };
 
     this.setServerState = function(serverState) {
