@@ -4,7 +4,7 @@ const util = require('util');
 module.exports = {
     deployValidators: function() {
         console.log(' =>Starting validators loading process');
-        NODICS.setValidators(SYSTEM.loadFiles(CONFIG.getProperties(), '/src/schemas/validators.js'));
+        NODICS.setValidators(SYSTEM.loadFiles('/src/schemas/validators.js'));
     },
 
     createSchema: function(database, schema, moduleName, modelName, schemaDefinition) {
@@ -87,7 +87,7 @@ module.exports = {
 
     deploySchemas: function() {
         console.log(' =>Starting schemas loading process');
-        let mergedSchema = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/schemas/schemas.js');
+        let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js');
         let modules = NODICS.getModules();
         Object.keys(mergedSchema).forEach(function(key) {
             if (key !== 'default') {
@@ -104,7 +104,7 @@ module.exports = {
 
     deployInterceptors: function() {
         console.log(' =>Starting interceptors loading process');
-        let interceptorFiles = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/schemas/interceptors.js');
+        let interceptorFiles = SYSTEM.loadFiles('/src/schemas/interceptors.js');
         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.rawSchema) {
                 let masterSchema = moduleObject.schemas.master;
@@ -139,10 +139,8 @@ module.exports = {
             if (value.model) {
                 modelName = SYSTEM.createModelName(key);
                 console.log('   INFO: Creating model instance for : ', modelName);
-                if (value.model) {
-                    moduleObject.models.master[modelName] = masterDB.getConnection().model(modelName, masterSchema[key]);
-                    moduleObject.models.test[modelName] = testDB.getConnection().model(modelName, testSchema[key]);
-                }
+                moduleObject.models.master[modelName] = masterDB.getConnection().model(modelName, masterSchema[key]);
+                moduleObject.models.test[modelName] = testDB.getConnection().model(modelName, testSchema[key]);
             }
         });
     },

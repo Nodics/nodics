@@ -1,6 +1,6 @@
 module.exports = {
     activeModules: {
-        updateGroups: false,
+        updateGroups: true,
         groups: ['core'], // Group 'framework' will be included automatically
         modules: [
             'server'

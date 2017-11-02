@@ -7,7 +7,7 @@ module.exports = {
         let enums = global.ENUMS = {};
         let enumScript = {};
         console.log('=> Staring Enums loader process');
-        SYSTEM.loadFiles(CONFIG.getProperties(), '/src/utils/enums.js', enumScript);
+        SYSTEM.loadFiles('/src/utils/enums.js', enumScript);
 
         _.each(enumScript, function(value, key) {
             let _option = _self.createEnumOptions(key, value);

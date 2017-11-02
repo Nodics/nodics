@@ -10,7 +10,8 @@ module.exports = {
             'nprocess',
             'nfacade',
             'ncontroller',
-            'nrouter'
+            'nrouter',
+            'ntest'
         ]
     }
 };

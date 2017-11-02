@@ -7,13 +7,14 @@ const process = require('./nProcess');
 const facades = require('./nFacade');
 const controllers = require('./nController');
 const router = require('./nRouter');
+const test = require('./nTest');
 
 module.exports = {
     init: function() {
-        //Application code goes here
+        ////
     },
 
-    loadFramework: function(options) {
+    initFrameworkExecute: function(options) {
         config.loadConfig(options);
         SYSTEM.executePreScripts();
         common.loadCommon();
@@ -25,8 +26,21 @@ module.exports = {
         controllers.loadController();
         SYSTEM.loadModules();
         router.loadRouter();
+        SYSTEM.executePostScripts();
     },
+
     startServers: function() {
         SYSTEM.startServers();
+        NODICS.setServerState('started');
+    },
+
+    initTestRuner: function() {
+        test.runTest();
+    },
+
+    startNodics: function(options) {
+        this.initFrameworkExecute(options);
+        this.startServers();
+        this.initTestRuner();
     }
 };

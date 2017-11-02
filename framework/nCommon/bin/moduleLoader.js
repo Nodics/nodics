@@ -4,6 +4,7 @@ const processDefinition = require('./loaders/processDefinitionLoader');
 const facade = require('./loaders/facadeLoader');
 const controller = require('./loaders/controllerLoader');
 const router = require('./loaders/routerLoader');
+const test = require('./loaders/testLoader');
 
 module.exports = {
     init: function() {
@@ -18,14 +19,16 @@ module.exports = {
 
     loadModule: function(module) {
         console.log(' =>Staring process for module : ', module.name);
-        let moduleFile = require(module.path + '/nodics.js');
-        if (moduleFile.init) {
-            moduleFile.init();
-        }
         dao.loadDao(module);
         service.loadServices(module);
         processDefinition.loadProcessDefinition(module);
         facade.loadFacades(module);
         controller.loadControllers(module);
+        test.loadTest(module);
+
+        let moduleFile = require(module.path + '/nodics.js');
+        if (moduleFile.init) {
+            moduleFile.init();
+        }
     }
 };

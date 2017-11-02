@@ -5,9 +5,9 @@ module.exports = {
 
     loadPreScripts: function() {
         console.log('=> Starting Pre Scripts loader process');
-        let mergedFile = SYSTEM.loadFiles(CONFIG.getProperties(), '/config/prescripts.js');
-        var commonScriptFilePath = CONFIG.get('SERVER_PATH') + '/config/common/prescripts.js';
-        var envScriptFilePath = CONFIG.get('SERVER_PATH') + '/config/env-' + CONFIG.get('NODICS_ENV') + '/prescripts.js';
+        let mergedFile = SYSTEM.loadFiles('/config/prescripts.js');
+        var commonScriptFilePath = NODICS.getServerHome() + '/config/common/prescripts.js';
+        var envScriptFilePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/prescripts.js';
         if (fs.existsSync(commonScriptFilePath)) {
             console.info("   INFO: Loading script file from : " + commonScriptFilePath);
             mergedFile = _.merge(mergedFile, require(commonScriptFilePath));
@@ -21,9 +21,9 @@ module.exports = {
 
     loadPostScripts: function() {
         console.log('=> Starting Post Scripts loader process');
-        let mergedFile = SYSTEM.loadFiles(CONFIG.getProperties(), '/config/postscripts.js');
-        var commonScriptFilePath = CONFIG.get('SERVER_PATH') + '/config/common/postscripts.js';
-        var envScriptFilePath = CONFIG.get('SERVER_PATH') + '/config/env-' + CONFIG.get('NODICS_ENV') + '/postscripts.js';
+        let mergedFile = SYSTEM.loadFiles('/config/postscripts.js');
+        var commonScriptFilePath = NODICS.getServerHome() + '/config/common/postscripts.js';
+        var envScriptFilePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/postscripts.js';
         if (fs.existsSync(commonScriptFilePath)) {
             console.info("   INFO: Loading file from : " + commonScriptFilePath);
             mergedFile = _.merge(mergedFile, require(commonScriptFilePath));

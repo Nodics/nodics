@@ -1,7 +1,11 @@
-module.exports = function() {
+module.exports = function(env, nodicsHome, serverHome, argvs) {
     let _serverState = 'starting';
     let _activeTanent = 'default';
     let _activeChannel = 'master';
+    let _activeEnv = env;
+    let _nodicsHome = nodicsHome;
+    let _serverHome = serverHome;
+    let _argvs = argvs;
     let _activeModules = [];
     let _nodics = {
         modules: {
@@ -13,6 +17,22 @@ module.exports = function() {
         validators: {
 
         }
+    };
+
+    this.getArguments = function() {
+        return _argvs;
+    };
+
+    this.getNodicsHome = function() {
+        return _nodicsHome;
+    };
+
+    this.getServerHome = function() {
+        return _serverHome;
+    };
+
+    this.getActiveEnvironment = function() {
+        return _activeEnv;
     };
 
     this.setActiveModules = function(activeModules) {

@@ -9,7 +9,7 @@ module.exports = {
 
     init: function() {
         global.DAO = {};
-        let daoCommon = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/dao/common.js');
+        let daoCommon = SYSTEM.loadFiles('/src/dao/common.js');
         SYSTEM.schemaWalkThrough({ commonDefinition: daoCommon }, this.generateDao);
     }
 };

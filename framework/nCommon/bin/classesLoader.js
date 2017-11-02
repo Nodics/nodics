@@ -30,7 +30,7 @@ module.exports = {
     generalizeClasses: function() {
         let classesScripts = {};
         console.log('   INFO: Generalizing defined classes');
-        SYSTEM.loadFiles(CONFIG.getProperties(), '/src/lib/classes.js', classesScripts);
+        SYSTEM.loadFiles('/src/lib/classes.js', classesScripts);
 
         var methods = SYSTEM.getAllMethods(classesScripts);
         methods.forEach(function(instance) {

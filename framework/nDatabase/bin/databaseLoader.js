@@ -24,6 +24,7 @@ module.exports = {
     },
     createDatabase: function(moduleName) {
         let dbConfig = SYSTEM.getDatabaseConfiguration(moduleName);
+        console.log(CLASSES);
         let masterDatabase = new CLASSES.Database();
         let testDatabase = new CLASSES.Database();
 

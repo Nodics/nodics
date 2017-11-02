@@ -1,11 +1,11 @@
 const nodics = require('../Nodics');
 
 module.exports = {
-    start: (function() {
-        nodics.start({});
+    startNodics: (function() {
+        nodics.startNodics({});
     })(),
 
     init: function() {
-        //put Application specifically code here
+        // This is just a placeholder, code written here, is not going to be executed
     }
 };

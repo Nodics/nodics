@@ -4,14 +4,14 @@ module.exports = {
     generateFacades: function(options) {
         let _self = this;
         options.modelName = options.schemaName.toUpperCaseEachWord();
-        if (options.schemaObject.model) {
+        if (options.schemaObject.service) {
             FACADE[options.modelName + 'Facade'] = SYSTEM.replacePlaceholders(options);
         }
     },
 
     init: function() {
         global.FACADE = {};
-        let facadeCommon = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/facade/common.js');
+        let facadeCommon = SYSTEM.loadFiles('/src/facade/common.js');
         SYSTEM.schemaWalkThrough({ commonDefinition: facadeCommon }, this.generateFacades);
     }
 };

@@ -1,14 +1,16 @@
 const _ = require('lodash');
 module.exports = {
     registerModelRouter: function(options) {
-        console.log('       INFO: Registering router for model : ', options.schemaName);
-        options.modelName = options.schemaName.toUpperCaseEachWord();
-        let routerObject = SYSTEM.replacePlaceholders(options);
-        Object.keys(routerObject).forEach(function(key) {
-            if (routerObject[key] && typeof routerObject[key] === "function") {
-                routerObject[key](options.app);
-            }
-        });
+        if (options.schemaObject.service) {
+            console.log('       INFO: Registering router for model : ', options.schemaName);
+            options.modelName = options.schemaName.toUpperCaseEachWord();
+            let routerObject = SYSTEM.replacePlaceholders(options);
+            Object.keys(routerObject).forEach(function(key) {
+                if (routerObject[key] && typeof routerObject[key] === "function") {
+                    routerObject[key](options.app);
+                }
+            });
+        }
     },
 
 
@@ -16,7 +18,7 @@ module.exports = {
         let _self = this;
         console.log(' =>Starting routers registration process');
         let modules = NODICS.getModules();
-        let commonRoter = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/router/commonRouter.js');
+        let commonRoter = SYSTEM.loadFiles('/src/router/commonRouter.js');
         if (CONFIG.get('server').runAsSingleModule) {
             if (!modules.default || !modules.default.app) {
                 console.error('   ERROR: Server configurations has not be initialized. Please verify.');
@@ -30,7 +32,7 @@ module.exports = {
                 app: modules.default.app
             }, this.registerModelRouter);
             _.each(modules, function(value, moduleName) {
-                let moduleRouter = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/router/' + moduleName + 'Router.js');
+                let moduleRouter = SYSTEM.loadFiles('/src/router/' + moduleName + 'Router.js');
                 if (!SYSTEM.isBlank(moduleRouter)) {
                     console.log('     INFO: Executing module configurations :', moduleName);
                     Object.keys(moduleRouter).forEach(function(key) {
@@ -55,7 +57,7 @@ module.exports = {
                         app: value.app,
                         moduleName: moduleName
                     }, _self.registerModelRouter);
-                    let moduleRouter = SYSTEM.loadFiles(CONFIG.getProperties(), '/src/router/' + moduleName + 'Router.js');
+                    let moduleRouter = SYSTEM.loadFiles('/src/router/' + moduleName + 'Router.js');
                     if (!SYSTEM.isBlank(moduleRouter)) {
                         console.log('     INFO: Executing module configurations :', moduleName);
                         Object.keys(moduleRouter).forEach(function(key) {

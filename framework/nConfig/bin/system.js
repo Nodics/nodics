@@ -2,15 +2,17 @@ var _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
+let Config = require('./config');
+let Nodics = require('./nodics');
 
 module.exports = {
     getActiveModules: function(options) {
         let modules = [];
-        let moduleGroupsFilePath = options.SERVER_PATH + '/config/modules.js';
-        let serverProperty = require(options.SERVER_PATH + '/config/common/properties.js');
+        let moduleGroupsFilePath = NODICS.getServerHome() + '/config/modules.js';
+        let serverProperty = require(NODICS.getServerHome() + '/config/common/properties.js');
         if (!fs.existsSync(moduleGroupsFilePath) || serverProperty.activeModules.updateGroups) {
             var nodicsModulePath = [];
-            this.collectModulesList(options.SERVER_PATH, options.NODICS_HOME, nodicsModulePath);
+            this.collectModulesList(options.NODICS_HOME, nodicsModulePath);
             let mergedFile = {};
             nodicsModulePath.forEach(function(modulePath) {
                 if (fs.existsSync(modulePath + '/config/properties.js')) {
@@ -44,7 +46,6 @@ module.exports = {
             options.SERVER_PATH = process.env.SERVER_PATH || process.cwd();
             options.NODICS_HOME = process.env.NODICS_HOME || path.resolve(process.cwd(), '..');
             options.NODICS_ENV = process.env.NODICS_ENV || 'local';
-            options.activeModules = ['ALL'];
             if (process.argv) {
                 options.argv = process.argv;
             }
@@ -58,12 +59,15 @@ module.exports = {
             if (!options.NODICS_ENV) {
                 options.NODICS_ENV = process.env.NODICS_ENV || 'local';
             }
-            options.activeModules = this.getActiveModules(options);
             if (process.argv) {
                 options.argv = process.argv;
             }
         }
-        return options;
+        global.NODICS = new Nodics(options.NODICS_ENV, options.NODICS_HOME, options.SERVER_PATH, options.argv);
+        NODICS.setActiveModules(this.getActiveModules(options));
+        global.CONFIG = new Config();
+        CONFIG.setProperties({});
+        global.SYSTEM = {};
     },
 
     subFolders: function(folder) {
@@ -73,14 +77,14 @@ module.exports = {
             .map(subFolder => path.join(folder, subFolder));
     },
 
-    collectModulesList: function(serverPath, folder, modulePathList) {
+    collectModulesList: function(folder, modulePathList) {
         const hasPackageJson = fs.existsSync(path.join(folder, 'package.json'));
         if (hasPackageJson) {
             modulePathList.push(folder);
         }
         for (let subFolder of this.subFolders(folder)) {
-            if (subFolder !== serverPath) {
-                this.collectModulesList(serverPath, subFolder, modulePathList);
+            if (subFolder !== NODICS.getServerHome()) {
+                this.collectModulesList(subFolder, modulePathList);
             }
         }
     },
@@ -91,18 +95,18 @@ module.exports = {
         return moduleIndex;
     },
 
-    getModulesMetaData: function(properties) {
+    getModulesMetaData: function() {
         let _self = this;
-        let config = properties || CONFIG.getProperties();
+        let config = CONFIG.getProperties();
         let modules = NODICS.getModules();
         let moduleIndex = [];
         let metaData = {};
         var nodicsModulePath = [],
             serverModulePath = [];
         //Get list of OOTB Active modules
-        this.collectModulesList(config.SERVER_PATH, config.NODICS_HOME, nodicsModulePath);
+        this.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
         //Adding list of Custom Active modules
-        this.collectModulesList(config.SERVER_PATH, config.SERVER_PATH, serverModulePath);
+        this.collectModulesList(NODICS.getServerHome(), serverModulePath);
 
         nodicsModulePath = nodicsModulePath.concat(serverModulePath);
         var counter = 0;
@@ -135,12 +139,11 @@ module.exports = {
         config.metaData = metaData;
     },
 
-    loadFiles: function(config, fileName, frameworkFile) {
+    loadFiles: function(fileName, frameworkFile) {
         let _self = this;
         let mergedFile = frameworkFile || {};
-        let moduleIndex = config.moduleIndex;
-        Object.keys(moduleIndex).forEach(function(key) {
-            var value = moduleIndex[key][0];
+        Object.keys(CONFIG.get('moduleIndex')).forEach(function(key) {
+            var value = CONFIG.get('moduleIndex')[key][0];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
                 console.log('   INFO: Loading file from : ' + filePath);
@@ -159,38 +162,5 @@ module.exports = {
 
     isBlank: function(value) {
         return !Object.keys(value).length;
-    },
-
-    startServers: function() {
-        if (CONFIG.get('server').runAsSingleModule) {
-            if (!NODICS.getModules().default || !NODICS.getModules().default.app) {
-                console.error('   ERROR: Server configurations has not be initialized. Please verify.');
-                process.exit(CONFIG.get('errorExitCode'));
-            }
-            const httpPort = SYSTEM.getServerPort('default');
-            console.log('=>  Starting Server for module : default on PORT : ', httpPort);
-            NODICS.getModules().default.app.listen(httpPort);
-        } else {
-            let modules = NODICS.getModules();
-            if (this.isBlank(NODICS.getModules())) {
-                console.error('   ERROR: Please define valid active modules');
-                process.exit(CONFIG.get('errorExitCode'));
-            }
-            _.each(modules, function(value, moduleName) {
-                if (value.metaData && value.metaData.publish) {
-                    if (!value.app) {
-                        console.error('   ERROR: Server configurations has not be initialized for module : ', moduleName);
-                        process.exit(CONFIG.get('errorExitCode'));
-                    }
-                    const httpPort = SYSTEM.getServerPort(moduleName);
-                    if (!httpPort) {
-                        console.error('   ERROR: Please define listening PORT for module: ', moduleName);
-                        process.exit(CONFIG.get('errorExitCode'));
-                    }
-                    console.log(' =>Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
-                    value.app.listen(httpPort);
-                }
-            });
-        }
     }
 };

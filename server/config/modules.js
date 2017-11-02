@@ -7,7 +7,7 @@ module.exports = { core: [ 'core', 'cronjob', 'user' ],
      'ndao',
      'nservice',
      'nprocess',
-     'ncronjob',
      'nfacade',
      'ncontroller',
-     'nrouter' ] };
+     'nrouter',
+     'ntest' ] };

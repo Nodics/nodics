@@ -10,16 +10,16 @@ module.exports = {
 
     loadConfig: function(options) {
         let system = global.SYSTEM = {};
-        system['options'] = sys.prepareOptions(options);
-        if (!SYSTEM.options) {
+        sys.prepareOptions(options);
+        if (!NODICS) {
             console.error("    ERROR: System initialization error: options cann't be null or empty");
             process.exit(1);
         }
         console.log('=>Initializing Nodics, Node based enterprise application solution   ###');
         console.log('---------------------------------------------------------------------------');
-        console.log('SERVER_PATH : ', SYSTEM.options.SERVER_PATH);
-        console.log('NODICS_HOME : ', SYSTEM.options.NODICS_HOME);
-        console.log('NODICS_ENV  : ', SYSTEM.options.NODICS_ENV);
+        console.log('SERVER_PATH : ', NODICS.getServerHome());
+        console.log('NODICS_HOME : ', NODICS.getNodicsHome());
+        console.log('NODICS_ENV  : ', NODICS.getActiveEnvironment());
         console.log('---------------------------------------------------------------------------');
         propertyLoader.init();
         systemLoader.init();

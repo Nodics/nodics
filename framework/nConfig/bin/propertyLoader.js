@@ -1,13 +1,12 @@
 const _ = require('lodash');
 const fs = require('fs');
 const sys = require('./system');
-let Config = require('./config');
-let Nodics = require('./nodics');
+
 
 module.exports = {
-    loadProperties: function(properties, fileName) {
+    loadProperties: function(fileName) {
         let _self = this;
-        let config = properties || CONFIG.getProperties();
+        let config = CONFIG.getProperties();
         let moduleIndex = config.moduleIndex;
         Object.keys(moduleIndex).forEach(function(key) {
             var value = moduleIndex[key][0];
@@ -23,17 +22,17 @@ module.exports = {
      * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
      * will load properties from $MODULE/common/properties.js
      */
-    loadCommonProperties: function(properties) {
-        return this.loadProperties(properties, '/config/properties.js');
+    loadCommonProperties: function() {
+        return this.loadProperties('/config/properties.js');
     },
 
     /*
      * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
      * will load properties from $APP_MODULE/config/common/properties.js
      */
-    loadAppCommnProperties: function(properties) {
-        let config = properties || CONFIG.getProperties();
-        var filePath = config.SERVER_PATH + '/config/common/properties.js';
+    loadAppCommnProperties: function() {
+        let config = CONFIG.getProperties();
+        var filePath = NODICS.getServerHome() + '/config/common/properties.js';
         if (fs.existsSync(filePath)) {
             console.log('   INFO: Loading configration file from : ' + filePath);
             var commonPropertyFile = require(filePath);
@@ -41,10 +40,10 @@ module.exports = {
         }
     },
 
-    loadAppCommnTanentProperties: function(properties) {
-        let config = properties || CONFIG.getProperties();
+    loadAppCommnTanentProperties: function() {
+        let config = CONFIG.getProperties();
         if (config.activeTanent && config.activeTanent !== 'default') {
-            var filePath = config.SERVER_PATH + '/config/common/' + config.activeTanent + '-properties.js';
+            var filePath = NODICS.getServerHome() + '/config/common/' + config.activeTanent + '-properties.js';
             if (fs.existsSync(filePath)) {
                 console.log('   INFO: Loading configration file from : ' + filePath);
                 var commonPropertyFile = require(filePath);
@@ -56,9 +55,9 @@ module.exports = {
      * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
      * will load properties from $APP_MODULE/config/env-{NODICS_ENV}/properties.js
      */
-    loadAppEnvProperties: function(properties) {
-        let config = properties || CONFIG.getProperties();
-        var filePath = config.SERVER_PATH + '/config/env-' + config.NODICS_ENV + '/properties.js';
+    loadAppEnvProperties: function() {
+        let config = CONFIG.getProperties();
+        var filePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/properties.js';
         if (fs.existsSync(filePath)) {
             console.log('   INFO: Loading configration file from : ' + filePath);
             var commonPropertyFile = require(filePath);
@@ -66,10 +65,10 @@ module.exports = {
         }
     },
 
-    loadAppEnvTanentProperties: function(properties) {
-        let config = properties || CONFIG.getProperties();
+    loadAppEnvTanentProperties: function() {
+        let config = CONFIG.getProperties();
         if (config.activeTanent && config.activeTanent !== 'default') {
-            var filePath = config.SERVER_PATH + '/config/env-' + config.NODICS_ENV + '/' + config.activeTanent + '-properties.js';
+            var filePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/' + config.activeTanent + '-properties.js';
             if (fs.existsSync(filePath)) {
                 console.log('   INFO: Loading configration file from : ' + filePath);
                 var commonPropertyFile = require(filePath);
@@ -81,8 +80,8 @@ module.exports = {
      * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
      * will load properties from $APP_MODULE/config/env-{NODICS_ENV}/properties.js
      */
-    loadExternalProperties: function(properties) {
-        let config = properties || CONFIG.getProperties();
+    loadExternalProperties: function() {
+        let config = CONFIG.getProperties();
         if (config.externalPropertyFile && config.externalPropertyFile.length > 0) {
             config.externalPropertyFile.forEach(function(filePath) {
                 if (fs.existsSync(filePath)) {
@@ -96,34 +95,18 @@ module.exports = {
         }
     },
 
-    loadModulesMetaData: function(properties) {
-        sys.getModulesMetaData(properties);
+    loadModulesMetaData: function() {
+        sys.getModulesMetaData();
         process.stdout.write('   INFO: Modules : ');
-        _.each(properties.moduleIndex, (obj, key) => {
+        _.each(CONFIG.get('moduleIndex'), (obj, key) => {
             process.stdout.write(obj[0].name + ',');
         });
         console.log('');
     },
 
-    setDefaultProperties: function(options) {
-        global.CONFIG = new Config();
-        global.NODICS = new Nodics();
-        global.SYSTEM = {};
-        let properties = {};
-        properties.NODICS_HOME = options.NODICS_HOME;
-        properties.NODICS_ENV = options.NODICS_ENV;
-        properties.SERVER_PATH = options.SERVER_PATH;
-        NODICS.setActiveModules(options.activeModules);
-        if (options.argv) {
-            properties.ARGV = options.argv;
-        }
-        properties.SERVER_PATH = options.SERVER_PATH;
-        return properties;
-    },
-
-    loadTanentConfiguration: function(properties) {
-        let config = properties || CONFIG.getProperties();
-        var filePath = config.SERVER_PATH + '/config/env-' + config.NODICS_ENV + '/properties.js';
+    loadTanentConfiguration: function() {
+        let config = CONFIG.getProperties();
+        var filePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/properties.js';
         if (fs.existsSync(filePath)) {
             console.log('   INFO: Loading configration file from : ' + filePath);
             var commonPropertyFile = require(filePath);
@@ -133,14 +116,12 @@ module.exports = {
 
     init: function() {
         console.log('=> Starting Configuration loader process ##');
-        let properties = this.setDefaultProperties(SYSTEM.options);
-        this.loadModulesMetaData(properties);
-        this.loadCommonProperties(properties);
-        this.loadAppCommnProperties(properties);
-        this.loadAppCommnTanentProperties(properties);
-        this.loadAppEnvProperties(properties);
-        this.loadAppEnvTanentProperties(properties);
-        this.loadExternalProperties(properties);
-        CONFIG.setProperties(properties);
+        this.loadModulesMetaData();
+        this.loadCommonProperties();
+        this.loadAppCommnProperties();
+        this.loadAppCommnTanentProperties();
+        this.loadAppEnvProperties();
+        this.loadAppEnvTanentProperties();
+        this.loadExternalProperties();
     }
 };
