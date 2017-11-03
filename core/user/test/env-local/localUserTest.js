@@ -1,14 +1,48 @@
+const Chai = require('chai');
+const expect = Chai.expect;
+
 module.exports = {
-    userTestSuiteLocal: {
+    userTestSuite: {
         options: {
-            description: 'Test suite to run all user related test-cases - local'
+            description: 'Test suite to run all user related userTestSuite',
+            timeout: 100,
+            params: {
+                ui: 'tdd',
+                reporter: 'list'
+            },
+            beforeAll: function() {
+                console.log('This is Base beforeAll');
+            },
+            afterAll: function() {
+                console.log('This is Base afterAll');
+            }
+        },
+        data: {
+            value: 3
         },
         insertUser: {
             options: {
-                description: 'Test suite to run all user related test-cases'
+                description: 'Test suite to run all user related insertUser',
+                beforeEach: function() {
+                    console.log('   This is insertUser beforeEach');
+                },
+                beforeAll: function() {
+                    console.log('   This is insertUser beforeAll');
+                },
+                afterEach: function() {
+                    console.log('   This is insertUser afterEach');
+                },
+                afterAll: function() {
+                    console.log('   This is insertUser afterAll');
+                }
             },
-            testCaseLocal: {
-                description: 'Running test : '
+            testIfEqual: {
+                description: 'Testing equality...1',
+                test: function(done) {
+                    console.log(TEST.data.value);
+                    expect(TEST.data.value).to.equal(TEST.data.value);
+                    done();
+                }
             }
         }
     }

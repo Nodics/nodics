@@ -12,61 +12,41 @@ module.exports = {
             console.log('ACTIVE_CAHNNEL : ', NODICS.getActiveChannel());
             console.log('ACTIVE_TANENT  : ', NODICS.getActiveTanent());
             console.log('---------------------------------------------------------------------------');
-            let suitePool = new CLASSES.TestSuitePool();
-            let index = 0;
+            let masterMocha = new Mocha();
+            let masterSuite = Mocha.Suite.create(masterMocha.suite, 'Starting master suite execution');
             if (!SYSTEM.isBlank(TEST.commonTest)) {
-                index = this.createSuites(index, suitePool, TEST.commonTest);
+                this.createSuites(masterSuite, TEST.commonTest);
             }
             if (!SYSTEM.isBlank(TEST.envTest)) {
-                index = this.createSuites(index, suitePool, TEST.envTest);
+                this.createSuites(masterSuite, TEST.envTest);
             }
-            _.each(suitePool.getAllSuite(), (testSuite, suiteName) => {
-                //console.log('------------------ : ', testSuite.index);
-                testSuite.mocha.run();
+            masterMocha.run(function(failures) {
+                process.on('exit', function() {
+                    process.exit(failures);
+                });
             });
         }
     },
 
-    createMochSuite: function(mocha, testSuite, suiteName, baseSuite) {
-        let suite = Mocha.Suite.create(mocha.suite, testSuite.options.description);
-        if (baseSuite) {
-            baseSuite.addSuite(suite);
-        }
-        return suite;
-    },
-
-    createMochaTest: function(testName, testCase, suite) {
-        suite.addTest(new Test('testing tests : ' + testName, function() {
-            expect(2).to.equal(2);
-        }));
-    },
-
-    createSuites: function(index, suitePool, testSuites) { // whole file
+    createSuites: function(masterSuite, testSuites) { // whole file
         let _self = this;
         _.each(testSuites, (testSuite, suiteName) => {
             if (!SYSTEM.isBlank(testSuite)) {
-                let mocha = new Mocha();
-                let suite = _self.createMochSuite(mocha, testSuite, suiteName);
+                let mocha = testSuite.options.params ? new Mocha(testSuite.options.params) : new Mocha();
+                let suite = _self.createSuite(mocha, suiteName, testSuite, masterSuite);
                 if (!SYSTEM.isBlank(suite)) {
                     _self.createTestGroup(suiteName, testSuite, suite);
-                    suitePool.addSuite(suiteName, {
-                        index: index,
-                        suite: suite,
-                        mocha: mocha
-                    });
                 }
-                index++;
             }
         });
-        return index;
     },
 
     createTestGroup: function(suiteName, testSuite, baseSuite) { //one top suite
         let _self = this;
         _.each(testSuite, (testGroup, groupName) => {
             if (groupName !== 'data' && groupName !== 'options') {
-                let mocha = new Mocha();
-                let suite = _self.createMochSuite(mocha, testSuite, suiteName, baseSuite);
+                let mocha = testGroup.options.params ? new Mocha(testGroup.options.params) : new Mocha();
+                let suite = _self.createSuite(mocha, groupName, testGroup, baseSuite);
                 _self.createTestCase(groupName, testGroup, suite);
             }
         });
@@ -76,8 +56,35 @@ module.exports = {
         let _self = this;
         _.each(testGroup, (testCase, testName) => {
             if (testName !== 'data' && testName !== 'options') {
-                _self.createMochaTest(testName, testCase, testSuite);
+                _self.createTest(testName, testCase, testSuite);
             }
         });
-    }
+    },
+
+    createSuite: function(mocha, suiteName, testSuite, baseSuite) {
+        let suite = Mocha.Suite.create(mocha.suite, testSuite.options.description);
+        if (testSuite.options.timeout) {
+            suite.timeout(testSuite.options.timeout);
+        }
+        if (testSuite.options.beforeEach) {
+            suite.beforeEach(testSuite.options.beforeEach);
+        }
+        if (testSuite.options.beforeAll) {
+            suite.beforeAll(testSuite.options.beforeAll);
+        }
+        if (testSuite.options.afterEach) {
+            suite.afterEach(testSuite.options.afterEach);
+        }
+        if (testSuite.options.afterAll) {
+            suite.afterAll(testSuite.options.afterAll);
+        }
+        if (baseSuite) {
+            baseSuite.addSuite(suite);
+        }
+        return suite;
+    },
+
+    createTest: function(testName, testCase, suite) {
+        suite.addTest(new Test(testCase.description, testCase.test));
+    },
 };
