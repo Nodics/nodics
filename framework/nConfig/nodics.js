@@ -9,7 +9,6 @@ module.exports = {
     },
 
     loadConfig: function(options) {
-        let system = global.SYSTEM = {};
         sys.prepareOptions(options);
         if (!NODICS) {
             console.error("    ERROR: System initialization error: options cann't be null or empty");

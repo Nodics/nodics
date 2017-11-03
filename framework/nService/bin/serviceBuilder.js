@@ -8,7 +8,6 @@ module.exports = {
     },
 
     init: function() {
-        global.SERVICE = {};
         let serviceCommon = SYSTEM.loadFiles('/src/service/common.js');
         SYSTEM.schemaWalkThrough({ commonDefinition: serviceCommon }, this.generateServices);
     }

@@ -4,7 +4,7 @@ const Enum = require('./enum');
 module.exports = {
     loadEnums: function() {
         let _self = this;
-        let enums = global.ENUMS = {};
+        let enums = global.ENUMS;
         let enumScript = {};
         console.log('=> Staring Enums loader process');
         SYSTEM.loadFiles('/src/utils/enums.js', enumScript);

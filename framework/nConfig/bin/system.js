@@ -67,7 +67,32 @@ module.exports = {
         NODICS.setActiveModules(this.getActiveModules(options));
         global.CONFIG = new Config();
         CONFIG.setProperties({});
+
         global.SYSTEM = {};
+        global.CLASSES = {};
+        global.ENUMS = {};
+        global.UTILS = {};
+
+        global.DAO = {};
+        global.SERVICE = {};
+        global.PROCESS = {};
+        global.FACADE = {};
+        global.CONTROLLER = {};
+
+        global.TEST = {
+            data: {
+                // This hold data definition which needs to be inserted to the database, 
+                //for testing purpose. In this way, we can re-use same definition for multiple test cases.
+            },
+            commonTest: {
+                //All the test cases, those needs to be executed in all environment.
+                //Best usecase could be testing all created page template
+            },
+            envTest: {
+                //All the test cases, those needs to be executed in secific environment.
+                //Best usecase could be testing all created pages
+            }
+        };
     },
 
     subFolders: function(folder) {

@@ -8,7 +8,6 @@ module.exports = {
     },
 
     init: function() {
-        global.CONTROLLER = {};
         let controllerCommon = SYSTEM.loadFiles('/src/controller/common.js');
         SYSTEM.schemaWalkThrough({ commonDefinition: controllerCommon }, this.generateControllers);
     }

@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 module.exports = {
     loadClasses: function() {
-        let classes = global.CLASSES = {};
+        let classes = global.CLASSES;
         console.log('=> Staring Classes loader process');
 
         let _self = this;

@@ -3,22 +3,6 @@ var _ = require('lodash');
 module.exports = {
     loadTest: function(module) {
         if (CONFIG.get('test').run) {
-            if (typeof TEST == 'undefined') {
-                global.TEST = {
-                    data: {
-                        // This hold data definition which needs to be inserted to the database, 
-                        //for testing purpose. In this way, we can re-use same definition for multiple test cases.
-                    },
-                    commonTest: {
-                        //All the test cases, those needs to be executed in all environment.
-                        //Best usecase could be testing all created page template
-                    },
-                    envTest: {
-                        //All the test cases, those needs to be executed in secific environment.
-                        //Best usecase could be testing all created pages
-                    }
-                };
-            }
             this.loadCommonTest(module);
             this.loadEnvTest(module);
             console.log(TEST);
