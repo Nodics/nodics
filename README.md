@@ -3,4 +3,4 @@ Being an extremely interactive JS based enterprise API management framework, Nod
 
 For more detail, visit http://www.nodics.com
 
-For complete product documentation, visit out WIKI http://nodics.com/wiki-home/getting-started/
+For complete product documentation, visit out WIKI http://nodics.com/wiki-home/nodics/
