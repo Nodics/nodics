@@ -1,6 +1,18 @@
+/*
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 const _ = require('lodash');
 const extend = require('mongoose-schema-extend');
 const util = require('util');
+
 module.exports = {
     deployValidators: function() {
         console.log(' =>Starting validators loading process');
@@ -21,25 +33,33 @@ module.exports = {
     },
 
     resolveSchemaDependancy: function(moduleName, modelName, schemaDefinition) {
+        let _self = this;
         let flag = false;
-        let database = SYSTEM.getDatabase(moduleName);
-        let masterSchema = NODICS.getModule(moduleName).schemas.master;
-        let testSchema = NODICS.getModule(moduleName).schemas.test;
-
-        if (SYSTEM.validateSchemaDefinition(modelName, schemaDefinition)) {
-            process.exit(CONFIG.get('errorExitCode'));
-        }
-        if (masterSchema[modelName] && testSchema[modelName]) {
-            return true;
-        }
-        if (!masterSchema[modelName]) {
-            this.createSchema(database.master, masterSchema, moduleName, modelName, schemaDefinition);
-            flag = true;
-        }
-        if (!testSchema[modelName]) {
-            this.createSchema(database.test, testSchema, moduleName, modelName, schemaDefinition);
-            flag = true;
-        }
+        CONFIG.get('activeTanents').forEach(function(tntName) {
+            flag = false;
+            if (SYSTEM.validateSchemaDefinition(modelName, schemaDefinition)) {
+                process.exit(CONFIG.get('errorExitCode'));
+            }
+            let database = NODICS.getDatabase(moduleName, tntName);
+            let schemaObject = NODICS.getModule(moduleName).schemas;
+            if (!schemaObject[tntName]) {
+                schemaObject[tntName] = {
+                    master: {},
+                    test: {}
+                };
+            }
+            if (schemaObject[tntName].master[modelName] && schemaObject[tntName].test[modelName]) {
+                return true;
+            }
+            if (!schemaObject[tntName].master[modelName]) {
+                _self.createSchema(database.master, schemaObject[tntName].master, moduleName, modelName, schemaDefinition);
+                flag = true;
+            }
+            if (!schemaObject[tntName].test[modelName]) {
+                _self.createSchema(database.test, schemaObject[tntName].test, moduleName, modelName, schemaDefinition);
+                flag = true;
+            }
+        });
         return flag;
     },
 
@@ -74,12 +94,6 @@ module.exports = {
                 if (!moduleObject.schemas) {
                     moduleObject.schemas = {};
                 }
-                if (!moduleObject.schemas.master) {
-                    moduleObject.schemas.master = {};
-                }
-                if (!moduleObject.schemas.test) {
-                    moduleObject.schemas.test = {};
-                }
                 _self.extractRawSchema(moduleName, moduleObject);
             }
         });
@@ -107,24 +121,25 @@ module.exports = {
         let interceptorFiles = SYSTEM.loadFiles('/src/schemas/interceptors.js');
         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.rawSchema) {
-                let masterSchema = moduleObject.schemas.master;
-                let testSchema = moduleObject.schemas.test;
-                _.each(moduleObject.rawSchema, function(value, key) {
-                    if (value.model) {
-                        let defaultFunctions = SYSTEM.getAllMethods(interceptorFiles.default);
-                        defaultFunctions.forEach(function(operationName) {
-                            interceptorFiles.default[operationName](masterSchema[key]);
-                            interceptorFiles.default[operationName](testSchema[key]);
-                        });
-                        let moduleInterceptors = interceptorFiles[moduleName];
-                        if (moduleInterceptors) {
-                            let moduleFunctions = SYSTEM.getAllMethods(moduleInterceptors);
-                            moduleFunctions.forEach(function(operationName) {
-                                moduleInterceptors[operationName](masterSchema[key]);
-                                moduleInterceptors[operationName](testSchema[key]);
+                CONFIG.get('activeTanents').forEach(function(tntName) {
+                    let schemaObject = NODICS.getModule(moduleName).schemas;
+                    _.each(moduleObject.rawSchema, function(value, key) {
+                        if (value.model) {
+                            let defaultFunctions = SYSTEM.getAllMethods(interceptorFiles.default);
+                            defaultFunctions.forEach(function(operationName) {
+                                interceptorFiles.default[operationName](schemaObject[tntName].master[key]);
+                                interceptorFiles.default[operationName](schemaObject[tntName].test[key]);
                             });
+                            let moduleInterceptors = interceptorFiles[moduleName];
+                            if (moduleInterceptors) {
+                                let moduleFunctions = SYSTEM.getAllMethods(moduleInterceptors);
+                                moduleFunctions.forEach(function(operationName) {
+                                    moduleInterceptors[operationName](schemaObject[tntName].master[key]);
+                                    moduleInterceptors[operationName](schemaObject[tntName].test[key]);
+                                });
+                            }
                         }
-                    }
+                    });
                 });
             }
         });
@@ -133,14 +148,25 @@ module.exports = {
     createModelsForDatabase: function(moduleName, moduleObject) {
         let masterDB = NODICS.getDatabase(moduleName).master;
         let testDB = NODICS.getDatabase(moduleName).test;
-        let masterSchema = moduleObject.schemas.master;
-        let testSchema = moduleObject.schemas.test;
+
+        let schemaObject = NODICS.getModule(moduleName).schemas;
         _.each(moduleObject.rawSchema, function(value, key) {
             if (value.model) {
                 modelName = SYSTEM.createModelName(key);
                 console.log('   INFO: Creating model instance for : ', modelName);
-                moduleObject.models.master[modelName] = masterDB.getConnection().model(modelName, masterSchema[key]);
-                moduleObject.models.test[modelName] = testDB.getConnection().model(modelName, testSchema[key]);
+                CONFIG.get('activeTanents').forEach(function(tntName) {
+                    let masterSchema = schemaObject[tntName].master;
+                    let testSchema = schemaObject[tntName].test;
+                    let database = NODICS.getDatabase(moduleName, tntName);
+                    if (!moduleObject.models[tntName]) {
+                        moduleObject.models[tntName] = {
+                            master: {},
+                            test: {}
+                        };
+                    }
+                    moduleObject.models[tntName].master[modelName] = database.master.getConnection().model(modelName, masterSchema[key]);
+                    moduleObject.models[tntName].test[modelName] = database.test.getConnection().model(modelName, testSchema[key]);
+                });
             }
         });
     },
@@ -152,12 +178,6 @@ module.exports = {
             if (moduleObject.rawSchema) {
                 if (!moduleObject.models) {
                     moduleObject.models = {};
-                }
-                if (!moduleObject.models.master) {
-                    moduleObject.models.master = {};
-                }
-                if (!moduleObject.models.test) {
-                    moduleObject.models.test = {};
                 }
                 _self.createModelsForDatabase(moduleName, moduleObject);
             }

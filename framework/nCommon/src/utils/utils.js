@@ -1,9 +1,18 @@
-const fs = require('fs');
+/*
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
+ */
 
 module.exports = {
-    executeFunctions: function (object, param) {
+    executeFunctions: function(object, param) {
         if (object) {
-            Object.keys(object).forEach(function (key) {
+            Object.keys(object).forEach(function(key) {
                 let instance = object[key];
                 if (instance && typeof instance === "function") {
                     if (param) {

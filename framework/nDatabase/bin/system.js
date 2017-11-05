@@ -1,3 +1,14 @@
+/*
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 module.exports = {
     validateDatabaseConfiguration: function(dbName) {
         var flag = true;
@@ -13,20 +24,6 @@ module.exports = {
             flag = false;
         }
         return flag;
-    },
-    getDatabase: function(moduleName) {
-        if (NODICS.getDatabase(moduleName)) {
-            return NODICS.getDatabase(moduleName);
-        } else {
-            return NODICS.getDatabase('default');
-        }
-    },
-    getDatabaseConfiguration: function(moduleName) {
-        if (CONFIG.get('database')[moduleName]) {
-            return CONFIG.get('database')[moduleName];
-        } else {
-            return CONFIG.get('database').default;
-        }
     },
 
     createModelName: function(modelName) {

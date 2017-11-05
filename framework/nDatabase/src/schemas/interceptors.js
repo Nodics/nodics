@@ -1,6 +1,14 @@
 /*
- * These are self executable processes, so need to be defined in this way
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
  */
+
 module.exports = {
     default: {
         preSaveInterceptor: function(schema) {
@@ -8,7 +16,7 @@ module.exports = {
             schema.pre('save', function(next) {
                 //console.log('%%% This is custome PreSave methods');
                 if (next && typeof next === "function") {
-                    console.log('function1111111111111111');
+                    //console.log('function1111111111111111');
                     next();
                 }
             });
@@ -19,7 +27,7 @@ module.exports = {
             schema.pre('save', function(next) {
                 //console.log('%%% This is custome Pre1Save methods');
                 if (next && typeof next === "function") {
-                    console.log('function222222222222222');
+                    //console.log('function222222222222222');
                     next();
                 }
             });

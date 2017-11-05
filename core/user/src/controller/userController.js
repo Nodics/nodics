@@ -1,13 +1,24 @@
+/*
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 module.exports = {
     options: {
         isNew: false
-    }, 
+    },
 
-    getFullName: function (req, res) {
-       let inputParam = {
+    getFullName: function(req, res) {
+        let inputParam = {
             req: req,
             res: res
-        }
+        };
         FACADE.UserFacade.getFullName(inputParam);
     }
-}
+};

@@ -1,3 +1,14 @@
+/*
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 const _ = require('lodash');
 let mongoose = require('mongoose');
 module.exports = {
@@ -23,33 +34,39 @@ module.exports = {
         return connection;
     },
     createDatabase: function(moduleName) {
-        let dbConfig = SYSTEM.getDatabaseConfiguration(moduleName);
-        let masterDatabase = new CLASSES.Database();
-        let testDatabase = new CLASSES.Database();
+        const _self = this;
+        let tntDB = {};
+        CONFIG.get('activeTanents').forEach(function(tntName) {
+            let dbConfig = NODICS.getDatabaseConfiguration(moduleName, tntName);
+            let masterDatabase = new CLASSES.Database();
+            let testDatabase = new CLASSES.Database();
 
-        masterDatabase.setName(moduleName);
-        masterDatabase.setURI(dbConfig.master.URI);
-        masterDatabase.setOptions(dbConfig.master.options);
-        masterDatabase.setConnection(this.createConnection(dbConfig.master));
-        masterDatabase.setSchema(mongoose.Schema);
-        if (dbConfig.test) {
-            testDatabase.setName(moduleName);
-            testDatabase.setURI(dbConfig.test.URI);
-            testDatabase.setOptions(dbConfig.test.options);
-            testDatabase.setConnection(this.createConnection(dbConfig.test));
-            testDatabase.setSchema(mongoose.Schema);
-        } else {
-            let testDB = NODICS.getDatabase().test;
-            if (!testDB) {
-                console.error('   ERROR: Default test database configuration not found. Please velidate database configuration');
-                process.exit(CONFIG.get('errorExitCode'));
+            masterDatabase.setName(moduleName);
+            masterDatabase.setURI(dbConfig.master.URI);
+            masterDatabase.setOptions(dbConfig.master.options);
+            masterDatabase.setConnection(_self.createConnection(dbConfig.master));
+            masterDatabase.setSchema(mongoose.Schema);
+            if (dbConfig.test) {
+                testDatabase.setName(moduleName);
+                testDatabase.setURI(dbConfig.test.URI);
+                testDatabase.setOptions(dbConfig.test.options);
+                testDatabase.setConnection(_self.createConnection(dbConfig.test));
+                testDatabase.setSchema(mongoose.Schema);
+            } else {
+                let testDB = NODICS.getDatabase().test;
+                if (!testDB) {
+                    console.error('   ERROR: Default test database configuration not found. Please velidate database configuration');
+                    process.exit(CONFIG.get('errorExitCode'));
+                }
+                testDatabase = testDB;
             }
-            testDatabase = testDB;
-        }
-        return {
-            master: masterDatabase,
-            test: testDatabase
-        };
+            tntDB[tntName] = {
+                master: masterDatabase,
+                test: testDatabase
+            };
+        });
+
+        return tntDB;
     },
     createDatabases: function() {
         const _self = this;

@@ -1,22 +1,28 @@
+/*
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 module.exports = function(env, nodicsHome, serverHome, argvs) {
     let _serverState = 'starting';
-    let _activeTanent = 'default';
+    let _activeTenant = 'default';
     let _activeChannel = 'master';
     let _activeEnv = env;
     let _nodicsHome = nodicsHome;
     let _serverHome = serverHome;
     let _argvs = argvs;
     let _activeModules = [];
+
     let _nodics = {
-        modules: {
-
-        },
-        dbs: {
-
-        },
-        validators: {
-
-        }
+        modules: {},
+        dbs: {},
+        validators: {}
     };
 
     this.getArguments = function() {
@@ -55,11 +61,11 @@ module.exports = function(env, nodicsHome, serverHome, argvs) {
         return _serverState;
     };
 
-    this.setActiveTanent = function(tanent) {
-        _activeTanent = tanent;
+    this.setActiveTanent = function(tenant) {
+        _activeTenant = tenant;
     };
     this.getActiveTanent = function() {
-        return _activeTanent;
+        return _activeTenant;
     };
 
     this.setActiveChannel = function(channel) {
@@ -86,12 +92,11 @@ module.exports = function(env, nodicsHome, serverHome, argvs) {
     this.setDatabases = function(databases) {
         _nodics.dbs = databases;
     };
-    this.getDatabase = function(moduleName) {
-        if (moduleName && _nodics.dbs[moduleName]) {
-            return _nodics.dbs[moduleName];
-        }
-        return _nodics.dbs.default;
+
+    this.getDatabases = function() {
+        return _nodics.dbs;
     };
+
     this.addDatabase = function(moduleName, database) {
         if (!moduleName) {
             moduleName = 'default';
@@ -108,9 +113,31 @@ module.exports = function(env, nodicsHome, serverHome, argvs) {
 
     this.getModels = function(moduleName) {
         let modules = this.getModule(moduleName);
-        if (this.getActiveChannel() && this.getActiveChannel() === 'master') {
-            return modules.models.master;
+        if (this.getActiveChannel() === 'master') {
+            return modules.models[this.getActiveTanent()].master;
         }
-        return modules.models.test;
+        return modules.models[this.getActiveTanent()].test;
+    };
+
+    this.getDatabase = function(moduleName, tenant) {
+        let database = {};
+        if (moduleName && _nodics.dbs[moduleName]) {
+            database = _nodics.dbs[moduleName];
+        } else {
+            database = _nodics.dbs.default;
+        }
+        if (!tenant) {
+            tenant = this.getActiveTanent();
+        }
+        return database[tenant];
+    };
+
+    this.getDatabaseConfiguration = function(moduleName, tenant) {
+        let properties = CONFIG.get('database', tenant);
+        if (properties[moduleName]) {
+            return properties[moduleName];
+        } else {
+            return properties.default;
+        }
     };
 };
