@@ -27,6 +27,16 @@ module.exports = {
             console.info("   INFO: Loading script file from : " + envScriptFilePath);
             mergedFile = _.merge(mergedFile, require(envScriptFilePath));
         }
+        let commonTenantScriptFilePath = NODICS.getServerHome() + '/config/common/' + NODICS.getActiveTanent() + '-prescripts.js';
+        if (fs.existsSync(commonTenantScriptFilePath)) {
+            console.info("   INFO: Loading script file from : " + commonTenantScriptFilePath);
+            mergedFile = _.merge(mergedFile, require(commonTenantScriptFilePath));
+        }
+        var envTenantScriptFilePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/' + NODICS.getActiveTanent() + '-prescripts.js';
+        if (fs.existsSync(envTenantScriptFilePath)) {
+            console.info("   INFO: Loading script file from : " + envTenantScriptFilePath);
+            mergedFile = _.merge(mergedFile, require(envTenantScriptFilePath));
+        }
         return mergedFile;
     },
 
@@ -42,6 +52,17 @@ module.exports = {
         if (fs.existsSync(envScriptFilePath)) {
             console.info("   INFO: Loading file from : " + envScriptFilePath);
             mergedFile = _.merge(mergedFile, require(envScriptFilePath));
+        }
+
+        let commonTenantScriptFilePath = NODICS.getServerHome() + '/config/common/' + NODICS.getActiveTanent() + '-postscripts.js';
+        if (fs.existsSync(commonTenantScriptFilePath)) {
+            console.info("   INFO: Loading script file from : " + commonTenantScriptFilePath);
+            mergedFile = _.merge(mergedFile, require(commonTenantScriptFilePath));
+        }
+        var envTenantScriptFilePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/' + NODICS.getActiveTanent() + '-postscripts.js';
+        if (fs.existsSync(envTenantScriptFilePath)) {
+            console.info("   INFO: Loading script file from : " + envTenantScriptFilePath);
+            mergedFile = _.merge(mergedFile, require(envTenantScriptFilePath));
         }
         return mergedFile;
     },

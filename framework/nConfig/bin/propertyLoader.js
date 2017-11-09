@@ -75,62 +75,56 @@ module.exports = {
         }
     },
 
-    loadAppCommnTanentProperties: function(tntConfig, tntName) {
-        var filePath = NODICS.getServerHome() + '/config/common/' + tntName + '-properties.js';
-        if (fs.existsSync(filePath)) {
-            console.log('   INFO: Loading configration file from : ' + filePath);
-            var commonPropertyFile = require(filePath);
-            tntConfig = _.merge(tntConfig, commonPropertyFile);
-        } else {
-            console.log('   ERROR: configuration file for tenant : ', tntName, ' not found at : ', filePath);
-            process.exit(1);
-        }
-        return tntConfig;
-    },
-
-    loadAppEnvTanentProperties: function(tntConfig, tntName) {
-
-        var filePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/' + tntName + '-properties.js';
-        if (fs.existsSync(filePath)) {
-            console.log('   INFO: Loading configration file from : ' + filePath);
-            var commonPropertyFile = require(filePath);
-            tntConfig = _.merge(tntConfig, commonPropertyFile);
-        }
-        return tntConfig;
-    },
-
     loadTanentConfiguration: function() {
         let _self = this;
-        CONFIG.get('activeTanents').forEach(function(tntName) {
+        CONFIG.get('installedTanents').forEach(function(tntName) {
             if (tntName && tntName !== 'default') {
                 let tntConfig = _.merge({}, CONFIG.getProperties());
-                tntConfig = _self.loadAppCommnTanentProperties(tntConfig, tntName);
-                tntConfig = _self.loadAppEnvTanentProperties(tntConfig, tntName);
+
+                let commonFilePath = NODICS.getServerHome() + '/config/common/' + tntName + '-properties.js';
+                if (fs.existsSync(commonFilePath)) {
+                    console.log('   INFO: Loading configration file from : ' + commonFilePath);
+                    let commonPropertyFile = require(commonFilePath);
+
+                    let filePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/' + tntName + '-properties.js';
+                    if (fs.existsSync(filePath)) {
+                        console.log('   INFO: Loading configration file from : ' + filePath);
+                        let envPropertyFile = require(filePath);
+                        commonPropertyFile = _.merge(commonPropertyFile, envPropertyFile);
+                    }
+                    if (!commonPropertyFile.database) {
+                        console.log('   ERROR: define database configuration for tenant : ', tntName);
+                        process.exit(1);
+                    }
+                    tntConfig = _.merge(tntConfig, commonPropertyFile);
+                } else {
+                    console.log('   ERROR: configuration file for tenant : ', tntName, ' not found at : ', commonFilePath);
+                    process.exit(1);
+                }
                 CONFIG.setProperties(tntConfig, tntName);
             }
         });
     },
+
     /*
      * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
      * will load properties from $APP_MODULE/config/env-{NODICS_ENV}/properties.js
      */
     loadExternalProperties: function() {
-        CONFIG.get('activeTanents').forEach(function(tntName) {
-            if (tntName && tntName !== 'default') {
-                let tntConfig = CONFIG.getProperties(tntName);
-                if (CONFIG.get('externalPropertyFile') && CONFIG.get('externalPropertyFile').length > 0) {
-                    CONFIG.get('externalPropertyFile').forEach(function(filePath) {
-                        if (fs.existsSync(filePath)) {
-                            console.log('   INFO: Loading configration file from : ' + filePath);
-                            var commonPropertyFile = require(filePath);
-                            config = _.merge(config, commonPropertyFile);
-                        } else {
-                            console.warn('   WARNING: System cant find configuration at : ' + filePath);
-                        }
+        if (CONFIG.get('externalPropertyFile') && CONFIG.get('externalPropertyFile').length > 0) {
+            CONFIG.get('externalPropertyFile').forEach(function(filePath) {
+                if (fs.existsSync(filePath)) {
+                    console.log('   INFO: Loading configration file from : ' + filePath);
+                    var commonPropertyFile = require(filePath);
+                    CONFIG.get('installedTanents').forEach(function(tntName) {
+                        let tntConfig = CONFIG.getProperties(tntName);
+                        tntConfig = _.merge(tntConfig, commonPropertyFile);
                     });
+                } else {
+                    console.warn('   WARNING: System cant find configuration at : ' + filePath);
                 }
-            }
-        });
+            });
+        }
     },
 
     init: function() {

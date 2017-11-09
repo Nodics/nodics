@@ -11,56 +11,56 @@
 
 module.exports = {
     tntName: 'Node Tenant',
-    /*
-        database: {
-            default: {
-                master: {
-                    URI: 'mongodb://localhost:27017/himkarMaster',
-                    options: {
-                        db: {
-                            native_parser: true
-                        },
-                        server: {
-                            poolSize: 5
-                        }
-                    }
-                },
-                test: {
-                    URI: 'mongodb://localhost:27017/himkarTest',
-                    options: {
-                        db: {
-                            native_parser: true
-                        },
-                        server: {
-                            poolSize: 5
-                        }
+
+    database: {
+        default: {
+            master: {
+                URI: 'mongodb://localhost:27017/himkarMaster',
+                options: {
+                    db: {
+                        native_parser: true
+                    },
+                    server: {
+                        poolSize: 5
                     }
                 }
             },
-            user: {
-                master: {
-                    URI: 'mongodb://localhost:27017/userHimkarMaster',
-                    options: {
-                        db: {
-                            native_parser: true
-                        },
-                        server: {
-                            poolSize: 5
-                        }
+            test: {
+                URI: 'mongodb://localhost:27017/himkarTest',
+                options: {
+                    db: {
+                        native_parser: true
+                    },
+                    server: {
+                        poolSize: 5
                     }
-                },
-                test: {
-                    URI: 'mongodb://localhost:27017/userHimkarTest',
-                    options: {
-                        db: {
-                            native_parser: true
-                        },
-                        server: {
-                            poolSize: 5
-                        }
+                }
+            }
+        },
+        user: {
+            master: {
+                URI: 'mongodb://localhost:27017/userHimkarMaster',
+                options: {
+                    db: {
+                        native_parser: true
+                    },
+                    server: {
+                        poolSize: 5
+                    }
+                }
+            },
+            test: {
+                URI: 'mongodb://localhost:27017/userHimkarTest',
+                options: {
+                    db: {
+                        native_parser: true
+                    },
+                    server: {
+                        poolSize: 5
                     }
                 }
             }
         }
-    */
+    }
+
 };

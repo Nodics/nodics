@@ -50,9 +50,11 @@ module.exports = {
     // databaseUserURI = mongodb://nonexistent.domain:27000
 
     // Tanent configuration tell system to group properties based on active tenants
-    activeTanents: [
+    installedTanents: [
         'default'
     ],
+
+    activeTanent: 'default',
 
     defaultContentType: 'application/json',
 

@@ -35,7 +35,7 @@ module.exports = {
     resolveSchemaDependancy: function(moduleName, modelName, schemaDefinition) {
         let _self = this;
         let flag = false;
-        CONFIG.get('activeTanents').forEach(function(tntName) {
+        CONFIG.get('installedTanents').forEach(function(tntName) {
             flag = false;
             if (SYSTEM.validateSchemaDefinition(modelName, schemaDefinition)) {
                 process.exit(CONFIG.get('errorExitCode'));
@@ -121,7 +121,7 @@ module.exports = {
         let interceptorFiles = SYSTEM.loadFiles('/src/schemas/interceptors.js');
         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.rawSchema) {
-                CONFIG.get('activeTanents').forEach(function(tntName) {
+                CONFIG.get('installedTanents').forEach(function(tntName) {
                     let schemaObject = NODICS.getModule(moduleName).schemas;
                     _.each(moduleObject.rawSchema, function(value, key) {
                         if (value.model) {
@@ -154,7 +154,7 @@ module.exports = {
             if (value.model) {
                 modelName = SYSTEM.createModelName(key);
                 console.log('   INFO: Creating model instance for : ', modelName);
-                CONFIG.get('activeTanents').forEach(function(tntName) {
+                CONFIG.get('installedTanents').forEach(function(tntName) {
                     let masterSchema = schemaObject[tntName].master;
                     let testSchema = schemaObject[tntName].test;
                     let database = NODICS.getDatabase(moduleName, tntName);

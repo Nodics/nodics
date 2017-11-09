@@ -36,7 +36,7 @@ module.exports = {
     createDatabase: function(moduleName) {
         const _self = this;
         let tntDB = {};
-        CONFIG.get('activeTanents').forEach(function(tntName) {
+        CONFIG.get('installedTanents').forEach(function(tntName) {
             let dbConfig = NODICS.getDatabaseConfiguration(moduleName, tntName);
             let masterDatabase = new CLASSES.Database();
             let testDatabase = new CLASSES.Database();

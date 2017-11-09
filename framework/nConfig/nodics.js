@@ -32,6 +32,8 @@ module.exports = {
         console.log('NODICS_ENV  : ', NODICS.getActiveEnvironment());
         console.log('---------------------------------------------------------------------------');
         propertyLoader.init();
+        NODICS.setActiveTanent(CONFIG.get('activeTanent'));
+        console.log("   INFO: Starting Nodics with active tenant : ", CONFIG.get('activeTanent'));
         systemLoader.init();
 
         SYSTEM.executePreScripts = function() {

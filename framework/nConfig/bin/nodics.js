@@ -62,14 +62,24 @@ module.exports = function(env, nodicsHome, serverHome, argvs) {
     };
 
     this.setActiveTanent = function(tenant) {
-        _activeTenant = tenant;
+        if (CONFIG.get('installedTanents').includes(tenant)) {
+            _activeTenant = tenant;
+        } else {
+            console.log('   ERROR: given tenant not supported here : ', tenant);
+            process.exit(1);
+        }
     };
     this.getActiveTanent = function() {
         return _activeTenant;
     };
 
     this.setActiveChannel = function(channel) {
-        _activeChannel = channel;
+        if (channel === 'master' || channel === 'test') {
+            _activeChannel = channel;
+        } else {
+            console.log('   ERROR: given channel not supported here : ', channel);
+            process.exit(1);
+        }
     };
     this.getActiveChannel = function() {
         return _activeChannel;
