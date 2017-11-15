@@ -33,6 +33,7 @@ module.exports = {
             .select(requestBody.select || {})
             .exec(callback);
     },
+
     getById: function(input, callback) {
         if (!input.id) {
             throw new Error("   ERROR: Id value can't be null to get Item");
@@ -47,6 +48,7 @@ module.exports = {
         };
         return this.get(request, callback);
     },
+
     getByCode: function(input, callback) {
         if (!input.code) {
             throw new Error("   ERROR: Code value can't be null to get Item");
@@ -68,6 +70,7 @@ module.exports = {
         }
         return NODICS.getModels('moduleName', input.tenant).modelName.create(input.model, callback);
     },
+
     removeById: function(input, callback) {
         if (!input.ids) {
             throw new Error("   ERROR: Ids list can't be null to save Item");
@@ -95,15 +98,16 @@ module.exports = {
         });
     },
 
-    //  *********************** Done 
     saveOrUpdate: function(model, callback) {
-        if (!model) {
+        if (!input.models) {
             throw new Error("   ERROR: Model can't be null to save Item");
         }
-        if (model._id) {
-            return NODICS.getModels('moduleName', input.tenant).modelName.findByIdAndUpdate(model._id, { $set: model }, { upsert: true, new: true }, callback);
-        } else {
-            return NODICS.getModels('moduleName', input.tenant).modelName.findOneAndUpdate({ code: model.code }, { $set: model }, { upsert: true, new: true }, callback);
-        }
+        return input.models.map((model) => {
+            if (model._id) {
+                return NODICS.getModels('moduleName', input.tenant).modelName.findByIdAndUpdate(model._id, { $set: model }, { upsert: true, new: true }, callback);
+            } else {
+                return NODICS.getModels('moduleName', input.tenant).modelName.findOneAndUpdate({ code: model.code }, { $set: model }, { upsert: true, new: true }, callback);
+            }
+        });
     }
 };

@@ -12,163 +12,67 @@
 const _ = require('lodash');
 
 module.exports = {
-    /* handleResponse: function(error, success, httpRequest, httpResponse, callback) {
-         let response = {};
-         if (error) {
-             response.success = false;
-             response.code = 'ERR001';
-             response.msg = error;
-         } else {
-             response.success = true;
-             response.code = 'SUC001';
-             response.msg = 'Finished Successfully';
-             response.result = success;
-         }
-         if (callback) {
-             callback(response, httpRequest, httpResponse);
-         } else {
-             inputParam.res.json(response);
-         }
-     },*/
-    get: function(input, output, callback) {
-        let request = {
-            tenant: input.tenant
-        };
-        if (input.httpRequest) {
-            request = {
-                options: input.httpRequest.body
-            };
-        }
+    get: function(request, callback) {
         DAO.daoName.get(request).then((models) => {
-            callback(null, models, input, output);
+            callback(null, models);
         }).catch((error) => {
-            callback(error, null, input, output);
+            callback(error, null);
         });
     },
-    getById: function(input, output, callback) {
-        let request = {
-            tenant: input.tenant
-        };
-        if (input.httpRequest) {
-            request.id = input.httpRequest.params.id;
-        } else {
-            request.id = input.id;
-        }
+
+    getById: function(request, callback) {
         DAO.daoName.getById(request).then((models) => {
-            callback(null, models, input, output);
+            callback(null, models);
         }).catch((error) => {
-            callback(error, null, input, output);
+            callback(error, null);
         });
     },
-    getByCode: function(input, output, callback) {
-        let request = {
-            tenant: input.tenant
-        };
-        if (input.httpRequest) {
-            request.code = input.httpRequest.params.code;
-        } else {
-            request.id = input.code;
-        }
+
+    getByCode: function(request, callback) {
         DAO.daoName.getByCode(request).then((models) => {
-            callback(null, models, input, output);
+            callback(null, models);
         }).catch((error) => {
-            callback(error, null, input, output);
+            callback(error, null);
         });
     },
 
-    save: function(input, output, callback) {
-        let request = {
-            tenant: input.tenant
-        };
-        if (input.httpRequest && input.httpRequest.req && !_.isEmpty(input.httpRequest.req.body)) {
-            request.models = input.httpRequest.req.body;
-        } else {
-            request.models = input.models;
-        }
+    save: function(request, callback) {
         DAO.daoName.save(request).then((models) => {
-            callback(null, models, input, output);
+            callback(null, models);
         }).catch((error) => {
-            callback(error, null, input, output);
+            callback(error, null);
         });
     },
 
-    removeById: function(input, output, callback) {
-        let request = {
-            ids: [],
-            tenant: input.tenant
-        };
-        if (input.ids) {
-            request.ids = input.ids;
-        } else if (input.httpRequest.req.params.id) {
-            request.ids.push(input.httpRequest.req.params.id);
-        } else {
-            request.ids = input.httpRequest.req.body;
-        }
+    removeById: function(request, callback) {
         DAO.daoName.removeById(request).then((models) => {
-            callback(null, models, input, output);
+            callback(null, models);
         }).catch((error) => {
-            callback(error, null, input, output);
+            callback(error, null);
         });
     },
 
-    removeByCode: function(input, output, callback) {
-        let request = {
-            codes: [],
-            tenant: input.tenant
-        };
-        if (input.codes) {
-            request.codes = input.codes;
-        } else if (input.httpRequest.req.params.code) {
-            request.codes.push(input.httpRequest.req.params.code);
-        } else {
-            request.codes = input.httpRequest.req.body;
-        }
+    removeByCode: function(request, callback) {
         DAO.daoName.removeByCode(request).then((models) => {
-            callback(null, models, input, output);
+            callback(null, models);
         }).catch((error) => {
-            callback(error, null, input, output);
+            callback(error, null);
         });
     },
 
-    update: function(input, output, callback) {
-        let request = {
-            models: [],
-            tenant: input.tenant
-        };
-        if (input.models) {
-            request.models = input.models;
-        } else if (SYSTEM.isBlank(input.httpRequest.body)) {
-            if (_.isArray(input.httpRequest.body)) {
-                request.models = input.httpRequest.body;
-            } else {
-                request.models.push(input.httpRequest.body);
-            }
-        }
+    update: function(request, callback) {
         Promise.all(DAO.daoName.update(request)).then(function(models) {
-            callback(null, models, input, output);
+            callback(null, models);
         }).catch((error) => {
-            callback(error, null, input, output);
+            callback(error, null);
         });
     },
 
-    saveOrUpdate: function(input, output, callback) {
-        let request = {
-            models: [],
-            tenant: input.tenant
-        };
-        if (input.models) {
-            request.models = input.models;
-        } else if (SYSTEM.isBlank(input.httpRequest.body)) {
-            if (_.isArray(input.httpRequest.body)) {
-                request.models = input.httpRequest.body;
-            } else {
-                request.models.push(input.httpRequest.body);
-            }
-        }
+    saveOrUpdate: function(request, callback) {
         Promise.all(DAO.daoName.saveOrUpdate(request)).then(function(models) {
-            callback(null, models, input, output);
+            callback(null, models);
         }).catch((error) => {
-            callback(error, null, input, output);
+            callback(error, null);
         });
     }
 };

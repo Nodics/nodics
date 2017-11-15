@@ -18,8 +18,8 @@ module.exports = {
 
     parseHeader: function(processRequest, processResponse, process) {
         console.log(' ======= Handling parseHeader');
-        processRequest.tenant = processRequest.req.get('tenant') || {};
-        processRequest.authTocket = processRequest.req.get('authTocken') || {};
+        processRequest.tenant = processRequest.httpRequest.get('tenant') || {};
+        processRequest.authTocket = processRequest.httpRequest.get('authTocken') || {};
         process.nextSuccess(processRequest, processResponse);
     },
 
@@ -27,46 +27,52 @@ module.exports = {
         console.log(' ======= Handling parseBody');
         process.nextSuccess(processRequest, processResponse);
     },
-
+    //Authentication process
     handleRequest: function(processRequest, processResponse, process) {
         console.log(' ======= Handling handleRequest');
         processRequest.process = process;
-        CONTROLLER.CronJobController.get(processRequest, processResponse, (error, result) => {
-            if (error) {
-                processResponse.response = {
-                    success: false,
-                    code: 'ERR001',
-                    msg: error
-                };
-            } else {
-                processResponse.response = {
-                    success: true,
-                    code: 'SUC001',
-                    msg: 'Finished Successfully',
-                    result: models
-                };
-            }
-            processRequest.process.nextSuccess(processRequest, processResponse);
-        });
+        try {
+            CONTROLLER.CronJobController.get(processRequest, (error, models) => {
+                if (error) {
+                    throw error;
+                } else {
+                    processResponse.response = {
+                        success: true,
+                        code: 'SUC001',
+                        msg: 'Finished Successfully',
+                        result: models
+                    };
+                }
+                process.nextSuccess(processRequest, processResponse);
+            });
+        } catch (error) {
+            processResponse.errors.PROC_ERR_0002 = {
+                success: false,
+                code: 'ERR002',
+                msg: error
+            };
+            process.nextFailure(processRequest, processResponse);
+        }
+
     },
 
     handleSucessEnd: function(processRequest, processResponse) {
-        console.log('+++++++++++++++ handleSucessEnd');
+        console.log('   INFO: Request : ', processRequest.originalUrl, ' processed successfully.');
         if (!SYSTEM.isBlank(processResponse.errors)) {
             processResponse.response = {
                 errors: processResponse.errors
             };
         }
-        processRequest.res.json(processResponse.response);
+        processRequest.httpResponse.json(processResponse.response);
     },
 
     handleFailureEnd: function(processRequest, processResponse) {
-        console.log('+++++++++++++++ handleFailureEnd');
-        processRequest.res.json(processResponse.errors);
+        console.log('   ERROR: Got error while processing request : ', processResponse.errors);
+        processRequest.httpResponse.json(processResponse.errors);
     },
 
     handleError: function(processRequest, processResponse) {
-        console.log('+++++++++++++++ handleError ');
-        processRequest.res.jsonp(processResponse.errors);
+        console.log('   ERROR: Got error while processing request : ', processResponse.errors);
+        processRequest.httpResponse.json(processResponse.errors);
     }
 };

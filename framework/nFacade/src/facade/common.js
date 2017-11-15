@@ -10,76 +10,35 @@
  */
 
 module.exports = {
-    get: function(input, output, callback) {
-        if (callback) {
-            return SERVICE.ServiceName.get(input, output, (error, models, input, output) => {
-                callback(error, models, input, output);
-            });
-        } else {
-            return SERVICE.ServiceName.get(input, output);
-        }
+    get: function(request, callback) {
+        return SERVICE.ServiceName.get(request, callback);
     },
-    getById: function(input, output, callback) {
-        if (callback) {
-            return SERVICE.ServiceName.getById(inputParam, (error, models, input, output) => {
-                callback(error, models, input, output);
-            });
-        } else {
-            return SERVICE.ServiceName.getById(input, output);
-        }
+
+    getById: function(request, callback) {
+        return SERVICE.ServiceName.getById(request, callback);
     },
-    getByCode: function(input, output, callback) {
-        if (callback) {
-            return SERVICE.ServiceName.getByCode(input, output, (error, models, input, output) => {
-                callback(error, models, input, output);
-            });
-        } else {
-            SERVICE.ServiceName.getByCode(input, output);
-        }
+
+    getByCode: function(request, callback) {
+        return SERVICE.ServiceName.getByCode(request, callback);
     },
-    save: function(input, output, callback) {
-        if (callback) {
-            return SERVICE.ServiceName.save(input, output, (error, models, input, output) => {
-                callback(error, models, input, output);
-            });
-        } else {
-            return SERVICE.ServiceName.save(input, output);
-        }
+
+    save: function(request, callback) {
+        return SERVICE.ServiceName.save(request, callback);
     },
-    removeById: function(input, output, callback) {
-        if (callback) {
-            return SERVICE.ServiceName.removeById(input, output, (error, models, input, output) => {
-                callback(error, models, input, output);
-            });
-        } else {
-            return SERVICE.ServiceName.removeById(input, output);
-        }
+
+    removeById: function(request, callback) {
+        return SERVICE.ServiceName.removeById(request, callback);
     },
-    removeByCode: function(input, output, callback) {
-        if (callback) {
-            return SERVICE.ServiceName.removeByCode(input, output, (error, models, input, output) => {
-                callback(error, models, input, output);
-            });
-        } else {
-            return SERVICE.ServiceName.removeByCode(input, output);
-        }
+
+    removeByCode: function(request, callback) {
+        return SERVICE.ServiceName.removeByCode(request, callback);
     },
-    update: function(input, output, callback) {
-        if (callback) {
-            return SERVICE.ServiceName.update(inputParam, (error, models, input, output) => {
-                callback(error, models, input, output);
-            });
-        } else {
-            return SERVICE.ServiceName.update(input, output);
-        }
+
+    update: function(request, callback) {
+        return SERVICE.ServiceName.update(request, callback);
     },
-    saveOrUpdate: function(input, output, callback) {
-        if (callback) {
-            return SERVICE.ServiceName.saveOrUpdate(inputParam, (error, models, input, output) => {
-                callback(error, models, input, output);
-            });
-        } else {
-            return SERVICE.ServiceName.saveOrUpdate(input, output);
-        }
+
+    saveOrUpdate: function(request, callback) {
+        return SERVICE.ServiceName.saveOrUpdate(request, callback);
     }
 };
