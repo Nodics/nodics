@@ -24,4 +24,4 @@ module.exports = {
     handleFailureEnd: function(processRequest, processResponse) {
         console.log('............. handleFailureEnd');
     }
-}
+};

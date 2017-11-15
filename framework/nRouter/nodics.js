@@ -21,6 +21,6 @@ module.exports = {
         console.log('=> Staring servers initialization process');
         initServers.init();
         serverConfig.init();
-        registerRouter.init();
+        registerRouter.moduleRoot();
     }
 };

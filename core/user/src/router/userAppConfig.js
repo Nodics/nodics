@@ -11,7 +11,11 @@
 
 module.exports = {
     initSession: function(app) {
-        //console.log(' User initSession');
+        //console.log('======================== Registering User App');
+        /*app.use(function(req, res, next) {
+            console.log('======================== > ');
+            next();
+        });*/
     },
     initLogger: function(app) {
         //console.log(' User initLogger');

@@ -10,6 +10,7 @@
  */
 
 module.exports = {
+
     calculationProcess: {
         startNode: "node1",
         //handleError: 'someProcess', // if this is not defined, handle OOTB

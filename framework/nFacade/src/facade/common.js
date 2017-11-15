@@ -10,76 +10,76 @@
  */
 
 module.exports = {
-    get: function(inputParam, callback) {
+    get: function(input, output, callback) {
         if (callback) {
-            return SERVICE.ServiceName.get(inputParam, (error, models, inputParam) => {
-                callback(error, models, inputParam);
+            return SERVICE.ServiceName.get(input, output, (error, models, input, output) => {
+                callback(error, models, input, output);
             });
         } else {
-            return SERVICE.ServiceName.get(inputParam);
+            return SERVICE.ServiceName.get(input, output);
         }
     },
-    getById: function(inputParam, callback) {
+    getById: function(input, output, callback) {
         if (callback) {
-            return SERVICE.ServiceName.getById(inputParam, (error, models, inputParam) => {
-                callback(error, models, inputParam);
+            return SERVICE.ServiceName.getById(inputParam, (error, models, input, output) => {
+                callback(error, models, input, output);
             });
         } else {
-            return SERVICE.ServiceName.getById(inputParam);
+            return SERVICE.ServiceName.getById(input, output);
         }
     },
-    getByCode: function(inputParam, callback) {
+    getByCode: function(input, output, callback) {
         if (callback) {
-            return SERVICE.ServiceName.getByCode(inputParam, (error, models, inputParam) => {
-                callback(error, models, inputParam);
+            return SERVICE.ServiceName.getByCode(input, output, (error, models, input, output) => {
+                callback(error, models, input, output);
             });
         } else {
-            SERVICE.ServiceName.getByCode(inputParam);
+            SERVICE.ServiceName.getByCode(input, output);
         }
     },
-    save: function(inputParam, callback) {
+    save: function(input, output, callback) {
         if (callback) {
-            return SERVICE.ServiceName.save(inputParam, (error, models, inputParam) => {
-                callback(error, models, inputParam);
+            return SERVICE.ServiceName.save(input, output, (error, models, input, output) => {
+                callback(error, models, input, output);
             });
         } else {
-            return SERVICE.ServiceName.save(inputParam);
+            return SERVICE.ServiceName.save(input, output);
         }
     },
-    removeById: function(inputParam, callback) {
+    removeById: function(input, output, callback) {
         if (callback) {
-            return SERVICE.ServiceName.removeById(inputParam, (error, models, inputParam) => {
-                callback(error, models, inputParam);
+            return SERVICE.ServiceName.removeById(input, output, (error, models, input, output) => {
+                callback(error, models, input, output);
             });
         } else {
-            return SERVICE.ServiceName.removeById(inputParam);
+            return SERVICE.ServiceName.removeById(input, output);
         }
     },
-    removeByCode: function(inputParam, callback) {
+    removeByCode: function(input, output, callback) {
         if (callback) {
-            return SERVICE.ServiceName.removeByCode(inputParam, (error, models, inputParam) => {
-                callback(error, models, inputParam);
+            return SERVICE.ServiceName.removeByCode(input, output, (error, models, input, output) => {
+                callback(error, models, input, output);
             });
         } else {
-            return SERVICE.ServiceName.removeByCode(inputParam);
+            return SERVICE.ServiceName.removeByCode(input, output);
         }
     },
-    update: function(inputParam, callback) {
+    update: function(input, output, callback) {
         if (callback) {
-            return SERVICE.ServiceName.update(inputParam, (error, models, inputParam) => {
-                callback(error, models, inputParam);
+            return SERVICE.ServiceName.update(inputParam, (error, models, input, output) => {
+                callback(error, models, input, output);
             });
         } else {
-            return SERVICE.ServiceName.update(inputParam);
+            return SERVICE.ServiceName.update(input, output);
         }
     },
-    saveOrUpdate: function(inputParam, callback) {
+    saveOrUpdate: function(input, output, callback) {
         if (callback) {
-            return SERVICE.ServiceName.saveOrUpdate(inputParam, (error, models, inputParam) => {
-                callback(error, models, inputParam);
+            return SERVICE.ServiceName.saveOrUpdate(inputParam, (error, models, input, output) => {
+                callback(error, models, input, output);
             });
         } else {
-            return SERVICE.ServiceName.saveOrUpdate(inputParam);
+            return SERVICE.ServiceName.saveOrUpdate(input, output);
         }
     }
 };

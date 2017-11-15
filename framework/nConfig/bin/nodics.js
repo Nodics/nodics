@@ -121,12 +121,16 @@ module.exports = function(env, nodicsHome, serverHome, argvs) {
         return _nodics.validators;
     };
 
-    this.getModels = function(moduleName) {
-        let modules = this.getModule(moduleName);
-        if (this.getActiveChannel() === 'master') {
-            return modules.models[this.getActiveTanent()].master;
+    this.getModels = function(moduleName, tenant) {
+        if (tenant) {
+            let modules = this.getModule(moduleName);
+            if (this.getActiveChannel() === 'master') {
+                return modules.models[tenant].master;
+            }
+            return modules.models[tenant].test;
+        } else {
+            throw new Error('Invalid tenant id...');
         }
-        return modules.models[this.getActiveTanent()].test;
     };
 
     this.getDatabase = function(moduleName, tenant) {

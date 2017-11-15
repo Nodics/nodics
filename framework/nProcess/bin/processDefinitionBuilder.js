@@ -28,7 +28,7 @@ module.exports = {
         _.each(processDefinitions, function(value, key) {
             if (key !== 'defaultProcess') {
                 tmpProcessHead = new CLASSES.ProcessHead(key, value, processDefinitions.defaultProcess);
-                tmpProcessHead.init();
+                tmpProcessHead.buildProcess();
                 process[key] = tmpProcessHead;
             }
         });

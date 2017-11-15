@@ -60,7 +60,7 @@ module.exports = {
 
     server: {
         contextRoot: 'nodics',
-        runAsSingleModule: false,
+        runAsSingleModule: true,
         default: {
             httpServer: 'localhost',
             httpPort: 3000,

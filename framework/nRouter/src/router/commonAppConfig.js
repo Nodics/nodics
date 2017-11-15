@@ -13,7 +13,10 @@ const bodyParser = require('body-parser');
 
 module.exports = {
     initProperties: function(app) {
-        //console.log(' Default initProperties');
+        /*app.use(function(req, res, next) {
+            console.log('======================== > ');
+            next('Done initProperties');
+        });*/
     },
     initSession: function(app) {
         //console.log(' Default initSession');
@@ -33,9 +36,12 @@ module.exports = {
         //console.log(' Default initHeaders');
     },
     initErrorRoutes: function(app) {
-        //console.log(' Default initErrorRoutes');
+        /*app.use(function(himkar, req, res, next) {
+            console.log('----------------------- > ', himkar);
+            next('done initErrorRoutes');
+        });*/
     },
     initExtras: function(app) {
-        //console.log(' Default initExtras');
+
     }
 };

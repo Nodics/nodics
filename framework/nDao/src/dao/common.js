@@ -10,88 +10,100 @@
  */
 
 module.exports = {
-    /*{
-        pageSize:10,
-        pageNumber:1,
-        select:{},
-        sort:{},
-        options:{},
-        query:{}
-    }*/
-    get: function(request, callback) {
-        if (!request) {
-            request = {};
+    /*
+    let input = {
+        tenant: tenantName,
+        options: {
+            pageSize:10,
+            pageNumber:1,
+            select:{},
+            sort:{},
+            options:{},
+            query:{}
         }
-        let skip = (request.pageSize || CONFIG.get('defaultPageSize')) * (request.pageNumber || CONFIG.get('defaultPageNumber'));
-        return NODICS.getModels('moduleName').modelName.find(request.query || {})
-            .limit(request.pageSize || CONFIG.get('defaultPageSize'))
+    }
+    */
+    get: function(input, callback) {
+        let requestBody = input.options;
+        let skip = (requestBody.pageSize || CONFIG.get('defaultPageSize')) * (requestBody.pageNumber || CONFIG.get('defaultPageNumber'));
+        return NODICS.getModels('moduleName', input.tenant).modelName.find(requestBody.query || {})
+            .limit(requestBody.pageSize || CONFIG.get('defaultPageSize'))
             .skip(skip)
-            .sort(request.sort || {})
-            .select(request.select || {})
+            .sort(requestBody.sort || {})
+            .select(requestBody.select || {})
             .exec(callback);
     },
-    getById: function(id, callback) {
-        if (!id) {
+    getById: function(input, callback) {
+        if (!input.id) {
             throw new Error("   ERROR: Id value can't be null to get Item");
         }
         let request = {
-            pageSize: CONFIG.get('defaultPageSize'),
-            pageNumber: CONFIG.get('defaultPageNumber'),
-            query: { _id: id }
+            tenant: input.tenant,
+            options: {
+                pageSize: CONFIG.get('defaultPageSize'),
+                pageNumber: CONFIG.get('defaultPageNumber'),
+                query: { _id: input.id }
+            }
         };
         return this.get(request, callback);
     },
-    getByCode: function(code, callback) {
-        if (!code) {
+    getByCode: function(input, callback) {
+        if (!input.code) {
             throw new Error("   ERROR: Code value can't be null to get Item");
         }
         let request = {
-            pageSize: CONFIG.get('defaultPageSize'),
-            pageNumber: CONFIG.get('defaultPageNumber'),
-            query: { code: code }
+            tenant: input.tenant,
+            options: {
+                pageSize: CONFIG.get('defaultPageSize'),
+                pageNumber: CONFIG.get('defaultPageNumber'),
+                query: { code: input.code }
+            }
         };
         return this.get(request, callback);
     },
-    save: function(model, callback) {
-        if (!model) {
+
+    save: function(input, callback) {
+        if (!input.model) {
             throw new Error("   ERROR: Model value can't be null to save Item");
         }
-        return NODICS.getModels('moduleName').modelName.create(model, callback);
-
+        return NODICS.getModels('moduleName', input.tenant).modelName.create(input.model, callback);
     },
-    removeById: function(ids, callback) {
-        if (!ids) {
+    removeById: function(input, callback) {
+        if (!input.ids) {
             throw new Error("   ERROR: Ids list can't be null to save Item");
         }
-        return NODICS.getModels('moduleName').modelName.remove({ _id: { $in: ids } }, callback);
+        return NODICS.getModels('moduleName', input.tenant).modelName.remove({ _id: { $in: input.ids } }, callback);
     },
 
-    removeByCode: function(codes, callback) {
-        if (!codes) {
+    removeByCode: function(input, callback) {
+        if (!input.codes) {
             throw new Error("   ERROR: Code list can't be null to save Item");
         }
-        return NODICS.getModels('moduleName').modelName.remove({ code: { $in: codes } }, callback);
+        return NODICS.getModels('moduleName', input.tenant).modelName.remove({ code: { $in: input.codes } }, callback);
     },
 
-    update: function(model, callback) {
-        if (!model) {
+    update: function(input, callback) {
+        if (!input.models) {
             throw new Error("   ERROR: Model can't be null to save Item");
         }
-        if (model._id) {
-            return NODICS.getModels('moduleName').modelName.findByIdAndUpdate(model._id, { $set: model }, { new: true }, callback);
-        } else {
-            return NODICS.getModels('moduleName').modelName.findOneAndUpdate({ code: model.code }, { $set: model }, { new: true }, callback);
-        }
+        return input.models.map((model) => {
+            if (model._id) {
+                return NODICS.getModels('moduleName', input.tenant).modelName.findByIdAndUpdate(model._id, { $set: model }, { new: true }, callback);
+            } else {
+                return NODICS.getModels('moduleName', input.tenant).modelName.findOneAndUpdate({ code: model.code }, { $set: model }, { new: true }, callback);
+            }
+        });
     },
 
+    //  *********************** Done 
     saveOrUpdate: function(model, callback) {
         if (!model) {
             throw new Error("   ERROR: Model can't be null to save Item");
         }
         if (model._id) {
-            return NODICS.getModels('moduleName').modelName.findByIdAndUpdate(model._id, { $set: model }, { upsert: true, new: true }, callback);
+            return NODICS.getModels('moduleName', input.tenant).modelName.findByIdAndUpdate(model._id, { $set: model }, { upsert: true, new: true }, callback);
         } else {
-            return NODICS.getModels('moduleName').modelName.findOneAndUpdate({ code: model.code }, { $set: model }, { upsert: true, new: true }, callback);
+            return NODICS.getModels('moduleName', input.tenant).modelName.findOneAndUpdate({ code: model.code }, { $set: model }, { upsert: true, new: true }, callback);
         }
     }
 };

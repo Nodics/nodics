@@ -19,7 +19,6 @@ module.exports = {
     },
 
     installedTanents: [
-        'default',
-        'node'
+        'default'
     ],
 };

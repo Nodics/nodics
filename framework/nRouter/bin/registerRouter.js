@@ -12,6 +12,23 @@
 const _ = require('lodash');
 
 module.exports = {
+    moduleRoot: function() {
+        let modules = NODICS.getModules();
+        _.each(modules, function(value, moduleName) {
+            if (value.metaData && value.metaData.publish) {
+                if (CONFIG.get('server').runAsSingleModule) {
+                    modules.default.app.use('/' + CONFIG.get('server').contextRoot + '/' + moduleName, (req, res) => {
+                        SERVICE.RequestHandlerService.startHandlerProcess(req, res);
+                    });
+                } else {
+                    value.app.use('/' + CONFIG.get('server').contextRoot + '/' + moduleName, (req, res) => {
+                        SERVICE.RequestHandlerService.startHandlerProcess(req, res);
+                    });
+                }
+            }
+        });
+    },
+
     registerModelRouter: function(options) {
         if (options.schemaObject.service) {
             console.log('       INFO: Registering router for model : ', options.schemaName);

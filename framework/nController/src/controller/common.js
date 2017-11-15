@@ -11,69 +11,38 @@
 
 module.exports = {
     moduleName: 'mdulName',
-
-    get: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
-        };
-        FACADE.FacadeName.get(inputParam);
+    /*
+        getTemp: function(processRequest, processResponse) {
+            let response = {};
+            DAO.CronJobDao.get().then((models) => {
+                processRequest.callback(models, processRequest, processResponse);
+            }).catch((error) => {
+                console.log('       --------- Controller error ', error);
+            });
+        },
+    */
+    get: function(input, output, callback) {
+        FACADE.FacadeName.get(input, output, callback);
     },
-
-    get: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
-        };
-        FACADE.FacadeName.get(inputParam);
+    getById: function(input, output, callback) {
+        FACADE.FacadeName.getById(input, output, callback);
     },
-    getById: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
-        }
-        FACADE.FacadeName.getById(inputParam);
+    getByCode: function(input, output, callback) {
+        FACADE.FacadeName.getByCode(input, output, callback);
     },
-    getByCode: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
-        }
-        FACADE.FacadeName.getByCode(inputParam);
+    save: function(input, output, callback) {
+        FACADE.FacadeName.save(input, output, callback);
     },
-    save: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
-        }
-        FACADE.FacadeName.save(inputParam);
+    removeById: function(input, output, callback) {
+        FACADE.FacadeName.removeById(input, output, callback);
     },
-    removeById: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
-        }
-        FACADE.FacadeName.removeById(inputParam);
+    removeByCode: function(input, output, callback) {
+        FACADE.FacadeName.removeByCode(input, output);
     },
-    removeByCode: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
-        }
-        FACADE.FacadeName.removeByCode(inputParam);
+    update: function(input, output, callback) {
+        FACADE.FacadeName.update(input, output, callback);
     },
-    update: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
-        }
-        FACADE.FacadeName.update(inputParam);
-    },
-    saveOrUpdate: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
-        }
-        FACADE.FacadeName.saveOrUpdate(inputParam);
+    saveOrUpdate: function(input, output, callback) {
+        FACADE.FacadeName.saveOrUpdate(input, output, callback);
     }
 }
