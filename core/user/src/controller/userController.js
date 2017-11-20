@@ -14,11 +14,13 @@ module.exports = {
         isNew: false
     },
 
-    getFullName: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
+    getFullName: function(requestContext, callback) {
+        let request = {
+            tenant: requestContext.tenant
         };
-        FACADE.UserFacade.getFullName(inputParam);
+        if (requestContext.httpRequest) {
+            request.code = requestContext.httpRequest.params.code;
+        }
+        FACADE.UserFacade.getFullName(request, callback);
     }
 };

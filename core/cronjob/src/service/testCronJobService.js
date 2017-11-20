@@ -16,7 +16,8 @@ module.exports = {
     },
 
     runJob: function(definition) {
-        console.log('CronJos Started................1111 ');
+        var today = new Date();
+        console.log('CronJos Started................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
     },
 
     stopJob: function(definition) {

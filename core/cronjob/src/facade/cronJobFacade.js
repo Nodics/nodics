@@ -14,35 +14,35 @@ module.exports = {
         isNew: false
     },
 
-    create: function(inputParam) {
-        return SERVICE.CronJobService.create(inputParam);
+    createJob: function(request, callback) {
+        return SERVICE.CronJobService.createJob(request, callback);
     },
 
-    update: function(inputParam) {
-        return SERVICE.CronJobService.update(inputParam);
+    updateJob: function(request, callback) {
+        return SERVICE.CronJobService.updateJob(request, callback);
     },
 
-    run: function(inputParam) {
-        return SERVICE.CronJobService.run(inputParam);
+    runJob: function(request, callback) {
+        return SERVICE.CronJobService.runJob(request, callback);
     },
 
-    start: function(inputParam) {
-        return SERVICE.CronJobService.start(inputParam);
+    startJob: function(request, callback) {
+        return SERVICE.CronJobService.startJob(request, callback);
     },
 
-    stop: function(inputParam) {
-        return SERVICE.CronJobService.stop(inputParam);
+    stopJob: function(request, callback) {
+        return SERVICE.CronJobService.stopJob(request, callback);
     },
 
-    remove: function(inputParam) {
-        return SERVICE.CronJobService.remove(inputParam);
+    removeJob: function(request, callback) {
+        return SERVICE.CronJobService.removeJob(request, callback);
     },
 
-    pause: function(inputParam) {
-        return SERVICE.CronJobService.pause(inputParam);
+    pauseJob: function(request, callback) {
+        return SERVICE.CronJobService.pauseJob(request, callback);
     },
 
-    resume: function(inputParam) {
-        return SERVICE.CronJobService.resume(inputParam);
+    resumeJob: function(request, callback) {
+        return SERVICE.CronJobService.resumeJob(request, callback);
     }
 };

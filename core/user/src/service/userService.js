@@ -15,7 +15,7 @@ module.exports = {
     },
 
     getFullName: function(inputParam) {
-        let requestBody = {
+        /*let requestBody = {
             query: {
                 _id: '599ffb445c3fe417d02c6d4c'
             }
@@ -27,8 +27,17 @@ module.exports = {
             inputParam.res.json(response);
         }).catch((error) => {
             inputParam.res.json(error);
-        });
+        });*/
     },
+    /*
+        get: function(request, callback) {
+            DAO.daoName.get(request).then((models) => {
+                callback(null, models);
+            }).catch((error) => {
+                callback(error, null);
+            });
+        },
+    */
 
     processNodeFirst: function(processRequest, processResponse, process) {
         console.log('.............processNodeFirst');

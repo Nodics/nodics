@@ -22,5 +22,6 @@ module.exports = {
         initServers.init();
         serverConfig.init();
         registerRouter.moduleRoot();
+        //registerRouter.init();
     }
 };

@@ -41,8 +41,10 @@ module.exports = function(definition, trigger, context, timeZone) {
 
     this.init = function(oneTime) {
         let _self = this;
+        let cronTime = this.getCronTime(oneTime);
+        console.log('    Creating job with time schedule : ', cronTime);
         _cronJob = new CronJob({
-            cronTime: this.getCronTime(oneTime),
+            cronTime: cronTime,
             onTick: function() {
                 if (!_paused) {
                     _running = true;

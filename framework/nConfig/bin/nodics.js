@@ -122,7 +122,7 @@ module.exports = function(env, nodicsHome, serverHome, argvs) {
     };
 
     this.getModels = function(moduleName, tenant) {
-        if (tenant) {
+        if (tenant && !SYSTEM.isBlank(tenant)) {
             let modules = this.getModule(moduleName);
             if (this.getActiveChannel() === 'master') {
                 return modules.models[tenant].master;

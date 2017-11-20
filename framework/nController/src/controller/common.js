@@ -10,7 +10,6 @@
  */
 
 module.exports = {
-    moduleName: 'mdulName',
 
     get: function(requestContext, callback) {
         let request = {
@@ -22,28 +21,35 @@ module.exports = {
             } else {
                 request.options = {};
             }
+            FACADE.FacadeName.get(request, callback);
+        } else {
+            console.log('   ERROR: Please validate your request, it is not a valid one');
         }
-        FACADE.FacadeName.get(request, callback);
+
     },
 
     getById: function(requestContext, callback) {
         let request = {
             tenant: requestContext.tenant
         };
-        if (input.httpRequest) {
+        if (requestContext.httpRequest) {
             request.id = requestContext.httpRequest.params.id;
+            FACADE.FacadeName.getById(request, callback);
+        } else {
+            console.log('   ERROR: Please validate your request, it is not a valid one');
         }
-        FACADE.FacadeName.getById(request, callback);
     },
 
     getByCode: function(requestContext, callback) {
         let request = {
             tenant: requestContext.tenant
         };
-        if (input.httpRequest) {
+        if (requestContext.httpRequest) {
             request.code = requestContext.httpRequest.params.code;
+            FACADE.FacadeName.getByCode(request, callback);
+        } else {
+            console.log('   ERROR: Please validate your request, it is not a valid one');
         }
-        FACADE.FacadeName.getByCode(request, callback);
     },
 
     save: function(requestContext, callback) {
@@ -76,12 +82,17 @@ module.exports = {
             codes: [],
             tenant: requestContext.tenant
         };
-        if (requestContext.httpRequest.req.params.code) {
-            request.codes.push(requestContext.httpRequest.req.params.code);
+        if (requestContext.httpRequest) {
+            if (requestContext.httpRequest.req.params.code) {
+                request.codes.push(requestContext.httpRequest.req.params.code);
+            } else {
+                request.codes = requestContext.httpRequest.req.body;
+            }
+            FACADE.FacadeName.removeByCode(request, output);
         } else {
-            request.codes = requestContext.httpRequest.req.body;
+            console.log('   ERROR: Please validate your request, it is not a valid one');
         }
-        FACADE.FacadeName.removeByCode(input, output);
+
     },
 
     update: function(requestContext, callback) {
@@ -89,27 +100,38 @@ module.exports = {
             models: [],
             tenant: requestContext.tenant
         };
-        if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
-            if (_.isArray(requestContext.httpRequest.body)) {
-                request.models = requestContext.httpRequest.body;
-            } else {
-                request.models.push(requestContext.httpRequest.body);
+        if (requestContext.httpRequest) {
+            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+                if (_.isArray(requestContext.httpRequest.body)) {
+                    request.models = requestContext.httpRequest.body;
+                } else {
+                    request.models.push(requestContext.httpRequest.body);
+                }
             }
+            console.log('    1111111--------------- : ', request);
+            FACADE.FacadeName.update(request, callback);
+        } else {
+            console.log('   ERROR: Please validate your request, it is not a valid one');
         }
-        FACADE.FacadeName.update(request, callback);
+
     },
     saveOrUpdate: function(requestContext, callback) {
         let request = {
             models: [],
             tenant: requestContext.tenant
         };
-        if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
-            if (_.isArray(requestContext.httpRequest.body)) {
-                request.models = requestContext.httpRequest.body;
-            } else {
-                request.models.push(requestContext.httpRequest.body);
+        if (requestContext.httpRequest) {
+            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+                if (_.isArray(requestContext.httpRequest.body)) {
+                    request.models = requestContext.httpRequest.body;
+                } else {
+                    request.models.push(requestContext.httpRequest.body);
+                }
             }
+            FACADE.FacadeName.saveOrUpdate(reqest, callback);
+        } else {
+            console.log('   ERROR: Please validate your request, it is not a valid one');
         }
-        FACADE.FacadeName.saveOrUpdate(reqest, callback);
+
     }
-}
+};

@@ -164,48 +164,19 @@ module.exports = function() {
         let _success = {};
         let _failed = {};
         let response = {};
-        if (jobNames) {
-            jobNames.forEach((value) => {
-                try {
-                    _self.startCronJob(value);
-                    _success[value] = {
-                        message: 'Successfully started'
-                    };
-                } catch (error) {
-                    _failed[value] = error;
-                }
-            });
-        } else if (_jobPool && Object.keys(_jobPool).length) {
-            _.each(_jobPool, function(valueIn, keyIn) {
-                try {
-                    _self.startCronJob(keyIn);
-                    _success[keyIn] = {
-                        message: 'Successfully started'
-                    };
-                } catch (error) {
-                    _failed[keyIn] = error;
-                }
-            });
-        } else {
-            return {
-                response: {
-                    success: false,
-                    code: 'ERR001',
-                    msg: 'Job pool is empty'
-                }
-            };
-        }
-        return {
-            response: {
-                success: false,
-                code: 'SUC001',
-                msg: 'Finished Successfully',
-                result: {
-                    success: _success,
-                    failed: _failed
-                }
+        jobNames.forEach((value) => {
+            try {
+                _self.startCronJob(value);
+                _success[value] = {
+                    message: 'Successfully started'
+                };
+            } catch (error) {
+                _failed[value] = error;
             }
-
+        });
+        return {
+            success: _success,
+            failed: _failed
         };
     };
 
@@ -224,48 +195,19 @@ module.exports = function() {
         let _success = {};
         let _failed = {};
         let response = {};
-        if (jobNames) {
-            jobNames.forEach((value) => {
-                try {
-                    _self.stopCronJob(value);
-                    _success[value] = {
-                        message: 'Successfully stoped'
-                    };
-                } catch (error) {
-                    _failed[value] = error;
-                }
-            });
-        } else if (_jobPool && Object.keys(_jobPool).length) {
-            _.each(_jobPool, function(valueIn, keyIn) {
-                try {
-                    _self.stopCronJob(keyIn);
-                    _success[keyIn] = {
-                        message: 'Successfully stoped'
-                    };
-                } catch (error) {
-                    _failed[keyIn] = error;
-                }
-            });
-        } else {
-            return {
-                response: {
-                    success: false,
-                    code: 'ERR001',
-                    msg: 'Job pool is empty'
-                }
-            };
-        }
-        return {
-            response: {
-                success: false,
-                code: 'SUC001',
-                msg: 'Finished Successfully',
-                result: {
-                    success: _success,
-                    failed: _failed
-                }
+        jobNames.forEach((value) => {
+            try {
+                _self.stopCronJob(value);
+                _success[value] = {
+                    message: 'Successfully stoped'
+                };
+            } catch (error) {
+                _failed[value] = error;
             }
-
+        });
+        return {
+            success: _success,
+            failed: _failed
         };
     };
 
@@ -280,112 +222,59 @@ module.exports = function() {
     };
 
     this.removeCronJobs = function(jobNames) {
+        let _self = this;
         let _success = {};
         let _failed = {};
         let response = {};
-        if (jobNames) {
-            jobNames.forEach((value) => {
-                try {
-                    _self.removeCronJob(value);
-                    _success[value] = {
-                        message: 'Successfully removed'
-                    };
-                } catch (error) {
-                    _failed[value] = error;
-                }
-            });
-        } else if (_jobPool && Object.keys(_jobPool).length) {
-            _.each(_jobPool, function(valueIn, keyIn) {
-                try {
-                    _self.removeCronJob(keyIn);
-                    _success[keyIn] = {
-                        message: 'Successfully removed'
-                    };
-                } catch (error) {
-                    _failed[keyIn] = error;
-                }
-            });
-        } else {
-            return {
-                response: {
-                    success: false,
-                    code: 'ERR001',
-                    msg: 'Job pool is empty'
-                }
-            };
-        }
-        return {
-            response: {
-                success: false,
-                code: 'SUC001',
-                msg: 'Finished Successfully',
-                result: {
-                    success: _success,
-                    failed: _failed
-                }
+        jobNames.forEach((value) => {
+            try {
+                console.log('  --Removing job : ', value);
+                _self.removeCronJob(value);
+                _success[value] = {
+                    message: 'Successfully removed'
+                };
+            } catch (error) {
+                _failed[value] = error;
             }
-
+        });
+        return {
+            success: _success,
+            failed: _failed
         };
     };
 
     this.removeCronJob = function(jobName) {
         if (jobName && _jobPool[jobName]) {
+            console.log('    --Job Object : ', _jobPool[jobName]);
             _jobPool[jobName].forEach(function(cronJob) {
                 cronJob.stopCronJob();
             });
-            _success[jobName] = _jobPool[jobName];
+            //_success[jobName] = _jobPool[jobName];
             delete _jobPool[jobName];
+            console.log('    --1Job Object : ', _jobPool[jobName]);
         } else {
             throw new Error('Either name is not valid or job already removed.');
         }
     };
 
     this.pauseCronJobs = function(jobNames) {
+        let _self = this;
         let _success = {};
         let _failed = {};
         let response = {};
-        if (jobNames) {
-            jobNames.forEach((value) => {
-                try {
-                    _self.pauseCronJob(value);
-                    _success[value] = {
-                        message: 'Successfully paused'
-                    };
-                } catch (error) {
-                    _failed[value] = error;
-                }
-            });
-        } else if (_jobPool && Object.keys(_jobPool).length) {
-            _.each(_jobPool, function(valueIn, keyIn) {
-                try {
-                    _self.pauseCronJob(keyIn);
-                    _success[keyIn] = {
-                        message: 'Successfully paused'
-                    };
-                } catch (error) {
-                    _failed[keyIn] = error;
-                }
-            });
-        } else {
-            return {
-                response: {
-                    success: false,
-                    code: 'ERR001',
-                    msg: 'Job pool is empty'
-                }
-            };
-        }
-        return {
-            response: {
-                success: false,
-                code: 'SUC001',
-                msg: 'Finished Successfully',
-                result: {
-                    success: _success,
-                    failed: _failed
-                }
+        jobNames.forEach((value) => {
+            try {
+                _self.pauseCronJob(value);
+                _success[value] = {
+                    message: 'Successfully paused'
+                };
+            } catch (error) {
+                _failed[value] = error;
             }
-
+        });
+        return {
+            success: _success,
+            failed: _failed
         };
     };
 
@@ -400,51 +289,23 @@ module.exports = function() {
     };
 
     this.resumeCronJobs = function(jobNames) {
+        let _self = this;
         let _success = {};
         let _failed = {};
         let response = {};
-        if (jobNames) {
-            jobNames.forEach((value) => {
-                try {
-                    _self.resumeCronJob(value);
-                    _success[value] = {
-                        message: 'Successfully resumed'
-                    };
-                } catch (error) {
-                    _failed[value] = error;
-                }
-            });
-        } else if (_jobPool && Object.keys(_jobPool).length) {
-            _.each(_jobPool, function(valueIn, keyIn) {
-                try {
-                    _self.resumeCronJob(keyIn);
-                    _success[keyIn] = {
-                        message: 'Successfully resumed'
-                    };
-                } catch (error) {
-                    _failed[keyIn] = error;
-                }
-            });
-        } else {
-            return {
-                response: {
-                    success: false,
-                    code: 'ERR001',
-                    msg: 'Job pool is empty'
-                }
-            };
-        }
-        return {
-            response: {
-                success: false,
-                code: 'SUC001',
-                msg: 'Finished Successfully',
-                result: {
-                    success: _success,
-                    failed: _failed
-                }
+        jobNames.forEach((value) => {
+            try {
+                _self.resumeCronJob(value);
+                _success[value] = {
+                    message: 'Successfully resumed'
+                };
+            } catch (error) {
+                _failed[value] = error;
             }
-
+        });
+        return {
+            success: _success,
+            failed: _failed
         };
     };
 

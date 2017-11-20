@@ -4,17 +4,19 @@ module.exports = {
     },
 
     validateTenantId: function(processRequest, processResponse, process) {
-        console.log('   ======= Handling validateTenantId');
+        console.log('   ----======= Handling validateTenantId : ', SYSTEM.isBlank(processRequest.tenant));
         if (SYSTEM.isBlank(processRequest.tenant)) {
-            processResponse.errors.PROC_ERR_0002 = {
-                code: 'PROC_ERR_0002',
-                message: 'PROC_ERR_0002',
+            console.log('   11111');
+            processResponse.errors.PROC_ERR_0001 = {
+                code: 'PROC_ERR_0001',
+                message: 'PROC_ERR_0001',
                 processName: process.getProcessName(),
                 nodeName: process.getNodeName(),
                 error: 'Tenant id is null or not a valid one'
             };
             process.nextFailure(processRequest, processResponse);
         } else {
+            console.log('   22222');
             process.nextSuccess(processRequest, processResponse);
         }
     },

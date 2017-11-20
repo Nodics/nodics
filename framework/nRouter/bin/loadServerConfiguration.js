@@ -15,7 +15,7 @@ module.exports = {
     init: function() {
         console.log(' =>Starting server configuration');
         let modules = NODICS.getModules();
-        let commonConfig = SYSTEM.loadFiles('/src/router/commonAppConfig.js');
+        let commonConfig = SYSTEM.loadFiles('/src/router/appConfig.js');
         if (CONFIG.get('server').runAsSingleModule) {
             if (!modules.default || !modules.default.app) {
                 console.error('   ERROR: Server configurations has not be initialized. Please verify.');
@@ -23,13 +23,13 @@ module.exports = {
             }
             console.log('   INFO: Configuring Default App');
             console.log('     INFO: Executing common configurations');
-            SYSTEM.executeRouterConfig(modules.default.app, commonConfig);
+            SYSTEM.executeRouterConfig(modules.default.app, commonConfig.default);
             _.each(modules, function(value, moduleName) {
                 if (value.metaData && value.metaData.publish) {
-                    let moduleConfig = SYSTEM.loadFiles('/src/router/' + moduleName + 'AppConfig.js');
-                    if (moduleConfig != null && moduleConfig) {
+                    //let moduleConfig = SYSTEM.loadFiles('/src/router/' + commonConfig[moduleName] + 'AppConfig.js');
+                    if (commonConfig[moduleName] && !SYSTEM.isBlank(commonConfig[moduleName])) {
                         console.log('     INFO: Executing module configurations :', moduleName);
-                        SYSTEM.executeRouterConfig(modules.default.app, moduleConfig);
+                        SYSTEM.executeRouterConfig(modules.default.app, commonConfig[moduleName]);
                     }
                 }
             });
@@ -42,11 +42,10 @@ module.exports = {
                     }
                     console.log('   INFO: Configuring App from module : ', moduleName);
                     console.log('     INFO: Executing common configurations');
-                    SYSTEM.executeRouterConfig(value.app, commonConfig);
-                    let moduleConfig = SYSTEM.loadFiles('/src/router/' + moduleName + 'AppConfig.js');
-                    if (moduleConfig != null && moduleConfig) {
+                    SYSTEM.executeRouterConfig(value.app, commonConfig.default);
+                    if (commonConfig[moduleName] && !SYSTEM.isBlank(commonConfig[moduleName])) {
                         console.log('     INFO: Executing module configurations :', moduleName);
-                        SYSTEM.executeRouterConfig(value.app, moduleConfig);
+                        SYSTEM.executeRouterConfig(value.app, commonConfig[moduleName]);
                     }
                 }
             });

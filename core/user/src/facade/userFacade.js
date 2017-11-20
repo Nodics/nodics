@@ -14,7 +14,7 @@ module.exports = {
         isNew: false
     },
 
-    getFullName: function(inputParam) {
-        return SERVICE.UserService.getFullName(inputParam);
-    }
+    getFullName: function(request, callback) {
+        return SERVICE.UserService.getFullName(request, callback);
+    },
 };

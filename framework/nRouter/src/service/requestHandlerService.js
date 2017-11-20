@@ -3,8 +3,10 @@ module.exports = {
         isNew: true
     },
 
-    startHandlerProcess: function(req, res) {
+    startHandlerProcess: function(req, res, routerDef) {
+
         let processRequest = {
+            router: routerDef,
             httpRequest: req,
             httpResponse: res,
             protocal: req.protocol,
@@ -29,10 +31,9 @@ module.exports = {
     },
     //Authentication process
     handleRequest: function(processRequest, processResponse, process) {
-        console.log(' ======= Handling handleRequest');
-        processRequest.process = process;
+        console.log(' ======= Handling handleRequest : ', processRequest.router.controller);
         try {
-            CONTROLLER.CronJobController.get(processRequest, (error, models) => {
+            eval(processRequest.router.controller)(processRequest, (error, models) => {
                 if (error) {
                     throw error;
                 } else {
@@ -46,14 +47,13 @@ module.exports = {
                 process.nextSuccess(processRequest, processResponse);
             });
         } catch (error) {
-            processResponse.errors.PROC_ERR_0002 = {
+            processResponse.errors.PROC_ERR_0003 = {
                 success: false,
-                code: 'ERR002',
-                msg: error
+                code: 'ERR003',
+                msg: error.toString()
             };
             process.nextFailure(processRequest, processResponse);
         }
-
     },
 
     handleSucessEnd: function(processRequest, processResponse) {

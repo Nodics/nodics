@@ -10,7 +10,13 @@
  */
 
 module.exports = {
-    initExtras: function(app) {
-        //console.log(' User initExtras Extended');
+    user: {
+        routeUserFullName: {
+            fullName: {
+                key: '/user/fullname',
+                method: 'GET',
+                controller: 'CONTROLLER.UserController.getFullName'
+            },
+        }
     }
 };

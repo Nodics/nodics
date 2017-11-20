@@ -14,15 +14,44 @@ const _ = require('lodash');
 module.exports = {
     moduleRoot: function() {
         let modules = NODICS.getModules();
+        let routers = SYSTEM.loadFiles('/src/router/router.js');
         _.each(modules, function(value, moduleName) {
+            let app = {};
+            if (CONFIG.get('server').runAsSingleModule) {
+                app = modules.default.app;
+            } else {
+                app = value.app;
+            }
+
             if (value.metaData && value.metaData.publish) {
-                if (CONFIG.get('server').runAsSingleModule) {
-                    modules.default.app.use('/' + CONFIG.get('server').contextRoot + '/' + moduleName, (req, res) => {
-                        SERVICE.RequestHandlerService.startHandlerProcess(req, res);
-                    });
-                } else {
-                    value.app.use('/' + CONFIG.get('server').contextRoot + '/' + moduleName, (req, res) => {
-                        SERVICE.RequestHandlerService.startHandlerProcess(req, res);
+                // Execute common routers for each required Schema
+                _.each(value.rawSchema, (schemaObject, schemaName) => {
+                    if (schemaObject.service) {
+                        _.each(routers.default, function(group, groupName) {
+                            _.each(group, function(routerDef, routerName) {
+                                let functionName = routerDef.method.toLowerCase();
+                                let tmpRouterDef = _.merge({}, routerDef);
+                                tmpRouterDef.key = tmpRouterDef.key.replaceAll('schemaName', schemaName.toLowerCase());
+                                tmpRouterDef.controller = tmpRouterDef.controller.replaceAll('controllerName', schemaName.toUpperCaseEachWord() + 'Controller');
+                                tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
+                                console.log(tmpRouterDef.url);
+                                eval(routers.operations[functionName](app, moduleName, tmpRouterDef));
+                            });
+                        });
+                    }
+                });
+                // Register all module specific routers here
+                if (!SYSTEM.isBlank(routers[moduleName])) {
+                    _.each(routers[moduleName], function(group, groupName) {
+                        _.each(group, function(routerDef, routerName) {
+                            let functionName = routerDef.method.toLowerCase();
+                            let tmpRouterDef = _.merge({}, routerDef);
+                            //tmpRouterDef.key = tmpRouterDef.key.replaceAll('schemaName', schemaName.toLowerCase());
+                            //tmpRouterDef.controller = tmpRouterDef.controller.replaceAll('controllerName', schemaName.toUpperCaseEachWord() + 'Controller');
+                            tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
+                            console.log(tmpRouterDef.url);
+                            eval(routers.operations[functionName](app, moduleName, tmpRouterDef));
+                        });
                     });
                 }
             }
@@ -42,12 +71,11 @@ module.exports = {
         }
     },
 
-
     init: function() {
         let _self = this;
         console.log(' =>Starting routers registration process');
         let modules = NODICS.getModules();
-        let commonRoter = SYSTEM.loadFiles('/src/router/commonRouter.js');
+        let commonRoter = SYSTEM.loadFiles('/src/router/router.js');
         if (CONFIG.get('server').runAsSingleModule) {
             if (!modules.default || !modules.default.app) {
                 console.error('   ERROR: Server configurations has not be initialized. Please verify.');
@@ -57,11 +85,11 @@ module.exports = {
             console.log('     INFO: Executing common routers');
             SYSTEM.modelsWalkThrough({
                 requireParsing: true,
-                commonDefinition: commonRoter,
+                commonDefinition: commonRoter.default,
                 app: modules.default.app
             }, this.registerModelRouter);
             _.each(modules, function(value, moduleName) {
-                let moduleRouter = SYSTEM.loadFiles('/src/router/' + moduleName + 'Router.js');
+                let moduleRouter = commonRoter[moduleName];
                 if (!SYSTEM.isBlank(moduleRouter)) {
                     console.log('     INFO: Executing module configurations :', moduleName);
                     Object.keys(moduleRouter).forEach(function(key) {
@@ -82,11 +110,11 @@ module.exports = {
                     console.log('     INFO: Executing common routers');
                     SYSTEM.modelsWalkThrough({
                         requireParsing: true,
-                        commonDefinition: commonRoter,
+                        commonDefinition: commonRoter.default,
                         app: value.app,
                         moduleName: moduleName
                     }, _self.registerModelRouter);
-                    let moduleRouter = SYSTEM.loadFiles('/src/router/' + moduleName + 'Router.js');
+                    let moduleRouter = commonRoter[moduleName];
                     if (!SYSTEM.isBlank(moduleRouter)) {
                         console.log('     INFO: Executing module configurations :', moduleName);
                         Object.keys(moduleRouter).forEach(function(key) {

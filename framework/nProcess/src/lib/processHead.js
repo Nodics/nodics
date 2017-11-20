@@ -97,6 +97,7 @@ module.exports = function(name, processDefinition, defaultNodes) {
     };
 
     this.error = function(processRequest, processResponse, err) {
+        console.log('   ERROR: Error occured while processing node', processResponse.errors);
         _preNode = _currentNode;
         _currentNode = _handleError;
         processResponse.errors.PROC_ERR_0001 = {
@@ -104,16 +105,13 @@ module.exports = function(name, processDefinition, defaultNodes) {
             message: 'PROC_ERR_0001',
             processName: _processName,
             nodeName: _preNode.getName(),
-            error: err
+            error: err.toString()
         };
-        console.log('   ERROR: Error occured while processing node', processResponse.errors);
         eval(_currentNode.getProcess())(processRequest, processResponse);
     };
 
     this.start = function(processRequest, processResponse) {
-
         _currentNode = _nodeList[_startNode];
-
         if (!_currentNode) {
             console.log('Node link is broken for node : ', _startNode, ' for process : ', _processName);
             process.exit(CONFIG.get('errorExitCode'));
@@ -124,7 +122,6 @@ module.exports = function(name, processDefinition, defaultNodes) {
 
     this.next = function(processRequest, processResponse) {
         if (_currentNode) {
-            //console.log('        11111111=========== ', _currentNode.getProcess());
             this.prepareNextNode();
             if (_currentNode.getType() === 'function') {
                 try {
@@ -137,7 +134,6 @@ module.exports = function(name, processDefinition, defaultNodes) {
                 try {
                     let _self = this;
                     PROCESS.ProcessService.startProcess(_currentNode.getProcess(), processRequest, processResponse);
-                    //PROCESS[_currentNode.getProcess()].next(processRequest, processResponse); //need to be called by ProcessService
                     if (_hardStop && !SYSTEM.isBlank(processResponse.errors)) {
                         _self.nextFailure(processRequest, processResponse);
                     } else {

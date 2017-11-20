@@ -14,88 +14,162 @@ module.exports = {
         isNew: false
     },
 
-    create: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
+    createJob: function(requestContext, callback) {
+        let request = {
+            tenant: requestContext.tenant
         };
-        FACADE.CronJobFacade.create(inputParam);
+        if (requestContext.httpRequest) {
+            request.options = {};
+            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+                request.options = requestContext.httpRequest.body;
+            } else if (requestContext.httpRequest.params.jobName) {
+                request.options.query = { name: requestContext.httpRequest.params.jobName };
+            }
+            FACADE.CronJobFacade.createJob(request, callback);
+        } else {
+            console.log('   ERROR: Please validate your request, it is not a valid one');
+            callback('ERROR: Please validate your request, it is not a valid one', null, request);
+        }
     },
 
-    update: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
+    updateJob: function(requestContext, callback) {
+        let request = {
+            tenant: requestContext.tenant
         };
-        FACADE.CronJobFacade.update(inputParam);
+        if (requestContext.httpRequest) {
+            request.options = {};
+            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+                request.options = requestContext.httpRequest.body;
+            } else if (requestContext.httpRequest.params.jobName) {
+                request.options.query = { name: requestContext.httpRequest.params.jobName };
+            }
+            FACADE.CronJobFacade.updateJob(request, callback);
+        } else {
+            console.log('   ERROR: Please validate your request, it is not a valid one');
+            callback('ERROR: Please validate your request, it is not a valid one', null, request);
+        }
     },
 
-    run: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
+    runJob: function(requestContext, callback) {
+        let request = {
+            tenant: requestContext.tenant
         };
-        FACADE.CronJobFacade.run(inputParam);
+        if (requestContext.httpRequest) {
+            request.options = {};
+            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+                request.options = requestContext.httpRequest.body;
+            } else if (requestContext.httpRequest.params.jobName) {
+                request.options.query = { name: requestContext.httpRequest.params.jobName };
+            }
+            FACADE.CronJobFacade.runJob(request, callback);
+        } else {
+            console.log('   ERROR: Please validate your request, it is not a valid one');
+            callback('ERROR: Please validate your request, it is not a valid one', null, request);
+        }
     },
 
-    start: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
+    startJob: function(requestContext, callback) {
+        let request = {
+            tenant: requestContext.tenant,
+            jobNames: []
         };
-        if (!SYSTEM.isBlank(req.body)) {
-            inputParam.jobName = req.body;
+        if (requestContext.httpRequest) {
+            if (requestContext.httpRequest.params.jobName) {
+                request.jobNames.push(requestContext.httpRequest.params.jobName);
+            } else if (requestContext.httpRequest.body instanceof Array) {
+                request.jobNames = requestContext.httpRequest.body;
+            } else {
+                console.log('   ERROR: Please validate your request, it is not a valid one');
+                callback('ERROR: Please validate your request, it is not a valid one', null, request);
+            }
+            FACADE.CronJobFacade.startJob(request, callback);
         } else {
-            inputParam.jobName = req.params.jobName;
+            console.log('   ERROR: Please validate your request, it is not a valid one');
+            callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
-        FACADE.CronJobFacade.start(inputParam);
     },
-    stop: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
+
+    stopJob: function(requestContext, callback) {
+        let request = {
+            tenant: requestContext.tenant,
+            jobNames: []
         };
-        if (req.body) {
-            inputParam.jobName = req.body;
+        if (requestContext.httpRequest) {
+            if (requestContext.httpRequest.params.jobName) {
+                request.jobNames.push(requestContext.httpRequest.params.jobName);
+            } else if (requestContext.httpRequest.body instanceof Array) {
+                request.jobNames = requestContext.httpRequest.body;
+            } else {
+                console.log('   ERROR: Please validate your request, it is not a valid one');
+                callback('ERROR: Please validate your request, it is not a valid one', null, request);
+            }
+            FACADE.CronJobFacade.stopJob(request, callback);
         } else {
-            inputParam.jobName = req.params.jobName;
+            console.log('   ERROR: Please validate your request, it is not a valid one');
+            callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
-        FACADE.CronJobFacade.stop(inputParam);
     },
-    remove: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
+
+    removeJob: function(requestContext, callback) {
+        let request = {
+            tenant: requestContext.tenant,
+            jobNames: []
         };
-        if (req.body) {
-            inputParam.jobName = req.body;
+        if (requestContext.httpRequest) {
+            if (requestContext.httpRequest.params.jobName) {
+                request.jobNames.push(requestContext.httpRequest.params.jobName);
+            } else if (requestContext.httpRequest.body instanceof Array) {
+                request.jobNames = requestContext.httpRequest.body;
+            } else {
+                console.log('   ERROR: Please validate your request, it is not a valid one');
+                callback('ERROR: Please validate your request, it is not a valid one', null, request);
+            }
+            FACADE.CronJobFacade.removeJob(request, callback);
         } else {
-            inputParam.jobName = req.params.jobName;
+            console.log('   ERROR: Please validate your request, it is not a valid one');
+            callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
-        FACADE.CronJobFacade.remove(inputParam);
     },
-    pause: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
+
+    pauseJob: function(requestContext, callback) {
+        let request = {
+            tenant: requestContext.tenant,
+            jobNames: []
         };
-        if (req.body) {
-            inputParam.jobName = req.body;
+        if (requestContext.httpRequest) {
+            if (requestContext.httpRequest.params.jobName) {
+                request.jobNames.push(requestContext.httpRequest.params.jobName);
+            } else if (requestContext.httpRequest.body instanceof Array) {
+                request.jobNames = requestContext.httpRequest.body;
+            } else {
+                console.log('   ERROR: Please validate your request, it is not a valid one');
+                callback('ERROR: Please validate your request, it is not a valid one', null, request);
+            }
+            FACADE.CronJobFacade.pauseJob(request, callback);
         } else {
-            inputParam.jobName = req.params.jobName;
+            console.log('   ERROR: Please validate your request, it is not a valid one');
+            callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
-        FACADE.CronJobFacade.pause(inputParam);
     },
-    resume: function(req, res) {
-        let inputParam = {
-            req: req,
-            res: res
+
+    resumeJob: function(requestContext, callback) {
+        let request = {
+            tenant: requestContext.tenant,
+            jobNames: []
         };
-        if (req.body) {
-            inputParam.jobName = req.body;
+        if (requestContext.httpRequest) {
+            if (requestContext.httpRequest.params.jobName) {
+                request.jobNames.push(requestContext.httpRequest.params.jobName);
+            } else if (requestContext.httpRequest.body instanceof Array) {
+                request.jobNames = requestContext.httpRequest.body;
+            } else {
+                console.log('   ERROR: Please validate your request, it is not a valid one');
+                callback('ERROR: Please validate your request, it is not a valid one', null, request);
+            }
+            FACADE.CronJobFacade.resumeJob(request, callback);
         } else {
-            inputParam.jobName = req.params.jobName;
+            console.log('   ERROR: Please validate your request, it is not a valid one');
+            callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
-        FACADE.CronJobFacade.resume(inputParam);
     }
 };
