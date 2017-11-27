@@ -12,7 +12,7 @@
 const _ = require('lodash');
 
 module.exports = function(name, processDefinition, defaultNodes) {
-
+    let _processId = 'id';
     let _processDefinition = processDefinition;
     let _defaultNodes = defaultNodes;
     let _self = this;
@@ -25,6 +25,14 @@ module.exports = function(name, processDefinition, defaultNodes) {
     let _preNode = {};
     let _nextSuccessNode = {};
     let _nextFailureNode = {};
+
+    this.setProcessId = function(id) {
+        _processId = id;
+    };
+
+    this.getProcessId = function() {
+        return _processId;
+    };
 
     this.getNodeName = function() {
         if (_currentNode) {
@@ -97,7 +105,7 @@ module.exports = function(name, processDefinition, defaultNodes) {
     };
 
     this.error = function(processRequest, processResponse, err) {
-        console.log('   ERROR: Error occured while processing node', processResponse.errors);
+        console.log('   ERROR: Error occured while processing node', err);
         _preNode = _currentNode;
         _currentNode = _handleError;
         processResponse.errors.PROC_ERR_0001 = {
@@ -105,12 +113,13 @@ module.exports = function(name, processDefinition, defaultNodes) {
             message: 'PROC_ERR_0001',
             processName: _processName,
             nodeName: _preNode.getName(),
-            error: err.toString()
+            error: err
         };
         eval(_currentNode.getProcess())(processRequest, processResponse);
     };
 
-    this.start = function(processRequest, processResponse) {
+    this.start = function(id, processRequest, processResponse) {
+        _processId = id;
         _currentNode = _nodeList[_startNode];
         if (!_currentNode) {
             console.log('Node link is broken for node : ', _startNode, ' for process : ', _processName);
@@ -125,6 +134,7 @@ module.exports = function(name, processDefinition, defaultNodes) {
             this.prepareNextNode();
             if (_currentNode.getType() === 'function') {
                 try {
+                    console.log(_processId, ' ----- ', processRequest.originalUrl, '  ----------->>>> ', _currentNode.getProcess());
                     eval(_currentNode.getProcess())(processRequest, processResponse, this);
                 } catch (error) {
                     this.error(processRequest, processResponse, error);

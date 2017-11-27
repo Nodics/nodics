@@ -14,20 +14,22 @@ module.exports = {
         isNew: false
     },
 
-    getFullName: function(inputParam) {
-        /*let requestBody = {
+    getFullName: function(request, callback) {
+        let requestBody = {
             query: {
                 _id: '599ffb445c3fe417d02c6d4c'
             }
         };
 
-        let request = SERVICE.ModuleService.buildRequest('cronjob', 'POST', 'cronjob', requestBody);
-
-        SERVICE.ModuleService.fetch(request).then((response) => {
-            inputParam.res.json(response);
+        let httpRequest = SERVICE.ModuleService.buildRequest('cronjob', 'POST', 'cronjob', requestBody);
+        console.log('--------------Service call Start----------------');
+        SERVICE.ModuleService.fetch(httpRequest).then((response) => {
+            console.log('--------------Service call End Success----------------');
+            callback(null, response.result, request);
         }).catch((error) => {
-            inputParam.res.json(error);
-        });*/
+            console.log('--------------Service call End Error----------------');
+            callback(error, null, request);
+        });
     },
     /*
         get: function(request, callback) {
@@ -62,16 +64,13 @@ module.exports = {
     process1NodeThird: function(processRequest, processResponse, process) {
         console.log('.............process1NodeThird');
         process.nextSuccess(processRequest, processResponse);
-        //throw new Error('something bad happened');
     },
 
     successEnd: function(processRequest, processResponse, process) {
         console.log('.............successEnd');
-        //process.success(param, process);
     },
 
     errorEnd: function(processRequest, processResponse, process) {
         console.log('.............errorEnd');
-        //process.success(param, process);
     }
 };

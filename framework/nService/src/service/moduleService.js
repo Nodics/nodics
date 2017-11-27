@@ -20,7 +20,9 @@ module.exports = {
             method: methodName || 'GET',
             uri: SYSTEM.prepareConnectionUrl(moduleName) + '/' + apiName,
             headers: {
-                'content-type': contentType || CONFIG.defaultContentType
+                'content-type': contentType || CONFIG.defaultContentType,
+                'tenant': 'default',
+                'authTocken': 'xdcfgvhbjn324356gfbvd'
             },
             body: requestBody,
             json: isJsonResponse || true

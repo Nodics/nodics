@@ -19,8 +19,11 @@ module.exports = {
             tenant: requestContext.tenant
         };
         if (requestContext.httpRequest) {
-            request.code = requestContext.httpRequest.params.code;
+            //request.code = requestContext.httpRequest.params.code;
+            FACADE.UserFacade.getFullName(request, callback);
+        } else {
+            console.log('   ERROR: Please validate your request, it is not a valid one');
+            callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
-        FACADE.UserFacade.getFullName(request, callback);
     }
 };

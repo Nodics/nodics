@@ -12,18 +12,18 @@
 const _ = require('lodash');
 
 module.exports = {
-    buildDefaultHandler: function() {
-        SYSTEM.loadFiles('/src/process/common.js', global.PROCESS);
+    /*buildDefaultHandler: function() {
+        return SYSTEM.loadFiles('/src/process/common.js');
     },
-
+*/
     buildProcessService: function() {
         let process = global.PROCESS;
         process['ProcessService'] = SYSTEM.loadFiles('/src/process/processService.js');
     },
 
-    buildProcesses: function() {
+    buildProcesses: function(commonHandlers) {
         _self = this;
-        let processDefinitions = SYSTEM.loadFiles('/src/process/processDefinition.js');
+        let processDefinitions = SYSTEM.loadFiles('/src/process/processDefinition.js', commonHandlers);
         let process = global.PROCESS;
         _.each(processDefinitions, function(value, key) {
             if (key !== 'defaultProcess') {
@@ -35,7 +35,7 @@ module.exports = {
     },
 
     init: function() {
-        this.buildDefaultHandler();
+        // let commonHandlers = this.buildDefaultHandler();
         this.buildProcessService();
         this.buildProcesses();
     }

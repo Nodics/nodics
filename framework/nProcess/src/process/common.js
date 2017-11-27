@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    handleErrorEnd: function(processRequest, processResponse) {
+    /*handleErrorEnd: function(processRequest, processResponse) {
         console.log('............. handleErrorEnd : ');
         if (processResponse.errors) {
             console.log(processResponse.errors);
@@ -23,5 +23,5 @@ module.exports = {
 
     handleFailureEnd: function(processRequest, processResponse) {
         console.log('............. handleFailureEnd');
-    }
+    }*/
 };

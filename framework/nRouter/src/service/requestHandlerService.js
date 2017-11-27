@@ -31,9 +31,10 @@ module.exports = {
     },
     //Authentication process
     handleRequest: function(processRequest, processResponse, process) {
-        console.log(' ======= Handling handleRequest : ', processRequest.router.controller);
         try {
-            eval(processRequest.router.controller)(processRequest, (error, models) => {
+            eval(processRequest.router.controller)(processRequest, (error, response) => {
+                console.log(' ======= Handling handleRequest : ', response);
+                console.log(' ======= ========================================');
                 if (error) {
                     throw error;
                 } else {
@@ -41,7 +42,7 @@ module.exports = {
                         success: true,
                         code: 'SUC001',
                         msg: 'Finished Successfully',
-                        result: models
+                        result: response
                     };
                 }
                 process.nextSuccess(processRequest, processResponse);
@@ -50,7 +51,7 @@ module.exports = {
             processResponse.errors.PROC_ERR_0003 = {
                 success: false,
                 code: 'ERR003',
-                msg: error.toString()
+                msg: error
             };
             process.nextFailure(processRequest, processResponse);
         }

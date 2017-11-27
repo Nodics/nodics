@@ -17,7 +17,8 @@ module.exports = {
         if (PROCESS[processName]) {
             response.errors = {};
             try {
-                PROCESS[processName].start(request, response);
+                let process = Object.create(PROCESS[processName]);
+                process.start(request.httpRequest.originalUrl, request, response);
                 success = true;
             } catch (err) {
                 response.errors.PROC_ERR_0000 = {

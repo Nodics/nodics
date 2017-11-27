@@ -18,7 +18,7 @@ module.exports = {
         if (!moduleServerConfiguration || CONFIG.get('server').runAsSingleModule) {
             moduleServerConfiguration = CONFIG.get('server').default;
         }
-        return 'http://' + moduleServerConfiguration.httpServer + ':' + moduleServerConfiguration.httpPort + '/' + CONFIG.get('server').contextRoot;
+        return 'http://' + moduleServerConfiguration.httpServer + ':' + moduleServerConfiguration.httpPort + '/' + CONFIG.get('server').contextRoot + '/' + moduleName;
     },
 
     prepareSecureConnectionUrl: function(moduleName) {
@@ -26,6 +26,6 @@ module.exports = {
         if (!moduleServerConfiguration || CONFIG.get('server').runAsSingleModule) {
             moduleServerConfiguration = CONFIG.get('server').default;
         }
-        return 'https://' + moduleServerConfiguration.httpsServer + ':' + moduleServerConfiguration.httpsPort + '/' + CONFIG.get('server').contextRoot;
+        return 'https://' + moduleServerConfiguration.httpsServer + ':' + moduleServerConfiguration.httpsPort + '/' + CONFIG.get('server').contextRoot + '/' + moduleName;
     },
 };
