@@ -20,26 +20,13 @@ module.exports = {
                 _id: '599ffb445c3fe417d02c6d4c'
             }
         };
-
         let httpRequest = SERVICE.ModuleService.buildRequest('cronjob', 'POST', 'cronjob', requestBody);
-        console.log('--------------Service call Start----------------');
         SERVICE.ModuleService.fetch(httpRequest).then((response) => {
-            console.log('--------------Service call End Success----------------');
-            callback(null, response.result, request);
+            callback(null, response.response.result, request);
         }).catch((error) => {
-            console.log('--------------Service call End Error----------------');
             callback(error, null, request);
         });
     },
-    /*
-        get: function(request, callback) {
-            DAO.daoName.get(request).then((models) => {
-                callback(null, models);
-            }).catch((error) => {
-                callback(error, null);
-            });
-        },
-    */
 
     processNodeFirst: function(processRequest, processResponse, process) {
         console.log('.............processNodeFirst');

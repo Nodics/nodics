@@ -30,7 +30,6 @@ module.exports = {
     },
 
     fetch: function(options, callback) {
-        console.log('Calling ', options);
         if (callback) {
             requestPromise(options)
                 .then(function(response) {

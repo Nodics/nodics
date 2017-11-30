@@ -11,10 +11,9 @@
 
 const _ = require('lodash');
 
-module.exports = function(name, processDefinition, defaultNodes) {
+module.exports = function(name, processDefinition) {
     let _processId = 'id';
     let _processDefinition = processDefinition;
-    let _defaultNodes = defaultNodes;
     let _self = this;
     let _processName = name;
     let _startNode = processDefinition.startNode;
@@ -45,7 +44,6 @@ module.exports = function(name, processDefinition, defaultNodes) {
     };
     this.buildProcess = function() {
         let _self = this;
-        _processDefinition.nodes = _.merge(_defaultNodes.nodes, _processDefinition.nodes);
         _.each(_processDefinition.nodes, function(value, key) {
             _nodeList[key] = new CLASSES.ProcessNode(key, value);
         });
@@ -119,13 +117,13 @@ module.exports = function(name, processDefinition, defaultNodes) {
     };
 
     this.start = function(id, processRequest, processResponse) {
+        console.log('   INFO: Starting process with process id : ', id);
         _processId = id;
         _currentNode = _nodeList[_startNode];
         if (!_currentNode) {
-            console.log('Node link is broken for node : ', _startNode, ' for process : ', _processName);
+            console.error('   ERROR: Node link is broken for node : ', _startNode, ' for process : ', _processName);
             process.exit(CONFIG.get('errorExitCode'));
         }
-
         this.next(processRequest, processResponse);
     };
 
@@ -134,16 +132,14 @@ module.exports = function(name, processDefinition, defaultNodes) {
             this.prepareNextNode();
             if (_currentNode.getType() === 'function') {
                 try {
-                    console.log(_processId, ' ----- ', processRequest.originalUrl, '  ----------->>>> ', _currentNode.getProcess());
                     eval(_currentNode.getProcess())(processRequest, processResponse, this);
                 } catch (error) {
                     this.error(processRequest, processResponse, error);
-                    //throw new Error('something bad happened');
                 }
             } else {
                 try {
                     let _self = this;
-                    PROCESS.ProcessService.startProcess(_currentNode.getProcess(), processRequest, processResponse);
+                    SERVICE.ProcessService.startProcess(_currentNode.getProcess(), processRequest, processResponse);
                     if (_hardStop && !SYSTEM.isBlank(processResponse.errors)) {
                         _self.nextFailure(processRequest, processResponse);
                     } else {

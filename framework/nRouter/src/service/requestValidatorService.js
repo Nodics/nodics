@@ -4,9 +4,9 @@ module.exports = {
     },
 
     validateTenantId: function(processRequest, processResponse, process) {
-        console.log('   ----======= Handling validateTenantId : ', SYSTEM.isBlank(processRequest.tenant));
+        console.log('   INFO: Validating tenant id : ', processRequest.originalUrl);
         if (SYSTEM.isBlank(processRequest.tenant)) {
-            console.log('   11111');
+            console.log('   ERROR: Invalide tenant id');
             processResponse.errors.PROC_ERR_0001 = {
                 code: 'PROC_ERR_0001',
                 message: 'PROC_ERR_0001',
@@ -16,14 +16,14 @@ module.exports = {
             };
             process.nextFailure(processRequest, processResponse);
         } else {
-            console.log('   22222');
             process.nextSuccess(processRequest, processResponse);
         }
     },
 
     validateAuthTocken: function(processRequest, processResponse, process) {
-        console.log('   ======= Handling validateAuthTocken');
+        console.log('   INFO: Validating Authentication tocken : ', processRequest.originalUrl);
         if (processRequest.secured && SYSTEM.isBlank(processRequest.authTocket)) {
+            console.log('   INFO: Authentication tocken not fout found with request');
             processResponse.errors.PROC_ERR_0002 = {
                 code: 'PROC_ERR_0002',
                 message: 'PROC_ERR_0002',

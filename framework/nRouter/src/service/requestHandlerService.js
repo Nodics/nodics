@@ -3,38 +3,22 @@ module.exports = {
         isNew: true
     },
 
-    startHandlerProcess: function(req, res, routerDef) {
-
-        let processRequest = {
-            router: routerDef,
-            httpRequest: req,
-            httpResponse: res,
-            protocal: req.protocol,
-            host: req.get('host'),
-            originalUrl: req.originalUrl,
-            secured: true
-        };
-        let processResponse = {};
-        let response = PROCESS.ProcessService.startProcess('requestHandlerProcess', processRequest, processResponse);
-    },
-
     parseHeader: function(processRequest, processResponse, process) {
-        console.log(' ======= Handling parseHeader');
+        console.log('   INFO: Parsing request header : ', processRequest.originalUrl);
         processRequest.tenant = processRequest.httpRequest.get('tenant') || {};
         processRequest.authTocket = processRequest.httpRequest.get('authTocken') || {};
         process.nextSuccess(processRequest, processResponse);
     },
 
     parseBody: function(processRequest, processResponse, process) {
-        console.log(' ======= Handling parseBody');
+        console.log('   INFO: Parsing request body : ', processRequest.originalUrl);
         process.nextSuccess(processRequest, processResponse);
     },
-    //Authentication process
+
     handleRequest: function(processRequest, processResponse, process) {
+        console.log('   INFO: processing your request : ', processRequest.originalUrl);
         try {
             eval(processRequest.router.controller)(processRequest, (error, response) => {
-                console.log(' ======= Handling handleRequest : ', response);
-                console.log(' ======= ========================================');
                 if (error) {
                     throw error;
                 } else {
@@ -58,22 +42,23 @@ module.exports = {
     },
 
     handleSucessEnd: function(processRequest, processResponse) {
-        console.log('   INFO: Request : ', processRequest.originalUrl, ' processed successfully.');
-        if (!SYSTEM.isBlank(processResponse.errors)) {
+        console.log('   INFO: Request has been processed successfully : ', processRequest.originalUrl);
+        /*if (!SYSTEM.isBlank(processResponse.errors)) {
             processResponse.response = {
                 errors: processResponse.errors
             };
-        }
-        processRequest.httpResponse.json(processResponse.response);
+        }*/
+        console.log(processResponse.response);
+        processRequest.httpResponse.json(processResponse);
     },
 
     handleFailureEnd: function(processRequest, processResponse) {
-        console.log('   ERROR: Got error while processing request : ', processResponse.errors);
-        processRequest.httpResponse.json(processResponse.errors);
+        console.log('   INFO: Request has been processed with some failures : ', processRequest.originalUrl);
+        processRequest.httpResponse.json(processResponse);
     },
 
     handleError: function(processRequest, processResponse) {
-        console.log('   ERROR: Got error while processing request : ', processResponse.errors);
-        processRequest.httpResponse.json(processResponse.errors);
+        console.log('   INFO: Request has been processed and got errors : ', processRequest.originalUrl);
+        processRequest.httpResponse.json(processResponse);
     }
 };
