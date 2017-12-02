@@ -17,6 +17,7 @@ module.exports = {
         options: {
             description: 'Test suite to run all user related userTestSuite',
             timeout: 100,
+            type: 'utest',
             params: {
                 ui: 'tdd',
                 reporter: 'list'
@@ -50,8 +51,8 @@ module.exports = {
             testIfEqual: {
                 description: 'Testing equality...',
                 test: function(done) {
-                    //console.log(TEST.data.value);
-                    expect(TEST.data.value).to.equal(TEST.data.value);
+                    let val = 2;
+                    expect(val).to.equal(TEST.uTestPool.data.value);
                     done();
                 }
             }

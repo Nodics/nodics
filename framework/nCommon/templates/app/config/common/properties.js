@@ -10,5 +10,7 @@
  */
 
 module.exports = {
-
+    moduleGroups: {
+        customApplication: []
+    }
 };

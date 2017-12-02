@@ -10,12 +10,15 @@
  */
 
 module.exports = {
+    moduleGroups: {
+        custom: ['server']
+    },
     activeModules: {
         updateGroups: true,
-        groups: ['core'], // Group 'framework' will be included automatically
-        modules: [
-            'server'
-        ]
+        groups: ['core', 'custom'] // Group 'framework' will be included automatically
+            /*modules: [
+                'server'
+            ]*/
     },
 
     installedTanents: [

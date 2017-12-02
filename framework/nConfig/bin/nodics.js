@@ -18,11 +18,20 @@ module.exports = function(env, nodicsHome, serverHome, argvs) {
     let _serverHome = serverHome;
     let _argvs = argvs;
     let _activeModules = [];
+    let _nTestRunning = false;
 
     let _nodics = {
         modules: {},
         dbs: {},
         validators: {}
+    };
+
+    this.setNTestRunning = function(isRunning) {
+        _nTestRunning = isRunning;
+    };
+
+    this.isNTestRunning = function() {
+        return _nTestRunning;
     };
 
     this.getArguments = function() {
@@ -122,7 +131,7 @@ module.exports = function(env, nodicsHome, serverHome, argvs) {
     };
 
     this.getModels = function(moduleName, tenant) {
-        if (tenant && !SYSTEM.isBlank(tenant)) {
+        if (tenant && !UTILS.isBlank(tenant)) {
             let modules = this.getModule(moduleName);
             if (this.getActiveChannel() === 'master') {
                 return modules.models[tenant].master;

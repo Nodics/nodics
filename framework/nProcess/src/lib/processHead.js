@@ -140,7 +140,7 @@ module.exports = function(name, processDefinition) {
                 try {
                     let _self = this;
                     SERVICE.ProcessService.startProcess(_currentNode.getProcess(), processRequest, processResponse);
-                    if (_hardStop && !SYSTEM.isBlank(processResponse.errors)) {
+                    if (_hardStop && !UTILS.isBlank(processResponse.errors)) {
                         _self.nextFailure(processRequest, processResponse);
                     } else {
                         _self.nextSuccess(processRequest, processResponse, this);

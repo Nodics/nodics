@@ -16,7 +16,6 @@ module.exports = {
         if (CONFIG.get('test').run) {
             this.loadCommonTest(module);
             this.loadEnvTest(module);
-            console.log(TEST);
         }
     },
 
@@ -26,10 +25,18 @@ module.exports = {
         SYSTEM.processFiles(path, "Test.js", (file) => {
             let testFile = this.collectData(require(file));
             _.each(testFile, (testSuite, suiteName) => {
-                if (TEST.commonTest[suiteName]) {
-                    TEST.commonTest[suiteName] = _.merge(TEST.commonTest[suiteName], testSuite);
+                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                    if (TEST.nTestPool[suiteName]) {
+                        TEST.nTestPool[suiteName] = _.merge(TEST.nTestPool[suiteName], testSuite);
+                    } else {
+                        TEST.nTestPool[suiteName] = testSuite;
+                    }
                 } else {
-                    TEST.commonTest[suiteName] = testSuite;
+                    if (TEST.uTestPool[suiteName]) {
+                        TEST.uTestPool[suiteName] = _.merge(TEST.uTestPool[suiteName], testSuite);
+                    } else {
+                        TEST.uTestPool[suiteName] = testSuite;
+                    }
                 }
             });
         });
@@ -41,24 +48,39 @@ module.exports = {
         SYSTEM.processFiles(path, "Test.js", (file) => {
             let testFile = this.collectData(require(file));
             _.each(testFile, (testSuite, suiteName) => {
-                if (TEST.envTest[suiteName]) {
-                    TEST.envTest[suiteName] = _.merge(TEST.envTest[suiteName], testSuite);
+                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                    if (TEST.nTestPool[suiteName]) {
+                        TEST.nTestPool[suiteName] = _.merge(TEST.nTestPool[suiteName], testSuite);
+                    } else {
+                        TEST.nTestPool[suiteName] = testSuite;
+                    }
                 } else {
-                    TEST.envTest[suiteName] = testSuite;
+                    if (TEST.uTestPool[suiteName]) {
+                        TEST.uTestPool[suiteName] = _.merge(TEST.uTestPool[suiteName], testSuite);
+                    } else {
+                        TEST.uTestPool[suiteName] = testSuite;
+                    }
                 }
             });
         });
     },
-
     collectData: function(file) {
         _.each(file, (testSuite, suiteName) => {
             if (testSuite.data) {
-                TEST.data = _.merge(TEST.data, testSuite.data);
+                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                    TEST.nTestPool.data = _.merge(TEST.nTestPool.data, testSuite.data);
+                } else {
+                    TEST.uTestPool.data = _.merge(TEST.uTestPool.data, testSuite.data);
+                }
                 delete testSuite.data;
             }
             _.each(testSuite, (testGroup, groupName) => {
                 if (testGroup.data) {
-                    TEST.data = _.merge(TEST.data, testGroup.data);
+                    if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                        TEST.nTestPool.data = _.merge(TEST.nTestPool.data, testGroup.data);
+                    } else {
+                        TEST.uTestPool.data = _.merge(TEST.uTestPool.data, testGroup.data);
+                    }
                     delete testGroup.data;
                 }
             });

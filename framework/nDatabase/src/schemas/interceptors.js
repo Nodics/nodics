@@ -12,22 +12,22 @@
 module.exports = {
     default: {
         preSaveInterceptor: function(schema) {
-            //console.log('!!!! PreSave ');
             schema.pre('save', function(next) {
-                //console.log('%%% This is custome PreSave methods');
+                if (NODICS.isNTestRunning()) {
+                    throw new Error('Save operation not allowed, while running N-Test cases');
+                }
                 if (next && typeof next === "function") {
-                    //console.log('function1111111111111111');
                     next();
                 }
             });
         },
 
-        preSave1Interceptor: function(schema) {
-            //console.log('!!!! PreSave ');
-            schema.pre('save', function(next) {
-                //console.log('%%% This is custome Pre1Save methods');
+        preUpdateInterceptor: function(schema) {
+            schema.pre('update', function(next) {
+                if (NODICS.isNTestRunning()) {
+                    throw new Error('Update operation not allowed, while running N-Test cases');
+                }
                 if (next && typeof next === "function") {
-                    //console.log('function222222222222222');
                     next();
                 }
             });

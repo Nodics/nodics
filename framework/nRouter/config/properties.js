@@ -19,5 +19,17 @@ module.exports = {
         'initHeaders',
         'initErrorRoutes',
         'initExtras'
-    ]
+    ],
+
+    server: {
+        contextRoot: 'nodics',
+        runAsSingleModule: true,
+        default: {
+            httpServer: 'localhost',
+            httpPort: 3000,
+
+            httpsServer: 'localhost',
+            httpsPort: 3001,
+        }
+    }
 };

@@ -11,42 +11,24 @@
 
 module.exports = {
     operations: {
-        startHandlerProcess: function(req, res, routerDef) {
-            let processRequest = {
-                router: routerDef,
-                httpRequest: req,
-                httpResponse: res,
-                protocal: req.protocol,
-                host: req.get('host'),
-                originalUrl: req.originalUrl,
-                secured: true
-            };
-            let processResponse = {};
-            try {
-                SERVICE.ProcessService.startProcess('requestHandlerProcess', processRequest, processResponse);
-            } catch (error) {
-                res.json(error);
-            }
-        },
-
         get: function(app, moduleName, routerDef) {
             app.route(routerDef.url).get((req, res) => {
-                this.startHandlerProcess(req, res, routerDef);
+                SERVICE.RequestHandlerService.startRequestHandlerProcess(req, res, routerDef);
             });
         },
         post: function(app, moduleName, routerDef) {
             app.route(routerDef.url).post((req, res) => {
-                this.startHandlerProcess(req, res, routerDef);
+                SERVICE.RequestHandlerService.startRequestHandlerProcess(req, res, routerDef);
             });
         },
         delete: function(app, moduleName, routerDef) {
             app.route(routerDef.url).delete((req, res) => {
-                this.startHandlerProcess(req, res, routerDef);
+                SERVICE.RequestHandlerService.startRequestHandlerProcess(req, res, routerDef);
             });
         },
         put: function(app, moduleName, routerDef) {
             app.route(routerDef.url).put((req, res) => {
-                this.startHandlerProcess(req, res, routerDef);
+                SERVICE.RequestHandlerService.startRequestHandlerProcess(req, res, routerDef);
             });
         }
     },

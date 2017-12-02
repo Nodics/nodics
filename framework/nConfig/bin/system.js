@@ -21,13 +21,20 @@ module.exports = {
         let modules = [];
         let moduleGroupsFilePath = NODICS.getServerHome() + '/config/modules.js';
         let serverProperty = require(NODICS.getServerHome() + '/config/common/properties.js');
+        if (fs.existsSync(NODICS.getServerHome() + '/config/env-' + options.NODICS_ENV + '/properties.js')) {
+            serverProperty = _.merge(serverProperty, require(NODICS.getServerHome() + '/config/env-' + options.NODICS_ENV + '/properties.js'));
+        }
         if (!fs.existsSync(moduleGroupsFilePath) || serverProperty.activeModules.updateGroups) {
             var nodicsModulePath = [];
             this.collectModulesList(options.NODICS_HOME, nodicsModulePath);
+            this.collectModulesList(options.SERVER_PATH, nodicsModulePath);
             let mergedFile = {};
             nodicsModulePath.forEach(function(modulePath) {
                 if (fs.existsSync(modulePath + '/config/properties.js')) {
                     mergedFile = _.merge(mergedFile, require(modulePath + '/config/properties.js'));
+                }
+                if (fs.existsSync(modulePath + '/config/common/properties.js')) {
+                    mergedFile = _.merge(mergedFile, require(modulePath + '/config/common/properties.js'));
                 }
             });
             if (!_.isEmpty(mergedFile.moduleGroups)) {
@@ -42,7 +49,8 @@ module.exports = {
         modules = moduleData.framework;
         serverProperty.activeModules.groups.forEach((groupName) => {
             if (!moduleData[groupName]) {
-
+                console.log('   ERROR: Invalide module group : ', groupName);
+                process.exit(1);
             }
             modules = modules.concat(moduleData[groupName]);
         });
@@ -91,17 +99,14 @@ module.exports = {
         global.CONTROLLER = {};
 
         global.TEST = {
-            data: {
-                // This hold data definition which needs to be inserted to the database, 
-                //for testing purpose. In this way, we can re-use same definition for multiple test cases.
-            },
-            commonTest: {
-                //All the test cases, those needs to be executed in all environment.
-                //Best usecase could be testing all created page template
-            },
-            envTest: {
+            nTestPool: {
+                data: {}
                 //All the test cases, those needs to be executed in secific environment.
                 //Best usecase could be testing all created pages
+            },
+            uTestPool: {
+                data: {}
+                // This pool for all test cases
             }
         };
     },
@@ -194,9 +199,5 @@ module.exports = {
         return Object.getOwnPropertyNames(envScripts).filter(function(prop) {
             return typeof envScripts[prop] == 'function';
         });
-    },
-
-    isBlank: function(value) {
-        return !Object.keys(value).length;
     }
 };

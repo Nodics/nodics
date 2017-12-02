@@ -20,7 +20,7 @@ module.exports = {
         };
         if (requestContext.httpRequest) {
             request.options = {};
-            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+            if (!UTILS.isBlank(requestContext.httpRequest.body)) {
                 request.options = requestContext.httpRequest.body;
             } else if (requestContext.httpRequest.params.jobName) {
                 request.options.query = { name: requestContext.httpRequest.params.jobName };
@@ -38,7 +38,7 @@ module.exports = {
         };
         if (requestContext.httpRequest) {
             request.options = {};
-            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+            if (!UTILS.isBlank(requestContext.httpRequest.body)) {
                 request.options = requestContext.httpRequest.body;
             } else if (requestContext.httpRequest.params.jobName) {
                 request.options.query = { name: requestContext.httpRequest.params.jobName };
@@ -56,7 +56,7 @@ module.exports = {
         };
         if (requestContext.httpRequest) {
             request.options = {};
-            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+            if (!UTILS.isBlank(requestContext.httpRequest.body)) {
                 request.options = requestContext.httpRequest.body;
             } else if (requestContext.httpRequest.params.jobName) {
                 request.options.query = { name: requestContext.httpRequest.params.jobName };

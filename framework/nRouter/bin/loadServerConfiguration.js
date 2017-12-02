@@ -27,7 +27,7 @@ module.exports = {
             _.each(modules, function(value, moduleName) {
                 if (value.metaData && value.metaData.publish) {
                     //let moduleConfig = SYSTEM.loadFiles('/src/router/' + commonConfig[moduleName] + 'AppConfig.js');
-                    if (commonConfig[moduleName] && !SYSTEM.isBlank(commonConfig[moduleName])) {
+                    if (commonConfig[moduleName] && !UTILS.isBlank(commonConfig[moduleName])) {
                         console.log('     INFO: Executing module configurations :', moduleName);
                         SYSTEM.executeRouterConfig(modules.default.app, commonConfig[moduleName]);
                     }
@@ -43,7 +43,7 @@ module.exports = {
                     console.log('   INFO: Configuring App from module : ', moduleName);
                     console.log('     INFO: Executing common configurations');
                     SYSTEM.executeRouterConfig(value.app, commonConfig.default);
-                    if (commonConfig[moduleName] && !SYSTEM.isBlank(commonConfig[moduleName])) {
+                    if (commonConfig[moduleName] && !UTILS.isBlank(commonConfig[moduleName])) {
                         console.log('     INFO: Executing module configurations :', moduleName);
                         SYSTEM.executeRouterConfig(value.app, commonConfig[moduleName]);
                     }

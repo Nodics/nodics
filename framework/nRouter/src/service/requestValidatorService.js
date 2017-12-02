@@ -5,7 +5,7 @@ module.exports = {
 
     validateTenantId: function(processRequest, processResponse, process) {
         console.log('   INFO: Validating tenant id : ', processRequest.originalUrl);
-        if (SYSTEM.isBlank(processRequest.tenant)) {
+        if (UTILS.isBlank(processRequest.tenant)) {
             console.log('   ERROR: Invalide tenant id');
             processResponse.errors.PROC_ERR_0001 = {
                 code: 'PROC_ERR_0001',
@@ -20,9 +20,9 @@ module.exports = {
         }
     },
 
-    validateAuthTocken: function(processRequest, processResponse, process) {
+    validateAuthToken: function(processRequest, processResponse, process) {
         console.log('   INFO: Validating Authentication tocken : ', processRequest.originalUrl);
-        if (processRequest.secured && SYSTEM.isBlank(processRequest.authTocket)) {
+        if (processRequest.secured && UTILS.isBlank(processRequest.authToket)) {
             console.log('   INFO: Authentication tocken not fout found with request');
             processResponse.errors.PROC_ERR_0002 = {
                 code: 'PROC_ERR_0002',

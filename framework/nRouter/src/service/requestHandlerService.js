@@ -3,10 +3,28 @@ module.exports = {
         isNew: true
     },
 
+    startRequestHandlerProcess: function(req, res, routerDef) {
+        let processRequest = {
+            router: routerDef,
+            httpRequest: req,
+            httpResponse: res,
+            protocal: req.protocol,
+            host: req.get('host'),
+            originalUrl: req.originalUrl,
+            secured: true
+        };
+        let processResponse = {};
+        try {
+            SERVICE.ProcessService.startProcess('requestHandlerProcess', processRequest, processResponse);
+        } catch (error) {
+            res.json(error);
+        }
+    },
+
     parseHeader: function(processRequest, processResponse, process) {
         console.log('   INFO: Parsing request header : ', processRequest.originalUrl);
         processRequest.tenant = processRequest.httpRequest.get('tenant') || {};
-        processRequest.authTocket = processRequest.httpRequest.get('authTocken') || {};
+        processRequest.authToket = processRequest.httpRequest.get('authToken') || {};
         process.nextSuccess(processRequest, processResponse);
     },
 
@@ -43,12 +61,11 @@ module.exports = {
 
     handleSucessEnd: function(processRequest, processResponse) {
         console.log('   INFO: Request has been processed successfully : ', processRequest.originalUrl);
-        /*if (!SYSTEM.isBlank(processResponse.errors)) {
+        /*if (!UTILS.isBlank(processResponse.errors)) {
             processResponse.response = {
                 errors: processResponse.errors
             };
         }*/
-        console.log(processResponse.response);
         processRequest.httpResponse.json(processResponse);
     },
 

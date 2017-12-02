@@ -89,7 +89,6 @@ module.exports = {
         if (!input.models) {
             throw new Error("   ERROR: Model can't be null to save Item");
         }
-        console.log('    222224444444     --------------- : ', input);
         return input.models.map((model) => {
             if (model._id) {
                 return NODICS.getModels('moduleName', input.tenant).modelName.findByIdAndUpdate(model._id, { $set: model }, { new: true }, callback);

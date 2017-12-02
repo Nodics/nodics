@@ -16,7 +16,7 @@ module.exports = {
             tenant: requestContext.tenant
         };
         if (requestContext.httpRequest) {
-            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+            if (!UTILS.isBlank(requestContext.httpRequest.body)) {
                 request.options = requestContext.httpRequest.body;
             } else {
                 request.options = {};
@@ -25,7 +25,6 @@ module.exports = {
         } else {
             console.log('   ERROR: Please validate your request, it is not a valid one');
         }
-
     },
 
     getById: function(requestContext, callback) {
@@ -58,10 +57,13 @@ module.exports = {
         };
         if (requestContext.httpRequest &&
             requestContext.httpRequest.req &&
-            !SYSTEM.isBlank(requestContext.httpRequest.req.body)) {
+            !UTILS.isBlank(requestContext.httpRequest.req.body)) {
             request.models = requestContext.httpRequest.req.body;
+            FACADE.FacadeName.save(request, callback);
+        } else {
+            console.log('   ERROR: Please validate your request, it is not a valid one');
         }
-        FACADE.FacadeName.save(request, callback);
+
     },
 
     removeById: function(requestContext, callback) {
@@ -101,14 +103,13 @@ module.exports = {
             tenant: requestContext.tenant
         };
         if (requestContext.httpRequest) {
-            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+            if (!UTILS.isBlank(requestContext.httpRequest.body)) {
                 if (_.isArray(requestContext.httpRequest.body)) {
                     request.models = requestContext.httpRequest.body;
                 } else {
                     request.models.push(requestContext.httpRequest.body);
                 }
             }
-            console.log('    1111111--------------- : ', request);
             FACADE.FacadeName.update(request, callback);
         } else {
             console.log('   ERROR: Please validate your request, it is not a valid one');
@@ -121,7 +122,7 @@ module.exports = {
             tenant: requestContext.tenant
         };
         if (requestContext.httpRequest) {
-            if (!SYSTEM.isBlank(requestContext.httpRequest.body)) {
+            if (!UTILS.isBlank(requestContext.httpRequest.body)) {
                 if (_.isArray(requestContext.httpRequest.body)) {
                     request.models = requestContext.httpRequest.body;
                 } else {

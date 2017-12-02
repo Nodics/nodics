@@ -34,14 +34,14 @@ module.exports = {
                                 tmpRouterDef.key = tmpRouterDef.key.replaceAll('schemaName', schemaName.toLowerCase());
                                 tmpRouterDef.controller = tmpRouterDef.controller.replaceAll('controllerName', schemaName.toUpperCaseEachWord() + 'Controller');
                                 tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
-                                console.log(tmpRouterDef.url);
+                                //console.log(tmpRouterDef.url);
                                 eval(routers.operations[functionName](app, moduleName, tmpRouterDef));
                             });
                         });
                     }
                 });
                 // Register all module specific routers here
-                if (!SYSTEM.isBlank(routers[moduleName])) {
+                if (!UTILS.isBlank(routers[moduleName])) {
                     _.each(routers[moduleName], function(group, groupName) {
                         _.each(group, function(routerDef, routerName) {
                             let functionName = routerDef.method.toLowerCase();
@@ -49,7 +49,6 @@ module.exports = {
                             //tmpRouterDef.key = tmpRouterDef.key.replaceAll('schemaName', schemaName.toLowerCase());
                             //tmpRouterDef.controller = tmpRouterDef.controller.replaceAll('controllerName', schemaName.toUpperCaseEachWord() + 'Controller');
                             tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
-                            console.log(tmpRouterDef.url);
                             eval(routers.operations[functionName](app, moduleName, tmpRouterDef));
                         });
                     });
@@ -90,7 +89,7 @@ module.exports = {
             }, this.registerModelRouter);
             _.each(modules, function(value, moduleName) {
                 let moduleRouter = commonRoter[moduleName];
-                if (!SYSTEM.isBlank(moduleRouter)) {
+                if (!UTILS.isBlank(moduleRouter)) {
                     console.log('     INFO: Executing module configurations :', moduleName);
                     Object.keys(moduleRouter).forEach(function(key) {
                         if (moduleRouter[key] && typeof moduleRouter[key] === "function") {
@@ -115,7 +114,7 @@ module.exports = {
                         moduleName: moduleName
                     }, _self.registerModelRouter);
                     let moduleRouter = commonRoter[moduleName];
-                    if (!SYSTEM.isBlank(moduleRouter)) {
+                    if (!UTILS.isBlank(moduleRouter)) {
                         console.log('     INFO: Executing module configurations :', moduleName);
                         Object.keys(moduleRouter).forEach(function(key) {
                             if (moduleRouter[key] && typeof moduleRouter[key] === "function") {

@@ -52,6 +52,6 @@ module.exports = {
     startNodics: function(options) {
         this.initFrameworkExecute(options);
         this.startServers();
-        //this.initTestRuner();
+        this.initTestRuner();
     }
 };

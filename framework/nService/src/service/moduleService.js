@@ -22,7 +22,7 @@ module.exports = {
             headers: {
                 'content-type': contentType || CONFIG.defaultContentType,
                 'tenant': 'default',
-                'authTocken': 'xdcfgvhbjn324356gfbvd'
+                'authToken': 'xdcfgvhbjn324356gfbvd'
             },
             body: requestBody,
             json: isJsonResponse || true

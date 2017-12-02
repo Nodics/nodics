@@ -23,7 +23,7 @@ module.exports = function() {
         if (tenant) {
             return _tntProperties[tenant];
         } else {
-            return _tntProperties[NODICS.getActiveTanent()];
+            return _tntProperties['default'];
         }
     };
 

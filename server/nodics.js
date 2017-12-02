@@ -8,7 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-const nodics = require('../Nodics');
+const nodics = require('../nodics');
 
 module.exports = {
     startNodics: (function() {

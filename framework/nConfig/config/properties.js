@@ -56,17 +56,5 @@ module.exports = {
 
     activeTanent: 'default',
 
-    defaultContentType: 'application/json',
-
-    server: {
-        contextRoot: 'nodics',
-        runAsSingleModule: true,
-        default: {
-            httpServer: 'localhost',
-            httpPort: 3000,
-
-            httpsServer: 'localhost',
-            httpsPort: 3001,
-        }
-    },
+    defaultContentType: 'application/json'
 };

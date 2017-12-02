@@ -70,12 +70,12 @@ module.exports = {
             validateTenantId: {
                 type: 'function',
                 process: 'SERVICE.RequestValidatorService.validateTenantId',
-                success: 'validateAuthTocken',
+                success: 'validateAuthToken',
                 failure: 'failureEnd'
             },
-            validateAuthTocken: {
+            validateAuthToken: {
                 type: 'function',
-                process: 'SERVICE.RequestValidatorService.validateAuthTocken',
+                process: 'SERVICE.RequestValidatorService.validateAuthToken',
                 success: 'successEnd',
                 failure: 'failureEnd'
             },

@@ -61,7 +61,6 @@ module.exports = {
     },
 
     update: function(request, callback) {
-        console.log('    1111111 3333333333--------------- : ', request);
         Promise.all(DAO.daoName.update(request)).then(function(models) {
             callback(null, models, request);
         }).catch((error) => {

@@ -10,4 +10,5 @@ module.exports = { core: [ 'core', 'cronjob', 'user' ],
      'nfacade',
      'ncontroller',
      'nrouter',
-     'ntest' ] };
+     'ntest' ],
+  custom: [ 'server' ] };
