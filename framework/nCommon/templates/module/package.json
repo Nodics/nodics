@@ -1,6 +1,6 @@
 {
     "name": "customApplication",
-    "//": "value for this property should start from 2000, value <2000 are reserved for Nodics",
+    "//": "value for index property should start from 2000, value <2000 are reserved for Nodics",
     "index": "index",
     "description": "Nodics applicaion module. It will hold all configuration and customApplication point to start nodics",
     "homepage": "http://www.nodics.com/",

@@ -9,7 +9,7 @@
 
  */
 
-const nodics = require('../Nodics');
+const nodics = require('../nodics');
 
 module.exports = (function() {
     nodics.startNodics({});

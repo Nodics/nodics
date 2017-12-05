@@ -132,11 +132,21 @@ module.exports = {
                             });
                             let moduleInterceptors = interceptorFiles[moduleName];
                             if (moduleInterceptors) {
-                                let moduleFunctions = SYSTEM.getAllMethods(moduleInterceptors);
-                                moduleFunctions.forEach(function(operationName) {
-                                    moduleInterceptors[operationName](schemaObject[tntName].master[key]);
-                                    moduleInterceptors[operationName](schemaObject[tntName].test[key]);
-                                });
+                                if (moduleInterceptors.default) {
+                                    let moduleFunctions = SYSTEM.getAllMethods(moduleInterceptors.default);
+                                    console.log('      ', moduleFunctions);
+                                    moduleFunctions.forEach(function(operationName) {
+                                        moduleInterceptors.default[operationName](schemaObject[tntName].master[key]);
+                                        moduleInterceptors.default[operationName](schemaObject[tntName].test[key]);
+                                    });
+                                }
+                                if (moduleInterceptors[key]) {
+                                    let schemaFunctions = SYSTEM.getAllMethods(moduleInterceptors[key]);
+                                    schemaFunctions.forEach(function(operationName) {
+                                        moduleInterceptors[key][operationName](schemaObject[tntName].master[key]);
+                                        moduleInterceptors[key][operationName](schemaObject[tntName].test[key]);
+                                    });
+                                }
                             }
                         }
                     });

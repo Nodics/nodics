@@ -11,8 +11,16 @@
 
 module.exports = {
     user: {
-        testUserInterceptors: function(schema) {
-            //console.log('%%% testUserInterceptors');
+        default: { // for all schema in user module
+            testUserInterceptors: function(schema) {
+                console.log('%%% testUserInterceptors');
+            }
+        },
+        person: { // this will execute only for person schema
+            testPersonInterceptors: function(schema) {
+                console.log('%%% testPersonInterceptors');
+            }
         }
+
     }
 };
