@@ -25,7 +25,7 @@ module.exports = {
         } else {
             let superSchema = schemaDefinition.super;
             if (!schema[superSchema]) {
-                let rawSchema = JSON.parse(JSON.stringify(NODICS.getModule(moduleName).rawSchema));
+                let rawSchema = NODICS.getModule(moduleName).rawSchema;
                 this.resolveSchemaDependancy(moduleName, superSchema, rawSchema[superSchema]);
             }
             schema[modelName] = schema[superSchema].extend(schemaDefinition.definition);
@@ -116,37 +116,46 @@ module.exports = {
         this.createSchemas();
     },
 
+    executeInterceptor: function(interceptors, schemaName, moduleSchema) {
+        if (!UTILS.isBlank(interceptors)) {
+            let interceptorFunctions = SYSTEM.getAllMethods(interceptors);
+            interceptorFunctions.forEach(function(operationName) {
+                interceptors[operationName](moduleSchema.master[schemaName]);
+                interceptors[operationName](moduleSchema.test[schemaName]);
+            });
+        }
+    },
+
+    registerModel: function(dao, schemaName, moduleSchema, schemaDef) {
+        if (!UTILS.isBlank(dao)) {
+            let daoFunctions = SYSTEM.getAllMethods(dao);
+            daoFunctions.forEach(function(operationName) {
+                dao[operationName](moduleSchema.master[schemaName], schemaDef);
+                dao[operationName](moduleSchema.test[schemaName], schemaDef);
+            });
+        }
+    },
+
     deployInterceptors: function() {
+        let _self = this;
         console.log(' =>Starting interceptors loading process');
         let interceptorFiles = SYSTEM.loadFiles('/src/schemas/interceptors.js');
+        let daoFiles = SYSTEM.loadFiles('/src/schemas/model.js');
         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.rawSchema) {
                 CONFIG.get('installedTanents').forEach(function(tntName) {
-                    let schemaObject = NODICS.getModule(moduleName).schemas;
+                    let moduleSchemas = NODICS.getModule(moduleName).schemas;
                     _.each(moduleObject.rawSchema, function(value, key) {
                         if (value.model) {
-                            let defaultFunctions = SYSTEM.getAllMethods(interceptorFiles.default);
-                            defaultFunctions.forEach(function(operationName) {
-                                interceptorFiles.default[operationName](schemaObject[tntName].master[key]);
-                                interceptorFiles.default[operationName](schemaObject[tntName].test[key]);
-                            });
-                            let moduleInterceptors = interceptorFiles[moduleName];
-                            if (moduleInterceptors) {
-                                if (moduleInterceptors.default) {
-                                    let moduleFunctions = SYSTEM.getAllMethods(moduleInterceptors.default);
-                                    console.log('      ', moduleFunctions);
-                                    moduleFunctions.forEach(function(operationName) {
-                                        moduleInterceptors.default[operationName](schemaObject[tntName].master[key]);
-                                        moduleInterceptors.default[operationName](schemaObject[tntName].test[key]);
-                                    });
-                                }
-                                if (moduleInterceptors[key]) {
-                                    let schemaFunctions = SYSTEM.getAllMethods(moduleInterceptors[key]);
-                                    schemaFunctions.forEach(function(operationName) {
-                                        moduleInterceptors[key][operationName](schemaObject[tntName].master[key]);
-                                        moduleInterceptors[key][operationName](schemaObject[tntName].test[key]);
-                                    });
-                                }
+                            _self.executeInterceptor(interceptorFiles.default, key, moduleSchemas[tntName]);
+                            _self.registerModel(daoFiles.default, key, moduleSchemas[tntName], value);
+                            if (interceptorFiles[moduleName]) {
+                                _self.executeInterceptor(interceptorFiles[moduleName].default, key, moduleSchemas[tntName]);
+                                _self.executeInterceptor(interceptorFiles[moduleName][key], key, moduleSchemas[tntName]);
+                            }
+                            if (daoFiles[moduleName]) {
+                                _self.registerModel(daoFiles[moduleName].default, key, moduleSchemas[tntName], value);
+                                _self.registerModel(daoFiles[moduleName][key], key, moduleSchemas[tntName], value);
                             }
                         }
                     });
@@ -158,7 +167,6 @@ module.exports = {
     createModelsForDatabase: function(moduleName, moduleObject) {
         let masterDB = NODICS.getDatabase(moduleName).master;
         let testDB = NODICS.getDatabase(moduleName).test;
-
         let schemaObject = NODICS.getModule(moduleName).schemas;
         _.each(moduleObject.rawSchema, function(value, key) {
             if (value.model) {

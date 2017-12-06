@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
     get: function(request, callback) {
-        DAO.daoName.get(request).then((models) => {
+        NODICS.getModels('moduleName', request.tenant).modelName.get(request).then((models) => {
             callback(null, models, request);
         }).catch((error) => {
             callback(error, null, request);
@@ -21,7 +21,7 @@ module.exports = {
     },
 
     getById: function(request, callback) {
-        DAO.daoName.getById(request).then((models) => {
+        NODICS.getModels('moduleName', request.tenant).modelName.getById(request).then((models) => {
             callback(null, models, request);
         }).catch((error) => {
             callback(error, null, request);
@@ -29,7 +29,7 @@ module.exports = {
     },
 
     getByCode: function(request, callback) {
-        DAO.daoName.getByCode(request).then((models) => {
+        NODICS.getModels('moduleName', request.tenant).modelName.getByCode(request).then((models) => {
             callback(null, models, request);
         }).catch((error) => {
             callback(error, null, request);
@@ -37,7 +37,7 @@ module.exports = {
     },
 
     save: function(request, callback) {
-        DAO.daoName.save(request).then((models) => {
+        NODICS.getModels('moduleName', request.tenant).modelName.save(request).then((models) => {
             callback(null, models, request);
         }).catch((error) => {
             callback(error, null, request);
@@ -45,7 +45,7 @@ module.exports = {
     },
 
     removeById: function(request, callback) {
-        DAO.daoName.removeById(request).then((models) => {
+        NODICS.getModels('moduleName', request.tenant).modelName.removeById(request).then((models) => {
             callback(null, models, request);
         }).catch((error) => {
             callback(error, null, request);
@@ -53,7 +53,7 @@ module.exports = {
     },
 
     removeByCode: function(request, callback) {
-        DAO.daoName.removeByCode(request).then((models) => {
+        NODICS.getModels('moduleName', request.tenant).modelName.removeByCode(request).then((models) => {
             callback(null, models, request);
         }).catch((error) => {
             callback(error, null, request);
@@ -61,7 +61,7 @@ module.exports = {
     },
 
     update: function(request, callback) {
-        Promise.all(DAO.daoName.update(request)).then(function(models) {
+        Promise.all(NODICS.getModels('moduleName', request.tenant).modelName.update(request)).then(function(models) {
             callback(null, models, request);
         }).catch((error) => {
             callback(error, null, request);
@@ -69,7 +69,7 @@ module.exports = {
     },
 
     saveOrUpdate: function(request, callback) {
-        Promise.all(DAO.daoName.saveOrUpdate(request)).then(function(models) {
+        Promise.all(NODICS.getModels('moduleName', request.tenant).modelName.saveOrUpdate(request)).then(function(models) {
             callback(null, models, request);
         }).catch((error) => {
             callback(error, null, request);

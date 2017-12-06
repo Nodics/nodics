@@ -50,10 +50,11 @@ module.exports = {
                 process.nextSuccess(processRequest, processResponse);
             });
         } catch (error) {
+            console.log('   ERROR: got error while servive request : ', error);
             processResponse.errors.PROC_ERR_0003 = {
                 success: false,
                 code: 'ERR003',
-                msg: error
+                msg: error.toString()
             };
             process.nextFailure(processRequest, processResponse);
         }

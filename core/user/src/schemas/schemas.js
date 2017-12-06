@@ -9,10 +9,40 @@
 
  */
 
+let mongoose = require('mongoose');
+
 module.exports = {
     //Database name
     user: {
         //Collection name
+        address: {
+            super: 'base',
+            model: true,
+            service: true,
+            definition: {
+                flatNo: {
+                    type: 'String'
+                },
+                blockNo: {
+                    type: 'String'
+                },
+                building: {
+                    type: 'String'
+                },
+                locality: {
+                    type: 'String'
+                },
+                city: {
+                    type: 'String'
+                },
+                state: {
+                    type: 'String'
+                },
+                zipCode: {
+                    type: 'String'
+                },
+            }
+        },
         user: {
             super: 'base',
             model: true,

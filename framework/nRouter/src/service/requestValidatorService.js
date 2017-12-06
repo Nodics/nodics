@@ -23,7 +23,7 @@ module.exports = {
     validateAuthToken: function(processRequest, processResponse, process) {
         console.log('   INFO: Validating Authentication tocken : ', processRequest.originalUrl);
         if (processRequest.secured && UTILS.isBlank(processRequest.authToket)) {
-            console.log('   INFO: Authentication tocken not fout found with request');
+            console.log('   INFO: Authentication token not fout found with request');
             processResponse.errors.PROC_ERR_0002 = {
                 code: 'PROC_ERR_0002',
                 message: 'PROC_ERR_0002',

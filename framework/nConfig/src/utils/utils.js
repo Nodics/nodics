@@ -11,6 +11,6 @@
 
 module.exports = {
     isBlank: function(value) {
-        return !Object.keys(value).length;
+        return !value || !Object.keys(value).length;
     }
 };

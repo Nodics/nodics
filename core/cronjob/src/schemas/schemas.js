@@ -124,8 +124,8 @@ module.exports = {
                     default: 1000
                 },
                 runOnInit: 'Boolean',
-                emails: ["schemas['email']"],
-                triggers: ["schemas['trigger']"],
+                emails: ["schema['email']"],
+                triggers: ["schema['trigger']"],
                 jobDetail: {
                     startNode: {
                         type: 'String',
