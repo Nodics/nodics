@@ -34,7 +34,6 @@ module.exports = {
         },
 
         postSaveInterceptor: function(schema) {
-            //console.log('!!!! PostSave ');
             schema.post('save', function(next) {
                 //console.log('%%% This is custome PostSave methods');
                 if (next && typeof next === "function") {

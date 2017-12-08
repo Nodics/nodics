@@ -9,8 +9,9 @@
 
  */
 
-const databaseLoader = require('./bin/databaseLoader');
-const schemaLoader = require('./bin/schemaLoader');
+const conHandler = require('./bin/connectionHandler');
+const prepareModel = require('./bin/prepareModels');
+const schmeaLoader = require('./bin/schemaLoader');
 
 module.exports = {
     init: function() {
@@ -18,7 +19,8 @@ module.exports = {
     },
     loadDatabase: function() {
         console.log('=> Starting database configuration process');
-        databaseLoader.init();
-        schemaLoader.init();
+        conHandler.init();
+        //prepareModel.init();
+        schmeaLoader.init();
     }
 };

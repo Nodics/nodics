@@ -19,82 +19,151 @@ module.exports = {
         NODICS.setValidators(SYSTEM.loadFiles('/src/schemas/validators.js'));
     },
 
-    createSchema: function(database, schema, moduleName, modelName, schemaDefinition) {
-        if (schemaDefinition.super === 'none') {
-            schema[modelName] = new database.getSchema()(schemaDefinition.definition);
-        } else {
-            let superSchema = schemaDefinition.super;
-            if (!schema[superSchema]) {
-                let rawSchema = NODICS.getModule(moduleName).rawSchema;
-                this.resolveSchemaDependancy(moduleName, superSchema, rawSchema[superSchema]);
-            }
-            schema[modelName] = schema[superSchema].extend(schemaDefinition.definition);
+    interceptorMiddleware: function(interceptors, moduleSchema) {
+        if (!UTILS.isBlank(interceptors)) {
+            let interceptorFunctions = SYSTEM.getAllMethods(interceptors);
+            interceptorFunctions.forEach(function(operationName) {
+                interceptors[operationName](moduleSchema);
+            });
         }
     },
 
-    resolveSchemaDependancy: function(moduleName, modelName, schemaDefinition) {
+    modelDaoMiddleware: function(dao, moduleSchema, schemaDef) {
+        if (!UTILS.isBlank(dao)) {
+            let daoFunctions = SYSTEM.getAllMethods(dao);
+            daoFunctions.forEach(function(operationName) {
+                dao[operationName](moduleSchema, schemaDef);
+                dao[operationName](moduleSchema, schemaDef);
+            });
+        }
+    },
+
+    registerSchemaMiddleWare: function(options) {
+        this.interceptorMiddleware(options.interceptors.default, options.modelSchema);
+        if (options.interceptors[options.moduleName]) {
+            this.interceptorMiddleware(options.interceptors[options.moduleName].default, options.modelSchema);
+            this.interceptorMiddleware(options.interceptors[options.moduleName][options.modelName], options.modelSchema);
+        }
+
+        this.modelDaoMiddleware(options.daos.default, options.modelSchema, options.schemaDef);
+        if (options.daos[options.moduleName]) {
+            this.modelDaoMiddleware(options.daos[options.moduleName].default, options.modelSchema, options.schemaDef);
+            this.modelDaoMiddleware(options.daos[options.moduleName][options.modelName], options.modelSchema, options.schemaDef);
+        }
+    },
+
+    createModelObject: function(options) {
+        let modelName = SYSTEM.createModelName(options.modelName);
+        //console.log(' ----- creating model : ', modelName);
+        options.modelObject[modelName] = options.database.getConnection().model(modelName, options.modelSchema);
+    },
+
+    createSchema: function(options) {
+        if (options.schemaDef.super === 'none') {
+            options.schemaObject[options.modelName] = new options.database.getSchema()(options.schemaDef.definition);
+        } else {
+            let superSchema = options.schemaDef.super;
+            if (!options.schemaObject[superSchema]) {
+                let rawSchema = NODICS.getModule(options.moduleName).rawSchema;
+                let tmpOptions = _.merge({}, options);
+                tmpOptions.schemaDef = rawSchema[superSchema];
+                tmpOptions.modelName = superSchema;
+                this.resolveSchemaDependancy(tmpOptions);
+            }
+            options.schemaObject[options.modelName] = options.schemaObject[superSchema].extend(options.schemaDef.definition);
+        }
+        if (options.schemaDef.model) {
+            options.modelSchema = options.schemaObject[options.modelName];
+            this.registerSchemaMiddleWare(options);
+            this.createModelObject(options);
+        }
+    },
+
+    resolveSchemaDependancy: function(options) {
         let _self = this;
         let flag = false;
         CONFIG.get('installedTanents').forEach(function(tntName) {
             flag = false;
-            if (SYSTEM.validateSchemaDefinition(modelName, schemaDefinition)) {
+            if (SYSTEM.validateSchemaDefinition(options.modelName, options.schemaDef)) {
                 process.exit(CONFIG.get('errorExitCode'));
             }
-            let database = NODICS.getDatabase(moduleName, tntName);
-            let schemaObject = NODICS.getModule(moduleName).schemas;
+            let database = NODICS.getDatabase(options.moduleName, tntName);
+            let schemaObject = NODICS.getModule(options.moduleName).schemas;
+            let modelObject = NODICS.getModule(options.moduleName).models;
             if (!schemaObject[tntName]) {
                 schemaObject[tntName] = {
                     master: {},
                     test: {}
                 };
             }
-            if (schemaObject[tntName].master[modelName] && schemaObject[tntName].test[modelName]) {
+
+            if (!modelObject[tntName]) {
+                modelObject[tntName] = {
+                    master: {},
+                    test: {}
+                };
+            }
+
+            if (schemaObject[tntName].master[options.modelName] && schemaObject[tntName].test[options.modelName]) {
                 return true;
             }
-            if (!schemaObject[tntName].master[modelName]) {
-                _self.createSchema(database.master, schemaObject[tntName].master, moduleName, modelName, schemaDefinition);
+            if (!schemaObject[tntName].master[options.modelName]) {
+                options.database = database.master;
+                options.schemaObject = schemaObject[tntName].master;
+                options.modelObject = modelObject[tntName].master;
+                _self.createSchema(options);
                 flag = true;
             }
-            if (!schemaObject[tntName].test[modelName]) {
-                _self.createSchema(database.test, schemaObject[tntName].test, moduleName, modelName, schemaDefinition);
+            if (!schemaObject[tntName].test[options.modelName]) {
+                options.database = database.test;
+                options.schemaObject = schemaObject[tntName].test;
+                options.modelObject = modelObject[tntName].test;
+                _self.createSchema(options);
                 flag = true;
             }
         });
         return flag;
     },
 
-    traverseSchemas: function(moduleName, rawSchema) {
+    traverseSchemas: function(options) {
         let _self = this;
-        let cloneSchema = JSON.parse(JSON.stringify(rawSchema));
-        _.each(rawSchema, function(valueIn, keyIn) {
-            if (_self.resolveSchemaDependancy(moduleName, keyIn, valueIn)) {
+        let cloneSchema = _.merge({}, options.rawSchema);
+        _.each(options.rawSchema, function(valueIn, keyIn) {
+            options.modelName = keyIn;
+            options.schemaDef = valueIn;
+            if (_self.resolveSchemaDependancy(options)) {
                 delete cloneSchema[keyIn];
             }
         });
         return cloneSchema;
     },
 
-    extractRawSchema: function(moduleName, moduleObject) {
+    extractRawSchema: function(options) {
         let _self = this;
-        let rawSchema = JSON.parse(JSON.stringify(moduleObject.rawSchema));
+        options.rawSchema = _.merge({}, options.moduleObject.rawSchema);
         let loop = true;
         let counter = 0;
         do {
-            rawSchema = this.traverseSchemas(moduleName, rawSchema);
-            if (_.isEmpty(rawSchema)) {
+            options.rawSchema = this.traverseSchemas(options);
+            if (_.isEmpty(options.rawSchema)) {
                 loop = false;
             }
         } while (loop && counter++ < 10);
     },
 
-    createSchemas: function() {
+    createSchemas: function(options) {
         let _self = this;
         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.rawSchema) {
                 if (!moduleObject.schemas) {
                     moduleObject.schemas = {};
                 }
-                _self.extractRawSchema(moduleName, moduleObject);
+                if (!moduleObject.models) {
+                    moduleObject.models = {};
+                }
+                options.moduleName = moduleName;
+                options.moduleObject = moduleObject;
+                _self.extractRawSchema(options);
             }
         });
     },
@@ -102,6 +171,11 @@ module.exports = {
     deploySchemas: function() {
         console.log(' =>Starting schemas loading process');
         let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js');
+        let options = {
+            interceptors: SYSTEM.loadFiles('/src/schemas/interceptors.js'),
+            daos: SYSTEM.loadFiles('/src/schemas/model.js'),
+            schemas: mergedSchema
+        };
         let modules = NODICS.getModules();
         Object.keys(mergedSchema).forEach(function(key) {
             if (key !== 'default') {
@@ -113,99 +187,11 @@ module.exports = {
                 moduleObject.rawSchema = _.merge(mergedSchema[key], mergedSchema.default);
             }
         });
-        this.createSchemas();
-    },
-
-    executeInterceptor: function(interceptors, schemaName, moduleSchema) {
-        if (!UTILS.isBlank(interceptors)) {
-            let interceptorFunctions = SYSTEM.getAllMethods(interceptors);
-            interceptorFunctions.forEach(function(operationName) {
-                interceptors[operationName](moduleSchema.master[schemaName]);
-                interceptors[operationName](moduleSchema.test[schemaName]);
-            });
-        }
-    },
-
-    registerModel: function(dao, schemaName, moduleSchema, schemaDef) {
-        if (!UTILS.isBlank(dao)) {
-            let daoFunctions = SYSTEM.getAllMethods(dao);
-            daoFunctions.forEach(function(operationName) {
-                dao[operationName](moduleSchema.master[schemaName], schemaDef);
-                dao[operationName](moduleSchema.test[schemaName], schemaDef);
-            });
-        }
-    },
-
-    deployInterceptors: function() {
-        let _self = this;
-        console.log(' =>Starting interceptors loading process');
-        let interceptorFiles = SYSTEM.loadFiles('/src/schemas/interceptors.js');
-        let daoFiles = SYSTEM.loadFiles('/src/schemas/model.js');
-        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-            if (moduleObject.rawSchema) {
-                CONFIG.get('installedTanents').forEach(function(tntName) {
-                    let moduleSchemas = NODICS.getModule(moduleName).schemas;
-                    _.each(moduleObject.rawSchema, function(value, key) {
-                        if (value.model) {
-                            _self.executeInterceptor(interceptorFiles.default, key, moduleSchemas[tntName]);
-                            _self.registerModel(daoFiles.default, key, moduleSchemas[tntName], value);
-                            if (interceptorFiles[moduleName]) {
-                                _self.executeInterceptor(interceptorFiles[moduleName].default, key, moduleSchemas[tntName]);
-                                _self.executeInterceptor(interceptorFiles[moduleName][key], key, moduleSchemas[tntName]);
-                            }
-                            if (daoFiles[moduleName]) {
-                                _self.registerModel(daoFiles[moduleName].default, key, moduleSchemas[tntName], value);
-                                _self.registerModel(daoFiles[moduleName][key], key, moduleSchemas[tntName], value);
-                            }
-                        }
-                    });
-                });
-            }
-        });
-    },
-
-    createModelsForDatabase: function(moduleName, moduleObject) {
-        let masterDB = NODICS.getDatabase(moduleName).master;
-        let testDB = NODICS.getDatabase(moduleName).test;
-        let schemaObject = NODICS.getModule(moduleName).schemas;
-        _.each(moduleObject.rawSchema, function(value, key) {
-            if (value.model) {
-                modelName = SYSTEM.createModelName(key);
-                console.log('   INFO: Creating model instance for : ', modelName);
-                CONFIG.get('installedTanents').forEach(function(tntName) {
-                    let masterSchema = schemaObject[tntName].master;
-                    let testSchema = schemaObject[tntName].test;
-                    let database = NODICS.getDatabase(moduleName, tntName);
-                    if (!moduleObject.models[tntName]) {
-                        moduleObject.models[tntName] = {
-                            master: {},
-                            test: {}
-                        };
-                    }
-                    moduleObject.models[tntName].master[modelName] = database.master.getConnection().model(modelName, masterSchema[key]);
-                    moduleObject.models[tntName].test[modelName] = database.test.getConnection().model(modelName, testSchema[key]);
-                });
-            }
-        });
-    },
-
-    createModels: function() {
-        let _self = this;
-        console.log(' =>Starting model generation process');
-        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-            if (moduleObject.rawSchema) {
-                if (!moduleObject.models) {
-                    moduleObject.models = {};
-                }
-                _self.createModelsForDatabase(moduleName, moduleObject);
-            }
-        });
+        this.createSchemas(options);
     },
 
     init: function() {
         this.deployValidators();
         this.deploySchemas();
-        this.deployInterceptors();
-        this.createModels();
     }
 };
