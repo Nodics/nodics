@@ -47,13 +47,23 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
+            refSchema: {
+                addresses: {
+                    modelName: "AddressModel",
+                    type: 'many'
+                }
+            },
             definition: {
                 firstName: "String",
                 lastName: "String",
                 name: {
                     type: "String",
                     default: 'Nodics Framework'
-                }
+                },
+                addresses: [{
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'AddressModel'
+                }]
             }
         },
         person: {
@@ -65,4 +75,4 @@ module.exports = {
             }
         }
     }
-}
+};

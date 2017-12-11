@@ -59,6 +59,8 @@ module.exports = {
     },
 
     createSchema: function(options) {
+        let schemas = options.schemaObject;
+        let models = options.modelObject;
         if (options.schemaDef.super === 'none') {
             options.schemaObject[options.modelName] = new options.database.getSchema()(options.schemaDef.definition);
         } else {
@@ -131,6 +133,7 @@ module.exports = {
         _.each(options.rawSchema, function(valueIn, keyIn) {
             options.modelName = keyIn;
             options.schemaDef = valueIn;
+            options.schemaDef.moduleName = options.moduleName;
             if (_self.resolveSchemaDependancy(options)) {
                 delete cloneSchema[keyIn];
             }

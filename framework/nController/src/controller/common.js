@@ -55,13 +55,15 @@ module.exports = {
         let request = {
             tenant: requestContext.tenant
         };
+        console.log(requestContext.httpRequest.body);
         if (requestContext.httpRequest &&
-            requestContext.httpRequest.req &&
-            !UTILS.isBlank(requestContext.httpRequest.req.body)) {
-            request.models = requestContext.httpRequest.req.body;
+            requestContext.httpRequest &&
+            !UTILS.isBlank(requestContext.httpRequest.body)) {
+            request.models = requestContext.httpRequest.body;
             FACADE.FacadeName.save(request, callback);
         } else {
             console.log('   ERROR: Please validate your request, it is not a valid one');
+            throw new Error('ERROR: Please validate your request, it is not a valid one');
         }
 
     },

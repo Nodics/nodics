@@ -22,7 +22,7 @@ module.exports = {
 
     validateAuthToken: function(processRequest, processResponse, process) {
         console.log('   INFO: Validating Authentication tocken : ', processRequest.originalUrl);
-        if (processRequest.secured && UTILS.isBlank(processRequest.authToket)) {
+        /*if (processRequest.secured && UTILS.isBlank(processRequest.authToket)) {
             console.log('   INFO: Authentication token not fout found with request');
             processResponse.errors.PROC_ERR_0002 = {
                 code: 'PROC_ERR_0002',
@@ -34,7 +34,8 @@ module.exports = {
             process.nextFailure(processRequest, processResponse);
         } else {
             process.nextSuccess(processRequest, processResponse);
-        }
+        }*/
+        process.nextSuccess(processRequest, processResponse);
     },
 
     handleSucessEnd: function(processRequest, processResponse) {
