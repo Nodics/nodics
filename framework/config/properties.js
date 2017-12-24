@@ -19,6 +19,7 @@ module.exports = {
             'ndao',
             'nservice',
             'nprocess',
+            'nevent',
             'nfacade',
             'ncontroller',
             'nrouter',

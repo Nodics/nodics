@@ -1,4 +1,4 @@
-module.exports = { core: [ 'core', 'cronjob', 'user' ],
+module.exports = { core: [ 'core', 'cronjob', 'nems', 'user' ],
   framework: 
    [ 'framework',
      'nconfig',
@@ -7,6 +7,7 @@ module.exports = { core: [ 'core', 'cronjob', 'user' ],
      'ndao',
      'nservice',
      'nprocess',
+     'nevent',
      'nfacade',
      'ncontroller',
      'nrouter',

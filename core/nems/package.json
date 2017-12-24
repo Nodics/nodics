@@ -1,18 +1,16 @@
 {
-    "name": "user",
-    "index": "120",
-    "publish": "true",
-    "description": "Module user, process user related information",
+    "name": "nems",
+    "index": "110",
+    "description": "Nodics applicaion module. This module works for Even management and Exchange",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "Nodics"
+        "nems"
     ],
     "author": "Nodics Framework <nodics.framework@gmail.com>",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,
-    "license": "GNU General Public License v3",
-    "scripts": {},
+    "license": "GPL License",
     "repository": {
         "type": "git",
         "url": "https://github.com/Nodics/nodics.git"

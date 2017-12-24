@@ -73,21 +73,19 @@ var copyDir = function(sourcePath, destPath, appName) {
             //console.info('Copying file ' + copyOperation.src + '...');
         })
         .on(copy.events.COPY_FILE_COMPLETE, function(copyOperation) {
-            if (path.extname(copyOperation.dest) === '.json') {
-                fs.readFile(copyOperation.dest, 'utf8', (error, content) => {
-                    if (error) {
-                        console.log('Got error in file : ', copyOperation.dest, ' --- ', error);
-                        return;
-                    }
-                    content = content.replace(/customApplication/g, appName);
-                    fs.writeFile(copyOperation.dest,
-                        content.replace('customApplication', appName),
-                        'utf8',
-                        function(err) {
-                            if (err) return console.log(err);
-                        });
-                });
-            }
+            fs.readFile(copyOperation.dest, 'utf8', (error, content) => {
+                if (error) {
+                    console.log('Got error in file : ', copyOperation.dest, ' --- ', error);
+                    return;
+                }
+                content = content.replace(/customApplication/g, appName);
+                fs.writeFile(copyOperation.dest,
+                    content.replace('customApplication', appName),
+                    'utf8',
+                    function(err) {
+                        if (err) return console.log(err);
+                    });
+            });
         })
         .on(copy.events.ERROR, function(error, copyOperation) {
             console.error('Unable to copy ' + copyOperation.dest);
