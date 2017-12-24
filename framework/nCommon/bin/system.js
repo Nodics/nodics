@@ -129,7 +129,7 @@ module.exports = {
                 console.error('   ERROR: Server configurations has not be initialized. Please verify.');
                 process.exit(CONFIG.get('errorExitCode'));
             }
-            const httpPort = SYSTEM.getServerPort('default');
+            const httpPort = SYSTEM.getPort('default');
             console.log('=>  Starting Server for module : default on PORT : ', httpPort);
             NODICS.getModules().default.app.listen(httpPort);
         } else {
@@ -144,7 +144,7 @@ module.exports = {
                         console.error('   ERROR: Server configurations has not be initialized for module : ', moduleName);
                         process.exit(CONFIG.get('errorExitCode'));
                     }
-                    const httpPort = SYSTEM.getServerPort(moduleName);
+                    const httpPort = SYSTEM.getPort(moduleName);
                     if (!httpPort) {
                         console.error('   ERROR: Please define listening PORT for module: ', moduleName);
                         process.exit(CONFIG.get('errorExitCode'));

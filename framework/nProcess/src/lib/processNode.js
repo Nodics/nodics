@@ -19,7 +19,7 @@ module.exports = function(name, processNode) {
 
     if (!_process) {
         throw new Error("Process property for node : " + _name + " can't be null or blank");
-    };
+    }
 
     this.getName = function() {
         return _name;

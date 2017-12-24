@@ -25,11 +25,27 @@ module.exports = {
         contextRoot: 'nodics',
         runAsSingleModule: true,
         default: {
-            httpServer: 'localhost',
-            httpPort: 3000,
+            abstractServer: {
+                httpHost: 'localhost',
+                httpPort: '3000',
 
-            httpsServer: 'localhost',
-            httpsPort: 3001,
+                httpsHost: 'localhost',
+                httpsPort: '3000'
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3000,
+
+                httpsHost: 'localhost',
+                httpsPort: 3001
+            }
+            /*
+                httpServer: 'localhost',
+                httpPort: 3000,
+
+                httpsServer: 'localhost',
+                httpsPort: 3001
+            */
         }
     }
 };

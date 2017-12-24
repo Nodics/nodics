@@ -37,33 +37,68 @@ module.exports = {
         }
     },
 
-    getServerName: function(moduleName) {
-        let serverName = CONFIG.get('server').default.httpServer;
-        if (CONFIG.get('server')[moduleName] && CONFIG.get('server')[moduleName].httpServer) {
-            serverName = CONFIG.get('server')[moduleName].httpServer;
+    getServerConfiguration: function(moduleName) {
+        let moduleServerConfiguration = CONFIG.get('server')[moduleName];
+        if (!moduleServerConfiguration || CONFIG.get('server').runAsSingleModule) {
+            moduleServerConfiguration = CONFIG.get('server').default;
         }
-        return serverName;
-    },
-    getServerPort: function(moduleName) {
-        let serverPort = CONFIG.get('server').default.httpPort;
-        if (CONFIG.get('server')[moduleName] && CONFIG.get('server')[moduleName].httpPort) {
-            serverPort = CONFIG.get('server')[moduleName].httpPort;
-        }
-        return serverPort;
+        return moduleServerConfiguration;
     },
 
-    getSecureServerName: function(moduleName) {
-        let serverName = CONFIG.get('server').default.httpsServer;
-        if (CONFIG.get('server')[moduleName] && CONFIG.get('server')[moduleName].httpsServer) {
-            serverName = CONFIG.get('server')[moduleName].httpsServer;
-        }
-        return serverName;
+    getHost: function(moduleName) {
+        return SYSTEM.getServerConfiguration(moduleName).server.httpHost;
     },
-    getSecureServerPort: function(moduleName) {
-        let serverPort = CONFIG.get('server').default.httpsPort;
-        if (CONFIG.get('server')[moduleName] && CONFIG.get('server')[moduleName].httpsPort) {
-            serverPort = CONFIG.get('server')[moduleName].httpsPort;
+    getPort: function(moduleName) {
+        return SYSTEM.getServerConfiguration(moduleName).server.httpPort;
+    },
+
+    getSecuredHost: function(moduleName) {
+        return SYSTEM.getServerConfiguration(moduleName).server.httpsHost;
+    },
+    getSecuredPort: function(moduleName) {
+        return SYSTEM.getServerConfiguration(moduleName).server.httpsPort;
+    },
+
+    getAbstractHost: function(moduleName) {
+        let moduleServerConfiguration = SYSTEM.getServerConfiguration(moduleName);
+
+        if (UTILS.isBlank(moduleServerConfiguration.abstractServer)) {
+            moduleServerConfiguration = moduleServerConfiguration.server;
+        } else {
+            moduleServerConfiguration = moduleServerConfiguration.abstractServer;
         }
-        return serverPort;
+        return moduleServerConfiguration.httpHost;
+    },
+
+    getAbstractPort: function(moduleName) {
+        let moduleServerConfiguration = SYSTEM.getServerConfiguration(moduleName);
+
+        if (UTILS.isBlank(moduleServerConfiguration.abstractServer)) {
+            moduleServerConfiguration = moduleServerConfiguration.server;
+        } else {
+            moduleServerConfiguration = moduleServerConfiguration.abstractServer;
+        }
+        return moduleServerConfiguration.httpPort;
+    },
+    getAbstractSecuredHost: function(moduleName) {
+        let moduleServerConfiguration = SYSTEM.getServerConfiguration(moduleName);
+
+        if (UTILS.isBlank(moduleServerConfiguration.abstractServer)) {
+            moduleServerConfiguration = moduleServerConfiguration.server;
+        } else {
+            moduleServerConfiguration = moduleServerConfiguration.abstractServer;
+        }
+        return moduleServerConfiguration.httpsHost;
+    },
+
+    getAbstractSecuredPort: function(moduleName) {
+        let moduleServerConfiguration = SYSTEM.getServerConfiguration(moduleName);
+
+        if (UTILS.isBlank(moduleServerConfiguration.abstractServer)) {
+            moduleServerConfiguration = moduleServerConfiguration.server;
+        } else {
+            moduleServerConfiguration = moduleServerConfiguration.abstractServer;
+        }
+        return moduleServerConfiguration.httpsPort;
     }
 };

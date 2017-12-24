@@ -99,6 +99,7 @@ module.exports = function(name, processDefinition) {
     this.nextFailure = function(processRequest, processResponse) {
         _preNode = _currentNode;
         _currentNode = _nextFailureNode;
+        console.log(_currentNode.getName(), ' --------- : ', _currentNode.getFailure(), ' ------- ', _currentNode.getProcess());
         this.next(processRequest, processResponse);
     };
 
@@ -132,8 +133,10 @@ module.exports = function(name, processDefinition) {
             this.prepareNextNode();
             if (_currentNode.getType() === 'function') {
                 try {
+                    console.log(' =========== ', _currentNode.getProcess());
                     eval(_currentNode.getProcess())(processRequest, processResponse, this);
                 } catch (error) {
+                    console.log(' ===========  GOT Error', _currentNode.getProcess());
                     this.error(processRequest, processResponse, error);
                 }
             } else {

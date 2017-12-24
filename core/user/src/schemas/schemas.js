@@ -43,6 +43,19 @@ module.exports = {
                 },
             }
         },
+        contact: {
+            super: 'base',
+            model: true,
+            service: true,
+            definition: {
+                contactType: {
+                    type: 'String'
+                },
+                contactNo: {
+                    type: 'String'
+                }
+            }
+        },
         user: {
             super: 'base',
             model: true,
@@ -50,6 +63,10 @@ module.exports = {
             refSchema: {
                 addresses: {
                     modelName: "AddressModel",
+                    type: 'one'
+                },
+                contacts: {
+                    modelName: "ContactModel",
                     type: 'many'
                 }
             },
@@ -60,9 +77,13 @@ module.exports = {
                     type: "String",
                     default: 'Nodics Framework'
                 },
-                addresses: [{
+                addresses: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'AddressModel'
+                },
+                contacts: [{
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'ContactModel'
                 }]
             }
         },

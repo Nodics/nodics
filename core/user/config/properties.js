@@ -12,11 +12,28 @@
 module.exports = {
     server: {
         user: {
-            httpServer: 'localhost',
-            httpPort: 3004,
+            abstractServer: {
+                httpHost: 'localhost',
+                httpPort: '3004',
 
-            httpsServer: 'localhost',
-            httpsPort: 3005,
+                httpsHost: 'localhost',
+                httpsPort: '3005'
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3004,
+
+                httpsHost: 'localhost',
+                httpsPort: 3005
+
+            }
+            /*
+                httpServer: 'localhost',
+                httpPort: 3004,
+
+                httpsServer: 'localhost',
+                httpsPort: 3005,
+            */
         }
     }
 };

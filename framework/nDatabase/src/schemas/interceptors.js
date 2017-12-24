@@ -27,6 +27,7 @@ module.exports = {
                 if (NODICS.isNTestRunning()) {
                     throw new Error('Update operation not allowed, while running N-Test cases');
                 }
+                console.log('   INFO: System is updating model... ---------------------');
                 if (next && typeof next === "function") {
                     next();
                 }
@@ -42,4 +43,4 @@ module.exports = {
             });
         }
     }
-}
+};

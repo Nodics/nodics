@@ -12,6 +12,7 @@
 module.exports = {
 
     get: function(requestContext, callback) {
+        console.log(' ------------------- Get');
         let request = {
             tenant: requestContext.tenant
         };
@@ -28,6 +29,7 @@ module.exports = {
     },
 
     getById: function(requestContext, callback) {
+        console.log(' ------------------- GetById');
         let request = {
             tenant: requestContext.tenant
         };
@@ -40,6 +42,7 @@ module.exports = {
     },
 
     getByCode: function(requestContext, callback) {
+        console.log(' ------------------- GetByCode');
         let request = {
             tenant: requestContext.tenant
         };
@@ -52,10 +55,10 @@ module.exports = {
     },
 
     save: function(requestContext, callback) {
+        console.log(' ------------------- GetSave');
         let request = {
             tenant: requestContext.tenant
         };
-        console.log(requestContext.httpRequest.body);
         if (requestContext.httpRequest &&
             requestContext.httpRequest &&
             !UTILS.isBlank(requestContext.httpRequest.body)) {
@@ -69,6 +72,7 @@ module.exports = {
     },
 
     removeById: function(requestContext, callback) {
+        console.log(' ------------------- GetRemoveId');
         let request = {
             ids: [],
             tenant: requestContext.tenant
@@ -82,6 +86,7 @@ module.exports = {
     },
 
     removeByCode: function(requestContext, callback) {
+        console.log(' ------------------- GetremoveCode');
         let request = {
             codes: [],
             tenant: requestContext.tenant
@@ -100,6 +105,7 @@ module.exports = {
     },
 
     update: function(requestContext, callback) {
+        console.log(' ------------------- Update');
         let request = {
             models: [],
             tenant: requestContext.tenant
@@ -119,6 +125,7 @@ module.exports = {
 
     },
     saveOrUpdate: function(requestContext, callback) {
+        console.log(' ------------------- SaveUpdate');
         let request = {
             models: [],
             tenant: requestContext.tenant

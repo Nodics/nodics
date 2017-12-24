@@ -1,3 +1,14 @@
+/*
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 const _ = require('lodash');
 
 module.exports = {
@@ -12,7 +23,7 @@ module.exports = {
                     .skip(skip)
                     .sort(requestBody.sort || {})
                     .select(requestBody.select || {});
-                if (schema.refSchema) {
+                if (requestBody.recursive && schema.refSchema) {
                     _.each(schema.refSchema, function(modelName, property) {
                         query.populate(property);
                     });
@@ -57,26 +68,6 @@ module.exports = {
             };
         },
 
-        defineDefaultSave: function(model, rawSchema) {
-            model.statics.save = function(input, callback) {
-                let schema = rawSchema;
-                if (!input.models) {
-                    throw new Error("   ERROR: Model value can't be null to save Item");
-                }
-                /*if (!UTILS.isBlank(schema.refSchema)) {
-                    let request = _.merge({}, input);
-                    request.rawSchema = schema;
-                    DAO.NestedModelsHandlerDao.saveNestedSchema(request, (input, callback) => {
-                        console.log("final models : ", input.models);
-                        return this.create(input.models, callback);
-                    });
-                } else {
-                    return this.create(input.models, callback);
-                }*/
-                return this.create(input.models, callback);
-            };
-        },
-
         defineDefaultRemoveById: function(model, rawSchema) {
             model.statics.removeById = function(input, callback) {
                 let schema = rawSchema;
@@ -97,35 +88,79 @@ module.exports = {
             };
         },
 
+        defineDefaultSave: function(model, rawSchema) {
+            model.statics.save = function(input, callback) {
+                let schema = rawSchema;
+                if (!input.models || !input.tenant) {
+                    throw new Error("   ERROR: Model value can't be null to save Item");
+                }
+                if (!UTILS.isBlank(schema.refSchema)) {
+                    let request = _.merge({
+                        input: input,
+                        callback: callback,
+                        rawSchema: schema,
+                        operation: DAO.NestedModelsHandlerDao.saveSubModel
+                    }, input);
+                    DAO.NestedModelsHandlerDao.performNestedSchema(request, (input, callback) => {
+                        this.create(input.models, (error, models) => {
+                            callback(error, models, input);
+                        });
+                    });
+                } else {
+                    return this.create(input.models, (error, models) => {
+                        callback(error, models, input);
+                    });
+                }
+            };
+        },
+
         defineDefaultUpdate: function(model, rawSchema) {
             model.statics.update = function(input, callback) {
+                let _self = this;
                 let schema = rawSchema;
-                if (!input.models) {
+                if (!input.models || !input.tenant) {
                     throw new Error("   ERROR: Model can't be null to save Item");
                 }
-                return input.models.map((model) => {
-                    if (model._id) {
-                        return this.findByIdAndUpdate(model._id, { $set: model }, { new: true }, callback);
-                    } else {
-                        return this.findOneAndUpdate({ code: model.code }, { $set: model }, { new: true }, callback);
-                    }
-                });
+                if (!UTILS.isBlank(schema.refSchema)) {
+                    let request = _.merge({
+                        input: input,
+                        callback: callback,
+                        rawSchema: schema,
+                        operation: DAO.NestedModelsHandlerDao.updateSubModel
+                    }, input);
+                    DAO.NestedModelsHandlerDao.performNestedSchema(request, (input, callback) => {
+                        console.log('updating final models : ', input.models);
+                        input._self = _self;
+                        DAO.NestedModelsHandlerDao.createModels(input, callback, { new: true });
+                    });
+                } else {
+                    input._self = _self;
+                    DAO.NestedModelsHandlerDao.createModels(input, callback, { new: true });
+                }
             };
         },
 
         defineDefaultSaveOrUpdate: function(model, rawSchema) {
             model.statics.saveOrUpdate = function(input, callback) {
                 let schema = rawSchema;
-                if (!input.models) {
+                if (!input.models || !input.tenant) {
                     throw new Error("   ERROR: Model can't be null to save Item");
                 }
-                return input.models.map((model) => {
-                    if (model._id) {
-                        return this.findByIdAndUpdate(model._id, { $set: model }, { upsert: true, new: true }, callback);
-                    } else {
-                        return this.findOneAndUpdate({ code: model.code }, { $set: model }, { upsert: true, new: true }, callback);
-                    }
-                });
+                if (!UTILS.isBlank(schema.refSchema)) {
+                    let request = _.merge({
+                        input: input,
+                        callback: callback,
+                        rawSchema: schema,
+                        operation: DAO.NestedModelsHandlerDao.updateSubModel
+                    }, input);
+                    input._self = _self;
+                    DAO.NestedModelsHandlerDao.performNestedSchema(request, (input, callback) => {
+                        DAO.NestedModelsHandlerDao.createModels(input, callback, { upsert: true, new: true });
+                    });
+                } else {
+                    input._self = _self;
+                    DAO.NestedModelsHandlerDao.createModels(input, callback, { upsert: true, new: true });
+                }
             };
         },
     }

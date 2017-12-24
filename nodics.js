@@ -16,8 +16,5 @@ const util = require('util');
 module.exports = {
     startNodics: function(options) {
         FRAMEWORK.startNodics(options);
-        //console.log(util.inspect(NODICS.getModule('user').models.default.master.UserModel, { showHidden: false, depth: 3 }));
-        //console.log(' ------------------------------------------------- ');
-        //console.log(NODICS.getModule('user').models.default.master.UserModel);
     }
 };

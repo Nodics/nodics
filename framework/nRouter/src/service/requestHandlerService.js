@@ -1,3 +1,14 @@
+/*
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 module.exports = {
     options: {
         isNew: true
@@ -36,9 +47,15 @@ module.exports = {
     handleRequest: function(processRequest, processResponse, process) {
         console.log('   INFO: processing your request : ', processRequest.originalUrl);
         try {
-            eval(processRequest.router.controller)(processRequest, (error, response) => {
+            eval(processRequest.router.controller)(processRequest, (error, response, input) => {
                 if (error) {
-                    throw error;
+                    console.log('   ERROR: got error while processing request : ', error);
+                    processResponse.errors.PROC_ERR_0003 = {
+                        success: false,
+                        code: 'ERR003',
+                        msg: error.toString()
+                    };
+                    process.nextFailure(processRequest, processResponse);
                 } else {
                     processResponse.response = {
                         success: true,
@@ -46,27 +63,25 @@ module.exports = {
                         msg: 'Finished Successfully',
                         result: response
                     };
+                    process.nextSuccess(processRequest, processResponse);
                 }
-                process.nextSuccess(processRequest, processResponse);
             });
+            console.log('12');
         } catch (error) {
-            console.log('   ERROR: got error while servive request : ', error);
+            console.log('   ERROR: got error while service request : ', error);
             processResponse.errors.PROC_ERR_0003 = {
                 success: false,
                 code: 'ERR003',
                 msg: error.toString()
             };
             process.nextFailure(processRequest, processResponse);
+            console.log('13');
         }
+        console.log('14');
     },
 
     handleSucessEnd: function(processRequest, processResponse) {
         console.log('   INFO: Request has been processed successfully : ', processRequest.originalUrl);
-        /*if (!UTILS.isBlank(processResponse.errors)) {
-            processResponse.response = {
-                errors: processResponse.errors
-            };
-        }*/
         processRequest.httpResponse.json(processResponse);
     },
 

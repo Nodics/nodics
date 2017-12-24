@@ -78,7 +78,6 @@ module.exports = {
                 controller: 'CONTROLLER.controllerName.removeByCode'
             }
         },
-
         commonSaveOperations: {
             saveModels: {
                 key: '/schemaName',
@@ -86,7 +85,6 @@ module.exports = {
                 controller: 'CONTROLLER.controllerName.save'
             }
         },
-
         commonUpdateOperations: {
             saveModels: {
                 key: '/schemaName/update',

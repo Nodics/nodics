@@ -11,4 +11,19 @@
 
 module.exports = {
 
+    isObject: function(value) {
+        return Object.prototype.toString.call(value) == "[object Object]";
+    },
+
+    isArray: function(value) {
+        return value instanceof Array;
+    },
+
+    isBlankArray: function(value) {
+        return (value instanceof Array && !value[0]);
+    },
+
+    isArrayOfObject: function(value) {
+        return this.isArray(value) && this.isObject(value[0]);
+    }
 };

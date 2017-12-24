@@ -10,7 +10,6 @@
  */
 
 const conHandler = require('./bin/connectionHandler');
-const prepareModel = require('./bin/prepareModels');
 const schmeaLoader = require('./bin/schemaLoader');
 
 module.exports = {
@@ -20,7 +19,6 @@ module.exports = {
     loadDatabase: function() {
         console.log('=> Starting database configuration process');
         conHandler.init();
-        //prepareModel.init();
         schmeaLoader.init();
     }
 };
