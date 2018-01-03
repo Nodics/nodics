@@ -14,7 +14,7 @@ const _ = require('lodash');
 module.exports = {
     default: {
         defineDefaultGet: function(model, rawSchema) {
-            model.statics.get = function(input, callback) {
+            model.statics.get = function(input) {
                 let schema = rawSchema;
                 let requestBody = input.options;
                 let skip = (requestBody.pageSize || CONFIG.get('defaultPageSize')) * (requestBody.pageNumber || CONFIG.get('defaultPageNumber'));
@@ -28,12 +28,12 @@ module.exports = {
                         query.populate(property);
                     });
                 }
-                return query.exec(callback);
+                return query.exec();
             };
         },
 
         defineDefaultGetById: function(model, rawSchema) {
-            model.statics.getById = function(input, callback) {
+            model.statics.getById = function(input) {
                 let schema = rawSchema;
                 if (!input.id) {
                     throw new Error("   ERROR: Id value can't be null to get Item");
@@ -46,12 +46,12 @@ module.exports = {
                         query: { _id: input.id }
                     }
                 };
-                return this.get(request, callback);
+                return this.get(request);
             };
         },
 
         defineDefaultGetByCode: function(model, rawSchema) {
-            model.statics.getByCode = function(input, callback) {
+            model.statics.getByCode = function(input) {
                 let schema = rawSchema;
                 if (!input.code) {
                     throw new Error("   ERROR: Code value can't be null to get Item");
@@ -64,103 +64,122 @@ module.exports = {
                         query: { code: input.code }
                     }
                 };
-                return this.get(request, callback);
+                return this.get(request);
             };
         },
 
         defineDefaultRemoveById: function(model, rawSchema) {
-            model.statics.removeById = function(input, callback) {
+            model.statics.removeById = function(input) {
                 let schema = rawSchema;
                 if (!input.ids) {
                     throw new Error("   ERROR: Ids list can't be null to save Item");
                 }
-                return this.remove({ _id: { $in: input.ids } }, callback);
+                return this.remove({ _id: { $in: input.ids } });
             };
         },
 
         defineDefaultRemoveByCode: function(model, rawSchema) {
-            model.statics.removeByCode = function(input, callback) {
+            model.statics.removeByCode = function(input) {
                 let schema = rawSchema;
                 if (!input.codes) {
                     throw new Error("   ERROR: Code list can't be null to save Item");
                 }
-                return this.remove({ code: { $in: input.codes } }, callback);
+                return this.remove({ code: { $in: input.codes } });
             };
         },
 
         defineDefaultSave: function(model, rawSchema) {
-            model.statics.save = function(input, callback) {
+            model.statics.save = function(input) {
                 let schema = rawSchema;
                 if (!input.models || !input.tenant) {
                     throw new Error("   ERROR: Model value can't be null to save Item");
                 }
-                if (!UTILS.isBlank(schema.refSchema)) {
-                    let request = _.merge({
-                        input: input,
-                        callback: callback,
-                        rawSchema: schema,
-                        operation: DAO.NestedModelsHandlerDao.saveSubModel
-                    }, input);
-                    DAO.NestedModelsHandlerDao.performNestedSchema(request, (input, callback) => {
-                        this.create(input.models, (error, models) => {
-                            callback(error, models, input);
+                return new Promise((resolve, reject) => {
+                    if (!UTILS.isBlank(schema.refSchema)) {
+                        let request = _.merge({
+                            input: input,
+                            rawSchema: schema,
+                            resolve: resolve,
+                            reject: reject,
+                            operation: DAO.NestedModelsHandlerDao.saveSubModel
+                        }, input);
+                        DAO.NestedModelsHandlerDao.performNestedSchema(request, (input) => {
+                            this.create(input.models, (error, models) => {
+                                if (error) reject(error);
+                                resolve(models);
+                            });
                         });
-                    });
-                } else {
-                    return this.create(input.models, (error, models) => {
-                        callback(error, models, input);
-                    });
-                }
+                    } else {
+                        this.create(input.models, (error, models) => {
+                            if (error) reject(error);
+                            resolve(models);
+                        });
+                    }
+                });
             };
         },
 
         defineDefaultUpdate: function(model, rawSchema) {
-            model.statics.update = function(input, callback) {
+            model.statics.update = function(input) {
                 let _self = this;
                 let schema = rawSchema;
                 if (!input.models || !input.tenant) {
                     throw new Error("   ERROR: Model can't be null to save Item");
                 }
-                if (!UTILS.isBlank(schema.refSchema)) {
-                    let request = _.merge({
-                        input: input,
-                        callback: callback,
-                        rawSchema: schema,
-                        operation: DAO.NestedModelsHandlerDao.updateSubModel
-                    }, input);
-                    DAO.NestedModelsHandlerDao.performNestedSchema(request, (input, callback) => {
-                        console.log('updating final models : ', input.models);
+                return new Promise((resolve, reject) => {
+                    if (!UTILS.isBlank(schema.refSchema)) {
+                        let request = _.merge({
+                            input: input,
+                            rawSchema: schema,
+                            resolve: resolve,
+                            reject: reject,
+                            operation: DAO.NestedModelsHandlerDao.updateSubModel
+                        }, input);
+                        DAO.NestedModelsHandlerDao.performNestedSchema(request, (input) => {
+                            input._self = _self;
+                            input.resolve = resolve;
+                            input.reject = reject;
+                            DAO.NestedModelsHandlerDao.createModels(input, { new: true });
+                        });
+                    } else {
                         input._self = _self;
-                        DAO.NestedModelsHandlerDao.createModels(input, callback, { new: true });
-                    });
-                } else {
-                    input._self = _self;
-                    DAO.NestedModelsHandlerDao.createModels(input, callback, { new: true });
-                }
+                        input.resolve = resolve;
+                        input.reject = reject;
+                        DAO.NestedModelsHandlerDao.createModels(input, { new: true });
+                    }
+                });
             };
         },
 
         defineDefaultSaveOrUpdate: function(model, rawSchema) {
-            model.statics.saveOrUpdate = function(input, callback) {
+            model.statics.saveOrUpdate = function(input) {
+                let _self = this;
                 let schema = rawSchema;
                 if (!input.models || !input.tenant) {
                     throw new Error("   ERROR: Model can't be null to save Item");
                 }
-                if (!UTILS.isBlank(schema.refSchema)) {
-                    let request = _.merge({
-                        input: input,
-                        callback: callback,
-                        rawSchema: schema,
-                        operation: DAO.NestedModelsHandlerDao.updateSubModel
-                    }, input);
-                    input._self = _self;
-                    DAO.NestedModelsHandlerDao.performNestedSchema(request, (input, callback) => {
-                        DAO.NestedModelsHandlerDao.createModels(input, callback, { upsert: true, new: true });
-                    });
-                } else {
-                    input._self = _self;
-                    DAO.NestedModelsHandlerDao.createModels(input, callback, { upsert: true, new: true });
-                }
+                return new Promise((resolve, reject) => {
+                    if (!UTILS.isBlank(schema.refSchema)) {
+                        let request = _.merge({
+                            input: input,
+                            rawSchema: schema,
+                            resolve: resolve,
+                            reject: reject,
+                            operation: DAO.NestedModelsHandlerDao.saveOrUpdateSubModel
+                        }, input);
+                        DAO.NestedModelsHandlerDao.performNestedSchema(request, (input) => {
+                            input._self = _self;
+                            input.resolve = resolve;
+                            input.reject = reject;
+                            DAO.NestedModelsHandlerDao.createModels(input, { upsert: true, new: true });
+                        });
+                    } else {
+                        input._self = _self;
+                        input.resolve = resolve;
+                        input.reject = reject;
+                        DAO.NestedModelsHandlerDao.createModels(input, { upsert: true, new: true });
+                    }
+                });
             };
         },
     }

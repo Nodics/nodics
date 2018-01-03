@@ -12,7 +12,6 @@
 module.exports = {
 
     get: function(requestContext, callback) {
-        console.log(' ------------------- Get');
         let request = {
             tenant: requestContext.tenant
         };
@@ -29,7 +28,6 @@ module.exports = {
     },
 
     getById: function(requestContext, callback) {
-        console.log(' ------------------- GetById');
         let request = {
             tenant: requestContext.tenant
         };
@@ -42,7 +40,6 @@ module.exports = {
     },
 
     getByCode: function(requestContext, callback) {
-        console.log(' ------------------- GetByCode');
         let request = {
             tenant: requestContext.tenant
         };
@@ -55,7 +52,6 @@ module.exports = {
     },
 
     save: function(requestContext, callback) {
-        console.log(' ------------------- GetSave');
         let request = {
             tenant: requestContext.tenant
         };
@@ -72,7 +68,6 @@ module.exports = {
     },
 
     removeById: function(requestContext, callback) {
-        console.log(' ------------------- GetRemoveId');
         let request = {
             ids: [],
             tenant: requestContext.tenant
@@ -86,7 +81,6 @@ module.exports = {
     },
 
     removeByCode: function(requestContext, callback) {
-        console.log(' ------------------- GetremoveCode');
         let request = {
             codes: [],
             tenant: requestContext.tenant
@@ -105,7 +99,6 @@ module.exports = {
     },
 
     update: function(requestContext, callback) {
-        console.log(' ------------------- Update');
         let request = {
             models: [],
             tenant: requestContext.tenant
@@ -125,7 +118,6 @@ module.exports = {
 
     },
     saveOrUpdate: function(requestContext, callback) {
-        console.log(' ------------------- SaveUpdate');
         let request = {
             models: [],
             tenant: requestContext.tenant
@@ -138,7 +130,7 @@ module.exports = {
                     request.models.push(requestContext.httpRequest.body);
                 }
             }
-            FACADE.FacadeName.saveOrUpdate(reqest, callback);
+            FACADE.FacadeName.saveOrUpdate(request, callback);
         } else {
             console.log('   ERROR: Please validate your request, it is not a valid one');
         }

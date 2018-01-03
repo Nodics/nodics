@@ -59,7 +59,7 @@ module.exports = {
                 triggerType: {
                     type: 'String',
                     enum: ENUMS.TriggerType.getEnumValue(),
-                    default: ENUMS.CronJobState.NEW
+                    default: ENUMS.TriggerType.NEW
                 },
                 isActive: {
                     type: 'Boolean',

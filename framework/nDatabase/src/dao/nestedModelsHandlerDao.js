@@ -44,14 +44,13 @@ module.exports = {
     performSubModel: function(options) {
         if (UTILS.isBlank(options.refSchema)) {
             options.request.input.models = options.resoledModels;
-            options.callback(options.request.input, options.request.callback);
+            options.callback(options.request.input);
         } else {
             options.refKey = Object.keys(options.refSchema)[0];
             options.refValue = options.refSchema[options.refKey];
 
             delete options.refSchema[options.refKey];
             let subModel = options.model[options.refKey];
-            console.log('Performing for sub models : ', subModel);
             if (!UTILS.isBlank(subModel) && (UTILS.isObject(subModel) || UTILS.isArrayOfObject(subModel))) {
                 options.request.operation(options, subModel);
             } else {
@@ -65,7 +64,7 @@ module.exports = {
             DAO.NestedModelsHandlerDao.performSubModel(options);
         } else if (options.models.length > 0) {
             options.resoledModels.push(options.model);
-            options.model = models.shift();
+            options.model = options.models.shift();
             options.refSchema = _.merge({}, options.request.rawSchema.refSchema);
             DAO.NestedModelsHandlerDao.performSubModel(options);
         } else {
@@ -79,17 +78,15 @@ module.exports = {
             tenant: options.request.tenant,
             models: subModel
         };
-        NODICS.getModels(options.request.rawSchema.moduleName, input.tenant)[options.refValue.modelName].save(input, (error, result) => {
-            if (error) {
-                options.request.callback(error, null, options.request);
+        NODICS.getModels(options.request.rawSchema.moduleName, input.tenant)[options.refValue.modelName].save(input).then(result => {
+            if (result instanceof Array) {
+                options.model[options.refKey] = result.map(obj => obj._id);
             } else {
-                if (result instanceof Array) {
-                    options.model[options.refKey] = result.map(obj => obj._id);
-                } else {
-                    options.model[options.refKey] = result._id;
-                }
-                DAO.NestedModelsHandlerDao.performNextSubModel(options);
+                options.model[options.refKey] = result._id;
             }
+            DAO.NestedModelsHandlerDao.performNextSubModel(options);
+        }).catch(error => {
+            options.request.reject(error);
         });
     },
 
@@ -98,22 +95,35 @@ module.exports = {
             tenant: options.request.tenant,
             models: subModel
         };
-        NODICS.getModels(options.request.rawSchema.moduleName, input.tenant)[options.refValue.modelName].update(input, (error, result) => {
-            if (error) {
-                options.request.callback(error, null, options.request);
+        NODICS.getModels(options.request.rawSchema.moduleName, input.tenant)[options.refValue.modelName].update(input).then(result => {
+            if (result instanceof Array) {
+                options.model[options.refKey] = result.map(obj => obj._id);
             } else {
-                if (result instanceof Array) {
-                    options.model[options.refKey] = result.map(obj => obj._id);
-                } else {
-                    options.model[options.refKey] = result._id;
-                }
-                DAO.NestedModelsHandlerDao.performNextSubModel(options);
+                options.model[options.refKey] = result._id;
             }
+            DAO.NestedModelsHandlerDao.performNextSubModel(options);
+        }).catch(error => {
+            options.request.reject(error);
+        });
+    },
+    saveOrUpdateSubModel: function(options, subModel) {
+        let input = {
+            tenant: options.request.tenant,
+            models: subModel
+        };
+        NODICS.getModels(options.request.rawSchema.moduleName, input.tenant)[options.refValue.modelName].saveOrUpdate(input).then(result => {
+            if (result instanceof Array) {
+                options.model[options.refKey] = result.map(obj => obj._id);
+            } else {
+                options.model[options.refKey] = result._id;
+            }
+            DAO.NestedModelsHandlerDao.performNextSubModel(options);
+        }).catch(error => {
+            options.request.reject(error);
         });
     },
 
-    createModels: function(input, callback, option) {
-        console.log(' ----------------- : ', input.models);
+    createModels: function(input, option) {
         let finalModels = [];
         if (input.models instanceof Array) {
             finalModels = input.models;
@@ -129,9 +139,9 @@ module.exports = {
                 }
             })
         ).then(function(models) {
-            callback(null, models, input);
+            input.resolve(models);
         }).catch((error) => {
-            callback(error, null, input);
+            input.reject(error);
         });
     }
 };

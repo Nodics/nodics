@@ -77,10 +77,10 @@ module.exports = {
                     type: "String",
                     default: 'Nodics Framework'
                 },
-                addresses: {
+                addresses: [{
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'AddressModel'
-                },
+                }],
                 contacts: [{
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'ContactModel'

@@ -37,7 +37,11 @@ module.exports = {
     },
 
     save: function(request, callback) {
-        NODICS.getModels('moduleName', request.tenant).modelName.save(request, callback);
+        NODICS.getModels('moduleName', request.tenant).modelName.save(request).then((models) => {
+            callback(null, models, request);
+        }).catch((error) => {
+            callback(error, null, request);
+        });
     },
 
     removeById: function(request, callback) {
@@ -57,10 +61,18 @@ module.exports = {
     },
 
     update: function(request, callback) {
-        NODICS.getModels('moduleName', request.tenant).modelName.update(request, callback);
+        NODICS.getModels('moduleName', request.tenant).modelName.update(request).then((models) => {
+            callback(null, models, request);
+        }).catch((error) => {
+            callback(error, null, request);
+        });
     },
 
     saveOrUpdate: function(request, callback) {
-        NODICS.getModels('moduleName', request.tenant).modelName.saveOrUpdate(request, callback);
+        NODICS.getModels('moduleName', request.tenant).modelName.saveOrUpdate(request).then((models) => {
+            callback(null, models, request);
+        }).catch((error) => {
+            callback(error, null, request);
+        });
     }
 };

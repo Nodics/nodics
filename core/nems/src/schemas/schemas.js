@@ -10,5 +10,58 @@
  */
 
 module.exports = {
+    nems: {
+        event: {
+            super: 'base',
+            model: true,
+            service: true,
+            definition: {
+                action: {
+                    type: 'String'
+                },
+                source: {
+                    type: 'String'
+                },
+                target: {
+                    type: 'String'
+                },
+                state: {
+                    type: 'String',
+                    enum: ENUMS.EventState.getEnumValue(),
+                    default: ENUMS.EventState.NEW,
+                    index: true
+                },
+                type: {
+                    type: 'String',
+                    enum: ENUMS.EventType.getEnumValue(),
+                    default: ENUMS.EventType.ASYNC
+                },
+                hits: {
+                    type: 'Number',
+                    default: 0,
+                    index: true
+                },
+                log: [{
+                    type: 'String'
+                }],
+                params: [{
+                    key: {
+                        type: 'String'
+                    },
+                    value: {
+                        type: 'String'
+                    }
+                }]
+            }
+        },
 
+        eventLog: {
+            super: 'event',
+            model: true,
+            service: true,
+            definition: {
+
+            }
+        }
+    }
 };
