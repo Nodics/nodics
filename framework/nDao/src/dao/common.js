@@ -10,19 +10,6 @@
  */
 
 module.exports = {
-    /*
-    let input = {
-        tenant: tenantName,
-        options: {
-            pageSize:10,
-            pageNumber:1,
-            select:{},
-            sort:{},
-            options:{},
-            query:{}
-        }
-    }
-    */
     get: function(input, callback) {
         return NODICS.getModels('moduleName', input.tenant).modelName.get(input, callback);
     },
@@ -51,7 +38,7 @@ module.exports = {
         return NODICS.getModels('moduleName', input.tenant).modelName.update(input, callback);
     },
 
-    saveOrUpdate: function(model, callback) {
+    saveOrUpdate: function(input, callback) {
         return NODICS.getModels('moduleName', input.tenant).modelName.saveOrUpdate(input, callback);
     }
 };

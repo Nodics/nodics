@@ -10,5 +10,14 @@
  */
 
 module.exports = {
-
+    common: {
+        moduleEventRouters: {
+            eventTriggered: {
+                secured: true,
+                key: '/event/handle',
+                method: 'POST',
+                controller: 'CONTROLLER.EventController.handleEvent'
+            }
+        }
+    }
 };

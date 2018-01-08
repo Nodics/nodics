@@ -50,7 +50,7 @@ module.exports = {
             };
         },
 
-        defineDefaultGetByCode: function(model, rawSchema) {
+        /*defineDefaultGetByCode: function(model, rawSchema) {
             model.statics.getByCode = function(input) {
                 let schema = rawSchema;
                 if (!input.code) {
@@ -66,7 +66,7 @@ module.exports = {
                 };
                 return this.get(request);
             };
-        },
+        },*/
 
         defineDefaultRemoveById: function(model, rawSchema) {
             model.statics.removeById = function(input) {
@@ -78,7 +78,7 @@ module.exports = {
             };
         },
 
-        defineDefaultRemoveByCode: function(model, rawSchema) {
+        /*defineDefaultRemoveByCode: function(model, rawSchema) {
             model.statics.removeByCode = function(input) {
                 let schema = rawSchema;
                 if (!input.codes) {
@@ -86,11 +86,12 @@ module.exports = {
                 }
                 return this.remove({ code: { $in: input.codes } });
             };
-        },
+        },*/
 
         defineDefaultSave: function(model, rawSchema) {
             model.statics.save = function(input) {
                 let schema = rawSchema;
+                console.log('---- Got save event request : ', input);
                 if (!input.models || !input.tenant) {
                     throw new Error("   ERROR: Model value can't be null to save Item");
                 }
@@ -111,7 +112,9 @@ module.exports = {
                         });
                     } else {
                         this.create(input.models, (error, models) => {
-                            if (error) reject(error);
+                            if (error) {
+                                reject(error);
+                            }
                             resolve(models);
                         });
                     }

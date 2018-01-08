@@ -11,6 +11,13 @@
 
 module.exports = {
     finalizeConfig: function() {
+        /*let event = {
+            name: "himkar"
+        };
+        NODICS.getModules().user.eventService.emit('testMe', event, function(error, success) {
+            console.log(error, '  :  ----------------------------------   :  ', success);
+        });
+*/
         return '----Finalizing configuration';
     },
 

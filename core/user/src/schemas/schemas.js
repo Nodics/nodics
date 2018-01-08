@@ -19,6 +19,7 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
+            event: true,
             definition: {
                 flatNo: {
                     type: 'String'
@@ -47,6 +48,7 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
+            event: true,
             definition: {
                 contactType: {
                     type: 'String'
@@ -60,6 +62,7 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
+            event: true,
             refSchema: {
                 addresses: {
                     modelName: "AddressModel",

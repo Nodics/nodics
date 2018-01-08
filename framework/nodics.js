@@ -15,6 +15,7 @@ const db = require('./nDatabase');
 const dao = require('./nDao');
 const services = require('./nService');
 const process = require('./nProcess');
+const event = require('./nEvent');
 const facades = require('./nFacade');
 const controllers = require('./nController');
 const router = require('./nRouter');
@@ -36,6 +37,7 @@ module.exports = {
         facades.loadFacade();
         controllers.loadController();
         SYSTEM.loadModules();
+        event.loadListeners();
         router.loadRouter();
         SYSTEM.executePostScripts();
     },

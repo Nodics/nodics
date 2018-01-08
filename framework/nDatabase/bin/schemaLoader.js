@@ -19,11 +19,11 @@ module.exports = {
         NODICS.setValidators(SYSTEM.loadFiles('/src/schemas/validators.js'));
     },
 
-    interceptorMiddleware: function(interceptors, moduleSchema) {
+    interceptorMiddleware: function(interceptors, moduleSchema, modelName) {
         if (!UTILS.isBlank(interceptors)) {
             let interceptorFunctions = SYSTEM.getAllMethods(interceptors);
             interceptorFunctions.forEach(function(operationName) {
-                interceptors[operationName](moduleSchema);
+                interceptors[operationName](moduleSchema, modelName);
             });
         }
     },
@@ -39,10 +39,10 @@ module.exports = {
     },
 
     registerSchemaMiddleWare: function(options) {
-        this.interceptorMiddleware(options.interceptors.default, options.modelSchema);
+        this.interceptorMiddleware(options.interceptors.default, options.modelSchema, options.modelName);
         if (options.interceptors[options.moduleName]) {
-            this.interceptorMiddleware(options.interceptors[options.moduleName].default, options.modelSchema);
-            this.interceptorMiddleware(options.interceptors[options.moduleName][options.modelName], options.modelSchema);
+            this.interceptorMiddleware(options.interceptors[options.moduleName].default, options.modelSchema, options.modelName);
+            this.interceptorMiddleware(options.interceptors[options.moduleName][options.modelName], options.modelSchema, options.modelName);
         }
 
         this.modelDaoMiddleware(options.daos.default, options.modelSchema, options.schemaDef);
@@ -54,7 +54,6 @@ module.exports = {
 
     createModelObject: function(options) {
         let modelName = SYSTEM.createModelName(options.modelName);
-        //console.log(' ----- creating model : ', modelName);
         options.modelObject[modelName] = options.database.getConnection().model(modelName, options.modelSchema);
     },
 
@@ -76,6 +75,9 @@ module.exports = {
         }
         if (options.schemaDef.model) {
             options.modelSchema = options.schemaObject[options.modelName];
+            options.modelSchema.moduleName = options.schemaDef.moduleName;
+            options.modelSchema.modelName = SYSTEM.createModelName(options.modelName);
+            options.modelSchema.rawSchema = options.schemaDef;
             this.registerSchemaMiddleWare(options);
             this.createModelObject(options);
         }

@@ -133,10 +133,8 @@ module.exports = function(name, processDefinition) {
             this.prepareNextNode();
             if (_currentNode.getType() === 'function') {
                 try {
-                    console.log(' =========== ', _currentNode.getProcess());
                     eval(_currentNode.getProcess())(processRequest, processResponse, this);
                 } catch (error) {
-                    console.log(' ===========  GOT Error', _currentNode.getProcess());
                     this.error(processRequest, processResponse, error);
                 }
             } else {

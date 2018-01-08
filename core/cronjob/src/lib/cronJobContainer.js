@@ -142,6 +142,7 @@ module.exports = function() {
             throw new Error('Invalid cron job definition');
         }
         let _running = false;
+        console.log(_jobPool);
         if (_jobPool[definition.name] && _jobPool[definition.name][0].isRunning()) {
             _running = _jobPool[definition.name][0].isRunning();
             _jobPool[definition.name].forEach(function(job) {

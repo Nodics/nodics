@@ -11,7 +11,7 @@
 
 module.exports = {
     default: {
-        preSaveInterceptor: function(schema) {
+        preSaveInterceptor: function(schema, modelName) {
             schema.pre('save', function(next) {
                 if (NODICS.isNTestRunning()) {
                     throw new Error('Save operation not allowed, while running N-Test cases');
@@ -22,21 +22,76 @@ module.exports = {
             });
         },
 
-        preUpdateInterceptor: function(schema) {
-            schema.pre('update', function(next) {
-                if (NODICS.isNTestRunning()) {
-                    throw new Error('Update operation not allowed, while running N-Test cases');
+        postSaveInterceptor: function(schema, modelName) {
+            schema.post('save', function(next) {
+                if (schema.rawSchema.event) {
+                    let event = {
+                        event: 'save',
+                        source: schema.moduleName,
+                        target: schema.moduleName,
+                        state: "NEW",
+                        type: "ASYNC",
+                        params: [{
+                            key: 'modelName',
+                            value: schema.modelName
+                        }]
+                    };
+                    SERVICE.EventService.publish(event, (error, response, request) => {
+                        if (error) console.log('   ERROR: facing issue while pushing saveOrUpdate event : ', error);
+                        console.log('   INFO: Event saveOrUpdate published successfully ', response);
+                    });
                 }
-                console.log('   INFO: System is updating model... ---------------------');
                 if (next && typeof next === "function") {
                     next();
                 }
             });
         },
 
-        postSaveInterceptor: function(schema) {
-            schema.post('save', function(next) {
-                //console.log('%%% This is custome PostSave methods');
+        preUpdateInterceptor: function(schema, modelName) {
+            schema.pre('update', function(next) {
+                if (NODICS.isNTestRunning()) {
+                    throw new Error('Update operation not allowed, while running N-Test cases');
+                }
+                this._update.updatedDate = new Date();
+                if (next && typeof next === "function") {
+                    next();
+                }
+            });
+        },
+
+        preSaveOrUpdateInterceptor: function(schema, modelName) {
+            schema.pre('findOneAndUpdate', function(next) {
+                if (NODICS.isNTestRunning()) {
+                    throw new Error('Update operation not allowed, while running N-Test cases');
+                }
+                this._update.updatedDate = new Date();
+                if (next && typeof next === "function") {
+                    next();
+                }
+            });
+        },
+
+        postSaveOrUpdateInterceptor: function(schema, modelName) {
+            schema.post('findOneAndUpdate', function(next) {
+                if (schema.rawSchema.event) {
+                    if (!CONFIG.get('excludedEventModels').includes(schema.modelName)) {
+                        let event = {
+                            event: 'saveOrUpdate',
+                            source: schema.moduleName,
+                            target: schema.moduleName,
+                            state: "NEW",
+                            type: "ASYNC",
+                            params: [{
+                                key: 'modelName',
+                                value: schema.modelName
+                            }]
+                        };
+                        SERVICE.EventService.publish(event, (error, response, request) => {
+                            if (error) console.log('   ERROR: facing issue while pushing saveOrUpdate event : ', error);
+                            console.log('   INFO: Event saveOrUpdate published successfully ', response);
+                        });
+                    }
+                }
                 if (next && typeof next === "function") {
                     next();
                 }

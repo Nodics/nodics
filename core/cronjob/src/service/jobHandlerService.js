@@ -39,11 +39,11 @@ module.exports = {
     },
 
     handleSuccess: function(definition, job) {
-        console.log('=============== handleSuccess');
+        //console.log('=============== handleSuccess');
         //throw new Error("Cron Job Error");
     },
 
     handleError: function(definition, job, error) {
-        console.log('=============== handleError : ', error);
+        //console.log('=============== handleError : ', error);
     }
 };

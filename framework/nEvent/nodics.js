@@ -9,8 +9,14 @@
 
  */
 
+let listeners = require('./bin/registerEventListeners');
+
 module.exports = {
     init: function(options) {
         // 
+    },
+
+    loadListeners: function() {
+        listeners.init();
     }
 };

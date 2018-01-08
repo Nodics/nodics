@@ -23,4 +23,4 @@ module.exports = {
     stopJob: function(definition) {
         console.log('CronJos Started................ stopJob');
     }
-}
+};

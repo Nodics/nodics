@@ -50,15 +50,15 @@ module.exports = {
             eval(processRequest.router.controller)(processRequest, (error, response, input) => {
                 if (error) {
                     console.log('   ERROR: got error while processing request : ', error);
+                    processResponse.success = false;
                     processResponse.errors.PROC_ERR_0003 = {
-                        success: false,
                         code: 'ERR003',
                         msg: error.toString()
                     };
                     process.nextFailure(processRequest, processResponse);
                 } else {
+                    processResponse.success = true;
                     processResponse.response = {
-                        success: true,
                         code: 'SUC001',
                         msg: 'Finished Successfully',
                         result: response
@@ -66,18 +66,15 @@ module.exports = {
                     process.nextSuccess(processRequest, processResponse);
                 }
             });
-            console.log('12');
         } catch (error) {
             console.log('   ERROR: got error while service request : ', error);
+            processResponse.success = false;
             processResponse.errors.PROC_ERR_0003 = {
-                success: false,
                 code: 'ERR003',
                 msg: error.toString()
             };
             process.nextFailure(processRequest, processResponse);
-            console.log('13');
         }
-        console.log('14');
     },
 
     handleSucessEnd: function(processRequest, processResponse) {

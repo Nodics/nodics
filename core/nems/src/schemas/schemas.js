@@ -15,8 +15,9 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
+            event: false,
             definition: {
-                action: {
+                event: {
                     type: 'String'
                 },
                 source: {
@@ -59,6 +60,7 @@ module.exports = {
             super: 'event',
             model: true,
             service: true,
+            event: false,
             definition: {
 
             }

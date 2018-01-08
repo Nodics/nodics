@@ -10,5 +10,24 @@
  */
 
 module.exports = {
-    eventFetchSize: 100
+    eventFetchSize: 100,
+    server: {
+        nems: {
+            abstractServer: {
+                httpHost: 'localhost',
+                httpPort: '3006',
+
+                httpsHost: 'localhost',
+                httpsPort: '3007'
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3006,
+
+                httpsHost: 'localhost',
+                httpsPort: 3007
+            }
+        }
+    }
+
 };

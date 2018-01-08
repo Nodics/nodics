@@ -16,11 +16,12 @@ module.exports = {
         isNew: true
     },
     buildRequest: function(moduleName, methodName, apiName, requestBody, contentType, isJsonResponse) {
+        console.log(' buildRequest : ', moduleName);
         return {
             method: methodName || 'GET',
             uri: SYSTEM.prepareConnectionUrl(moduleName) + '/' + apiName,
             headers: {
-                'content-type': contentType || CONFIG.defaultContentType,
+                'content-type': contentType || CONFIG.get('defaultContentType'),
                 'tenant': 'default',
                 'authToken': 'xdcfgvhbjn324356gfbvd'
             },

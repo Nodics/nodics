@@ -16,11 +16,6 @@ module.exports = {
             model: false,
             service: false,
             definition: {
-                code: {
-                    type: 'String',
-                    unique: true,
-                    required: true
-                },
                 creationDate: {
                     type: 'Date',
                     default: new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
@@ -28,12 +23,8 @@ module.exports = {
                 updatedDate: {
                     type: 'Date',
                     default: new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
-                },
-                testProperty: {
-                    type: 'String',
-                    default: 'Nodics Framework'
                 }
             }
         }
     }
-}
+};

@@ -10,5 +10,14 @@
  */
 
 module.exports = {
-
+    nems: {
+        processEvent: {
+            process: {
+                secured: true,
+                key: '/event/process',
+                method: 'GET',
+                controller: 'CONTROLLER.EventHandlerController.processEvents'
+            }
+        }
+    }
 };

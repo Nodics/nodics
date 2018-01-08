@@ -39,17 +39,17 @@ module.exports = {
     },
 
     handleSucessEnd: function(processRequest, processResponse) {
-        console.log('   1111111111111111 handleSucessEnd');
+        //console.log('   1111111111111111 handleSucessEnd');
         //processRequest.res.json(processResponse.response);
     },
 
     handleFailureEnd: function(processRequest, processResponse) {
-        console.log('   1111111111111111 handleFailureEnd');
+        //console.log('   1111111111111111 handleFailureEnd');
 
     },
 
     handleError: function(processRequest, processResponse) {
-        console.log('   1111111111111111 handleError ');
+        //console.log('   1111111111111111 handleError ');
         //processRequest.res.jsonp(processResponse.errors);
     }
 };

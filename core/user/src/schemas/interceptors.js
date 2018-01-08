@@ -13,12 +13,12 @@ module.exports = {
     user: {
         default: { // for all schema in user module
             testUserInterceptors: function(schema) {
-                console.log('%%% testUserInterceptors');
+                //console.log('%%% testUserInterceptors');
             }
         },
         person: { // this will execute only for person schema
             testPersonInterceptors: function(schema) {
-                console.log('%%% testPersonInterceptors');
+                //console.log('%%% testPersonInterceptors');
             }
         }
 

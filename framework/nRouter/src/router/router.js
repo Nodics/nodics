@@ -36,21 +36,25 @@ module.exports = {
     default: {
         commonGetterOperation: {
             getModel: {
+                secured: true,
                 key: '/schemaName',
                 method: 'GET',
                 controller: 'CONTROLLER.controllerName.get'
             },
             postModel: {
+                secured: true,
                 key: '/schemaName',
                 method: 'POST',
                 controller: 'CONTROLLER.controllerName.get'
             },
             getById: {
+                secured: true,
                 key: '/schemaName/id/:id',
                 method: 'GET',
                 controller: 'CONTROLLER.controllerName.getById'
             },
             getByCode: {
+                secured: true,
                 key: '/schemaName/code/:code',
                 method: 'GET',
                 controller: 'CONTROLLER.controllerName.getById'
@@ -58,21 +62,25 @@ module.exports = {
         },
         commonRemoveOperations: {
             deleteById: {
+                secured: true,
                 key: '/schemaName/id',
                 method: 'DELETE',
                 controller: 'CONTROLLER.controllerName.removeById'
             },
             deleteByIds: {
+                secured: true,
                 key: '/schemaName/id/:id',
                 method: 'DELETE',
                 controller: 'CONTROLLER.controllerName.removeById'
             },
             deleteByCode: {
+                secured: true,
                 key: '/schemaName/code',
                 method: 'DELETE',
                 controller: 'CONTROLLER.controllerName.removeByCode'
             },
             deleteByCodes: {
+                secured: true,
                 key: '/schemaName/code/:code',
                 method: 'DELETE',
                 controller: 'CONTROLLER.controllerName.removeByCode'
@@ -80,6 +88,7 @@ module.exports = {
         },
         commonSaveOperations: {
             saveModels: {
+                secured: true,
                 key: '/schemaName',
                 method: 'PUT',
                 controller: 'CONTROLLER.controllerName.save'
@@ -87,6 +96,7 @@ module.exports = {
         },
         commonUpdateOperations: {
             saveModels: {
+                secured: true,
                 key: '/schemaName/update',
                 method: 'PUT',
                 controller: 'CONTROLLER.controllerName.update'
@@ -95,6 +105,7 @@ module.exports = {
 
         commonSaveOrUpdateOperations: {
             saveModels: {
+                secured: true,
                 key: '/schemaName/saveOrUpdate',
                 method: 'PUT',
                 controller: 'CONTROLLER.controllerName.saveOrUpdate'

@@ -32,8 +32,9 @@ http://localhost:3005/nodics/cronjob
 }
 // just for test
 */
+
+let mongoose = require('mongoose');
 module.exports = {
-    //Module Name
     cronjob: {
         email: {
             super: 'none',
@@ -63,7 +64,8 @@ module.exports = {
                 },
                 isActive: {
                     type: 'Boolean',
-                    default: false
+                    default: false,
+                    required: true
                 },
                 second: {
                     type: 'String'
@@ -89,25 +91,48 @@ module.exports = {
             }
         },
 
+        cronJobLog: {
+            super: 'base',
+            model: true,
+            service: false,
+            event: false,
+            definition: {
+                log: {
+                    type: 'String'
+                }
+            }
+        },
+
         cronJob: {
             super: 'base',
             model: true,
             service: true,
+            event: false,
+            refSchema: {
+                addresses: {
+                    modelName: 'CronJobLogModel',
+                    type: 'many'
+                }
+            },
             definition: {
                 name: {
                     type: 'String',
                     unique: true,
                     required: true
                 },
+                tenant: {
+                    type: 'String',
+                    required: true
+                },
                 state: {
                     type: 'String',
                     enum: ENUMS.CronJobState.getEnumValue(),
-                    default: ENUMS.CronJobState.NEW
+                    default: ENUMS.CronJobState.NEW.key
                 },
                 lastResult: {
                     type: 'String',
                     enum: ENUMS.CronJobStatus.getEnumValue(),
-                    default: ENUMS.CronJobState.NEW
+                    default: ENUMS.CronJobStatus.NEW.key
                 },
                 lastStartTime: {
                     type: 'Date'
@@ -118,12 +143,23 @@ module.exports = {
                 lastSuccessTime: {
                     type: 'Date'
                 },
-                clusterId: 'Number',
+                clusterId: {
+                    type: 'Number'
+                },
                 priority: {
                     type: 'Number',
                     default: 1000
                 },
-                runOnInit: 'Boolean',
+                runOnInit: {
+                    type: 'Boolean'
+                },
+                saveLog: {
+                    type: 'Boolean'
+                },
+                logs: [{
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'CronJobLogModel'
+                }],
                 emails: ["schemas['email']"],
                 triggers: ["schemas['trigger']"],
                 jobDetail: {

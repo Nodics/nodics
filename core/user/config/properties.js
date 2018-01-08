@@ -25,15 +25,7 @@ module.exports = {
 
                 httpsHost: 'localhost',
                 httpsPort: 3005
-
             }
-            /*
-                httpServer: 'localhost',
-                httpPort: 3004,
-
-                httpsServer: 'localhost',
-                httpsPort: 3005,
-            */
         }
     }
 };
