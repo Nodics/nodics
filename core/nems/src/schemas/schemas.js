@@ -16,6 +16,7 @@ module.exports = {
             model: true,
             service: true,
             event: false,
+            router: true,
             definition: {
                 event: {
                     type: 'String'
@@ -61,6 +62,7 @@ module.exports = {
             model: true,
             service: true,
             event: false,
+            router: true,
             definition: {
 
             }

@@ -1,21 +1,20 @@
 {
-    "name": "user",
+    "name": "profile",
     "index": "120",
     "publish": "true",
-    "description": "Module user, process user related information",
+    "description": "Nodics applicaion module. It will hold all profile realted information",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "Nodics"
+        "profile"
     ],
     "author": "Nodics Framework <nodics.framework@gmail.com>",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,
-    "license": "GNU General Public License v3",
-    "scripts": {},
+    "license": "GPL License",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Nodics/nodics.git"
+        "url": "repository URL"
     },
     "dependencies": {}
 }

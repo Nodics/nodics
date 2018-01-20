@@ -11,7 +11,7 @@
 
 const _ = require('lodash');
 
-module.exports = function(name, processDefinition) {
+module.exports = function(name, processDefinition, callback) {
     let _processId = 'id';
     let _processDefinition = processDefinition;
     let _self = this;
@@ -24,6 +24,9 @@ module.exports = function(name, processDefinition) {
     let _preNode = {};
     let _nextSuccessNode = {};
     let _nextFailureNode = {};
+    let _successEndNode = {};
+    let _callback = callback;
+    let _done = false;
 
     this.setProcessId = function(id) {
         _processId = id;
@@ -60,33 +63,28 @@ module.exports = function(name, processDefinition) {
         } else {
             _handleError = _nodeList.handleError;
         }
+        _successEndNode = _nodeList.successEnd;
+
     };
 
     this.prepareNextNode = function() {
-        //console.log('        222222=========== ', _currentNode.getSuccess());
         if (_currentNode.getSuccess()) {
             if (_nodeList[_currentNode.getSuccess()]) {
                 _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
             } else {
-                _nextSuccessNode = new CLASSES.ProcessNode('successEnd', {
-                    type: 'function',
-                    process: _currentNode.getSuccess()
-                });
+                console.log('   ERROR: Process link is broken : invalid node line : ', _currentNode.getSuccess());
             }
         } else {
-            _nextSuccessNode = _nodeList.successEnd;
+            _nextSuccessNode = null;
         }
         if (_currentNode.getFailure()) {
             if (_nodeList[_currentNode.getFailure()]) {
                 _nextFailureNode = _nodeList[_currentNode.getFailure()];
             } else {
-                _nextFailureNode = new CLASSES.ProcessNode('failureEnd', {
-                    type: 'function',
-                    process: _currentNode.getFailure()
-                });
+                console.log('   ERROR: Process link is broken : invalid node line : ', _currentNode.getFailure());
             }
         } else {
-            _nextFailureNode = _nodeList.failureEnd;
+            _nextFailureNode = null;
         }
     };
 
@@ -99,14 +97,20 @@ module.exports = function(name, processDefinition) {
     this.nextFailure = function(processRequest, processResponse) {
         _preNode = _currentNode;
         _currentNode = _nextFailureNode;
-        console.log(_currentNode.getName(), ' --------- : ', _currentNode.getFailure(), ' ------- ', _currentNode.getProcess());
+        this.next(processRequest, processResponse);
+    };
+
+    this.stop = function(processRequest, processResponse) {
+        _preNode = _currentNode;
+        _currentNode = _successEndNode;
         this.next(processRequest, processResponse);
     };
 
     this.error = function(processRequest, processResponse, err) {
-        console.log('   ERROR: Error occured while processing node', err);
+        console.log('   ERROR: Error occured while processing node', _currentNode.getName(), ' - ', err);
         _preNode = _currentNode;
         _currentNode = _handleError;
+        processResponse.success = false;
         processResponse.errors.PROC_ERR_0001 = {
             code: 'PROC_ERR_0001',
             message: 'PROC_ERR_0001',
@@ -115,6 +119,10 @@ module.exports = function(name, processDefinition) {
             error: err
         };
         eval(_currentNode.getProcess())(processRequest, processResponse);
+        if (_callback && !_done) {
+            _callback();
+        }
+        _done = true;
     };
 
     this.start = function(id, processRequest, processResponse) {
@@ -133,19 +141,30 @@ module.exports = function(name, processDefinition) {
             this.prepareNextNode();
             if (_currentNode.getType() === 'function') {
                 try {
+                    console.log(_currentNode.getProcess());
                     eval(_currentNode.getProcess())(processRequest, processResponse, this);
+                    if (!_nextSuccessNode) {
+                        if (_callback && !_done) {
+                            _callback();
+                        }
+                        _done = true;
+                    }
                 } catch (error) {
                     this.error(processRequest, processResponse, error);
                 }
             } else {
                 try {
                     let _self = this;
-                    SERVICE.ProcessService.startProcess(_currentNode.getProcess(), processRequest, processResponse);
-                    if (_hardStop && !UTILS.isBlank(processResponse.errors)) {
-                        _self.nextFailure(processRequest, processResponse);
-                    } else {
-                        _self.nextSuccess(processRequest, processResponse, this);
-                    }
+                    let proName = _currentNode.getProcess();
+                    console.log('>========= Starting nested Process : ', proName);
+                    SERVICE.ProcessService.startProcess(_currentNode.getProcess(), processRequest, processResponse, () => {
+                        console.log('<========= End nested Process : ', proName);
+                        if (_hardStop && !UTILS.isBlank(processResponse.errors)) {
+                            _self.nextFailure(processRequest, processResponse);
+                        } else {
+                            _self.nextSuccess(processRequest, processResponse, this);
+                        }
+                    });
                 } catch (error) {
                     if (_hardStop) {
                         _self.error(processRequest, processResponse, error);

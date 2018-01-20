@@ -18,20 +18,12 @@ module.exports = {
         return NODICS.getModels('moduleName', input.tenant).modelName.getById(input, callback);
     },
 
-    getByCode: function(input, callback) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.getByCode(input, callback);
-    },
-
     save: function(input, callback) {
         return NODICS.getModels('moduleName', input.tenant).modelName.save(input, callback);
     },
 
     removeById: function(input, callback) {
         return NODICS.getModels('moduleName', input.tenant).modelName.removeById(input, callback);
-    },
-
-    removeByCode: function(input, callback) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.removeByCode(input, callback);
     },
 
     update: function(input, callback) {

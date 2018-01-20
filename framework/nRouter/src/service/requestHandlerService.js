@@ -22,7 +22,9 @@ module.exports = {
             protocal: req.protocol,
             host: req.get('host'),
             originalUrl: req.originalUrl,
-            secured: true
+            secured: routerDef.secured,
+            moduleName: routerDef.module,
+            special: (routerDef.controller) ? false : true
         };
         let processResponse = {};
         try {
@@ -34,8 +36,7 @@ module.exports = {
 
     parseHeader: function(processRequest, processResponse, process) {
         console.log('   INFO: Parsing request header : ', processRequest.originalUrl);
-        processRequest.tenant = processRequest.httpRequest.get('tenant') || {};
-        processRequest.authToket = processRequest.httpRequest.get('authToken') || {};
+        processRequest.enterpriseCode = processRequest.httpRequest.get('enterpriseCode') || {};
         process.nextSuccess(processRequest, processResponse);
     },
 
@@ -44,10 +45,43 @@ module.exports = {
         process.nextSuccess(processRequest, processResponse);
     },
 
+    handleSpecialRequest: function(processRequest, processResponse, process) {
+        console.log('   INFO: Handling special request : ', processRequest.originalUrl);
+        if (processRequest.special) {
+            console.log(1);
+            eval(processRequest.router.handler)(processRequest, (error, response) => {
+                if (error) {
+                    console.log('   ERROR: got error while handling special request : ', error);
+                    process.error(processRequest, processResponse, error);
+                } else {
+                    processResponse.success = true;
+                    processResponse.code = 'SUC001';
+                    processResponse.msg = 'Processed successfully';
+                    processResponse.result = response;
+                    process.stop(processRequest, processResponse);
+                }
+            });
+        } else {
+            console.log(3);
+            process.nextSuccess(processRequest, processResponse);
+        }
+    },
+
+    redirectRequest: function(processRequest, processResponse, process) {
+        console.log('   INFO: redirecting secured/non-secured request  : ', processRequest.originalUrl);
+        if (processRequest.secured) {
+            console.log('   INFO: Handling secured request');
+            process.nextSuccess(processRequest, processResponse);
+        } else {
+            console.log('   INFO: Handling non-secured request');
+            process.nextFailure(processRequest, processResponse);
+        }
+    },
+
     handleRequest: function(processRequest, processResponse, process) {
         console.log('   INFO: processing your request : ', processRequest.originalUrl);
         try {
-            eval(processRequest.router.controller)(processRequest, (error, response, input) => {
+            eval(processRequest.router.controller)(processRequest, (error, response) => {
                 if (error) {
                     console.log('   ERROR: got error while processing request : ', error);
                     processResponse.success = false;
@@ -58,11 +92,9 @@ module.exports = {
                     process.nextFailure(processRequest, processResponse);
                 } else {
                     processResponse.success = true;
-                    processResponse.response = {
-                        code: 'SUC001',
-                        msg: 'Finished Successfully',
-                        result: response
-                    };
+                    processResponse.code = 'SUC001';
+                    processResponse.msg = 'Processed successfully';
+                    processResponse.result = response;
                     process.nextSuccess(processRequest, processResponse);
                 }
             });
@@ -78,7 +110,7 @@ module.exports = {
     },
 
     handleSucessEnd: function(processRequest, processResponse) {
-        console.log('   INFO: Request has been processed successfully : ', processRequest.originalUrl);
+        console.log('   INFO: Request has been processed successfully : ', processResponse);
         processRequest.httpResponse.json(processResponse);
     },
 
@@ -87,7 +119,7 @@ module.exports = {
         processRequest.httpResponse.json(processResponse);
     },
 
-    handleError: function(processRequest, processResponse) {
+    handleErrorEnd: function(processRequest, processResponse) {
         console.log('   INFO: Request has been processed and got errors : ', processRequest.originalUrl);
         processRequest.httpResponse.json(processResponse);
     }

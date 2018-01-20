@@ -15,32 +15,31 @@ module.exports = {
     options: {
         isNew: true
     },
-    buildRequest: function(moduleName, methodName, apiName, requestBody, contentType, isJsonResponse) {
-        console.log(' buildRequest : ', moduleName);
+    buildRequest: function(options) {
+        console.log('   INFO: Building request url for module ', options.moduleName);
         return {
-            method: methodName || 'GET',
-            uri: SYSTEM.prepareConnectionUrl(moduleName) + '/' + apiName,
+            method: options.methodName || 'GET',
+            uri: SYSTEM.prepareConnectionUrl(options.moduleName) + '/' + options.apiName,
             headers: {
-                'content-type': contentType || CONFIG.get('defaultContentType'),
-                'tenant': 'default',
-                'authToken': 'xdcfgvhbjn324356gfbvd'
+                'content-type': options.contentType || CONFIG.get('defaultContentType'),
+                'enterpriseCode': options.enterpriseCode
             },
-            body: requestBody,
-            json: isJsonResponse || true
+            body: options.requestBody,
+            json: options.isJsonResponse || true
         };
     },
 
-    fetch: function(options, callback) {
+    fetch: function(requestUrl, callback) {
         if (callback) {
-            requestPromise(options)
-                .then(function(response) {
-                    callback(null, response, options);
+            requestPromise(requestUrl)
+                .then(response => {
+                    callback(null, response, requestUrl);
                 })
-                .catch(function(error) {
-                    callback(error, null, options);
+                .catch(error => {
+                    callback(error, null, requestUrl);
                 });
         } else {
-            return requestPromise(options);
+            return requestPromise(requestUrl);
         }
     }
 };

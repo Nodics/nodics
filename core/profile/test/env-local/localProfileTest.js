@@ -9,11 +9,15 @@
 
  */
 
+/*
+   Change this file name as per test case name. This just a sample file.
+   You can create n-number of test file and n-number of different environment as well
+*/
 const Chai = require('chai');
 const expect = Chai.expect;
 
 module.exports = {
-    userTestSuite: {
+    profileTestSuite: {
         options: {
             description: 'Test suite to run all user related userTestSuite',
             timeout: 100,

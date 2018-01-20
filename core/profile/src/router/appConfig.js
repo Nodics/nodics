@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    user: {
+    profile: {
         initSession: function(app) {
             //console.log('======================== Registering User App');
             /*app.use(function(req, res, next) {

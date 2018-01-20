@@ -11,7 +11,7 @@
 
 module.exports = {
     server: {
-        user: {
+        profile: {
             abstractServer: {
                 httpHost: 'localhost',
                 httpPort: '3004',

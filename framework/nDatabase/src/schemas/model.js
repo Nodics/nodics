@@ -15,6 +15,7 @@ module.exports = {
     default: {
         defineDefaultGet: function(model, rawSchema) {
             model.statics.get = function(input) {
+                console.log('$$$$$$$$Model');
                 let schema = rawSchema;
                 let requestBody = input.options;
                 let skip = (requestBody.pageSize || CONFIG.get('defaultPageSize')) * (requestBody.pageNumber || CONFIG.get('defaultPageNumber'));
@@ -28,7 +29,7 @@ module.exports = {
                         query.populate(property);
                     });
                 }
-                return query.exec();
+                return query.lean().exec();
             };
         },
 
@@ -50,24 +51,6 @@ module.exports = {
             };
         },
 
-        /*defineDefaultGetByCode: function(model, rawSchema) {
-            model.statics.getByCode = function(input) {
-                let schema = rawSchema;
-                if (!input.code) {
-                    throw new Error("   ERROR: Code value can't be null to get Item");
-                }
-                let request = {
-                    tenant: input.tenant,
-                    options: {
-                        pageSize: CONFIG.get('defaultPageSize'),
-                        pageNumber: CONFIG.get('defaultPageNumber'),
-                        query: { code: input.code }
-                    }
-                };
-                return this.get(request);
-            };
-        },*/
-
         defineDefaultRemoveById: function(model, rawSchema) {
             model.statics.removeById = function(input) {
                 let schema = rawSchema;
@@ -77,16 +60,6 @@ module.exports = {
                 return this.remove({ _id: { $in: input.ids } });
             };
         },
-
-        /*defineDefaultRemoveByCode: function(model, rawSchema) {
-            model.statics.removeByCode = function(input) {
-                let schema = rawSchema;
-                if (!input.codes) {
-                    throw new Error("   ERROR: Code list can't be null to save Item");
-                }
-                return this.remove({ code: { $in: input.codes } });
-            };
-        },*/
 
         defineDefaultSave: function(model, rawSchema) {
             model.statics.save = function(input) {

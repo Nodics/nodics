@@ -9,11 +9,14 @@
 
  */
 
+/*
+   Change this file name as per test case name. This just a sample file
+*/
 const Chai = require('chai');
 const expect = Chai.expect;
 
 module.exports = {
-    userTestSuite: {
+    profileTestSuite: {
         options: {
             description: 'Test suite to run all user related userTestSuite',
             timeout: 100,

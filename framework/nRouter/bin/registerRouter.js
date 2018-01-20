@@ -26,7 +26,7 @@ module.exports = {
             if (app && value.metaData && value.metaData.publish) {
                 // Execute common routers for each required Schema
                 _.each(value.rawSchema, (schemaObject, schemaName) => {
-                    if (schemaObject.service) {
+                    if (schemaObject.service && schemaObject.router) {
                         _.each(routers.default, function(group, groupName) {
                             _.each(group, function(routerDef, routerName) {
                                 let functionName = routerDef.method.toLowerCase();
@@ -34,7 +34,8 @@ module.exports = {
                                 tmpRouterDef.key = tmpRouterDef.key.replaceAll('schemaName', schemaName.toLowerCase());
                                 tmpRouterDef.controller = tmpRouterDef.controller.replaceAll('controllerName', schemaName.toUpperCaseEachWord() + 'Controller');
                                 tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
-                                eval(routers.operations[functionName](app, moduleName, tmpRouterDef));
+                                tmpRouterDef.moduleName = moduleName;
+                                eval(routers.operations[functionName](app, tmpRouterDef));
                             });
                         });
                     }
@@ -46,8 +47,8 @@ module.exports = {
                             let functionName = routerDef.method.toLowerCase();
                             let tmpRouterDef = _.merge({}, routerDef);
                             tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
-                            console.log(' -------------------------- Registering URL : ', tmpRouterDef.url);
-                            eval(routers.operations[functionName](app, moduleName, tmpRouterDef));
+                            tmpRouterDef.moduleName = moduleName;
+                            eval(routers.operations[functionName](app, tmpRouterDef));
                         });
                     });
                 }
@@ -58,7 +59,8 @@ module.exports = {
                             let functionName = routerDef.method.toLowerCase();
                             let tmpRouterDef = _.merge({}, routerDef);
                             tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
-                            eval(routers.operations[functionName](app, moduleName, tmpRouterDef));
+                            tmpRouterDef.moduleName = moduleName;
+                            eval(routers.operations[functionName](app, tmpRouterDef));
                         });
                     });
                 }

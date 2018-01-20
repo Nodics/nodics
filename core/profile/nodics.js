@@ -10,11 +10,7 @@
  */
 
 module.exports = {
-    options: {
-        isNew: false
-    },
-
-    getFullName: function(request, callback) {
-        return SERVICE.UserService.getFullName(request, callback);
-    },
+    init: function(options) {
+        // 
+    }
 };

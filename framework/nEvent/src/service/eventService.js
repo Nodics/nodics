@@ -1,6 +1,18 @@
+/*
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 module.exports = {
+
     options: {
-        isNew: true
+        isNew: false
     },
 
     handleEvent: function(event, callback) {
@@ -10,7 +22,16 @@ module.exports = {
     },
 
     publish: function(eventDef, callback) {
-        let eventUrl = SERVICE.ModuleService.buildRequest('nems', 'PUT', 'event', eventDef, null, true);
+        let options = {
+            moduleName: 'nems',
+            methodName: 'put',
+            apiName: 'event',
+            requestBody: eventDef,
+            isJsonResponse: true,
+            enterpriseCode: eventDef.enterpriseCode
+        };
+
+        let eventUrl = SERVICE.ModuleService.buildRequest(options);
         SERVICE.ModuleService.fetch(eventUrl, callback);
     }
 };

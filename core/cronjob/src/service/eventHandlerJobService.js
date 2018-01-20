@@ -26,7 +26,15 @@ module.exports = {
         });
     },
     triggerEventHandlerJob: function(definition, callback) {
-        let nemsUrl = SERVICE.ModuleService.buildRequest('nems', 'GET', 'event/process', {}, null, true);
+        let options = {
+            moduleName: 'nems',
+            methodName: 'GET',
+            apiName: 'event/process',
+            requestBody: {},
+            isJsonResponse: true,
+            enterpriseCode: definition.enterpriseCode
+        };
+        let nemsUrl = SERVICE.ModuleService.buildRequest(options);
         console.log('   INFO: Triggering Job : ', nemsUrl);
         SERVICE.ModuleService.fetch(nemsUrl, (error, response) => {
             console.log('   INFO: Events processed with response : ', response);

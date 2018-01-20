@@ -15,29 +15,27 @@ module.exports = {
     options: {
         isNew: true
     },
-
-    handleErrorEnd: function(processRequest, processResponse) {
-        console.log('............. handleErrorEnd : ');
-        if (processResponse.errors) {
-            console.log(processResponse.errors);
-        }
-    },
-
     handleSucessEnd: function(processRequest, processResponse) {
-        console.log('............. handleSucessEnd');
+        console.log('   WARN: This is default success handler, will not perform anything ');
     },
 
     handleFailureEnd: function(processRequest, processResponse) {
-        console.log('............. handleFailureEnd');
+        console.log('   WARN: This is default failure handler, will not perform anything ');
     },
 
-    startProcess: function(processName, processRequest, processResponse) {
+    handleErrorEnd: function(processRequest, processResponse) {
+        console.log('   WARN: This is default error handler, will not perform anything ');
+    },
+    startProcess: function(processName, processRequest, processResponse, callback) {
         let success = false;
         if (processName !== 'defaultProcess' && PROCESS[processName]) {
             processResponse.errors = {};
             let id = processRequest.httpRequest.originalUrl;
+            // TODO: Make this id unique to track nested process management - will implement in Future
             try {
-                let process = new CLASSES.ProcessHead(processName, _.merge(PROCESS.defaultProcess, PROCESS[processName]));
+                let defaultProcess = _.merge({}, PROCESS.defaultProcess);
+                let processDef = _.merge(defaultProcess, PROCESS[processName]);
+                let process = new CLASSES.ProcessHead(processName, processDef, callback);
                 process.buildProcess();
                 process.start(id, processRequest, processResponse);
                 success = true;

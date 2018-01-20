@@ -13,6 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
     get: function(request, callback) {
+        console.log('$$$$$$$$Service');
         NODICS.getModels('moduleName', request.tenant).modelName.get(request).then((models) => {
             callback(null, models, request);
         }).catch((error) => {
@@ -22,14 +23,6 @@ module.exports = {
 
     getById: function(request, callback) {
         NODICS.getModels('moduleName', request.tenant).modelName.getById(request).then((models) => {
-            callback(null, models, request);
-        }).catch((error) => {
-            callback(error, null, request);
-        });
-    },
-
-    getByCode: function(request, callback) {
-        NODICS.getModels('moduleName', request.tenant).modelName.getByCode(request).then((models) => {
             callback(null, models, request);
         }).catch((error) => {
             callback(error, null, request);
@@ -46,14 +39,6 @@ module.exports = {
 
     removeById: function(request, callback) {
         NODICS.getModels('moduleName', request.tenant).modelName.removeById(request).then((models) => {
-            callback(null, models, request);
-        }).catch((error) => {
-            callback(error, null, request);
-        });
-    },
-
-    removeByCode: function(request, callback) {
-        NODICS.getModels('moduleName', request.tenant).modelName.removeByCode(request).then((models) => {
             callback(null, models, request);
         }).catch((error) => {
             callback(error, null, request);

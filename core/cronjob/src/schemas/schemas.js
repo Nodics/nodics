@@ -40,6 +40,7 @@ module.exports = {
             super: 'none',
             model: true,
             service: false,
+            router: false,
             definition: {
                 mailId: "String",
             }
@@ -48,6 +49,7 @@ module.exports = {
             super: 'none',
             model: true,
             service: false,
+            router: false,
             definition: {
                 triggerId: {
                     type: 'String',
@@ -96,6 +98,7 @@ module.exports = {
             model: true,
             service: false,
             event: false,
+            router: false,
             definition: {
                 log: {
                     type: 'String'
@@ -108,6 +111,7 @@ module.exports = {
             model: true,
             service: true,
             event: false,
+            router: true,
             refSchema: {
                 addresses: {
                     modelName: 'CronJobLogModel',

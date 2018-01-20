@@ -13,7 +13,8 @@ module.exports = {
 
     get: function(requestContext, callback) {
         let request = {
-            tenant: requestContext.tenant
+            tenant: requestContext.tenant,
+            enterpriseCode: requestContext.enterpriseCode
         };
         if (requestContext.httpRequest) {
             if (!UTILS.isBlank(requestContext.httpRequest.body)) {
@@ -21,6 +22,7 @@ module.exports = {
             } else {
                 request.options = {};
             }
+            console.log('$$$$$$$$Controller');
             FACADE.FacadeName.get(request, callback);
         } else {
             console.log('   ERROR: Please validate your request, it is not a valid one');
@@ -29,7 +31,8 @@ module.exports = {
 
     getById: function(requestContext, callback) {
         let request = {
-            tenant: requestContext.tenant
+            tenant: requestContext.tenant,
+            enterpriseCode: requestContext.enterpriseCode
         };
         if (requestContext.httpRequest) {
             request.id = requestContext.httpRequest.params.id;
@@ -39,21 +42,10 @@ module.exports = {
         }
     },
 
-    getByCode: function(requestContext, callback) {
-        let request = {
-            tenant: requestContext.tenant
-        };
-        if (requestContext.httpRequest) {
-            request.code = requestContext.httpRequest.params.code;
-            FACADE.FacadeName.getByCode(request, callback);
-        } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
-        }
-    },
-
     save: function(requestContext, callback) {
         let request = {
-            tenant: requestContext.tenant
+            tenant: requestContext.tenant,
+            enterpriseCode: requestContext.enterpriseCode
         };
         if (requestContext.httpRequest &&
             requestContext.httpRequest &&
@@ -70,7 +62,8 @@ module.exports = {
     removeById: function(requestContext, callback) {
         let request = {
             ids: [],
-            tenant: requestContext.tenant
+            tenant: requestContext.tenant,
+            enterpriseCode: requestContext.enterpriseCode
         };
         if (requestContext.httpRequest.req.params.id) {
             request.ids.push(requestContext.httpRequest.req.params.id);
@@ -80,28 +73,11 @@ module.exports = {
         FACADE.FacadeName.removeById(request, callback);
     },
 
-    removeByCode: function(requestContext, callback) {
-        let request = {
-            codes: [],
-            tenant: requestContext.tenant
-        };
-        if (requestContext.httpRequest) {
-            if (requestContext.httpRequest.req.params.code) {
-                request.codes.push(requestContext.httpRequest.req.params.code);
-            } else {
-                request.codes = requestContext.httpRequest.req.body;
-            }
-            FACADE.FacadeName.removeByCode(request, output);
-        } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
-        }
-
-    },
-
     update: function(requestContext, callback) {
         let request = {
             models: [],
-            tenant: requestContext.tenant
+            tenant: requestContext.tenant,
+            enterpriseCode: requestContext.enterpriseCode
         };
         if (requestContext.httpRequest) {
             if (!UTILS.isBlank(requestContext.httpRequest.body)) {
@@ -120,7 +96,8 @@ module.exports = {
     saveOrUpdate: function(requestContext, callback) {
         let request = {
             models: [],
-            tenant: requestContext.tenant
+            tenant: requestContext.tenant,
+            enterpriseCode: requestContext.enterpriseCode
         };
         if (requestContext.httpRequest) {
             if (!UTILS.isBlank(requestContext.httpRequest.body)) {

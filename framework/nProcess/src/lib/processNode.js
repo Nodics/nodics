@@ -14,8 +14,8 @@ module.exports = function(name, processNode) {
     let _name = name;
     let _type = processNode.type || 'function';
     let _process = processNode.process;
-    let _success = processNode.success || 'SERVICE.ProcessHandlerService.handleSucessEnd';
-    let _failure = processNode.failure || 'PROCESS.ProcessHandlerService.handleFailureEnd';
+    let _success = processNode.success;
+    let _failure = processNode.failure;
 
     if (!_process) {
         throw new Error("Process property for node : " + _name + " can't be null or blank");

@@ -15,7 +15,7 @@ module.exports = {
     database: {
         default: {
             master: {
-                URI: 'mongodb://localhost:27017/himkarMaster',
+                URI: 'mongodb://localhost:27017/defaultMaster',
                 options: {
                     db: {
                         native_parser: true
@@ -26,7 +26,7 @@ module.exports = {
                 }
             },
             test: {
-                URI: 'mongodb://localhost:27017/himkarTest',
+                URI: 'mongodb://localhost:27017/defaultTest',
                 options: {
                     db: {
                         native_parser: true
@@ -39,7 +39,7 @@ module.exports = {
         },
         user: {
             master: {
-                URI: 'mongodb://localhost:27017/userHimkarMaster',
+                URI: 'mongodb://localhost:27017/userMaster',
                 options: {
                     db: {
                         native_parser: true
@@ -50,7 +50,7 @@ module.exports = {
                 }
             },
             test: {
-                URI: 'mongodb://localhost:27017/userHimkarTest',
+                URI: 'mongodb://localhost:27017/userTest',
                 options: {
                     db: {
                         native_parser: true

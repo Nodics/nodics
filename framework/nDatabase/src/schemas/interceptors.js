@@ -36,9 +36,9 @@ module.exports = {
                             value: schema.modelName
                         }]
                     };
-                    SERVICE.EventService.publish(event, (error, response, request) => {
-                        if (error) console.log('   ERROR: facing issue while pushing saveOrUpdate event : ', error);
-                        console.log('   INFO: Event saveOrUpdate published successfully ', response);
+                    SERVICE.EventService.publish(event, (error, response) => {
+                        if (error) console.log('   ERROR: facing issue while pushing save event : ', error);
+                        console.log('   INFO: Event save published successfully ', response);
                     });
                 }
                 if (next && typeof next === "function") {

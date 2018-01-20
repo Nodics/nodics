@@ -9,7 +9,7 @@
 
  */
 
-const definitionBuilder = require('./bin/processDefinitionBuilder');
+const processBuilder = require('./bin/processDefinitionBuilder');
 
 module.exports = {
     init: function() {
@@ -17,6 +17,6 @@ module.exports = {
     },
     loadProcess: function() {
         console.log('=> Starting Process Defintion builder process');
-        definitionBuilder.init();
+        processBuilder.init();
     }
 };

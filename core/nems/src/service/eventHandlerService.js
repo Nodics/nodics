@@ -1,3 +1,14 @@
+/*
+    Nodics - Enterprice API management framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 const _ = require('lodash');
 
 module.exports = {
@@ -41,7 +52,7 @@ module.exports = {
             } else if (UTILS.isBlank(events)) {
                 callback('None of the events available', null, request);
             } else {
-                _self.broadcastEvents(events, (error, processedEvents) => {
+                _self.broadcastEvents(events, request, (error, processedEvents) => {
                     _self.handleProcessedEvents(request, processedEvents, (message) => {
                         callback(null, message);
                     });
@@ -100,13 +111,13 @@ module.exports = {
         });
     },
 
-    broadcastEvents: function(events, callback) {
+    broadcastEvents: function(events, request, callback) {
         let _self = this;
         let processed = [];
         events.forEach(event => {
             processed.push(
                 new Promise((resolve, reject) => {
-                    _self.broadcastEvent(event, (err, response) => {
+                    _self.broadcastEvent(event, request, (err, response) => {
                         if (err) {
                             event.state = ENUMS.EventState.ERROR;
                             event.log.push(err.toString());
@@ -128,9 +139,17 @@ module.exports = {
         });
     },
 
-    broadcastEvent: function(event, callback) {
-        let request = SERVICE.ModuleService.buildRequest(event.target, 'POST', 'event/handle', event, null, true);
-        SERVICE.ModuleService.fetch(request).then(response => {
+    broadcastEvent: function(event, request, callback) {
+        let options = {
+            moduleName: event.target,
+            methodName: 'POST',
+            apiName: 'event/handle',
+            requestBody: event,
+            isJsonResponse: true,
+            enterpriseCode: event.enterpriseCode
+        };
+        let requestUrl = SERVICE.ModuleService.buildRequest(options);
+        SERVICE.ModuleService.fetch(requestUrl).then(response => {
             callback(null, response);
         }).catch(error => {
             callback(error, null);

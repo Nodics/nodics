@@ -1,10 +1,3 @@
-var _ = require('lodash');
-const path = require('path');
-const fs = require('fs');
-const util = require('util');
-let Config = require('./config');
-let Nodics = require('./nodics');
-
 /*
     Nodics - Enterprice API management framework
 
@@ -15,6 +8,13 @@ let Nodics = require('./nodics');
     terms of the license agreement you entered into with Nodics.
 
  */
+
+var _ = require('lodash');
+const path = require('path');
+const fs = require('fs');
+const util = require('util');
+let Config = require('./config');
+let Nodics = require('./nodics');
 
 module.exports = {
     getActiveModules: function(options) {

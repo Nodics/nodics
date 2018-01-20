@@ -42,6 +42,10 @@ All Priority ONE Task
 - Define a common Service, Facade and Controller which will be merged in every layer
 - Define namespace capability - load cleasses from sub-folders
 
+Authentication : 
+- Set a process in request process for both Authentication and Authentication
+- Return result from there itself, without visiting whole layer
+
 All Priority TWO Task
 - All required modules need to be identified at run time
 - Keep list of modules required in a property in package.json file

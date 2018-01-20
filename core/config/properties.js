@@ -15,7 +15,7 @@ module.exports = {
             'core',
             'cronjob',
             'nems',
-            'user'
+            'profile'
         ]
     }
 };

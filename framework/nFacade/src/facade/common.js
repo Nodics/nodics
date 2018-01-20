@@ -11,15 +11,12 @@
 
 module.exports = {
     get: function(request, callback) {
+        console.log('$$$$$$$$Facade');
         return SERVICE.ServiceName.get(request, callback);
     },
 
     getById: function(request, callback) {
         return SERVICE.ServiceName.getById(request, callback);
-    },
-
-    getByCode: function(request, callback) {
-        return SERVICE.ServiceName.getByCode(request, callback);
     },
 
     save: function(request, callback) {
@@ -28,10 +25,6 @@ module.exports = {
 
     removeById: function(request, callback) {
         return SERVICE.ServiceName.removeById(request, callback);
-    },
-
-    removeByCode: function(request, callback) {
-        return SERVICE.ServiceName.removeByCode(request, callback);
     },
 
     update: function(request, callback) {

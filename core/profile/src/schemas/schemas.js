@@ -13,13 +13,13 @@ let mongoose = require('mongoose');
 
 module.exports = {
     //Database name
-    user: {
-        //Collection name
+    profile: {
         address: {
             super: 'base',
             model: true,
             service: true,
             event: true,
+            router: true,
             definition: {
                 flatNo: {
                     type: 'String'
@@ -49,6 +49,7 @@ module.exports = {
             model: true,
             service: true,
             event: true,
+            router: true,
             definition: {
                 contactType: {
                     type: 'String'
@@ -58,21 +59,58 @@ module.exports = {
                 }
             }
         },
+
+        enterprise: {
+            super: 'base',
+            model: true,
+            service: true,
+            event: true,
+            router: true,
+            refSchema: {
+                superEnterprise: {
+                    modelName: "EnterpriceModel",
+                    type: 'one'
+                },
+                subEnterprises: {
+                    modelName: "EnterpriceModel",
+                    type: 'many'
+                }
+            },
+            definition: {
+                name: {
+                    type: 'String',
+                    required: true
+                },
+                description: {
+                    type: 'String'
+                },
+                tenant: {
+                    type: 'String',
+                    required: true
+                },
+
+                addresses: ["schemas['address']"],
+                contacts: ["schemas['contact']"],
+
+                superEnterprise: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'EnterpriceModel'
+                },
+
+                subEnterprises: [{
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'EnterpriceModel'
+                }]
+            }
+        },
+
+
         user: {
             super: 'base',
             model: true,
             service: true,
             event: true,
-            refSchema: {
-                addresses: {
-                    modelName: "AddressModel",
-                    type: 'one'
-                },
-                contacts: {
-                    modelName: "ContactModel",
-                    type: 'many'
-                }
-            },
+            router: true,
             definition: {
                 firstName: "String",
                 lastName: "String",
@@ -80,20 +118,15 @@ module.exports = {
                     type: "String",
                     default: 'Nodics Framework'
                 },
-                addresses: [{
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'AddressModel'
-                }],
-                contacts: [{
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'ContactModel'
-                }]
+                addresses: ["schemas['address']"],
+                contacts: ["schemas['contact']"],
             }
         },
         person: {
             super: 'user',
             model: true,
             service: true,
+            router: true,
             definition: {
                 displayName: "String"
             }

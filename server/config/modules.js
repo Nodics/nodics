@@ -1,4 +1,4 @@
-module.exports = { core: [ 'core', 'cronjob', 'nems', 'user' ],
+module.exports = { core: [ 'core', 'cronjob', 'nems', 'profile' ],
   framework: 
    [ 'framework',
      'nconfig',

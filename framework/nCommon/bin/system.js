@@ -110,9 +110,6 @@ module.exports = {
             .replaceAll('FacadeName', options.modelName + 'Facade')
             .replaceAll("contextRoot", contextRoot)
             .replaceAll("controllerName", options.modelName + 'Controller');
-        //console.log('=========================================================================');
-        //console.log(commonDefinitionString);
-        //console.log('=========================================================================');
         return JSON.parse(commonDefinitionString, function(key, value) {
             if (_(value).startsWith('function')) {
                 value = value.replace("function", key + ' = function');

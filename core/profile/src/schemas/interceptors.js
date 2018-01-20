@@ -10,7 +10,17 @@
  */
 
 module.exports = {
-    init: function() {
-        //console.log(' ==== > Module User');
+    profile: {
+        default: { // for all schema in user module
+            testUserInterceptors: function(schema) {
+                //console.log('%%% testUserInterceptors');
+            }
+        },
+        person: { // this will execute only for person schema
+            testPersonInterceptors: function(schema) {
+                //console.log('%%% testPersonInterceptors');
+            }
+        }
+
     }
 };

@@ -15,7 +15,13 @@ module.exports = {
             super: 'none',
             model: false,
             service: false,
+            event: false,
+            router: false,
             definition: {
+                enterpriseCode: {
+                    type: 'String',
+                    required: true
+                },
                 creationDate: {
                     type: 'Date',
                     default: new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)

@@ -10,17 +10,14 @@
  */
 
 module.exports = {
-    user: {
-        default: { // for all schema in user module
-            testUserInterceptors: function(schema) {
-                //console.log('%%% testUserInterceptors');
-            }
-        },
-        person: { // this will execute only for person schema
-            testPersonInterceptors: function(schema) {
-                //console.log('%%% testPersonInterceptors');
+    profile: {
+        loadEnterprise: {
+            getEnterprise: {
+                secured: false,
+                key: '/enterprise/get',
+                method: 'POST',
+                handler: 'CONTROLLER.EnterpriseController.getEnterprise'
             }
         }
-
     }
 };
