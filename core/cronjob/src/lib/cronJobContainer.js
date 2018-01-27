@@ -26,11 +26,11 @@ module.exports = function() {
                     };
                 } catch (error) {
                     failed[definition.name] = error;
-                    console.log('Error while creating job for : ', definition.name, ' ', error);
+                    console.log('   ERROR:  while creating job for : ', definition.name, ' ', error);
                 }
             });
         } else {
-            throw new Error('Invalid cron job definitions');
+            throw new Error('   ERROR: Invalid cron job definitions');
         }
         return {
             success: _success,
@@ -40,10 +40,10 @@ module.exports = function() {
 
     this.createCronJob = function(definition) {
         if (!definition) {
-            throw new Error('Invalid cron job definition');
+            throw new Error('   ERROR: Invalid cron job definition');
         }
         if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
-            throw new Error('Invalid cron job definition triggers');
+            throw new Error('   ERROR: Invalid cron job definition triggers');
         }
         if (!_jobPool[definition.name]) {
             let cronJobs = [];
@@ -57,7 +57,7 @@ module.exports = function() {
             });
             _jobPool[definition.name] = cronJobs;
         } else {
-            console.log('Definition ', definition.name, ' is already available.');
+            console.log('   WARN: Definition ', definition.name, ' is already available.');
             throw new Error('Definition ', definition.name, ' is already available.');
         }
     };
@@ -75,11 +75,11 @@ module.exports = function() {
                     };
                 } catch (error) {
                     failed[definition.name] = error;
-                    console.log('Error while creating job for : ', definition.name, ' ', error);
+                    console.log('   ERROR: while creating job for : ', definition.name, ' ', error);
                 }
             });
         } else {
-            throw new Error('Invalid cron job definitions');
+            throw new Error('   ERROR: Invalid cron job definitions');
         }
         return {
             success: success,
@@ -89,10 +89,10 @@ module.exports = function() {
 
     this.updateCronJob = function(definition) {
         if (!definition) {
-            throw new Error('Invalid cron job definition');
+            throw new Error('   ERROR: Invalid cron job definition');
         }
         if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
-            throw new Error('Invalid cron job definition triggers');
+            throw new Error('   ERROR: Invalid cron job definition triggers');
         }
         if (!_jobPool[definition.name]) {
             this.createCronJob(definition);
@@ -125,11 +125,11 @@ module.exports = function() {
                     };
                 } catch (error) {
                     failed[definition.name] = error;
-                    console.log('Error while executing job for : ', definition.name, ' ', error);
+                    console.log('   ERROR: while executing job for : ', definition.name, ' ', error);
                 }
             });
         } else {
-            throw new Error('Invalid cron job definitions');
+            throw new Error('   ERROR: Invalid cron job definitions');
         }
         return {
             success: success,
@@ -139,7 +139,7 @@ module.exports = function() {
 
     this.runCronJob = function(definition) {
         if (!definition) {
-            throw new Error('Invalid cron job definition');
+            throw new Error('   ERROR: Invalid cron job definition');
         }
         let _running = false;
         console.log(_jobPool);
@@ -187,7 +187,7 @@ module.exports = function() {
                 cronJob.startCronJob();
             });
         } else {
-            throw new Error('Either name is not valid or job already removed.');
+            throw new Error('   WARN: Either name is not valid or job already removed.');
         }
     };
 
@@ -218,7 +218,7 @@ module.exports = function() {
                 cronJob.stopCronJob();
             });
         } else {
-            throw new Error('Either name is not valid or job already removed.');
+            throw new Error('   ERROR: Either name is not valid or job already removed.');
         }
     };
 
@@ -229,7 +229,6 @@ module.exports = function() {
         let response = {};
         jobNames.forEach((value) => {
             try {
-                console.log('  --Removing job : ', value);
                 _self.removeCronJob(value);
                 _success[value] = {
                     message: 'Successfully removed'
@@ -246,13 +245,10 @@ module.exports = function() {
 
     this.removeCronJob = function(jobName) {
         if (jobName && _jobPool[jobName]) {
-            console.log('    --Job Object : ', _jobPool[jobName]);
             _jobPool[jobName].forEach(function(cronJob) {
                 cronJob.stopCronJob();
             });
-            //_success[jobName] = _jobPool[jobName];
             delete _jobPool[jobName];
-            console.log('    --1Job Object : ', _jobPool[jobName]);
         } else {
             throw new Error('Either name is not valid or job already removed.');
         }
@@ -285,7 +281,7 @@ module.exports = function() {
                 cronJob.pauseCronJob();
             });
         } else {
-            throw new Error('Given cronJob name is not valid');
+            throw new Error('   ERROR: Given cronJob name is not valid');
         }
     };
 
@@ -316,7 +312,7 @@ module.exports = function() {
                 cronJob.resumeCronJob();
             });
         } else {
-            throw new Error('Given cronJob name is not valid');
+            throw new Error('   ERROR: Given cronJob name is not valid');
         }
     };
 };

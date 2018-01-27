@@ -94,7 +94,6 @@ module.exports = function(definition, trigger, context, timeZone) {
                 },
                 function() {
                     _cronJob.start();
-                    console.log('      triggered: ');
                 }
             ]);
         }

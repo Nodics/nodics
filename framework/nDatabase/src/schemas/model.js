@@ -15,7 +15,6 @@ module.exports = {
     default: {
         defineDefaultGet: function(model, rawSchema) {
             model.statics.get = function(input) {
-                console.log('$$$$$$$$Model');
                 let schema = rawSchema;
                 let requestBody = input.options;
                 let skip = (requestBody.pageSize || CONFIG.get('defaultPageSize')) * (requestBody.pageNumber || CONFIG.get('defaultPageNumber'));

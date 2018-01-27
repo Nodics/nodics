@@ -42,8 +42,10 @@ module.exports = {
                 zipCode: {
                     type: 'String'
                 },
+                contacts: ["schemas['contact']"]
             }
         },
+
         contact: {
             super: 'base',
             model: true,
@@ -52,10 +54,15 @@ module.exports = {
             router: true,
             definition: {
                 contactType: {
+                    type: 'String',
+                    required: true
+                },
+                prefix: {
                     type: 'String'
                 },
                 contactNo: {
-                    type: 'String'
+                    type: 'String',
+                    required: true
                 }
             }
         },
@@ -76,6 +83,7 @@ module.exports = {
                     type: 'many'
                 }
             },
+
             definition: {
                 name: {
                     type: 'String',
@@ -104,32 +112,71 @@ module.exports = {
             }
         },
 
-
-        user: {
+        person: {
             super: 'base',
-            model: true,
-            service: true,
-            event: true,
-            router: true,
+            model: false,
+            service: false,
+            event: false,
+            router: false,
             definition: {
-                firstName: "String",
-                lastName: "String",
-                name: {
+                firstName: {
                     type: "String",
-                    default: 'Nodics Framework'
+                    required: true
+                },
+                middleName: {
+                    type: "String"
+                },
+                lastName: {
+                    type: "String",
+                    required: true
+                },
+                lastLogin: {
+                    type: 'Date'
+                },
+                loginId: {
+                    type: "String",
+                    required: true,
+                    unique: true
+                },
+                password: {
+                    type: "String",
+                    required: true
+                },
+                locked: {
+                    type: 'Boolean'
+                },
+                lockedTime: {
+                    type: 'Date'
+                },
+                active: {
+                    type: 'Boolean',
+                    default: true
                 },
                 addresses: ["schemas['address']"],
                 contacts: ["schemas['contact']"],
             }
         },
-        person: {
-            super: 'user',
+
+        employee: {
+            super: 'person',
             model: true,
             service: true,
+            event: true,
             router: true,
             definition: {
-                displayName: "String"
+
             }
-        }
+        },
+
+        customer: {
+            super: 'person',
+            model: true,
+            service: true,
+            event: true,
+            router: true,
+            definition: {
+
+            }
+        },
     }
 };

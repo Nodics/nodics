@@ -10,6 +10,9 @@
  */
 
 module.exports = {
+
+    encryptSaltLength: 10,
+
     server: {
         profile: {
             abstractServer: {

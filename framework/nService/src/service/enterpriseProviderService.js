@@ -24,7 +24,6 @@ module.exports = {
             enterpriseCode: processRequest.enterpriseCode
         };
         let requestUrl = SERVICE.ModuleService.buildRequest(options);
-        console.log('loadEnterprise : ', requestUrl);
         SERVICE.ModuleService.fetch(requestUrl, (error, response) => {
             if (error) {
                 callback(error, null);

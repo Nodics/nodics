@@ -17,13 +17,19 @@ module.exports = {
     },
     buildRequest: function(options) {
         console.log('   INFO: Building request url for module ', options.moduleName);
+        let header = {
+            'content-type': options.contentType || CONFIG.get('defaultContentType')
+        };
+        if (!UTILS.isBlank(options.enterpriseCode)) {
+            header.enterpriseCode = options.enterpriseCode;
+        }
+        if (!UTILS.isBlank(options.authToken)) {
+            header.authToken = options.authToken;
+        }
         return {
             method: options.methodName || 'GET',
             uri: SYSTEM.prepareConnectionUrl(options.moduleName) + '/' + options.apiName,
-            headers: {
-                'content-type': options.contentType || CONFIG.get('defaultContentType'),
-                'enterpriseCode': options.enterpriseCode
-            },
+            headers: header,
             body: options.requestBody,
             json: options.isJsonResponse || true
         };

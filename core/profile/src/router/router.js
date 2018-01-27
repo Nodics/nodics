@@ -18,6 +18,24 @@ module.exports = {
                 method: 'POST',
                 handler: 'CONTROLLER.EnterpriseController.getEnterprise'
             }
+        },
+
+        authenticate: {
+            authorize: {
+                secured: false,
+                key: '/authenticate',
+                method: 'POST',
+                handler: 'CONTROLLER.AuthenticationProviderController.authenticate'
+            }
+        },
+
+        authorize: {
+            authorize: {
+                secured: false,
+                key: '/authorize',
+                method: 'POST',
+                handler: 'CONTROLLER.AuthenticationProviderController.authorize'
+            }
         }
     }
 };

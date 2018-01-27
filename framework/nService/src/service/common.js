@@ -13,7 +13,6 @@ const _ = require('lodash');
 
 module.exports = {
     get: function(request, callback) {
-        console.log('$$$$$$$$Service');
         NODICS.getModels('moduleName', request.tenant).modelName.get(request).then((models) => {
             callback(null, models, request);
         }).catch((error) => {

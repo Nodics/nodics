@@ -62,7 +62,7 @@ module.exports = {
             model: true,
             service: true,
             event: false,
-            router: true,
+            router: false,
             definition: {
 
             }

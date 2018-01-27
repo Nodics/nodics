@@ -87,7 +87,6 @@ module.exports = {
 
     pauseJob: function(request, callback) {
         try {
-            console.log(' ---- Pausing jobs : ', request);
             let result = this.cronJobContainer.pauseCronJobs(request.jobNames);
             callback(null, result, request);
         } catch (error) {

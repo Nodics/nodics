@@ -11,7 +11,6 @@
 
 module.exports = {
     get: function(request, callback) {
-        console.log('$$$$$$$$Facade');
         return SERVICE.ServiceName.get(request, callback);
     },
 

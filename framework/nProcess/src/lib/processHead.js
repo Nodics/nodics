@@ -141,7 +141,6 @@ module.exports = function(name, processDefinition, callback) {
             this.prepareNextNode();
             if (_currentNode.getType() === 'function') {
                 try {
-                    console.log(_currentNode.getProcess());
                     eval(_currentNode.getProcess())(processRequest, processResponse, this);
                     if (!_nextSuccessNode) {
                         if (_callback && !_done) {
@@ -156,9 +155,7 @@ module.exports = function(name, processDefinition, callback) {
                 try {
                     let _self = this;
                     let proName = _currentNode.getProcess();
-                    console.log('>========= Starting nested Process : ', proName);
                     SERVICE.ProcessService.startProcess(_currentNode.getProcess(), processRequest, processResponse, () => {
-                        console.log('<========= End nested Process : ', proName);
                         if (_hardStop && !UTILS.isBlank(processResponse.errors)) {
                             _self.nextFailure(processRequest, processResponse);
                         } else {

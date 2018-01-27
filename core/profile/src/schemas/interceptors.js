@@ -9,6 +9,8 @@
 
  */
 
+const bcrypt = require("bcrypt");
+
 module.exports = {
     profile: {
         default: { // for all schema in user module
@@ -16,10 +18,46 @@ module.exports = {
                 //console.log('%%% testUserInterceptors');
             }
         },
-        person: { // this will execute only for person schema
-            testPersonInterceptors: function(schema) {
-                //console.log('%%% testPersonInterceptors');
-            }
+        employee: { // this will execute only for person schema
+            encryptPasswordPreSave: function(schema, modelName) {
+                schema.pre('save', function(next) {
+                    console.log(' ---------- encrypting password : ', this);
+                    SYSTEM.encryptPassword(this).then(document => {
+                        console.log('------------ : ', document);
+                        next();
+                    }).catch(error => {
+                        next(error);
+                    });
+                });
+            },
+
+            encryptPasswordFindAndUpdate: function(schema, modelName) {
+                schema.pre('findOneAndUpdate', function(next) {
+                    let document = this._update.$set;
+                    delete document.password;
+                    next();
+                });
+            },
+
+        },
+        customer: { // this will execute only for person schema
+            encryptPasswordPreSave: function(schema, modelName) {
+                schema.pre('save', function(next) {
+                    SYSTEM.encryptPassword(this).then(document => {
+                        next();
+                    }).catch(error => {
+                        next(error);
+                    });
+                });
+            },
+
+            encryptPasswordFindAndUpdate: function(schema, modelName) {
+                schema.pre('findOneAndUpdate', function(next) {
+                    let document = this._update.$set;
+                    delete document.password;
+                    next();
+                });
+            },
         }
 
     }

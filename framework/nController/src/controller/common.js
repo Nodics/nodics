@@ -22,7 +22,6 @@ module.exports = {
             } else {
                 request.options = {};
             }
-            console.log('$$$$$$$$Controller');
             FACADE.FacadeName.get(request, callback);
         } else {
             console.log('   ERROR: Please validate your request, it is not a valid one');

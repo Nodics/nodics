@@ -13,22 +13,22 @@ module.exports = {
     operations: {
         get: function(app, routerDef) {
             app.route(routerDef.url).get((req, res) => {
-                SERVICE.RequestHandlerService.startRequestHandlerProcess(req, res, routerDef);
+                SERVICE.RequestHandlerProcessService.startRequestHandlerProcess(req, res, routerDef);
             });
         },
         post: function(app, routerDef) {
             app.route(routerDef.url).post((req, res) => {
-                SERVICE.RequestHandlerService.startRequestHandlerProcess(req, res, routerDef);
+                SERVICE.RequestHandlerProcessService.startRequestHandlerProcess(req, res, routerDef);
             });
         },
         delete: function(app, routerDef) {
             app.route(routerDef.url).delete((req, res) => {
-                SERVICE.RequestHandlerService.startRequestHandlerProcess(req, res, routerDef);
+                SERVICE.RequestHandlerProcessService.startRequestHandlerProcess(req, res, routerDef);
             });
         },
         put: function(app, routerDef) {
             app.route(routerDef.url).put((req, res) => {
-                SERVICE.RequestHandlerService.startRequestHandlerProcess(req, res, routerDef);
+                SERVICE.RequestHandlerProcessService.startRequestHandlerProcess(req, res, routerDef);
             });
         }
     },

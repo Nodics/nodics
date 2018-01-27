@@ -36,7 +36,6 @@ module.exports = {
 
     parseHeader: function(processRequest, processResponse, process) {
         console.log('   INFO: Parsing request header : ', processRequest.originalUrl);
-        processRequest.enterpriseCode = processRequest.httpRequest.get('enterpriseCode') || {};
         process.nextSuccess(processRequest, processResponse);
     },
 
@@ -48,7 +47,6 @@ module.exports = {
     handleSpecialRequest: function(processRequest, processResponse, process) {
         console.log('   INFO: Handling special request : ', processRequest.originalUrl);
         if (processRequest.special) {
-            console.log(1);
             eval(processRequest.router.handler)(processRequest, (error, response) => {
                 if (error) {
                     console.log('   ERROR: got error while handling special request : ', error);
@@ -62,7 +60,6 @@ module.exports = {
                 }
             });
         } else {
-            console.log(3);
             process.nextSuccess(processRequest, processResponse);
         }
     },
@@ -71,9 +68,11 @@ module.exports = {
         console.log('   INFO: redirecting secured/non-secured request  : ', processRequest.originalUrl);
         if (processRequest.secured) {
             console.log('   INFO: Handling secured request');
+            processRequest.authToken = processRequest.httpRequest.get('authToken');
             process.nextSuccess(processRequest, processResponse);
         } else {
             console.log('   INFO: Handling non-secured request');
+            processRequest.enterpriseCode = processRequest.httpRequest.get('enterpriseCode') || {};
             process.nextFailure(processRequest, processResponse);
         }
     },

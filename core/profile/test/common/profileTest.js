@@ -35,7 +35,7 @@ module.exports = {
         data: {
             value: 2
         },
-        insertUser: {
+        createDefaultData: {
             options: {
                 description: 'Test suite to run all user related insertUser',
                 beforeEach: function() {
@@ -51,12 +51,49 @@ module.exports = {
                     console.log('   This is insertUser afterAll');
                 }
             },
-            testIfEqual: {
-                description: 'Testing equality...',
+            insertDefaultEnterprise: {
+                description: 'Insert default Enterprise',
                 test: function(done) {
-                    let val = 2;
-                    expect(val).to.equal(TEST.uTestPool.data.value);
-                    done();
+                    NODICS.getModels('profile', 'default').EnterpriseModel.saveOrUpdate({
+                        tenant: 'default',
+                        models: [{
+                            _id: '5a6051e068e7aa0f6c15bcf1',
+                            enterpriseCode: 'default',
+                            name: 'Default',
+                            description: 'Default Enterprise',
+                            tenant: 'default'
+                        }]
+                    }).then(models => {
+                        console.log('   INFO: Default Enterprise has been created');
+                        done();
+                    }).catch(error => {
+                        console.log('   INFO: Could not create Default Enterprise');
+                        done();
+                    });
+                }
+            },
+            insertDefaultEmployee: {
+                description: 'Insert default user',
+                test: function(done) {
+                    NODICS.getModels('profile', 'default').EmployeeModel.saveOrUpdate({
+                        tenant: 'default',
+                        models: [{
+                            _id: '5a6051e068e7aa0f6c15bcb1',
+                            enterpriseCode: 'default',
+                            firstName: 'Himkar',
+                            middleName: 'Admin',
+                            lastName: 'Admin',
+                            loginId: 'admin',
+                            password: 'nodics',
+                            active: true
+                        }]
+                    }).then(models => {
+                        console.log('   INFO: Default employee has been created');
+                        done();
+                    }).catch(error => {
+                        console.log('   INFO: Could not create Default employee');
+                        done();
+                    });
                 }
             }
         }

@@ -15,7 +15,6 @@ module.exports = {
     },
 
     getEnterprise: function(processRequest, callback) {
-        console.log(' ------- get Enterprise : ', processRequest.enterpriseCode);
         if (UTILS.isBlank(processRequest.enterpriseCode)) {
             callback('Invalid enterprise code');
         } else {

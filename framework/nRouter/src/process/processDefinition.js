@@ -20,28 +20,28 @@ module.exports = {
         nodes: {
             parseHeader: {
                 type: 'function',
-                process: 'SERVICE.RequestHandlerService.parseHeader',
+                process: 'SERVICE.RequestHandlerProcessService.parseHeader',
                 success: 'parseBody',
                 failure: 'failureEnd'
             },
 
             parseBody: {
                 type: 'function',
-                process: 'SERVICE.RequestHandlerService.parseBody',
+                process: 'SERVICE.RequestHandlerProcessService.parseBody',
                 success: 'handleSpecialRequest',
                 failure: 'failureEnd'
             },
 
             handleSpecialRequest: {
                 type: 'function',
-                process: 'SERVICE.RequestHandlerService.handleSpecialRequest',
+                process: 'SERVICE.RequestHandlerProcessService.handleSpecialRequest',
                 success: 'redirectRequest',
                 failure: 'failureEnd'
             },
 
             redirectRequest: {
                 type: 'function',
-                process: 'SERVICE.RequestHandlerService.redirectRequest',
+                process: 'SERVICE.RequestHandlerProcessService.redirectRequest',
                 success: 'handleSecuredRequest',
                 failure: 'handleNonSecuredRequest'
             },
@@ -62,48 +62,42 @@ module.exports = {
 
             handleRequest: {
                 type: 'function',
-                process: 'SERVICE.RequestHandlerService.handleRequest',
+                process: 'SERVICE.RequestHandlerProcessService.handleRequest',
                 success: 'successEnd',
                 failure: 'failureEnd'
             },
 
             successEnd: {
                 type: 'function',
-                process: 'SERVICE.RequestHandlerService.handleSucessEnd'
+                process: 'SERVICE.RequestHandlerProcessService.handleSucessEnd'
             },
 
             failureEnd: {
                 type: 'function',
-                process: 'SERVICE.RequestHandlerService.handleFailureEnd'
+                process: 'SERVICE.RequestHandlerProcessService.handleFailureEnd'
             },
 
             handleError: {
                 type: 'function',
-                process: 'SERVICE.RequestHandlerService.handleErrorEnd'
+                process: 'SERVICE.RequestHandlerProcessService.handleErrorEnd'
             }
         }
     },
 
     handleSecuredRequestProcess: {
-        startNode: "validateEnterpriseCode",
+        startNode: "validateAuthToken",
         hardStop: true,
         handleError: 'handleError',
         nodes: {
-            validateEnterpriseCode: {
+            validateAuthToken: {
                 type: 'function',
-                process: 'SERVICE.RequestValidatorService.validateEnterpriseCode',
-                success: 'loadEnterpriseCode',
+                process: 'SERVICE.SecuredRequestProcessService.validateAuthToken',
+                success: 'authorizeAuthToken',
                 failure: 'failureEnd'
             },
-            loadEnterpriseCode: {
+            authorizeAuthToken: {
                 type: 'function',
-                process: 'SERVICE.RequestValidatorService.loadEnterpriseCode',
-                success: 'validateTenantId',
-                failure: 'failureEnd'
-            },
-            validateTenantId: {
-                type: 'function',
-                process: 'SERVICE.RequestValidatorService.validateTenantId',
+                process: 'SERVICE.SecuredRequestProcessService.authorizeAuthToken',
                 success: 'successEnd',
                 failure: 'failureEnd'
             }
@@ -117,19 +111,19 @@ module.exports = {
         nodes: {
             validateEnterpriseCode: {
                 type: 'function',
-                process: 'SERVICE.RequestValidatorService.validateEnterpriseCode',
+                process: 'SERVICE.NonSecuredRequestProcessService.validateEnterpriseCode',
                 success: 'loadEnterpriseCode',
                 failure: 'failureEnd'
             },
             loadEnterpriseCode: {
                 type: 'function',
-                process: 'SERVICE.RequestValidatorService.loadEnterpriseCode',
+                process: 'SERVICE.NonSecuredRequestProcessService.loadEnterpriseCode',
                 success: 'validateTenantId',
                 failure: 'failureEnd'
             },
             validateTenantId: {
                 type: 'function',
-                process: 'SERVICE.RequestValidatorService.validateTenantId',
+                process: 'SERVICE.NonSecuredRequestProcessService.validateTenantId',
                 success: 'successEnd',
                 failure: 'failureEnd'
             }

@@ -74,23 +74,21 @@ module.exports = {
         postSaveOrUpdateInterceptor: function(schema, modelName) {
             schema.post('findOneAndUpdate', function(next) {
                 if (schema.rawSchema.event) {
-                    if (!CONFIG.get('excludedEventModels').includes(schema.modelName)) {
-                        let event = {
-                            event: 'saveOrUpdate',
-                            source: schema.moduleName,
-                            target: schema.moduleName,
-                            state: "NEW",
-                            type: "ASYNC",
-                            params: [{
-                                key: 'modelName',
-                                value: schema.modelName
-                            }]
-                        };
-                        SERVICE.EventService.publish(event, (error, response, request) => {
-                            if (error) console.log('   ERROR: facing issue while pushing saveOrUpdate event : ', error);
-                            console.log('   INFO: Event saveOrUpdate published successfully ', response);
-                        });
-                    }
+                    let event = {
+                        event: 'saveOrUpdate',
+                        source: schema.moduleName,
+                        target: schema.moduleName,
+                        state: "NEW",
+                        type: "ASYNC",
+                        params: [{
+                            key: 'modelName',
+                            value: schema.modelName
+                        }]
+                    };
+                    SERVICE.EventService.publish(event, (error, response, request) => {
+                        if (error) console.log('   ERROR: facing issue while pushing saveOrUpdate event : ', error);
+                        console.log('   INFO: Event saveOrUpdate published successfully ', response);
+                    });
                 }
                 if (next && typeof next === "function") {
                     next();
