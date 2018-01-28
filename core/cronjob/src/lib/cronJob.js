@@ -57,15 +57,15 @@ module.exports = function(definition, trigger, context, timeZone) {
             onTick: function() {
                 if (!_paused) {
                     _running = true;
-                    SERVICE.JobHandlerService.handleJobTriggered(_definition, _cronJob);
+                    SERVICE.JobHandlerService.handleJobTriggered(_definition, _self);
                     try {
                         if (NODICS.getServerState() === 'started' && CONFIG.get('clusterId') === _definition.clusterId) {
-                            eval(_definition.jobDetail.startNode + '(_definition, _cronJob)');
+                            eval(_definition.jobDetail.startNode + '(_definition, _self)');
                         }
                     } catch (error) {
-                        eval(_definition.jobDetail.errorNode + '(_definition, _cronJob, error)');
+                        eval(_definition.jobDetail.errorNode + '(_definition, _self, error)');
                     }
-                    SERVICE.JobHandlerService.handleJobCompleted(_definition, _cronJob);
+                    SERVICE.JobHandlerService.handleJobCompleted(_definition, _self);
                     if (oneTime) {
                         _self.stopCronJob();
                     }
@@ -75,12 +75,12 @@ module.exports = function(definition, trigger, context, timeZone) {
                 if (!_paused) {
                     try {
                         if (_running && NODICS.getServerState() === 'started' && CONFIG.get('clusterId') === _definition.clusterId) {
-                            eval(_definition.jobDetail.endNode + '(_definition, _cronJob)');
+                            eval(_definition.jobDetail.endNode + '(_definition, _self)');
                         }
                     } catch (error) {
-                        eval(_definition.jobDetail.errorNode + '(_definition, _cronJob, error)');
+                        eval(_definition.jobDetail.errorNode + '(_definition, _self, error)');
                     }
-                    SERVICE.JobHandlerService.handleCronJobEnd(_definition, _cronJob);
+                    SERVICE.JobHandlerService.handleCronJobEnd(_definition, _self);
                     _running = false;
                 }
             },

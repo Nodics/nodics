@@ -146,7 +146,7 @@ module.exports = {
             apiName: 'event/handle',
             requestBody: event,
             isJsonResponse: true,
-            enterpriseCode: event.enterpriseCode
+            authToken: request.authToken
         };
         let requestUrl = SERVICE.ModuleService.buildRequest(options);
         SERVICE.ModuleService.fetch(requestUrl).then(response => {

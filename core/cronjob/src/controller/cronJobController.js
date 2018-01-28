@@ -16,7 +16,8 @@ module.exports = {
 
     createJob: function(requestContext, callback) {
         let request = {
-            tenant: requestContext.tenant
+            tenant: requestContext.tenant,
+            authToken: requestContext.authToken
         };
         if (requestContext.httpRequest) {
             request.options = {};
@@ -52,7 +53,8 @@ module.exports = {
 
     runJob: function(requestContext, callback) {
         let request = {
-            tenant: requestContext.tenant
+            tenant: requestContext.tenant,
+            authToken: requestContext.authToken
         };
         if (requestContext.httpRequest) {
             request.options = {};

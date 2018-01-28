@@ -20,7 +20,7 @@ module.exports = function() {
         if (definitions) {
             definitions.forEach(function(definition) {
                 try {
-                    _self.createCronJob(authToken, definition);
+                    _self.createCronJob(request.authToken, definition);
                     _success[definition.name] = {
                         message: 'Successfully created'
                     };
@@ -120,7 +120,7 @@ module.exports = function() {
         if (definitions) {
             definitions.forEach(function(definition) {
                 try {
-                    _self.runCronJob(definition);
+                    _self.runCronJob(request.authToken, definition);
                     success[definition.name] = {
                         message: 'Successfully executed'
                     };
@@ -138,7 +138,7 @@ module.exports = function() {
         };
     };
 
-    this.runCronJob = function(definition) {
+    this.runCronJob = function(authToken, definition) {
         if (!definition) {
             throw new Error('   ERROR: Invalid cron job definition');
         }
@@ -151,6 +151,7 @@ module.exports = function() {
         }
         let tmpCronJob = new CLASSES.CronJob(definition, definition.triggers[0]); //TODO: need to add context and timeZone
         tmpCronJob.validate();
+        tmpCronJob.setAuthToken(authToken);
         tmpCronJob.init(true);
         if (_jobPool[definition.name] && _running) {
             _jobPool[definition.name].forEach(function(job) {

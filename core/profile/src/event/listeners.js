@@ -10,15 +10,10 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
-
-    handleEvent: function(request, callback) {
-        SERVICE.EventService.handleEvent(request, callback);
-    },
-
-    publish: function(request, callback) {
-        SERVICE.EventService.publish(request, callback);
+    profile: {
+        testListener: {
+            event: 'testMe',
+            listner: 'SERVICE.EventTestService.handleTestEvent'
+        }
     }
 };

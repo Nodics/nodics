@@ -36,7 +36,6 @@ module.exports = {
     },
 
     authorizeToken: function(processRequest, callback) {
-        console.log('Authorizing token');
         this.findToken(processRequest, (error, token) => {
             if (error) {
                 let options = {

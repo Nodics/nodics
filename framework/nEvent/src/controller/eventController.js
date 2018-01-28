@@ -23,13 +23,13 @@ module.exports = {
 
     handleEvent: function(requestContext, callback) {
         if (CONTROLLER.EventController.validateEvent(requestContext.httpRequest.body)) {
-            FACADE.EventFacade.handleEvent(requestContext.httpRequest.body, callback);
+            FACADE.EventFacade.handleEvent(requestContext, callback);
         }
     },
 
     publish: function(requestContext, callback) {
         if (CONTROLLER.EventController.validateEvent(requestContext.httpRequest.body)) {
-            FACADE.EventFacade.publish(requestContext.httpRequest.body, callback);
+            FACADE.EventFacade.publish(requestContext, callback);
         }
     }
 };

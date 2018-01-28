@@ -26,7 +26,7 @@ module.exports = {
             schema.post('save', function(next) {
                 try {
                     if (NODICS.getActiveChannel() !== 'test' &&
-                        NODICS.getNTestRunning() &&
+                        NODICS.isNTestRunning() &&
                         CONFIG.get('event').publishAllActive &&
                         schema.rawSchema.event) {
                         let document = this;
@@ -80,7 +80,7 @@ module.exports = {
             schema.post('findOneAndUpdate', function(next) {
                 try {
                     if (NODICS.getActiveChannel() !== 'test' &&
-                        NODICS.getNTestRunning() &&
+                        NODICS.isNTestRunning() &&
                         CONFIG.get('event').publishAllActive &&
                         schema.rawSchema.event) {
                         let document = this._update.$set;
