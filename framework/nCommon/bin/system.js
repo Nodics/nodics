@@ -21,33 +21,6 @@ module.exports = {
         return fileName;
     },
 
-    processFiles: function(filePath, filePostFix, callback, exclude) {
-        let _self = this;
-        if (fs.existsSync(filePath)) {
-            let files = fs.readdirSync(filePath);
-            if (files) {
-                files.map(function(file) {
-                    return path.join(filePath, file);
-                }).filter(function(file) {
-                    if (fs.statSync(file).isDirectory()) {
-                        _self.processFiles(file, filePostFix, callback, exclude);
-                    } else {
-                        return fs.statSync(file).isFile();
-                    }
-                }).filter(function(file) {
-                    if (!filePostFix || filePostFix === '*') {
-                        return true;
-                    } else {
-                        return file.endsWith(filePostFix);
-                    }
-                }).forEach(function(file) {
-                    console.log('   INFO: Loading file from : ', file);
-                    callback(file);
-                });
-            }
-        }
-    },
-
     schemaWalkThrough: function(options, callback) {
         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.models) {

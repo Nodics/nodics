@@ -9,12 +9,12 @@
 
  */
 
-var _ = require('lodash');
+const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
-let Config = require('./config');
-let Nodics = require('./nodics');
+const Config = require('./config');
+const Nodics = require('./nodics');
 
 module.exports = {
     getActiveModules: function(options) {
@@ -193,6 +193,33 @@ module.exports = {
             }
         });
         return mergedFile;
+    },
+
+    processFiles: function(filePath, filePostFix, callback) {
+        let _self = this;
+        if (fs.existsSync(filePath)) {
+            let files = fs.readdirSync(filePath);
+            if (files) {
+                files.map(function(file) {
+                    return path.join(filePath, file);
+                }).filter(function(file) {
+                    if (fs.statSync(file).isDirectory()) {
+                        _self.processFiles(file, filePostFix, callback);
+                    } else {
+                        return fs.statSync(file).isFile();
+                    }
+                }).filter(function(file) {
+                    if (!filePostFix || filePostFix === '*') {
+                        return true;
+                    } else {
+                        return file.endsWith(filePostFix);
+                    }
+                }).forEach(function(file) {
+                    console.log('!!!!!!!   INFO: Loading file from : ', file);
+                    callback(file);
+                });
+            }
+        }
     },
 
     getAllMethods: function(envScripts) {
