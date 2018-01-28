@@ -35,6 +35,7 @@ module.exports = {
                                 tmpRouterDef.controller = tmpRouterDef.controller.replaceAll('controllerName', schemaName.toUpperCaseEachWord() + 'Controller');
                                 tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
                                 tmpRouterDef.moduleName = moduleName;
+                                //console.log(tmpRouterDef.secured, ' : ', tmpRouterDef.method, ' : ', tmpRouterDef.url);
                                 eval(routers.operations[functionName](app, tmpRouterDef));
                             });
                         });
@@ -48,6 +49,7 @@ module.exports = {
                             let tmpRouterDef = _.merge({}, routerDef);
                             tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
                             tmpRouterDef.moduleName = moduleName;
+                            //console.log(tmpRouterDef.secured, ' : ', tmpRouterDef.method, ' : ', tmpRouterDef.url);
                             eval(routers.operations[functionName](app, tmpRouterDef));
                         });
                     });
@@ -60,6 +62,7 @@ module.exports = {
                             let tmpRouterDef = _.merge({}, routerDef);
                             tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
                             tmpRouterDef.moduleName = moduleName;
+                            //console.log(tmpRouterDef.secured, ' : ', tmpRouterDef.method, ' : ', tmpRouterDef.url, ' : ', moduleName);
                             eval(routers.operations[functionName](app, tmpRouterDef));
                         });
                     });

@@ -14,7 +14,7 @@ module.exports = {
         preSaveInterceptor: function(schema, modelName) {
             schema.pre('save', function(next) {
                 if (NODICS.isNTestRunning()) {
-                    throw new Error('Save operation not allowed, while running N-Test cases');
+                    next(new Error('Save operation not allowed, while running N-Test cases'));
                 }
                 if (next && typeof next === "function") {
                     next();
@@ -24,22 +24,29 @@ module.exports = {
 
         postSaveInterceptor: function(schema, modelName) {
             schema.post('save', function(next) {
-                if (schema.rawSchema.event) {
-                    let event = {
-                        event: 'save',
-                        source: schema.moduleName,
-                        target: schema.moduleName,
-                        state: "NEW",
-                        type: "ASYNC",
-                        params: [{
-                            key: 'modelName',
-                            value: schema.modelName
-                        }]
-                    };
-                    SERVICE.EventService.publish(event, (error, response) => {
-                        if (error) console.log('   ERROR: facing issue while pushing save event : ', error);
-                        console.log('   INFO: Event save published successfully ', response);
-                    });
+                try {
+                    if (NODICS.getActiveChannel() !== 'test' &&
+                        NODICS.getNTestRunning() &&
+                        CONFIG.get('event').publishAllActive &&
+                        schema.rawSchema.event) {
+                        let document = this;
+                        let event = {
+                            enterpriseCode: document.enterpriseCode,
+                            event: 'save',
+                            source: schema.moduleName,
+                            target: schema.moduleName,
+                            state: "NEW",
+                            type: "ASYNC",
+                            params: [{
+                                key: 'modelName',
+                                value: schema.modelName
+                            }]
+                        };
+                        console.log('   INFO: Pushing event for item created : ', schema.rawSchema);
+                        SERVICE.EventService.publish(event);
+                    }
+                } catch (error) {
+                    console.log('   ERROR: facing issue while pushing save event : ', error);
                 }
                 if (next && typeof next === "function") {
                     next();
@@ -50,9 +57,8 @@ module.exports = {
         preUpdateInterceptor: function(schema, modelName) {
             schema.pre('update', function(next) {
                 if (NODICS.isNTestRunning()) {
-                    throw new Error('Update operation not allowed, while running N-Test cases');
+                    next(new Error('Save operation not allowed, while running N-Test cases'));
                 }
-                this._update.updatedDate = new Date();
                 if (next && typeof next === "function") {
                     next();
                 }
@@ -62,9 +68,8 @@ module.exports = {
         preSaveOrUpdateInterceptor: function(schema, modelName) {
             schema.pre('findOneAndUpdate', function(next) {
                 if (NODICS.isNTestRunning()) {
-                    throw new Error('Update operation not allowed, while running N-Test cases');
+                    next(new Error('Save operation not allowed, while running N-Test cases'));
                 }
-                this._update.updatedDate = new Date();
                 if (next && typeof next === "function") {
                     next();
                 }
@@ -73,22 +78,28 @@ module.exports = {
 
         postSaveOrUpdateInterceptor: function(schema, modelName) {
             schema.post('findOneAndUpdate', function(next) {
-                if (schema.rawSchema.event) {
-                    let event = {
-                        event: 'saveOrUpdate',
-                        source: schema.moduleName,
-                        target: schema.moduleName,
-                        state: "NEW",
-                        type: "ASYNC",
-                        params: [{
-                            key: 'modelName',
-                            value: schema.modelName
-                        }]
-                    };
-                    SERVICE.EventService.publish(event, (error, response, request) => {
-                        if (error) console.log('   ERROR: facing issue while pushing saveOrUpdate event : ', error);
-                        console.log('   INFO: Event saveOrUpdate published successfully ', response);
-                    });
+                try {
+                    if (NODICS.getActiveChannel() !== 'test' &&
+                        NODICS.getNTestRunning() &&
+                        CONFIG.get('event').publishAllActive &&
+                        schema.rawSchema.event) {
+                        let document = this._update.$set;
+                        let event = {
+                            enterpriseCode: document.enterpriseCode,
+                            event: 'saveOrUpdate',
+                            source: schema.moduleName,
+                            target: schema.moduleName,
+                            state: "NEW",
+                            type: "ASYNC",
+                            params: [{
+                                key: 'modelName',
+                                value: schema.modelName
+                            }]
+                        };
+                        SERVICE.EventService.publish(event);
+                    }
+                } catch (error) {
+                    console.log('   ERROR: facing issue while pushing save event : ', error);
                 }
                 if (next && typeof next === "function") {
                     next();

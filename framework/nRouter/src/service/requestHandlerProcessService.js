@@ -109,7 +109,7 @@ module.exports = {
     },
 
     handleSucessEnd: function(processRequest, processResponse) {
-        console.log('   INFO: Request has been processed successfully : ', processResponse);
+        console.log('   INFO: Request has been processed successfully : ', processRequest.originalUrl);
         processRequest.httpResponse.json(processResponse);
     },
 

@@ -67,7 +67,6 @@ module.exports = {
     authenticate: function(request, callback) {
         let _self = this;
         _self.retrieveEnterprise(request).then(enterprise => {
-            console.log(enterprise);
             _self.retrieveEmployee(request, enterprise).then(employee => {
                 SYSTEM.compareHash(request.password, employee.password).then(match => {
                     if (match) {

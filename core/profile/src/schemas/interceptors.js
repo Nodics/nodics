@@ -21,9 +21,7 @@ module.exports = {
         employee: { // this will execute only for person schema
             encryptPasswordPreSave: function(schema, modelName) {
                 schema.pre('save', function(next) {
-                    console.log(' ---------- encrypting password : ', this);
                     SYSTEM.encryptPassword(this).then(document => {
-                        console.log('------------ : ', document);
                         next();
                     }).catch(error => {
                         next(error);

@@ -10,5 +10,7 @@
  */
 
 module.exports = {
-
+    event: {
+        publishAllActive: true
+    }
 };

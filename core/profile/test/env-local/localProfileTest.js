@@ -19,7 +19,7 @@ const expect = Chai.expect;
 module.exports = {
     profileTestSuite: {
         options: {
-            description: 'Test suite to run all user related userTestSuite',
+            description: '   INFO: Test suite to run all user related userTestSuite',
             timeout: 100,
             type: 'ntest',
             params: {
@@ -27,10 +27,10 @@ module.exports = {
                 reporter: 'list'
             },
             beforeAll: function() {
-                console.log('This is Base beforeAll');
+                console.log('   INFO: This is Base beforeAll');
             },
             afterAll: function() {
-                console.log('This is Base afterAll');
+                console.log('   INFO: This is Base afterAll');
             }
         },
         data: {
@@ -38,18 +38,18 @@ module.exports = {
         },
         insertUser: {
             options: {
-                description: 'Test suite to run all user related insertUser',
+                description: 'INFO: Test suite to run all user related insertUser',
                 beforeEach: function() {
-                    console.log('   This is insertUser beforeEach');
+                    console.log('   INFO: This is insertUser beforeEach');
                 },
                 beforeAll: function() {
-                    console.log('   This is insertUser beforeAll');
+                    console.log('   INFO: This is insertUser beforeAll');
                 },
                 afterEach: function() {
-                    console.log('   This is insertUser afterEach');
+                    console.log('   INFO: This is insertUser afterEach');
                 },
                 afterAll: function() {
-                    console.log('   This is insertUser afterAll');
+                    console.log('   INFO: This is insertUser afterAll');
                 }
             },
             testIfEqual: {

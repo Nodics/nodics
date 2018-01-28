@@ -63,7 +63,6 @@ module.exports = {
         defineDefaultSave: function(model, rawSchema) {
             model.statics.save = function(input) {
                 let schema = rawSchema;
-                console.log('---- Got save event request : ', input);
                 if (!input.models || !input.tenant) {
                     throw new Error("   ERROR: Model value can't be null to save Item");
                 }

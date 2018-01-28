@@ -15,7 +15,8 @@ module.exports = {
     },
 
     getEnterprise: function(processRequest, callback) {
-        if (UTILS.isBlank(processRequest.enterpriseCode)) {
+        let enterpriseCode = processRequest.httpRequest.get('enterpriseCode');
+        if (UTILS.isBlank(enterpriseCode)) {
             callback('Invalid enterprise code');
         } else {
             let request = {
@@ -23,7 +24,7 @@ module.exports = {
             };
             request.options = {
                 query: {
-                    enterpriseCode: processRequest.enterpriseCode
+                    enterpriseCode: enterpriseCode
                 }
             };
             FACADE.EnterpriseFacade.get(request, callback);

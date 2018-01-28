@@ -132,7 +132,11 @@ module.exports = {
         }
         return Promise.all(
             finalModels.map((model) => {
-                return input._self.findByIdAndUpdate(model._id, { $set: model }, option);
+                if (model._id) {
+                    return input._self.findByIdAndUpdate(model._id, { $set: model }, option);
+                } else {
+                    return input._self.create(model);
+                }
                 /*if (model._id) {
                     return input._self.findByIdAndUpdate(model._id, { $set: model }, option);
                 } else {

@@ -25,13 +25,14 @@ module.exports = {
         let options = {
             moduleName: 'nems',
             methodName: 'put',
-            apiName: 'event',
+            apiName: 'event/push',
             requestBody: eventDef,
             isJsonResponse: true,
             enterpriseCode: eventDef.enterpriseCode
         };
 
         let eventUrl = SERVICE.ModuleService.buildRequest(options);
+        console.log('   INFO: Publishing event to event server');
         SERVICE.ModuleService.fetch(eventUrl, callback);
     }
 };

@@ -11,6 +11,14 @@
 
 module.exports = {
     nems: {
+        pushNonSecuredEvent: {
+            saveEvent: {
+                secured: false,
+                key: '/event/push',
+                method: 'PUT',
+                controller: 'CONTROLLER.EventController.save'
+            },
+        },
         processEvent: {
             process: {
                 secured: true,

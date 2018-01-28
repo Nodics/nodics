@@ -23,7 +23,7 @@ module.exports = {
     createJob: function(request, callback) {
         DAO.CronJobDao.get(request).then((models) => {
             try {
-                let result = this.cronJobContainer.createCronJobs(models);
+                let result = this.cronJobContainer.createCronJobs(request, models);
                 callback(null, result, request);
             } catch (error) {
                 callback(error, null, request);
@@ -35,7 +35,7 @@ module.exports = {
     updateJob: function(request, callback) {
         DAO.CronJobDao.get(request).then((models) => {
             try {
-                let result = this.cronJobContainer.updateCronJobs(models);
+                let result = this.cronJobContainer.updateCronJobs(request, models);
                 callback(null, result, request);
             } catch (error) {
                 callback(error, null, request);
@@ -48,7 +48,7 @@ module.exports = {
     runJob: function(request, callback) {
         DAO.CronJobDao.get(request).then((models) => {
             try {
-                let result = this.cronJobContainer.runCronJobs(models);
+                let result = this.cronJobContainer.runCronJobs(request, models);
                 callback(null, result, request);
             } catch (error) {
                 callback(error, null, request);
@@ -60,7 +60,8 @@ module.exports = {
 
     startJob: function(request, callback) {
         try {
-            let result = this.cronJobContainer.startCronJobs(request.jobNames);
+            //let result = this.cronJobContainer.startCronJobs(request.jobNames);
+            let result = this.cronJobContainer.startCronJobs(request);
             callback(null, result, request);
         } catch (error) {
             callback(error, null, request);
@@ -69,7 +70,8 @@ module.exports = {
 
     stopJob: function(request, callback) {
         try {
-            let result = this.cronJobContainer.stopCronJobs(request.jobNames);
+            // let result = this.cronJobContainer.stopCronJobs(request.jobNames);
+            let result = this.cronJobContainer.stopCronJobs(request);
             callback(null, result, request);
         } catch (error) {
             callback(error, null, request);
@@ -78,6 +80,7 @@ module.exports = {
 
     removeJob: function(request, callback) {
         try {
+            //let result = this.cronJobContainer.removeCronJobs(request.jobNames);
             let result = this.cronJobContainer.removeCronJobs(request.jobNames);
             callback(null, result, request);
         } catch (error) {
@@ -87,7 +90,8 @@ module.exports = {
 
     pauseJob: function(request, callback) {
         try {
-            let result = this.cronJobContainer.pauseCronJobs(request.jobNames);
+            //let result = this.cronJobContainer.pauseCronJobs(request.jobNames);
+            let result = this.cronJobContainer.pauseCronJobs(request);
             callback(null, result, request);
         } catch (error) {
             callback(error, null, request);
@@ -96,7 +100,8 @@ module.exports = {
 
     resumeJob: function(request, callback) {
         try {
-            let result = this.cronJobContainer.resumeCronJobs(request.jobNames);
+            let result = this.cronJobContainer.resumeCronJobs(request);
+            //let result = this.cronJobContainer.resumeCronJobs(request.jobNames);
             callback(null, result, request);
         } catch (error) {
             callback(error, null, request);

@@ -13,14 +13,14 @@ const _ = require('lodash');
 module.exports = function() {
     let _jobPool = {};
 
-    this.createCronJobs = function(definitions) {
+    this.createCronJobs = function(request, definitions) {
         let _self = this;
         let _success = {};
         let _failed = {};
         if (definitions) {
             definitions.forEach(function(definition) {
                 try {
-                    _self.createCronJob(definition);
+                    _self.createCronJob(authToken, definition);
                     _success[definition.name] = {
                         message: 'Successfully created'
                     };
@@ -38,7 +38,7 @@ module.exports = function() {
         };
     };
 
-    this.createCronJob = function(definition) {
+    this.createCronJob = function(authToken, definition) {
         if (!definition) {
             throw new Error('   ERROR: Invalid cron job definition');
         }
@@ -52,6 +52,7 @@ module.exports = function() {
                     let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
                     tmpCronJob.validate();
                     tmpCronJob.init();
+                    tmpCronJob.setAuthToken(authToken);
                     cronJobs.push(tmpCronJob);
                 }
             });
@@ -62,7 +63,7 @@ module.exports = function() {
         }
     };
 
-    this.updateCronJobs = function(definitions) {
+    this.updateCronJobs = function(request, definitions) {
         let _self = this;
         let success = {};
         let failed = {};
@@ -112,7 +113,7 @@ module.exports = function() {
         }
     };
 
-    this.runCronJobs = function(definitions) {
+    this.runCronJobs = function(request, definitions) {
         let _self = this;
         let success = {};
         let failed = {};
@@ -142,7 +143,6 @@ module.exports = function() {
             throw new Error('   ERROR: Invalid cron job definition');
         }
         let _running = false;
-        console.log(_jobPool);
         if (_jobPool[definition.name] && _jobPool[definition.name][0].isRunning()) {
             _running = _jobPool[definition.name][0].isRunning();
             _jobPool[definition.name].forEach(function(job) {
@@ -160,7 +160,8 @@ module.exports = function() {
     };
 
 
-    this.startCronJobs = function(jobNames) {
+    this.startCronJobs = function(request) {
+        let jobNames = request.jobNames;
         let _self = this;
         let _success = {};
         let _failed = {};
@@ -191,7 +192,8 @@ module.exports = function() {
         }
     };
 
-    this.stopCronJobs = function(jobNames) {
+    this.stopCronJobs = function(request) {
+        let jobNames = request.jobNames;
         let _self = this;
         let _success = {};
         let _failed = {};
@@ -222,7 +224,8 @@ module.exports = function() {
         }
     };
 
-    this.removeCronJobs = function(jobNames) {
+    this.removeCronJobs = function(request) {
+        let jobNames = request.jobNames;
         let _self = this;
         let _success = {};
         let _failed = {};
@@ -254,7 +257,8 @@ module.exports = function() {
         }
     };
 
-    this.pauseCronJobs = function(jobNames) {
+    this.pauseCronJobs = function(request) {
+        let jobNames = request.jobNames;
         let _self = this;
         let _success = {};
         let _failed = {};
@@ -285,7 +289,8 @@ module.exports = function() {
         }
     };
 
-    this.resumeCronJobs = function(jobNames) {
+    this.resumeCronJobs = function(request) {
+        let jobNames = request.jobNames;
         let _self = this;
         let _success = {};
         let _failed = {};

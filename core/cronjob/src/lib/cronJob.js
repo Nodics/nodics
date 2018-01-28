@@ -20,6 +20,15 @@ module.exports = function(definition, trigger, context, timeZone) {
     let _cronJob = '';
     let _running = false;
     let _paused = false;
+    let _authToken = '';
+
+    this.setAuthToken = function(authToken) {
+        _authToken = authToken;
+    };
+
+    this.getAuthToken = function() {
+        return _authToken;
+    };
 
     this.validate = function() {
         if (!_trigger.expression) {

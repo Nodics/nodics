@@ -11,7 +11,6 @@
 
 module.exports = {
     prepareConnectionUrl: function(moduleName) {
-        console.log(' prepareConnectionUrl : ', moduleName);
         return 'http://' +
             SYSTEM.getAbstractHost(moduleName) + ':' +
             SYSTEM.getAbstractPort(moduleName) + '/' +
@@ -20,6 +19,10 @@ module.exports = {
     },
 
     prepareSecureConnectionUrl: function(moduleName) {
-        return 'http://' + SYSTEM.getAbstractSecuredHost(moduleName) + ':' + SYSTEM.getAbstractSecuredPort(moduleName) + '/' + CONFIG.get('server').contextRoot + '/' + moduleName;
+        return 'http://' +
+            SYSTEM.getAbstractSecuredHost(moduleName) + ':' +
+            SYSTEM.getAbstractSecuredPort(moduleName) + '/' +
+            CONFIG.get('server').contextRoot + '/' +
+            moduleName;
     }
 };

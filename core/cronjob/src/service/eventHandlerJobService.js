@@ -13,6 +13,7 @@ module.exports = {
     options: {
         isNew: true
     },
+
     runJob: function(definition, cronJob) {
         this.triggerEventHandlerJob(definition, () => {
             DAO.CronJobDao.update({
@@ -25,6 +26,7 @@ module.exports = {
             });
         });
     },
+
     triggerEventHandlerJob: function(definition, callback) {
         let options = {
             moduleName: 'nems',

@@ -30,9 +30,9 @@ module.exports = {
 
     save: function(request, callback) {
         NODICS.getModels('moduleName', request.tenant).modelName.save(request).then((models) => {
-            callback(null, models, request);
+            callback(null, models);
         }).catch((error) => {
-            callback(error, null, request);
+            callback(error, null);
         });
     },
 
