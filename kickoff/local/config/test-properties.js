@@ -10,7 +10,8 @@
  */
 
 module.exports = {
-    init: function(options) {
-        //put Application specific code here
-    }
+
+    installedTanents: [
+        'default', 'test'
+    ],
 };

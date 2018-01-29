@@ -13,7 +13,7 @@
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,
-    "license": "MIT License",
+    "license": "GPL License",
     "repository": {
         "type": "git",
         "url": "repository URL"

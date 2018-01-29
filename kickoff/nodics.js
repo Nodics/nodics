@@ -10,5 +10,7 @@
  */
 
 module.exports = {
-    externalProperty: 'nodicsFramework'
+    init: function(options) {
+        //put Application specifically code here
+    }
 };

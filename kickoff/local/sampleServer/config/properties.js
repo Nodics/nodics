@@ -10,7 +10,13 @@
  */
 
 module.exports = {
-    init: function(options) {
-        //put Application specific code here
-    }
+    activeModules: {
+        updateGroups: true,
+        groups: ['core'], // Group 'framework' will be included automatically
+        modules: [
+            'sampleServer',
+            'kickoff',
+            'local'
+        ]
+    },
 };

@@ -10,11 +10,15 @@
  */
 
 const FRAMEWORK = require('./framework');
-const util = require('util');
-
 
 module.exports = {
-    startNodics: function(options) {
-        FRAMEWORK.startNodics(options);
-    }
+    start: (function() {
+        console.log('Starting Nodics Server');
+        FRAMEWORK.startNodics({});
+    })(),
+    /*
+        startNodics: function(options) {
+            FRAMEWORK.startNodics(options);
+        },
+    */
 };

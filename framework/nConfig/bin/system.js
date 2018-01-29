@@ -19,22 +19,24 @@ const Nodics = require('./nodics');
 module.exports = {
     getActiveModules: function(options) {
         let modules = [];
+        let appHome = NODICS.getNodicsHome() + '/' + NODICS.getActiveApplication();
+        let envHome = appHome + '/' + NODICS.getActiveEnvironment();
         let moduleGroupsFilePath = NODICS.getServerHome() + '/config/modules.js';
-        let serverProperty = require(NODICS.getServerHome() + '/config/common/properties.js');
-        if (fs.existsSync(NODICS.getServerHome() + '/config/env-' + options.NODICS_ENV + '/properties.js')) {
-            serverProperty = _.merge(serverProperty, require(NODICS.getServerHome() + '/config/env-' + options.NODICS_ENV + '/properties.js'));
-        }
-        if (!fs.existsSync(moduleGroupsFilePath) || serverProperty.activeModules.updateGroups) {
+        let serverProperties = {};
+        serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
+        serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
+        serverProperties = _.merge(serverProperties, require(NODICS.getServerHome() + '/config/properties.js'));
+
+        if (!fs.existsSync(moduleGroupsFilePath) || serverProperties.activeModules.updateGroups) {
             var nodicsModulePath = [];
-            this.collectModulesList(options.NODICS_HOME, nodicsModulePath);
-            this.collectModulesList(options.SERVER_PATH, nodicsModulePath);
+            this.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
+            nodicsModulePath.push(appHome);
+            nodicsModulePath.push(envHome);
+            this.collectModulesList(NODICS.getServerHome(), nodicsModulePath);
             let mergedFile = {};
             nodicsModulePath.forEach(function(modulePath) {
                 if (fs.existsSync(modulePath + '/config/properties.js')) {
                     mergedFile = _.merge(mergedFile, require(modulePath + '/config/properties.js'));
-                }
-                if (fs.existsSync(modulePath + '/config/common/properties.js')) {
-                    mergedFile = _.merge(mergedFile, require(modulePath + '/config/common/properties.js'));
                 }
             });
             if (!_.isEmpty(mergedFile.moduleGroups)) {
@@ -47,7 +49,7 @@ module.exports = {
         let moduleData = require(moduleGroupsFilePath);
         //pushing framework modules
         modules = moduleData.framework;
-        serverProperty.activeModules.groups.forEach((groupName) => {
+        serverProperties.activeModules.groups.forEach((groupName) => {
             if (!moduleData[groupName]) {
                 console.log('   ERROR: Invalide module group : ', groupName);
                 process.exit(1);
@@ -55,34 +57,47 @@ module.exports = {
             modules = modules.concat(moduleData[groupName]);
         });
         //pushing application modules
-        modules = modules.concat(serverProperty.activeModules.modules);
+        modules = modules.concat(serverProperties.activeModules.modules);
+        console.log(modules);
         return modules;
     },
     prepareOptions: function(options) {
-        if (!options) {
-            console.warn('   WARNING: Please set NODICS_HOME into environment variable.');
-            options = {};
-            options.SERVER_PATH = process.env.SERVER_PATH || process.cwd();
-            options.NODICS_HOME = process.env.NODICS_HOME || path.resolve(process.cwd(), '..');
-            options.NODICS_ENV = process.env.NODICS_ENV || 'local';
-            if (process.argv) {
-                options.argv = process.argv;
-            }
-        } else {
-            if (!options.SERVER_PATH) {
-                options.SERVER_PATH = process.env.SERVER_PATH || process.cwd();
-            }
-            if (!options.NODICS_HOME) {
-                options.NODICS_HOME = process.env.NODICS_HOME || path.resolve(process.cwd(), '..');
-            }
-            if (!options.NODICS_ENV) {
-                options.NODICS_ENV = process.env.NODICS_ENV || 'local';
-            }
-            if (process.argv) {
-                options.argv = process.argv;
-            }
+        if (!options.NODICS_HOME) {
+            options.NODICS_HOME = process.env.NODICS_HOME || process.cwd();
         }
-        global.NODICS = new Nodics(options.NODICS_ENV, options.NODICS_HOME, options.SERVER_PATH, options.argv);
+        if (!options.NODICS_APP) {
+            options.NODICS_APP = process.argv[2];
+        }
+        if (!options.NODICS_ENV) {
+            options.NODICS_ENV = process.argv[3];
+        }
+        if (!options.NODICS_SEVER) {
+            options.NODICS_SEVER = options.NODICS_HOME + '/' +
+                options.NODICS_APP + '/' +
+                options.NODICS_ENV + '/' +
+                process.argv[4];
+        }
+        if (process.argv) {
+            options.argv = process.argv;
+        }
+        if (!options.NODICS_HOME) {
+            console.error('   ERROR: Please pass valid NODICS_HOME. It can be pass as options or set to evn variable');
+            process.exit(1);
+        }
+        if (!options.NODICS_APP) {
+            console.error('   ERROR: Could not found valid application name to run');
+            process.exit(1);
+        }
+        if (!options.NODICS_ENV) {
+            console.error('   ERROR: Could not found valid environmnet name to run');
+            process.exit(1);
+        }
+        if (!options.NODICS_SEVER) {
+            console.error('   ERROR: Could not found valid server name to run');
+            process.exit(1);
+        }
+        //global.NODICS = new Nodics(options.NODICS_ENV, options.NODICS_HOME, options.NODICS_SEVER, options.argv);
+        global.NODICS = new Nodics(options.NODICS_HOME, options.NODICS_APP, options.NODICS_ENV, options.NODICS_SEVER, options.argv);
         NODICS.setActiveModules(this.getActiveModules(options));
         global.CONFIG = new Config();
         CONFIG.setProperties({});
@@ -124,7 +139,7 @@ module.exports = {
             modulePathList.push(folder);
         }
         for (let subFolder of this.subFolders(folder)) {
-            if (subFolder !== NODICS.getServerHome()) {
+            if (!subFolder.endsWith(NODICS.getActiveApplication())) {
                 this.collectModulesList(subFolder, modulePathList);
             }
         }
@@ -138,12 +153,15 @@ module.exports = {
 
     getModulesMetaData: function() {
         let _self = this;
+        let appHome = NODICS.getNodicsHome() + '/' + NODICS.getActiveApplication();
+        let envHome = appHome + '/' + NODICS.getActiveEnvironment();
         let config = CONFIG.getProperties();
         let modules = NODICS.getModules();
         let moduleIndex = [];
         let metaData = {};
         var nodicsModulePath = [],
-            serverModulePath = [];
+            serverModulePath = [appHome, envHome];
+
         //Get list of OOTB Active modules
         this.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
         //Adding list of Custom Active modules
@@ -215,7 +233,7 @@ module.exports = {
                         return file.endsWith(filePostFix);
                     }
                 }).forEach(function(file) {
-                    console.log('!!!!!!!   INFO: Loading file from : ', file);
+                    console.log('   INFO: Loading file from : ', file);
                     callback(file);
                 });
             }

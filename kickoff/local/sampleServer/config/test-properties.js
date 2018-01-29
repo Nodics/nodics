@@ -10,36 +10,15 @@
  */
 
 module.exports = {
-    tntName: 'Node Tenant',
+
+    installedTanents: [
+        'default', 'test'
+    ],
 
     database: {
         default: {
             master: {
-                URI: 'mongodb://localhost:27017/defaultMaster',
-                options: {
-                    db: {
-                        native_parser: true
-                    },
-                    server: {
-                        poolSize: 5
-                    }
-                }
-            },
-            test: {
-                URI: 'mongodb://localhost:27017/defaultTest',
-                options: {
-                    db: {
-                        native_parser: true
-                    },
-                    server: {
-                        poolSize: 5
-                    }
-                }
-            }
-        },
-        user: {
-            master: {
-                URI: 'mongodb://localhost:27017/userMaster',
+                URI: 'mongodb://localhost:27017/userTest',
                 options: {
                     db: {
                         native_parser: true
@@ -62,5 +41,4 @@ module.exports = {
             }
         }
     }
-
 };

@@ -8,14 +8,10 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-const nodics = require('../nodics');
 
 module.exports = {
-    startNodics: (function() {
-        nodics.startNodics({});
-    })(),
 
-    init: function() {
-        // This is just a placeholder, code written here, is not going to be executed
-    }
+    installedTanents: [
+        'default'
+    ],
 };

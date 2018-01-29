@@ -12,4 +12,4 @@ module.exports = { core: [ 'core', 'cronjob', 'nems', 'profile' ],
      'ncontroller',
      'nrouter',
      'ntest' ],
-  custom: [ 'server' ] };
+  kickoff: [] };

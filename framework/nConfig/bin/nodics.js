@@ -9,11 +9,12 @@
 
  */
 
-module.exports = function(env, nodicsHome, serverHome, argvs) {
+module.exports = function(nodicsHome, app, env, serverHome, argvs) {
     let _serverState = 'starting';
     let _activeTenant = 'default';
     let _activeChannel = 'master';
     let _activeEnv = env;
+    let _activeApp = app;
     let _nodicsHome = nodicsHome;
     let _serverHome = serverHome;
     let _argvs = argvs;
@@ -48,6 +49,10 @@ module.exports = function(env, nodicsHome, serverHome, argvs) {
 
     this.getActiveEnvironment = function() {
         return _activeEnv;
+    };
+
+    this.getActiveApplication = function() {
+        return _activeApp;
     };
 
     this.setActiveModules = function(activeModules) {

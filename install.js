@@ -18,19 +18,23 @@ var help = function() {
     console.log('----------------------------------');
     console.log('This process help you to generate Application or module for your application');
     console.log('');
-    console.log('$ node install [commandName] [name] [appName]');
+    console.log('$ node install [commandName] [name] [appName]/[appPath]');
     console.log('');
     console.log('=> commandName: command name could be one of app, module or help');
     console.log('        app     - if you want to generate application for your custom application');
+    console.log('        group   - if you want to generate group module for your custom application');
     console.log('        module  - if you want to generate module for your custom application');
     console.log('=> name: name of the module or application, based on command provided');
     console.log('=> appName: if command is module, pass application name where this module needs to be generated');
     console.log('----------------------------------');
 };
 
-var createApplication = function(appName) {
+var createApplication = function(appName, appPath) {
     let sourcePath = __dirname + '/framework/nCommon/templates/app';
     let destPath = __dirname + '/' + appName;
+    if (appPath) {
+        destPath = __dirname + appPath + '/' + appName;
+    }
     if (fs.existsSync(destPath)) {
         console.log('Application directory already exist');
         process.exit(0);
@@ -40,7 +44,7 @@ var createApplication = function(appName) {
 
 var createModule = function(moduleName, appName) {
     let sourcePath = __dirname + '/framework/nCommon/templates/module';
-    let destPath = __dirname + '/' + appName;
+    let destPath = __dirname + appName;
     if (!fs.existsSync(destPath)) {
         console.log('Application has not been created yet, please create Application');
         process.exit(0);
@@ -113,17 +117,17 @@ module.exports = (function() {
         return help();
     }
     const name = process.argv[3];
-    const appName = process.argv[4];
+    let appPath = process.argv[4];
     if (command === 'help') {
         help();
-    } else if (command === 'app') {
-        createApplication(name);
+    } else if (command === 'app' || command === 'group') {
+        createApplication(name, appPath);
     } else if (command === 'module') {
-        if (!appName) {
+        if (!appPath) {
             console.log('ERROR: Please pass Application name, where this module needs to be generated');
             return help();
         }
-        createModule(name, appName);
+        createModule(name, appPath);
     } else {
         console.log('ERROR: Please pass a valid commandName to proceed');
         return help();

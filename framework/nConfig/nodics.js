@@ -29,6 +29,7 @@ module.exports = {
         console.log('---------------------------------------------------------------------------');
         console.log('SERVER_PATH : ', NODICS.getServerHome());
         console.log('NODICS_HOME : ', NODICS.getNodicsHome());
+        console.log('NODICS_APP  : ', NODICS.getActiveApplication());
         console.log('NODICS_ENV  : ', NODICS.getActiveEnvironment());
         console.log('---------------------------------------------------------------------------');
         propertyLoader.init();

@@ -11,6 +11,6 @@
 
 module.exports = {
     init: function(options) {
-        //put Application specific code here
+        //put Application specifically code here
     }
 };
