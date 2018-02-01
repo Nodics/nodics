@@ -56,5 +56,15 @@ module.exports = {
 
     activeTanent: 'default',
 
-    defaultContentType: 'application/json'
+    defaultContentType: 'application/json',
+
+    cache: {
+        apiCache: {
+            engine: '',
+            // Namespace used to prevent cache conflicts, must be alphanumeric
+            namespace: 'expresscache',
+            // Store cache entries for 1 minute (can also pass milliseconds e.g 60000)
+            defaultTtl: '1 minute'
+        }
+    }
 };

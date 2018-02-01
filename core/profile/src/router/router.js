@@ -14,6 +14,7 @@ module.exports = {
         loadEnterprise: {
             getEnterprise: {
                 secured: false,
+                cache: true,
                 key: '/enterprise/get',
                 method: 'POST',
                 handler: 'CONTROLLER.EnterpriseController.getEnterprise'

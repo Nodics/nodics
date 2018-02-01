@@ -13,7 +13,6 @@ const FRAMEWORK = require('./framework');
 
 module.exports = {
     start: (function() {
-        console.log('Starting Nodics Server');
         FRAMEWORK.startNodics({});
     })(),
     /*

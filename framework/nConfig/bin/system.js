@@ -58,7 +58,6 @@ module.exports = {
         });
         //pushing application modules
         modules = modules.concat(serverProperties.activeModules.modules);
-        console.log(modules);
         return modules;
     },
     prepareOptions: function(options) {

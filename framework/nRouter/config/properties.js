@@ -20,7 +20,6 @@ module.exports = {
         'initErrorRoutes',
         'initExtras'
     ],
-
     server: {
         contextRoot: 'nodics',
         runAsSingleModule: true,
