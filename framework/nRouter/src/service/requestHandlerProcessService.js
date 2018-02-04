@@ -23,7 +23,7 @@ module.exports = {
             host: req.get('host'),
             originalUrl: req.originalUrl,
             secured: routerDef.secured,
-            moduleName: routerDef.module,
+            moduleName: routerDef.moduleName,
             special: (routerDef.controller) ? false : true
         };
         let processResponse = {};
@@ -35,7 +35,7 @@ module.exports = {
     },
 
     parseHeader: function(processRequest, processResponse, process) {
-        console.log('   INFO: Parsing request header : ', processRequest.originalUrl);
+        console.log('   INFO: Parsing request header : ', processRequest.moduleName);
         process.nextSuccess(processRequest, processResponse);
     },
 
@@ -84,6 +84,9 @@ module.exports = {
                 if (error) {
                     console.log('   ERROR: got error while processing request : ', error);
                     processResponse.success = false;
+                    delete processResponse.result;
+                    delete processResponse.msg;
+                    delete processResponse.code;
                     processResponse.errors.PROC_ERR_0003 = {
                         code: 'ERR003',
                         msg: error.toString()
@@ -94,12 +97,23 @@ module.exports = {
                     processResponse.code = 'SUC001';
                     processResponse.msg = 'Processed successfully';
                     processResponse.result = response;
-                    process.nextSuccess(processRequest, processResponse);
+                    if (processRequest.router.cache) {
+                        SERVICE.InternalCacheService.put(processRequest.router, processRequest.httpRequest, processResponse).then(cuccess => {
+                            process.nextSuccess(processRequest, processResponse);
+                        }).catch(error => {
+                            process.nextSuccess(processRequest, processResponse);
+                        });
+                    } else {
+                        process.nextSuccess(processRequest, processResponse);
+                    }
                 }
             });
         } catch (error) {
             console.log('   ERROR: got error while service request : ', error);
             processResponse.success = false;
+            delete processResponse.result;
+            delete processResponse.msg;
+            delete processResponse.code;
             processResponse.errors.PROC_ERR_0003 = {
                 code: 'ERR003',
                 msg: error.toString()

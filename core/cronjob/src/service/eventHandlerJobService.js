@@ -29,7 +29,6 @@ module.exports = {
 
     triggerEventHandlerJob: function(definition, cronJob, callback) {
         try {
-            console.log('001 : ', cronJob);
             let options = {
                 moduleName: 'nems',
                 methodName: 'GET',
@@ -38,9 +37,7 @@ module.exports = {
                 isJsonResponse: true,
                 authToken: cronJob.getAuthToken()
             };
-            console.log('002');
             let nemsUrl = SERVICE.ModuleService.buildRequest(options);
-            console.log('003');
             console.log('   INFO: Triggering Job : ', nemsUrl);
             SERVICE.ModuleService.fetch(nemsUrl, (error, response) => {
                 console.log('   INFO: Events processed with response : ', response);

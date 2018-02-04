@@ -30,5 +30,14 @@ module.exports = {
                 httpsPort: 3005
             }
         }
+    },
+
+    apiCache: {
+        profile: {
+            stdTTL: 100,
+            checkperiod: 10,
+            errorOnMissing: false,
+            useClones: true
+        }
     }
 };

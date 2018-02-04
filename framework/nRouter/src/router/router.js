@@ -9,19 +9,17 @@
 
  */
 
-const ExpeditiousCache = require('express-expeditious');
-const MemoryEngine = require('expeditious-engine-memory');
-
 module.exports = {
     operations: {
         get: function(app, routerDef) {
             if (routerDef.cache) {
-                if (!routerDef.apiCache.engine) {
-                    routerDef.apiCache.engine = new MemoryEngine();
-                }
-                //console.log('Cache configuration : ', routerDef.apiCache, '  :  ', routerDef.url);
-                let cache = new ExpeditiousCache(routerDef.apiCache);
-                app.route(routerDef.url).get(cache, (req, res) => {
+                app.route(routerDef.url).get((req, res, next) => {
+                    SERVICE.InternalCacheService.get(routerDef.moduleObject.apiCache, req, res).then(value => {
+                        res.json(value);
+                    }).catch(error => {
+                        next();
+                    });
+                }, (req, res) => {
                     SERVICE.RequestHandlerProcessService.startRequestHandlerProcess(req, res, routerDef);
                 });
             } else {
@@ -32,12 +30,13 @@ module.exports = {
         },
         post: function(app, routerDef) {
             if (routerDef.cache) {
-                if (!routerDef.apiCache.engine) {
-                    routerDef.apiCache.engine = new MemoryEngine();
-                }
-                //console.log('Cache configuration : ', routerDef.apiCache, '  :  ', routerDef.url);
-                let cache = new ExpeditiousCache(routerDef.apiCache);
-                app.route(routerDef.url).post(cache, (req, res) => {
+                app.route(routerDef.url).post((req, res, next) => {
+                    SERVICE.InternalCacheService.get(routerDef.moduleObject.apiCache, req, res).then(value => {
+                        res.json(value);
+                    }).catch(error => {
+                        next();
+                    });
+                }, (req, res) => {
                     SERVICE.RequestHandlerProcessService.startRequestHandlerProcess(req, res, routerDef);
                 });
             } else {
@@ -59,30 +58,11 @@ module.exports = {
     },
 
     default: {
-        /*
-            options: {
-                apiCache: {
-                    // Namespace used to prevent cache conflicts, must be alphanumeric
-                    namespace: 'expresscache',
-                    // Store cache entries for 1 minute (can also pass milliseconds e.g 60000)
-                    defaultTtl: '2 minute'
-                }
-            },
-        */
         commonGetterOperation: {
-            /*
-                options: {
-                    apiCache: {
-                        // Namespace used to prevent cache conflicts, must be alphanumeric
-                        namespace: 'expresscache',
-                        // Store cache entries for 1 minute (can also pass milliseconds e.g 60000)
-                        defaultTtl: '3 minute'
-                    }
-                },
-            */
             getModel: {
                 secured: true,
                 cache: true,
+                ttl: 20,
                 key: '/schemaName',
                 method: 'GET',
                 controller: 'CONTROLLER.controllerName.get'
@@ -97,6 +77,7 @@ module.exports = {
             getById: {
                 secured: true,
                 cache: true,
+                ttl: 20,
                 key: '/schemaName/id/:id',
                 method: 'GET',
                 controller: 'CONTROLLER.controllerName.getById'
@@ -139,6 +120,17 @@ module.exports = {
                 key: '/schemaName/saveOrUpdate',
                 method: 'PUT',
                 controller: 'CONTROLLER.controllerName.saveOrUpdate'
+            }
+        }
+    },
+
+    common: {
+        flushAPICache: {
+            flush: {
+                secured: true,
+                key: '/cache/flush',
+                method: 'GET',
+                controller: 'CONTROLLER.CacheController.invalidateAPICache'
             }
         }
     }

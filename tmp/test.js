@@ -1,15 +1,8 @@
-const _ = require('lodash');
+const uuidv5 = require('uuid/v5');
 
-let prop = {
-    name: "himkar"
-};
-
-let prop1 = {
-    name: "Dwivedi"
-};
-
-let club = _.merge(prop, prop1);
-
-console.log(prop);
-console.log(prop1);
-console.log(club);
+console.log(uuidv5('nodics/profile', uuidv5.URL));
+console.log(uuidv5('nodics/profile', uuidv5.URL));
+console.log('---------------------------------------------');
+console.log(uuidv5('nodics/profile/id/123', uuidv5.URL));
+console.log(uuidv5('nodics/profile/id/123', uuidv5.URL));
+console.log('---------------------------------------------');

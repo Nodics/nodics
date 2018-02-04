@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const uuidv4 = require('uuid/v4');
+const uuidv5 = require('uuid/v5');
 
 module.exports = {
 
@@ -15,8 +15,8 @@ module.exports = {
     /**
      * Generate Unique Hash
      */
-    generateHash: function() {
-        return uuidv4();
+    generateHash: function(key) {
+        return uuidv5(key, uuidv5.URL);
     },
 
     /**

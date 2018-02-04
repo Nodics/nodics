@@ -36,6 +36,7 @@
         "mocha-suit": "^0.5.2",
         "mongoose": "^4.11.7",
         "mongoose-schema-extend": "0.2.0",
+        "node-cache": "^4.1.1",
         "properties-reader": "*",
         "recursive-copy": "^2.0.6",
         "request": "^2.81.0",

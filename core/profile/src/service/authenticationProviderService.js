@@ -9,9 +9,6 @@
 
  */
 
-const crypto = require('crypto');
-const async = require('async');
-const uuid = require('uuid/v4');
 module.exports = {
     options: {
         isNew: false
@@ -71,7 +68,8 @@ module.exports = {
                 SYSTEM.compareHash(request.password, employee.password).then(match => {
                     if (match) {
                         try {
-                            let hash = SYSTEM.generateHash();
+                            let key = enterprise._id + employee._id + (new Date()).getTime();
+                            let hash = SYSTEM.generateHash(key);
                             let moduleObject = NODICS.getModules(request.moduleName);
                             if (!moduleObject.cache) {
                                 moduleObject.cache = {};
