@@ -14,7 +14,7 @@ module.exports = {
         isNew: true
     },
 
-    invalidateApplicationCache: function(requestContext, callback) {
-        FACADE.ApplicationCacheFacade.invalidateApplicationCache(requestContext, callback);
+    invalidateCache: function(request, callback) {
+        SERVICE.CacheService.invalidateCache(request, callback);
     }
 };

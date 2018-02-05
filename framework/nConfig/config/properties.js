@@ -58,6 +58,30 @@ module.exports = {
 
     defaultContentType: 'application/json',
 
+    cache: {
+        default: {
+            apiCache: {
+                enabled: true,
+                engine: 'local'
+            },
+            itemCache: {
+                enabled: true,
+                engine: 'local'
+            },
+            localOptions: {
+                stdTTL: 100,
+                checkperiod: 10,
+                errorOnMissing: false,
+                useClones: true
+            },
+            redisOptions: {
+                host: 'localhost',
+                port: 6379,
+                user: 'nodics',
+                password: 'Nodics@12345'
+            }
+        }
+    },
     apiCache: {
         default: {
             cacheEnabled: true,
