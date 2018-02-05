@@ -10,7 +10,6 @@
  */
 
 const _ = require('lodash');
-const NodeCache = require("node-cache");
 
 module.exports = {
     init: function() {
@@ -23,11 +22,7 @@ module.exports = {
             } else {
                 app = value.app;
             }
-            let apiCache = CONFIG.get('apiCache');
-            if (!value.apiCache) {
-                let cacheConfig = _.merge(_.merge({}, apiCache.default || {}), apiCache[moduleName] || {});
-                value.apiCache = new NodeCache(cacheConfig);
-            }
+            value.apiCache = SERVICE.ApplicationCacheService.initApplicationCache(moduleName);
             if (app && value.metaData && value.metaData.publish) {
                 // Execute common routers for each required Schema
                 _.each(value.rawSchema, (schemaObject, schemaName) => {

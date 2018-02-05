@@ -34,10 +34,13 @@ module.exports = {
 
     apiCache: {
         profile: {
-            stdTTL: 100,
-            checkperiod: 10,
-            errorOnMissing: false,
-            useClones: true
+            cacheEnabled: true,
+            options: {
+                stdTTL: 100,
+                checkperiod: 10,
+                errorOnMissing: false,
+                useClones: true
+            }
         }
     }
 };

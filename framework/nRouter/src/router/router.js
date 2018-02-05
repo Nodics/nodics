@@ -12,9 +12,9 @@
 module.exports = {
     operations: {
         get: function(app, routerDef) {
-            if (routerDef.cache) {
+            if (routerDef.cache && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).get((req, res, next) => {
-                    SERVICE.InternalCacheService.get(routerDef.moduleObject.apiCache, req, res).then(value => {
+                    SERVICE.ApplicationCacheService.get(routerDef.moduleObject.apiCache, req, res).then(value => {
                         res.json(value);
                     }).catch(error => {
                         next();
@@ -29,9 +29,9 @@ module.exports = {
             }
         },
         post: function(app, routerDef) {
-            if (routerDef.cache) {
+            if (routerDef.cache && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).post((req, res, next) => {
-                    SERVICE.InternalCacheService.get(routerDef.moduleObject.apiCache, req, res).then(value => {
+                    SERVICE.ApplicationCacheService.get(routerDef.moduleObject.apiCache, req, res).then(value => {
                         res.json(value);
                     }).catch(error => {
                         next();
@@ -130,7 +130,7 @@ module.exports = {
                 secured: true,
                 key: '/cache/flush',
                 method: 'GET',
-                controller: 'CONTROLLER.CacheController.invalidateAPICache'
+                controller: 'CONTROLLER.ApplicationCacheController.invalidateApplicationCache'
             }
         }
     }

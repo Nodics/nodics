@@ -9,12 +9,25 @@
 
  */
 
+const _ = require('lodash');
+const NodeCache = require("node-cache");
+
 module.exports = {
     options: {
         isNew: true
     },
+    initApplicationCache: function(moduleName) {
+        let apiCache = CONFIG.get('apiCache');
+        let moduleObject = NODICS.getModules()[moduleName];
+        if (!moduleObject.apiCache) {
+            let cacheConfig = _.merge(_.merge({}, apiCache.default || {}), apiCache[moduleName] || {});
+            if (cacheConfig.cacheEnabled) {
+                return new NodeCache(cacheConfig.options);
+            }
+        }
+    },
 
-    invalidateAPICache: function(request, callback) {
+    invalidateApplicationCache: function(request, callback) {
         try {
             let moduleObject = NODICS.getModules()[request.moduleName];
             if (moduleObject.apiCache) {

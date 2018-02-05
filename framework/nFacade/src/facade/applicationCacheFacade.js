@@ -14,7 +14,7 @@ module.exports = {
         isNew: true
     },
 
-    invalidateAPICache: function(request, callback) {
-        SERVICE.InternalCacheService.invalidateAPICache(request, callback);
+    invalidateApplicationCache: function(request, callback) {
+        SERVICE.ApplicationCacheService.invalidateApplicationCache(request, callback);
     }
 };

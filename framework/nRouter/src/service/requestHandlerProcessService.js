@@ -98,7 +98,7 @@ module.exports = {
                     processResponse.msg = 'Processed successfully';
                     processResponse.result = response;
                     if (processRequest.router.cache) {
-                        SERVICE.InternalCacheService.put(processRequest.router, processRequest.httpRequest, processResponse).then(cuccess => {
+                        SERVICE.ApplicationCacheService.put(processRequest.router, processRequest.httpRequest, processResponse).then(cuccess => {
                             process.nextSuccess(processRequest, processResponse);
                         }).catch(error => {
                             process.nextSuccess(processRequest, processResponse);

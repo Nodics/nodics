@@ -14,7 +14,7 @@ module.exports = {
         isNew: true
     },
 
-    invalidateAPICache: function(requestContext, callback) {
-        FACADE.CacheFacade.invalidateAPICache(requestContext, callback);
+    invalidateApplicationCache: function(requestContext, callback) {
+        FACADE.ApplicationCacheFacade.invalidateApplicationCache(requestContext, callback);
     }
 };
