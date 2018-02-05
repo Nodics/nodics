@@ -12,9 +12,9 @@
 module.exports = {
     operations: {
         get: function(app, routerDef) {
-            if (routerDef.cache && routerDef.moduleObject.cache) {
+            if (routerDef.cache && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).get((req, res, next) => {
-                    SERVICE.CacheService.get(routerDef.moduleObject.cache, req, res).then(value => {
+                    SERVICE.CacheService.get(routerDef.moduleObject.apiCache, req, res).then(value => {
                         res.json(value);
                     }).catch(error => {
                         next();
@@ -29,9 +29,9 @@ module.exports = {
             }
         },
         post: function(app, routerDef) {
-            if (routerDef.cache && routerDef.moduleObject.cache) {
+            if (routerDef.cache && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).post((req, res, next) => {
-                    SERVICE.CacheService.get(routerDef.moduleObject.cache, req, res).then(value => {
+                    SERVICE.CacheService.get(routerDef.moduleObject.apiCache, req, res).then(value => {
                         res.json(value);
                     }).catch(error => {
                         next();

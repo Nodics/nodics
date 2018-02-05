@@ -97,8 +97,11 @@ module.exports = {
                     processResponse.code = 'SUC001';
                     processResponse.msg = 'Processed successfully';
                     processResponse.result = response;
-                    if (processRequest.router.cache) {
-                        SERVICE.CacheService.put(processRequest.router, processRequest.httpRequest, processResponse).then(cuccess => {
+                    if (processRequest.router.cache && processRequest.router.moduleObject.apiCache) {
+                        let options = {
+                            ttl: processRequest.router.ttl
+                        };
+                        SERVICE.CacheService.put(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, options).then(cuccess => {
                             process.nextSuccess(processRequest, processResponse);
                         }).catch(error => {
                             process.nextSuccess(processRequest, processResponse);

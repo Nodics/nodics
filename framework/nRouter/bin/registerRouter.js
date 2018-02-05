@@ -23,8 +23,8 @@ module.exports = {
             } else {
                 app = value.app;
             }
-            SERVICE.CacheService.initCache(moduleName).then(cache => {
-                value.cache = cache;
+            SERVICE.CacheService.initApplicationCache(moduleName).then(cache => {
+                value.apiCache = cache;
                 _self.registerRouters(app, value, moduleName, routers);
             }).catch(error => {
                 console.log('   ERROR: While configuring api cache : ', error);

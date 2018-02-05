@@ -16,7 +16,7 @@ module.exports = {
     options: {
         isNew: true
     },
-    initCache: function(moduleName) {
+    initApplicationCache: function(moduleName) {
         return new Promise((resolev, reject) => {
             let cache = CONFIG.get('cache');
             let moduleObject = NODICS.getModules()[moduleName];
@@ -97,18 +97,15 @@ module.exports = {
         });
     },
 
-    put: function(router, request, value) {
+    put: function(cache, request, value, options) {
         return new Promise((resolve, reject) => {
             try {
-                let cache = router.moduleObject.cache;
                 let hash = this.generateCacheKey(request);
-                if (router.ttl) {
-                    if (cache.type === 'local') {
+                if (cache.type === 'local') {
+                    if (options.ttl) {
                         cache.client.set(hash, value, router.ttl);
                         resolve(true);
-                    }
-                } else {
-                    if (cache.type === 'local') {
+                    } else {
                         cache.client.set(hash, value);
                         resolve(true);
                     }
