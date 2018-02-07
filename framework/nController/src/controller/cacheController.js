@@ -14,7 +14,11 @@ module.exports = {
         isNew: true
     },
 
-    invalidateApplicationCache: function(requestContext, callback) {
-        FACADE.CacheFacade.invalidateCache(requestContext, callback);
+    flushApiCache: function(requestContext, callback) {
+        FACADE.CacheFacade.flushApiCache(requestContext, callback);
+    },
+
+    flushItemCache: function(requestContext, callback) {
+        FACADE.CacheFacade.flushItemCache(requestContext, callback);
     }
 };

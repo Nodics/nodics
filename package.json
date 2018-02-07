@@ -29,7 +29,6 @@
         "enum": "^2.4.0",
         "eslint": "^4.8.0",
         "express": "^4.15.4",
-        "express-expeditious": "^3.2.1",
         "glob": "*",
         "lodash": "*",
         "mocha": "^4.0.1",

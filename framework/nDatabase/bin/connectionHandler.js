@@ -10,9 +10,10 @@
  */
 
 const _ = require('lodash');
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
+
 module.exports = {
-    createConnection: function(dbConfig) {
+    createConnection: function(dbConfig, cacheConfig) {
         console.log('   INFO: Creating database connection for URI : ', dbConfig.URI);
         let connection = '';
         mongoose.Promise = global.Promise;
@@ -31,11 +32,19 @@ module.exports = {
         connection.on('disconnected', function() {
             console.log('   INFO: Mongoose default connection disconnected');
         });
+        /*if (cacheConfig.itemCache.enabled) {
+            MongooseCacheBox(mongoose, {
+                cache: true, // start caching
+                ttl: 30 // 30 seconds
+            });
+        }*/
         return connection;
     },
     createDatabase: function(moduleName) {
         const _self = this;
         let tntDB = {};
+        let cache = CONFIG.get('cache');
+        let cacheConfig = _.merge(_.merge({}, cache.default || {}), cache[moduleName] || {});
         CONFIG.get('installedTanents').forEach(function(tntName) {
             let dbConfig = NODICS.getDatabaseConfiguration(moduleName, tntName);
             let masterDatabase = new CLASSES.Database();
@@ -44,13 +53,13 @@ module.exports = {
             masterDatabase.setName(moduleName);
             masterDatabase.setURI(dbConfig.master.URI);
             masterDatabase.setOptions(dbConfig.master.options);
-            masterDatabase.setConnection(_self.createConnection(dbConfig.master));
+            masterDatabase.setConnection(_self.createConnection(dbConfig.master, cacheConfig));
             masterDatabase.setSchema(mongoose.Schema);
             if (dbConfig.test) {
                 testDatabase.setName(moduleName);
                 testDatabase.setURI(dbConfig.test.URI);
                 testDatabase.setOptions(dbConfig.test.options);
-                testDatabase.setConnection(_self.createConnection(dbConfig.test));
+                testDatabase.setConnection(_self.createConnection(dbConfig.test, cacheConfig));
                 testDatabase.setSchema(mongoose.Schema);
             } else {
                 let testDB = NODICS.getDatabase().test;

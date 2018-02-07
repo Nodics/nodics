@@ -16,27 +16,27 @@ module.exports = {
         let _self = this;
         let modules = NODICS.getModules();
         let routers = SYSTEM.loadFiles('/src/router/router.js');
-        _.each(modules, function(value, moduleName) {
+        _.each(modules, function(moduleObject, moduleName) {
             let app = {};
             if (CONFIG.get('server').runAsSingleModule) {
                 app = modules.default.app;
             } else {
-                app = value.app;
+                app = moduleObject.app;
             }
-            SERVICE.CacheService.initApplicationCache(moduleName).then(cache => {
-                value.apiCache = cache;
-                _self.registerRouters(app, value, moduleName, routers);
+            SERVICE.CacheService.initCache(moduleObject, moduleName).then(() => {
+                _self.registerRouters(app, moduleObject, moduleName, routers);
             }).catch(error => {
-                console.log('   ERROR: While configuring api cache : ', error);
-                process.exit(CONFIG.get('errorExitCode'));
+                console.log('   ERROR: got error while initializing cache for module : ', moduleName);
+                self.registerRouters(app, moduleObject, moduleName, routers);
             });
+
         });
     },
 
-    registerRouters: function(app, value, moduleName, routers) {
-        if (app && value.metaData && value.metaData.publish) {
+    registerRouters: function(app, moduleObject, moduleName, routers) {
+        if (app && moduleObject.metaData && moduleObject.metaData.publish) {
             // Execute common routers for each required Schema
-            _.each(value.rawSchema, (schemaObject, schemaName) => {
+            _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
                 if (schemaObject.service && schemaObject.router) {
                     _.each(routers.default, function(group, groupName) {
                         if (groupName !== 'options') {
@@ -48,7 +48,7 @@ module.exports = {
                                     tmpRouterDef.controller = tmpRouterDef.controller.replaceAll('controllerName', schemaName.toUpperCaseEachWord() + 'Controller');
                                     tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
                                     tmpRouterDef.moduleName = moduleName;
-                                    tmpRouterDef.moduleObject = value;
+                                    tmpRouterDef.moduleObject = moduleObject;
                                     eval(routers.operations[functionName](app, tmpRouterDef));
                                 }
                             });
@@ -66,7 +66,7 @@ module.exports = {
                                 let tmpRouterDef = _.merge({}, routerDef);
                                 tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
                                 tmpRouterDef.moduleName = moduleName;
-                                tmpRouterDef.moduleObject = value;
+                                tmpRouterDef.moduleObject = moduleObject;
                                 eval(routers.operations[functionName](app, tmpRouterDef));
                             }
                         });
@@ -83,7 +83,7 @@ module.exports = {
                                 let tmpRouterDef = _.merge({}, routerDef);
                                 tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
                                 tmpRouterDef.moduleName = moduleName;
-                                tmpRouterDef.moduleObject = value;
+                                tmpRouterDef.moduleObject = moduleObject;
                                 eval(routers.operations[functionName](app, tmpRouterDef));
                             }
                         });

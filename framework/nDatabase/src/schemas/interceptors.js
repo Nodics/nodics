@@ -11,6 +11,35 @@
 
 module.exports = {
     default: {
+        preFindInterceptor: function(schema, modelName) {
+            schema.pre('find', function(next) {
+                console.log('      Inside find pre hook');
+                if (next && typeof next === "function") {
+                    next();
+                }
+            });
+        },
+
+        postFindInterceptor: function(schema, modelName) {
+            schema.post('find', function(docs, next) {
+                console.log('      Inside find post hook');
+                let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
+                if (moduleObject.itemCache && schema.rawSchema.cache) {
+                    SERVICE.CacheService.putItem(schema.rawSchema, moduleObject.itemCache, this.getQuery(), docs).then(success => {
+                        console.log('   INFO: Item saved in item cache');
+                    }).catch(error => {
+                        console.log('   ERROR: while saving item in item cache : ', error);
+                    });
+                    if (next && typeof next === "function") {
+                        next();
+                    }
+                } else {
+                    if (next && typeof next === "function") {
+                        next();
+                    }
+                }
+            });
+        },
         preSaveInterceptor: function(schema, modelName) {
             schema.pre('save', function(next) {
                 if (NODICS.isNTestRunning()) {

@@ -32,14 +32,25 @@ module.exports = {
         }
     },
 
-    apiCache: {
+    cache: {
         profile: {
-            cacheEnabled: true,
-            options: {
+            apiCache: {
+                enabled: true,
+                engine: 'local'
+            },
+            itemCache: {
+                enabled: true,
+                engine: 'local'
+            },
+            localOptions: {
                 stdTTL: 100,
                 checkperiod: 10,
                 errorOnMissing: false,
                 useClones: true
+            },
+            redisOptions: {
+                host: 'localhost',
+                port: 6379
             }
         }
     }

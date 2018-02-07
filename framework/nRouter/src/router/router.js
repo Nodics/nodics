@@ -14,7 +14,8 @@ module.exports = {
         get: function(app, routerDef) {
             if (routerDef.cache && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).get((req, res, next) => {
-                    SERVICE.CacheService.get(routerDef.moduleObject.apiCache, req, res).then(value => {
+                    SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
+                        console.log('      Fulfilled from API cache');
                         res.json(value);
                     }).catch(error => {
                         next();
@@ -31,7 +32,8 @@ module.exports = {
         post: function(app, routerDef) {
             if (routerDef.cache && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).post((req, res, next) => {
-                    SERVICE.CacheService.get(routerDef.moduleObject.apiCache, req, res).then(value => {
+                    SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
+                        console.log('      Fulfilled from API cache');
                         res.json(value);
                     }).catch(error => {
                         next();
@@ -61,7 +63,7 @@ module.exports = {
         commonGetterOperation: {
             getModel: {
                 secured: true,
-                cache: true,
+                cache: false,
                 ttl: 20,
                 key: '/schemaName',
                 method: 'GET',
@@ -69,7 +71,7 @@ module.exports = {
             },
             postModel: {
                 secured: true,
-                cache: true,
+                cache: false,
                 key: '/schemaName',
                 method: 'POST',
                 controller: 'CONTROLLER.controllerName.get'
@@ -128,9 +130,18 @@ module.exports = {
         flushAPICache: {
             flush: {
                 secured: true,
-                key: '/cache/flush',
+                key: '/cache/api/flush',
                 method: 'GET',
-                controller: 'CONTROLLER.CacheController.invalidateCache'
+                controller: 'CONTROLLER.CacheController.flushApiCache'
+            }
+        },
+
+        flushItemCache: {
+            flush: {
+                secured: true,
+                key: '/cache/item/flush',
+                method: 'GET',
+                controller: 'CONTROLLER.CacheController.flushItemCache'
             }
         }
     }

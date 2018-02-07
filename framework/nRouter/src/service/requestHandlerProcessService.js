@@ -56,7 +56,18 @@ module.exports = {
                     processResponse.code = 'SUC001';
                     processResponse.msg = 'Processed successfully';
                     processResponse.result = response;
-                    process.stop(processRequest, processResponse);
+                    if (processRequest.router.cache && processRequest.router.moduleObject.apiCache) {
+                        let options = {
+                            ttl: processRequest.router.ttl
+                        };
+                        SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, options).then(cuccess => {
+                            process.stop(processRequest, processResponse);
+                        }).catch(error => {
+                            process.stop(processRequest, processResponse);
+                        });
+                    } else {
+                        process.stop(processRequest, processResponse);
+                    }
                 }
             });
         } else {
@@ -101,7 +112,7 @@ module.exports = {
                         let options = {
                             ttl: processRequest.router.ttl
                         };
-                        SERVICE.CacheService.put(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, options).then(cuccess => {
+                        SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, options).then(cuccess => {
                             process.nextSuccess(processRequest, processResponse);
                         }).catch(error => {
                             process.nextSuccess(processRequest, processResponse);

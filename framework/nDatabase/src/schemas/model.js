@@ -13,8 +13,8 @@ const _ = require('lodash');
 
 module.exports = {
     default: {
-        defineDefaultGet: function(model, rawSchema) {
-            model.statics.get = function(input) {
+        defineDefaultFind: function(model, rawSchema) {
+            model.statics.findItem = function(input) {
                 let schema = rawSchema;
                 let requestBody = input.options;
                 let skip = (requestBody.pageSize || CONFIG.get('defaultPageSize')) * (requestBody.pageNumber || CONFIG.get('defaultPageNumber'));
@@ -29,6 +29,30 @@ module.exports = {
                     });
                 }
                 return query.lean().exec();
+            };
+        },
+
+        defineDefaultGet: function(model, rawSchema) {
+            //console.log('Model middleware : ', rawSchema);
+            model.statics.get = function(input) {
+                console.log('   =>Getting Item from model');
+                let moduleObject = NODICS.getModules()[rawSchema.moduleName];
+                if (moduleObject.itemCache && rawSchema.cache) {
+                    return new Promise((resolve, reject) => {
+                        SERVICE.CacheService.getItem(rawSchema, moduleObject.itemCache, input.options).then(value => {
+                            console.log('      Fulfilled from  Item cache');
+                            resolve(value);
+                        }).catch(error => {
+                            this.findItem(input).then(items => {
+                                resolve(items);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        });
+                    });
+                } else {
+                    return this.findItem(input);
+                }
             };
         },
 

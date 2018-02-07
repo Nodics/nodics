@@ -12,6 +12,7 @@
 const _ = require('lodash');
 const extend = require('mongoose-schema-extend');
 const util = require('util');
+const MongooseCacheBox = require('mongoose-cachebox');
 
 module.exports = {
     deployValidators: function() {
@@ -88,6 +89,7 @@ module.exports = {
         let flag = false;
         CONFIG.get('installedTanents').forEach(function(tntName) {
             flag = false;
+            options.schemaDef.tenant = tntName;
             if (SYSTEM.validateSchemaDefinition(options.modelName, options.schemaDef)) {
                 process.exit(CONFIG.get('errorExitCode'));
             }
@@ -136,6 +138,7 @@ module.exports = {
             options.modelName = keyIn;
             options.schemaDef = valueIn;
             options.schemaDef.moduleName = options.moduleName;
+            options.schemaDef.modelName = keyIn;
             if (_self.resolveSchemaDependancy(options)) {
                 delete cloneSchema[keyIn];
             }
@@ -195,8 +198,16 @@ module.exports = {
         this.createSchemas(options);
     },
 
+    initItemCache: function() {
+        let _self = this;
+        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+
+        });
+    },
+
     init: function() {
         this.deployValidators();
         this.deploySchemas();
+        this.initItemCache();
     }
 };

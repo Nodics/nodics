@@ -14,7 +14,11 @@ module.exports = {
         isNew: true
     },
 
-    invalidateCache: function(request, callback) {
-        SERVICE.CacheService.invalidateCache(request, callback);
+    flushApiCache: function(request, callback) {
+        SERVICE.CacheService.flushApiCache(request, callback);
+    },
+
+    flushItemCache: function(request, callback) {
+        SERVICE.CacheService.flushItemCache(request, callback);
     }
 };

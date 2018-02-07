@@ -72,6 +72,8 @@ module.exports = {
             model: true,
             service: true,
             event: true,
+            cache: true,
+            ttl: 100,
             router: true,
             refSchema: {
                 superEnterprise: {
@@ -163,6 +165,8 @@ module.exports = {
             service: true,
             event: true,
             router: true,
+            cache: false,
+            ttl: 20,
             definition: {
 
             }

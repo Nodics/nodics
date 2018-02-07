@@ -76,20 +76,7 @@ module.exports = {
             },
             redisOptions: {
                 host: 'localhost',
-                port: 6379,
-                user: 'nodics',
-                password: 'Nodics@12345'
-            }
-        }
-    },
-    apiCache: {
-        default: {
-            cacheEnabled: true,
-            options: {
-                stdTTL: 100,
-                checkperiod: 10,
-                errorOnMissing: false,
-                useClones: true
+                port: 6379
             }
         }
     }
