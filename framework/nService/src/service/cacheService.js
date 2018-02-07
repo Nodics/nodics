@@ -89,31 +89,6 @@ module.exports = {
         });
     },
 
-    /*initItemCache: function(moduleObject, moduleName, cacheConfig) {
-        return new Promise((resolve, reject) => {
-            if (moduleObject.rawSchema) {
-                if (!moduleObject.itemCache &&
-                    cacheConfig.itemCache.enabled) {
-                    if (cacheConfig.itemCache.engine === 'local') {
-                        console.log('   INFO: Initializing local Item Cache instance for module: ', moduleName);
-                        moduleObject.itemCache = {
-                            type: cacheConfig.itemCache.engine,
-                            client: new NodeCache(cacheConfig.localOptions)
-                        };
-                        resolve();
-                    } else {
-
-                    }
-                } else {
-                    console.log('   WARN: Item Cache is not enabled for : ', moduleName);
-                    resolve('   ERROR: Item Cache is not enabled for : ' + moduleName);
-                }
-            } else {
-                resolve();
-            }
-        });
-    },*/
-
     flushApiCache: function(request, callback) {
         try {
             let moduleObject = NODICS.getModules()[request.moduleName];
@@ -143,40 +118,25 @@ module.exports = {
     },
 
     get: function(cache, key) {
-        return new Promise((resolve, reject) => {
-            let hash = SYSTEM.generateHash(key);
-            console.log('   INFO: Retrieving value from cache with key : ', hash);
-            if (cache.type === 'local') {
-                cache.client.get(hash, (error, success) => {
-                    if (error) {
-                        reject(error);
-                    } else if (success) {
-                        resolve(success);
-                    } else {
-                        reject('key not found');
-                    }
-                });
-            } else {
-                reject('Invalid client configuration');
-            }
-        });
+        let hash = SYSTEM.generateHash(key);
+        try {
+            return SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].get(cache.client, hash);
+        } catch (error) {
+            return new Promise((resolve, reject) => {
+                reject(error);
+            });
+        }
     },
 
     put: function(cache, key, value, options) {
-        return new Promise((resolve, reject) => {
-            let hash = SYSTEM.generateHash(key);
-            console.log('   INFO: Storing value from cache with key : ', hash);
-            if (cache.type === 'local') {
-                if (options.ttl) {
-                    cache.client.set(hash, value, options.ttl);
-                } else {
-                    cache.client.set(hash, value);
-                }
-                resolve(true);
-            } else {
-                reject('Invalid client configuration');
-            }
-        });
+        let hash = SYSTEM.generateHash(key);
+        try {
+            return SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].put(cache.client, hash, value, options);
+        } catch (error) {
+            return new Promise((resolve, reject) => {
+                reject(error);
+            });
+        }
     },
 
     createApiKey: function(request) {

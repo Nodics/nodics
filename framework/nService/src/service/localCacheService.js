@@ -30,4 +30,39 @@ module.exports = {
             resolve(new NodeCache(options));
         });
     },
+
+    get: function(client, hashKey) {
+        return new Promise((resolve, reject) => {
+            try {
+                client.get(hashKey, (error, value) => {
+                    if (error) {
+                        reject(error);
+                    } else if (value) {
+                        resolve(value);
+                    } else {
+                        reject();
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+
+        });
+    },
+
+    put: function(client, hashKey, value, options) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (options.ttl) {
+                    client.set(hashKey, value, options.ttl);
+                } else {
+                    client.set(hashKey, value);
+                }
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+
+        });
+    }
 };

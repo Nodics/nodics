@@ -63,6 +63,7 @@ module.exports = {
                         SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, options).then(cuccess => {
                             process.stop(processRequest, processResponse);
                         }).catch(error => {
+                            console.log('   ERROR: While pushing data into Item cache : ', error);
                             process.stop(processRequest, processResponse);
                         });
                     } else {
@@ -115,6 +116,7 @@ module.exports = {
                         SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, options).then(cuccess => {
                             process.nextSuccess(processRequest, processResponse);
                         }).catch(error => {
+                            console.log('   ERROR: While pushing data into Item cache : ', error);
                             process.nextSuccess(processRequest, processResponse);
                         });
                     } else {
