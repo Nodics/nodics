@@ -37,7 +37,7 @@ module.exports = {
             model.statics.get = function(input) {
                 console.log('   =>Getting Item from model');
                 let moduleObject = NODICS.getModules()[rawSchema.moduleName];
-                if (moduleObject.itemCache && rawSchema.cache) {
+                if (moduleObject.itemCache && rawSchema.cache && rawSchema.cache.enabled) {
                     return new Promise((resolve, reject) => {
                         SERVICE.CacheService.getItem(rawSchema, moduleObject.itemCache, input.options).then(value => {
                             console.log('      Fulfilled from  Item cache');

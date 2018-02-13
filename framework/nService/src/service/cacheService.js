@@ -45,13 +45,28 @@ module.exports = {
                     SERVICE[cacheConfig.apiCache.engine.toUpperCaseFirstChar() + 'CacheService']
                         .initApiCache(cacheConfig[cacheConfig.apiCache.engine + 'Options'], moduleName).then(value => {
                             moduleObject.apiCache = {
-                                type: cacheConfig.itemCache.engine,
+                                type: cacheConfig.apiCache.engine,
                                 client: value
                             };
                             resolve();
                         }).catch(error => {
                             console.log('   ERROR: Not able to initialize API cache for :', moduleName, '  :  ', error);
-                            resolve();
+                            if (cacheConfig.apiCache.engine !== 'local' && cacheConfig.apiCache.fallback) {
+                                console.log('   INFO: Initializing local API cache');
+                                cacheConfig.apiCache.engine = 'local';
+                                SERVICE[cacheConfig.apiCache.engine.toUpperCaseFirstChar() + 'CacheService']
+                                    .initApiCache(cacheConfig[cacheConfig.apiCache.engine + 'Options'], moduleName).then(value => {
+                                        moduleObject.apiCache = {
+                                            type: cacheConfig.apiCache.engine,
+                                            client: value
+                                        };
+                                        resolve();
+                                    }).catch(error => {
+                                        resolve();
+                                    });
+                            } else {
+                                resolve();
+                            }
                         });
                 } else {
                     console.log('   WARN: API Cache is not enabled for : ', moduleName);
@@ -77,7 +92,22 @@ module.exports = {
                             resolve();
                         }).catch(error => {
                             console.log('   ERROR: Not able to initialize Item cache for :', moduleName, '  :  ', error);
-                            resolve();
+                            if (cacheConfig.itemCache.engine !== 'local' && cacheConfig.itemCache.fallback) {
+                                console.log('   INFO: Initializing local Item cache');
+                                cacheConfig.itemCache.engine = 'local';
+                                SERVICE[cacheConfig.itemCache.engine.toUpperCaseFirstChar() + 'CacheService']
+                                    .initApiCache(cacheConfig[cacheConfig.itemCache.engine + 'Options'], moduleName).then(value => {
+                                        moduleObject.itemCache = {
+                                            type: cacheConfig.itemCache.engine,
+                                            client: value
+                                        };
+                                        resolve();
+                                    }).catch(error => {
+                                        resolve();
+                                    });
+                            } else {
+                                resolve();
+                            }
                         });
                 } else {
                     console.log('   WARN: Item Cache is not enabled for : ', moduleName);
@@ -120,6 +150,7 @@ module.exports = {
     get: function(cache, key) {
         let hash = SYSTEM.generateHash(key);
         try {
+            console.log(' ------------------- ', cache.type);
             return SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].get(cache.client, hash);
         } catch (error) {
             return new Promise((resolve, reject) => {
@@ -170,9 +201,7 @@ module.exports = {
     },
     putItem: function(rawSchema, cache, query, value) {
         let key = rawSchema.modelName + rawSchema.tenant + query;
-        let options = {
-            ttl: rawSchema.ttl
-        };
-        return this.put(cache, key, value, options);
+        console.log(' Putting value in cache : ', cache.type);
+        return this.put(cache, key, value, rawSchema.cache);
     }
 };

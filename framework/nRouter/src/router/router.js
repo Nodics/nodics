@@ -12,7 +12,7 @@
 module.exports = {
     operations: {
         get: function(app, routerDef) {
-            if (routerDef.cache && routerDef.moduleObject.apiCache) {
+            if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).get((req, res, next) => {
                     SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
                         console.log('      Fulfilled from API cache');
@@ -30,7 +30,7 @@ module.exports = {
             }
         },
         post: function(app, routerDef) {
-            if (routerDef.cache && routerDef.moduleObject.apiCache) {
+            if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).post((req, res, next) => {
                     SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
                         console.log('      Fulfilled from API cache');
@@ -63,23 +63,30 @@ module.exports = {
         commonGetterOperation: {
             getModel: {
                 secured: true,
-                cache: false,
-                ttl: 20,
+                cache: {
+                    enabled: false,
+                    ttl: 20
+                },
                 key: '/schemaName',
                 method: 'GET',
                 controller: 'CONTROLLER.controllerName.get'
             },
             postModel: {
                 secured: true,
-                cache: false,
+                cache: {
+                    enabled: false,
+                    ttl: 20
+                },
                 key: '/schemaName',
                 method: 'POST',
                 controller: 'CONTROLLER.controllerName.get'
             },
             getById: {
                 secured: true,
-                cache: true,
-                ttl: 20,
+                cache: {
+                    enabled: false,
+                    ttl: 20
+                },
                 key: '/schemaName/id/:id',
                 method: 'GET',
                 controller: 'CONTROLLER.controllerName.getById'

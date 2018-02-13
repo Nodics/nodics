@@ -24,7 +24,7 @@ module.exports = {
             schema.post('find', function(docs, next) {
                 console.log('      Inside find post hook');
                 let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
-                if (moduleObject.itemCache && schema.rawSchema.cache) {
+                if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
                     SERVICE.CacheService.putItem(schema.rawSchema, moduleObject.itemCache, this.getQuery(), docs).then(success => {
                         console.log('   INFO: Item saved in item cache');
                     }).catch(error => {

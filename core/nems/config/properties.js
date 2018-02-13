@@ -28,6 +28,31 @@ module.exports = {
                 httpsPort: 3007
             }
         }
+    },
+
+    cache: {
+        nems: {
+            apiCache: {
+                enabled: true,
+                fallback: true,
+                engine: 'redis'
+            },
+            itemCache: {
+                enabled: true,
+                fallback: true,
+                engine: 'redis'
+            },
+            localOptions: {
+                stdTTL: 100,
+                checkperiod: 10,
+                errorOnMissing: false,
+                useClones: true
+            },
+            redisOptions: {
+                host: 'localhost',
+                port: 6379
+            }
+        }
     }
 
 };

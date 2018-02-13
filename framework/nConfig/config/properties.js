@@ -62,11 +62,13 @@ module.exports = {
         default: {
             apiCache: {
                 enabled: true,
-                engine: 'local'
+                fallback: true,
+                engine: 'redis'
             },
             itemCache: {
                 enabled: true,
-                engine: 'local'
+                fallback: true,
+                engine: 'redis'
             },
             localOptions: {
                 stdTTL: 100,

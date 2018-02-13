@@ -56,11 +56,11 @@ module.exports = {
                     processResponse.code = 'SUC001';
                     processResponse.msg = 'Processed successfully';
                     processResponse.result = response;
-                    if (processRequest.router.cache && processRequest.router.moduleObject.apiCache) {
+                    if (processRequest.router.cache && processRequest.router.cache.enabled && processRequest.router.moduleObject.apiCache) {
                         let options = {
                             ttl: processRequest.router.ttl
                         };
-                        SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, options).then(cuccess => {
+                        SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, processRequest.router.cache).then(cuccess => {
                             process.stop(processRequest, processResponse);
                         }).catch(error => {
                             console.log('   ERROR: While pushing data into Item cache : ', error);
@@ -109,11 +109,11 @@ module.exports = {
                     processResponse.code = 'SUC001';
                     processResponse.msg = 'Processed successfully';
                     processResponse.result = response;
-                    if (processRequest.router.cache && processRequest.router.moduleObject.apiCache) {
+                    if (processRequest.router.cache && processRequest.router.cache.enabled && processRequest.router.moduleObject.apiCache) {
                         let options = {
                             ttl: processRequest.router.ttl
                         };
-                        SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, options).then(cuccess => {
+                        SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, processRequest.router.cache).then(cuccess => {
                             process.nextSuccess(processRequest, processResponse);
                         }).catch(error => {
                             console.log('   ERROR: While pushing data into Item cache : ', error);

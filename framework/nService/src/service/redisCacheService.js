@@ -9,7 +9,7 @@
 
  */
 
-const NodeCache = require("node-cache");
+const redis = require("redis");
 
 module.exports = {
     options: {
@@ -18,15 +18,33 @@ module.exports = {
 
     initApiCache: function(options, moduleName) {
         return new Promise((resolve, reject) => {
-            console.log('   INFO: Initializing local API Cache instance for module: ', moduleName);
-            resolve(new NodeCache(options));
+            console.log('   INFO: Initializing Redis API Cache instance for module: ', moduleName);
+            let client = redis.createClient(options);
+            client.on("error", err => {
+                reject(err);
+            });
+            client.on("connect", success => {
+                resolve(client);
+            });
+            client.on("ready", function(err) {
+                console.log('   INFO: Item redis client is ready for module : ', moduleName);
+            });
         });
     },
 
     initItemCache: function(options, moduleName) {
         return new Promise((resolve, reject) => {
-            console.log('   INFO: Initializing local Item Cache instance for module: ', moduleName);
-            resolve(new NodeCache(options));
+            console.log('   INFO: Initializing Redis Item Cache instance for module: ', moduleName);
+            let client = redis.createClient(options);
+            client.on("error", err => {
+                reject(err);
+            });
+            client.on("connect", success => {
+                resolve(client);
+            });
+            client.on("ready", function(err) {
+                console.log('   INFO: Item redis client is ready for module : ', moduleName);
+            });
         });
     },
 
@@ -37,7 +55,7 @@ module.exports = {
                     if (error) {
                         reject(error);
                     } else if (value) {
-                        resolve(value);
+                        resolve(JSON.parse(value));
                     } else {
                         reject();
                     }
@@ -53,9 +71,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 if (options.ttl) {
-                    client.set(hashKey, value, options.ttl);
+                    client.set(hashKey, JSON.stringify(value), 'EX', options.ttl);
                 } else {
-                    client.set(hashKey, value);
+                    client.set(hashKey, JSON.stringify(value));
                 }
                 resolve();
             } catch (error) {

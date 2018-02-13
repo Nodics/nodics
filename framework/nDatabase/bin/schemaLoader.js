@@ -12,7 +12,6 @@
 const _ = require('lodash');
 const extend = require('mongoose-schema-extend');
 const util = require('util');
-const MongooseCacheBox = require('mongoose-cachebox');
 
 module.exports = {
     deployValidators: function() {
