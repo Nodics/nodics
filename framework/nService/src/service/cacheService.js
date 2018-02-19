@@ -119,38 +119,62 @@ module.exports = {
         });
     },
 
-    flushApiCache: function(request, callback) {
-        try {
-            let moduleObject = NODICS.getModules()[request.moduleName];
-            if (moduleObject.apiCache) {
-                if (moduleObject.apiCache.type === 'local') {
-                    moduleObject.apiCache.client.flushAll();
-                    callback(null, 'api cache for module : ' + request.moduleName + ', flushed successfully');
-                }
-            }
-        } catch (error) {
-            callback(error);
+    flushApiCache(request, callback) {
+        let moduleObject = NODICS.getModules()[request.moduleName];
+        if (moduleObject.apiCache) {
+            return this.flush(moduleObject.apiCache, request.prefix, request.moduleName, callback);
         }
     },
 
-    flushItemCache: function(request, callback) {
-        try {
-            let moduleObject = NODICS.getModules()[request.moduleName];
-            if (moduleObject.itemCache) {
-                if (moduleObject.itemCache.type === 'local') {
-                    moduleObject.itemCache.client.flushAll();
-                    callback(null, 'api cache for module : ' + request.moduleName + ', flushed successfully');
-                }
-            }
-        } catch (error) {
-            callback(error);
+    flushItemCache(request, callback) {
+        let moduleObject = NODICS.getModules()[request.moduleName];
+        if (moduleObject.itemCache) {
+            return this.flush(moduleObject.itemCache, request.prefix, request.moduleName, callback);
         }
     },
 
-    get: function(cache, key) {
-        let hash = SYSTEM.generateHash(key);
+    flush: function(cache, prefix, moduleName, callback) {
+        SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix).then(success => {
+            console.log('   INFO: cache for module : ', moduleName, ', flushed successfully');
+            if (callback) {
+                callback(null, 'cache for module : ' + moduleName + ', flushed successfully');
+            }
+        }).catch(error => {
+            console.log('   ERROR: While flushing cache for module : ', moduleName);
+            if (callback) {
+                callback(error);
+            }
+        });
+    },
+
+    flushApiCacheKeys: function(request, callback) {
+        callback('Not supported for API cache');
+    },
+
+    flushItemCacheKeys: function(request, callback) {
+        let moduleObject = NODICS.getModules()[request.moduleName];
+        if (moduleObject.itemCache) {
+            return this.flushKeys(moduleObject.itemCache, request.keys, request.moduleName, callback);
+        }
+    },
+
+    flushKeys: function(cache, keys, moduleName, callback) {
+        SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].flushKeys(cache.client, keys).then(success => {
+            console.log('   INFO: cache for module : ' + moduleName + ', flushed successfully');
+            if (callback) {
+                callback(null, 'cache for module : ' + moduleName + ', flushed successfully');
+            }
+        }).catch(error => {
+            console.log('   ERROR: While flushing cache for module : ', moduleName);
+            if (callback) {
+                callback(error);
+            }
+        });
+    },
+
+    get: function(cache, hash) {
+        console.log('   INFO: Getting value for key : ', hash);
         try {
-            console.log(' ------------------- ', cache.type);
             return SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].get(cache.client, hash);
         } catch (error) {
             return new Promise((resolve, reject) => {
@@ -159,8 +183,8 @@ module.exports = {
         }
     },
 
-    put: function(cache, key, value, options) {
-        let hash = SYSTEM.generateHash(key);
+    put: function(cache, hash, value, options) {
+        console.log('   INFO: Putting value for key : ', hash);
         try {
             return SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].put(cache.client, hash, value, options);
         } catch (error) {
@@ -173,7 +197,6 @@ module.exports = {
     createApiKey: function(request) {
         let key = request.originalUrl;
         let method = request.method;
-
         if (method === 'POST' || method === 'post') {
             if (request.body) {
                 key += '-' + JSON.stringify(request.body);
@@ -187,21 +210,52 @@ module.exports = {
         }
         return method + '-' + key;
     },
+
+    createItemKey: function(input) {
+        if (input._mongooseOptions) {
+            let pageSize = input.options.limit || CONFIG.get('defaultPageSize');
+            let pageNumber = 0;
+            if (input.options.skip !== 0) {
+                pageNumber = input.options.skip / pageSize;
+            }
+            let sort = input.options.sort || {};
+            let select = input._fields || {};
+
+            return {
+                pageSize: pageSize,
+                pageNumber: pageNumber,
+                select: select || {},
+                sort: sort || {},
+                query: input.getQuery() || {}
+            };
+        } else {
+            return {
+                pageSize: input.options.pageSize || CONFIG.get('defaultPageSize'),
+                pageNumber: input.options.pageNumber || CONFIG.get('defaultPageNumber'),
+                select: input.options.select || {},
+                sort: input.options.sort || {},
+                query: input.options.query || {}
+            };
+        }
+    },
     getApi: function(cache, request, response) {
-        let key = this.createApiKey(request);
-        return this.get(cache, key);
+        let hash = SYSTEM.generateHash(this.createApiKey(request));
+        return this.get(cache, hash);
     },
     putApi: function(cache, request, response, options) {
-        let key = this.createApiKey(request);
-        return this.put(cache, key, response, options);
+        let hash = SYSTEM.generateHash(this.createApiKey(request));
+        return this.put(cache, hash, response, options);
     },
     getItem: function(rawSchema, cache, query) {
-        let key = rawSchema.modelName + rawSchema.tenant + query;
-        return this.get(cache, key);
+        let hash = rawSchema.modelName + '_' +
+            rawSchema.tenant + '_' +
+            SYSTEM.generateHash(JSON.stringify(query));
+        return this.get(cache, hash);
     },
     putItem: function(rawSchema, cache, query, value) {
-        let key = rawSchema.modelName + rawSchema.tenant + query;
-        console.log(' Putting value in cache : ', cache.type);
-        return this.put(cache, key, value, rawSchema.cache);
+        let hash = rawSchema.modelName + '_' +
+            rawSchema.tenant + '_' +
+            SYSTEM.generateHash(JSON.stringify(query));
+        return this.put(cache, hash, value, rawSchema.cache);
     }
 };

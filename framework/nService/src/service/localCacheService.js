@@ -52,7 +52,7 @@ module.exports = {
     put: function(client, hashKey, value, options) {
         return new Promise((resolve, reject) => {
             try {
-                if (options.ttl) {
+                if (options && options.ttl) {
                     client.set(hashKey, value, options.ttl);
                 } else {
                     client.set(hashKey, value);
@@ -63,5 +63,30 @@ module.exports = {
             }
 
         });
-    }
+    },
+
+    flush: function(client, prefix) {
+        return new Promise((resolve, reject) => {
+            if (prefix) {
+                client.keys(function(err, cacheKeys) {
+                    cacheKeys.forEach(key => {
+                        if (key.startWith(prefix)) {
+                            client.del(key);
+                        }
+                    });
+                    resolve(true);
+                });
+            } else {
+                client.flushAll();
+                resolve(true);
+            }
+        });
+    },
+
+    flushKeys: function(client, keys) {
+        return new Promise((resolve, reject) => {
+            client.del(keys);
+            resolve(true);
+        });
+    },
 };

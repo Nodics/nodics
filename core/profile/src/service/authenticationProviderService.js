@@ -70,19 +70,20 @@ module.exports = {
                         try {
                             let key = enterprise._id + employee._id + (new Date()).getTime();
                             let hash = SYSTEM.generateHash(key);
-                            let moduleObject = NODICS.getModules(request.moduleName);
-                            if (!moduleObject.cache) {
-                                moduleObject.cache = {};
-                            }
-                            moduleObject.cache[hash] = {
+                            let moduleObject = NODICS.getModule(request.moduleName);
+                            let cache = moduleObject.apiCache || moduleObject.itemCache;
+                            _self.addToken(moduleObject, cache, hash, {
                                 employee: employee,
                                 enterprise: enterprise
-                            };
-                            callback(null, {
-                                authToken: hash
+                            }).then(success => {
+                                callback(null, {
+                                    authToken: hash
+                                });
+                            }).catch(error => {
+                                callback(error);
                             });
                         } catch (error) {
-                            callback('Invalid authentication request : Internal error ');
+                            callback('Invalid authentication request : Internal error: ' + error);
                         }
                     } else {
                         callback('Invalid authentication request : Given password is not valid');

@@ -14,30 +14,67 @@ module.exports = {
         isNew: true
     },
 
-    addToken: function(request, token) {
-        new Promise((resolve, reject) => {
+
+    addToken: function(moduleObject, cache, hash, value) {
+        return new Promise((resolve, reject) => {
             try {
-                let currentModule = NODICS.getModules(request.moduleName);
-                currentModule.authToken = token;
-                resolve(token);
+                if (cache) {
+                    SERVICE.CacheService.put(cache, hash, JSON.stringify(value), CONFIG.get('authTokenLife')).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    if (!moduleObject.cache) {
+                        moduleObject.cache = {};
+                    }
+                    moduleObject.cache[hash] = {
+                        employee: employee,
+                        enterprise: enterprise
+                    };
+                    resolve(true);
+                }
             } catch (error) {
                 reject(error);
             }
         });
     },
 
-    findToken: function(request, callback) {
-        let moduleObject = NODICS.getModules(request.moduleName);
-        if (moduleObject && moduleObject.cache && moduleObject.cache[request.authToken]) {
-            callback(null, moduleObject.cache[request.authToken]);
-        } else {
-            callback('Invalid token');
-        }
+    findToken: function(request) {
+        return new Promise((resolve, reject) => {
+            try {
+                let moduleObject = NODICS.getModule(request.moduleName);
+                let cache = moduleObject.apiCache || moduleObject.itemCache;
+                if (cache) {
+                    SERVICE.CacheService.get(cache, request.authToken).then(value => {
+                        resolve(JSON.parse(value));
+                    }).catch(error => {
+                        reject('Invalid token');
+                    });
+                } else {
+                    if (moduleObject && moduleObject.cache && moduleObject.cache[request.authToken]) {
+                        let result = moduleObject.cache[request.authToken];
+                        if (result) {
+                            resolve(JSON.parse(result));
+                        } else {
+                            reject('Invalid token');
+                        }
+                    } else {
+                        reject('Invalid token');
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+                reject(error);
+            }
+        });
     },
 
     authorizeToken: function(processRequest, callback) {
-        this.findToken(processRequest, (error, token) => {
-            if (error) {
+        this.findToken(processRequest).then(success => {
+            callback(null, success);
+        }).catch(error => {
+            if (processRequest.moduleName !== CONFIG.get('authorizationModuleName')) {
                 let options = {
                     moduleName: 'profile',
                     methodName: 'POST',
@@ -50,15 +87,15 @@ module.exports = {
                 console.log('   INFO: Authorizing reqiuest for token :', processRequest.authToken);
                 SERVICE.ModuleService.fetch(requestUrl, (error, response) => {
                     if (error) {
-                        callback(error, null);
+                        callback(error);
                     } else if (!response.success) {
-                        callback('Given token is not valid one', null);
+                        callback('Given token is not valid one');
                     } else {
                         callback(null, response.result[0]);
                     }
                 });
             } else {
-                callback(null, token);
+                callback('Given token is not valid one');
             }
         });
     }

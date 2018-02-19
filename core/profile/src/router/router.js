@@ -15,7 +15,7 @@ module.exports = {
             getEnterprise: {
                 secured: false,
                 cache: {
-                    enabled: true,
+                    enabled: false,
                     ttl: 20
                 },
                 key: '/enterprise/get',

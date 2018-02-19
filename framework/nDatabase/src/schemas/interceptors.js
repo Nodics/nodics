@@ -22,10 +22,10 @@ module.exports = {
 
         postFindInterceptor: function(schema, modelName) {
             schema.post('find', function(docs, next) {
-                console.log('      Inside find post hook');
                 let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
                 if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
-                    SERVICE.CacheService.putItem(schema.rawSchema, moduleObject.itemCache, this.getQuery(), docs).then(success => {
+                    let query = SERVICE.CacheService.createItemKey(this);
+                    SERVICE.CacheService.putItem(schema.rawSchema, moduleObject.itemCache, query, docs).then(success => {
                         console.log('   INFO: Item saved in item cache');
                     }).catch(error => {
                         console.log('   ERROR: while saving item in item cache : ', error);
@@ -40,6 +40,7 @@ module.exports = {
                 }
             });
         },
+
         preSaveInterceptor: function(schema, modelName) {
             schema.pre('save', function(next) {
                 if (NODICS.isNTestRunning()) {
@@ -54,6 +55,19 @@ module.exports = {
         postSaveInterceptor: function(schema, modelName) {
             schema.post('save', function(next) {
                 try {
+                    let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
+                    if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
+                        SERVICE.CacheService.flushItemCache({
+                            moduleName: schema.rawSchema.moduleName,
+                            prefix: schema.rawSchema.modelName
+                        }, (error, success) => {
+                            if (error) {
+                                console.log('   ERROR: Not able to flush item: ', schema.rawSchema.modelName, ' error : ', error);
+                            } else {
+                                console.log('   INFO: Item: ', schema.rawSchema.modelName, ' flushed from cache');
+                            }
+                        });
+                    }
                     if (NODICS.getActiveChannel() !== 'test' &&
                         NODICS.isNTestRunning() &&
                         CONFIG.get('event').publishAllActive &&
@@ -94,6 +108,27 @@ module.exports = {
             });
         },
 
+        postUpdateInterceptor: function(schema, modelName) {
+            schema.post('update', function(next) {
+                let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
+                if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
+                    SERVICE.CacheService.flushItemCache({
+                        moduleName: schema.rawSchema.moduleName,
+                        prefix: schema.rawSchema.modelName
+                    }, (error, success) => {
+                        if (error) {
+                            console.log('   ERROR: Not able to flush item: ', schema.rawSchema.modelName, ' error : ', error);
+                        } else {
+                            console.log('   INFO: Item: ', schema.rawSchema.modelName, ' flushed from cache');
+                        }
+                    });
+                }
+                if (next && typeof next === "function") {
+                    next();
+                }
+            });
+        },
+
         preSaveOrUpdateInterceptor: function(schema, modelName) {
             schema.pre('findOneAndUpdate', function(next) {
                 if (NODICS.isNTestRunning()) {
@@ -108,6 +143,19 @@ module.exports = {
         postSaveOrUpdateInterceptor: function(schema, modelName) {
             schema.post('findOneAndUpdate', function(next) {
                 try {
+                    let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
+                    if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
+                        SERVICE.CacheService.flushItemCache({
+                            moduleName: schema.rawSchema.moduleName,
+                            prefix: schema.rawSchema.modelName
+                        }, (error, success) => {
+                            if (error) {
+                                console.log('   ERROR: Not able to flush item: ', schema.rawSchema.modelName, ' error : ', error);
+                            } else {
+                                console.log('   INFO: Item: ', schema.rawSchema.modelName, ' flushed from cache');
+                            }
+                        });
+                    }
                     if (NODICS.getActiveChannel() !== 'test' &&
                         NODICS.isNTestRunning() &&
                         CONFIG.get('event').publishAllActive &&

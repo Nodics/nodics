@@ -20,5 +20,13 @@ module.exports = {
 
     flushItemCache: function(request, callback) {
         SERVICE.CacheService.flushItemCache(request, callback);
+    },
+
+    flushApiCacheKeys: function(request, callback) {
+        SERVICE.CacheService.flushApiCacheKeys(request, callback);
+    },
+
+    flushItemCacheKeys: function(request, callback) {
+        SERVICE.CacheService.flushItemCache(request, callback);
     }
 };

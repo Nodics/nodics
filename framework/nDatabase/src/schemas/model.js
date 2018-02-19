@@ -11,6 +11,23 @@
 
 const _ = require('lodash');
 
+/*
+    {
+        "pageSize": 10,
+        "pageNumber": 0,
+        "select": {
+            "enterpriseCode": 1,
+            "name": 1
+        },
+        "sort": { 
+            "name": -1 
+        }
+    }
+
+    options: { retainKeyOrder: false, limit: 10, skip: 0, sort: { name: -1 } },
+    _conditions: { enterpriseCode: 'default' },
+    _fields: { enterpriseCode: 1, name: 1 },
+*/
 module.exports = {
     default: {
         defineDefaultFind: function(model, rawSchema) {
@@ -33,14 +50,13 @@ module.exports = {
         },
 
         defineDefaultGet: function(model, rawSchema) {
-            //console.log('Model middleware : ', rawSchema);
             model.statics.get = function(input) {
-                console.log('   =>Getting Item from model');
                 let moduleObject = NODICS.getModules()[rawSchema.moduleName];
                 if (moduleObject.itemCache && rawSchema.cache && rawSchema.cache.enabled) {
                     return new Promise((resolve, reject) => {
-                        SERVICE.CacheService.getItem(rawSchema, moduleObject.itemCache, input.options).then(value => {
-                            console.log('      Fulfilled from  Item cache');
+                        let query = SERVICE.CacheService.createItemKey(input);
+                        SERVICE.CacheService.getItem(rawSchema, moduleObject.itemCache, query).then(value => {
+                            console.log('      Fulfilled from Item cache');
                             resolve(value);
                         }).catch(error => {
                             this.findItem(input).then(items => {

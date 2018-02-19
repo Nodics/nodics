@@ -12,7 +12,8 @@
 module.exports = {
 
     encryptSaltLength: 10,
-
+    authorizationModuleName: 'profile',
+    authTokenLife: 60 * 5,
     server: {
         profile: {
             abstractServer: {

@@ -81,5 +81,33 @@ module.exports = {
             }
 
         });
-    }
+    },
+
+    flush: function(client, prefix) {
+        return new Promise((resolve, reject) => {
+            if (prefix) {
+                if (!prefix.endsWith('*')) {
+                    prefix += '*';
+                }
+                client.keys(function(err, cacheKeys) {
+                    if (cacheKeys) {
+                        cacheKeys.forEach(key => {
+                            client.del(key);
+                        });
+                    }
+                    resolve(true);
+                });
+            } else {
+                client.flushAll();
+                resolve(true);
+            }
+        });
+    },
+
+    flushKeys: function(client, keys) {
+        return new Promise((resolve, reject) => {
+            client.del(keys);
+            resolve(true);
+        });
+    },
 };

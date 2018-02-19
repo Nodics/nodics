@@ -89,6 +89,9 @@ module.exports = {
             },
 
             definition: {
+                enterpriseCode: {
+                    unique: true
+                },
                 name: {
                     type: 'String',
                     required: true

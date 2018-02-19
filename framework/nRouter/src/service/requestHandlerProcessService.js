@@ -36,17 +36,29 @@ module.exports = {
 
     parseHeader: function(processRequest, processResponse, process) {
         console.log('   INFO: Parsing request header : ', processRequest.moduleName);
+        if (processRequest.httpRequest.get('authToken')) {
+            processRequest.authToken = processRequest.httpRequest.get('authToken');
+        }
+        if (processRequest.httpRequest.get('enterpriseCode')) {
+            processRequest.enterpriseCode = processRequest.httpRequest.get('enterpriseCode');
+        }
         process.nextSuccess(processRequest, processResponse);
     },
 
     parseBody: function(processRequest, processResponse, process) {
         console.log('   INFO: Parsing request body : ', processRequest.originalUrl);
+        if (processRequest.httpRequest.body) {
+            processRequest.body = processRequest.httpRequest.body;
+        }
         process.nextSuccess(processRequest, processResponse);
     },
 
     handleSpecialRequest: function(processRequest, processResponse, process) {
         console.log('   INFO: Handling special request : ', processRequest.originalUrl);
         if (processRequest.special) {
+            if (!processRequest.tenant) {
+                processRequest.tenant = 'default';
+            }
             eval(processRequest.router.handler)(processRequest, (error, response) => {
                 if (error) {
                     console.log('   ERROR: got error while handling special request : ', error);
@@ -80,11 +92,9 @@ module.exports = {
         console.log('   INFO: redirecting secured/non-secured request  : ', processRequest.originalUrl);
         if (processRequest.secured) {
             console.log('   INFO: Handling secured request');
-            processRequest.authToken = processRequest.httpRequest.get('authToken');
             process.nextSuccess(processRequest, processResponse);
         } else {
             console.log('   INFO: Handling non-secured request');
-            processRequest.enterpriseCode = processRequest.httpRequest.get('enterpriseCode') || {};
             process.nextFailure(processRequest, processResponse);
         }
     },

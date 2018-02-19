@@ -16,6 +16,7 @@ module.exports = {
 
     authenticate: function(processRequest, callback) {
         let request = {
+            moduleName: processRequest.moduleName,
             loginId: processRequest.httpRequest.get('loginId'),
             password: processRequest.httpRequest.get('password'),
             enterpriseCode: processRequest.httpRequest.get('enterpriseCode')
@@ -26,6 +27,7 @@ module.exports = {
 
     authorize: function(processRequest, callback) {
         let request = {
+            moduleName: processRequest.moduleName,
             authToken: processRequest.authToken
         };
 

@@ -15,10 +15,34 @@ module.exports = {
     },
 
     flushApiCache: function(requestContext, callback) {
+        if (requestContext.httpRequest.params.prefix) {
+            requestContext.prefix = requestContext.httpRequest.params.prefix;
+        } else if (requestContext.httpRequest.body) {
+            requestContext.keys = requestContext.httpRequest.body;
+        }
         FACADE.CacheFacade.flushApiCache(requestContext, callback);
     },
 
     flushItemCache: function(requestContext, callback) {
+        if (requestContext.httpRequest.params.prefix) {
+            requestContext.prefix = requestContext.httpRequest.params.prefix;
+        } else if (requestContext.httpRequest.body) {
+            requestContext.keys = requestContext.httpRequest.body;
+        }
         FACADE.CacheFacade.flushItemCache(requestContext, callback);
+    },
+
+    flushApiCacheKeys: function(requestContext, callback) {
+        if (requestContext.httpRequest.body) {
+            requestContext.keys = requestContext.httpRequest.body;
+        }
+        FACADE.CacheFacade.flushApiCacheKeys(requestContext, callback);
+    },
+
+    flushItemCacheKeys: function(requestContext, callback) {
+        if (requestContext.httpRequest.body) {
+            requestContext.keys = requestContext.httpRequest.body;
+        }
+        FACADE.CacheFacade.flushItemCacheKeys(requestContext, callback);
     }
 };

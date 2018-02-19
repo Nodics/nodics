@@ -135,21 +135,45 @@ module.exports = {
 
     common: {
         flushAPICache: {
-            flush: {
+            flushAll: {
                 secured: true,
                 key: '/cache/api/flush',
                 method: 'GET',
                 controller: 'CONTROLLER.CacheController.flushApiCache'
-            }
+            },
+            flushPrefix: {
+                secured: true,
+                key: '/cache/api/flush/:prefix',
+                method: 'GET',
+                controller: 'CONTROLLER.CacheController.flushApiCache'
+            },
+            flushKeys: {
+                secured: true,
+                key: '/cache/api/flush',
+                method: 'POST',
+                controller: 'CONTROLLER.CacheController.flushApiCacheKeys'
+            },
         },
 
         flushItemCache: {
-            flush: {
+            flushAll: {
                 secured: true,
                 key: '/cache/item/flush',
                 method: 'GET',
                 controller: 'CONTROLLER.CacheController.flushItemCache'
-            }
+            },
+            flushPrefix: {
+                secured: true,
+                key: '/cache/item/flush/:prefix',
+                method: 'GET',
+                controller: 'CONTROLLER.CacheController.flushItemCache'
+            },
+            flushKeys: {
+                secured: true,
+                key: '/cache/item/flush',
+                method: 'POST',
+                controller: 'CONTROLLER.CacheController.flushItemCacheKeys'
+            },
         }
     }
 };
