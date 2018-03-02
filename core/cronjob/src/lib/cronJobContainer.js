@@ -1,5 +1,5 @@
 /*
-    Nodics - Enterprice API management framework
+    Nodics - Enterprice Micro-Services Management Framework
 
     Copyright (c) 2017 Nodics All rights reserved.
 
