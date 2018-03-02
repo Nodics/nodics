@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: false
-    },
 
     cronJobContainer: new CLASSES.CronJobContainer(),
 

@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     startRequestHandlerProcess: function(req, res, routerDef) {
         let processRequest = {
@@ -42,6 +39,11 @@ module.exports = {
         if (processRequest.httpRequest.get('enterpriseCode')) {
             processRequest.enterpriseCode = processRequest.httpRequest.get('enterpriseCode');
         }
+        if (!processRequest.enterpriseCode &&
+            !UTILS.isBlank(processRequest.httpRequest.body) &&
+            processRequest.httpRequest.body.enterpriseCode) {
+            processRequest.enterpriseCode = processRequest.httpRequest.body.enterpriseCode;
+        }
         process.nextSuccess(processRequest, processResponse);
     },
 
@@ -64,6 +66,11 @@ module.exports = {
                     console.log('   ERROR: got error while handling special request : ', error);
                     process.error(processRequest, processResponse, error);
                 } else {
+                    let cache = false;
+                    if (response.cache) {
+                        cache = true;
+                        delete response.cache;
+                    }
                     processResponse.success = true;
                     processResponse.code = 'SUC001';
                     processResponse.msg = 'Processed successfully';
@@ -73,12 +80,18 @@ module.exports = {
                             ttl: processRequest.router.ttl
                         };
                         SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, processRequest.router.cache).then(cuccess => {
+                            if (cache) {
+                                processResponse.cache = 'item hit';
+                            }
                             process.stop(processRequest, processResponse);
                         }).catch(error => {
                             console.log('   ERROR: While pushing data into Item cache : ', error);
                             process.stop(processRequest, processResponse);
                         });
                     } else {
+                        if (cache) {
+                            processResponse.cache = 'item hit';
+                        }
                         process.stop(processRequest, processResponse);
                     }
                 }
@@ -115,6 +128,11 @@ module.exports = {
                     };
                     process.nextFailure(processRequest, processResponse);
                 } else {
+                    let cache = false;
+                    if (response.cache) {
+                        cache = true;
+                        delete response.cache;
+                    }
                     processResponse.success = true;
                     processResponse.code = 'SUC001';
                     processResponse.msg = 'Processed successfully';
@@ -124,12 +142,22 @@ module.exports = {
                             ttl: processRequest.router.ttl
                         };
                         SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, processRequest.router.cache).then(cuccess => {
+                            if (cache) {
+                                processResponse.cache = 'item hit';
+                            } else {
+                                processResponse.cache = 'mis';
+                            }
                             process.nextSuccess(processRequest, processResponse);
                         }).catch(error => {
                             console.log('   ERROR: While pushing data into Item cache : ', error);
                             process.nextSuccess(processRequest, processResponse);
                         });
                     } else {
+                        if (cache) {
+                            processResponse.cache = 'item hit';
+                        } else {
+                            processResponse.cache = 'mis';
+                        }
                         process.nextSuccess(processRequest, processResponse);
                     }
                 }

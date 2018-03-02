@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     authenticate: function(request, callback) {
         SERVICE.AuthenticationProviderService.authenticate(request, callback);

@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     flushApiCache: function(request, callback) {
         SERVICE.CacheService.flushApiCache(request, callback);

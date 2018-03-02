@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     runJob: function(definition, cronJob) {
         this.triggerEventHandlerJob(definition, cronJob, () => {

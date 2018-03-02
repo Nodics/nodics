@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     validateEvent: function(event) {
         if (UTILS.isBlank(event)) {

@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: false
-    },
 
     createJob: function(requestContext, callback) {
         let request = {

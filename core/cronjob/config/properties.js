@@ -44,12 +44,12 @@ module.exports = {
             apiCache: {
                 enabled: true,
                 fallback: true,
-                engine: 'redis'
+                engine: 'local'
             },
             itemCache: {
                 enabled: true,
                 fallback: true,
-                engine: 'redis'
+                engine: 'local'
             },
             localOptions: {
                 stdTTL: 100,

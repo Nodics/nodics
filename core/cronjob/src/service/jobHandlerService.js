@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     handleCronJobStart: function(definition, cronJob) {
         console.log('Job Started........');

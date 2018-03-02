@@ -13,9 +13,6 @@ const _ = require('lodash');
 const NodeCache = require("node-cache");
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     initCache: function(moduleObject, moduleName) {
         let _self = this;
@@ -250,12 +247,14 @@ module.exports = {
         let hash = rawSchema.modelName + '_' +
             rawSchema.tenant + '_' +
             SYSTEM.generateHash(JSON.stringify(query));
+        //console.log('Get Key :', rawSchema.modelName + '_' + rawSchema.tenant + '_' + JSON.stringify(query));
         return this.get(cache, hash);
     },
     putItem: function(rawSchema, cache, query, value) {
         let hash = rawSchema.modelName + '_' +
             rawSchema.tenant + '_' +
             SYSTEM.generateHash(JSON.stringify(query));
+        //console.log('Put Key :', rawSchema.modelName + '_' + rawSchema.tenant + '_' + JSON.stringify(query));
         return this.put(cache, hash, value, rawSchema.cache);
     }
 };

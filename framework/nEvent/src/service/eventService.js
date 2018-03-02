@@ -11,10 +11,6 @@
 
 module.exports = {
 
-    options: {
-        isNew: false
-    },
-
     handleEvent: function(request, callback) {
         let event = request.httpRequest.body;
         if (!NODICS.getModules()[event.target].eventService.emit(event.event, event, callback)) {

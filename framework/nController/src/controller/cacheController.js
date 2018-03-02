@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     flushApiCache: function(requestContext, callback) {
         if (requestContext.httpRequest.params.prefix) {

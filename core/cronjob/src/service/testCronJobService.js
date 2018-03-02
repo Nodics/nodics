@@ -11,9 +11,6 @@
 
 module.exports = {
     //Created this class to test if cronJob run process works fine
-    options: {
-        isNew: true
-    },
 
     runJob: function(definition) {
         var today = new Date();

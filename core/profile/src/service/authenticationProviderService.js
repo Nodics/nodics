@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: false
-    },
 
     retrieveEnterprise: function(request) {
         return new Promise((resolve, reject) => {
@@ -100,6 +97,12 @@ module.exports = {
     },
 
     authorize: function(processRequest, callback) {
-        this.findToken(processRequest, callback);
+        this.findToken(processRequest).then(success => {
+            callback(null, success);
+        }).catch(error => {
+            callback('Given token is not valid one');
+        });
+
+
     }
 };

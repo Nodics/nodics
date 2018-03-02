@@ -20,12 +20,7 @@ module.exports = {
             if (CONTROLLER[controllerName]) {
                 CONTROLLER[controllerName] = _.merge(CONTROLLER[controllerName], require(file));
             } else {
-                let controllerObject = require(file);
-                if (controllerObject.options.isNew) {
-                    CONTROLLER[controllerName] = controllerObject;
-                } else {
-                    console.warn('   WARNING: Controller container doesn,t contain ' + controllerName + ' and isNew Property is false. hence ignoring file ', file);
-                }
+                CONTROLLER[controllerName] = require(file);
             }
         });
     }

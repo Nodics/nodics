@@ -12,9 +12,7 @@
 var requestPromise = require('request-promise');
 
 module.exports = {
-    options: {
-        isNew: true
-    },
+
     buildRequest: function(options) {
         console.log('   INFO: Building request url for module ', options.moduleName);
         let header = {

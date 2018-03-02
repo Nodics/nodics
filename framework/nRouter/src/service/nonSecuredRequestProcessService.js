@@ -1,7 +1,4 @@
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     validateEnterpriseCode: function(processRequest, processResponse, process) {
         console.log('   INFO: Validating Enterprise code : ', processRequest.enterpriseCode);

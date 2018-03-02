@@ -12,10 +12,6 @@
 const _ = require('lodash');
 
 module.exports = {
-
-    options: {
-        isNew: true
-    },
     /*
         request.tenant
         request.models

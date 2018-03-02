@@ -65,12 +65,28 @@ module.exports = {
             options.NODICS_HOME = process.env.NODICS_HOME || process.cwd();
         }
         if (!options.NODICS_APP) {
-            options.NODICS_APP = process.argv[2];
+            if (process.argv[2]) {
+                options.NODICS_APP = process.argv[2];
+            } else {
+                console.log('   WARN: Could not found App Name, So starting with default "kickoff"');
+                options.NODICS_APP = 'kickoff';
+            }
         }
         if (!options.NODICS_ENV) {
-            options.NODICS_ENV = process.argv[3];
+            if (process.argv[3]) {
+                options.NODICS_ENV = process.argv[3];
+            } else {
+                console.log('   WARN: Could not found Environment Name, So starting with default "local"');
+                options.NODICS_ENV = 'local';
+            }
+
         }
         if (!options.NODICS_SEVER) {
+            let serverName = process.argv[4];
+            if (!serverName) {
+                serverName = 'sampleServer';
+                console.log('   WARN: Could not found Server Name, So starting with default "sampleServer"');
+            }
             options.NODICS_SEVER = options.NODICS_HOME + '/' +
                 options.NODICS_APP + '/' +
                 options.NODICS_ENV + '/' +

@@ -12,9 +12,6 @@
 const _ = require('lodash');
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     buildQuery: function() {
         return {

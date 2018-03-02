@@ -10,10 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
-
 
     addToken: function(moduleObject, cache, hash, value) {
         return new Promise((resolve, reject) => {
@@ -64,7 +60,6 @@ module.exports = {
                     }
                 }
             } catch (error) {
-                console.log(error);
                 reject(error);
             }
         });
@@ -91,7 +86,7 @@ module.exports = {
                     } else if (!response.success) {
                         callback('Given token is not valid one');
                     } else {
-                        callback(null, response.result[0]);
+                        callback(null, response.result);
                     }
                 });
             } else {

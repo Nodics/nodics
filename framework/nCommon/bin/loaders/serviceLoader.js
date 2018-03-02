@@ -20,12 +20,7 @@ module.exports = {
             if (SERVICE[serviceName]) {
                 SERVICE[serviceName] = _.merge(SERVICE[serviceName], require(file));
             } else {
-                let serviceObject = require(file);
-                if (serviceObject.options.isNew) {
-                    SERVICE[serviceName] = serviceObject;
-                } else {
-                    console.warn('   WARNING: ModelService container doesn,t contain ' + serviceName + ' and isNew Property is false. hence ignoring file ', file);
-                }
+                SERVICE[serviceName] = require(file);
             }
         });
     }

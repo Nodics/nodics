@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: false
-    },
 
     createJob: function(request, callback) {
         return SERVICE.CronJobService.createJob(request, callback);

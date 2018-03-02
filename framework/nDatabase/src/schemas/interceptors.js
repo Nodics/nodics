@@ -24,7 +24,7 @@ module.exports = {
             schema.post('find', function(docs, next) {
                 let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
                 if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
-                    let query = SERVICE.CacheService.createItemKey(this);
+                    let query = this.rawQuery; //SERVICE.CacheService.createItemKey(this);
                     SERVICE.CacheService.putItem(schema.rawSchema, moduleObject.itemCache, query, docs).then(success => {
                         console.log('   INFO: Item saved in item cache');
                     }).catch(error => {

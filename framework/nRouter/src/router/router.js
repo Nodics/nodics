@@ -16,6 +16,7 @@ module.exports = {
                 app.route(routerDef.url).get((req, res, next) => {
                     SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
                         console.log('      Fulfilled from API cache');
+                        value.cache = 'api hit';
                         res.json(value);
                     }).catch(error => {
                         next();
@@ -34,6 +35,7 @@ module.exports = {
                 app.route(routerDef.url).post((req, res, next) => {
                     SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
                         console.log('      Fulfilled from API cache');
+                        value.cache = 'api hit';
                         res.json(value);
                     }).catch(error => {
                         next();
@@ -64,8 +66,8 @@ module.exports = {
             getModel: {
                 secured: true,
                 cache: {
-                    enabled: false,
-                    ttl: 20
+                    enabled: true,
+                    ttl: 40
                 },
                 key: '/schemaName',
                 method: 'GET',

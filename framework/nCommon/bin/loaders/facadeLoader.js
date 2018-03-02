@@ -20,12 +20,7 @@ module.exports = {
             if (FACADE[facadeName]) {
                 FACADE[facadeName] = _.merge(FACADE[facadeName], require(file));
             } else {
-                let facadeObject = require(file);
-                if (facadeObject.options.isNew) {
-                    FACADE[facadeName] = facadeObject;
-                } else {
-                    console.warn('   WARNING: Facade container doesn,t contain ' + facadeName + ' and isNew Property is false. hence ignoring file ', file);
-                }
+                FACADE[facadeName] = require(file);
             }
         });
     }

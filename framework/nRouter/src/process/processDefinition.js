@@ -98,6 +98,12 @@ module.exports = {
             authorizeAuthToken: {
                 type: 'function',
                 process: 'SERVICE.SecuredRequestProcessService.authorizeAuthToken',
+                success: 'validateTenantId',
+                failure: 'failureEnd'
+            },
+            validateTenantId: {
+                type: 'function',
+                process: 'SERVICE.NonSecuredRequestProcessService.validateTenantId',
                 success: 'successEnd',
                 failure: 'failureEnd'
             }

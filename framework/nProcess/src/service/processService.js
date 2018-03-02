@@ -12,9 +12,7 @@
 const _ = require('lodash');
 
 module.exports = {
-    options: {
-        isNew: true
-    },
+
     handleSucessEnd: function(processRequest, processResponse) {
         console.log('   WARN: This is default success handler, will not perform anything ');
     },

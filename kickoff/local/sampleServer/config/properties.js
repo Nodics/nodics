@@ -12,7 +12,7 @@
 module.exports = {
     activeModules: {
         updateGroups: true,
-        groups: ['core'], // Group 'framework' will be included automatically
+        groups: ['core', 'ems'], // Group 'framework' will be included automatically
         modules: [
             'sampleServer',
             'kickoff',

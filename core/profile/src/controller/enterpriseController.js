@@ -10,12 +10,9 @@
  */
 
 module.exports = {
-    options: {
-        isNew: false
-    },
 
     getEnterprise: function(processRequest, callback) {
-        let enterpriseCode = processRequest.httpRequest.get('enterpriseCode');
+        let enterpriseCode = processRequest.enterpriseCode;
         if (UTILS.isBlank(enterpriseCode)) {
             callback('Invalid enterprise code');
         } else {

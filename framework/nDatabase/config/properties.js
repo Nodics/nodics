@@ -34,31 +34,6 @@ module.exports = {
                     }
                 }
             }
-        },
-        /*
-        user: {
-            master: {
-                URI: 'mongodb://localhost:27017/userMaster',
-                options: {
-                    db: {
-                        native_parser: true
-                    },
-                    server: {
-                        poolSize: 5
-                    }
-                }
-            },
-            test: {
-                URI: 'mongodb://localhost:27017/userTest',
-                options: {
-                    db: {
-                        native_parser: true
-                    },
-                    server: {
-                        poolSize: 5
-                    }
-                }
-            }
-        }*/
+        }
     }
 };

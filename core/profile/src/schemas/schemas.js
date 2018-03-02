@@ -172,7 +172,7 @@ module.exports = {
             router: true,
             cache: {
                 enabled: true,
-                ttl: 20
+                ttl: 100
             },
             definition: {
 
@@ -185,6 +185,10 @@ module.exports = {
             service: true,
             event: true,
             router: true,
+            cache: {
+                enabled: true,
+                ttl: 20
+            },
             definition: {
 
             }

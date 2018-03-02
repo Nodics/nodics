@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     handleEvent: function(request, callback) {
         SERVICE.EventService.handleEvent(request, callback);

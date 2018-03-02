@@ -34,17 +34,9 @@ http://localhost:3005/nodics/cronjob
 */
 
 let mongoose = require('mongoose');
+
 module.exports = {
     cronjob: {
-        email: {
-            super: 'none',
-            model: true,
-            service: false,
-            router: false,
-            definition: {
-                mailId: "String",
-            }
-        },
         trigger: {
             super: 'none',
             model: true,
@@ -113,7 +105,7 @@ module.exports = {
             event: false,
             router: true,
             refSchema: {
-                addresses: {
+                logs: {
                     modelName: 'CronJobLogModel',
                     type: 'many'
                 }
@@ -164,7 +156,9 @@ module.exports = {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'CronJobLogModel'
                 }],
-                emails: ["schemas['email']"],
+                emails: [{
+                    type: 'String'
+                }],
                 triggers: ["schemas['trigger']"],
                 jobDetail: {
                     startNode: {

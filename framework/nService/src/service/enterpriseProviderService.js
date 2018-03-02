@@ -10,9 +10,6 @@
  */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     loadEnterprise: function(processRequest, callback) {
         let options = {

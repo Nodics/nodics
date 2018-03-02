@@ -22,6 +22,9 @@ module.exports = {
             } else {
                 request.options = {};
             }
+            if (request.options.recursive) {
+                request.options.recursive = requestContext.httpRequest.get('recursive') || false;
+            }
             FACADE.FacadeName.get(request, callback);
         } else {
             console.log('   ERROR: Please validate your request, it is not a valid one');
@@ -35,6 +38,7 @@ module.exports = {
         };
         if (requestContext.httpRequest) {
             request.id = requestContext.httpRequest.params.id;
+            request.recursive = requestContext.httpRequest.get('recursive') || false;
             FACADE.FacadeName.getById(request, callback);
         } else {
             console.log('   ERROR: Please validate your request, it is not a valid one');

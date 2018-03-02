@@ -31,21 +31,28 @@ const _ = require('lodash');
 module.exports = {
     default: {
         defineDefaultFind: function(model, rawSchema) {
-            model.statics.findItem = function(input) {
-                let schema = rawSchema;
-                let requestBody = input.options;
-                let skip = (requestBody.pageSize || CONFIG.get('defaultPageSize')) * (requestBody.pageNumber || CONFIG.get('defaultPageNumber'));
-                let query = this.find(requestBody.query || {})
-                    .limit(requestBody.pageSize || CONFIG.get('defaultPageSize'))
-                    .skip(skip)
-                    .sort(requestBody.sort || {})
-                    .select(requestBody.select || {});
-                if (requestBody.recursive && schema.refSchema) {
-                    _.each(schema.refSchema, function(modelName, property) {
-                        query.populate(property);
+            model.statics.findItem = function(input, rawQuery) {
+                return new Promise((resolve, reject) => {
+                    let schema = rawSchema;
+                    let requestBody = input.options;
+                    SERVICE.ValidateRequestService.validateInputFilter(requestBody).then(success => {
+                        let skip = (requestBody.pageSize || CONFIG.get('defaultPageSize')) * (requestBody.pageNumber || CONFIG.get('defaultPageNumber'));
+                        let query = this.find(requestBody.query || {})
+                            .limit(requestBody.pageSize || CONFIG.get('defaultPageSize'))
+                            .skip(skip)
+                            .sort(requestBody.sort || {})
+                            .select(requestBody.select || {});
+                        if (requestBody.recursive && schema.refSchema) {
+                            _.each(schema.refSchema, function(modelName, property) {
+                                query.populate(property);
+                            });
+                        }
+                        query.rawQuery = rawQuery;
+                        resolve(query.lean().exec());
+                    }).catch(error => {
+                        reject(error);
                     });
-                }
-                return query.lean().exec();
+                });
             };
         },
 
@@ -57,9 +64,10 @@ module.exports = {
                         let query = SERVICE.CacheService.createItemKey(input);
                         SERVICE.CacheService.getItem(rawSchema, moduleObject.itemCache, query).then(value => {
                             console.log('      Fulfilled from Item cache');
+                            value.cache = 'item hit';
                             resolve(value);
                         }).catch(error => {
-                            this.findItem(input).then(items => {
+                            this.findItem(input, query).then(items => {
                                 resolve(items);
                             }).catch(error => {
                                 reject(error);
@@ -81,6 +89,7 @@ module.exports = {
                 let request = {
                     tenant: input.tenant,
                     options: {
+                        recursive: input.recursive,
                         pageSize: CONFIG.get('defaultPageSize'),
                         pageNumber: CONFIG.get('defaultPageNumber'),
                         query: { _id: input.id }

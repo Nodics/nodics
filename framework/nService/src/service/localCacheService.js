@@ -12,9 +12,6 @@
 const NodeCache = require("node-cache");
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     initApiCache: function(options, moduleName) {
         return new Promise((resolve, reject) => {

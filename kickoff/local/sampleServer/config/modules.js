@@ -1,4 +1,5 @@
 module.exports = { core: [ 'core', 'cronjob', 'nems', 'profile' ],
+  ems: [ 'emsClient' ],
   framework: 
    [ 'framework',
      'nconfig',
@@ -11,5 +12,4 @@ module.exports = { core: [ 'core', 'cronjob', 'nems', 'profile' ],
      'nfacade',
      'ncontroller',
      'nrouter',
-     'ntest' ],
-  kickoff: [] };
+     'ntest' ] };

@@ -120,9 +120,10 @@ module.exports = (function() {
     let appPath = process.argv[4];
     if (command === 'help') {
         help();
-    } else if (command === 'app' || command === 'group') {
+    } else if (command === 'app' || command === 'application' || command === 'group') {
         createApplication(name, appPath);
     } else if (command === 'module') {
+        console.log(name, ' ------ ', appPath);
         if (!appPath) {
             console.log('ERROR: Please pass Application name, where this module needs to be generated');
             return help();

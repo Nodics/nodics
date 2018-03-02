@@ -20,12 +20,7 @@ module.exports = {
             if (DAO[daoName]) {
                 DAO[daoName] = _.merge(DAO[daoName], require(file));
             } else {
-                let doaObject = require(file);
-                if (doaObject.options.isNew) {
-                    DAO[daoName] = doaObject;
-                } else {
-                    console.warn('   WARNING: Dao container doesn,t contain ' + daoName + ' and isNew Property is false. hence ignoring file ', file);
-                }
+                DAO[daoName] = require(file);
             }
         });
     }

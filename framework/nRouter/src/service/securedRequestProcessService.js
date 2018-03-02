@@ -1,7 +1,4 @@
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     validateAuthToken: function(processRequest, processResponse, process) {
         console.log('   INFO: Validating auth token : ', processRequest.authToken);
@@ -20,6 +17,7 @@ module.exports = {
                 process.error(processRequest, processResponse, error);
             } else {
                 processRequest.enterprise = response.enterprise;
+                processRequest.employee = response.employee;
                 processRequest.tenant = response.enterprise.tenant;
                 process.nextSuccess(processRequest, processResponse);
             }

@@ -10,9 +10,6 @@
 */
 
 module.exports = {
-    options: {
-        isNew: true
-    },
 
     authenticate: function(processRequest, callback) {
         let request = {
