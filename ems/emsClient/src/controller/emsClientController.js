@@ -16,7 +16,6 @@ module.exports = {
             request.tenant = requestContext.tenant;
             request.enterpriseCode = requestContext.enterpriseCode;
             request.authToken = requestContext.authToken;
-
             return FACADE.EmsClientFacade.publish(request, callback);
         } else {
             console.log('   ERROR: Please validate your request, it is not a valid one');

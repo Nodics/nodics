@@ -17,6 +17,7 @@ module.exports = {
                 process.error(processRequest, processResponse, error);
             } else {
                 processRequest.enterprise = response.enterprise;
+                processRequest.enterpriseCode = response.enterprise.enterpriseCode;
                 processRequest.employee = response.employee;
                 processRequest.tenant = response.enterprise.tenant;
                 process.nextSuccess(processRequest, processResponse);

@@ -19,12 +19,15 @@ module.exports = function() {
     this.setName = function(name) {
         _name = name;
     };
+
     this.getName = function(name) {
         return _name;
-    }
+    };
+
     this.setURI = function(uri) {
         _uri = uri;
     };
+
     this.getRUI = function() {
         return _uri;
     };
@@ -32,6 +35,7 @@ module.exports = function() {
     this.setOptions = function(options) {
         _options = options;
     };
+
     this.getOptions = function() {
         return _options;
     };
@@ -39,6 +43,7 @@ module.exports = function() {
     this.setConnection = function(connection) {
         _connection = connection;
     };
+
     this.getConnection = function() {
         return _connection;
     };
@@ -46,7 +51,8 @@ module.exports = function() {
     this.setSchema = function(schema) {
         _schema = schema;
     };
+
     this.getSchema = function() {
         return _schema;
-    }
+    };
 };

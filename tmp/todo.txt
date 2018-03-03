@@ -11,3 +11,19 @@
 - Define namespace capability - load cleasses from sub-folders
 - Add Service to return sample request object for all the services.
 - Implement Jsdoc NPM to generate JavaScript Docs
+- Make all framework load Prmoisify (Loading all modules in sequence)
+- 
+
+- Invalidation process for authToken (Should be common for module level caching)
+- Cache Auth token in each module
+- Make item and API TTL at configuration level
+- Connect Test DB only if required (Check may be its working like this only)
+- Build common event Listener for all module (May be for cache invalidation)
+- Authentication and Authorization for background processes like CronJob Execution
+- Create default data import process
+
+- Data Import process
+- Data Export process
+
+- Client for ActiveMQ
+- Client for Kafka

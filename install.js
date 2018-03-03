@@ -12,7 +12,6 @@
 var fs = require('fs');
 var copy = require('recursive-copy');
 var path = require('path');
-var through = require('through2');
 
 var help = function() {
     console.log('----------------------------------');

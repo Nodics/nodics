@@ -1,1 +1,57 @@
-console.log(__dirname);
+{
+    "name": "nodics",
+    "index": "0",
+    "description": "Nodics, A Node based enterprise application solution",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "Nodics"
+    ],
+    "author": "Nodics Framework <nodics.framework@gmail.com>",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GNU General Public License v3",
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics.git"
+    },
+    "dependencies": {
+        "ajv": "^6.1.1",
+        "ajv-keywords": "^3.1.0",
+        "async": "^2.6.0",
+        "bcrypt": "^1.0.3",
+        "bcrypt-nodejs": "0.0.3",
+        "body-parser": "^1.18.2",
+        "chai": "^4.1.2",
+        "chalk": "^2.3.0",
+        "cron": "^1.3.0",
+        "distributed-eventemitter": "^1.2.1",
+        "ems": "^1.5.0",
+        "enum": "^2.5.0",
+        "eslint": "^4.17.0",
+        "express": "^4.16.2",
+        "glob": "*",
+        "java": "^0.9.0",
+        "kafka-node": "^2.4.1",
+        "lightstreamer-jms-client": "^1.2.1",
+        "lodash": "^4.17.5",
+        "mocha": "^4.1.0",
+        "mocha-suit": "^0.5.3",
+        "mongoose": "^4.13.10",
+        "mongoose-schema-extend": "0.2.0",
+        "node-cache": "^4.1.1",
+        "properties-reader": "0.0.16",
+        "recursive-copy": "^2.0.8",
+        "redis": "^2.8.0",
+        "request": "^2.83.0",
+        "request-promise": "^4.2.2",
+        "should": "^13.2.1",
+        "stomp-client": "^0.9.0",
+        "stompit": "^0.25.0",
+        "string": "*",
+        "through2": "^2.0.3",
+        "uuid": "^3.2.1",
+        "validator": "^8.2.0"
+    }
+}

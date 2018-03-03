@@ -18,10 +18,10 @@ module.exports = {
     publisherPool: {},
     consumerPool: {},
 
-    init: function(options) {
+    init: function(config) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (!options) {
+            if (!config.options) {
                 reject('ERROR: Tibco configuration is not valid');
             }
             let baseDir = path.join(__dirname, '../');
@@ -35,22 +35,22 @@ module.exports = {
             console.log('   INFO: Setting classpath for : ', baseDir + '/ext/bin');
             java.classpath.push(baseDir + '/ext/bin');
             try {
-                java.newInstance("com.tibco.tibjms.TibjmsConnectionFactory", options.url, function(error, tibcoConnectionFactory) {
+                java.newInstance("com.tibco.tibjms.TibjmsConnectionFactory", config.options.url, function(error, tibcoConnectionFactory) {
                     if (error) {
                         reject('  ERROR: while creating tibco connection factory');
                     } else {
                         java.newInstance("com.nodics.tibco.connection.ConnectionFactory",
-                            options.username,
-                            options.password,
+                            config.options.username,
+                            config.options.password,
                             tibcoConnectionFactory,
                             function(err, connectionFactory) {
                                 if (error) {
-                                    reject('  ERROR: while creating tibco connection : ', options.url);
+                                    reject('  ERROR: while creating tibco connection : ', config.options.url);
                                 } else {
                                     console.log('   INFO: Connection stablished with tibco ems');
                                     let publishers = [];
                                     let consumers = [];
-                                    options.queues.forEach(queue => {
+                                    config.queues.forEach(queue => {
                                         if (queue.inputQueue) {
                                             publishers.push(_self.createPublisher(connectionFactory, queue));
                                         }
@@ -68,13 +68,12 @@ module.exports = {
                                     } else {
                                         reject('   ERROR: could not found any queue information');
                                     }
-
                                 }
                             });
                     }
                 });
             } catch (err) {
-                reject('  ERROR: while creating tibco connection : ', options.url);
+                reject('  ERROR: while creating tibco connection : ', config.options.url);
             }
         });
 
@@ -141,7 +140,6 @@ module.exports = {
 
     publish: function(queueName, message) {
         return new Promise((resolve, reject) => {
-            console.log(this.publisherPool);
             let publisher = this.publisherPool[queueName];
             if (publisher) {
                 try {

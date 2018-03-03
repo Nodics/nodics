@@ -14,32 +14,26 @@ module.exports = {
     init: function() {
         let emsConfig = CONFIG.get('emsClient');
         if (emsConfig.enabled && emsConfig.type) {
-            SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].init(emsConfig[emsConfig.type + 'Options']).then(success => {
-                console.log('   INFO: Successfully established connect with : ', emsConfig.type);
+            SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].init(emsConfig[emsConfig.type]).then(success => {
+                console.log('   INFO: Successfully established connection with : ', emsConfig.type);
             }).catch(error => {
                 console.log(error);
             });
         }
     },
 
+    /*
+        let message = {
+            topic: payload.queue,
+            messages: payload.messages,
+            partition: payload.partition || 0
+        };
+    */
     publish: function(input, callback) {
         let emsConfig = CONFIG.get('emsClient');
         if (callback) {
-            SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(input.queue, input.message).then(success => {
+            SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(input).then(success => {
                 callback(null, 'Message published Successfully');
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(input.queue, input.message);
-        }
-    },
-
-    consume: function(input, callback) {
-        let emsConfig = CONFIG.get('emsClient');
-        if (callback) {
-            SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].consume(input).then(success => {
-                callback(null, 'Message consumed Successfully');
             }).catch(error => {
                 callback(error);
             });
