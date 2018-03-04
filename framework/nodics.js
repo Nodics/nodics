@@ -48,7 +48,7 @@ module.exports = {
     },
 
     initTestRuner: function() {
-        test.runTest();
+        test.initTest().then(success => {}).catch(error => {});
     },
 
     startNodics: function(options) {

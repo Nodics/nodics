@@ -1,6 +1,7 @@
 {
     "name": "ncontroller",
     "index": "9",
+    "publish": false,
     "description": "Build OOTB controllers for Nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [

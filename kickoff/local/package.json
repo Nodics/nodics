@@ -1,6 +1,7 @@
 {
     "name": "local",
     "index": "1010",
+    "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and local point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [

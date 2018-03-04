@@ -13,8 +13,10 @@ const _ = require('lodash');
 
 module.exports = {
     loadTest: function(module) {
-        if (CONFIG.get('test').run) {
+        if (CONFIG.get('test').uTest.enabled) {
             this.loadCommonTest(module);
+        }
+        if (CONFIG.get('test').nTest.enabled) {
             this.loadEnvTest(module);
         }
     },
@@ -26,16 +28,16 @@ module.exports = {
             let testFile = this.collectData(require(file));
             _.each(testFile, (testSuite, suiteName) => {
                 if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
-                    if (TEST.nTestPool[suiteName]) {
-                        TEST.nTestPool[suiteName] = _.merge(TEST.nTestPool[suiteName], testSuite);
+                    if (TEST.nTestPool.suites[suiteName]) {
+                        TEST.nTestPool.suites[suiteName] = _.merge(TEST.nTestPool.suites[suiteName], testSuite);
                     } else {
-                        TEST.nTestPool[suiteName] = testSuite;
+                        TEST.nTestPool.suites[suiteName] = testSuite;
                     }
                 } else {
-                    if (TEST.uTestPool[suiteName]) {
-                        TEST.uTestPool[suiteName] = _.merge(TEST.uTestPool[suiteName], testSuite);
+                    if (TEST.uTestPool.suites[suiteName]) {
+                        TEST.uTestPool.suites[suiteName] = _.merge(TEST.uTestPool.suites[suiteName], testSuite);
                     } else {
-                        TEST.uTestPool[suiteName] = testSuite;
+                        TEST.uTestPool.suites[suiteName] = testSuite;
                     }
                 }
             });
@@ -49,16 +51,16 @@ module.exports = {
             let testFile = this.collectData(require(file));
             _.each(testFile, (testSuite, suiteName) => {
                 if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
-                    if (TEST.nTestPool[suiteName]) {
-                        TEST.nTestPool[suiteName] = _.merge(TEST.nTestPool[suiteName], testSuite);
+                    if (TEST.nTestPool.suites[suiteName]) {
+                        TEST.nTestPool.suites[suiteName] = _.merge(TEST.nTestPool.suites[suiteName], testSuite);
                     } else {
-                        TEST.nTestPool[suiteName] = testSuite;
+                        TEST.nTestPool.suites[suiteName] = testSuite;
                     }
                 } else {
-                    if (TEST.uTestPool[suiteName]) {
-                        TEST.uTestPool[suiteName] = _.merge(TEST.uTestPool[suiteName], testSuite);
+                    if (TEST.uTestPool.suites[suiteName]) {
+                        TEST.uTestPool.suites[suiteName] = _.merge(TEST.uTestPool.suites[suiteName], testSuite);
                     } else {
-                        TEST.uTestPool[suiteName] = testSuite;
+                        TEST.uTestPool.suites[suiteName] = testSuite;
                     }
                 }
             });

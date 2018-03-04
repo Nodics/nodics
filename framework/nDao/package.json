@@ -1,6 +1,7 @@
 {
     "name": "ndao",
     "index": "4",
+    "publish": false,
     "description": "Generate DAO layer for all defined items",
     "homepage": "http://www.nodics.com/",
     "keywords": [

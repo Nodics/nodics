@@ -119,7 +119,7 @@ module.exports = {
                 _self.createSchema(options);
                 flag = true;
             }
-            if (!schemaObject[tntName].test[options.modelName]) {
+            if (!schemaObject[tntName].test[options.modelName] && database.test) {
                 options.database = database.test;
                 options.schemaObject = schemaObject[tntName].test;
                 options.modelObject = modelObject[tntName].test;

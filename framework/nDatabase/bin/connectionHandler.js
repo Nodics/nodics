@@ -47,27 +47,31 @@ module.exports = {
         let cacheConfig = _.merge(_.merge({}, cache.default || {}), cache[moduleName] || {});
         CONFIG.get('installedTanents').forEach(function(tntName) {
             let dbConfig = NODICS.getDatabaseConfiguration(moduleName, tntName);
+            let testConfig = CONFIG.get('test');
             let masterDatabase = new CLASSES.Database();
-            let testDatabase = new CLASSES.Database();
+            let testDatabase = null;
 
             masterDatabase.setName(moduleName);
             masterDatabase.setURI(dbConfig.master.URI);
             masterDatabase.setOptions(dbConfig.master.options);
             masterDatabase.setConnection(_self.createConnection(dbConfig.master, cacheConfig));
             masterDatabase.setSchema(mongoose.Schema);
-            if (dbConfig.test) {
-                testDatabase.setName(moduleName);
-                testDatabase.setURI(dbConfig.test.URI);
-                testDatabase.setOptions(dbConfig.test.options);
-                testDatabase.setConnection(_self.createConnection(dbConfig.test, cacheConfig));
-                testDatabase.setSchema(mongoose.Schema);
-            } else {
-                let testDB = NODICS.getDatabase().test;
-                if (!testDB) {
-                    console.error('   ERROR: Default test database configuration not found. Please velidate database configuration');
-                    process.exit(CONFIG.get('errorExitCode'));
+            if (testConfig.enabled && testConfig.uTest.enabled) {
+                testDatabase = new CLASSES.Database();
+                if (dbConfig.test) {
+                    testDatabase.setName(moduleName);
+                    testDatabase.setURI(dbConfig.test.URI);
+                    testDatabase.setOptions(dbConfig.test.options);
+                    testDatabase.setConnection(_self.createConnection(dbConfig.test, cacheConfig));
+                    testDatabase.setSchema(mongoose.Schema);
+                } else {
+                    let testDB = NODICS.getDatabase().test;
+                    if (!testDB) {
+                        console.error('   ERROR: Default test database configuration not found. Please velidate database configuration');
+                        process.exit(CONFIG.get('errorExitCode'));
+                    }
+                    testDatabase = testDB;
                 }
-                testDatabase = testDB;
             }
             tntDB[tntName] = {
                 master: masterDatabase,
@@ -83,9 +87,7 @@ module.exports = {
             process.exit(CONFIG.get('errorExitCode'));
         }
         let modules = NODICS.getModules();
-        //Creating default data base instance
         NODICS.addDatabase('default', this.createDatabase('default'));
-        //Creating databases for all modules, if configuration available
         _.each(modules, (value, moduleName) => {
             if (CONFIG.get('database')[moduleName]) {
                 console.log('   INFO: Creating database for module : ', moduleName);
@@ -94,6 +96,7 @@ module.exports = {
                 console.warn('   WARNING: None database configuration found for module : ', moduleName, '\tHence running on Default configurarion');
             }
         });
+        console.log(NODICS.getDatabases());
     },
     init: function() {
         console.log(" =>Starting Database creating process");

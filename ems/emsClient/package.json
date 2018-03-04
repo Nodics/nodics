@@ -2,7 +2,7 @@
     "name": "emsClient",
     "//": "value for index property should start from 2000, value <2000 are reserved for Nodics",
     "index": "505",
-    "publish": "false",
+    "publish": true,
     "description": "Nodics applicaion module. It will hold all configuration and emsClient point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [

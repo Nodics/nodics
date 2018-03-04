@@ -67,7 +67,7 @@ module.exports = {
             if (prefix) {
                 client.keys(function(err, cacheKeys) {
                     cacheKeys.forEach(key => {
-                        if (key.startWith(prefix)) {
+                        if (key.startsWith(prefix)) {
                             client.del(key);
                         }
                     });

@@ -1,6 +1,7 @@
 {
     "name": "ndatabase",
     "index": "3",
+    "publish": false,
     "description": "Manage database connections and configuration",
     "homepage": "http://www.nodics.com/",
     "keywords": [

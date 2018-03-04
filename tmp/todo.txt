@@ -17,10 +17,12 @@
 - Invalidation process for authToken (Should be common for module level caching)
 - Cache Auth token in each module
 - Make item and API TTL at configuration level
-- Connect Test DB only if required (Check may be its working like this only)
+- Connect Test DB only if required (Check may be its working like this only) - Not possible, If I need to run 
+  test cases from API will not work. - Done
 - Build common event Listener for all module (May be for cache invalidation)
 - Authentication and Authorization for background processes like CronJob Execution
 - Create default data import process
+- Execute Test cases from API - Done
 
 - Data Import process
 - Data Export process

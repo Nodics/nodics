@@ -1,6 +1,7 @@
 {
     "name": "nevent",
     "index": "7",
+    "publish": false,
     "description": "Nodics applicaion module. It gives functionalities to publish and execute events",
     "homepage": "http://www.nodics.com/",
     "keywords": [

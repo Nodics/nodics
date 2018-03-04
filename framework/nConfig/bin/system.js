@@ -130,12 +130,14 @@ module.exports = {
 
         global.TEST = {
             nTestPool: {
-                data: {}
+                data: {},
+                suites: {}
                 //All the test cases, those needs to be executed in secific environment.
                 //Best usecase could be testing all created pages
             },
             uTestPool: {
-                data: {}
+                data: {},
+                suites: {}
                 // This pool for all test cases
             }
         };

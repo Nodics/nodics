@@ -1,6 +1,7 @@
 {
     "name": "ems",
     "index": "500",
+    "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and ems point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [
