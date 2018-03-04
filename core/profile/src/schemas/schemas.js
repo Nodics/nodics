@@ -12,7 +12,6 @@
 let mongoose = require('mongoose');
 
 module.exports = {
-    //Database name
     profile: {
         address: {
             super: 'base',
@@ -192,6 +191,6 @@ module.exports = {
             definition: {
 
             }
-        },
+        }
     }
 };

@@ -55,6 +55,12 @@ module.exports = {
                 host: 'localhost',
                 port: 6379
             }
+        },
+        itemLevelCache: {
+            enterprise: {
+                enabled: true,
+                ttl: 100
+            }
         }
     }
 };

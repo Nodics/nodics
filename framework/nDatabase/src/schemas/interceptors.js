@@ -23,8 +23,9 @@ module.exports = {
         postFindInterceptor: function(schema, modelName) {
             schema.post('find', function(docs, next) {
                 let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
+                SYSTEM.buildItemLevelCache(schema.rawSchema);
                 if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
-                    let query = this.rawQuery; //SERVICE.CacheService.createItemKey(this);
+                    let query = this.rawQuery;
                     SERVICE.CacheService.putItem(schema.rawSchema, moduleObject.itemCache, query, docs).then(success => {
                         console.log('   INFO: Item saved in item cache');
                     }).catch(error => {

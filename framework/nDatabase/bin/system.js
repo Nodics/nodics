@@ -45,5 +45,12 @@ module.exports = {
             console.error('   ERROR: Invalid schema definition for : ' + modelName + ', please define definition attribute');
             flag = false;
         }
+    },
+
+    buildItemLevelCache: function(rawSchema) {
+        let itemLevelCache = CONFIG.get('cache').itemLevelCache[rawSchema.modelName];
+        if (itemLevelCache) {
+            rawSchema.cache = itemLevelCache;
+        }
     }
-}
+};
