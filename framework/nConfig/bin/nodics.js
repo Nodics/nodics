@@ -9,14 +9,16 @@
 
  */
 
-module.exports = function(nodicsHome, app, env, serverHome, argvs) {
+module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
     let _serverState = 'starting';
     let _activeTenant = 'default';
     let _activeChannel = 'master';
     let _activeEnv = env;
     let _activeApp = app;
     let _nodicsHome = nodicsHome;
-    let _serverHome = serverHome;
+    let _serverName = serverName;
+    let _serverHome = '';
+    let _customHome = customHome;
     let _argvs = argvs;
     let _activeModules = [];
     let _nTestRunning = false;
@@ -43,8 +45,20 @@ module.exports = function(nodicsHome, app, env, serverHome, argvs) {
         return _nodicsHome;
     };
 
+    this.getCustomHome = function() {
+        return _customHome;
+    };
+
+    this.getServerName = function() {
+        return _serverName;
+    };
+
     this.getServerHome = function() {
         return _serverHome;
+    };
+
+    this.setServerHome = function(serverHome) {
+        _serverHome = serverHome;
     };
 
     this.getActiveEnvironment = function() {

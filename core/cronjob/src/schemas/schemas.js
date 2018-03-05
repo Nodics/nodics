@@ -110,6 +110,12 @@ module.exports = {
                     type: 'many'
                 }
             },
+            virtualProperties: {
+                fullname: 'SERVICE.CronJobVirtualService.getFullName',
+                jobDetail: {
+                    fullname: 'SERVICE.CronJobVirtualService.getFullName'
+                }
+            },
             definition: {
                 name: {
                     type: 'String',
@@ -157,7 +163,9 @@ module.exports = {
                     ref: 'CronJobLogModel'
                 }],
                 emails: [{
-                    type: 'String'
+                    email: {
+                        type: 'String'
+                    }
                 }],
                 triggers: ["schemas['trigger']"],
                 jobDetail: {

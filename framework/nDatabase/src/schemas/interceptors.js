@@ -13,7 +13,6 @@ module.exports = {
     default: {
         preFindInterceptor: function(schema, modelName) {
             schema.pre('find', function(next) {
-                console.log('      Inside find pre hook');
                 if (next && typeof next === "function") {
                     next();
                 }
@@ -22,6 +21,7 @@ module.exports = {
 
         postFindInterceptor: function(schema, modelName) {
             schema.post('find', function(docs, next) {
+                SERVICE.VirtualPropertiesHandlerService.populateVirtualProperties(schema.rawSchema, docs);
                 let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
                 SYSTEM.buildItemLevelCache(schema.rawSchema);
                 if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
@@ -103,6 +103,8 @@ module.exports = {
                 if (NODICS.isNTestRunning()) {
                     next(new Error('Save operation not allowed, while running N-Test cases'));
                 }
+                let model = this.getUpdate().$set;
+                model.updatedDate = new Date(+new Date() + 7 * 24 * 60 * 60 * 1000);
                 if (next && typeof next === "function") {
                     next();
                 }
@@ -135,6 +137,8 @@ module.exports = {
                 if (NODICS.isNTestRunning()) {
                     next(new Error('Save operation not allowed, while running N-Test cases'));
                 }
+                let model = this.getUpdate().$set;
+                model.updatedDate = new Date(+new Date() + 7 * 24 * 60 * 60 * 1000);
                 if (next && typeof next === "function") {
                     next();
                 }

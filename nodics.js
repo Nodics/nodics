@@ -10,9 +10,11 @@
  */
 
 const FRAMEWORK = require('./framework');
+const path = require("path");
 
 module.exports = {
     start: (function() {
+        //{ CUSTOM_HOME: path.join(__dirname, '../custom') }
         FRAMEWORK.startNodics({});
     })(),
     /*

@@ -133,11 +133,6 @@ module.exports = {
                 } else {
                     return input._self.create(model);
                 }
-                /*if (model._id) {
-                    return input._self.findByIdAndUpdate(model._id, { $set: model }, option);
-                } else {
-                    return input._self.findOneAndUpdate({ code: model.code }, { $set: model }, option);
-                }*/
             })
         ).then(function(models) {
             input.resolve(models);

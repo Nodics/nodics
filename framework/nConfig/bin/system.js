@@ -19,20 +19,26 @@ const Nodics = require('./nodics');
 module.exports = {
     getActiveModules: function(options) {
         let modules = [];
-        let appHome = NODICS.getNodicsHome() + '/' + NODICS.getActiveApplication();
+        let customPath = NODICS.getCustomHome();
+        let appHome = customPath + '/' + NODICS.getActiveApplication();
         let envHome = appHome + '/' + NODICS.getActiveEnvironment();
-        let moduleGroupsFilePath = NODICS.getServerHome() + '/config/modules.js';
+        let serverHome = envHome + '/' + NODICS.getServerName();
+        NODICS.setServerHome(serverHome);
+        let moduleGroupsFilePath = serverHome + '/config/modules.js';
         let serverProperties = {};
         serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
         serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
-        serverProperties = _.merge(serverProperties, require(NODICS.getServerHome() + '/config/properties.js'));
+        serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
 
         if (!fs.existsSync(moduleGroupsFilePath) || serverProperties.activeModules.updateGroups) {
             var nodicsModulePath = [];
             this.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
+            if (NODICS.getCustomHome() !== NODICS.getNodicsHome()) {
+                this.collectModulesList(NODICS.getCustomHome(), nodicsModulePath);
+            }
             nodicsModulePath.push(appHome);
             nodicsModulePath.push(envHome);
-            this.collectModulesList(NODICS.getServerHome(), nodicsModulePath);
+            this.collectModulesList(serverHome, nodicsModulePath);
             let mergedFile = {};
             nodicsModulePath.forEach(function(modulePath) {
                 if (fs.existsSync(modulePath + '/config/properties.js')) {
@@ -64,6 +70,9 @@ module.exports = {
         if (!options.NODICS_HOME) {
             options.NODICS_HOME = process.env.NODICS_HOME || process.cwd();
         }
+        if (!options.CUSTOM_HOME) {
+            options.CUSTOM_HOME = process.env.CUSTOM_HOME || options.NODICS_HOME;
+        }
         if (!options.NODICS_APP) {
             if (process.argv[2]) {
                 options.NODICS_APP = process.argv[2];
@@ -82,15 +91,13 @@ module.exports = {
 
         }
         if (!options.NODICS_SEVER) {
-            let serverName = process.argv[4];
-            if (!serverName) {
-                serverName = 'sampleServer';
+            if (process.argv[4]) {
+                options.NODICS_SEVER = process.argv[4];
+            } else {
+                options.NODICS_SEVER = 'sampleServer';
                 console.log('   WARN: Could not found Server Name, So starting with default "sampleServer"');
             }
-            options.NODICS_SEVER = options.NODICS_HOME + '/' +
-                options.NODICS_APP + '/' +
-                options.NODICS_ENV + '/' +
-                process.argv[4];
+
         }
         if (process.argv) {
             options.argv = process.argv;
@@ -112,7 +119,7 @@ module.exports = {
             process.exit(1);
         }
         //global.NODICS = new Nodics(options.NODICS_ENV, options.NODICS_HOME, options.NODICS_SEVER, options.argv);
-        global.NODICS = new Nodics(options.NODICS_HOME, options.NODICS_APP, options.NODICS_ENV, options.NODICS_SEVER, options.argv);
+        global.NODICS = new Nodics(options.NODICS_HOME, options.CUSTOM_HOME, options.NODICS_APP, options.NODICS_ENV, options.NODICS_SEVER, options.argv);
         NODICS.setActiveModules(this.getActiveModules(options));
         global.CONFIG = new Config();
         CONFIG.setProperties({});
@@ -170,7 +177,7 @@ module.exports = {
 
     getModulesMetaData: function() {
         let _self = this;
-        let appHome = NODICS.getNodicsHome() + '/' + NODICS.getActiveApplication();
+        let appHome = NODICS.getCustomHome() + '/' + NODICS.getActiveApplication();
         let envHome = appHome + '/' + NODICS.getActiveEnvironment();
         let config = CONFIG.getProperties();
         let modules = NODICS.getModules();
@@ -181,6 +188,9 @@ module.exports = {
 
         //Get list of OOTB Active modules
         this.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
+        if (NODICS.getCustomHome() !== NODICS.getNodicsHome()) {
+            this.collectModulesList(NODICS.getCustomHome(), nodicsModulePath);
+        }
         //Adding list of Custom Active modules
         this.collectModulesList(NODICS.getServerHome(), serverModulePath);
 

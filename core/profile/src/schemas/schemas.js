@@ -86,7 +86,6 @@ module.exports = {
                     type: 'many'
                 }
             },
-
             definition: {
                 enterpriseCode: {
                     unique: true
