@@ -18,7 +18,13 @@ module.exports = {
     },
     loadDatabase: function() {
         console.log('=> Starting database configuration process');
-        conHandler.init();
-        schmeaLoader.init();
+        return new Promise((resolve, reject) => {
+            conHandler.init().then(success => {
+                schmeaLoader.init();
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     }
 };

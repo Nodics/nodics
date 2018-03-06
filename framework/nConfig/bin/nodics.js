@@ -142,6 +142,16 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
         _nodics.dbs[moduleName] = database;
     };
 
+    this.addTenantDatabase = function(moduleName, tenant, database) {
+        if (!moduleName) {
+            moduleName = 'default';
+        }
+        if (!_nodics.dbs[moduleName]) {
+            _nodics.dbs[moduleName] = {};
+        }
+        _nodics.dbs[moduleName][tenant] = database;
+    };
+
     this.setValidators = function(validators) {
         _nodics.validators = validators;
     };

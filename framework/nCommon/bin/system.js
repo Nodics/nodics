@@ -94,35 +94,43 @@ module.exports = {
     },
 
     startServers: function() {
-        if (CONFIG.get('server').runAsSingleModule) {
-            if (!NODICS.getModules().default || !NODICS.getModules().default.app) {
-                console.error('   ERROR: Server configurations has not be initialized. Please verify.');
-                process.exit(CONFIG.get('errorExitCode'));
-            }
-            const httpPort = SYSTEM.getPort('default');
-            console.log('=>  Starting Server for module : default on PORT : ', httpPort);
-            NODICS.getModules().default.app.listen(httpPort);
-        } else {
-            let modules = NODICS.getModules();
-            if (this.isBlank(NODICS.getModules())) {
-                console.error('   ERROR: Please define valid active modules');
-                process.exit(CONFIG.get('errorExitCode'));
-            }
-            _.each(modules, function(value, moduleName) {
-                if (value.metaData && value.metaData.publish) {
-                    if (!value.app) {
-                        console.error('   ERROR: Server configurations has not be initialized for module : ', moduleName);
+        return new Promise((resolve, reject) => {
+            try {
+                if (CONFIG.get('server').runAsSingleModule) {
+                    if (!NODICS.getModules().default || !NODICS.getModules().default.app) {
+                        console.error('   ERROR: Server configurations has not be initialized. Please verify.');
                         process.exit(CONFIG.get('errorExitCode'));
                     }
-                    const httpPort = SYSTEM.getPort(moduleName);
-                    if (!httpPort) {
-                        console.error('   ERROR: Please define listening PORT for module: ', moduleName);
+                    const httpPort = SYSTEM.getPort('default');
+                    console.log('=> Starting Server for module : default on PORT : ', httpPort);
+                    NODICS.getModules().default.app.listen(httpPort);
+                    resolve(true);
+                } else {
+                    let modules = NODICS.getModules();
+                    if (this.isBlank(NODICS.getModules())) {
+                        console.error('   ERROR: Please define valid active modules');
                         process.exit(CONFIG.get('errorExitCode'));
                     }
-                    console.log(' =>Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
-                    value.app.listen(httpPort);
+                    _.each(modules, function(value, moduleName) {
+                        if (value.metaData && value.metaData.publish) {
+                            if (!value.app) {
+                                console.error('   ERROR: Server configurations has not be initialized for module : ', moduleName);
+                                process.exit(CONFIG.get('errorExitCode'));
+                            }
+                            const httpPort = SYSTEM.getPort(moduleName);
+                            if (!httpPort) {
+                                console.error('   ERROR: Please define listening PORT for module: ', moduleName);
+                                process.exit(CONFIG.get('errorExitCode'));
+                            }
+                            console.log(' =>Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
+                            value.app.listen(httpPort);
+                        }
+                        resolve(true);
+                    });
                 }
-            });
-        }
-    },
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
 };

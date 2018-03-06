@@ -27,24 +27,29 @@ module.exports = {
     },
 
     initFrameworkExecute: function(options) {
-        config.loadConfig(options);
-        SYSTEM.executePreScripts();
-        common.loadCommon();
-        db.loadDatabase();
-        dao.loadDao();
-        services.loadService();
-        process.loadProcess();
-        facades.loadFacade();
-        controllers.loadController();
-        SYSTEM.loadModules();
-        event.loadListeners();
-        router.loadRouter();
-        SYSTEM.executePostScripts();
+        return new Promise((resolve, reject) => {
+            config.loadConfig(options);
+            SYSTEM.executePreScripts();
+            common.loadCommon();
+            db.loadDatabase().then(success => {
+                dao.loadDao();
+                services.loadService();
+                process.loadProcess();
+                facades.loadFacade();
+                controllers.loadController();
+                SYSTEM.loadModules();
+                event.loadListeners();
+                router.loadRouter();
+                SYSTEM.executePostScripts();
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
 
     startServers: function() {
-        SYSTEM.startServers();
-        NODICS.setServerState('started');
+
     },
 
     initTestRuner: function() {
@@ -52,8 +57,17 @@ module.exports = {
     },
 
     startNodics: function(options) {
-        this.initFrameworkExecute(options);
-        this.startServers();
-        this.initTestRuner();
+        this.initFrameworkExecute(options).then(success => {
+            SYSTEM.startServers().then(success => {
+                NODICS.setServerState('started');
+                console.log('   INFO: Nodics started successfully');
+                this.initTestRuner();
+            }).catch(error => {
+                console.log('   ERROR: Nodics server error : ', error);
+            });
+        }).catch(error => {
+            console.log('   ERROR: Nodics server error : ', error);
+        });
+
     }
 };

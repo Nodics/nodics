@@ -14,11 +14,11 @@ module.exports = {
         enabled: true,
         uTest: {
             enabled: true,
-            runOnStartup: false
+            runOnStartup: true
         },
         nTest: {
-            enabled: false,
-            runOnStartup: false
+            enabled: true,
+            runOnStartup: true
         }
     }
 };
