@@ -10,27 +10,26 @@
  */
 
 /*
-http://localhost:3005/nodics/cronjob
-    {
-	"code": "101",
-	"state": "NEW",
-	"clusterId": "0",
-	"priority": "10",
-	"cronjobtmp": [{
-		"name": "Nodics Framework"
-	}],
-	"triggers": [{
-		"triggerId": "testTrigger",
-		"triggerName": "testTrigger",
-		"second": "0",
-		"minute": "0",
-		"hour": "0",
-		"day": "10",
-		"month": "02",
-		"year": "03"
-	}]
-}
-// just for test
+    http://localhost:3005/nodics/cronjob {
+        "code": "101",
+        "state": "NEW",
+        "clusterId": "0",
+        "priority": "10",
+        "cronjobtmp": [{
+            "name": "Nodics Framework"
+        }],
+        "triggers": [{
+            "triggerId": "testTrigger",
+            "triggerName": "testTrigger",
+            "second": "0",
+            "minute": "0",
+            "hour": "0",
+            "day": "10",
+            "month": "02",
+            "year": "03"
+        }]
+    }
+    // just for test
 */
 
 let mongoose = require('mongoose');
@@ -167,6 +166,15 @@ module.exports = {
                         type: 'String'
                     }
                 }],
+                active: {
+                    start: {
+                        type: 'Date',
+                        required: true
+                    },
+                    end: {
+                        type: 'Date'
+                    }
+                },
                 triggers: ["schemas['trigger']"],
                 jobDetail: {
                     startNode: {

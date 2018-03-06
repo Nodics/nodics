@@ -1,6 +1,6 @@
 {
     "name": "core",
-    "index": "100",
+    "index": "199",
     "description": "Module core, groups all core module in Nodics framework",
     "homepage": "http://www.nodics.com/",
     "keywords": [

@@ -22,11 +22,11 @@ module.exports = {
                     type: 'String',
                     required: true
                 },
-                creationDate: {
+                created: {
                     type: 'Date',
                     default: new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
                 },
-                updatedDate: {
+                updated: {
                     type: 'Date',
                     default: new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
                 }

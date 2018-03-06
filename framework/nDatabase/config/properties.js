@@ -13,7 +13,7 @@ module.exports = {
     database: {
         default: {
             master: {
-                URI: 'mongodb://localhost:27017/userTest',
+                URI: 'mongodb://localhost:27017/nodicsMaster',
                 options: {
                     db: {
                         native_parser: true
@@ -24,7 +24,7 @@ module.exports = {
                 }
             },
             test: {
-                URI: 'mongodb://localhost:27017/userTest',
+                URI: 'mongodb://localhost:27017/nodicsTest',
                 options: {
                     db: {
                         native_parser: true

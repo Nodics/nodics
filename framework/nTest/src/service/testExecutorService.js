@@ -42,10 +42,9 @@ module.exports = {
                 NODICS.setActiveChannel('test');
                 console.log('   INFO: Starting Unit Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
                 try {
-                    let uTestMasterMocha = new Mocha();
+                    let uTestMasterMocha = new Mocha({ timeout: 10 });
                     let uTestMasterSuite = Mocha.Suite.create(uTestMasterMocha.suite, 'Starting master suite execution for U-Test');
                     this.createSuites(uTestMasterSuite, TEST.uTestPool);
-                    //TEST.uTestPool.uTestMasterMocha = uTestMasterMocha;
                     uTestMasterMocha.run(failures => {
                         process.on('exit', () => {
                             NODICS.setActiveChannel('master');

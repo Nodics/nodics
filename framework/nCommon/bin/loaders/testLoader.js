@@ -25,7 +25,7 @@ module.exports = {
         console.log('   INFO: Loading module test cases');
         let path = module.path + '/test/common';
         SYSTEM.processFiles(path, "Test.js", (file) => {
-            let testFile = this.collectData(require(file));
+            let testFile = this.collectTest(require(file));
             _.each(testFile, (testSuite, suiteName) => {
                 if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
                     if (TEST.nTestPool.suites[suiteName]) {
@@ -48,7 +48,7 @@ module.exports = {
         console.log('   INFO: Loading test cases for ENV : ', NODICS.getActiveEnvironment());
         let path = module.path + '/test/env-' + NODICS.getActiveEnvironment();
         SYSTEM.processFiles(path, "Test.js", (file) => {
-            let testFile = this.collectData(require(file));
+            let testFile = this.collectTest(require(file));
             _.each(testFile, (testSuite, suiteName) => {
                 if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
                     if (TEST.nTestPool.suites[suiteName]) {
@@ -66,7 +66,7 @@ module.exports = {
             });
         });
     },
-    collectData: function(file) {
+    collectTest: function(file) {
         _.each(file, (testSuite, suiteName) => {
             if (testSuite.data) {
                 if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {

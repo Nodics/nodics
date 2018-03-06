@@ -16,6 +16,7 @@ const facade = require('./loaders/facadeLoader');
 const controller = require('./loaders/controllerLoader');
 const router = require('./loaders/routerLoader');
 const test = require('./loaders/testLoader');
+const data = require('./loaders/dataLoader');
 
 module.exports = {
     init: function() {
@@ -35,6 +36,7 @@ module.exports = {
         processDefinition.loadProcessDefinition(module);
         facade.loadFacades(module);
         controller.loadControllers(module);
+        data.loadData(module);
         test.loadTest(module);
 
         let moduleFile = require(module.path + '/nodics.js');

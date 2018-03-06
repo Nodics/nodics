@@ -10,8 +10,11 @@
  */
 
 module.exports = {
-    startJobsOnStartup: false,
-    cronJobStartWaitInterval: 1000,
+    cronjob: {
+        runOnStartup: false,
+        waitTime: 1000,
+    },
+
     server: {
         cronjob: {
             abstractServer: {
@@ -29,13 +32,6 @@ module.exports = {
                 httpsPort: 3003
 
             }
-            /*
-                httpServer: 'localhost',
-                httpPort: 3002,
-
-                httpsServer: 'localhost',
-                httpsPort: 3003,
-            */
         }
     },
 

@@ -1,11 +1,11 @@
 {
-    "name": "system",
-    "index": "130",
-    "publish": true,
-    "description": "Nodics applicaion module. It will hold all configuration and system point to start nodics",
+    "name": "nData",
+    "index": "11",
+    "publish": false,
+    "description": "Nodics applicaion module. It will hold all configuration and nData point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "system"
+        "nData"
     ],
     "author": "authorName",
     "main": "nodics.js",

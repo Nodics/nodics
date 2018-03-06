@@ -10,21 +10,8 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        framework: [
-            'framework',
-            'nconfig',
-            'ncommon',
-            'ndatabase',
-            'ndao',
-            'nservice',
-            'nprocess',
-            'nevent',
-            'nfacade',
-            'ncontroller',
-            'nrouter',
-            'nData',
-            'ntest'
-        ]
+
+    export: function(input, callback) {
+        SERVICE.DataExportService.export(input, callback);
     }
 };

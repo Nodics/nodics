@@ -10,21 +10,13 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        framework: [
-            'framework',
-            'nconfig',
-            'ncommon',
-            'ndatabase',
-            'ndao',
-            'nservice',
-            'nprocess',
-            'nevent',
-            'nfacade',
-            'ncontroller',
-            'nrouter',
-            'nData',
-            'ntest'
-        ]
+
+    runUTest: function(input, callback) {
+        SERVICE.TestRunnerService.runUTest(input, callback);
+    },
+
+    runNTest: function(input, callback) {
+        SERVICE.TestRunnerService.runNTest(input, callback);
     }
+
 };

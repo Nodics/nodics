@@ -24,6 +24,56 @@ module.exports = {
                 method: 'GET',
                 controller: 'CONTROLLER.TestRunnerController.runNTest'
             }
+        },
+        importInitData: {
+            importInit: {
+                secured: true,
+                key: '/import/init',
+                method: 'GET',
+                handler: 'CONTROLLER.DataImportController.importInitData'
+            },
+        },
+        importCoreData: {
+            importGet: {
+                secured: true,
+                key: '/import/core',
+                method: 'GET',
+                controller: 'CONTROLLER.DataImportController.importCoreData'
+            },
+            importPost: {
+                secured: true,
+                key: '/import/core',
+                method: 'POST',
+                controller: 'CONTROLLER.DataImportController.importCoreData'
+            }
+        },
+        importSampleData: {
+            importGet: {
+                secured: true,
+                key: '/import/sample',
+                method: 'GET',
+                controller: 'CONTROLLER.DataImportController.importSampleData'
+            },
+            importPost: {
+                secured: true,
+                key: '/import/sample',
+                method: 'POST',
+                controller: 'CONTROLLER.DataImportController.importSampleData'
+            }
+        },
+        dataExport: {
+            exportGet: {
+                secured: true,
+                key: '/export',
+                method: 'GET',
+                controller: 'CONTROLLER.DataExportController.export'
+            },
+            exportPost: {
+                secured: true,
+                key: '/export',
+                method: 'POST',
+                controller: 'CONTROLLER.DataExportController.export'
+            }
         }
     }
 };

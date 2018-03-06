@@ -10,21 +10,13 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        framework: [
-            'framework',
-            'nconfig',
-            'ncommon',
-            'ndatabase',
-            'ndao',
-            'nservice',
-            'nprocess',
-            'nevent',
-            'nfacade',
-            'ncontroller',
-            'nrouter',
-            'nData',
-            'ntest'
-        ]
+    export: function(requestContext, callback) {
+        let input = {
+            tenant: requestContext.tenant,
+            enterprise: requestContext.enterprise,
+            employee: requestContext.employee,
+            enterpriseCode: requestContext.enterpriseCode
+        };
+        FACADE.DataExportFacade.export(input, callback);
     }
 };

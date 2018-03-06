@@ -10,21 +10,17 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        framework: [
-            'framework',
-            'nconfig',
-            'ncommon',
-            'ndatabase',
-            'ndao',
-            'nservice',
-            'nprocess',
-            'nevent',
-            'nfacade',
-            'ncontroller',
-            'nrouter',
-            'nData',
-            'ntest'
-        ]
+
+    importInitData: function(input, callback) {
+        SERVICE.DataImportService.importInitData(input, callback);
+    },
+
+    importCoreData: function(input, callback) {
+        SERVICE.DataImportService.importCoreData(input, callback);
+    },
+
+    importSampleData: function(input, callback) {
+        SERVICE.DataImportService.importSampleData(input, callback);
     }
+
 };
