@@ -34,6 +34,13 @@ module.exports = {
     },
 
     cache: {
+        authTokenTTL: 60 * 60,
+        authToken: {
+            stdTTL: 60 * 60,
+            checkperiod: 180,
+            errorOnMissing: false,
+            useClones: true
+        },
         profile: {
             apiCache: {
                 enabled: true,

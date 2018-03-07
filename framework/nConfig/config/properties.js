@@ -58,6 +58,19 @@ module.exports = {
 
     defaultContentType: 'application/json',
 
+    backgroundAuthModules: {
+        cronjob: {
+            enterpriseCode: 'default',
+            loginId: 'admin',
+            password: 'nodics'
+        },
+        nems: {
+            enterpriseCode: 'default',
+            loginId: 'admin',
+            password: 'nodics'
+        }
+    },
+
     cache: {
         default: {
             apiCache: {

@@ -104,7 +104,7 @@ module.exports = {
                     next(new Error('Save operation not allowed, while running N-Test cases'));
                 }
                 let model = this.getUpdate().$set;
-                model.updatedDate = new Date(+new Date() + 7 * 24 * 60 * 60 * 1000);
+                model.updatedDate = new Date();
                 if (next && typeof next === "function") {
                     next();
                 }
@@ -138,7 +138,7 @@ module.exports = {
                     next(new Error('Save operation not allowed, while running N-Test cases'));
                 }
                 let model = this.getUpdate().$set;
-                model.updatedDate = new Date(+new Date() + 7 * 24 * 60 * 60 * 1000);
+                model.updatedDate = new Date();
                 if (next && typeof next === "function") {
                     next();
                 }

@@ -14,9 +14,14 @@ const _ = require('lodash');
 module.exports = {
 
     insertData: function(definition) {
+        let models = [];
+        _.each(definition.models, (model, name) => {
+            models.push(model);
+        });
+        console.log(models);
         input = {
             tenant: definition.tenant,
-            models: definition.data
+            models: models
         };
         if (definition.operation === 'save') {
             return SERVICE[definition.modelName.toUpperCaseFirstChar() + 'Service'].save(input);

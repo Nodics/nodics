@@ -11,16 +11,19 @@
 
 module.exports = {
 
-    retrieveEnterprise: function(request) {
+    createAuthCache: function(request) {
+
+    },
+    retrieveEnterprise: function(enterpriseCode) {
         return new Promise((resolve, reject) => {
-            if (UTILS.isBlank(request.enterpriseCode)) {
+            if (UTILS.isBlank(enterpriseCode)) {
                 reject('Enterprise Code is invalid or null');
             } else {
                 DAO.EnterpriseDao.get({
                     tenant: 'default',
                     options: {
                         query: {
-                            enterpriseCode: request.enterpriseCode
+                            enterpriseCode: enterpriseCode
                         }
                     }
                 }).then(enterprises => {
@@ -36,13 +39,13 @@ module.exports = {
         });
     },
 
-    retrieveEmployee: function(request, enterprise) {
+    retrieveEmployee: function(loginId, enterprise) {
         return new Promise((resolve, reject) => {
             DAO.EmployeeDao.get({
                 tenant: enterprise.tenant,
                 options: {
                     query: {
-                        loginId: request.loginId,
+                        loginId: loginId,
                         enterpriseCode: enterprise.enterpriseCode
                     }
                 }
@@ -60,16 +63,14 @@ module.exports = {
 
     authenticate: function(request, callback) {
         let _self = this;
-        _self.retrieveEnterprise(request).then(enterprise => {
-            _self.retrieveEmployee(request, enterprise).then(employee => {
+        _self.retrieveEnterprise(request.enterpriseCode).then(enterprise => {
+            _self.retrieveEmployee(request.loginId, enterprise).then(employee => {
                 SYSTEM.compareHash(request.password, employee.password).then(match => {
                     if (match) {
                         try {
                             let key = enterprise._id + employee._id + (new Date()).getTime();
                             let hash = SYSTEM.generateHash(key);
-                            let moduleObject = NODICS.getModule(request.moduleName);
-                            let cache = moduleObject.apiCache || moduleObject.itemCache;
-                            _self.addToken(moduleObject, cache, hash, {
+                            _self.addToken(request.moduleName, request.source, hash, {
                                 employee: employee,
                                 enterprise: enterprise
                             }).then(success => {

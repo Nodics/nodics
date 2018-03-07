@@ -32,10 +32,12 @@ module.exports = {
                 apiName: 'event/process',
                 requestBody: {},
                 isJsonResponse: true,
-                authToken: cronJob.getAuthToken()
+                header: {
+                    authToken: cronJob.getAuthToken()
+                }
             };
             let nemsUrl = SERVICE.ModuleService.buildRequest(options);
-            console.log('   INFO: Triggering Job : ', nemsUrl);
+            // console.log('   INFO: Triggering Job : ', nemsUrl);
             SERVICE.ModuleService.fetch(nemsUrl, (error, response) => {
                 console.log('   INFO: Events processed with response : ', response);
                 let logMessage = '';

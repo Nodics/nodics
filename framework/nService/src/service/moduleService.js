@@ -9,7 +9,8 @@
 
  */
 
-var requestPromise = require('request-promise');
+const requestPromise = require('request-promise');
+const _ = require('lodash');
 
 module.exports = {
 
@@ -18,11 +19,8 @@ module.exports = {
         let header = {
             'content-type': options.contentType || CONFIG.get('defaultContentType')
         };
-        if (!UTILS.isBlank(options.enterpriseCode)) {
-            header.enterpriseCode = options.enterpriseCode;
-        }
-        if (!UTILS.isBlank(options.authToken)) {
-            header.authToken = options.authToken;
+        if (options.header) {
+            _.merge(header, options.header);
         }
         return {
             method: options.methodName || 'GET',

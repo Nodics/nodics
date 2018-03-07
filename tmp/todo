@@ -23,11 +23,14 @@ Todos:
     - Authentication and Authorization for background processes like CronJob Execution
     - Create default data import process
 
-    - Data Import process
+    ✔ Data Import process @done(18-03-07 11:33)
     - Data Export process
 
     ✔ Client for ActiveMQ @done(18-03-05 22:53)
     ✔ Client for Kafka @done(18-03-05 22:53)
+
+    - Check if Test Cases are loading properly from environment location
+    - Check if Data is loading properly from environment location
 
     ✔ Execute Test cases from API - Done @done(18-03-04 21:00)
     ✔ Connect Test DB only if required (Check may be its working like this only) - Not possible, If I need to run @done(18-03-04 21:00) test cases from API will not work. - Done @done(18-03-04 21:00)

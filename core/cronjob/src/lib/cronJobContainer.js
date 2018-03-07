@@ -13,54 +13,56 @@ const _ = require('lodash');
 module.exports = function() {
     let _jobPool = {};
 
-    this.createCronJobs = function(request, definitions) {
-        let _self = this;
-        let _success = {};
-        let _failed = {};
-        if (definitions) {
-            definitions.forEach(function(definition) {
-                try {
-                    _self.createCronJob(request.authToken, definition);
-                    _success[definition.name] = {
-                        message: 'Successfully created'
-                    };
-                } catch (error) {
-                    failed[definition.name] = error;
-                    console.log('   ERROR:  while creating job for : ', definition.name, ' ', error);
+    this.createCronJobs = function(definitions) {
+        return new Promise((resolve, reject) => {
+            let _self = this;
+            let _success = {};
+            let _failed = {};
+            let moduleObject = NODICS.getModule('cronjob');
+            if (definitions) {
+                let allJob = [];
+                definitions.forEach((definition) => {
+                    allJob.push(_self.createCronJob(moduleObject.metaData.authToken, definition));
+                });
+                if (allJob.length > 0) {
+                    Promise.all(allJob).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
                 }
-            });
-        } else {
-            throw new Error('   ERROR: Invalid cron job definitions');
-        }
-        return {
-            success: _success,
-            failed: _failed
-        };
+            } else {
+                reject('Invalid cron job definitions');
+            }
+        });
     };
 
     this.createCronJob = function(authToken, definition) {
-        if (!definition) {
-            throw new Error('   ERROR: Invalid cron job definition');
-        }
-        if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
-            throw new Error('   ERROR: Invalid cron job definition triggers');
-        }
-        if (!_jobPool[definition.name]) {
-            let cronJobs = [];
-            definition.triggers.forEach(function(value) {
-                if (value.isActive && CONFIG.get('clusterId') === definition.clusterId) {
-                    let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
-                    tmpCronJob.validate();
-                    tmpCronJob.init();
-                    tmpCronJob.setAuthToken(authToken);
-                    cronJobs.push(tmpCronJob);
-                }
-            });
-            _jobPool[definition.name] = cronJobs;
-        } else {
-            console.log('   WARN: Definition ', definition.name, ' is already available.');
-            throw new Error('Definition ', definition.name, ' is already available.');
-        }
+        return new Promise((resolve, reject) => {
+            if (!definition) {
+                reject('Invalid cron job definition');
+            }
+            if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
+                rject('Invalid cron job definition triggers');
+            }
+            if (!_jobPool[definition.name]) {
+                let cronJobs = [];
+                definition.triggers.forEach(function(value) {
+                    if (value.isActive && CONFIG.get('clusterId') === definition.clusterId) {
+                        let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
+                        tmpCronJob.validate();
+                        tmpCronJob.init();
+                        tmpCronJob.setAuthToken(authToken);
+                        cronJobs.push(tmpCronJob);
+                    }
+                });
+                _jobPool[definition.name] = cronJobs;
+                resolve(definition.name);
+            } else {
+                console.log('   WARN: Definition ', definition.name, ' is already available.');
+                resolve(definition);
+            }
+        });
     };
 
     this.updateCronJobs = function(request, definitions) {

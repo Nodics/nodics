@@ -10,7 +10,7 @@
  */
 
 const _ = require('lodash');
-//const util = require('util');
+const util = require('util');
 
 module.exports = {
     loadData: function(module) {
@@ -18,6 +18,8 @@ module.exports = {
         this.loadCodeData(module);
         this.loadCommonSampleData(module);
         this.loadEnvSampleData(module);
+
+        //console.log('Data :', util.inspect(DATA.core, false, null));
     },
 
     loadInitData: function(module) {

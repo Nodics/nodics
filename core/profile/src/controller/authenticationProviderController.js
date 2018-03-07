@@ -16,7 +16,8 @@ module.exports = {
             moduleName: processRequest.moduleName,
             loginId: processRequest.httpRequest.get('loginId'),
             password: processRequest.httpRequest.get('password'),
-            enterpriseCode: processRequest.httpRequest.get('enterpriseCode')
+            enterpriseCode: processRequest.httpRequest.get('enterpriseCode'),
+            source: processRequest.httpRequest.get('source')
         };
         FACADE.AuthenticationProviderFacade.authenticate(request, callback);
 

@@ -18,7 +18,9 @@ module.exports = {
             apiName: 'enterprise/get',
             requestBody: {},
             isJsonResponse: true,
-            enterpriseCode: processRequest.enterpriseCode
+            header: {
+                enterpriseCode: processRequest.enterpriseCode
+            }
         };
         let requestUrl = SERVICE.ModuleService.buildRequest(options);
         //console.log(' Remote URL : ', requestUrl);

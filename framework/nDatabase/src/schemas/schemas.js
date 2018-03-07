@@ -24,11 +24,11 @@ module.exports = {
                 },
                 created: {
                     type: 'Date',
-                    default: new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
+                    default: new Date() //new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
                 },
                 updated: {
                     type: 'Date',
-                    default: new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
+                    default: new Date() //new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
                 }
             }
         }

@@ -12,7 +12,19 @@
 module.exports = {
     cronjob: {
         runOnStartup: false,
-        waitTime: 1000,
+        waitTime: 100,
+        activeJobsQuery: {
+            $and: [
+                { "triggers.isActive": true },
+                { "active.start": { $lt: new Date() } },
+                {
+                    $or: [
+                        { "active.end": { $gte: new Date() } },
+                        { "active.end": { $exists: false } }
+                    ]
+                }
+            ]
+        }
     },
 
     server: {

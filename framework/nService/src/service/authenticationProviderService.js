@@ -8,28 +8,24 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const NodeCache = require("node-cache");
 
 module.exports = {
 
-    addToken: function(moduleObject, cache, hash, value) {
+    addToken: function(moduleName, source, hash, value) {
         return new Promise((resolve, reject) => {
             try {
-                if (cache) {
-                    SERVICE.CacheService.put(cache, hash, JSON.stringify(value), CONFIG.get('authTokenLife')).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    if (!moduleObject.cache) {
-                        moduleObject.cache = {};
-                    }
-                    moduleObject.cache[hash] = {
-                        employee: employee,
-                        enterprise: enterprise
-                    };
-                    resolve(true);
+                let moduleObject = NODICS.getModule(moduleName);
+                let ttl = CONFIG.get('cache').authTokenTTL;
+                if (source) {
+                    ttl = 0;
                 }
+                if (!moduleObject.authCache) {
+                    moduleObject.authCache = new NodeCache(CONFIG.get('cache').authToken);
+                }
+
+                moduleObject.authCache.set(hash, JSON.stringify(value), ttl);
+                resolve(true);
             } catch (error) {
                 reject(error);
             }
@@ -40,24 +36,15 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let moduleObject = NODICS.getModule(request.moduleName);
-                let cache = moduleObject.apiCache || moduleObject.itemCache;
-                if (cache) {
-                    SERVICE.CacheService.get(cache, request.authToken).then(value => {
+                if (moduleObject.authCache) {
+                    let value = moduleObject.authCache.get(request.authToken);
+                    if (value) {
                         resolve(JSON.parse(value));
-                    }).catch(error => {
-                        reject('Invalid token');
-                    });
-                } else {
-                    if (moduleObject && moduleObject.cache && moduleObject.cache[request.authToken]) {
-                        let result = moduleObject.cache[request.authToken];
-                        if (result) {
-                            resolve(JSON.parse(result));
-                        } else {
-                            reject('Invalid token');
-                        }
                     } else {
                         reject('Invalid token');
                     }
+                } else {
+                    reject('Invalid token');
                 }
             } catch (error) {
                 reject(error);
@@ -76,7 +63,9 @@ module.exports = {
                     apiName: 'authorize',
                     requestBody: {},
                     isJsonResponse: true,
-                    authToken: processRequest.authToken
+                    header: {
+                        authToken: processRequest.authToken
+                    }
                 };
                 let requestUrl = SERVICE.ModuleService.buildRequest(options);
                 console.log('   INFO: Authorizing reqiuest for token :', processRequest.authToken);

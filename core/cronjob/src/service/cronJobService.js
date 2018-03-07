@@ -8,9 +8,9 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const _ = require('lodash');
 
 module.exports = {
-
     cronJobContainer: new CLASSES.CronJobContainer(),
 
     getCronJobContainer: function() {
@@ -18,17 +18,33 @@ module.exports = {
     },
 
     createJob: function(request, callback) {
-        DAO.CronJobDao.get(request).then((models) => {
-            try {
-                let result = this.cronJobContainer.createCronJobs(request, models);
-                callback(null, result, request);
-            } catch (error) {
-                callback(error, null, request);
+        let input = {
+            tenant: request.tenant,
+            options: {
+                noLimit: true,
+                query: CONFIG.get('cronjob').activeJobsQuery
             }
-        }).catch((error) => {
-            callback(error, null, request);
+        };
+        input = _.merge(input, request);
+        SERVICE.CronJobService.get(input).then((models) => {
+            if (callback) {
+                this.cronJobContainer.createCronJobs(models).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                return this.cronJobContainer.createCronJobs(models)
+            }
+        }).catch(error => {
+            if (callback) {
+                callback(error);
+            } else {
+                return Promise.reject(error);
+            }
         });
     },
+
     updateJob: function(request, callback) {
         DAO.CronJobDao.get(request).then((models) => {
             try {
@@ -57,11 +73,10 @@ module.exports = {
 
     startJob: function(request, callback) {
         try {
-            //let result = this.cronJobContainer.startCronJobs(request.jobNames);
             let result = this.cronJobContainer.startCronJobs(request);
-            callback(null, result, request);
+            callback(null, result);
         } catch (error) {
-            callback(error, null, request);
+            callback(error, null);
         }
     },
 
@@ -106,22 +121,23 @@ module.exports = {
     },
 
     startOnStartup: function() {
-        // TODO: need to run all cronJobs those are active and
-        // startDate < CurrentDate AND endDate > currentDate
-        /*if (CONFIG.get('startJobsOnStartup')) {
+        if (CONFIG.get('cronjob').runOnStartup) {
+            console.log('   INFO: Starting active jobs');
             if (NODICS.getServerState() === 'started') {
-                SERVICE.CronJobService.create({}, (response, inputParam) => {
-                    if (response.success === 'false') {
-                        console.log('   ERROR: Something went wrong while creating CronJobs : ', response);
+                SERVICE.CronJobService.createJob({ tenant: 'default' }, (error, response) => {
+                    console.log(response);
+                    if (error) {
+                        console.log('   ERROR: Something went wrong while creating CronJobs : ', error);
                     } else {
-                        SERVICE.CronJobService.start({ jobName: 'all' }, (response, inputParam) => {
+                        SERVICE.CronJobService.startJob({ jobNames: response }, (error, response) => {
                             console.log('   INFO: triggered cronjob start process : ', response);
                         });
                     }
                 });
             } else {
-                setTimeout(SERVICE.CronJobService.startOnStartup, CONFIG.get('cronJobStartWaitInterval'));
+                console.log('   INFO: Server is not started yet, hence waiting');
+                setTimeout(SERVICE.CronJobService.startOnStartup, CONFIG.get('cronjob').waitTime || 100);
             }
-        }*/
+        }
     },
 };

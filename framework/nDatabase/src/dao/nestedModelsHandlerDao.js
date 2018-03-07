@@ -128,9 +128,12 @@ module.exports = {
         }
         return Promise.all(
             finalModels.map((model) => {
+                console.log(' ===== Starting for model : ', model._id);
                 if (model._id) {
+                    console.log('    ===== findByIdAndUpdate : ');
                     return input._self.findByIdAndUpdate(model._id, { $set: model }, option);
                 } else {
+                    console.log('    ===== create : ');
                     return input._self.create(model);
                 }
             })

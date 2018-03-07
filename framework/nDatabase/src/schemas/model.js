@@ -38,10 +38,12 @@ module.exports = {
                     SERVICE.ValidateRequestService.validateInputFilter(requestBody).then(success => {
                         let skip = (requestBody.pageSize || CONFIG.get('defaultPageSize')) * (requestBody.pageNumber || CONFIG.get('defaultPageNumber'));
                         let query = this.find(requestBody.query || {})
-                            .limit(requestBody.pageSize || CONFIG.get('defaultPageSize'))
-                            .skip(skip)
                             .sort(requestBody.sort || {})
                             .select(requestBody.select || {});
+                        if (!requestBody.noLimit) {
+                            query.limit(requestBody.pageSize || CONFIG.get('defaultPageSize'))
+                                .skip(skip);
+                        }
                         if (requestBody.recursive && schema.refSchema) {
                             _.each(schema.refSchema, function(modelName, property) {
                                 query.populate(property);

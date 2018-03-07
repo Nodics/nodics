@@ -17,13 +17,15 @@ module.exports = {
             operation: 'save', //save, update and saveOrUpdate
             tenant: 'default',
 
-            data: [{
-                _id: '5a6051e068e7aa0f6c15bcf1',
-                enterpriseCode: 'default',
-                name: 'Default',
-                description: 'Default Enterprise',
-                tenant: 'default'
-            }]
+            models: {
+                defaultEnterprise: {
+                    _id: '5a9e7dd88ac6ed3d73a76711',
+                    enterpriseCode: 'default',
+                    name: 'Default',
+                    description: 'Default Enterprise',
+                    tenant: 'default'
+                }
+            }
         },
 
         createDefaultEmployee: {
@@ -31,16 +33,18 @@ module.exports = {
             operation: 'save', //save, update and saveOrUpdate
             tenant: 'default',
 
-            data: [{
-                _id: '5a6051e068e7aa0f6c15bcb1',
-                enterpriseCode: 'default',
-                firstName: 'Himkar',
-                middleName: 'Admin',
-                lastName: 'Admin',
-                loginId: 'admin',
-                password: 'nodics',
-                active: true
-            }]
+            models: {
+                defaultEmployee: {
+                    _id: '5a9e7dd88ac6ed3d73a76712',
+                    enterpriseCode: 'default',
+                    firstName: 'Himkar',
+                    middleName: 'Admin',
+                    lastName: 'Admin',
+                    loginId: 'admin',
+                    password: 'nodics',
+                    active: true
+                }
+            }
         }
     }
 };

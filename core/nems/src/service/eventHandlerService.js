@@ -49,7 +49,7 @@ module.exports = {
             } else if (UTILS.isBlank(events)) {
                 callback('None of the events available', null, request);
             } else {
-                _self.broadcastEvents(events, request, (error, processedEvents) => {
+                _self.broadcastEvents(events, (error, processedEvents) => {
                     _self.handleProcessedEvents(request, processedEvents, (message) => {
                         callback(null, message);
                     });
@@ -108,13 +108,13 @@ module.exports = {
         });
     },
 
-    broadcastEvents: function(events, request, callback) {
+    broadcastEvents: function(events, callback) {
         let _self = this;
         let processed = [];
         events.forEach(event => {
             processed.push(
                 new Promise((resolve, reject) => {
-                    _self.broadcastEvent(event, request, (err, response) => {
+                    _self.broadcastEvent(event, (err, response) => {
                         if (err) {
                             event.state = ENUMS.EventState.ERROR;
                             event.log.push(err.toString());
@@ -136,14 +136,16 @@ module.exports = {
         });
     },
 
-    broadcastEvent: function(event, request, callback) {
+    broadcastEvent: function(event, callback) {
         let options = {
             moduleName: event.target,
             methodName: 'POST',
             apiName: 'event/handle',
             requestBody: event,
             isJsonResponse: true,
-            authToken: request.authToken
+            header: {
+                authToken: ENGINE_METHOD_CIPHERS.getModule('nems').metaData.authToken
+            }
         };
         let requestUrl = SERVICE.ModuleService.buildRequest(options);
         SERVICE.ModuleService.fetch(requestUrl).then(response => {

@@ -25,7 +25,9 @@ module.exports = {
             apiName: 'event/push',
             requestBody: eventDef,
             isJsonResponse: true,
-            enterpriseCode: eventDef.enterpriseCode
+            header: {
+                enterpriseCode: eventDef.enterpriseCode
+            }
         };
 
         let eventUrl = SERVICE.ModuleService.buildRequest(options);
