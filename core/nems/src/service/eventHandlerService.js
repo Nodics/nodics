@@ -144,7 +144,7 @@ module.exports = {
             requestBody: event,
             isJsonResponse: true,
             header: {
-                authToken: ENGINE_METHOD_CIPHERS.getModule('nems').metaData.authToken
+                authToken: NODICS.getModule('nems').metaData.authToken
             }
         };
         let requestUrl = SERVICE.ModuleService.buildRequest(options);
