@@ -46,7 +46,7 @@ module.exports = {
 
     loadEnvTest: function(module) {
         console.log('   INFO: Loading test cases for ENV : ', NODICS.getActiveEnvironment());
-        let path = module.path + '/test/env-' + NODICS.getActiveEnvironment();
+        let path = module.path + '/test/env/' + NODICS.getActiveEnvironment();
         SYSTEM.processFiles(path, "Test.js", (file) => {
             let testFile = this.collectTest(require(file));
             _.each(testFile, (testSuite, suiteName) => {

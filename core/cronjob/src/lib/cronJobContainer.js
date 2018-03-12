@@ -41,28 +41,34 @@ module.exports = function() {
 
     this.createCronJob = function(authToken, definition) {
         return new Promise((resolve, reject) => {
+            let currentDate = new Date();
             if (UTILS.isBlank(definition)) {
                 reject('Invalid cron job definition');
-            }
-            if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
+            } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
                 reject('Invalid cron job definition triggers');
-            }
-            if (!_jobPool[definition.name]) {
-                let cronJobs = [];
-                definition.triggers.forEach(function(value) {
-                    if (value.isActive && CONFIG.get('clusterId') === definition.clusterId) {
-                        let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
-                        tmpCronJob.validate();
-                        tmpCronJob.init();
-                        tmpCronJob.setAuthToken(authToken);
-                        cronJobs.push(tmpCronJob);
-                    }
-                });
-                _jobPool[definition.name] = cronJobs;
-                resolve(definition.name);
+            } else if (definition.active.start > currentDate) {
+                reject('Job can not be started before its start date');
+            } else if (definition.active.end && definition.active.end < currentDate) {
+                reject('Job already expired');
             } else {
-                console.log('   WARN: Definition ', definition.name, ' is already available.');
-                resolve(definition.name);
+                if (!_jobPool[definition.name]) {
+                    let cronJobs = [];
+                    definition.triggers.forEach(function(value) {
+                        if (value.isActive && CONFIG.get('clusterId') === definition.clusterId) {
+                            let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
+                            tmpCronJob.validate();
+                            tmpCronJob.init();
+                            tmpCronJob.setAuthToken(authToken);
+                            tmpCronJob.setJobPool(_jobPool);
+                            cronJobs.push(tmpCronJob);
+                        }
+                    });
+                    _jobPool[definition.name] = cronJobs;
+                    resolve(definition.name);
+                } else {
+                    console.log('   WARN: Definition ', definition.name, ' is already available.');
+                    resolve(definition.name);
+                }
             }
         });
     };
@@ -95,14 +101,13 @@ module.exports = function() {
 
     this.updateCronJob = function(authToken, definition) {
         return new Promise((resolve, reject) => {
+            let currentDate = new Date();
             if (UTILS.isBlank(definition)) {
                 reject('Invalid cron job definition');
-            }
-            if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
+            } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
                 reject('Invalid cron job definition triggers');
-            }
-            if (!_jobPool[definition.name]) {
-                console.log('    Couldnot found job, so creating new : ', definition.name);
+            } else if (!_jobPool[definition.name]) {
+                console.log('    INFO: Could not found job, so creating new : ', definition.name);
                 this.createCronJob(authToken, definition).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -157,33 +162,37 @@ module.exports = function() {
 
     this.runCronJob = function(authToken, definition) {
         return new Promise((resolve, reject) => {
+            let currentDate = new Date();
             if (UTILS.isBlank(definition)) {
                 reject('Invalid cron job definition');
+            } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
+                reject('Invalid cron job definition triggers');
+            } else if (definition.active.start > currentDate) {
+                reject('Job can not be started before its start date');
+            } else if (definition.active.end && definition.active.end < currentDate) {
+                reject('Job already expired');
+            } else {
+                let _running = false;
+                if (_jobPool[definition.name] && _jobPool[definition.name][0].isRunning()) {
+                    _running = _jobPool[definition.name][0].isRunning();
+                    _jobPool[definition.name].forEach(function(job) {
+                        job.pauseCronJob();
+                    });
+                }
+                let tmpCronJob = new CLASSES.CronJob(definition, definition.triggers[0]); //TODO: need to add context and timeZone
+                tmpCronJob.validate();
+                tmpCronJob.setAuthToken(authToken);
+                tmpCronJob.init(true);
+                tmpCronJob.setJobPool(_jobPool);
+                if (_jobPool[definition.name] && _running) {
+                    _jobPool[definition.name].forEach(function(job) {
+                        job.resumeCronJob();
+                    });
+                }
+                resolve(definition.name);
             }
-            if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
-                rject('Invalid cron job definition triggers');
-            }
-            let _running = false;
-            if (_jobPool[definition.name] && _jobPool[definition.name][0].isRunning()) {
-                _running = _jobPool[definition.name][0].isRunning();
-                _jobPool[definition.name].forEach(function(job) {
-                    job.pauseCronJob();
-                });
-            }
-            let tmpCronJob = new CLASSES.CronJob(definition, definition.triggers[0]); //TODO: need to add context and timeZone
-            tmpCronJob.validate();
-            tmpCronJob.setAuthToken(authToken);
-            tmpCronJob.init(true);
-            if (_jobPool[definition.name] && _running) {
-                _jobPool[definition.name].forEach(function(job) {
-                    job.resumeCronJob();
-                });
-            }
-            resolve(definition.name);
         });
-
     };
-
 
     this.startCronJobs = function(jobNames) {
         let _self = this;
@@ -197,7 +206,7 @@ module.exports = function() {
                     message: 'Successfully started'
                 };
             } catch (error) {
-                _failed[value] = error;
+                _failed[value] = error.toString();
             }
         });
         return {
@@ -212,7 +221,7 @@ module.exports = function() {
                 cronJob.startCronJob();
             });
         } else {
-            throw new Error('   WARN: Either name is not valid or job already removed.');
+            throw new Error('Either name is not valid or job already removed.');
         }
     };
 
@@ -228,7 +237,7 @@ module.exports = function() {
                     message: 'Successfully stoped'
                 };
             } catch (error) {
-                _failed[value] = error;
+                _failed[value] = error.toString();
             }
         });
         return {
@@ -259,7 +268,7 @@ module.exports = function() {
                     message: 'Successfully removed'
                 };
             } catch (error) {
-                _failed[value] = error;
+                _failed[value] = error.toString();
             }
         });
         return {
@@ -291,7 +300,7 @@ module.exports = function() {
                     message: 'Successfully paused'
                 };
             } catch (error) {
-                _failed[value] = error;
+                _failed[value] = error.toString();
             }
         });
         return {
@@ -322,7 +331,7 @@ module.exports = function() {
                     message: 'Successfully resumed'
                 };
             } catch (error) {
-                _failed[value] = error;
+                _failed[value] = error.toString();
             }
         });
         return {

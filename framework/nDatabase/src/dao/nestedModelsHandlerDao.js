@@ -47,12 +47,9 @@ module.exports = {
 
             delete options.refSchema[options.refKey];
             let subModel = options.model[options.refKey];
-            console.log('======== : ', subModel);
             if (!UTILS.isBlank(subModel) && (UTILS.isObject(subModel) || UTILS.isArrayOfObject(subModel))) {
-                console.log('000001');
                 options.request.operation(options, subModel);
             } else {
-                console.log('000001');
                 DAO.NestedModelsHandlerDao.performNextSubModel(options);
             }
         }

@@ -18,7 +18,6 @@ module.exports = {
         _.each(definition.models, (model, name) => {
             models.push(model);
         });
-        console.log(models);
         input = {
             tenant: definition.tenant,
             models: models

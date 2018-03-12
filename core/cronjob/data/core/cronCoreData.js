@@ -21,28 +21,28 @@ module.exports = {
                 publishEvents: {
                     _id: '5a9e7dd88ac6ed3d73a76713',
                     enterpriseCode: 'default',
-                    tenant: "default",
-                    name: "publishEvents",
+                    tenant: 'default',
+                    name: 'publishEvents',
                     clusterId: 0,
                     runOnInit: false,
                     jobDetail: {
-                        "startNode": "SERVICE.EventHandlerJobService.runJob"
+                        startNode: 'SERVICE.EventHandlerJobService.runJob'
                     },
                     triggers: [{
                         isActive: true,
-                        triggerId: "eventPublishTrigger",
-                        expression: "*/2 * * * * *"
+                        triggerId: 'eventPublishTrigger',
+                        expression: '*/2 * * * * *'
                     }],
                     emails: [{
-                        "email": "nodics.framework@nodics.com"
+                        email: 'nodics.framework@nodics.com'
                     }],
                     active: {
-                        start: Date.now
+                        start: new Date(),
+                        end: new Date()
                     },
                     priority: 1000,
-                    lastResult: "NEW",
-                    state: "NEW",
-                    testProperty: "Dwivedi Himkar"
+                    lastResult: 'NEW',
+                    state: 'NEW'
                 }
             }
         }

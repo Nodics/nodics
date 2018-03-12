@@ -54,9 +54,7 @@ module.exports = {
             }
         };
         input = _.merge(input, request);
-        console.log(' Request : ', input);
         SERVICE.CronJobService.get(input).then((models) => {
-            console.log(' Return models : ', models);
             if (callback) {
                 this.cronJobContainer.updateCronJobs(models).then(success => {
                     callback(null, success);
@@ -85,7 +83,6 @@ module.exports = {
         };
         input = _.merge(input, request);
         SERVICE.CronJobService.get(input).then((models) => {
-            console.log(' Models : ', models);
             if (callback) {
                 this.cronJobContainer.runCronJobs(models).then(success => {
                     callback(null, success);

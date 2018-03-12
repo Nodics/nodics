@@ -15,7 +15,7 @@ module.exports = {
 
         createDefaultEnterprise: {
             modelName: 'enterprise',
-            operation: 'save', //save, update and saveOrUpdate
+            operation: 'saveOrUpdate', //save, update and saveOrUpdate
             tenant: 'default',
 
             models: {
@@ -31,7 +31,7 @@ module.exports = {
 
         createDefaultEmployee: {
             modelName: 'employee',
-            operation: 'save', //save, update and saveOrUpdate
+            operation: 'saveOrUpdate', //save, update and saveOrUpdate
             tenant: 'default',
 
             models: {
@@ -51,7 +51,7 @@ module.exports = {
 
         createDefaultPassword: {
             modelName: 'password',
-            operation: 'save', //save, update and saveOrUpdate
+            operation: 'saveOrUpdate', //save, update and saveOrUpdate
             tenant: 'default',
 
             models: {

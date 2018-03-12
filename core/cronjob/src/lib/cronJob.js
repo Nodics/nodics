@@ -21,6 +21,11 @@ module.exports = function(definition, trigger, context, timeZone) {
     let _running = false;
     let _paused = false;
     let _authToken = '';
+    let _jobPool = [];
+
+    this.setJobPool = function(jobPool) {
+        _jobPool = jobPool;
+    };
 
     this.setAuthToken = function(authToken) {
         _authToken = authToken;
@@ -57,6 +62,11 @@ module.exports = function(definition, trigger, context, timeZone) {
             onTick: function() {
                 if (!_paused) {
                     _running = true;
+                    if (_definition.active.end && _definition.active.end < new Date()) {
+                        console.log('   WARN: Job : ', _definition.name, ' got expired. hence has been stopped');
+                        _self.stopCronJob();
+                        delete _jobPool[_definition.name];
+                    }
                     SERVICE.JobHandlerService.handleJobTriggered(_definition, _self);
                     try {
                         if (NODICS.getServerState() === 'started' && CONFIG.get('clusterId') === _definition.clusterId) {
@@ -149,9 +159,5 @@ module.exports = function(definition, trigger, context, timeZone) {
             _trigger.month || '*' +
             ' ' +
             _trigger.day || '*';
-    };
-
-    this.getName = function() {
-        console.log('This function is for testing only');
     };
 };
