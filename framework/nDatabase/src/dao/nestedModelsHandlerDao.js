@@ -47,9 +47,12 @@ module.exports = {
 
             delete options.refSchema[options.refKey];
             let subModel = options.model[options.refKey];
+            console.log('======== : ', subModel);
             if (!UTILS.isBlank(subModel) && (UTILS.isObject(subModel) || UTILS.isArrayOfObject(subModel))) {
+                console.log('000001');
                 options.request.operation(options, subModel);
             } else {
+                console.log('000001');
                 DAO.NestedModelsHandlerDao.performNextSubModel(options);
             }
         }
@@ -128,12 +131,9 @@ module.exports = {
         }
         return Promise.all(
             finalModels.map((model) => {
-                console.log(' ===== Starting for model : ', model._id);
                 if (model._id) {
-                    console.log('    ===== findByIdAndUpdate : ');
                     return input._self.findByIdAndUpdate(model._id, { $set: model }, option);
                 } else {
-                    console.log('    ===== create : ');
                     return input._self.create(model);
                 }
             })

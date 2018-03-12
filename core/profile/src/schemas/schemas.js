@@ -78,11 +78,11 @@ module.exports = {
             router: true,
             refSchema: {
                 superEnterprise: {
-                    modelName: "EnterpriceModel",
+                    modelName: "EnterpriseModel",
                     type: 'one'
                 },
                 subEnterprises: {
-                    modelName: "EnterpriceModel",
+                    modelName: "EnterpriseModel",
                     type: 'many'
                 }
             },
@@ -107,13 +107,36 @@ module.exports = {
 
                 superEnterprise: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: 'EnterpriceModel'
+                    ref: 'EnterpriseModel'
                 },
 
                 subEnterprises: [{
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: 'EnterpriceModel'
+                    ref: 'EnterpriseModel'
                 }]
+            }
+        },
+
+        password: {
+            super: 'base',
+            model: true,
+            service: true,
+            event: true,
+            router: true,
+            definition: {
+                password: {
+                    type: "String",
+                    required: true
+                },
+                loginId: {
+                    type: "String",
+                    required: true,
+                    unique: true
+                },
+                personId: {
+                    type: 'String',
+                    required: true
+                }
             }
         },
 
@@ -135,20 +158,25 @@ module.exports = {
                     type: "String",
                     required: true
                 },
-                lastLogin: {
-                    type: 'Date'
-                },
                 loginId: {
                     type: "String",
                     required: true,
                     unique: true
                 },
-                password: {
-                    type: "String",
-                    required: true
+                attempts: {
+                    type: 'Number',
+                    default: 1,
+                    validate: {
+                        validator: NODICS.getValidators().checkValidForAttempts,
+                        message: '{VALUE} is not a valid attempt! put 1 instead'
+                    }
+                },
+                lastAttempt: {
+                    type: 'Date'
                 },
                 locked: {
-                    type: 'Boolean'
+                    type: 'Boolean',
+                    default: false
                 },
                 lockedTime: {
                     type: 'Date'
@@ -173,7 +201,7 @@ module.exports = {
                 ttl: 100
             },
             definition: {
-
+                // ...
             }
         },
 
@@ -188,7 +216,7 @@ module.exports = {
                 ttl: 20
             },
             definition: {
-
+                // ...
             }
         }
     }

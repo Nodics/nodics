@@ -11,6 +11,7 @@
 
 module.exports = {
     database: {
+        processInitialData: false,
         default: {
             master: {
                 URI: 'mongodb://localhost:27017/nodicsMaster',

@@ -27,6 +27,9 @@ module.exports = {
                 target: {
                     type: 'String'
                 },
+                clusterId: {
+                    type: 'String'
+                },
                 state: {
                     type: 'String',
                     enum: ENUMS.EventState.getEnumValue(),

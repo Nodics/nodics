@@ -33,6 +33,7 @@ public class TibcoConsumerImpl implements TibcoConsumer, MessageListener {
 	private String outputQueueName;
 	private String evantUrl;
 	private String targetModule;
+	private String clusterId;
 	
 	private Connection connection;
 	private Session session;
@@ -43,11 +44,13 @@ public class TibcoConsumerImpl implements TibcoConsumer, MessageListener {
 	public TibcoConsumerImpl(ConnectionFactory connectionFactory,
 			String outputQueueName,
 			String targetModule,
+			String clusterId,
 			String evantUrl) {
 		this.connectionFactory = connectionFactory;
 		this.outputQueueName = outputQueueName;
 		this.evantUrl = evantUrl;
 		this.targetModule = targetModule;
+		this.clusterId = clusterId;
 		logger.info("Tibco outputQueue: {} : " + outputQueueName);
 	}
 	
@@ -97,6 +100,7 @@ public class TibcoConsumerImpl implements TibcoConsumer, MessageListener {
 				json.addProperty("event", this.outputQueueName);
 				json.addProperty("source", "tibcoMessageConsumed");
 				json.addProperty("target", this.targetModule);
+				json.addProperty("clusterId", this.clusterId);
 				json.addProperty("state", "NEW");
 				json.addProperty("type", "ASYNC");
 				

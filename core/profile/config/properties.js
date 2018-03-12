@@ -11,6 +11,7 @@
 
 module.exports = {
 
+    attemptsToLockAccount: 5,
     encryptSaltLength: 10,
     authorizationModuleName: 'profile',
     authTokenLife: 60 * 5,

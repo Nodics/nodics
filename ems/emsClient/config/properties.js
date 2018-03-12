@@ -22,10 +22,11 @@ module.exports = {
                 password: "admin",
             },
             queues: [{
-                messageType: "stockData",
-                inputQueue: "nodicsApplicationInput",
-                outputQueue: "nodicsApplicationOutput",
-                targetModule: 'emsClient'
+                messageType: 'stockData',
+                inputQueue: 'nodicsApplicationInput',
+                outputQueue: 'nodicsApplicationOutput',
+                targetModule: 'emsClient',
+                clusterId: '0'
             }]
         },
 
@@ -41,15 +42,17 @@ module.exports = {
                 }
             },
             queues: [{
-                messageType: "stockData",
-                inputQueue: "nodicsApplicationInput",
-                outputQueue: "nodicsApplicationOutput",
-                targetModule: 'emsClient'
+                messageType: 'stockData',
+                inputQueue: 'nodicsApplicationInput',
+                outputQueue: 'nodicsApplicationOutput',
+                targetModule: 'emsClient',
+                clusterId: '0'
             }, {
                 messageType: "intData",
                 inputQueue: "nodicsIntInput",
                 outputQueue: "nodicsIntOutput",
-                targetModule: 'emsClient'
+                targetModule: 'emsClient',
+                clusterId: '0'
             }]
         },
 
@@ -57,7 +60,7 @@ module.exports = {
             publisherType: 1, // 0 for normal, 1 for HighLevel Producer
             consumerType: 0, // 0 for normal, 1 for HighLevel Producer
             options: {
-                kafkaHost: "localhost:9092",
+                kafkaHost: 'localhost:9092',
                 connectTimeout: 10,
                 requestTimeout: 30000,
                 autoConnect: true,
@@ -72,16 +75,17 @@ module.exports = {
                 }
             },
             queues: [{
-                messageType: "stockData",
-                inputQueue: "nodicsApplicationInput",
-                outputQueue: "nodicsApplicationOutputNew",
+                messageType: 'stockData',
+                inputQueue: 'nodicsApplicationInput',
+                outputQueue: 'nodicsApplicationOutputNew',
                 consumerOptions: {
                     autoCommit: true,
                     fetchMaxWaitMs: 1000,
                     fetchMaxBytes: 1024 * 1024,
-                    encoding: "buffer"
+                    encoding: 'buffer'
                 },
-                targetModule: 'emsClient'
+                targetModule: 'emsClient',
+                clusterId: '0'
             }]
         }
     }

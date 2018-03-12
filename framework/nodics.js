@@ -41,15 +41,19 @@ module.exports = {
                 event.loadListeners();
                 router.loadRouter();
                 SYSTEM.executePostScripts();
-                resolve(true);
+                if (NODICS.isInitRequired()) {
+                    SERVICE.DataImportService.importInitData().then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
             }).catch(error => {
                 reject(error);
             });
         });
-    },
-
-    startServers: function() {
-
     },
 
     initTestRuner: function() {
@@ -75,6 +79,5 @@ module.exports = {
         }).catch(error => {
             console.log('   ERROR: Nodics server error : ', error);
         });
-
     }
 };

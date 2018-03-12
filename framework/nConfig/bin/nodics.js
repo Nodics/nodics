@@ -22,11 +22,20 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
     let _argvs = argvs;
     let _activeModules = [];
     let _nTestRunning = false;
+    let _initRequired = false;
 
     let _nodics = {
         modules: {},
         dbs: {},
         validators: {}
+    };
+
+    this.setInitRequired = function(flag) {
+        _initRequired = flag;
+    };
+
+    this.isInitRequired = function() {
+        return _initRequired;
     };
 
     this.setNTestRunning = function(isRunning) {

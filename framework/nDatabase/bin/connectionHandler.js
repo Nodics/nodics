@@ -13,7 +13,7 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 
 module.exports = {
-    createConnection: function(dbConfig) {
+    createConnection: function(dbConfig, tntName, type) {
         return new Promise((resolve, reject) => {
             console.log('   INFO: Creating database connection for URI : ', dbConfig.URI);
             let connection = '';
@@ -27,6 +27,20 @@ module.exports = {
             connection.on('connected', function() {
                 console.log('   INFO: Mongoose default connection open to ' + dbConfig.URI);
                 resolve(connection);
+                try {
+                    if (type === 'master' && tntName === 'default') {
+                        connection.db.collection('enterprisemodels', function(err, collection) {
+                            collection.count({}, function(error, count) {
+                                if (count <= 0 || CONFIG.get('database').processInitialData) {
+                                    NODICS.setInitRequired(true);
+                                }
+                            });
+                        });
+                    }
+                } catch (error) {
+                    console.log('   ERROR: While checking if initialization required : ', error);
+                }
+
             });
             connection.on('error', function(error) {
                 console.log('   INFO: Mongoose default connection error: ' + error);
@@ -49,7 +63,7 @@ module.exports = {
             masterDatabase.setName(moduleName);
             masterDatabase.setURI(dbConfig.master.URI);
             masterDatabase.setOptions(dbConfig.master.options);
-            _self.createConnection(dbConfig.master).then(connection => {
+            _self.createConnection(dbConfig.master, tntName, 'master').then(connection => {
                 masterDatabase.setConnection(connection);
                 masterDatabase.setSchema(mongoose.Schema);
                 if (testConfig.enabled && testConfig.uTest.enabled) {
@@ -58,7 +72,7 @@ module.exports = {
                         testDatabase.setName(moduleName);
                         testDatabase.setURI(dbConfig.test.URI);
                         testDatabase.setOptions(dbConfig.test.options);
-                        _self.createConnection(dbConfig.test).then(conn => {
+                        _self.createConnection(dbConfig.test, tntName, 'test').then(conn => {
                             testDatabase.setConnection(conn);
                             testDatabase.setSchema(mongoose.Schema);
                             NODICS.addTenantDatabase(moduleName, tntName, {

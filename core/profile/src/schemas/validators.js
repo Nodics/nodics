@@ -10,5 +10,10 @@
  */
 
 module.exports = {
-
+    checkValidForAttempts: function(value) {
+        if (value == 1) {
+            return true;
+        }
+        return false;
+    }
 };

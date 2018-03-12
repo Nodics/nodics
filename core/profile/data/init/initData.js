@@ -12,6 +12,7 @@
 module.exports = {
 
     profile: {
+
         createDefaultEnterprise: {
             modelName: 'enterprise',
             operation: 'save', //save, update and saveOrUpdate
@@ -19,7 +20,7 @@ module.exports = {
 
             models: {
                 defaultEnterprise: {
-                    _id: '5a9e7dd88ac6ed3d73a76711',
+                    _id: '111e7dd88ac6ed3d73a76711',
                     enterpriseCode: 'default',
                     name: 'Default',
                     description: 'Default Enterprise',
@@ -35,14 +36,31 @@ module.exports = {
 
             models: {
                 defaultEmployee: {
-                    _id: '5a9e7dd88ac6ed3d73a76712',
+                    _id: '121e7dd88ac6ed3d73a76712',
                     enterpriseCode: 'default',
                     firstName: 'Himkar',
                     middleName: 'Admin',
                     lastName: 'Admin',
                     loginId: 'admin',
-                    password: 'nodics',
-                    active: true
+                    locked: false,
+                    active: true,
+                    attempts: 1
+                }
+            }
+        },
+
+        createDefaultPassword: {
+            modelName: 'password',
+            operation: 'save', //save, update and saveOrUpdate
+            tenant: 'default',
+
+            models: {
+                defaultEmployee: {
+                    _id: '121e7dd88ac6ed3d73a76333',
+                    personId: '121e7dd88ac6ed3d73a76712',
+                    enterpriseCode: 'default',
+                    loginId: 'admin',
+                    password: 'nodics'
                 }
             }
         }

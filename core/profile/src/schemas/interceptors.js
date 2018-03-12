@@ -18,44 +18,37 @@ module.exports = {
                 //console.log('%%% testUserInterceptors');
             }
         },
-        employee: { // this will execute only for person schema
+        password: { // this will execute only for person schema
             encryptPasswordPreSave: function(schema, modelName) {
                 schema.pre('save', function(next) {
-                    SYSTEM.encryptPassword(this).then(document => {
+                    let doc = this;
+                    SYSTEM.encryptPassword(doc).then(document => {
                         next();
                     }).catch(error => {
                         next(error);
                     });
                 });
             },
-
-            encryptPasswordFindAndUpdate: function(schema, modelName) {
-                schema.pre('findOneAndUpdate', function(next) {
-                    let document = this._update.$set;
-                    delete document.password;
-                    next();
-                });
-            },
-
-        },
-        customer: { // this will execute only for person schema
-            encryptPasswordPreSave: function(schema, modelName) {
-                schema.pre('save', function(next) {
-                    SYSTEM.encryptPassword(this).then(document => {
+            encryptPasswordPreUpdate: function(schema, modelName) {
+                schema.pre('update', function(next) {
+                    let doc = this._update.$set;
+                    SYSTEM.encryptPassword(doc).then(document => {
                         next();
                     }).catch(error => {
                         next(error);
                     });
                 });
             },
-
-            encryptPasswordFindAndUpdate: function(schema, modelName) {
+            encryptPasswordPreSaveOrUpdate: function(schema, modelName) {
                 schema.pre('findOneAndUpdate', function(next) {
-                    let document = this._update.$set;
-                    delete document.password;
-                    next();
+                    let doc = this._update.$set;
+                    SYSTEM.encryptPassword(doc).then(document => {
+                        next();
+                    }).catch(error => {
+                        next(error);
+                    });
                 });
-            },
+            }
         }
     }
 };
