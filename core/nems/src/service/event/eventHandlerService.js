@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+const util = require('util');
 
 module.exports = {
 
@@ -34,29 +35,30 @@ module.exports = {
 
     processEvents: function(request, callback) {
         let _self = this;
-        request.response = {
+        let input = request.local || request;
+        input.response = {
             success: [],
             failed: []
         };
         console.log('   INFO: Starting process to handle events : ');
-        if (!request.options || !UTILS.isBlank(request.options)) {
-            request.options = this.buildQuery();
-        }
-        DAO.EventDao.get(request).then(events => {
+        input = _.merge(input, this.buildQuery());
+        //console.log('Event fetch query :', util.inspect(input.query, false, null));
+        DAO.EventDao.get(input).then(events => {
+            //console.log(' Total event to process : ', events);
             console.log('   INFO: Total events to be processed : ', (events instanceof Array) ? events.length : 1);
             if (events instanceof Array && events.length <= 0) {
-                callback('None of the events available', null, request);
+                callback('None of the events available');
             } else if (UTILS.isBlank(events)) {
-                callback('None of the events available', null, request);
+                callback('None of the events available');
             } else {
                 _self.broadcastEvents(events, (error, processedEvents) => {
-                    _self.handleProcessedEvents(request, processedEvents, (message) => {
+                    _self.handleProcessedEvents(input, processedEvents, (message) => {
                         callback(null, message);
                     });
                 });
             }
         }).catch(error => {
-            callback(error, null, request);
+            callback(error);
         });
     },
 
@@ -132,7 +134,7 @@ module.exports = {
         Promise.all(processed).then(result => {
             callback(null, result);
         }).catch(error => {
-            callback(error, null);
+            callback(error);
         });
     },
 
@@ -149,9 +151,13 @@ module.exports = {
         };
         let requestUrl = SERVICE.ModuleService.buildRequest(options);
         SERVICE.ModuleService.fetch(requestUrl).then(response => {
-            callback(null, response);
+            if (response.success) {
+                callback(null, response);
+            } else {
+                callback(JSON.stringify(response.errors));
+            }
         }).catch(error => {
-            callback(error, null);
+            callback(error);
         });
     }
 };

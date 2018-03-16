@@ -1,6 +1,6 @@
 module.exports = {
 
-    processEvents: function(requestContext, callback) {
-        FACADE.EventHandlerFacade.processEvents(requestContext, callback);
+    processEvents: function(request, callback) {
+        FACADE.EventHandlerFacade.processEvents(request, callback);
     }
 };

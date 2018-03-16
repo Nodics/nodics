@@ -12,13 +12,14 @@
 module.exports = {
 
     handleEvent: function(request, callback) {
-        let event = request.httpRequest.body;
+        let event = request.body;
         if (!NODICS.getModules()[event.target].eventService.emit(event.event, event, callback)) {
             callback('There is no Listener register for this event', null);
         }
     },
 
-    publish: function(eventDef, callback) {
+    publish: function(request, callback) {
+        let eventDef = request.body || request;
         let options = {
             moduleName: 'nems',
             methodName: 'put',

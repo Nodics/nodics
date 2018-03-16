@@ -11,183 +11,189 @@
 
 module.exports = {
 
-    startRequestHandlerProcess: function(req, res, routerDef) {
-        let processRequest = {
-            router: routerDef,
-            httpRequest: req,
-            httpResponse: res,
-            protocal: req.protocol,
-            host: req.get('host'),
-            originalUrl: req.originalUrl,
-            secured: routerDef.secured,
-            moduleName: routerDef.moduleName,
-            special: (routerDef.controller) ? false : true
-        };
-        let processResponse = {};
+    startRequestHandlerProcess: function(request, response, routerDef) {
         try {
-            SERVICE.ProcessService.startProcess('requestHandlerProcess', processRequest, processResponse);
+            request.local = {
+                router: routerDef,
+                httpResponse: response,
+                protocal: request.protocol,
+                host: request.hostname,
+                originalUrl: request.originalUrl,
+                secured: routerDef.secured,
+                moduleName: routerDef.moduleName,
+                special: (routerDef.controller) ? false : true
+            };
+            let processResponse = {};
+
+            SERVICE.ProcessService.startProcess('requestHandlerProcess', request, processResponse);
         } catch (error) {
-            res.json(error);
+            console.log(error);
+            response.json(error);
         }
     },
 
-    parseHeader: function(processRequest, processResponse, process) {
-        console.log('   INFO: Parsing request header : ', processRequest.moduleName);
-        if (processRequest.httpRequest.get('authToken')) {
-            processRequest.authToken = processRequest.httpRequest.get('authToken');
+    parseHeader: function(request, response, process) {
+        console.log('   INFO: Parsing request header for : ', request.local.originalUrl);
+        if (request.get('authToken')) {
+            request.local.authToken = request.get('authToken');
         }
-        if (processRequest.httpRequest.get('enterpriseCode')) {
-            processRequest.enterpriseCode = processRequest.httpRequest.get('enterpriseCode');
+        if (request.get('enterpriseCode')) {
+            request.local.enterpriseCode = request.get('enterpriseCode');
         }
-        if (!processRequest.enterpriseCode &&
-            !UTILS.isBlank(processRequest.httpRequest.body) &&
-            processRequest.httpRequest.body.enterpriseCode) {
-            processRequest.enterpriseCode = processRequest.httpRequest.body.enterpriseCode;
+        if (!request.local.enterpriseCode &&
+            !UTILS.isBlank(request.body) &&
+            request.body.enterpriseCode) {
+            request.local.enterpriseCode = request.body.enterpriseCode;
         }
-        process.nextSuccess(processRequest, processResponse);
+        process.nextSuccess(request, response);
     },
 
-    parseBody: function(processRequest, processResponse, process) {
-        console.log('   INFO: Parsing request body : ', processRequest.originalUrl);
-        if (processRequest.httpRequest.body) {
-            processRequest.body = processRequest.httpRequest.body;
-        }
-        process.nextSuccess(processRequest, processResponse);
+    parseBody: function(request, response, process) {
+        console.log('   INFO: Parsing request body : ', request.local.originalUrl);
+        process.nextSuccess(request, response);
     },
 
-    handleSpecialRequest: function(processRequest, processResponse, process) {
-        console.log('   INFO: Handling special request : ', processRequest.originalUrl);
-        if (processRequest.special) {
-            if (!processRequest.tenant) {
-                processRequest.tenant = 'default';
+    handleSpecialRequest: function(request, response, process) {
+        console.log('   INFO: Handling special request : ', request.local.originalUrl);
+        if (request.local.special) {
+            if (!request.local.tenant) {
+                request.local.tenant = 'default';
             }
-            eval(processRequest.router.handler)(processRequest, (error, response) => {
+            eval(request.local.router.handler)(request, (error, result) => {
                 if (error) {
                     console.log('   ERROR: got error while handling special request : ', error);
-                    process.error(processRequest, processResponse, error);
+                    process.error(request, response, error);
                 } else {
                     let cache = false;
-                    if (response.cache) {
+                    if (result.cache) {
                         cache = true;
-                        delete response.cache;
+                        delete result.cache;
                     }
-                    processResponse.success = true;
-                    processResponse.code = 'SUC001';
-                    processResponse.msg = 'Processed successfully';
-                    processResponse.result = response;
-                    if (processRequest.router.cache && processRequest.router.cache.enabled && processRequest.router.moduleObject.apiCache) {
+                    response.success = true;
+                    response.code = 'SUC001';
+                    response.msg = 'Processed successfully';
+                    response.result = result;
+                    if (request.local.router.cache && request.local.router.cache.enabled && request.local.router.moduleObject.apiCache) {
                         let options = {
-                            ttl: processRequest.router.ttl
+                            ttl: request.local.router.ttl
                         };
-                        SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, processRequest.router.cache).then(cuccess => {
+                        SERVICE.CacheService.putApi(request.local.router.moduleObject.apiCache,
+                            request,
+                            response,
+                            request.local.router.cache).then(cuccess => {
                             if (cache) {
-                                processResponse.cache = 'item hit';
+                                response.cache = 'item hit';
                             }
-                            process.stop(processRequest, processResponse);
+                            process.stop(request, response);
                         }).catch(error => {
                             console.log('   ERROR: While pushing data into Item cache : ', error);
-                            process.stop(processRequest, processResponse);
+                            process.stop(request, response);
                         });
                     } else {
                         if (cache) {
-                            processResponse.cache = 'item hit';
+                            response.cache = 'item hit';
                         }
-                        process.stop(processRequest, processResponse);
+                        process.stop(request, response);
                     }
                 }
             });
         } else {
-            process.nextSuccess(processRequest, processResponse);
+            process.nextSuccess(request, response);
         }
     },
 
-    redirectRequest: function(processRequest, processResponse, process) {
-        console.log('   INFO: redirecting secured/non-secured request  : ', processRequest.originalUrl);
-        if (processRequest.secured) {
+    redirectRequest: function(request, response, process) {
+        console.log('   INFO: redirecting secured/non-secured request  : ', request.local.originalUrl);
+        if (request.local.secured) {
             console.log('   INFO: Handling secured request');
-            process.nextSuccess(processRequest, processResponse);
+            process.nextSuccess(request, response);
         } else {
             console.log('   INFO: Handling non-secured request');
-            process.nextFailure(processRequest, processResponse);
+            process.nextFailure(request, response);
         }
     },
 
-    handleRequest: function(processRequest, processResponse, process) {
-        console.log('   INFO: processing your request : ', processRequest.originalUrl);
+    handleRequest: function(request, response, process) {
+        console.log('   INFO: processing your request : ', request.local.originalUrl);
         try {
-            eval(processRequest.router.controller)(processRequest, (error, response) => {
+            eval(request.local.router.controller)(request, (error, result) => {
                 if (error) {
                     console.log('   ERROR: got error while processing request : ', error);
-                    processResponse.success = false;
-                    delete processResponse.result;
-                    delete processResponse.msg;
-                    delete processResponse.code;
-                    processResponse.errors.PROC_ERR_0003 = {
+                    response.success = false;
+                    delete response.result;
+                    delete response.msg;
+                    delete response.code;
+                    response.errors.PROC_ERR_0003 = {
                         code: 'ERR003',
                         msg: error.toString()
                     };
-                    process.nextFailure(processRequest, processResponse);
+                    process.nextFailure(request, response);
                 } else {
                     let cache = false;
-                    if (response.cache) {
+                    if (result.cache) {
                         cache = true;
-                        delete response.cache;
+                        delete result.cache;
                     }
-                    processResponse.success = true;
-                    processResponse.code = 'SUC001';
-                    processResponse.msg = 'Processed successfully';
-                    processResponse.result = response;
-                    if (processRequest.router.cache && processRequest.router.cache.enabled && processRequest.router.moduleObject.apiCache) {
+                    response.success = true;
+                    response.code = 'SUC001';
+                    response.msg = 'Processed successfully';
+                    response.result = result;
+                    if (request.local.router.cache &&
+                        request.local.router.cache.enabled &&
+                        request.local.router.moduleObject.apiCache) {
                         let options = {
-                            ttl: processRequest.router.ttl
+                            ttl: request.local.router.ttl
                         };
-                        SERVICE.CacheService.putApi(processRequest.router.moduleObject.apiCache, processRequest.httpRequest, processResponse, processRequest.router.cache).then(cuccess => {
+                        SERVICE.CacheService.putApi(request.local.router.moduleObject.apiCache,
+                            request,
+                            response,
+                            request.local.router.cache).then(cuccess => {
                             if (cache) {
-                                processResponse.cache = 'item hit';
+                                request.local.cache = 'item hit';
                             } else {
-                                processResponse.cache = 'mis';
+                                request.local.cache = 'mis';
                             }
-                            process.nextSuccess(processRequest, processResponse);
+                            process.nextSuccess(request, request);
                         }).catch(error => {
                             console.log('   ERROR: While pushing data into Item cache : ', error);
-                            process.nextSuccess(processRequest, processResponse);
+                            process.nextSuccess(request, response);
                         });
                     } else {
                         if (cache) {
-                            processResponse.cache = 'item hit';
+                            response.cache = 'item hit';
                         } else {
-                            processResponse.cache = 'mis';
+                            response.cache = 'mis';
                         }
-                        process.nextSuccess(processRequest, processResponse);
+                        process.nextSuccess(request, response);
                     }
                 }
             });
         } catch (error) {
-            console.log('   ERROR: got error while service request : ', error);
-            processResponse.success = false;
-            delete processResponse.result;
-            delete processResponse.msg;
-            delete processResponse.code;
-            processResponse.errors.PROC_ERR_0003 = {
+            console.log('   111ERROR: got error while service request : ', error);
+            response.success = false;
+            delete response.result;
+            delete response.msg;
+            delete response.code;
+            response.errors.PROC_ERR_0003 = {
                 code: 'ERR003',
                 msg: error.toString()
             };
-            process.nextFailure(processRequest, processResponse);
+            process.nextFailure(request, response);
         }
     },
 
-    handleSucessEnd: function(processRequest, processResponse) {
-        console.log('   INFO: Request has been processed successfully : ', processRequest.originalUrl);
-        processRequest.httpResponse.json(processResponse);
+    handleSucessEnd: function(request, response) {
+        console.log('   INFO: Request has been processed successfully : ');
+        request.local.httpResponse.json(response);
     },
 
-    handleFailureEnd: function(processRequest, processResponse) {
-        console.log('   INFO: Request has been processed with some failures : ', processRequest.originalUrl);
-        processRequest.httpResponse.json(processResponse);
+    handleFailureEnd: function(request, response) {
+        console.log('   INFO: Request has been processed with some failures : ', request.local.originalUrl);
+        request.local.httpResponse.json(response);
     },
 
-    handleErrorEnd: function(processRequest, processResponse) {
-        console.log('   INFO: Request has been processed and got errors : ', processRequest.originalUrl);
-        processRequest.httpResponse.json(processResponse);
+    handleErrorEnd: function(request, response) {
+        console.log('   INFO: Request has been processed and got errors : ', request.local.originalUrl);
+        request.local.httpResponse.json(response);
     }
 };

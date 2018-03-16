@@ -192,49 +192,32 @@ module.exports = {
     },
 
     createApiKey: function(request) {
-        let key = request.originalUrl;
-        let method = request.method;
+        let key = request.local.originalUrl;
+        let method = request.local.method;
         if (method === 'POST' || method === 'post') {
-            if (request.body) {
+            if (request.local.body) {
                 key += '-' + JSON.stringify(request.body);
             }
         }
-        if (request.get('authToken')) {
-            key += '-' + request.get('authToken');
+        if (request.local.authToken) {
+            key += '-' + request.local.authToken;
         }
-        if (request.get('enterpriseCode')) {
-            key += '-' + request.get('enterpriseCode');
+        if (request.local.enterpriseCode) {
+            key += '-' + request.local.enterpriseCode;
         }
         return method + '-' + key;
     },
 
     createItemKey: function(input) {
-        if (input._mongooseOptions) {
-            let pageSize = input.options.limit || CONFIG.get('defaultPageSize');
-            let pageNumber = 0;
-            if (input.options.skip !== 0) {
-                pageNumber = input.options.skip / pageSize;
-            }
-            let sort = input.options.sort || {};
-            let select = input._fields || {};
-
-            return {
-                pageSize: pageSize,
-                pageNumber: pageNumber,
-                select: select || {},
-                sort: sort || {},
-                query: input.getQuery() || {}
-            };
-        } else {
-            return {
-                pageSize: input.options.pageSize || CONFIG.get('defaultPageSize'),
-                pageNumber: input.options.pageNumber || CONFIG.get('defaultPageNumber'),
-                select: input.options.select || {},
-                sort: input.options.sort || {},
-                query: input.options.query || {}
-            };
-        }
+        return {
+            pageSize: input.pageSize || CONFIG.get('defaultPageSize'),
+            pageNumber: input.pageNumber || CONFIG.get('defaultPageNumber'),
+            select: input.select || {},
+            sort: input.sort || {},
+            query: input.query || {}
+        };
     },
+
     getApi: function(cache, request, response) {
         let hash = SYSTEM.generateHash(this.createApiKey(request));
         return this.get(cache, hash);

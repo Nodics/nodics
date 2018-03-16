@@ -18,14 +18,11 @@ module.exports = {
     },
 
     createJob: function(request, callback) {
-        let input = {
-            tenant: request.tenant,
-            options: {
-                noLimit: true,
-                query: CONFIG.get('cronjob').activeJobsQuery
-            }
-        };
-        input = _.merge(input, request);
+        let input = request.local || request;
+        input = _.merge({
+            noLimit: true,
+            query: CONFIG.get('cronjob').activeJobsQuery
+        }, input);
         SERVICE.CronJobService.get(input).then((models) => {
             if (callback) {
                 this.cronJobContainer.createCronJobs(models).then(success => {
@@ -46,13 +43,11 @@ module.exports = {
     },
 
     updateJob: function(request, callback) {
-        let input = {
-            tenant: request.tenant,
-            options: {
-                noLimit: true,
-                query: CONFIG.get('cronjob').activeJobsQuery
-            }
-        };
+        let input = request.local || request;
+        input = _.merge({
+            noLimit: true,
+            query: CONFIG.get('cronjob').activeJobsQuery
+        }, input);
         input = _.merge(input, request);
         SERVICE.CronJobService.get(input).then((models) => {
             if (callback) {
@@ -74,13 +69,11 @@ module.exports = {
     },
 
     runJob: function(request, callback) {
-        let input = {
-            tenant: request.tenant,
-            options: {
-                noLimit: true,
-                query: CONFIG.get('cronjob').activeJobsQuery
-            }
-        };
+        let input = request.local || request;
+        input = _.merge({
+            noLimit: true,
+            query: CONFIG.get('cronjob').activeJobsQuery
+        }, input);
         input = _.merge(input, request);
         SERVICE.CronJobService.get(input).then((models) => {
             if (callback) {
@@ -102,8 +95,9 @@ module.exports = {
     },
 
     startJob: function(request, callback) {
+        let input = request.local || request;
         try {
-            let result = this.cronJobContainer.startCronJobs(request.jobNames);
+            let result = this.cronJobContainer.startCronJobs(input.jobNames);
             callback(null, result);
         } catch (error) {
             callback(error);
@@ -111,8 +105,9 @@ module.exports = {
     },
 
     stopJob: function(request, callback) {
+        let input = request.local || request;
         try {
-            let result = this.cronJobContainer.stopCronJobs(request.jobNames);
+            let result = this.cronJobContainer.stopCronJobs(input.jobNames);
             callback(null, result);
         } catch (error) {
             callback(error);
@@ -120,8 +115,9 @@ module.exports = {
     },
 
     removeJob: function(request, callback) {
+        let input = request.local || request;
         try {
-            let result = this.cronJobContainer.removeCronJobs(request.jobNames);
+            let result = this.cronJobContainer.removeCronJobs(input.jobNames);
             callback(null, result);
         } catch (error) {
             callback(error);
@@ -129,8 +125,9 @@ module.exports = {
     },
 
     pauseJob: function(request, callback) {
+        let input = request.local || request;
         try {
-            let result = this.cronJobContainer.pauseCronJobs(request.jobNames);
+            let result = this.cronJobContainer.pauseCronJobs(input.jobNames);
             callback(null, result);
         } catch (error) {
             callback(error);
@@ -138,8 +135,9 @@ module.exports = {
     },
 
     resumeJob: function(request, callback) {
+        let input = request.local || request;
         try {
-            let result = this.cronJobContainer.resumeCronJobs(request.jobNames);
+            let result = this.cronJobContainer.resumeCronJobs(input.jobNames);
             callback(null, result);
         } catch (error) {
             callback(error);

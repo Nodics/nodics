@@ -37,8 +37,7 @@ module.exports = {
                         email: 'nodics.framework@nodics.com'
                     }],
                     active: {
-                        start: new Date(),
-                        end: new Date()
+                        start: new Date()
                     },
                     priority: 1000,
                     lastResult: 'NEW',

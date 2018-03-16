@@ -34,17 +34,16 @@ module.exports = {
             model.statics.findItem = function(input, rawQuery) {
                 return new Promise((resolve, reject) => {
                     let schema = rawSchema;
-                    let requestBody = input.options;
-                    SERVICE.ValidateRequestService.validateInputFilter(requestBody).then(success => {
-                        let skip = (requestBody.pageSize || CONFIG.get('defaultPageSize')) * (requestBody.pageNumber || CONFIG.get('defaultPageNumber'));
-                        let query = this.find(requestBody.query || {})
-                            .sort(requestBody.sort || {})
-                            .select(requestBody.select || {});
-                        if (!requestBody.noLimit) {
-                            query.limit(requestBody.pageSize || CONFIG.get('defaultPageSize'))
+                    SERVICE.ValidateRequestService.validateInputFilter(input).then(success => {
+                        let skip = (input.pageSize || CONFIG.get('defaultPageSize')) * (input.pageNumber || CONFIG.get('defaultPageNumber'));
+                        let query = this.find(input.query || {})
+                            .sort(input.sort || {})
+                            .select(input.select || {});
+                        if (!input.noLimit) {
+                            query.limit(input.pageSize || CONFIG.get('defaultPageSize'))
                                 .skip(skip);
                         }
-                        if (requestBody.recursive && schema.refSchema) {
+                        if (input.recursive && schema.refSchema) {
                             _.each(schema.refSchema, function(modelName, property) {
                                 query.populate(property);
                             });
@@ -79,25 +78,6 @@ module.exports = {
                 } else {
                     return this.findItem(input);
                 }
-            };
-        },
-
-        defineDefaultGetById: function(model, rawSchema) {
-            model.statics.getById = function(input) {
-                let schema = rawSchema;
-                if (!input.id) {
-                    throw new Error("   ERROR: Id value can't be null to get Item");
-                }
-                let request = {
-                    tenant: input.tenant,
-                    options: {
-                        recursive: input.recursive,
-                        pageSize: CONFIG.get('defaultPageSize'),
-                        pageNumber: CONFIG.get('defaultPageNumber'),
-                        query: { _id: input.id }
-                    }
-                };
-                return this.get(request);
             };
         },
 

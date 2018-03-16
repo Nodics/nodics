@@ -113,21 +113,22 @@ module.exports = {
     },
 
     authenticate: function(request, callback) {
+        let input = request.local || request;
         let _self = this;
-        _self.retrieveEnterprise(request.enterpriseCode).then(enterprise => {
-            _self.retrieveEmployee(request.loginId, enterprise).then(employee => {
+        _self.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
+            _self.retrieveEmployee(input.loginId, enterprise).then(employee => {
                 _self.retrievePassword(employee, enterprise).then(password => {
                     if (employee.locked || !employee.active) {
                         callback('Account is currently in locked state or has been disabled');
                     } else {
-                        SYSTEM.compareHash(request.password, password.password).then(match => {
+                        SYSTEM.compareHash(input.password, password.password).then(match => {
                             if (match) {
                                 employee.attempts = 1;
                                 _self.updateAuthData(employee, enterprise);
                                 try {
                                     let key = enterprise._id + employee._id + (new Date()).getTime();
                                     let hash = SYSTEM.generateHash(key);
-                                    _self.addToken(request.moduleName, request.source, hash, {
+                                    _self.addToken(input.moduleName, input.source, hash, {
                                         employee: employee,
                                         enterprise: enterprise
                                     }).then(success => {
@@ -159,8 +160,9 @@ module.exports = {
         });
     },
 
-    authorize: function(processRequest, callback) {
-        this.findToken(processRequest).then(success => {
+    authorize: function(request, callback) {
+        let input = request.local || request;
+        this.findToken(input).then(success => {
             callback(null, success);
         }).catch(error => {
             callback('Given token is not valid one');

@@ -18,15 +18,15 @@ module.exports = {
         return true;
     },
 
-    handleEvent: function(requestContext, callback) {
-        if (CONTROLLER.EventController.validateEvent(requestContext.httpRequest.body)) {
-            FACADE.EventFacade.handleEvent(requestContext, callback);
+    handleEvent: function(request, callback) {
+        if (CONTROLLER.EventController.validateEvent(request.body)) {
+            FACADE.EventFacade.handleEvent(request, callback);
         }
     },
 
-    publish: function(requestContext, callback) {
-        if (CONTROLLER.EventController.validateEvent(requestContext.httpRequest.body)) {
-            FACADE.EventFacade.publish(requestContext, callback);
+    publish: function(request, callback) {
+        if (CONTROLLER.EventController.validateEvent(request.body)) {
+            FACADE.EventFacade.publish(request, callback);
         }
     }
 };

@@ -30,7 +30,6 @@ module.exports = {
                 };
                 let requestUrl = SERVICE.ModuleService.buildRequest(options);
                 SERVICE.ModuleService.fetch(requestUrl).then(success => {
-                    //console.log(success);
                     let moduleObject = NODICS.getModule(moduleName);
                     moduleObject.metaData.authToken = success.result.authToken;
                     if (!UTILS.isBlank(modules)) {

@@ -29,7 +29,8 @@ module.exports = {
             partition: payload.partition || 0
         };
     */
-    publish: function(input, callback) {
+    publish: function(request, callback) {
+        let input = request.local || request;
         let emsConfig = CONFIG.get('emsClient');
         if (callback) {
             SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(input).then(success => {

@@ -1,45 +1,45 @@
 module.exports = {
 
-    validateEnterpriseCode: function(processRequest, processResponse, process) {
-        console.log('   INFO: Validating Enterprise code : ', processRequest.enterpriseCode);
-        if (UTILS.isBlank(processRequest.enterpriseCode)) {
+    validateEnterpriseCode: function(request, response, process) {
+        console.log('   INFO: Validating Enterprise code : ', request.local.enterpriseCode);
+        if (UTILS.isBlank(request.local.enterpriseCode)) {
             console.log('   ERROR: Enterprise code can not be null');
-            process.error(processRequest, processResponse, 'Enterprise code can not be null');
+            process.error(request, response, 'Enterprise code can not be null');
         } else {
-            process.nextSuccess(processRequest, processResponse);
+            process.nextSuccess(request, response);
         }
     },
 
-    loadEnterpriseCode: function(processRequest, processResponse, process) {
-        console.log('   INFO: Loading Enterprise code : ', processRequest.enterpriseCode);
+    loadEnterpriseCode: function(request, response, process) {
+        console.log('   INFO: Loading Enterprise code : ', request.local.enterpriseCode);
         try {
-            SERVICE.EnterpriseProviderService.loadEnterprise(processRequest, (error, response) => {
+            SERVICE.EnterpriseProviderService.loadEnterprise(request, (error, response) => {
                 if (error) {
                     console.log('   ERROR: Enterprise code is not valid');
-                    process.error(processRequest, processResponse, error || 'Enterprise code is not valid');
+                    process.error(request, response, error || 'Enterprise code is not valid');
                 } else {
-                    processRequest.enterprise = response;
-                    processRequest.tenant = response.tenant;
-                    process.nextSuccess(processRequest, processResponse);
+                    request.local.enterprise = response;
+                    request.local.tenant = response.tenant;
+                    process.nextSuccess(request, response);
                 }
             });
-        } catch (err) {
+        } catch (error) {
             console.log('   ERROR: Enterprise code is not valid');
-            process.error(processRequest, processResponse, error || 'Enterprise code is not valid');
+            process.error(request, response, error || 'Enterprise code is not valid');
         }
     },
 
-    validateTenantId: function(processRequest, processResponse, process) {
-        console.log('   INFO: Validating Tenant Id : ', processRequest.tenant);
+    validateTenantId: function(request, response, process) {
+        console.log('   INFO: Validating Tenant Id : ', request.local.tenant);
         try {
-            if (UTILS.isBlank(processRequest.tenant)) {
+            if (UTILS.isBlank(request.local.tenant)) {
                 console.log('   ERROR: Tenant is null or invalid');
-                process.error(processRequest, processResponse, 'Tenant is null or invalid');
+                process.error(request, response, 'Tenant is null or invalid');
             } else {
-                process.nextSuccess(processRequest, processResponse);
+                process.nextSuccess(request, response);
             }
         } catch (err) {
-            process.error(processRequest, processResponse, 'Tenant is null or invalid');
+            process.error(request, response, 'Tenant is null or invalid');
         }
     }
 };

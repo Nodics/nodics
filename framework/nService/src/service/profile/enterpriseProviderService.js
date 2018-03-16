@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    loadEnterprise: function(processRequest, callback) {
+    loadEnterprise: function(request, callback) {
         let options = {
             moduleName: 'profile',
             methodName: 'POST',
@@ -19,7 +19,7 @@ module.exports = {
             requestBody: {},
             isJsonResponse: true,
             header: {
-                enterpriseCode: processRequest.enterpriseCode
+                enterpriseCode: request.local.enterpriseCode
             }
         };
         let requestUrl = SERVICE.ModuleService.buildRequest(options);

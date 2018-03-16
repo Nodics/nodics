@@ -54,7 +54,7 @@ module.exports = {
         },
 
         runJob: {
-            runGetJob: {
+            /*runGetJob: {
                 secured: true,
                 key: '/job/run',
                 method: 'GET',
@@ -65,7 +65,7 @@ module.exports = {
                 key: '/job/run',
                 method: 'POST',
                 controller: 'CONTROLLER.CronJobController.runJob'
-            },
+            },*/
             runGetJobByCode: {
                 secured: true,
                 key: '/job/run/:jobName',

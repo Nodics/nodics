@@ -25,8 +25,7 @@ module.exports = {
                 let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
                 SYSTEM.buildItemLevelCache(schema.rawSchema);
                 if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
-                    let query = this.rawQuery;
-                    SERVICE.CacheService.putItem(schema.rawSchema, moduleObject.itemCache, query, docs).then(success => {
+                    SERVICE.CacheService.putItem(schema.rawSchema, moduleObject.itemCache, this.rawQuery, docs).then(success => {
                         console.log('   INFO: Item saved in item cache');
                     }).catch(error => {
                         console.log('   ERROR: while saving item in item cache : ', error);

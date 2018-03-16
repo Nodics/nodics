@@ -1,26 +1,26 @@
 module.exports = {
 
-    validateAuthToken: function(processRequest, processResponse, process) {
-        console.log('   INFO: Validating auth token : ', processRequest.authToken);
-        if (UTILS.isBlank(processRequest.authToken)) {
+    validateAuthToken: function(request, response, process) {
+        console.log('   INFO: Validating auth token : ', request.local.authToken);
+        if (UTILS.isBlank(request.local.authToken)) {
             console.log('   ERROR: Auth Token is null or invalid');
-            process.error(processRequest, processResponse, 'Invalid auth token: Access denied');
+            process.error(request, response, 'Invalid auth token: Access denied');
         } else {
-            process.nextSuccess(processRequest, processResponse);
+            process.nextSuccess(request, response);
         }
     },
 
-    authorizeAuthToken: function(processRequest, processResponse, process) {
-        console.log('   INFO: Authorizing auth token : ', processRequest.authToken);
-        SERVICE.AuthenticationProviderService.authorizeToken(processRequest, (error, response) => {
+    authorizeAuthToken: function(request, response, process) {
+        console.log('   INFO: Authorizing auth token : ', request.local.authToken);
+        SERVICE.AuthenticationProviderService.authorizeToken(request, (error, result) => {
             if (error) {
-                process.error(processRequest, processResponse, error);
+                process.error(request, response, error);
             } else {
-                processRequest.enterprise = response.enterprise;
-                processRequest.enterpriseCode = response.enterprise.enterpriseCode;
-                processRequest.employee = response.employee;
-                processRequest.tenant = response.enterprise.tenant;
-                process.nextSuccess(processRequest, processResponse);
+                request.local.enterprise = result.enterprise;
+                request.local.enterpriseCode = result.enterprise.enterpriseCode;
+                request.local.employee = result.employee;
+                request.local.tenant = result.enterprise.tenant;
+                process.nextSuccess(request, response);
             }
         });
     }

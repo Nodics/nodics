@@ -52,11 +52,12 @@ module.exports = {
         });
     },
 
-    authorizeToken: function(processRequest, callback) {
-        this.findToken(processRequest).then(success => {
+    authorizeToken: function(request, callback) {
+        let input = request.local || request;
+        this.findToken(input).then(success => {
             callback(null, success);
         }).catch(error => {
-            if (processRequest.moduleName !== CONFIG.get('authorizationModuleName')) {
+            if (input.moduleName !== CONFIG.get('authorizationModuleName')) {
                 let options = {
                     moduleName: 'profile',
                     methodName: 'POST',
@@ -64,11 +65,11 @@ module.exports = {
                     requestBody: {},
                     isJsonResponse: true,
                     header: {
-                        authToken: processRequest.authToken
+                        authToken: input.authToken
                     }
                 };
                 let requestUrl = SERVICE.ModuleService.buildRequest(options);
-                console.log('   INFO: Authorizing reqiuest for token :', processRequest.authToken);
+                console.log('   INFO: Authorizing reqiuest for token :', input.authToken);
                 SERVICE.ModuleService.fetch(requestUrl, (error, response) => {
                     if (error) {
                         callback(error);

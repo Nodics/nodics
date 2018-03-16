@@ -11,18 +11,14 @@
 
 module.exports = {
 
-    getEnterprise: function(processRequest, callback) {
-        let enterpriseCode = processRequest.enterpriseCode;
+    getEnterprise: function(request, callback) {
+        let enterpriseCode = request.local.enterpriseCode;
         if (UTILS.isBlank(enterpriseCode)) {
             callback('Invalid enterprise code');
         } else {
-            let request = {
-                tenant: 'default'
-            };
-            request.options = {
-                query: {
-                    enterpriseCode: enterpriseCode
-                }
+            request.local.tenant = 'default';
+            request.local.query = {
+                enterpriseCode: enterpriseCode
             };
             FACADE.EnterpriseFacade.get(request, callback);
         }

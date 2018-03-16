@@ -12,16 +12,16 @@
 module.exports = {
 
     runJob: function(definition, cronJob) {
-        /* this.triggerEventHandlerJob(definition, cronJob, () => {
-             DAO.CronJobDao.update({
-                 tenant: definition.tenant,
-                 models: [definition]
-             }).then(response => {
-                 console.log('   INFO: Job : executed successfuly');
-             }).catch(error => {
-                 console.log('   ERROR: Job : executed with error : ', error);
-             });
-         });*/
+        this.triggerEventHandlerJob(definition, cronJob, () => {
+            DAO.CronJobDao.update({
+                tenant: definition.tenant,
+                models: [definition]
+            }).then(response => {
+                console.log('   INFO: Job : executed successfuly');
+            }).catch(error => {
+                console.log('   ERROR: Job : executed with error : ', error);
+            });
+        });
     },
 
     triggerEventHandlerJob: function(definition, cronJob, callback) {
@@ -33,7 +33,7 @@ module.exports = {
                 requestBody: {},
                 isJsonResponse: true,
                 header: {
-                    authToken: cronJob.getAuthToken()
+                    authToken: NODICS.getModule('cronjob').metaData.authToken
                 }
             };
             let nemsUrl = SERVICE.ModuleService.buildRequest(options);

@@ -11,6 +11,6 @@
 
 module.exports = {
     event: {
-        publishAllActive: true
+        publishAllActive: true,
     }
 };

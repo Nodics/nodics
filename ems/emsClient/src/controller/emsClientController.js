@@ -9,13 +9,12 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
-    publish: function(requestContext, callback) {
-        if (!UTILS.isBlank(requestContext.httpRequest.body)) {
-            let request = requestContext.httpRequest.body;
-            request.tenant = requestContext.tenant;
-            request.enterpriseCode = requestContext.enterpriseCode;
-            request.authToken = requestContext.authToken;
+    publish: function(request, callback) {
+        if (!UTILS.isBlank(request.body)) {
+            request.local = _.merge(request.local, request.body);
             return FACADE.EmsClientFacade.publish(request, callback);
         } else {
             console.log('   ERROR: Please validate your request, it is not a valid one');
