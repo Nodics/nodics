@@ -1,0 +1,633 @@
+2018-03-17T20:07:01.737Z - info: [SYSTEM] =>Initializing Nodics, Node based enterprise application solution   ###
+2018-03-17T20:07:01.853Z - info: [SYSTEM] => Starting Pre Scripts loader process
+2018-03-17T20:07:01.739Z - info: [SYSTEM] ---------------------------------------------------------------------------
+2018-03-17T20:07:01.739Z - info: [SYSTEM] SERVER_PATH :  /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer
+2018-03-17T20:07:01.739Z - info: [SYSTEM] NODICS_HOME :  /Users/baba/apps/HimProjects/nodics
+2018-03-17T20:07:01.739Z - info: [SYSTEM] NODICS_APP  :  kickoff
+2018-03-17T20:07:01.739Z - info: [SYSTEM] NODICS_ENV  :  local
+2018-03-17T20:07:01.739Z - info: [SYSTEM] ---------------------------------------------------------------------------
+2018-03-17T20:07:01.740Z - info: [SYSTEM] => Starting Configuration loader process ##
+2018-03-17T20:07:01.771Z - info: [SYSTEM]    INFO: Modules : 
+2018-03-17T20:07:01.773Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nConfig/config/properties.js
+2018-03-17T20:07:01.775Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nCommon/config/properties.js
+2018-03-17T20:07:01.775Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nDatabase/config/properties.js
+2018-03-17T20:07:01.775Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nDao/config/properties.js
+2018-03-17T20:07:01.776Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nService/config/properties.js
+2018-03-17T20:07:01.776Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nProcess/config/properties.js
+2018-03-17T20:07:01.776Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nEvent/config/properties.js
+2018-03-17T20:07:01.776Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nFacade/config/properties.js
+2018-03-17T20:07:01.776Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nController/config/properties.js
+2018-03-17T20:07:01.776Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nRouter/config/properties.js
+2018-03-17T20:07:01.776Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nData/config/properties.js
+2018-03-17T20:07:01.776Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/nTest/config/properties.js
+2018-03-17T20:07:01.777Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/framework/config/properties.js
+2018-03-17T20:07:01.778Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/config/properties.js
+2018-03-17T20:07:01.779Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/core/nems/config/properties.js
+2018-03-17T20:07:01.779Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/core/profile/config/properties.js
+2018-03-17T20:07:01.779Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/core/system/config/properties.js
+2018-03-17T20:07:01.779Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/core/config/properties.js
+2018-03-17T20:07:01.779Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/ems/emsClient/config/properties.js
+2018-03-17T20:07:01.781Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/kickoff/config/properties.js
+2018-03-17T20:07:01.781Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/config/properties.js
+2018-03-17T20:07:01.781Z - info: [SYSTEM]    INFO: Loading configration file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/config/properties.js
+2018-03-17T20:07:01.782Z - warn: [SYSTEM]    WARNING: System cant find configuration at : externalProps.js
+2018-03-17T20:07:01.782Z - info: [SYSTEM]    INFO: Starting Nodics with active tenant :  default
+2018-03-17T20:07:01.783Z - info: [SYSTEM] => Starting System loader process
+2018-03-17T20:07:01.783Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nConfig/bin/system.js
+2018-03-17T20:07:01.783Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nCommon/bin/system.js
+2018-03-17T20:07:01.785Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDatabase/bin/system.js
+2018-03-17T20:07:01.785Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nService/bin/system.js
+2018-03-17T20:07:01.786Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nProcess/bin/system.js
+2018-03-17T20:07:01.787Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nFacade/bin/system.js
+2018-03-17T20:07:01.788Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nController/bin/system.js
+2018-03-17T20:07:01.789Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nRouter/bin/system.js
+2018-03-17T20:07:01.790Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nTest/bin/system.js
+2018-03-17T20:07:01.790Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/bin/system.js
+2018-03-17T20:07:01.850Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/bin/system.js
+2018-03-17T20:07:01.854Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nConfig/config/prescripts.js
+2018-03-17T20:07:01.855Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nCommon/config/prescripts.js
+2018-03-17T20:07:01.856Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDatabase/config/prescripts.js
+2018-03-17T20:07:01.857Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDao/config/prescripts.js
+2018-03-17T20:07:01.857Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nService/config/prescripts.js
+2018-03-17T20:07:01.858Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nProcess/config/prescripts.js
+2018-03-17T20:07:01.858Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nEvent/config/prescripts.js
+2018-03-17T20:07:01.858Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nFacade/config/prescripts.js
+2018-03-17T20:07:01.859Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nController/config/prescripts.js
+2018-03-17T20:07:01.859Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nRouter/config/prescripts.js
+2018-03-17T20:07:01.859Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nData/config/prescripts.js
+2018-03-17T20:07:01.860Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nTest/config/prescripts.js
+2018-03-17T20:07:01.860Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/config/prescripts.js
+2018-03-17T20:07:01.860Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/config/prescripts.js
+2018-03-17T20:07:01.861Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/nems/config/prescripts.js
+2018-03-17T20:07:01.861Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/config/prescripts.js
+2018-03-17T20:07:01.862Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/system/config/prescripts.js
+2018-03-17T20:07:01.862Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/config/prescripts.js
+2018-03-17T20:07:01.862Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/ems/emsClient/config/prescripts.js
+2018-03-17T20:07:01.863Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/config/prescripts.js
+2018-03-17T20:07:01.863Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/config/prescripts.js
+2018-03-17T20:07:01.864Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/config/prescripts.js
+2018-03-17T20:07:01.865Z - info: [SYSTEM] => Starting pre-script execution process
+2018-03-17T20:07:01.865Z - info: [SYSTEM]    INFO: pre-script executed successfully
+2018-03-17T20:07:01.866Z - info: [SYSTEM] => Staring Utils loader process
+2018-03-17T20:07:01.866Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nConfig/src/utils/utils.js
+2018-03-17T20:07:01.866Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nCommon/src/utils/utils.js
+2018-03-17T20:07:01.867Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDatabase/src/utils/utils.js
+2018-03-17T20:07:01.867Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDao/src/utils/utils.js
+2018-03-17T20:07:01.868Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nService/src/utils/utils.js
+2018-03-17T20:07:01.869Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nProcess/src/utils/utils.js
+2018-03-17T20:07:01.869Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/utils/utils.js
+2018-03-17T20:07:01.870Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nFacade/src/utils/utils.js
+2018-03-17T20:07:01.870Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nController/src/utils/utils.js
+2018-03-17T20:07:01.871Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nRouter/src/utils/utils.js
+2018-03-17T20:07:01.872Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nData/src/utils/utils.js
+2018-03-17T20:07:01.872Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nTest/src/utils/utils.js
+2018-03-17T20:07:01.873Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/src/utils/utils.js
+2018-03-17T20:07:01.873Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/nems/src/utils/utils.js
+2018-03-17T20:07:01.874Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/src/utils/utils.js
+2018-03-17T20:07:01.874Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/system/src/utils/utils.js
+2018-03-17T20:07:01.874Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/utils/utils.js
+2018-03-17T20:07:01.875Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/src/utils/utils.js
+2018-03-17T20:07:01.875Z - info: [SYSTEM] => Staring Enums loader process
+2018-03-17T20:07:01.876Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/src/utils/enums.js
+2018-03-17T20:07:01.876Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/nems/src/utils/enums.js
+2018-03-17T20:07:01.878Z - info: [SYSTEM] => Staring Classes loader process
+2018-03-17T20:07:01.880Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nDatabase/src/lib/database.js
+2018-03-17T20:07:01.881Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nProcess/src/lib/processHead.js
+2018-03-17T20:07:01.882Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nProcess/src/lib/processNode.js
+2018-03-17T20:07:01.882Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/lib/eventService.js
+2018-03-17T20:07:01.883Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nTest/src/lib/testSuite.js
+2018-03-17T20:07:01.884Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nTest/src/lib/testSuitePool.js
+2018-03-17T20:07:01.884Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/src/lib/classes.js
+2018-03-17T20:07:01.884Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/src/lib/cronJob.js
+2018-03-17T20:07:01.910Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/src/lib/cronJobContainer.js
+2018-03-17T20:07:01.912Z - info: [SYSTEM]    INFO: Generalizing defined classes
+2018-03-17T20:07:01.914Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/src/lib/classes.js
+2018-03-17T20:07:01.915Z - info: [SYSTEM] => Starting database configuration process
+2018-03-17T20:07:01.915Z - info: [SYSTEM]  =>Starting Database creating process
+2018-03-17T20:07:01.916Z - info: [SYSTEM]    INFO: Creating database connection for URI :  mongodb://localhost:27017/nodicsMaster
+2018-03-17T20:07:01.947Z - info: [SYSTEM]    INFO: Mongoose default connection open to mongodb://localhost:27017/nodicsMaster
+2018-03-17T20:07:01.952Z - info: [SYSTEM]    INFO: Creating database connection for URI :  mongodb://localhost:27017/nodicsTest
+2018-03-17T20:07:01.958Z - info: [SYSTEM]    INFO: Mongoose default connection open to mongodb://localhost:27017/nodicsTest
+2018-03-17T20:07:01.959Z - info: [SYSTEM]  =>Starting validators loading process
+2018-03-17T20:07:01.959Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDatabase/src/schemas/validators.js
+2018-03-17T20:07:01.960Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/schemas/validators.js
+2018-03-17T20:07:01.961Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nData/src/schemas/validators.js
+2018-03-17T20:07:01.961Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/src/schemas/validators.js
+2018-03-17T20:07:01.962Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/nems/src/schemas/validators.js
+2018-03-17T20:07:01.962Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/src/schemas/validators.js
+2018-03-17T20:07:01.962Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/system/src/schemas/validators.js
+2018-03-17T20:07:01.963Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/schemas/validators.js
+2018-03-17T20:07:01.964Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/src/schemas/validators.js
+2018-03-17T20:07:01.965Z - info: [SYSTEM]  =>Starting schemas loading process
+2018-03-17T20:07:01.965Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDatabase/src/schemas/schemas.js
+2018-03-17T20:07:01.967Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/schemas/schemas.js
+2018-03-17T20:07:01.968Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nData/src/schemas/schemas.js
+2018-03-17T20:07:01.969Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/src/schemas/schemas.js
+2018-03-17T20:07:01.971Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/nems/src/schemas/schemas.js
+2018-03-17T20:07:01.972Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/src/schemas/schemas.js
+2018-03-17T20:07:01.977Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/system/src/schemas/schemas.js
+2018-03-17T20:07:01.978Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/schemas/schemas.js
+2018-03-17T20:07:01.981Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/src/schemas/schemas.js
+2018-03-17T20:07:01.982Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDatabase/src/schemas/interceptors.js
+2018-03-17T20:07:01.988Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/schemas/interceptors.js
+2018-03-17T20:07:01.990Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nData/src/schemas/interceptors.js
+2018-03-17T20:07:01.992Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/src/schemas/interceptors.js
+2018-03-17T20:07:01.993Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/nems/src/schemas/interceptors.js
+2018-03-17T20:07:01.993Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/src/schemas/interceptors.js
+2018-03-17T20:07:01.994Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/system/src/schemas/interceptors.js
+2018-03-17T20:07:01.995Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/schemas/interceptors.js
+2018-03-17T20:07:01.997Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/src/schemas/interceptors.js
+2018-03-17T20:07:01.998Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDatabase/src/schemas/model.js
+2018-03-17T20:07:02.000Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/src/schemas/model.js
+2018-03-17T20:07:02.159Z - info: [SYSTEM] => Starting Dao generation process.
+2018-03-17T20:07:02.161Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDao/src/dao/common.js
+2018-03-17T20:07:02.177Z - info: [SYSTEM] => Starting Service Generation process
+2018-03-17T20:07:02.190Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nService/src/service/common.js
+2018-03-17T20:07:02.212Z - info: [SYSTEM] => Starting Process Defintion builder process
+2018-03-17T20:07:02.212Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nProcess/src/process/processDefinition.js
+2018-03-17T20:07:02.213Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/process/processDefinition.js
+2018-03-17T20:07:02.213Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nRouter/src/process/processDefinition.js
+2018-03-17T20:07:02.216Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nData/src/process/processDefinition.js
+2018-03-17T20:07:02.217Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/nems/src/process/processDefinition.js
+2018-03-17T20:07:02.217Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/src/process/processDefinition.js
+2018-03-17T20:07:02.218Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/system/src/process/processDefinition.js
+2018-03-17T20:07:02.219Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/process/processDefinition.js
+2018-03-17T20:07:02.220Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/src/process/processDefinition.js
+2018-03-17T20:07:02.221Z - info: [SYSTEM] => Starting Facade Generation process
+2018-03-17T20:07:02.221Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nFacade/src/facade/common.js
+2018-03-17T20:07:02.228Z - info: [SYSTEM] => Starting Controller Generation process
+2018-03-17T20:07:02.228Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nController/src/controller/common.js
+2018-03-17T20:07:02.246Z - info: [SYSTEM] => Staring process to load Modules
+2018-03-17T20:07:02.247Z - info: [SYSTEM]  =>Staring process for module :  nconfig
+2018-03-17T20:07:02.247Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.247Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.247Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.248Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.248Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.248Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.248Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.249Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.249Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.249Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.250Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.250Z - info: [SYSTEM]  =>Staring process for module :  ncommon
+2018-03-17T20:07:02.250Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.250Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.251Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.251Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.253Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.255Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.256Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.256Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.256Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.256Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.257Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.257Z - info: [SYSTEM]  =>Staring process for module :  ndatabase
+2018-03-17T20:07:02.257Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.257Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nDatabase/src/dao/nestedModelsHandlerDao.js
+2018-03-17T20:07:02.258Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.259Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nDatabase/src/service/validator/validateRequestService.js
+2018-03-17T20:07:02.260Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nDatabase/src/service/virtual/virtualPropertiesHandlerService.js
+2018-03-17T20:07:02.261Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.262Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.264Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.265Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.265Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.265Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.267Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.268Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.268Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.268Z - info: [SYSTEM]  =>Staring process for module :  ndao
+2018-03-17T20:07:02.269Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.269Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.269Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.269Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.270Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.270Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.270Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.270Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.270Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.271Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.271Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.272Z - info: [SYSTEM]  =>Staring process for module :  nservice
+2018-03-17T20:07:02.272Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.272Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.274Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nService/src/service/authentication/authenticationProviderService.js
+2018-03-17T20:07:02.309Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nService/src/service/authentication/backgroundAuthTokenGenerateService.js
+2018-03-17T20:07:02.313Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nService/src/service/cache/cacheService.js
+2018-03-17T20:07:02.316Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nService/src/service/cache/localCacheService.js
+2018-03-17T20:07:02.317Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nService/src/service/cache/redisCacheService.js
+2018-03-17T20:07:02.347Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nService/src/service/module/moduleService.js
+2018-03-17T20:07:02.521Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nService/src/service/profile/enterpriseProviderService.js
+2018-03-17T20:07:02.523Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.523Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.523Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.523Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.523Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.523Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.523Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.524Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.524Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.524Z - info: [SYSTEM]  =>Staring process for module :  nprocess
+2018-03-17T20:07:02.524Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.525Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.525Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nProcess/src/service/processService.js
+2018-03-17T20:07:02.526Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.526Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nProcess/src/process/processDefinition.js
+2018-03-17T20:07:02.526Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.526Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.527Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.527Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.527Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.527Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.527Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.528Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.528Z - info: [SYSTEM]  =>Staring process for module :  nevent
+2018-03-17T20:07:02.528Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.528Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.528Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/service/eventService.js
+2018-03-17T20:07:02.529Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.529Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/process/processDefinition.js
+2018-03-17T20:07:02.529Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.530Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/facade/eventFacade.js
+2018-03-17T20:07:02.530Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.530Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/controller/eventController.js
+2018-03-17T20:07:02.531Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.531Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.531Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.531Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.531Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.532Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.532Z - info: [SYSTEM]  =>Staring process for module :  nfacade
+2018-03-17T20:07:02.532Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.532Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.532Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.532Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.533Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nFacade/src/facade/cacheFacade.js
+2018-03-17T20:07:02.533Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.534Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.534Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.534Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.534Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.534Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.534Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.535Z - info: [SYSTEM]  =>Staring process for module :  ncontroller
+2018-03-17T20:07:02.535Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.535Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.535Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.535Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.535Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.536Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nController/src/controller/cache/cacheController.js
+2018-03-17T20:07:02.537Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.537Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.537Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.537Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.537Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.537Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.538Z - info: [SYSTEM]  =>Staring process for module :  nrouter
+2018-03-17T20:07:02.538Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.538Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.538Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nRouter/src/service/nonSecuredRequestProcessService.js
+2018-03-17T20:07:02.539Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nRouter/src/service/requestHandlerProcessService.js
+2018-03-17T20:07:02.541Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nRouter/src/service/securedRequestProcessService.js
+2018-03-17T20:07:02.542Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.542Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nRouter/src/process/processDefinition.js
+2018-03-17T20:07:02.542Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.543Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.543Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.543Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.543Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.543Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.543Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.543Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.544Z - info: [SYSTEM]  =>Staring process for module :  nData
+2018-03-17T20:07:02.544Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.544Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.545Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nData/src/service/export/dataExportService.js
+2018-03-17T20:07:02.546Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nData/src/service/import/dataImportService.js
+2018-03-17T20:07:02.547Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.547Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nData/src/process/processDefinition.js
+2018-03-17T20:07:02.547Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.547Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nData/src/facade/export/dataExportFacade.js
+2018-03-17T20:07:02.548Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nData/src/facade/import/dataImportFacade.js
+2018-03-17T20:07:02.549Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.550Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nData/src/controller/export/dataExportController.js
+2018-03-17T20:07:02.551Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nData/src/controller/import/dataImportController.js
+2018-03-17T20:07:02.552Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.552Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.552Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.552Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.553Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.553Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.553Z - info: [SYSTEM]  =>Staring process for module :  ntest
+2018-03-17T20:07:02.553Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.554Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.554Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nTest/src/service/testExecutorService.js
+2018-03-17T20:07:02.628Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nTest/src/service/testRunnerService.js
+2018-03-17T20:07:02.634Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.634Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.634Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nTest/src/facade/testRunnerFacade.js
+2018-03-17T20:07:02.635Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.636Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/framework/nTest/src/controller/testRunnerController.js
+2018-03-17T20:07:02.636Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.637Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.637Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.637Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.637Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.637Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.638Z - info: [SYSTEM]  =>Staring process for module :  framework
+2018-03-17T20:07:02.638Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.638Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.639Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.639Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.639Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.639Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.639Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.640Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.640Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.640Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.640Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.641Z - info: [SYSTEM]  =>Staring process for module :  cronjob
+2018-03-17T20:07:02.641Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.641Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.641Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/src/service/cronJobService.js
+2018-03-17T20:07:02.643Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/src/service/cronJobVirtualService.js
+2018-03-17T20:07:02.644Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/src/service/eventHandlerJobService.js
+2018-03-17T20:07:02.645Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/src/service/jobHandlerService.js
+2018-03-17T20:07:02.646Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/src/service/testCronJobService.js
+2018-03-17T20:07:02.647Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.647Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.647Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/src/facade/cronJobFacade.js
+2018-03-17T20:07:02.648Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.648Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/src/controller/cronJobController.js
+2018-03-17T20:07:02.649Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.649Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.649Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/data/core/cronCoreData.js
+2018-03-17T20:07:02.650Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.650Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.650Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.651Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/test/common/commonTest.js
+2018-03-17T20:07:02.651Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.652Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/cronjob/test/env/local/envTest.js
+2018-03-17T20:07:02.653Z - info: [SYSTEM]  =>Staring process for module :  nems
+2018-03-17T20:07:02.653Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.653Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.653Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/nems/src/service/event/eventHandlerService.js
+2018-03-17T20:07:02.654Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.655Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/nems/src/process/processDefinition.js
+2018-03-17T20:07:02.655Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.655Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/nems/src/facade/eventHandlerFacade.js
+2018-03-17T20:07:02.656Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.656Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/nems/src/controller/eventHandlerController.js
+2018-03-17T20:07:02.657Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.657Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.657Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.658Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.658Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.658Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/nems/test/common/commonTest.js
+2018-03-17T20:07:02.659Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.659Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/nems/test/env/local/envTest.js
+2018-03-17T20:07:02.660Z - info: [SYSTEM]  =>Staring process for module :  profile
+2018-03-17T20:07:02.660Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.660Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.660Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/profile/src/service/authentication/authenticationProviderService.js
+2018-03-17T20:07:02.661Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/profile/src/service/test/eventTestService.js
+2018-03-17T20:07:02.662Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.663Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/profile/src/process/processDefinition.js
+2018-03-17T20:07:02.663Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.663Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/profile/src/facade/authenticationProviderFacade.js
+2018-03-17T20:07:02.664Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.665Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/profile/src/controller/authenticationProviderController.js
+2018-03-17T20:07:02.665Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/profile/src/controller/enterpriseController.js
+2018-03-17T20:07:02.666Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.666Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/profile/data/init/initData.js
+2018-03-17T20:07:02.667Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.667Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/profile/data/core/profileCoreData.js
+2018-03-17T20:07:02.668Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.668Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.668Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.668Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/profile/test/common/profileTest.js
+2018-03-17T20:07:02.670Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.670Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/profile/test/env/local/localProfileTest.js
+2018-03-17T20:07:02.671Z - info: [SYSTEM]  =>Staring process for module :  system
+2018-03-17T20:07:02.671Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.671Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.671Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.672Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/system/src/process/processDefinition.js
+2018-03-17T20:07:02.672Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.672Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.672Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.672Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.672Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.672Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.672Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.672Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/system/test/common/commonTest.js
+2018-03-17T20:07:02.673Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.673Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/core/system/test/env/local/envTest.js
+2018-03-17T20:07:02.674Z - info: [SYSTEM]  =>Staring process for module :  core
+2018-03-17T20:07:02.674Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.674Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.674Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.675Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.675Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.675Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.675Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.675Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.675Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.675Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.675Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.676Z - info: [SYSTEM]  =>Staring process for module :  emsClient
+2018-03-17T20:07:02.676Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.676Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.676Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/service/activemqClientService.js
+2018-03-17T20:07:02.697Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/service/emsClientService.js
+2018-03-17T20:07:02.698Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/service/kafkaClientService.js
+2018-03-17T20:07:02.767Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/service/tibcoClientService.js
+2018-03-17T20:07:02.798Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.798Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/process/processDefinition.js
+2018-03-17T20:07:02.799Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.799Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/facade/emsClientFacade.js
+2018-03-17T20:07:02.800Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.800Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/controller/emsClientController.js
+2018-03-17T20:07:02.801Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.801Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.801Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.801Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.802Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.802Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/ems/emsClient/test/common/commonTest.js
+2018-03-17T20:07:02.802Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.803Z - info: [SYSTEM]  =>Staring process for module :  kickoff
+2018-03-17T20:07:02.803Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.804Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.804Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.804Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.804Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.804Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.804Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.804Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.804Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.804Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.804Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.805Z - info: [SYSTEM]  =>Staring process for module :  local
+2018-03-17T20:07:02.805Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.806Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.806Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.806Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.806Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.806Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.806Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.806Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.806Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.806Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.806Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.807Z - info: [SYSTEM]  =>Staring process for module :  sampleServer
+2018-03-17T20:07:02.807Z - info: [SYSTEM]    INFO: Loading all module DAO
+2018-03-17T20:07:02.807Z - info: [SYSTEM]    INFO: Loading all module services
+2018-03-17T20:07:02.807Z - info: [SYSTEM]    INFO: Loading all module process definitions
+2018-03-17T20:07:02.807Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/src/process/processDefinition.js
+2018-03-17T20:07:02.807Z - info: [SYSTEM]    INFO: Loading all module facades
+2018-03-17T20:07:02.807Z - info: [SYSTEM]    INFO: Loading all module controllers
+2018-03-17T20:07:02.807Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.807Z - info: [SYSTEM]    INFO: Loading module core data
+2018-03-17T20:07:02.807Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/data/core/cronCoreData.js
+2018-03-17T20:07:02.808Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.808Z - info: [SYSTEM]    INFO: Loading module sample data
+2018-03-17T20:07:02.808Z - info: [SYSTEM]    INFO: Loading module test cases
+2018-03-17T20:07:02.808Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/test/common/commonTest.js
+2018-03-17T20:07:02.809Z - info: [SYSTEM]    INFO: Loading test cases for ENV :  local
+2018-03-17T20:07:02.809Z - info: [SYSTEM]    INFO: Loading file from :  /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/test/env/local/envTest.js
+2018-03-17T20:07:02.811Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/src/event/listeners.js
+2018-03-17T20:07:02.812Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/src/event/listeners.js
+2018-03-17T20:07:02.815Z - info: [SYSTEM] => Staring servers initialization process
+2018-03-17T20:07:02.815Z - info: [SYSTEM]  =>Initializing servers
+2018-03-17T20:07:02.816Z - info: [SYSTEM]    INFO: Initializing single server for whole application. As CONFIG.server.runAsSingleModule set to true.
+2018-03-17T20:07:02.896Z - info: [SYSTEM]  =>Starting server configuration
+2018-03-17T20:07:02.897Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/router/appConfig.js
+2018-03-17T20:07:02.898Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nRouter/src/router/appConfig.js
+2018-03-17T20:07:02.899Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nData/src/router/appConfig.js
+2018-03-17T20:07:02.899Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nTest/src/router/appConfig.js
+2018-03-17T20:07:02.899Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/src/router/appConfig.js
+2018-03-17T20:07:02.900Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/nems/src/router/appConfig.js
+2018-03-17T20:07:02.902Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/src/router/appConfig.js
+2018-03-17T20:07:02.902Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/system/src/router/appConfig.js
+2018-03-17T20:07:02.903Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/router/appConfig.js
+2018-03-17T20:07:02.904Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/src/router/appConfig.js
+2018-03-17T20:07:02.904Z - info: [SYSTEM]    INFO: Configuring Default App
+2018-03-17T20:07:02.904Z - info: [SYSTEM]      INFO: Executing common configurations
+2018-03-17T20:07:02.907Z - info: [SYSTEM]      INFO: Executing module configurations : cronjob
+2018-03-17T20:07:02.907Z - info: [SYSTEM]      INFO: Executing module configurations : profile
+2018-03-17T20:07:02.908Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nEvent/src/router/router.js
+2018-03-17T20:07:02.909Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nRouter/src/router/router.js
+2018-03-17T20:07:02.910Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nData/src/router/router.js
+2018-03-17T20:07:02.910Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nTest/src/router/router.js
+2018-03-17T20:07:02.910Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/src/router/router.js
+2018-03-17T20:07:02.911Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/nems/src/router/router.js
+2018-03-17T20:07:02.912Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/src/router/router.js
+2018-03-17T20:07:02.914Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/system/src/router/router.js
+2018-03-17T20:07:02.915Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/ems/emsClient/src/router/router.js
+2018-03-17T20:07:02.915Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/src/router/router.js
+2018-03-17T20:07:02.924Z - info: [SYSTEM] => Starting Post Scripts loader process
+2018-03-17T20:07:02.924Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nConfig/config/postscripts.js
+2018-03-17T20:07:02.924Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nCommon/config/postscripts.js
+2018-03-17T20:07:02.925Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDatabase/config/postscripts.js
+2018-03-17T20:07:02.925Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nDao/config/postscripts.js
+2018-03-17T20:07:02.926Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nService/config/postscripts.js
+2018-03-17T20:07:02.926Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nProcess/config/postscripts.js
+2018-03-17T20:07:02.926Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nEvent/config/postscripts.js
+2018-03-17T20:07:02.927Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nFacade/config/postscripts.js
+2018-03-17T20:07:02.927Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nController/config/postscripts.js
+2018-03-17T20:07:02.927Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nRouter/config/postscripts.js
+2018-03-17T20:07:02.928Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nData/config/postscripts.js
+2018-03-17T20:07:02.928Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/nTest/config/postscripts.js
+2018-03-17T20:07:02.929Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/framework/config/postscripts.js
+2018-03-17T20:07:02.929Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/cronjob/config/postscripts.js
+2018-03-17T20:07:02.929Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/nems/config/postscripts.js
+2018-03-17T20:07:02.930Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/profile/config/postscripts.js
+2018-03-17T20:07:02.930Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/system/config/postscripts.js
+2018-03-17T20:07:02.930Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/core/config/postscripts.js
+2018-03-17T20:07:02.931Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/ems/emsClient/config/postscripts.js
+2018-03-17T20:07:02.931Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/config/postscripts.js
+2018-03-17T20:07:02.932Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/config/postscripts.js
+2018-03-17T20:07:02.933Z - info: [SYSTEM]    INFO: Loading file from : /Users/baba/apps/HimProjects/nodics/kickoff/local/sampleServer/config/postscripts.js
+2018-03-17T20:07:02.933Z - info: [SYSTEM] => Starting post-script execution process
+2018-03-17T20:07:02.938Z - info: [SYSTEM]    INFO: post-script executed successfully
+2018-03-17T20:07:02.939Z - info: [SYSTEM] => Starting Server for module : default on PORT :  3000
+2018-03-17T20:07:02.917Z - info: [LocalCacheService]    INFO: Initializing local API Cache instance for module:  cronjob
+2018-03-17T20:07:02.942Z - info: [ModuleService]    INFO: Building request url for module  profile
+2018-03-17T20:07:02.920Z - info: [LocalCacheService]    INFO: Initializing local Item Cache instance for module:  cronjob
+2018-03-17T20:07:02.920Z - info: [LocalCacheService]    INFO: Initializing local API Cache instance for module:  nems
+2018-03-17T20:07:02.921Z - info: [LocalCacheService]    INFO: Initializing local Item Cache instance for module:  nems
+2018-03-17T20:07:02.921Z - info: [LocalCacheService]    INFO: Initializing local API Cache instance for module:  profile
+2018-03-17T20:07:02.921Z - info: [LocalCacheService]    INFO: Initializing local Item Cache instance for module:  profile
+2018-03-17T20:07:02.922Z - info: [LocalCacheService]    INFO: Initializing local API Cache instance for module:  system
+2018-03-17T20:07:02.922Z - info: [LocalCacheService]    INFO: Initializing local API Cache instance for module:  emsClient
+2018-03-17T20:07:02.981Z - error: [EmsClientService]    ERROR: ActiveMQ server is not reachable...
+2018-03-17T20:07:03.002Z - debug: [ProcessHead]    INFO: Starting process with process id :  /nodics/profile/authenticate
+2018-03-17T20:07:03.003Z - debug: [RequestHandlerProcessService]    INFO: Parsing request header for :  /nodics/profile/authenticate
+2018-03-17T20:07:03.007Z - info: [CacheService]    INFO: Getting value for key :  enterprise_default_63b2073f-5930-5ce8-aad4-7879fef4770e
+2018-03-17T20:07:03.004Z - debug: [RequestHandlerProcessService]    INFO: Parsing request body :  /nodics/profile/authenticate
+2018-03-17T20:07:03.004Z - debug: [RequestHandlerProcessService]    INFO: Handling special request :  /nodics/profile/authenticate
+2018-03-17T20:07:03.029Z - info: [CacheService]    INFO: Putting value for key :  enterprise_default_63b2073f-5930-5ce8-aad4-7879fef4770e
+2018-03-17T20:07:03.032Z - info: [CacheService]    INFO: Getting value for key :  employee_default_63b2073f-5930-5ce8-aad4-7879fef4770e
+2018-03-17T20:07:03.031Z - info: [EnterpriseInterceptor]    INFO: Item saved in item cache
+2018-03-17T20:07:03.038Z - info: [CacheService]    INFO: Putting value for key :  employee_default_63b2073f-5930-5ce8-aad4-7879fef4770e
+2018-03-17T20:07:03.039Z - info: [EmployeeInterceptor]    INFO: Item saved in item cache
+2018-03-17T20:07:03.128Z - debug: [RequestHandlerProcessService]    INFO: Request has been processed successfully :  /nodics/profile/authenticate
+2018-03-17T20:07:03.140Z - info: [CacheService]    INFO: cache for module :  profile , flushed successfully
+2018-03-17T20:07:03.140Z - info: [EmployeeInterceptor]    INFO: Item:  employee  flushed from cache
+2018-03-17T20:07:03.142Z - info: [ModuleService]    INFO: Building request url for module  profile
+2018-03-17T20:07:03.147Z - debug: [ProcessHead]    INFO: Starting process with process id :  /nodics/profile/authenticate
+2018-03-17T20:07:03.147Z - debug: [RequestHandlerProcessService]    INFO: Parsing request header for :  /nodics/profile/authenticate
+2018-03-17T20:07:03.148Z - info: [CacheService]    INFO: Getting value for key :  enterprise_default_63b2073f-5930-5ce8-aad4-7879fef4770e
+2018-03-17T20:07:03.150Z - info: [EmployeeInterceptor]    INFO: Item saved in item cache
+2018-03-17T20:07:03.141Z - debug: [AuthenticationProviderService]    INFO: Employee data has been updated with current time
+2018-03-17T20:07:03.147Z - debug: [RequestHandlerProcessService]    INFO: Parsing request body :  /nodics/profile/authenticate
+2018-03-17T20:07:03.148Z - debug: [RequestHandlerProcessService]    INFO: Handling special request :  /nodics/profile/authenticate
+2018-03-17T20:07:03.149Z - info: [CacheService]    INFO: Getting value for key :  employee_default_63b2073f-5930-5ce8-aad4-7879fef4770e
+2018-03-17T20:07:03.150Z - info: [CacheService]    INFO: Putting value for key :  employee_default_63b2073f-5930-5ce8-aad4-7879fef4770e
+2018-03-17T20:07:03.148Z - info: [EnterpriseModel]       Fulfilled from Item cache
+2018-03-17T20:07:03.233Z - debug: [RequestHandlerProcessService]    INFO: Request has been processed successfully :  /nodics/profile/authenticate
+2018-03-17T20:07:03.236Z - info: [CacheService]    INFO: cache for module :  profile , flushed successfully
+2018-03-17T20:07:03.236Z - info: [EmployeeInterceptor]    INFO: Item:  employee  flushed from cache
+2018-03-17T20:07:03.237Z - debug: [AuthenticationProviderService]    INFO: Employee data has been updated with current time
+2018-03-17T20:07:03.237Z - info: [SYSTEM]    INFO: Nodics started successfully in ( 1571 ) ms
+2018-03-17T20:07:03.237Z - info: [SYSTEM] ---------------------------------------------------------------------------
+2018-03-17T20:07:03.237Z - info: [SYSTEM] => Starting test case execution process   ###
+2018-03-17T20:07:03.237Z - info: [SYSTEM] ---------------------------------------------------------------------------
+2018-03-17T20:07:03.238Z - info: [TestExecutorService]    INFO: Starting Unit Test Execution Process with Active Channel :  test
+2018-03-17T20:07:03.250Z - info: [SYSTEM]    INFO: U-Test cases Executed successfully:
+2018-03-17T20:07:03.250Z - info: [TestExecutorService]    INFO: Starting N-Test Execution Process with Active Channel :  master
+2018-03-17T20:07:03.254Z - info: [SYSTEM]    INFO: N-Test cases Executed successfully:
+2018-03-17T20:07:08.036Z - debug: [ProcessHead]    INFO: Starting process with process id :  /nodics/profile/authenticate
+2018-03-17T20:07:08.036Z - debug: [RequestHandlerProcessService]    INFO: Parsing request header for :  /nodics/profile/authenticate
+2018-03-17T20:07:08.037Z - info: [CacheService]    INFO: Getting value for key :  enterprise_default_63b2073f-5930-5ce8-aad4-7879fef4770e
+2018-03-17T20:07:08.038Z - info: [EnterpriseModel]       Fulfilled from Item cache
+2018-03-17T20:07:08.037Z - debug: [RequestHandlerProcessService]    INFO: Parsing request body :  /nodics/profile/authenticate
+2018-03-17T20:07:08.037Z - debug: [RequestHandlerProcessService]    INFO: Handling special request :  /nodics/profile/authenticate
+2018-03-17T20:07:08.039Z - info: [CacheService]    INFO: Getting value for key :  employee_default_63b2073f-5930-5ce8-aad4-7879fef4770e
+2018-03-17T20:07:08.042Z - info: [CacheService]    INFO: Putting value for key :  employee_default_63b2073f-5930-5ce8-aad4-7879fef4770e
+2018-03-17T20:07:08.043Z - info: [EmployeeInterceptor]    INFO: Item saved in item cache
+2018-03-17T20:07:08.124Z - debug: [RequestHandlerProcessService]    INFO: Request has been processed successfully :  /nodics/profile/authenticate
+2018-03-17T20:07:08.130Z - info: [CacheService]    INFO: cache for module :  profile , flushed successfully
+2018-03-17T20:07:08.131Z - info: [EmployeeInterceptor]    INFO: Item:  employee  flushed from cache
+2018-03-17T20:07:08.131Z - debug: [AuthenticationProviderService]    INFO: Employee data has been updated with current time
+2018-03-17T20:07:18.578Z - debug: [ProcessHead]    INFO: Starting process with process id :  /nodics/cronjob/job/start/publishEvents
+2018-03-17T20:07:18.578Z - debug: [RequestHandlerProcessService]    INFO: Parsing request header for :  /nodics/cronjob/job/start/publishEvents
+2018-03-17T20:07:18.584Z - info: [ModuleService]    INFO: Building request url for module  profile
+2018-03-17T20:07:18.586Z - error: [AuthenticationProviderService]    INFO: Authorizing reqiuest for token : 18390c86-196b-5401-9464-27f43d8ab072
+2018-03-17T20:07:18.583Z - debug: [ProcessHead]    INFO: Starting process with process id :  /nodics/cronjob/job/start/publishEvents
+2018-03-17T20:07:18.578Z - debug: [RequestHandlerProcessService]    INFO: Parsing request body :  /nodics/cronjob/job/start/publishEvents
+2018-03-17T20:07:18.578Z - debug: [RequestHandlerProcessService]    INFO: Handling special request :  /nodics/cronjob/job/start/publishEvents
+2018-03-17T20:07:18.578Z - debug: [RequestHandlerProcessService]    INFO: redirecting secured/non-secured request  :  /nodics/cronjob/job/start/publishEvents
+2018-03-17T20:07:18.582Z - debug: [RequestHandlerProcessService]    INFO: Handling secured request
+2018-03-17T20:07:18.583Z - info: [SecuredRequestProcessService]    INFO: Validating auth token :  18390c86-196b-5401-9464-27f43d8ab072
+2018-03-17T20:07:18.584Z - info: [SecuredRequestProcessService]    INFO: Authorizing auth token :  18390c86-196b-5401-9464-27f43d8ab072
+2018-03-17T20:07:18.610Z - debug: [ProcessHead]    INFO: Starting process with process id :  /nodics/profile/authorize
+2018-03-17T20:07:18.610Z - debug: [RequestHandlerProcessService]    INFO: Parsing request header for :  /nodics/profile/authorize
+2018-03-17T20:07:18.610Z - debug: [RequestHandlerProcessService]    INFO: Parsing request body :  /nodics/profile/authorize
+2018-03-17T20:07:18.611Z - debug: [RequestHandlerProcessService]    INFO: Handling special request :  /nodics/profile/authorize
+2018-03-17T20:07:18.611Z - debug: [RequestHandlerProcessService]    INFO: Request has been processed successfully :  /nodics/profile/authorize
+2018-03-17T20:07:18.614Z - debug: [RequestHandlerProcessService]    INFO: processing your request :  /nodics/cronjob/job/start/publishEvents
+2018-03-17T20:07:18.615Z - debug: [RequestHandlerProcessService]    INFO: Request has been processed successfully :  /nodics/cronjob/job/start/publishEvents
+2018-03-17T20:07:18.613Z - debug: [NonSecuredRequestProcessService]    INFO: Validating Tenant Id :  default
+2018-03-17T20:07:18.614Z - debug: [ProcessService]    WARN: This is default success handler, will not perform anything 

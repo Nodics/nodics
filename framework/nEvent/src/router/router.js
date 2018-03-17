@@ -16,7 +16,8 @@ module.exports = {
                 secured: true,
                 key: '/event/handle',
                 method: 'POST',
-                controller: 'CONTROLLER.EventController.handleEvent'
+                controller: 'EventController',
+                operation: 'handleEvent'
             }
         }
     }

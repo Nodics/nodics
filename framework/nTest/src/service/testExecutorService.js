@@ -40,7 +40,7 @@ module.exports = {
             let testConfig = CONFIG.get('test');
             if (!UTILS.isBlank(TEST.uTestPool.suites) && testConfig.enabled && testConfig.uTest.enabled) {
                 NODICS.setActiveChannel('test');
-                console.log('   INFO: Starting Unit Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
+                this.LOG.info('   INFO: Starting Unit Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
                 try {
                     let uTestMasterMocha = new Mocha({ timeout: 10 });
                     let uTestMasterSuite = Mocha.Suite.create(uTestMasterMocha.suite, 'Starting master suite execution for U-Test');
@@ -54,11 +54,10 @@ module.exports = {
                         NODICS.setActiveChannel('master');
                         resolve(true);
                     }).on('error', (error) => {
-                        console.log('some error : ', error);
+                        this.LOG.error('some error : ', error);
                     });
                 } catch (error) {
                     NODICS.setActiveChannel('master');
-                    //console.log('   ERROR: got error while starting unit test case execution : ', error);
                     reject('got error while starting unit test case execution : ' + error);
                 }
             } else {
@@ -72,7 +71,7 @@ module.exports = {
             let testConfig = CONFIG.get('test');
             if (!UTILS.isBlank(TEST.nTestPool.suites) && testConfig.enabled && testConfig.nTest.enabled) {
                 NODICS.setNTestRunning(true);
-                console.log('   INFO: Starting N-Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
+                this.LOG.info('   INFO: Starting N-Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
                 try {
                     let nTestMasterMocha = new Mocha();
                     let nTestMasterSuite = Mocha.Suite.create(nTestMasterMocha.suite, 'Starting master suite execution for N-Test');

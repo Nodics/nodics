@@ -42,8 +42,8 @@ module.exports = {
                         resolve(success);
                     }
                 }).catch(error => {
-                    console.log('   ERROR: While hitting url: ', requestUrl);
-                    console.log('   ', error);
+                    this.LOG.error('   ERROR: While hitting url: ', requestUrl);
+                    this.LOG.error('   ', error);
                     reject(error);
                 });
             } else {

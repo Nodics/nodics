@@ -16,7 +16,8 @@ module.exports = {
                 secured: false,
                 key: '/event/push',
                 method: 'PUT',
-                controller: 'CONTROLLER.EventController.save'
+                controller: 'EventController',
+                operation: 'save'
             },
         },
         processEvent: {
@@ -24,7 +25,8 @@ module.exports = {
                 secured: true,
                 key: '/event/process',
                 method: 'GET',
-                controller: 'CONTROLLER.EventHandlerController.processEvents'
+                controller: 'EventHandlerController',
+                operation: 'processEvents'
             }
         }
     }

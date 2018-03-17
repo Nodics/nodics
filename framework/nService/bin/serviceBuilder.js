@@ -14,7 +14,9 @@ module.exports = {
         let _self = this;
         options.modelName = options.schemaName.toUpperCaseEachWord();
         if (options.schemaObject.service) {
-            SERVICE[options.modelName + 'Service'] = SYSTEM.replacePlaceholders(options);
+            let entityName = options.modelName + 'Service';
+            SERVICE[entityName] = SYSTEM.replacePlaceholders(options);
+            SERVICE[entityName].LOG = SYSTEM.createLogger(entityName);
         }
     },
 

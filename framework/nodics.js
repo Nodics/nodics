@@ -64,20 +64,22 @@ module.exports = {
         this.initFrameworkExecute(options).then(success => {
             SYSTEM.startServers().then(success => {
                 SERVICE.BackgroundAuthTokenGenerateService.generateAuthToken(CONFIG.get('backgroundAuthModules')).then(success => {
+                    NODICS.setEndTime(new Date());
                     NODICS.setServerState('started');
-                    console.log('   INFO: Nodics started successfully');
+                    SYSTEM.LOG.info('   INFO: Nodics started successfully in (', NODICS.getStartDuration(), ') ms');
                     this.initTestRuner();
                 }).catch(error => {
-                    console.error('   ERROR: Filed to allocate default token with modules, check configuration : ', error);
+                    SYSTEM.LOG.error('   ERROR: Filed to allocate default token with modules, check configuration : ', error);
+                    NODICS.setEndTime(new Date());
                     NODICS.setServerState('started');
-                    console.log('   INFO: Nodics started successfully');
+                    SYSTEM.LOG.info('   INFO: Nodics started successfully in (', NODICS.getStartDuration(), ') ms');
                     this.initTestRuner();
                 });
             }).catch(error => {
-                console.log('   ERROR: Nodics server error : ', error);
+                SYSTEM.LOG.error('   ERROR: Nodics server error : ', error);
             });
         }).catch(error => {
-            console.log('   ERROR: Nodics server error : ', error);
+            SYSTEM.LOG.error('   ERROR: Nodics server error : ', error);
         });
     }
 };

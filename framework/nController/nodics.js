@@ -16,7 +16,7 @@ module.exports = {
 
     },
     loadController: function() {
-        console.log('=> Starting Controller Generation process');
+        SYSTEM.LOG.info('=> Starting Controller Generation process');
         controller.init();
     }
 };

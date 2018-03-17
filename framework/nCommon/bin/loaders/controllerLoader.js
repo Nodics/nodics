@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
     loadControllers: function(module) {
-        console.log('   INFO: Loading all module controllers');
+        SYSTEM.LOG.info('   INFO: Loading all module controllers');
         let path = module.path + '/src/controller';
         SYSTEM.processFiles(path, "Controller.js", (file) => {
             let controllerName = SYSTEM.getFileNameWithoutExtension(file);
@@ -21,6 +21,7 @@ module.exports = {
                 CONTROLLER[controllerName] = _.merge(CONTROLLER[controllerName], require(file));
             } else {
                 CONTROLLER[controllerName] = require(file);
+                CONTROLLER[controllerName].LOG = SYSTEM.createLogger(controllerName);
             }
         });
     }

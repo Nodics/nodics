@@ -99,5 +99,35 @@ module.exports = {
                 port: 6379
             }
         }
+    },
+
+    log: {
+        level: 'debug',
+        format: 'simple', //json or simple
+        output: {
+            console: true,
+            file: true,
+            elastic: false
+        },
+        consoleConfig: {
+            colorize: true,
+            timestamp: true,
+            json: false,
+            stringify: false,
+            prettyPrint: true,
+            depth: 5,
+            humanReadableUnhandledException: true,
+            showLevel: true
+        },
+        fileConfig: {
+            filename: 'nodics.log',
+            timestamp: true,
+            json: false,
+            stringify: true
+        },
+        elasticConfig: {
+
+        }
+        //logLevelEventController: 'error'
     }
 };

@@ -16,7 +16,7 @@ module.exports = {
 
     },
     loadFacade: function() {
-        console.log('=> Starting Facade Generation process');
+        SYSTEM.LOG.info('=> Starting Facade Generation process');
         facade.init();
     }
 };

@@ -20,7 +20,8 @@ module.exports = {
                 },
                 key: '/enterprise/get',
                 method: 'POST',
-                handler: 'CONTROLLER.EnterpriseController.getEnterprise'
+                handler: 'EnterpriseController',
+                operation: 'getEnterprise'
             }
         },
 
@@ -29,7 +30,8 @@ module.exports = {
                 secured: false,
                 key: '/authenticate',
                 method: 'POST',
-                handler: 'CONTROLLER.AuthenticationProviderController.authenticate'
+                handler: 'AuthenticationProviderController',
+                operation: 'authenticate'
             }
         },
 
@@ -38,7 +40,8 @@ module.exports = {
                 secured: false,
                 key: '/authorize',
                 method: 'POST',
-                handler: 'CONTROLLER.AuthenticationProviderController.authorize'
+                handler: 'AuthenticationProviderController',
+                operation: 'authorize'
             }
         }
     }

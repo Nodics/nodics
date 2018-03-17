@@ -27,6 +27,7 @@ module.exports = function(name, processDefinition, callback) {
     let _successEndNode = {};
     let _callback = callback;
     let _done = false;
+    let _nodeLog = SYSTEM.createLogger('ProcessNode');
 
     this.setProcessId = function(id) {
         _processId = id;
@@ -49,6 +50,7 @@ module.exports = function(name, processDefinition, callback) {
         let _self = this;
         _.each(_processDefinition.nodes, function(value, key) {
             _nodeList[key] = new CLASSES.ProcessNode(key, value);
+            _nodeList[key].LOG = _nodeLog;
         });
 
         if (_processDefinition.handleError) {
@@ -59,6 +61,7 @@ module.exports = function(name, processDefinition, callback) {
                     type: 'function',
                     process: _processDefinition.handleError
                 });
+                _handleError.LOG = _nodeLog;
             }
         } else {
             _handleError = _nodeList.handleError;
@@ -72,7 +75,7 @@ module.exports = function(name, processDefinition, callback) {
             if (_nodeList[_currentNode.getSuccess()]) {
                 _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
             } else {
-                console.log('   ERROR: Process link is broken : invalid node line : ', _currentNode.getSuccess());
+                this.LOG.error('   ERROR: Process link is broken : invalid node line : ', _currentNode.getSuccess());
             }
         } else {
             _nextSuccessNode = null;
@@ -81,7 +84,7 @@ module.exports = function(name, processDefinition, callback) {
             if (_nodeList[_currentNode.getFailure()]) {
                 _nextFailureNode = _nodeList[_currentNode.getFailure()];
             } else {
-                console.log('   ERROR: Process link is broken : invalid node line : ', _currentNode.getFailure());
+                this.LOG.error('   ERROR: Process link is broken : invalid node line : ', _currentNode.getFailure());
             }
         } else {
             _nextFailureNode = null;
@@ -107,7 +110,7 @@ module.exports = function(name, processDefinition, callback) {
     };
 
     this.error = function(processRequest, processResponse, err) {
-        console.log('   ERROR: Error occured while processing node', _currentNode.getName(), ' - ', err);
+        this.LOG.debug('   ERROR: Error occured while processing node', _currentNode.getName(), ' - ', err);
         _preNode = _currentNode;
         _currentNode = _handleError;
         processResponse.success = false;
@@ -118,7 +121,10 @@ module.exports = function(name, processDefinition, callback) {
             nodeName: _preNode.getName(),
             error: err
         };
-        eval(_currentNode.getProcess())(processRequest, processResponse);
+        let serviceName = _currentNode.getProcess().substring(0, _currentNode.getProcess().lastIndexOf('.'));
+        let operation = _currentNode.getProcess().substring(_currentNode.getProcess().lastIndexOf('.') + 1, _currentNode.getProcess().length);
+        SERVICE[serviceName][operation](processRequest, processResponse);
+        //eval(_currentNode.getProcess())(processRequest, processResponse);
         if (_callback && !_done) {
             _callback();
         }
@@ -126,11 +132,11 @@ module.exports = function(name, processDefinition, callback) {
     };
 
     this.start = function(id, processRequest, processResponse) {
-        console.log('   INFO: Starting process with process id : ', id);
+        this.LOG.debug('   INFO: Starting process with process id : ', id);
         _processId = id;
         _currentNode = _nodeList[_startNode];
         if (!_currentNode) {
-            console.error('   ERROR: Node link is broken for node : ', _startNode, ' for process : ', _processName);
+            this.LOG.error('   ERROR: Node link is broken for node : ', _startNode, ' for process : ', _processName);
             process.exit(CONFIG.get('errorExitCode'));
         }
         this.next(processRequest, processResponse);
@@ -141,7 +147,10 @@ module.exports = function(name, processDefinition, callback) {
             this.prepareNextNode();
             if (_currentNode.getType() === 'function') {
                 try {
-                    eval(_currentNode.getProcess())(processRequest, processResponse, this);
+                    let serviceName = _currentNode.getProcess().substring(0, _currentNode.getProcess().lastIndexOf('.'));
+                    let operation = _currentNode.getProcess().substring(_currentNode.getProcess().lastIndexOf('.') + 1, _currentNode.getProcess().length);
+                    SERVICE[serviceName][operation](processRequest, processResponse, this);
+                    //eval(_currentNode.getProcess())(processRequest, processResponse, this);
                     if (!_nextSuccessNode) {
                         if (_callback && !_done) {
                             _callback();

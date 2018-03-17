@@ -29,10 +29,10 @@ module.exports = {
 
             let dependencies = fs.readdirSync(libPath);
             dependencies.forEach(function(dependency) {
-                console.log('   INFO: Setting classpath for : ', libPath + "/" + dependency);
+                _self.LOG.debug('   INFO: Setting classpath for : ', libPath + "/" + dependency);
                 java.classpath.push(libPath + "/" + dependency);
             });
-            console.log('   INFO: Setting classpath for : ', baseDir + '/ext/bin');
+            _self.LOG.debug('   INFO: Setting classpath for : ', baseDir + '/ext/bin');
             java.classpath.push(baseDir + '/ext/bin');
             try {
                 java.newInstance("com.tibco.tibjms.TibjmsConnectionFactory", config.options.url, function(error, tibcoConnectionFactory) {
@@ -47,7 +47,7 @@ module.exports = {
                                 if (error) {
                                     reject('  ERROR: while creating tibco connection : ', config.options.url);
                                 } else {
-                                    console.log('   INFO: Connection stablished with tibco ems');
+                                    _self.LOG.debug('   INFO: Connection stablished with tibco ems');
                                     let publishers = [];
                                     let consumers = [];
                                     config.queues.forEach(queue => {
@@ -90,7 +90,7 @@ module.exports = {
                     queue.inputQueue,
                     function(error, publisher) {
                         if (error) {
-                            console.log(error);
+                            _self.LOG.error(error);
                             reject('  ERROR: while creating publisher for queue : ' + queue.inputQueue);
                         } else {
                             try {
@@ -121,7 +121,7 @@ module.exports = {
                     evantUrl,
                     function(error, consumer) {
                         if (error) {
-                            console.log(error);
+                            _self.LOG.error(error);
                             reject('  ERROR: while creating consumer for queue : ' + queue.outputQueue);
                         } else {
                             try {

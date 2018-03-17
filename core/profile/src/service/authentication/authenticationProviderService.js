@@ -90,15 +90,16 @@ module.exports = {
     },
 
     updateAuthData: function(employee, enterprise) {
+        let _self = this;
         employee.lastAttempt = new Date();
         employee.updated = new Date();
         DAO.EmployeeDao.update({
             tenant: enterprise.tenant,
             models: [employee]
         }).then(success => {
-            console.log('   INFO: Employee data has been updated with current time');
+            _self.LOG.debug('   INFO: Employee data has been updated with current time');
         }).catch(error => {
-            console.log('   ERROR: While updating Employee data with current time : ', error);
+            _self.LOG.debug('   ERROR: While updating Employee data with current time : ', error);
         });
     },
 

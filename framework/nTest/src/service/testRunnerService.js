@@ -12,12 +12,13 @@
 module.exports = {
 
     runUTest: function(input, callback) {
+        let _self = this;
         if (callback) {
             SERVICE.TestExecutorService.executeUTest().then(success => {
-                console.log('   INFO: U-Test cases Executed successfully');
+                _self.LOG.info('   INFO: U-Test cases Executed successfully');
                 callback(null, 'U-Test cases Executed successfully');
             }).catch(error => {
-                console.log('   ERROR: ', error);
+                _self.LOG.error('   ERROR: ', error);
                 callback(error);
             });
         } else {
@@ -26,12 +27,13 @@ module.exports = {
     },
 
     runNTest: function(input, callback) {
+        let _self = this;
         if (callback) {
             SERVICE.TestExecutorService.executeNTest().then(success => {
-                console.log('   INFO: N-Test cases Executed successfully');
+                _self.LOG.info('   INFO: N-Test cases Executed successfully');
                 callback(null, 'N-Test cases Executed successfully');
             }).catch(error => {
-                console.log('   ERROR: ', error);
+                _self.LOG.error('   ERROR: ', error);
                 callback(error);
             });
         } else {

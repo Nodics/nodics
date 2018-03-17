@@ -61,10 +61,10 @@ module.exports = {
                     value: JSON.stringify(message)
                 }]
             };
-            console.log('   INFO: Pushing event for recieved message from  : ', queue.inputQueue);
+            this.LOG.debug('   INFO: Pushing event for recieved message from  : ', queue.inputQueue);
             SERVICE.EventService.publish(event);
         } catch (error) {
-            console.log('   ERROR: Could not parse message recieved from queue : ', queue.inputQueue, ' : ERROR: ', error);
+            this.LOG.error('   ERROR: Could not parse message recieved from queue : ', queue.inputQueue, ' : ERROR: ', error);
         }
     },
 
@@ -83,7 +83,7 @@ module.exports = {
                     frame.end();
                     resolve(true);
                 } catch (error) {
-                    console.log(error);
+                    this.LOG.error(error);
                     reject('   ERROR: Either queue name : ' + payload.queue + ' is not valid or could not created publisher');
                 }
             }

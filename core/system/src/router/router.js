@@ -16,13 +16,15 @@ module.exports = {
                 secured: true,
                 key: '/test/runUTest',
                 method: 'GET',
-                controller: 'CONTROLLER.TestRunnerController.runUTest'
+                controller: 'TestRunnerController',
+                operation: 'runUTest'
             },
             runAllNTest: {
                 secured: true,
                 key: '/test/runNTest',
                 method: 'GET',
-                controller: 'CONTROLLER.TestRunnerController.runNTest'
+                controller: 'TestRunnerController',
+                operation: 'runNTest'
             }
         },
         importInitData: {
@@ -30,7 +32,8 @@ module.exports = {
                 secured: true,
                 key: '/import/init',
                 method: 'GET',
-                handler: 'CONTROLLER.DataImportController.importInitData'
+                handler: 'DataImportController',
+                operation: 'importInitData'
             },
         },
         importCoreData: {
@@ -38,13 +41,15 @@ module.exports = {
                 secured: true,
                 key: '/import/core',
                 method: 'GET',
-                controller: 'CONTROLLER.DataImportController.importCoreData'
+                controller: 'DataImportController',
+                operation: 'importCoreData'
             },
             importPost: {
                 secured: true,
                 key: '/import/core',
                 method: 'POST',
-                controller: 'CONTROLLER.DataImportController.importCoreData'
+                controller: 'DataImportController',
+                operation: 'importCoreData'
             }
         },
         importSampleData: {
@@ -52,13 +57,15 @@ module.exports = {
                 secured: true,
                 key: '/import/sample',
                 method: 'GET',
-                controller: 'CONTROLLER.DataImportController.importSampleData'
+                controller: 'DataImportController',
+                operation: 'importSampleData'
             },
             importPost: {
                 secured: true,
                 key: '/import/sample',
                 method: 'POST',
-                controller: 'CONTROLLER.DataImportController.importSampleData'
+                controller: 'DataImportController',
+                operation: 'importSampleData'
             }
         },
         dataExport: {
@@ -66,13 +73,15 @@ module.exports = {
                 secured: true,
                 key: '/export',
                 method: 'GET',
-                controller: 'CONTROLLER.DataExportController.export'
+                controller: 'DataExportController',
+                operation: 'export'
             },
             exportPost: {
                 secured: true,
                 key: '/export',
                 method: 'POST',
-                controller: 'CONTROLLER.DataExportController.export'
+                controller: 'DataExportController',
+                operation: 'export'
             }
         }
     }

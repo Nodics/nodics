@@ -14,7 +14,9 @@ module.exports = {
         let _self = this;
         options.modelName = options.schemaName.toUpperCaseEachWord();
         if (options.schemaObject.model) {
-            DAO[options.modelName + 'Dao'] = SYSTEM.replacePlaceholders(options);
+            let entityName = options.modelName + 'Dao';
+            DAO[entityName] = SYSTEM.replacePlaceholders(options);
+            DAO[entityName].LOG = SYSTEM.createLogger(entityName);
         }
     },
 

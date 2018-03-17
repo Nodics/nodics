@@ -17,7 +17,7 @@ module.exports = {
             request.local = _.merge(request.local, request.body);
             return FACADE.EmsClientFacade.publish(request, callback);
         } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
             callback('ERROR: Please validate your request, it is not a valid one. Request should contain body: {queue:queueName, message:message}');
         }
     }

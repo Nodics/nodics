@@ -14,7 +14,7 @@ const _ = require('lodash');
 module.exports = {
     loadClasses: function() {
         let classes = global.CLASSES;
-        console.log('=> Staring Classes loader process');
+        SYSTEM.LOG.info('=> Staring Classes loader process');
 
         let _self = this;
         let moduleIndex = CONFIG.get('moduleIndex');
@@ -33,6 +33,9 @@ module.exports = {
                     CLASSES[className] = _.merge(CLASSES[className], require(file));
                 } else {
                     CLASSES[className] = require(file);
+                    //SYSTEM.LOG.info(' ++++++++++++++++++++++++++++++++++++++ : ', className);
+                    //CLASSES[className].LOG = SYSTEM.createLogger(className);
+                    //SYSTEM.LOG.info(' ++++++++++++++++++++++++++++++++++++++ : ', CLASSES[className].LOG);
                 }
             }
         }, 'classes.js');
@@ -40,7 +43,7 @@ module.exports = {
 
     generalizeClasses: function() {
         let classesScripts = {};
-        console.log('   INFO: Generalizing defined classes');
+        SYSTEM.LOG.info('   INFO: Generalizing defined classes');
         SYSTEM.loadFiles('/src/lib/classes.js', classesScripts);
 
         var methods = SYSTEM.getAllMethods(classesScripts);

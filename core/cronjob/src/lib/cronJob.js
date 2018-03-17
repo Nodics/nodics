@@ -56,14 +56,14 @@ module.exports = function(definition, trigger, context, timeZone) {
     this.init = function(oneTime) {
         let _self = this;
         let cronTime = this.getCronTime(oneTime);
-        console.log('    Creating job with time schedule : ', cronTime);
+        _self.LOG.info('    Creating job with time schedule : ', cronTime);
         _cronJob = new CronJob({
             cronTime: cronTime,
             onTick: function() {
                 if (!_paused) {
                     _running = true;
                     if (_definition.active.end && _definition.active.end < new Date()) {
-                        console.log('   WARN: Job : ', _definition.name, ' got expired. hence has been stopped');
+                        _self.LOG.warn('   WARN: Job : ', _definition.name, ' got expired. hence has been stopped');
                         _self.stopCronJob();
                         delete _jobPool[_definition.name];
                     }

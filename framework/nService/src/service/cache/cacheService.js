@@ -35,6 +35,7 @@ module.exports = {
     },
 
     initApiCache: function(moduleObject, moduleName, cacheConfig) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             if (moduleObject.metaData.publish) {
                 if (!moduleObject.apiCache &&
@@ -47,9 +48,9 @@ module.exports = {
                             };
                             resolve();
                         }).catch(error => {
-                            console.log('   ERROR: Not able to initialize API cache for :', moduleName, '  :  ', error);
+                            _self.LOG.info('   ERROR: Not able to initialize API cache for :', moduleName, '  :  ', error);
                             if (cacheConfig.apiCache.engine !== 'local' && cacheConfig.apiCache.fallback) {
-                                console.log('   INFO: Initializing local API cache');
+                                _self.LOG.info('   INFO: Initializing local API cache');
                                 cacheConfig.apiCache.engine = 'local';
                                 SERVICE[cacheConfig.apiCache.engine.toUpperCaseFirstChar() + 'CacheService']
                                     .initApiCache(cacheConfig[cacheConfig.apiCache.engine + 'Options'], moduleName).then(value => {
@@ -66,7 +67,7 @@ module.exports = {
                             }
                         });
                 } else {
-                    console.log('   WARN: API Cache is not enabled for : ', moduleName);
+                    _self.LOG.warn('   WARN: API Cache is not enabled for : ', moduleName);
                     resolve('   ERROR: API Cache is not enabled for : ' + moduleName);
                 }
             } else {
@@ -76,6 +77,7 @@ module.exports = {
     },
 
     initItemCache: function(moduleObject, moduleName, cacheConfig) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             if (moduleObject.rawSchema) {
                 if (!moduleObject.itemCache &&
@@ -88,9 +90,9 @@ module.exports = {
                             };
                             resolve();
                         }).catch(error => {
-                            console.log('   ERROR: Not able to initialize Item cache for :', moduleName, '  :  ', error);
+                            _self.LOG.info('   ERROR: Not able to initialize Item cache for :', moduleName, '  :  ', error);
                             if (cacheConfig.itemCache.engine !== 'local' && cacheConfig.itemCache.fallback) {
-                                console.log('   INFO: Initializing local Item cache');
+                                _self.LOG.info('   INFO: Initializing local Item cache');
                                 cacheConfig.itemCache.engine = 'local';
                                 SERVICE[cacheConfig.itemCache.engine.toUpperCaseFirstChar() + 'CacheService']
                                     .initApiCache(cacheConfig[cacheConfig.itemCache.engine + 'Options'], moduleName).then(value => {
@@ -107,7 +109,7 @@ module.exports = {
                             }
                         });
                 } else {
-                    console.log('   WARN: Item Cache is not enabled for : ', moduleName);
+                    _self.LOG.warn('   WARN: Item Cache is not enabled for : ', moduleName);
                     resolve('   ERROR: Item Cache is not enabled for : ' + moduleName);
                 }
             } else {
@@ -132,12 +134,12 @@ module.exports = {
 
     flush: function(cache, prefix, moduleName, callback) {
         SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix).then(success => {
-            console.log('   INFO: cache for module : ', moduleName, ', flushed successfully');
+            this.LOG.info('   INFO: cache for module : ', moduleName, ', flushed successfully');
             if (callback) {
                 callback(null, 'cache for module : ' + moduleName + ', flushed successfully');
             }
         }).catch(error => {
-            console.log('   ERROR: While flushing cache for module : ', moduleName);
+            this.LOG.error('   ERROR: While flushing cache for module : ', moduleName);
             if (callback) {
                 callback(error);
             }
@@ -156,13 +158,14 @@ module.exports = {
     },
 
     flushKeys: function(cache, keys, moduleName, callback) {
+        let _self = this;
         SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].flushKeys(cache.client, keys).then(success => {
-            console.log('   INFO: cache for module : ' + moduleName + ', flushed successfully');
+            _self.LOG.info('   INFO: cache for module : ' + moduleName + ', flushed successfully');
             if (callback) {
                 callback(null, 'cache for module : ' + moduleName + ', flushed successfully');
             }
         }).catch(error => {
-            console.log('   ERROR: While flushing cache for module : ', moduleName);
+            _self.LOG.info('   ERROR: While flushing cache for module : ', moduleName);
             if (callback) {
                 callback(error);
             }
@@ -170,7 +173,7 @@ module.exports = {
     },
 
     get: function(cache, hash) {
-        console.log('   INFO: Getting value for key : ', hash);
+        this.LOG.info('   INFO: Getting value for key : ', hash);
         try {
             return SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].get(cache.client, hash);
         } catch (error) {
@@ -181,7 +184,7 @@ module.exports = {
     },
 
     put: function(cache, hash, value, options) {
-        console.log('   INFO: Putting value for key : ', hash);
+        this.LOG.info('   INFO: Putting value for key : ', hash);
         try {
             return SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].put(cache.client, hash, value, options);
         } catch (error) {
@@ -192,18 +195,18 @@ module.exports = {
     },
 
     createApiKey: function(request) {
-        let key = request.local.originalUrl;
-        let method = request.local.method;
+        let key = request.originalUrl;
+        let method = request.method;
         if (method === 'POST' || method === 'post') {
-            if (request.local.body) {
+            if (request.body) {
                 key += '-' + JSON.stringify(request.body);
             }
         }
-        if (request.local.authToken) {
-            key += '-' + request.local.authToken;
+        if (request.get('authToken')) {
+            key += '-' + request.get('authToken');
         }
-        if (request.local.enterpriseCode) {
-            key += '-' + request.local.enterpriseCode;
+        if (request.get('enterpriseCode')) {
+            key += '-' + request.get('enterpriseCode');
         }
         return method + '-' + key;
     },

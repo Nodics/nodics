@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
     loadFacades: function(module) {
-        console.log('   INFO: Loading all module facades');
+        SYSTEM.LOG.info('   INFO: Loading all module facades');
         let path = module.path + '/src/facade';
         SYSTEM.processFiles(path, "Facade.js", (file) => {
             let facadeName = SYSTEM.getFileNameWithoutExtension(file);
@@ -21,6 +21,7 @@ module.exports = {
                 FACADE[facadeName] = _.merge(FACADE[facadeName], require(file));
             } else {
                 FACADE[facadeName] = require(file);
+                FACADE[facadeName].LOG = SYSTEM.createLogger(facadeName);
             }
         });
     }

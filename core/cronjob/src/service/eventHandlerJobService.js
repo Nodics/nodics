@@ -12,19 +12,21 @@
 module.exports = {
 
     runJob: function(definition, cronJob) {
+        let _self = this;
         this.triggerEventHandlerJob(definition, cronJob, () => {
             DAO.CronJobDao.update({
                 tenant: definition.tenant,
                 models: [definition]
             }).then(response => {
-                console.log('   INFO: Job : executed successfuly');
+                _self.LOG.info('   INFO: Job : executed successfuly');
             }).catch(error => {
-                console.log('   ERROR: Job : executed with error : ', error);
+                _self.LOG.error('   ERROR: Job : executed with error : ', error);
             });
         });
     },
 
     triggerEventHandlerJob: function(definition, cronJob, callback) {
+        let _self = this;
         try {
             let options = {
                 moduleName: 'nems',
@@ -37,9 +39,8 @@ module.exports = {
                 }
             };
             let nemsUrl = SERVICE.ModuleService.buildRequest(options);
-            // console.log('   INFO: Triggering Job : ', nemsUrl);
             SERVICE.ModuleService.fetch(nemsUrl, (error, response) => {
-                console.log('   INFO: Events processed with response : ', response);
+                _self.LOG.info('   INFO: Events processed with response : ', response);
                 let logMessage = '';
                 if (error) {
                     logMessage = error.toString();
@@ -66,7 +67,7 @@ module.exports = {
                 });
             });
         } catch (error) {
-            console.log(error);
+            _self.LOG.error(error);
         }
     }
 };

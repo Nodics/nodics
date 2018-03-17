@@ -15,7 +15,7 @@ module.exports = {
             if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).get((req, res, next) => {
                     SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
-                        console.log('      Fulfilled from API cache');
+                        SYSTEM.LOG.info('      Fulfilled from API cache');
                         value.cache = 'api hit';
                         res.json(value);
                     }).catch(error => {
@@ -34,7 +34,7 @@ module.exports = {
             if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).post((req, res, next) => {
                     SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
-                        console.log('      Fulfilled from API cache');
+                        SYSTEM.LOG.info('      Fulfilled from API cache');
                         value.cache = 'api hit';
                         res.json(value);
                     }).catch(error => {
@@ -71,7 +71,8 @@ module.exports = {
                 },
                 key: '/schemaName',
                 method: 'GET',
-                controller: 'CONTROLLER.controllerName.get'
+                controller: 'controllerName',
+                operation: 'get'
             },
             postModel: {
                 secured: false,
@@ -81,7 +82,8 @@ module.exports = {
                 },
                 key: '/schemaName',
                 method: 'POST',
-                controller: 'CONTROLLER.controllerName.get'
+                controller: 'controllerName',
+                operation: 'get'
             },
             getById: {
                 secured: true,
@@ -91,7 +93,8 @@ module.exports = {
                 },
                 key: '/schemaName/id/:id',
                 method: 'GET',
-                controller: 'CONTROLLER.controllerName.getById'
+                controller: 'controllerName',
+                operation: 'getById'
             }
         },
         commonRemoveOperations: {
@@ -99,13 +102,15 @@ module.exports = {
                 secured: true,
                 key: '/schemaName/id',
                 method: 'DELETE',
-                controller: 'CONTROLLER.controllerName.removeById'
+                controller: 'controllerName',
+                operation: 'removeById'
             },
             deleteByIds: {
                 secured: true,
                 key: '/schemaName/id/:id',
                 method: 'DELETE',
-                controller: 'CONTROLLER.controllerName.removeById'
+                controller: 'controllerName',
+                operation: 'removeById'
             }
         },
         commonSaveOperations: {
@@ -113,7 +118,8 @@ module.exports = {
                 secured: false,
                 key: '/schemaName',
                 method: 'PUT',
-                controller: 'CONTROLLER.controllerName.save'
+                controller: 'controllerName',
+                operation: 'save'
             }
         },
         commonUpdateOperations: {
@@ -121,7 +127,8 @@ module.exports = {
                 secured: false,
                 key: '/schemaName/update',
                 method: 'PUT',
-                controller: 'CONTROLLER.controllerName.update'
+                controller: 'controllerName',
+                operation: 'update'
             }
         },
 
@@ -130,7 +137,8 @@ module.exports = {
                 secured: false,
                 key: '/schemaName/saveOrUpdate',
                 method: 'PUT',
-                controller: 'CONTROLLER.controllerName.saveOrUpdate'
+                controller: 'controllerName',
+                operation: 'saveOrUpdate'
             }
         }
     },
@@ -141,19 +149,22 @@ module.exports = {
                 secured: true,
                 key: '/cache/api/flush',
                 method: 'GET',
-                controller: 'CONTROLLER.CacheController.flushApiCache'
+                controller: 'CacheController',
+                operation: 'flushApiCache'
             },
             flushPrefix: {
                 secured: true,
                 key: '/cache/api/flush/:prefix',
                 method: 'GET',
-                controller: 'CONTROLLER.CacheController.flushApiCache'
+                controller: 'CacheController',
+                operation: 'flushApiCache'
             },
             flushKeys: {
                 secured: true,
                 key: '/cache/api/flush',
                 method: 'POST',
-                controller: 'CONTROLLER.CacheController.flushApiCacheKeys'
+                controller: 'CacheController',
+                operation: 'flushApiCacheKeys'
             },
         },
 
@@ -162,19 +173,22 @@ module.exports = {
                 secured: true,
                 key: '/cache/item/flush',
                 method: 'GET',
-                controller: 'CONTROLLER.CacheController.flushItemCache'
+                controller: 'CacheController',
+                operation: 'flushItemCache'
             },
             flushPrefix: {
                 secured: true,
                 key: '/cache/item/flush/:prefix',
                 method: 'GET',
-                controller: 'CONTROLLER.CacheController.flushItemCache'
+                controller: 'CacheController',
+                operation: 'flushItemCache'
             },
             flushKeys: {
                 secured: true,
                 key: '/cache/item/flush',
                 method: 'POST',
-                controller: 'CONTROLLER.CacheController.flushItemCacheKeys'
+                controller: 'CacheController',
+                operation: 'flushItemCacheKeys'
             },
         }
     }

@@ -32,7 +32,7 @@ module.exports = {
         };
 
         let eventUrl = SERVICE.ModuleService.buildRequest(options);
-        console.log('   INFO: Publishing event to event server');
+        this.LOG.debug('   INFO: Publishing event to event server');
         SERVICE.ModuleService.fetch(eventUrl, callback);
     }
 };

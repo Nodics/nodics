@@ -24,7 +24,7 @@ module.exports = {
             };
             FACADE.CronJobFacade.createJob(request, callback);
         } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
             callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
     },
@@ -42,7 +42,7 @@ module.exports = {
             };
             FACADE.CronJobFacade.updateJob(request, callback);
         } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
             callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
     },
@@ -54,7 +54,7 @@ module.exports = {
             };
             FACADE.CronJobFacade.runJob(request, callback);
         } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
             callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
     },
@@ -68,7 +68,7 @@ module.exports = {
             request.local.jobNames = request.body;
             FACADE.CronJobFacade.startJob(request, callback);
         } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
             callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
     },
@@ -82,7 +82,7 @@ module.exports = {
             request.local.jobNames = request.body;
             FACADE.CronJobFacade.stopJob(request, callback);
         } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
             callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
     },
@@ -96,7 +96,7 @@ module.exports = {
             request.local.jobNames = request.body;
             FACADE.CronJobFacade.removeJob(request, callback);
         } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
             callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
     },
@@ -110,7 +110,7 @@ module.exports = {
             request.local.jobNames = request.body;
             FACADE.CronJobFacade.pauseJob(request, callback);
         } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
             callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
     },
@@ -124,7 +124,7 @@ module.exports = {
             request.local.jobNames = request.body;
             FACADE.CronJobFacade.resumeJob(request, callback);
         } else {
-            console.log('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
             callback('ERROR: Please validate your request, it is not a valid one', null, request);
         }
     }

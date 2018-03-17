@@ -15,17 +15,17 @@ module.exports = {
             successEnd: {
                 name: 'successEnd',
                 type: 'function',
-                process: 'SERVICE.ProcessService.handleSucessEnd'
+                process: 'ProcessService.handleSucessEnd'
             },
             failureEnd: {
                 name: 'failureEnd',
                 type: 'function',
-                process: 'SERVICE.ProcessService.handleFailureEnd'
+                process: 'ProcessService.handleFailureEnd'
             },
             handleError: {
                 name: 'handleError',
                 type: 'function',
-                process: 'SERVICE.ProcessService.handleErrorEnd'
+                process: 'ProcessService.handleErrorEnd'
             }
         }
     }

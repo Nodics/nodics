@@ -1,7 +1,12 @@
 const bcrypt = require("bcrypt");
 const uuidv5 = require('uuid/v5');
+const uuidv4 = require('uuid/v4');
 
 module.exports = {
+
+    generateUniqueCode: function() {
+        return uuidv4();
+    },
 
     /**
      * generates random string of characters i.e salt

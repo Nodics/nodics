@@ -26,7 +26,7 @@ module.exports = {
             SERVICE.CacheService.initCache(moduleObject, moduleName).then(() => {
                 _self.registerRouters(app, moduleObject, moduleName, routers);
             }).catch(error => {
-                console.log('   ERROR: got error while initializing cache for module : ', moduleName);
+                SYSTEM.LOG.error('   ERROR: got error while initializing cache for module : ', moduleName);
                 self.registerRouters(app, moduleObject, moduleName, routers);
             });
 

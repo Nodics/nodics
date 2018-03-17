@@ -15,14 +15,14 @@ module.exports = {
 
     initApiCache: function(options, moduleName) {
         return new Promise((resolve, reject) => {
-            console.log('   INFO: Initializing local API Cache instance for module: ', moduleName);
+            this.LOG.info('   INFO: Initializing local API Cache instance for module: ', moduleName);
             resolve(new NodeCache(options));
         });
     },
 
     initItemCache: function(options, moduleName) {
         return new Promise((resolve, reject) => {
-            console.log('   INFO: Initializing local Item Cache instance for module: ', moduleName);
+            this.LOG.info('   INFO: Initializing local Item Cache instance for module: ', moduleName);
             resolve(new NodeCache(options));
         });
     },

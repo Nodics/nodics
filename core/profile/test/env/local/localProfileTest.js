@@ -19,7 +19,7 @@ const expect = Chai.expect;
 module.exports = {
     profileTestSuite: {
         options: {
-            description: '   INFO: Test suite to run all user related userTestSuite',
+            description: '   Test suite to run all user related userTestSuite',
             timeout: 100,
             type: 'ntest',
             params: {

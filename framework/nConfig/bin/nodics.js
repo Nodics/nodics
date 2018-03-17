@@ -23,11 +23,44 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
     let _activeModules = [];
     let _nTestRunning = false;
     let _initRequired = false;
+    let _startTime = 0;
+    let _entTime = 0;
+    let _loggers = {};
+    this.LOG = {};
 
     let _nodics = {
         modules: {},
         dbs: {},
         validators: {}
+    };
+
+    this.setStartTime = function(time) {
+        _startTime = time;
+    };
+    this.getStartTime = function() {
+        return _startTime;
+    };
+    this.setEndTime = function(time) {
+        _entTime = time;
+    };
+    this.getEndTime = function() {
+        return _entTime;
+    };
+
+    this.getStartDuration = function() {
+        return (_entTime - _startTime);
+    };
+
+    this.addLogger = function(entityName, logger) {
+        _loggers[entityName] = logger;
+    };
+
+    this.getLogger = function(entityName) {
+        return _loggers[entityName];
+    };
+
+    this.getLoggers = function() {
+        return _loggers;
     };
 
     this.setInitRequired = function(flag) {
@@ -102,7 +135,7 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
         if (CONFIG.get('installedTanents').includes(tenant)) {
             _activeTenant = tenant;
         } else {
-            console.log('   ERROR: given tenant not supported here : ', tenant);
+            SYSTEM.LOG.error('   ERROR: given tenant not supported here : ', tenant);
             process.exit(1);
         }
     };
@@ -114,7 +147,7 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
         if (channel === 'master' || channel === 'test') {
             _activeChannel = channel;
         } else {
-            console.log('   ERROR: given channel not supported here : ', channel);
+            SYSTEM.LOG.error('   ERROR: given channel not supported here : ', channel);
             process.exit(1);
         }
     };

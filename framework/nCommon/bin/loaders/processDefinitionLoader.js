@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
     loadProcessDefinition: function(module) {
-        console.log('   INFO: Loading all module process definitions');
+        SYSTEM.LOG.info('   INFO: Loading all module process definitions');
         let path = module.path + '/src/process';
         SYSTEM.processFiles(path, "Definition.js", (file) => {
             let processName = SYSTEM.getFileNameWithoutExtension(file);

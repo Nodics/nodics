@@ -12,6 +12,9 @@
 const _ = require('lodash');
 module.exports = function() {
     let _jobPool = {};
+    let _jobLOG = SYSTEM.createLogger('ProcessHead');
+
+    this.LOG = SYSTEM.createLogger('CronJobContainer');
 
     this.createCronJobs = function(definitions) {
         return new Promise((resolve, reject) => {
@@ -40,6 +43,7 @@ module.exports = function() {
     };
 
     this.createCronJob = function(authToken, definition) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             let currentDate = new Date();
             if (UTILS.isBlank(definition)) {
@@ -56,17 +60,19 @@ module.exports = function() {
                     definition.triggers.forEach(function(value) {
                         if (value.isActive && CONFIG.get('clusterId') === definition.clusterId) {
                             let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
+                            tmpCronJob.LOG = _jobLOG;
                             tmpCronJob.validate();
                             tmpCronJob.init();
                             tmpCronJob.setAuthToken(authToken);
                             tmpCronJob.setJobPool(_jobPool);
                             cronJobs.push(tmpCronJob);
+
                         }
                     });
                     _jobPool[definition.name] = cronJobs;
                     resolve(definition.name);
                 } else {
-                    console.log('   WARN: Definition ', definition.name, ' is already available.');
+                    _self.LOG.warn('   WARN: Definition ', definition.name, ' is already available.');
                     resolve(definition.name);
                 }
             }
@@ -100,6 +106,7 @@ module.exports = function() {
     };
 
     this.updateCronJob = function(authToken, definition) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             let currentDate = new Date();
             if (UTILS.isBlank(definition)) {
@@ -107,7 +114,7 @@ module.exports = function() {
             } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
                 reject('Invalid cron job definition triggers');
             } else if (!_jobPool[definition.name]) {
-                console.log('    INFO: Could not found job, so creating new : ', definition.name);
+                _self.LOG.info('    INFO: Could not found job, so creating new : ', definition.name);
                 this.createCronJob(authToken, definition).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -180,6 +187,7 @@ module.exports = function() {
                     });
                 }
                 let tmpCronJob = new CLASSES.CronJob(definition, definition.triggers[0]); //TODO: need to add context and timeZone
+                tmpCronJob.LOG = _jobLOG;
                 tmpCronJob.validate();
                 tmpCronJob.setAuthToken(authToken);
                 tmpCronJob.init(true);

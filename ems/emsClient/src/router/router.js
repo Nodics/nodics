@@ -16,7 +16,8 @@ module.exports = {
                 secured: true,
                 key: '/publish',
                 method: 'POST',
-                controller: 'CONTROLLER.EmsClientController.publish'
+                controller: 'EmsClientController',
+                operation: 'publish'
             }
         }
     }

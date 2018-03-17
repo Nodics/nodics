@@ -69,7 +69,7 @@ module.exports = {
                     }
                 };
                 let requestUrl = SERVICE.ModuleService.buildRequest(options);
-                console.log('   INFO: Authorizing reqiuest for token :', input.authToken);
+                this.LOG.error('   INFO: Authorizing reqiuest for token :', input.authToken);
                 SERVICE.ModuleService.fetch(requestUrl, (error, response) => {
                     if (error) {
                         callback(error);

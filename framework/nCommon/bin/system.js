@@ -16,9 +16,7 @@ const path = require("path");
 module.exports = {
     getFileNameWithoutExtension: function(filePath) {
         let fileName = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.indexOf("."));
-        fileName = fileName.toUpperCaseFirstChar();
-
-        return fileName;
+        return fileName.toUpperCaseFirstChar();
     },
 
     schemaWalkThrough: function(options, callback) {
@@ -98,31 +96,31 @@ module.exports = {
             try {
                 if (CONFIG.get('server').runAsSingleModule) {
                     if (!NODICS.getModules().default || !NODICS.getModules().default.app) {
-                        console.error('   ERROR: Server configurations has not be initialized. Please verify.');
+                        LOG.error('   ERROR: Server configurations has not be initialized. Please verify.');
                         process.exit(CONFIG.get('errorExitCode'));
                     }
                     const httpPort = SYSTEM.getPort('default');
-                    console.log('=> Starting Server for module : default on PORT : ', httpPort);
+                    SYSTEM.LOG.info('=> Starting Server for module : default on PORT : ', httpPort);
                     NODICS.getModules().default.app.listen(httpPort);
                     resolve(true);
                 } else {
                     let modules = NODICS.getModules();
                     if (this.isBlank(NODICS.getModules())) {
-                        console.error('   ERROR: Please define valid active modules');
+                        SYSTEM.LOG.error('   ERROR: Please define valid active modules');
                         process.exit(CONFIG.get('errorExitCode'));
                     }
                     _.each(modules, function(value, moduleName) {
                         if (value.metaData && value.metaData.publish) {
                             if (!value.app) {
-                                console.error('   ERROR: Server configurations has not be initialized for module : ', moduleName);
+                                SYSTEM.LOG.error('   ERROR: Server configurations has not be initialized for module : ', moduleName);
                                 process.exit(CONFIG.get('errorExitCode'));
                             }
                             const httpPort = SYSTEM.getPort(moduleName);
                             if (!httpPort) {
-                                console.error('   ERROR: Please define listening PORT for module: ', moduleName);
+                                SYSTEM.LOG.error('   ERROR: Please define listening PORT for module: ', moduleName);
                                 process.exit(CONFIG.get('errorExitCode'));
                             }
-                            console.log(' =>Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
+                            SYSTEM.LOG.info(' =>Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
                             value.app.listen(httpPort);
                         }
                         resolve(true);

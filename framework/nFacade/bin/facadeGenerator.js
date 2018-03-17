@@ -16,7 +16,9 @@ module.exports = {
         let _self = this;
         options.modelName = options.schemaName.toUpperCaseEachWord();
         if (options.schemaObject.service) {
-            FACADE[options.modelName + 'Facade'] = SYSTEM.replacePlaceholders(options);
+            let entityName = options.modelName + 'Facade';
+            FACADE[entityName] = SYSTEM.replacePlaceholders(options);
+            FACADE[entityName].LOG = SYSTEM.createLogger(entityName);
         }
     },
 

@@ -30,6 +30,9 @@ const _ = require('lodash');
 */
 module.exports = {
     default: {
+        definedDefaultLog: function(model, rawSchema) {
+            model.statics.LOG = SYSTEM.createLogger(rawSchema.modelName.toUpperCaseEachWord() + 'Model');
+        },
         defineDefaultFind: function(model, rawSchema) {
             model.statics.findItem = function(input, rawQuery) {
                 return new Promise((resolve, reject) => {
@@ -59,12 +62,13 @@ module.exports = {
 
         defineDefaultGet: function(model, rawSchema) {
             model.statics.get = function(input) {
+                //this.LOG.info('------------------ : ');
                 let moduleObject = NODICS.getModules()[rawSchema.moduleName];
                 if (moduleObject.itemCache && rawSchema.cache && rawSchema.cache.enabled) {
                     return new Promise((resolve, reject) => {
                         let query = SERVICE.CacheService.createItemKey(input);
                         SERVICE.CacheService.getItem(rawSchema, moduleObject.itemCache, query).then(value => {
-                            console.log('      Fulfilled from Item cache');
+                            this.LOG.info('      Fulfilled from Item cache');
                             value.cache = 'item hit';
                             resolve(value);
                         }).catch(error => {

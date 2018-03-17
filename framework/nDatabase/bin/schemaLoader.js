@@ -15,7 +15,7 @@ const util = require('util');
 
 module.exports = {
     deployValidators: function() {
-        console.log(' =>Starting validators loading process');
+        SYSTEM.LOG.info(' =>Starting validators loading process');
         NODICS.setValidators(SYSTEM.loadFiles('/src/schemas/validators.js'));
     },
 
@@ -72,6 +72,7 @@ module.exports = {
                 this.resolveSchemaDependancy(tmpOptions);
             }
             options.schemaObject[options.modelName] = options.schemaObject[superSchema].extend(options.schemaDef.definition);
+            options.schemaObject[options.modelName].LOG = SYSTEM.createLogger(options.modelName.toUpperCaseEachWord() + 'Interceptor');
         }
         if (options.schemaDef.model) {
             options.modelSchema = options.schemaObject[options.modelName];
@@ -176,7 +177,7 @@ module.exports = {
     },
 
     deploySchemas: function() {
-        console.log(' =>Starting schemas loading process');
+        SYSTEM.LOG.info(' =>Starting schemas loading process');
         let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js');
         let options = {
             interceptors: SYSTEM.loadFiles('/src/schemas/interceptors.js'),
@@ -188,7 +189,7 @@ module.exports = {
             if (key !== 'default') {
                 let moduleObject = modules[key];
                 if (!moduleObject) {
-                    console.error('   ERROR: Module name : ', key, ' is not valid. Please define a valide module name in schema');
+                    SYSTEM.LOG.error('   ERROR: Module name : ', key, ' is not valid. Please define a valide module name in schema');
                     process.exit(CONFIG.get('errorExitCode'));
                 }
                 moduleObject.rawSchema = _.merge(mergedSchema[key], mergedSchema.default);

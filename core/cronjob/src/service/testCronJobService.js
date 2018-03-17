@@ -14,10 +14,10 @@ module.exports = {
 
     runJob: function(definition) {
         var today = new Date();
-        console.log('CronJos Started................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
+        this.LOG.info('CronJos Started................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
     },
 
     stopJob: function(definition) {
-        console.log('CronJos Started................ stopJob');
+        this.LOG.info('CronJos Started................ stopJob');
     }
 };

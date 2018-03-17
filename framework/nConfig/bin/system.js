@@ -15,8 +15,12 @@ const fs = require('fs');
 const util = require('util');
 const Config = require('./config');
 const Nodics = require('./nodics');
+const winston = require('winston');
+const Elasticsearch = require('winston-elasticsearch');
+const props = require('../config/properties');
 
 module.exports = {
+    LOG: {},
     getActiveModules: function(options) {
         let modules = [];
         let customPath = NODICS.getCustomHome();
@@ -29,7 +33,9 @@ module.exports = {
         serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
         serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
         serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
-
+        //Starting Log for System and Nodics
+        let prop = _.merge(props, serverProperties);
+        this.LOG = this.createLogger('SYSTEM', prop.log);
         if (!fs.existsSync(moduleGroupsFilePath) || serverProperties.activeModules.updateGroups) {
             var nodicsModulePath = [];
             this.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
@@ -53,7 +59,6 @@ module.exports = {
             }
         }
         let moduleData = require(moduleGroupsFilePath);
-        //pushing framework modules
         modules = moduleData.framework;
         serverProperties.activeModules.groups.forEach((groupName) => {
             if (!moduleData[groupName]) {
@@ -62,7 +67,6 @@ module.exports = {
             }
             modules = modules.concat(moduleData[groupName]);
         });
-        //pushing application modules
         modules = modules.concat(serverProperties.activeModules.modules);
         return modules;
     },
@@ -204,11 +208,11 @@ module.exports = {
             if (NODICS.isModuleActive(moduleFile.name)) {
                 metaData[moduleFile.name] = moduleFile;
                 if (!moduleFile.index) {
-                    console.error('   ERROR: Please update index property in package.json for module : ', moduleFile.name);
+                    this.LOG.error('   ERROR: Please update index property in package.json for module : ', moduleFile.name);
                     process.exit(1);
                 }
                 if (isNaN(moduleFile.index)) {
-                    console.error('   ERROR: Property index contain invalid value in package.json for module : ', moduleFile.name);
+                    this.LOG.error('   ERROR: Property index contain invalid value in package.json for module : ', moduleFile.name);
                     process.exit(1);
                 }
                 let indexData = {};
@@ -235,7 +239,7 @@ module.exports = {
             var value = CONFIG.get('moduleIndex')[key][0];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
-                console.log('   INFO: Loading file from : ' + filePath);
+                _self.LOG.info('   INFO: Loading file from : ' + filePath);
                 var commonPropertyFile = require(filePath);
                 mergedFile = _.merge(mergedFile, commonPropertyFile);
             }
@@ -263,7 +267,7 @@ module.exports = {
                         return file.endsWith(filePostFix);
                     }
                 }).forEach(function(file) {
-                    console.log('   INFO: Loading file from : ', file);
+                    _self.LOG.info('   INFO: Loading file from : ', file);
                     callback(file);
                 });
             }
@@ -274,5 +278,65 @@ module.exports = {
         return Object.getOwnPropertyNames(envScripts).filter(function(prop) {
             return typeof envScripts[prop] == 'function';
         });
+    },
+
+    changeLogLevel: function(entityName, logLevel) {
+
+    },
+    createLogger: function(entityName, logConfig) {
+        logConfig = logConfig || CONFIG.get('log');
+        let entityLevel = logConfig['logLevel' + entityName];
+        let config = this.getLoggerConfiguration(entityName, entityLevel, logConfig);
+        let logger = new winston.Logger(config);
+        NODICS.addLogger(entityName, logger);
+        return logger;
+    },
+
+    getLoggerConfiguration: function(entityName, level, logConfig) {
+        return {
+            level: level || logConfig.level || 'info',
+            //format: SYSTEM.getLogFormat(logConfig),
+            transports: this.getLogTransports(entityName, logConfig)
+        };
+    },
+
+    getLogFormat: function(logConfig) {
+        if (logConfig.format == 'json') {
+            return winston.format.json();
+        } else {
+            return winston.format.simple();
+        }
+    },
+    getLogTransports: function(entityName, logConfig) {
+        let transports = [];
+        if (logConfig.output.console) {
+            transports.push(this.createConsoleTransport(entityName, logConfig));
+        }
+        if (logConfig.output.file) {
+            transports.push(this.createFileTransport(entityName, logConfig));
+        }
+        if (logConfig.output.elastic) {
+            transports.push(this.createFileTransport(entityName, logConfig));
+        }
+        return transports;
+    },
+
+    createConsoleTransport: function(entityName, logConfig) {
+        let consoleConfig = _.merge({}, logConfig.consoleConfig);
+        consoleConfig.label = entityName;
+        return new winston.transports.Console(consoleConfig);
+    },
+
+    createFileTransport: function(entityName, logConfig) {
+        let fileConfig = _.merge({}, logConfig.fileConfig);
+        fileConfig.label = entityName;
+        fileConfig.filename = NODICS.getServerHome() + '/logs/' + fileConfig.filename;
+        return new winston.transports.File(fileConfig);
+    },
+
+    createElasticTransport: function(entityName, logConfig) {
+        let elasticConfig = _.merge({}, logConfig.elasticConfig);
+        elasticConfig.label = entityName;
+        return new Elasticsearch(elasticConfig);
     }
 };

@@ -25,7 +25,7 @@ module.exports = {
             try {
                 const client = new kafka.KafkaClient(config.options);
                 if (client) {
-                    console.log('   INFO: Kafka client is connected : ');
+                    _self.LOG.debug('   INFO: Kafka client is connected : ');
                     this.createPublisher(client, config).then(producer => {
                         _self.publisher = producer;
                         let consumers = [];
@@ -65,22 +65,22 @@ module.exports = {
                 } else if (config.publisherType === 1) {
                     producer = new kafka.HighLevelProducer(client);
                 } else {
-                    console.log('   ERROR: Invalid publisher type : ' + config.publisherType);
+                    _self.LOG.debug('   ERROR: Invalid publisher type : ' + config.publisherType);
                     reject('   ERROR: Invalid publisher type : ' + config.publisherType);
                 }
                 if (producer) {
                     producer.on("ready", function() {
-                        console.log("   INFO: Kafka Producer is connected and ready.");
+                        _self.LOG.debug("   INFO: Kafka Producer is connected and ready.");
                         resolve(producer);
                     });
                     producer.on("error", function(error) {
-                        console.error('   ERROR: While creating kafka publisher : ' + error);
+                        _self.LOG.error('   ERROR: While creating kafka publisher : ' + error);
                         reject('   ERROR: While creating kafka publisher : ' + error);
                     });
                 }
 
             } catch (error) {
-                console.log(error);
+                _self.LOG.error(error);
                 reject('  ERROR: while creating consumer for queue : ' + queue.inputQueue);
             }
         });
@@ -99,7 +99,7 @@ module.exports = {
                 } else if (config.consumerType === 1) {
                     consumer = new kafka.HighLevelConsumer(client, topics, queue.consumerOptions);
                 } else {
-                    console.log('   ERROR: Invalid publisher type : ' + config.publisherType);
+                    _self.LOG.error('   ERROR: Invalid publisher type : ' + config.publisherType);
                     reject('   ERROR: Invalid publisher type : ' + config.publisherType);
                 }
                 if (consumer) {
@@ -107,15 +107,15 @@ module.exports = {
                         _self.onConsume(response, queue);
                     });
                     consumer.on("error", function(message) {
-                        console.log('   ERROR: Kafka Consumer got discunnected...');
+                        _self.LOG.error('   ERROR: Kafka Consumer got discunnected...');
                     });
-                    console.log('   INFO: Registered consumer for queue : ', queue.inputQueue);
+                    _self.LOG.debug('   INFO: Registered consumer for queue : ', queue.inputQueue);
                     resolve(true);
                 } else {
                     reject('  ERROR: while creating consumer for queue : ' + queue.inputQueue);
                 }
             } catch (error) {
-                console.log(error);
+                _self.LOG.error(error);
                 reject('  ERROR: while creating consumer for queue : ' + queue.inputQueue);
             }
         });
@@ -138,10 +138,10 @@ module.exports = {
                     value: JSON.stringify(message)
                 }]
             };
-            console.log('   INFO: Pushing event for recieved message from  : ', queue.inputQueue);
+            this.LOG.debug('   INFO: Pushing event for recieved message from  : ', queue.inputQueue);
             SERVICE.EventService.publish(event);
         } catch (error) {
-            console.log('   ERROR: Could not parse message recieved from queue : ', queue.inputQueue, ' : ERROR: ', error);
+            this.LOG.error('   ERROR: Could not parse message recieved from queue : ', queue.inputQueue, ' : ERROR: ', error);
         }
     },
 

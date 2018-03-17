@@ -15,7 +15,7 @@ const mongoose = require('mongoose');
 module.exports = {
     createConnection: function(dbConfig, tntName, type) {
         return new Promise((resolve, reject) => {
-            console.log('   INFO: Creating database connection for URI : ', dbConfig.URI);
+            SYSTEM.LOG.info('   INFO: Creating database connection for URI : ', dbConfig.URI);
             let connection = '';
             mongoose.Promise = global.Promise;
             if (dbConfig.options) {
@@ -25,7 +25,7 @@ module.exports = {
             }
             //Register all posible event
             connection.on('connected', function() {
-                console.log('   INFO: Mongoose default connection open to ' + dbConfig.URI);
+                SYSTEM.LOG.info('   INFO: Mongoose default connection open to ' + dbConfig.URI);
                 resolve(connection);
                 try {
                     if (type === 'master' && tntName === 'default') {
@@ -38,16 +38,16 @@ module.exports = {
                         });
                     }
                 } catch (error) {
-                    console.log('   ERROR: While checking if initialization required : ', error);
+                    SYSTEM.LOG.info('   ERROR: While checking if initialization required : ', error);
                 }
 
             });
             connection.on('error', function(error) {
-                console.log('   INFO: Mongoose default connection error: ' + error);
+                SYSTEM.LOG.info('   INFO: Mongoose default connection error: ' + error);
                 reject('Mongoose default connection error: ' + error);
             });
             connection.on('disconnected', function() {
-                console.log('   INFO: Mongoose default connection disconnected');
+                SYSTEM.LOG.info('   INFO: Mongoose default connection disconnected');
             });
         });
     },
@@ -86,7 +86,7 @@ module.exports = {
                     } else {
                         let testDB = NODICS.getDatabase().test;
                         if (!testDB) {
-                            console.error('   ERROR: Default test database configuration not found. Please velidate database configuration');
+                            SYSTEM.LOG.error('   ERROR: Default test database configuration not found. Please velidate database configuration');
                             process.exit(CONFIG.get('errorExitCode'));
                         } {
 
@@ -157,7 +157,7 @@ module.exports = {
         });
     },
     init: function() {
-        console.log(" =>Starting Database creating process");
+        SYSTEM.LOG.info(" =>Starting Database creating process");
         return this.createDatabases();
     }
 };

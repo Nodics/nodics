@@ -16,19 +16,22 @@ module.exports = {
                 secured: true,
                 key: '/job/create',
                 method: 'GET',
-                controller: 'CONTROLLER.CronJobController.createJob'
+                controller: 'CronJobController',
+                operation: 'createJob'
             },
             createPostJob: {
                 secured: true,
                 key: '/job/create',
                 method: 'POST',
-                controller: 'CONTROLLER.CronJobController.createJob'
+                controller: 'CronJobController',
+                operation: 'createJob'
             },
             createGetJobByCode: {
                 secured: true,
                 key: '/job/create/:jobName',
                 method: 'GET',
-                controller: 'CONTROLLER.CronJobController.createJob'
+                controller: 'CronJobController',
+                operation: 'createJob'
             },
         },
 
@@ -37,19 +40,22 @@ module.exports = {
                 secured: true,
                 key: '/job/update',
                 method: 'GET',
-                controller: 'CONTROLLER.CronJobController.updateJob'
+                controller: 'CronJobController',
+                operation: 'updateJob'
             },
             updatePostJob: {
                 secured: true,
                 key: '/job/update',
                 method: 'POST',
-                controller: 'CONTROLLER.CronJobController.updateJob'
+                controller: 'CronJobController',
+                operation: 'updateJob'
             },
             updateGetJobByCode: {
                 secured: true,
                 key: '/job/update/:jobName',
                 method: 'GET',
-                controller: 'CONTROLLER.CronJobController.updateJob'
+                controller: 'CronJobController',
+                operation: 'updateJob'
             },
         },
 
@@ -70,7 +76,8 @@ module.exports = {
                 secured: true,
                 key: '/job/run/:jobName',
                 method: 'GET',
-                controller: 'CONTROLLER.CronJobController.runJob'
+                controller: 'CronJobController',
+                operation: 'runJob'
             },
         },
 
@@ -79,13 +86,15 @@ module.exports = {
                 secured: true,
                 key: '/job/start/:jobName',
                 method: 'GET',
-                controller: 'CONTROLLER.CronJobController.startJob'
+                controller: 'CronJobController',
+                operation: 'startJob'
             },
             startPostJob: {
                 secured: true,
                 key: '/job/start',
                 method: 'POST',
-                controller: 'CONTROLLER.CronJobController.startJob'
+                controller: 'CronJobController',
+                operation: 'startJob'
             },
         },
 
@@ -94,13 +103,15 @@ module.exports = {
                 secured: true,
                 key: '/job/stop/:jobName',
                 method: 'GET',
-                controller: 'CONTROLLER.CronJobController.stopJob'
+                controller: 'CronJobController',
+                operation: 'stopJob'
             },
             stopPostJob: {
                 secured: true,
                 key: '/job/stop',
                 method: 'POST',
-                controller: 'CONTROLLER.CronJobController.stopJob'
+                controller: 'CronJobController',
+                operation: 'stopJob'
             },
         },
 
@@ -109,13 +120,15 @@ module.exports = {
                 secured: true,
                 key: '/job/remove/:jobName',
                 method: 'GET',
-                controller: 'CONTROLLER.CronJobController.removeJob'
+                controller: 'CronJobController',
+                operation: 'removeJob'
             },
             removePostJob: {
                 secured: true,
                 key: '/job/remove',
                 method: 'POST',
-                controller: 'CONTROLLER.CronJobController.removeJob'
+                controller: 'CronJobController',
+                operation: 'removeJob'
             },
         },
 
@@ -124,13 +137,15 @@ module.exports = {
                 secured: true,
                 key: '/job/pause/:jobName',
                 method: 'GET',
-                controller: 'CONTROLLER.CronJobController.pauseJob'
+                controller: 'CronJobController',
+                operation: 'pauseJob'
             },
             pausePostJob: {
                 secured: true,
                 key: '/job/pause',
                 method: 'POST',
-                controller: 'CONTROLLER.CronJobController.pauseJob'
+                controller: 'CronJobController',
+                operation: 'pauseJob'
             },
         },
 
@@ -139,13 +154,15 @@ module.exports = {
                 secured: true,
                 key: '/job/resume/:jobName',
                 method: 'GET',
-                controller: 'CONTROLLER.CronJobController.resumeJob'
+                controller: 'CronJobController',
+                operation: 'resumeJob'
             },
             resumePostJob: {
                 secured: true,
                 key: '/job/resume',
                 method: 'POST',
-                controller: 'CONTROLLER.CronJobController.resumeJob'
+                controller: 'CronJobController',
+                operation: 'resumeJob'
             }
         }
     }
