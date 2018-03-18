@@ -11,6 +11,15 @@
 
 module.exports = {
     system: {
+        changeLogLevel: {
+            changeLevelPost: {
+                secured: true,
+                key: '/log/level',
+                method: 'POST',
+                controller: 'LogController',
+                operation: 'changeLogLevel'
+            }
+        },
         testRunner: {
             runAllUTest: {
                 secured: true,

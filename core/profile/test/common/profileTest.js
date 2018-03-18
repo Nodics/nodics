@@ -37,18 +37,18 @@ module.exports = {
         },
         createDefaultData: {
             options: {
-                description: 'INFO: Test suite to run all user related insertUser',
+                description: 'Test suite to run all user related insertUser',
                 beforeEach: function() {
-                    console.log('   INFO: This is insertUser beforeEach');
+                    console.log('This is insertUser beforeEach');
                 },
                 beforeAll: function() {
-                    console.log('   INFO: This is insertUser beforeAll');
+                    console.log('This is insertUser beforeAll');
                 },
                 afterEach: function() {
-                    console.log('   INFO: This is insertUser afterEach');
+                    console.log('This is insertUser afterEach');
                 },
                 afterAll: function() {
-                    console.log('   INFO: This is insertUser afterAll');
+                    console.log('This is insertUser afterAll');
                 }
             },
 
@@ -62,7 +62,7 @@ module.exports = {
             }
             /*
                         insertDefaultEmployee: {
-                            description: 'INFO: Insert default user',
+                            description: 'Insert default user',
                             test: function(done) {
                                 NODICS.getModels('profile', 'default').EmployeeModel.saveOrUpdate({
                                     tenant: 'default',
@@ -77,10 +77,10 @@ module.exports = {
                                         active: true
                                     }]
                                 }).then(models => {
-                                    console.log('   INFO: Default employee has been created');
+                                    console.log('Default employee has been created');
                                     done();
                                 }).catch(error => {
-                                    console.log('   INFO: Could not create Default employee');
+                                    console.log('Could not create Default employee');
                                     done();
                                 });
                             }

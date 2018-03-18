@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
     loadServices: function(module) {
-        SYSTEM.LOG.info('   INFO: Loading all module services');
+        SYSTEM.LOG.debug('Loading all module services');
         let path = module.path + '/src/service';
         SYSTEM.processFiles(path, "Service.js", (file) => {
             let serviceName = SYSTEM.getFileNameWithoutExtension(file);

@@ -16,7 +16,7 @@ module.exports = {
     initApiCache: function(options, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.LOG.info('   INFO: Initializing Redis API Cache instance for module: ', moduleName);
+            _self.LOG.info('Initializing Redis API Cache instance for module: ', moduleName);
             let client = redis.createClient(options);
             client.on("error", err => {
                 reject(err);
@@ -25,7 +25,7 @@ module.exports = {
                 resolve(client);
             });
             client.on("ready", function(err) {
-                _self.LOG.info('   INFO: Item redis client is ready for module : ', moduleName);
+                _self.LOG.debug('Item redis client is ready for module : ', moduleName);
             });
         });
     },
@@ -33,7 +33,7 @@ module.exports = {
     initItemCache: function(options, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.LOG.info('   INFO: Initializing Redis Item Cache instance for module: ', moduleName);
+            _self.LOG.debug('Initializing Redis Item Cache instance for module: ', moduleName);
             let client = redis.createClient(options);
             client.on("error", err => {
                 reject(err);
@@ -42,7 +42,7 @@ module.exports = {
                 resolve(client);
             });
             client.on("ready", function(err) {
-                _self.LOG.info('   INFO: Item redis client is ready for module : ', moduleName);
+                _self.LOG.debug('Item redis client is ready for module : ', moduleName);
             });
         });
     },

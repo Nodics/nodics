@@ -23,7 +23,6 @@ module.exports = {
                 if (!moduleObject.authCache) {
                     moduleObject.authCache = new NodeCache(CONFIG.get('cache').authToken);
                 }
-
                 moduleObject.authCache.set(hash, JSON.stringify(value), ttl);
                 resolve(true);
             } catch (error) {
@@ -69,7 +68,7 @@ module.exports = {
                     }
                 };
                 let requestUrl = SERVICE.ModuleService.buildRequest(options);
-                this.LOG.error('   INFO: Authorizing reqiuest for token :', input.authToken);
+                this.LOG.debug('Authorizing reqiuest for token :', input.authToken);
                 SERVICE.ModuleService.fetch(requestUrl, (error, response) => {
                     if (error) {
                         callback(error);

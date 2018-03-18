@@ -12,7 +12,6 @@
 const _ = require('lodash');
 
 module.exports = {
-    logger: {},
     get: function(request, callback) {
         if (!UTILS.isBlank(request.body)) {
             request.local = _.merge(request.local || {}, request.body);
@@ -29,7 +28,7 @@ module.exports = {
             request.local.recursive = request.get('recursive') || false;
             FACADE.FacadeName.getById(request, callback);
         } else {
-            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('Please validate your request, it is not a valid one');
         }
     },
 
@@ -58,7 +57,7 @@ module.exports = {
             }
             FACADE.FacadeName.update(request, callback);
         } else {
-            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('Please validate your request, it is not a valid one');
         }
     },
 
@@ -72,7 +71,7 @@ module.exports = {
             }
             FACADE.FacadeName.saveOrUpdate(request, callback);
         } else {
-            this.LOG.error('   ERROR: Please validate your request, it is not a valid one');
+            this.LOG.error('Please validate your request, it is not a valid one');
         }
     }
 };

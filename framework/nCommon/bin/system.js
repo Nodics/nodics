@@ -96,31 +96,31 @@ module.exports = {
             try {
                 if (CONFIG.get('server').runAsSingleModule) {
                     if (!NODICS.getModules().default || !NODICS.getModules().default.app) {
-                        LOG.error('   ERROR: Server configurations has not be initialized. Please verify.');
+                        SYSTEM.LOG.error('Server configurations has not be initialized. Please verify.');
                         process.exit(CONFIG.get('errorExitCode'));
                     }
                     const httpPort = SYSTEM.getPort('default');
-                    SYSTEM.LOG.info('=> Starting Server for module : default on PORT : ', httpPort);
+                    SYSTEM.LOG.info('Starting Server for module : default on PORT : ', httpPort);
                     NODICS.getModules().default.app.listen(httpPort);
                     resolve(true);
                 } else {
                     let modules = NODICS.getModules();
                     if (this.isBlank(NODICS.getModules())) {
-                        SYSTEM.LOG.error('   ERROR: Please define valid active modules');
+                        SYSTEM.LOG.error('Please define valid active modules');
                         process.exit(CONFIG.get('errorExitCode'));
                     }
                     _.each(modules, function(value, moduleName) {
                         if (value.metaData && value.metaData.publish) {
                             if (!value.app) {
-                                SYSTEM.LOG.error('   ERROR: Server configurations has not be initialized for module : ', moduleName);
+                                SYSTEM.LOG.error('Server configurations has not be initialized for module : ', moduleName);
                                 process.exit(CONFIG.get('errorExitCode'));
                             }
                             const httpPort = SYSTEM.getPort(moduleName);
                             if (!httpPort) {
-                                SYSTEM.LOG.error('   ERROR: Please define listening PORT for module: ', moduleName);
+                                SYSTEM.LOG.error('Please define listening PORT for module: ', moduleName);
                                 process.exit(CONFIG.get('errorExitCode'));
                             }
-                            SYSTEM.LOG.info(' =>Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
+                            SYSTEM.LOG.info('Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
                             value.app.listen(httpPort);
                         }
                         resolve(true);

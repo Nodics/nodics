@@ -16,11 +16,11 @@ module.exports = {
             dbName = 'default';
         }
         if (!CONFIG.get('database')) {
-            this.LOG.error('   ERROR: Databse configuration not found. Please configure in properties.js file.');
+            this.LOG.error('Databse configuration not found. Please configure in properties.js file.');
             flag = false;
         }
         if (!CONFIG.get('database')[dbName]) {
-            this.LOG.error('   ERROR: Default databse configuration not found. Please configure in properties.js file.');
+            this.LOG.error('Default databse configuration not found. Please configure in properties.js file.');
             flag = false;
         }
         return flag;
@@ -39,10 +39,10 @@ module.exports = {
     validateSchemaDefinition: function(modelName, schemaDefinition) {
         let flag = true;
         if (!schemaDefinition.super) {
-            this.LOG.error('   ERROR: Invalid schema definition for : ' + modelName + ', please define super attribute');
+            this.LOG.error('Invalid schema definition for : ' + modelName + ', please define super attribute');
             flag = false;
         } else if (!schemaDefinition.definition) {
-            this.LOG.error('   ERROR: Invalid schema definition for : ' + modelName + ', please define definition attribute');
+            this.LOG.error('Invalid schema definition for : ' + modelName + ', please define definition attribute');
             flag = false;
         }
     },

@@ -22,22 +22,22 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.options) {
-                reject('ERROR: Tibco configuration is not valid');
+                reject('Tibco configuration is not valid');
             }
             let baseDir = path.join(__dirname, '../');
             let libPath = baseDir + 'ext/lib';
 
             let dependencies = fs.readdirSync(libPath);
             dependencies.forEach(function(dependency) {
-                _self.LOG.debug('   INFO: Setting classpath for : ', libPath + "/" + dependency);
+                _self.LOG.debug('Setting classpath for : ', libPath + "/" + dependency);
                 java.classpath.push(libPath + "/" + dependency);
             });
-            _self.LOG.debug('   INFO: Setting classpath for : ', baseDir + '/ext/bin');
+            _self.LOG.debug('Setting classpath for : ', baseDir + '/ext/bin');
             java.classpath.push(baseDir + '/ext/bin');
             try {
                 java.newInstance("com.tibco.tibjms.TibjmsConnectionFactory", config.options.url, function(error, tibcoConnectionFactory) {
                     if (error) {
-                        reject('  ERROR: while creating tibco connection factory');
+                        reject('While creating tibco connection factory');
                     } else {
                         java.newInstance("com.nodics.tibco.connection.ConnectionFactory",
                             config.options.username,
@@ -45,9 +45,9 @@ module.exports = {
                             tibcoConnectionFactory,
                             function(err, connectionFactory) {
                                 if (error) {
-                                    reject('  ERROR: while creating tibco connection : ', config.options.url);
+                                    reject('While creating tibco connection : ', config.options.url);
                                 } else {
-                                    _self.LOG.debug('   INFO: Connection stablished with tibco ems');
+                                    _self.LOG.debug('Connection stablished with tibco ems');
                                     let publishers = [];
                                     let consumers = [];
                                     config.queues.forEach(queue => {
@@ -66,14 +66,14 @@ module.exports = {
                                             reject(error);
                                         });
                                     } else {
-                                        reject('   ERROR: could not found any queue information');
+                                        reject('Could not found any queue information');
                                     }
                                 }
                             });
                     }
                 });
             } catch (err) {
-                reject('  ERROR: while creating tibco connection : ', config.options.url);
+                reject('While creating tibco connection : ', config.options.url);
             }
         });
 
@@ -91,19 +91,19 @@ module.exports = {
                     function(error, publisher) {
                         if (error) {
                             _self.LOG.error(error);
-                            reject('  ERROR: while creating publisher for queue : ' + queue.inputQueue);
+                            reject('While creating publisher for queue : ' + queue.inputQueue);
                         } else {
                             try {
                                 publisher.initSync();
                                 _self.publisherPool[queue.inputQueue] = publisher;
                                 resolve(true);
                             } catch (errorInit) {
-                                reject('  ERROR: while creating publisher for queue : ' + queue.inputQueue);
+                                reject('While creating publisher for queue : ' + queue.inputQueue);
                             }
                         }
                     });
             } catch (error) {
-                reject('  ERROR: while creating publisher for queue : ' + queue.inputQueue);
+                reject('While creating publisher for queue : ' + queue.inputQueue);
             }
         });
     },
@@ -122,19 +122,19 @@ module.exports = {
                     function(error, consumer) {
                         if (error) {
                             _self.LOG.error(error);
-                            reject('  ERROR: while creating consumer for queue : ' + queue.outputQueue);
+                            reject('While creating consumer for queue : ' + queue.outputQueue);
                         } else {
                             try {
                                 consumer.initSync();
                                 _self.consumerPool[queue.outputQueue] = consumer;
                                 resolve(true);
                             } catch (errorInit) {
-                                reject('  ERROR: while creating consumer for queue : ' + queue.inputQueue);
+                                reject('While creating consumer for queue : ' + queue.inputQueue);
                             }
                         }
                     });
             } catch (error) {
-                reject('  ERROR: while creating consumer for queue : ' + queue.outputQueue);
+                reject('While creating consumer for queue : ' + queue.outputQueue);
             }
         });
     },
@@ -150,7 +150,7 @@ module.exports = {
                     reject(error);
                 }
             } else {
-                reject('   ERROR: Either queue name : ' + queueName + ' is not valid or could not created publisher');
+                reject('Either queue name : ' + queueName + ' is not valid or could not created publisher');
             }
         });
     }

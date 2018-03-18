@@ -147,19 +147,19 @@ module.exports = {
     startOnStartup: function() {
         let _self = this;
         if (CONFIG.get('cronjob').runOnStartup) {
-            _self.LOG.info('   INFO: Starting all active jobs on server start-up');
+            _self.LOG.debug('Starting all active jobs on server start-up');
             if (NODICS.getServerState() === 'started') {
                 SERVICE.CronJobService.createJob({ tenant: 'default' }, (error, response) => {
                     if (error) {
-                        _self.LOG.error('   ERROR: Something went wrong while creating CronJobs : ', error);
+                        _self.LOG.error('Something went wrong while creating CronJobs : ', error);
                     } else {
                         SERVICE.CronJobService.startJob({ jobNames: response }, (error, response) => {
-                            _self.LOG.info('   INFO: triggered cronjob start process : ', response);
+                            _self.LOG.debug('triggered cronjob start process : ', response);
                         });
                     }
                 });
             } else {
-                _self.LOG.info('   INFO: Server is not started yet, hence waiting');
+                _self.LOG.info('Server is not started yet, hence waiting');
                 setTimeout(SERVICE.CronJobService.startOnStartup, CONFIG.get('cronjob').waitTime || 100);
             }
         }

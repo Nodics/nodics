@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
     loadControllers: function(module) {
-        SYSTEM.LOG.info('   INFO: Loading all module controllers');
+        SYSTEM.LOG.debug('Loading all module controllers');
         let path = module.path + '/src/controller';
         SYSTEM.processFiles(path, "Controller.js", (file) => {
             let controllerName = SYSTEM.getFileNameWithoutExtension(file);

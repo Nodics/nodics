@@ -40,11 +40,12 @@ Todos:
     - Check data import with multi application, multi environment and multi server
     - Check Test loader with multi application, multi environment and multi server
 
-    - Implement Logger
-      - Console logger
-      - File Logger
-      - External Logger
-
+    ✔ Implement Logger @done(18-03-18 12:11)
+      ✔ Console logger @done(18-03-18 12:11)
+      ✔ File Logger @done(18-03-18 12:11)
+      ✔ External Logger write to Elastic @done(18-03-18 12:11)
+      ✔ Update individual entity log level @done(18-03-18 12:12)
+    ✔ Changes in Router definitions @done(18-03-18 12:13)
 
       https://stackoverflow.com/questions/12016474/node-js-logging
       https://www.npmjs.com/package/loglevel

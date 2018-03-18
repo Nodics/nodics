@@ -26,9 +26,9 @@ module.exports = {
                 SYSTEM.buildItemLevelCache(schema.rawSchema);
                 if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
                     SERVICE.CacheService.putItem(schema.rawSchema, moduleObject.itemCache, this.rawQuery, docs).then(success => {
-                        schema.LOG.info('   INFO: Item saved in item cache');
+                        schema.LOG.info('Item saved in item cache');
                     }).catch(error => {
-                        schema.LOG.error('   ERROR: while saving item in item cache : ', error);
+                        schema.LOG.error('While saving item in item cache : ', error);
                     });
                     if (next && typeof next === "function") {
                         next();
@@ -62,9 +62,9 @@ module.exports = {
                             prefix: schema.rawSchema.modelName
                         }, (error, success) => {
                             if (error) {
-                                schema.LOG.error('   ERROR: Not able to flush item: ', schema.rawSchema.modelName, ' error : ', error);
+                                schema.LOG.error('Not able to flush item: ', schema.rawSchema.modelName, ' error : ', error);
                             } else {
-                                schema.LOG.info('   INFO: Item: ', schema.rawSchema.modelName, ' flushed from cache');
+                                schema.LOG.debug('Item: ', schema.rawSchema.modelName, ' flushed from cache');
                             }
                         });
                     }
@@ -85,11 +85,11 @@ module.exports = {
                                 value: schema.modelName
                             }]
                         };
-                        schema.LOG.info('   INFO: Pushing event for item created : ', schema.rawSchema);
+                        schema.LOG.debug('Pushing event for item created : ', schema.rawSchema);
                         SERVICE.EventService.publish(event);
                     }
                 } catch (error) {
-                    schema.LOG.error('   ERROR: facing issue while pushing save event : ', error);
+                    schema.LOG.error('Facing issue while pushing save event : ', error);
                 }
                 if (next && typeof next === "function") {
                     next();
@@ -119,9 +119,9 @@ module.exports = {
                         prefix: schema.rawSchema.modelName
                     }, (error, success) => {
                         if (error) {
-                            schema.LOG.error('   ERROR: Not able to flush item: ', schema.rawSchema.modelName, ' error : ', error);
+                            schema.LOG.error('Not able to flush item: ', schema.rawSchema.modelName, ' error : ', error);
                         } else {
-                            schema.LOG.info('   INFO: Item: ', schema.rawSchema.modelName, ' flushed from cache');
+                            schema.LOG.debug('Item: ', schema.rawSchema.modelName, ' flushed from cache');
                         }
                     });
                 }
@@ -154,9 +154,9 @@ module.exports = {
                             prefix: schema.rawSchema.modelName
                         }, (error, success) => {
                             if (error) {
-                                schema.LOG.error('   ERROR: Not able to flush item: ', schema.rawSchema.modelName, ' error : ', error);
+                                schema.LOG.error('Not able to flush item: ', schema.rawSchema.modelName, ' error : ', error);
                             } else {
-                                schema.LOG.info('   INFO: Item: ', schema.rawSchema.modelName, ' flushed from cache');
+                                schema.LOG.debug('Item: ', schema.rawSchema.modelName, ' flushed from cache');
                             }
                         });
                     }
@@ -180,7 +180,7 @@ module.exports = {
                         SERVICE.EventService.publish(event);
                     }
                 } catch (error) {
-                    schema.LOG.error('   ERROR: facing issue while pushing save event : ', error);
+                    schema.LOG.error('Facing issue while pushing save event : ', error);
                 }
                 if (next && typeof next === "function") {
                     next();

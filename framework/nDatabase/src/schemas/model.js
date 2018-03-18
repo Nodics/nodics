@@ -89,7 +89,7 @@ module.exports = {
             model.statics.removeById = function(input) {
                 let schema = rawSchema;
                 if (!input.ids) {
-                    throw new Error("   ERROR: Ids list can't be null to save Item");
+                    throw new Error("Ids list can't be null to save Item");
                 }
                 return this.remove({ _id: { $in: input.ids } });
             };
@@ -99,7 +99,7 @@ module.exports = {
             model.statics.save = function(input) {
                 let schema = rawSchema;
                 if (!input.models || !input.tenant) {
-                    throw new Error("   ERROR: Model value can't be null to save Item");
+                    throw new Error("Model value can't be null to save Item");
                 }
                 return new Promise((resolve, reject) => {
                     if (!UTILS.isBlank(schema.refSchema)) {
@@ -133,7 +133,7 @@ module.exports = {
                 let _self = this;
                 let schema = rawSchema;
                 if (!input.models || !input.tenant) {
-                    throw new Error("   ERROR: Model can't be null to save Item");
+                    throw new Error("Model can't be null to save Item");
                 }
                 return new Promise((resolve, reject) => {
                     if (!UTILS.isBlank(schema.refSchema)) {
@@ -165,7 +165,7 @@ module.exports = {
                 let _self = this;
                 let schema = rawSchema;
                 if (!input.models || !input.tenant) {
-                    throw new Error("   ERROR: Model can't be null to save Item");
+                    throw new Error("Model can't be null to save Item");
                 }
                 return new Promise((resolve, reject) => {
                     if (!UTILS.isBlank(schema.refSchema)) {

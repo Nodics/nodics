@@ -23,7 +23,7 @@ module.exports = {
     },
 
     loadInitData: function(module) {
-        SYSTEM.LOG.info('   INFO: Loading module core data');
+        SYSTEM.LOG.debug('Loading module core data');
         let path = module.path + '/data/init';
         SYSTEM.processFiles(path, "Data.js", (file) => {
             let initDataFile = require(file);
@@ -38,7 +38,7 @@ module.exports = {
     },
 
     loadCodeData: function(module) {
-        SYSTEM.LOG.info('   INFO: Loading module core data');
+        SYSTEM.LOG.debug('Loading module core data');
         let path = module.path + '/data/core';
         SYSTEM.processFiles(path, "Data.js", (file) => {
             let coreDataFile = require(file);
@@ -53,7 +53,7 @@ module.exports = {
     },
 
     loadCommonSampleData: function(module) {
-        SYSTEM.LOG.info('   INFO: Loading module sample data');
+        SYSTEM.LOG.debug('Loading module sample data');
         let path = module.path + '/data/sample/common';
         SYSTEM.processFiles(path, "Data.js", (file) => {
             let commonSampleFile = require(file);
@@ -68,7 +68,7 @@ module.exports = {
     },
 
     loadEnvSampleData: function(module) {
-        SYSTEM.LOG.info('   INFO: Loading module sample data');
+        SYSTEM.LOG.debug('Loading module sample data');
         let path = module.path + '/data/sample/evn/' + NODICS.getActiveEnvironment();
         SYSTEM.processFiles(path, "Data.js", (file) => {
             let commonSampleFile = require(file);

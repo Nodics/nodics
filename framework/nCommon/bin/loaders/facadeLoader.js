@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
     loadFacades: function(module) {
-        SYSTEM.LOG.info('   INFO: Loading all module facades');
+        SYSTEM.LOG.debug('Loading all module facades');
         let path = module.path + '/src/facade';
         SYSTEM.processFiles(path, "Facade.js", (file) => {
             let facadeName = SYSTEM.getFileNameWithoutExtension(file);

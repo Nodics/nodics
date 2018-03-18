@@ -23,7 +23,6 @@ module.exports = {
             }
         };
         let requestUrl = SERVICE.ModuleService.buildRequest(options);
-        //console.log(' Remote URL : ', requestUrl);
         SERVICE.ModuleService.fetch(requestUrl, (error, response) => {
             if (error) {
                 callback(error, null);

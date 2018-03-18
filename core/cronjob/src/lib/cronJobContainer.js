@@ -72,7 +72,7 @@ module.exports = function() {
                     _jobPool[definition.name] = cronJobs;
                     resolve(definition.name);
                 } else {
-                    _self.LOG.warn('   WARN: Definition ', definition.name, ' is already available.');
+                    _self.LOG.warn('Definition ', definition.name, ' is already available.');
                     resolve(definition.name);
                 }
             }
@@ -114,7 +114,7 @@ module.exports = function() {
             } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
                 reject('Invalid cron job definition triggers');
             } else if (!_jobPool[definition.name]) {
-                _self.LOG.info('    INFO: Could not found job, so creating new : ', definition.name);
+                _self.LOG.debug('Could not found job, so creating new : ', definition.name);
                 this.createCronJob(authToken, definition).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -260,7 +260,7 @@ module.exports = function() {
                 cronJob.stopCronJob();
             });
         } else {
-            throw new Error('   ERROR: Either name is not valid or job already removed.');
+            throw new Error('Either name is not valid or job already removed.');
         }
     };
 
@@ -323,7 +323,7 @@ module.exports = function() {
                 cronJob.pauseCronJob();
             });
         } else {
-            throw new Error('   ERROR: Given cronJob name is not valid');
+            throw new Error('Given cronJob name is not valid');
         }
     };
 
@@ -354,7 +354,7 @@ module.exports = function() {
                 cronJob.resumeCronJob();
             });
         } else {
-            throw new Error('   ERROR: Given cronJob name is not valid');
+            throw new Error('Given cronJob name is not valid');
         }
     };
 };

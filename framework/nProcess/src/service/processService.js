@@ -39,13 +39,13 @@ module.exports = {
                 process.start(id, request, response);
                 success = true;
             } catch (err) {
-                this.LOG.error('   ERROR: Error while creating process : ', id, ' - ', err);
+                this.LOG.error('Error while creating process : ', id, ' - ', err);
                 response.errors.PROC_ERR_0000 = {
                     code: 'PROC_ERR_0000',
                     message: 'PROC_ERR_0000',
                     error: err.toString()
                 };
-                throw new Error('   ERROR: Error while creating process : ', id, ' - ', err);
+                throw new Error('Error while creating process : ', id, ' - ', err);
             }
         }
     }

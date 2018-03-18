@@ -16,11 +16,11 @@ const util = require('util');
 const Config = require('./config');
 const Nodics = require('./nodics');
 const winston = require('winston');
+require('winston-daily-rotate-file');
 const Elasticsearch = require('winston-elasticsearch');
 const props = require('../config/properties');
 
 module.exports = {
-    LOG: {},
     getActiveModules: function(options) {
         let modules = [];
         let customPath = NODICS.getCustomHome();
@@ -62,7 +62,7 @@ module.exports = {
         modules = moduleData.framework;
         serverProperties.activeModules.groups.forEach((groupName) => {
             if (!moduleData[groupName]) {
-                console.log('   ERROR: Invalide module group : ', groupName);
+                console.error('Invalid module group : ', groupName);
                 process.exit(1);
             }
             modules = modules.concat(moduleData[groupName]);
@@ -81,7 +81,7 @@ module.exports = {
             if (process.argv[2]) {
                 options.NODICS_APP = process.argv[2];
             } else {
-                console.log('   WARN: Could not found App Name, So starting with default "kickoff"');
+                console.warn('Could not found App Name, So starting with default "kickoff"');
                 options.NODICS_APP = 'kickoff';
             }
         }
@@ -89,7 +89,7 @@ module.exports = {
             if (process.argv[3]) {
                 options.NODICS_ENV = process.argv[3];
             } else {
-                console.log('   WARN: Could not found Environment Name, So starting with default "local"');
+                console.warn('Could not found Environment Name, So starting with default "local"');
                 options.NODICS_ENV = 'local';
             }
 
@@ -99,7 +99,7 @@ module.exports = {
                 options.NODICS_SEVER = process.argv[4];
             } else {
                 options.NODICS_SEVER = 'sampleServer';
-                console.log('   WARN: Could not found Server Name, So starting with default "sampleServer"');
+                console.warn('Could not found Server Name, So starting with default "sampleServer"');
             }
 
         }
@@ -107,19 +107,19 @@ module.exports = {
             options.argv = process.argv;
         }
         if (!options.NODICS_HOME) {
-            console.error('   ERROR: Please pass valid NODICS_HOME. It can be pass as options or set to evn variable');
+            console.error('Please pass valid NODICS_HOME. It can be pass as options or set to evn variable');
             process.exit(1);
         }
         if (!options.NODICS_APP) {
-            console.error('   ERROR: Could not found valid application name to run');
+            console.error('Could not found valid application name to run');
             process.exit(1);
         }
         if (!options.NODICS_ENV) {
-            console.error('   ERROR: Could not found valid environmnet name to run');
+            console.error('Could not found valid environmnet name to run');
             process.exit(1);
         }
         if (!options.NODICS_SEVER) {
-            console.error('   ERROR: Could not found valid server name to run');
+            console.error('Could not found valid server name to run');
             process.exit(1);
         }
         //global.NODICS = new Nodics(options.NODICS_ENV, options.NODICS_HOME, options.NODICS_SEVER, options.argv);
@@ -208,11 +208,11 @@ module.exports = {
             if (NODICS.isModuleActive(moduleFile.name)) {
                 metaData[moduleFile.name] = moduleFile;
                 if (!moduleFile.index) {
-                    this.LOG.error('   ERROR: Please update index property in package.json for module : ', moduleFile.name);
+                    this.LOG.error('Please update index property in package.json for module : ', moduleFile.name);
                     process.exit(1);
                 }
                 if (isNaN(moduleFile.index)) {
-                    this.LOG.error('   ERROR: Property index contain invalid value in package.json for module : ', moduleFile.name);
+                    this.LOG.error('Property index contain invalid value in package.json for module : ', moduleFile.name);
                     process.exit(1);
                 }
                 let indexData = {};
@@ -239,7 +239,7 @@ module.exports = {
             var value = CONFIG.get('moduleIndex')[key][0];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
-                _self.LOG.info('   INFO: Loading file from : ' + filePath);
+                _self.LOG.debug('Loading file from : ' + filePath);
                 var commonPropertyFile = require(filePath);
                 mergedFile = _.merge(mergedFile, commonPropertyFile);
             }
@@ -267,7 +267,7 @@ module.exports = {
                         return file.endsWith(filePostFix);
                     }
                 }).forEach(function(file) {
-                    _self.LOG.info('   INFO: Loading file from : ', file);
+                    _self.LOG.debug('Loading file from : ', file);
                     callback(file);
                 });
             }
@@ -280,8 +280,13 @@ module.exports = {
         });
     },
 
-    changeLogLevel: function(entityName, logLevel) {
-
+    changeLogLevel: function(input) {
+        let logger = NODICS.getLogger(input.entityName);
+        if (logger) {
+            logger.level = input.logLevel;
+            return true;
+        }
+        return false;
     },
     createLogger: function(entityName, logConfig) {
         logConfig = logConfig || CONFIG.get('log');
@@ -295,7 +300,7 @@ module.exports = {
     getLoggerConfiguration: function(entityName, level, logConfig) {
         return {
             level: level || logConfig.level || 'info',
-            //format: SYSTEM.getLogFormat(logConfig),
+            //format: //SYSTEM.getLogFormat(logConfig),
             transports: this.getLogTransports(entityName, logConfig)
         };
     },
@@ -328,10 +333,16 @@ module.exports = {
     },
 
     createFileTransport: function(entityName, logConfig) {
+        let transport = {};
         let fileConfig = _.merge({}, logConfig.fileConfig);
         fileConfig.label = entityName;
-        fileConfig.filename = NODICS.getServerHome() + '/logs/' + fileConfig.filename;
-        return new winston.transports.File(fileConfig);
+        fileConfig.dirname = NODICS.getServerHome() + '/logs';
+        try {
+            transport = new winston.transports.DailyRotateFile(fileConfig);
+        } catch (error) {
+            console.log(error);
+        }
+        return transport;
     },
 
     createElasticTransport: function(entityName, logConfig) {

@@ -23,10 +23,10 @@ module.exports = {
         let startTime = new Date();
         sys.prepareOptions(options);
         if (!NODICS) {
-            sys.LOG.error("    ERROR: System initialization error: options cann't be null or empty");
+            sys.LOG.error("System initialization error: options cann't be null or empty");
             process.exit(1);
         }
-        sys.LOG.info('=>Initializing Nodics, Node based enterprise application solution   ###');
+        sys.LOG.info('Initializing Nodics, Node based enterprise application solution   ###');
         sys.LOG.info('---------------------------------------------------------------------------');
         sys.LOG.info('SERVER_PATH : ', NODICS.getServerHome());
         sys.LOG.info('NODICS_HOME : ', NODICS.getNodicsHome());
@@ -36,7 +36,7 @@ module.exports = {
         propertyLoader.init();
         NODICS.setStartTime(startTime);
         NODICS.setActiveTanent(CONFIG.get('activeTanent'));
-        sys.LOG.info("   INFO: Starting Nodics with active tenant : ", CONFIG.get('activeTanent'));
+        sys.LOG.info("Starting Nodics with active tenant : ", CONFIG.get('activeTanent'));
         systemLoader.init();
         SYSTEM.LOG = SYSTEM.createLogger('SYSTEM');
         NODICS.LOG = SYSTEM.createLogger('NODICS');

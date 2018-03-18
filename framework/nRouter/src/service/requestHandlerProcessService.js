@@ -32,7 +32,7 @@ module.exports = {
     },
 
     parseHeader: function(request, response, process) {
-        this.LOG.debug('   INFO: Parsing request header for : ', request.local.originalUrl);
+        this.LOG.debug('Parsing request header for : ', request.local.originalUrl);
         if (request.get('authToken')) {
             request.local.authToken = request.get('authToken');
         }
@@ -48,13 +48,13 @@ module.exports = {
     },
 
     parseBody: function(request, response, process) {
-        this.LOG.debug('   INFO: Parsing request body : ', request.local.originalUrl);
+        this.LOG.debug('Parsing request body : ', request.local.originalUrl);
         process.nextSuccess(request, response);
     },
 
     handleSpecialRequest: function(request, response, process) {
         let _self = this;
-        this.LOG.debug('   INFO: Handling special request : ', request.local.originalUrl);
+        this.LOG.debug('Handling special request : ', request.local.originalUrl);
         if (request.local.special) {
             if (!request.local.tenant) {
                 request.local.tenant = 'default';
@@ -62,7 +62,7 @@ module.exports = {
             try {
                 CONTROLLER[request.local.router.handler][request.local.router.operation](request, (error, result) => {
                     if (error) {
-                        _self.LOG.error('   ERROR: got error while handling special request : ', error);
+                        _self.LOG.error('Got error while handling special request : ', error);
                         process.error(request, response, error);
                     } else {
                         let cache = false;
@@ -87,7 +87,7 @@ module.exports = {
                                 }
                                 process.stop(request, response);
                             }).catch(error => {
-                                _self.LOG.error('   ERROR: While pushing data into Item cache : ', error);
+                                _self.LOG.error('While pushing data into Item cache : ', error);
                                 process.stop(request, response);
                             });
                         } else {
@@ -107,23 +107,23 @@ module.exports = {
     },
 
     redirectRequest: function(request, response, process) {
-        this.LOG.debug('   INFO: redirecting secured/non-secured request  : ', request.local.originalUrl);
+        this.LOG.debug('Redirecting secured/non-secured request  : ', request.local.originalUrl);
         if (request.local.secured) {
-            this.LOG.debug('   INFO: Handling secured request');
+            this.LOG.debug('Handling secured request');
             process.nextSuccess(request, response);
         } else {
-            this.LOG.debug('   INFO: Handling non-secured request');
+            this.LOG.debug('Handling non-secured request');
             process.nextFailure(request, response);
         }
     },
 
     handleRequest: function(request, response, process) {
         let _self = this;
-        _self.LOG.debug('   INFO: processing your request : ', request.local.originalUrl);
+        _self.LOG.debug('processing your request : ', request.local.originalUrl);
         try {
             CONTROLLER[request.local.router.controller][request.local.router.operation](request, (error, result) => {
                 if (error) {
-                    _self.LOG.error('   ERROR: got error while processing request : ', error);
+                    _self.LOG.error('Got error while processing request : ', error);
                     response.success = false;
                     delete response.result;
                     delete response.msg;
@@ -160,7 +160,7 @@ module.exports = {
                             }
                             process.nextSuccess(request, response);
                         }).catch(error => {
-                            _self.LOG.error('   ERROR: While pushing data into Item cache : ', error);
+                            _self.LOG.error('While pushing data into Item cache : ', error);
                             process.nextSuccess(request, response);
                         });
                     } else {
@@ -174,7 +174,7 @@ module.exports = {
                 }
             });
         } catch (error) {
-            _self.LOG.error('   ERROR: got error while service request : ', error);
+            _self.LOG.error('Got error while service request : ', error);
             response.success = false;
             delete response.result;
             delete response.msg;
@@ -188,17 +188,17 @@ module.exports = {
     },
 
     handleSucessEnd: function(request, response) {
-        this.LOG.debug('   INFO: Request has been processed successfully : ', request.local.originalUrl);
+        this.LOG.debug('Request has been processed successfully : ', request.local.originalUrl);
         request.local.httpResponse.json(response);
     },
 
     handleFailureEnd: function(request, response) {
-        this.LOG.debug('   INFO: Request has been processed with some failures : ', request.local.originalUrl);
+        this.LOG.debug('Request has been processed with some failures : ', request.local.originalUrl);
         request.local.httpResponse.json(response);
     },
 
     handleErrorEnd: function(request, response) {
-        this.LOG.debug('   INFO: Request has been processed and got errors : ', request.local.originalUrl);
+        this.LOG.debug('Request has been processed and got errors : ', request.local.originalUrl);
         request.local.httpResponse.json(response);
     }
 };

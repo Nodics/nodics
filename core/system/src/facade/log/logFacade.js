@@ -9,14 +9,8 @@
 
  */
 
-const processBuilder = require('./bin/processDefinitionBuilder');
-
 module.exports = {
-    init: function() {
-
-    },
-    loadProcess: function() {
-        SYSTEM.LOG.info('Starting Process Defintion builder process');
-        processBuilder.init();
+    changeLogLevel: function(request, callback) {
+        SERVICE.LogService.changeLogLevel(request, callback);
     }
 };

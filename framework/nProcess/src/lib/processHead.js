@@ -75,7 +75,7 @@ module.exports = function(name, processDefinition, callback) {
             if (_nodeList[_currentNode.getSuccess()]) {
                 _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
             } else {
-                this.LOG.error('   ERROR: Process link is broken : invalid node line : ', _currentNode.getSuccess());
+                this.LOG.error('Process link is broken : invalid node line : ', _currentNode.getSuccess());
             }
         } else {
             _nextSuccessNode = null;
@@ -84,7 +84,7 @@ module.exports = function(name, processDefinition, callback) {
             if (_nodeList[_currentNode.getFailure()]) {
                 _nextFailureNode = _nodeList[_currentNode.getFailure()];
             } else {
-                this.LOG.error('   ERROR: Process link is broken : invalid node line : ', _currentNode.getFailure());
+                this.LOG.error('Process link is broken : invalid node line : ', _currentNode.getFailure());
             }
         } else {
             _nextFailureNode = null;
@@ -110,7 +110,7 @@ module.exports = function(name, processDefinition, callback) {
     };
 
     this.error = function(processRequest, processResponse, err) {
-        this.LOG.debug('   ERROR: Error occured while processing node', _currentNode.getName(), ' - ', err);
+        this.LOG.debug('Error occured while processing node', _currentNode.getName(), ' - ', err);
         _preNode = _currentNode;
         _currentNode = _handleError;
         processResponse.success = false;
@@ -132,11 +132,11 @@ module.exports = function(name, processDefinition, callback) {
     };
 
     this.start = function(id, processRequest, processResponse) {
-        this.LOG.debug('   INFO: Starting process with process id : ', id);
+        this.LOG.debug('Starting process with process id : ', id);
         _processId = id;
         _currentNode = _nodeList[_startNode];
         if (!_currentNode) {
-            this.LOG.error('   ERROR: Node link is broken for node : ', _startNode, ' for process : ', _processName);
+            this.LOG.error('Node link is broken for node : ', _startNode, ' for process : ', _processName);
             process.exit(CONFIG.get('errorExitCode'));
         }
         this.next(processRequest, processResponse);

@@ -15,10 +15,10 @@ module.exports = {
         let _self = this;
         if (callback) {
             SERVICE.TestExecutorService.executeUTest().then(success => {
-                _self.LOG.info('   INFO: U-Test cases Executed successfully');
+                _self.LOG.info('U-Test cases Executed successfully');
                 callback(null, 'U-Test cases Executed successfully');
             }).catch(error => {
-                _self.LOG.error('   ERROR: ', error);
+                _self.LOG.error(error);
                 callback(error);
             });
         } else {
@@ -30,10 +30,10 @@ module.exports = {
         let _self = this;
         if (callback) {
             SERVICE.TestExecutorService.executeNTest().then(success => {
-                _self.LOG.info('   INFO: N-Test cases Executed successfully');
+                _self.LOG.info('N-Test cases Executed successfully');
                 callback(null, 'N-Test cases Executed successfully');
             }).catch(error => {
-                _self.LOG.error('   ERROR: ', error);
+                _self.LOG.error(error);
                 callback(error);
             });
         } else {

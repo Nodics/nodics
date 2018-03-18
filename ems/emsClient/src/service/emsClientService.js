@@ -16,7 +16,7 @@ module.exports = {
         let emsConfig = CONFIG.get('emsClient');
         if (emsConfig.enabled && emsConfig.type) {
             SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].init(emsConfig[emsConfig.type]).then(success => {
-                _self.LOG.debug('   INFO: Successfully established connection with : ', emsConfig.type);
+                _self.LOG.debug('Successfully established connection with : ', emsConfig.type);
             }).catch(error => {
                 _self.LOG.error(error);
             });

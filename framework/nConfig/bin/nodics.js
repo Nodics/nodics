@@ -135,7 +135,7 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
         if (CONFIG.get('installedTanents').includes(tenant)) {
             _activeTenant = tenant;
         } else {
-            SYSTEM.LOG.error('   ERROR: given tenant not supported here : ', tenant);
+            SYSTEM.LOG.error('Given tenant not supported here : ', tenant);
             process.exit(1);
         }
     };
@@ -147,7 +147,7 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
         if (channel === 'master' || channel === 'test') {
             _activeChannel = channel;
         } else {
-            SYSTEM.LOG.error('   ERROR: given channel not supported here : ', channel);
+            SYSTEM.LOG.error('Given channel not supported here : ', channel);
             process.exit(1);
         }
     };

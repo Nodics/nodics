@@ -64,9 +64,9 @@ module.exports = {
     default: {
         commonGetterOperation: {
             getModel: {
-                secured: false,
+                secured: true,
                 cache: {
-                    enabled: true,
+                    enabled: false,
                     ttl: 40
                 },
                 key: '/schemaName',
@@ -75,7 +75,7 @@ module.exports = {
                 operation: 'get'
             },
             postModel: {
-                secured: false,
+                secured: true,
                 cache: {
                     enabled: false,
                     ttl: 20
@@ -115,7 +115,7 @@ module.exports = {
         },
         commonSaveOperations: {
             saveModels: {
-                secured: false,
+                secured: true,
                 key: '/schemaName',
                 method: 'PUT',
                 controller: 'controllerName',
@@ -124,7 +124,7 @@ module.exports = {
         },
         commonUpdateOperations: {
             saveModels: {
-                secured: false,
+                secured: true,
                 key: '/schemaName/update',
                 method: 'PUT',
                 controller: 'controllerName',
@@ -134,7 +134,7 @@ module.exports = {
 
         commonSaveOrUpdateOperations: {
             saveModels: {
-                secured: false,
+                secured: true,
                 key: '/schemaName/saveOrUpdate',
                 method: 'PUT',
                 controller: 'controllerName',

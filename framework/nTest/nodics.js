@@ -17,6 +17,7 @@ module.exports = {
 
     initTest: function() {
         let _self = this;
+        console.log('\n');
         SYSTEM.LOG.info('---------------------------------------------------------------------------');
         SYSTEM.LOG.info('=> Starting test case execution process   ###');
         SYSTEM.LOG.info('---------------------------------------------------------------------------');
@@ -25,15 +26,15 @@ module.exports = {
                 _self.initNTest().then(success => {
                     resolve(true);
                 }).catch(error => {
-                    SYSTEM.LOG.error('   ERROR: N-Test cases endup with error : ', error);
+                    SYSTEM.LOG.error('N-Test cases endup with error : ', error);
                     reject(false);
                 });
             }).catch(error => {
-                SYSTEM.LOG.error('   ERROR: U-Test cases endup with error : ', error);
+                SYSTEM.LOG.error('U-Test cases endup with error : ', error);
                 _self.initNTest().then(succ => {
                     resolve(true);
                 }).catch(err => {
-                    SYSTEM.LOG.error('   ERROR: N-Test cases endup with error : ', err);
+                    SYSTEM.LOG.error('N-Test cases endup with error : ', err);
                     reject(false);
                 });
             });
@@ -45,7 +46,7 @@ module.exports = {
             let testConfig = CONFIG.get('test');
             if (testConfig.uTest.runOnStartup) {
                 SERVICE.TestExecutorService.executeUTest().then(success => {
-                    SYSTEM.LOG.info('   INFO: U-Test cases Executed successfully:');
+                    SYSTEM.LOG.info('U-Test cases Executed successfully:');
                     resolve(true);
                 }).catch(error => {
                     reject(error);
@@ -61,7 +62,7 @@ module.exports = {
             let testConfig = CONFIG.get('test');
             if (testConfig.nTest.runOnStartup) {
                 SERVICE.TestExecutorService.executeNTest().then(success => {
-                    SYSTEM.LOG.info('   INFO: N-Test cases Executed successfully:');
+                    SYSTEM.LOG.info('N-Test cases Executed successfully:');
                     resolve(true);
                 }).catch(error => {
                     reject(error);

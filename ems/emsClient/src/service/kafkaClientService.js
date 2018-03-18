@@ -20,12 +20,12 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.options) {
-                reject('ERROR: Kafka configuration is not valid');
+                reject('Kafka configuration is not valid');
             }
             try {
                 const client = new kafka.KafkaClient(config.options);
                 if (client) {
-                    _self.LOG.debug('   INFO: Kafka client is connected : ');
+                    _self.LOG.info('Kafka client is connected : ');
                     this.createPublisher(client, config).then(producer => {
                         _self.publisher = producer;
                         let consumers = [];
@@ -47,7 +47,7 @@ module.exports = {
                         reject(error);
                     });
                 } else {
-                    reject('   ERROR: While creating Kafka client');
+                    reject('While creating Kafka client');
                 }
             } catch (error) {
                 reject(error);
@@ -65,23 +65,23 @@ module.exports = {
                 } else if (config.publisherType === 1) {
                     producer = new kafka.HighLevelProducer(client);
                 } else {
-                    _self.LOG.debug('   ERROR: Invalid publisher type : ' + config.publisherType);
-                    reject('   ERROR: Invalid publisher type : ' + config.publisherType);
+                    _self.LOG.debug('Invalid publisher type : ' + config.publisherType);
+                    reject('Invalid publisher type : ' + config.publisherType);
                 }
                 if (producer) {
                     producer.on("ready", function() {
-                        _self.LOG.debug("   INFO: Kafka Producer is connected and ready.");
+                        _self.LOG.debug("Kafka Producer is connected and ready.");
                         resolve(producer);
                     });
                     producer.on("error", function(error) {
-                        _self.LOG.error('   ERROR: While creating kafka publisher : ' + error);
-                        reject('   ERROR: While creating kafka publisher : ' + error);
+                        _self.LOG.error('While creating kafka publisher : ' + error);
+                        reject('While creating kafka publisher : ' + error);
                     });
                 }
 
             } catch (error) {
                 _self.LOG.error(error);
-                reject('  ERROR: while creating consumer for queue : ' + queue.inputQueue);
+                reject('while creating consumer for queue : ' + queue.inputQueue);
             }
         });
     },
@@ -99,24 +99,24 @@ module.exports = {
                 } else if (config.consumerType === 1) {
                     consumer = new kafka.HighLevelConsumer(client, topics, queue.consumerOptions);
                 } else {
-                    _self.LOG.error('   ERROR: Invalid publisher type : ' + config.publisherType);
-                    reject('   ERROR: Invalid publisher type : ' + config.publisherType);
+                    _self.LOG.error('Invalid publisher type : ' + config.publisherType);
+                    reject('Invalid publisher type : ' + config.publisherType);
                 }
                 if (consumer) {
                     consumer.on("message", function(response) {
                         _self.onConsume(response, queue);
                     });
                     consumer.on("error", function(message) {
-                        _self.LOG.error('   ERROR: Kafka Consumer got discunnected...');
+                        _self.LOG.error('Kafka Consumer got discunnected...');
                     });
-                    _self.LOG.debug('   INFO: Registered consumer for queue : ', queue.inputQueue);
+                    _self.LOG.debug('Registered consumer for queue : ', queue.inputQueue);
                     resolve(true);
                 } else {
-                    reject('  ERROR: while creating consumer for queue : ' + queue.inputQueue);
+                    reject('While creating consumer for queue : ' + queue.inputQueue);
                 }
             } catch (error) {
                 _self.LOG.error(error);
-                reject('  ERROR: while creating consumer for queue : ' + queue.inputQueue);
+                reject('While creating consumer for queue : ' + queue.inputQueue);
             }
         });
     },
@@ -138,17 +138,17 @@ module.exports = {
                     value: JSON.stringify(message)
                 }]
             };
-            this.LOG.debug('   INFO: Pushing event for recieved message from  : ', queue.inputQueue);
+            this.LOG.debug('Pushing event for recieved message from  : ', queue.inputQueue);
             SERVICE.EventService.publish(event);
         } catch (error) {
-            this.LOG.error('   ERROR: Could not parse message recieved from queue : ', queue.inputQueue, ' : ERROR: ', error);
+            this.LOG.error('Could not parse message recieved from queue : ', queue.inputQueue, ' : ERROR is ', error);
         }
     },
 
     publish: function(payload) {
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(this.publisher)) {
-                reject('   ERROR: Could not found a valid publisher instance');
+                reject('Could not found a valid publisher instance');
             } else {
                 try {
                     let message = {
@@ -160,7 +160,7 @@ module.exports = {
                         resolve(true);
                     });
                 } catch (error) {
-                    reject('   ERROR: Either queue name : ' + queueName + ' is not valid or could not created publisher');
+                    reject('Either queue name : ' + queueName + ' is not valid or could not created publisher');
                 }
             }
         });

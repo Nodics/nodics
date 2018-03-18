@@ -97,9 +97,9 @@ module.exports = {
             tenant: enterprise.tenant,
             models: [employee]
         }).then(success => {
-            _self.LOG.debug('   INFO: Employee data has been updated with current time');
+            _self.LOG.debug('Employee data has been updated with current time');
         }).catch(error => {
-            _self.LOG.debug('   ERROR: While updating Employee data with current time : ', error);
+            _self.LOG.debug('While updating Employee data with current time : ', error);
         });
     },
 

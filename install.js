@@ -107,12 +107,12 @@ var copyDir = function(sourcePath, destPath, appName) {
 
 module.exports = (function() {
     if (!process.argv[2]) {
-        console.log('ERROR: Please pass command to be executed');
+        console.log('Please pass command to be executed');
         return help();
     }
     const command = process.argv[2];
     if (!process.argv[3] && command !== 'help') {
-        console.log('ERROR: Please pass name of module or application to be created');
+        console.log('Please pass name of module or application to be created');
         return help();
     }
     const name = process.argv[3];
@@ -124,12 +124,12 @@ module.exports = (function() {
     } else if (command === 'module') {
         console.log(name, ' ------ ', appPath);
         if (!appPath) {
-            console.log('ERROR: Please pass Application name, where this module needs to be generated');
+            console.log('Please pass Application name, where this module needs to be generated');
             return help();
         }
         createModule(name, appPath);
     } else {
-        console.log('ERROR: Please pass a valid commandName to proceed');
+        console.log('Please pass a valid commandName to proceed');
         return help();
     }
 })();

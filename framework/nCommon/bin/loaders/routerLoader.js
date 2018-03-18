@@ -32,7 +32,7 @@ module.exports = {
 
     loadRouters: function(module) {
         if (API[module.name] && API[module.name].app) {
-            SYSTEM.LOG.info('=> Starting App Server initialization process for : ', module.name);
+            SYSTEM.LOG.info('Starting App Server initialization process for : ', module.name);
             this.loadModuleRouterConfig(module, API[module.name].app);
             this.registerModuleRouters(module, API[module.name].app);
         }

@@ -1,9 +1,9 @@
 module.exports = {
 
     validateAuthToken: function(request, response, process) {
-        this.LOG.info('   INFO: Validating auth token : ', request.local.authToken);
+        this.LOG.debug('Validating auth token : ', request.local.authToken);
         if (UTILS.isBlank(request.local.authToken)) {
-            this.LOG.error('   ERROR: Auth Token is null or invalid');
+            this.LOG.error('Auth Token is null or invalid');
             process.error(request, response, 'Invalid auth token: Access denied');
         } else {
             process.nextSuccess(request, response);
@@ -11,7 +11,7 @@ module.exports = {
     },
 
     authorizeAuthToken: function(request, response, process) {
-        this.LOG.info('   INFO: Authorizing auth token : ', request.local.authToken);
+        this.LOG.debug('Authorizing auth token : ', request.local.authToken);
         SERVICE.AuthenticationProviderService.authorizeToken(request, (error, result) => {
             if (error) {
                 process.error(request, response, error);

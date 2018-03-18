@@ -22,7 +22,7 @@ module.exports = {
     },
 
     loadCommonTest: function(module) {
-        SYSTEM.LOG.info('   INFO: Loading module test cases');
+        SYSTEM.LOG.debug('Loading module test cases');
         let path = module.path + '/test/common';
         SYSTEM.processFiles(path, "Test.js", (file) => {
             let testFile = this.collectTest(require(file));
@@ -45,7 +45,7 @@ module.exports = {
     },
 
     loadEnvTest: function(module) {
-        SYSTEM.LOG.info('   INFO: Loading test cases for ENV : ', NODICS.getActiveEnvironment());
+        SYSTEM.LOG.debug('Loading test cases for ENV : ', NODICS.getActiveEnvironment());
         let path = module.path + '/test/env/' + NODICS.getActiveEnvironment();
         SYSTEM.processFiles(path, "Test.js", (file) => {
             let testFile = this.collectTest(require(file));

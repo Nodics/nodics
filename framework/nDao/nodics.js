@@ -17,7 +17,7 @@ module.exports = {
     },
 
     loadDao: function() {
-        SYSTEM.LOG.info('=> Starting Dao generation process.');
+        SYSTEM.LOG.info('Starting Dao generation process.');
         daoGenerator.init();
     }
 };

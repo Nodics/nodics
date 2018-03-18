@@ -15,53 +15,53 @@ const fs = require('fs');
 module.exports = {
 
     loadPreScripts: function() {
-        SYSTEM.LOG.info('=> Starting Pre Scripts loader process');
+        SYSTEM.LOG.info('Starting Pre Scripts loader process');
         let mergedFile = SYSTEM.loadFiles('/config/prescripts.js');
         var commonScriptFilePath = NODICS.getServerHome() + '/config/common/prescripts.js';
         var envScriptFilePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/prescripts.js';
         if (fs.existsSync(commonScriptFilePath)) {
-            SYSTEM.LOG.info("   INFO: Loading script file from : " + commonScriptFilePath);
+            SYSTEM.LOG.debug("Loading script file from : " + commonScriptFilePath);
             mergedFile = _.merge(mergedFile, require(commonScriptFilePath));
         }
         if (fs.existsSync(envScriptFilePath)) {
-            SYSTEM.LOG.info("   INFO: Loading script file from : " + envScriptFilePath);
+            SYSTEM.LOG.debug("Loading script file from : " + envScriptFilePath);
             mergedFile = _.merge(mergedFile, require(envScriptFilePath));
         }
         let commonTenantScriptFilePath = NODICS.getServerHome() + '/config/common/' + NODICS.getActiveTanent() + '-prescripts.js';
         if (fs.existsSync(commonTenantScriptFilePath)) {
-            SYSTEM.LOG.info("   INFO: Loading script file from : " + commonTenantScriptFilePath);
+            SYSTEM.LOG.debug("Loading script file from : " + commonTenantScriptFilePath);
             mergedFile = _.merge(mergedFile, require(commonTenantScriptFilePath));
         }
         var envTenantScriptFilePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/' + NODICS.getActiveTanent() + '-prescripts.js';
         if (fs.existsSync(envTenantScriptFilePath)) {
-            SYSTEM.LOG.info("   INFO: Loading script file from : " + envTenantScriptFilePath);
+            SYSTEM.LOG.debug("Loading script file from : " + envTenantScriptFilePath);
             mergedFile = _.merge(mergedFile, require(envTenantScriptFilePath));
         }
         return mergedFile;
     },
 
     loadPostScripts: function() {
-        SYSTEM.LOG.info('=> Starting Post Scripts loader process');
+        SYSTEM.LOG.info('Starting Post Scripts loader process');
         let mergedFile = SYSTEM.loadFiles('/config/postscripts.js');
         var commonScriptFilePath = NODICS.getServerHome() + '/config/common/postscripts.js';
         var envScriptFilePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/postscripts.js';
         if (fs.existsSync(commonScriptFilePath)) {
-            SYSTEM.LOG.info("   INFO: Loading file from : " + commonScriptFilePath);
+            SYSTEM.LOG.debug("Loading file from : " + commonScriptFilePath);
             mergedFile = _.merge(mergedFile, require(commonScriptFilePath));
         }
         if (fs.existsSync(envScriptFilePath)) {
-            SYSTEM.LOG.info("   INFO: Loading file from : " + envScriptFilePath);
+            SYSTEM.LOG.debug("Loading file from : " + envScriptFilePath);
             mergedFile = _.merge(mergedFile, require(envScriptFilePath));
         }
 
         let commonTenantScriptFilePath = NODICS.getServerHome() + '/config/common/' + NODICS.getActiveTanent() + '-postscripts.js';
         if (fs.existsSync(commonTenantScriptFilePath)) {
-            SYSTEM.LOG.info("   INFO: Loading script file from : " + commonTenantScriptFilePath);
+            SYSTEM.LOG.debug("Loading script file from : " + commonTenantScriptFilePath);
             mergedFile = _.merge(mergedFile, require(commonTenantScriptFilePath));
         }
         var envTenantScriptFilePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/' + NODICS.getActiveTanent() + '-postscripts.js';
         if (fs.existsSync(envTenantScriptFilePath)) {
-            SYSTEM.LOG.info("   INFO: Loading script file from : " + envTenantScriptFilePath);
+            SYSTEM.LOG.debug("Loading script file from : " + envTenantScriptFilePath);
             mergedFile = _.merge(mergedFile, require(envTenantScriptFilePath));
         }
         return mergedFile;
@@ -69,21 +69,21 @@ module.exports = {
 
     executePreScripts: function() {
         var preScripts = this.loadPreScripts();
-        SYSTEM.LOG.info("=> Starting pre-script execution process");
+        SYSTEM.LOG.info("Starting pre-script execution process");
         var methods = SYSTEM.getAllMethods(preScripts);
         methods.forEach(function(instance) {
             preScripts[instance]();
         });
-        SYSTEM.LOG.info("   INFO: pre-script executed successfully");
+        SYSTEM.LOG.info("Pre-Script executed successfully");
     },
 
     executePostScripts: function() {
         var postScripts = this.loadPostScripts();
-        SYSTEM.LOG.info("=> Starting post-script execution process");
+        SYSTEM.LOG.info("Starting post-script execution process");
         var methods = SYSTEM.getAllMethods(postScripts);
         methods.forEach(function(instance) {
             postScripts[instance]();
         });
-        SYSTEM.LOG.info("   INFO: post-script executed successfully");
+        SYSTEM.LOG.info("Post-Script executed successfully");
     }
 };

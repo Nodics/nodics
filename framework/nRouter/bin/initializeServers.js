@@ -13,16 +13,16 @@ const _ = require('lodash');
 
 module.exports = {
     init: function() {
-        SYSTEM.LOG.info(' =>Initializing servers');
+        SYSTEM.LOG.info('Initializing servers');
         let modules = NODICS.getModules();
         if (CONFIG.get('server').runAsSingleModule) {
-            SYSTEM.LOG.info('   INFO: Initializing single server for whole application. As CONFIG.server.runAsSingleModule set to true.');
+            SYSTEM.LOG.debug('Initializing single server for whole application. As CONFIG.server.runAsSingleModule set to true.');
             modules.default = {};
             modules.default.app = require('express')();
         } else {
             _.each(modules, function(value, moduleName) {
                 if (value.metaData.publish) {
-                    SYSTEM.LOG.info('   INFO: Initializing server for module : ', moduleName);
+                    SYSTEM.LOG.debug('Initializing server for module : ', moduleName);
                     value.app = require('express')();
                 }
             });

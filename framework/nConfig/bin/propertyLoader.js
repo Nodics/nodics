@@ -23,7 +23,7 @@ module.exports = {
             var value = moduleIndex[key][0];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
-                sys.LOG.info('   INFO: Loading configration file from : ' + filePath);
+                sys.LOG.debug('Loading configration file from : ' + filePath);
                 var commonPropertyFile = require(filePath);
                 config = _.merge(config, commonPropertyFile);
             }
@@ -32,10 +32,11 @@ module.exports = {
 
     loadModulesMetaData: function() {
         sys.getModulesMetaData();
-        sys.LOG.info('   INFO: Modules : ');
+        sys.LOG.info('Modules : ');
         _.each(CONFIG.get('moduleIndex'), (obj, key) => {
             process.stdout.write(obj[0].name + ',');
         });
+        process.stdout.write('\n');
     },
 
     /*
@@ -58,19 +59,19 @@ module.exports = {
                 let evnTenantPropPath = envHome + '/config/' + tntName + '-properties.js';
                 let serverTenantPropPath = NODICS.getServerHome() + '/config/' + tntName + '-properties.js';
                 if (fs.existsSync(appTenantPropPath)) {
-                    sys.LOG.info('   INFO: Loading configration file from : ', appTenantPropPath);
+                    sys.LOG.debug('Loading configration file from : ', appTenantPropPath);
                     mergedProperties = _.merge(mergedProperties, require(appTenantPropPath));
                 }
                 if (fs.existsSync(evnTenantPropPath)) {
-                    sys.LOG.info('   INFO: Loading configration file from : ', evnTenantPropPath);
+                    sys.LOG.debug('Loading configration file from : ', evnTenantPropPath);
                     mergedProperties = _.merge(mergedProperties, require(evnTenantPropPath));
                 }
                 if (fs.existsSync(serverTenantPropPath)) {
-                    sys.LOG.info('   INFO: Loading configration file from : ', serverTenantPropPath);
+                    sys.LOG.debug('Loading configration file from : ', serverTenantPropPath);
                     mergedProperties = _.merge(mergedProperties, require(serverTenantPropPath));
                 }
                 if (!mergedProperties.database) {
-                    sys.LOG.info('   ERROR: define database configuration for tenant : ', tntName);
+                    sys.LOG.error('Define database configuration for tenant : ', tntName);
                     process.exit(1);
                 }
                 tntConfig = _.merge(tntConfig, mergedProperties);
@@ -88,21 +89,21 @@ module.exports = {
         if (CONFIG.get('externalPropertyFile') && CONFIG.get('externalPropertyFile').length > 0) {
             CONFIG.get('externalPropertyFile').forEach(function(filePath) {
                 if (fs.existsSync(filePath)) {
-                    sys.LOG.info('   INFO: Loading configration file from : ' + filePath);
+                    sys.LOG.debug('Loading configration file from : ' + filePath);
                     var commonPropertyFile = require(filePath);
                     CONFIG.get('installedTanents').forEach(function(tntName) {
                         let tntConfig = CONFIG.getProperties(tntName);
                         tntConfig = _.merge(tntConfig, commonPropertyFile);
                     });
                 } else {
-                    sys.LOG.warn('   WARNING: System cant find configuration at : ' + filePath);
+                    sys.LOG.warn('System cant find configuration at : ' + filePath);
                 }
             });
         }
     },
 
     init: function() {
-        sys.LOG.info('=> Starting Configuration loader process ##');
+        sys.LOG.info('Starting Configuration loader process ##');
         this.loadModulesMetaData();
         this.loadCommonProperties();
         this.loadTanentConfiguration();

@@ -17,7 +17,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.options) {
-                reject('ERROR: Kafka configuration is not valid');
+                reject('Kafka configuration is not valid');
             }
             try {
                 stompit.connect(config.options, function(error, client) {
@@ -36,7 +36,7 @@ module.exports = {
                         });
                         resolve(true);
                     } else {
-                        reject('   ERROR: ActiveMQ server is not reachable...');
+                        reject('ActiveMQ server is not reachable...');
                     }
                 });
             } catch (error) {
@@ -61,10 +61,10 @@ module.exports = {
                     value: JSON.stringify(message)
                 }]
             };
-            this.LOG.debug('   INFO: Pushing event for recieved message from  : ', queue.inputQueue);
+            this.LOG.debug('Pushing event for recieved message from  : ', queue.inputQueue);
             SERVICE.EventService.publish(event);
         } catch (error) {
-            this.LOG.error('   ERROR: Could not parse message recieved from queue : ', queue.inputQueue, ' : ERROR: ', error);
+            this.LOG.error('Could not parse message recieved from queue : ', queue.inputQueue, ' : ERROR is ', error);
         }
     },
 
@@ -72,7 +72,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(_self.client)) {
-                reject('   ERROR: Could not found a valid publisher instance');
+                reject('Could not found a valid publisher instance');
             } else {
                 try {
                     var frame = _self.client.send({
@@ -84,7 +84,7 @@ module.exports = {
                     resolve(true);
                 } catch (error) {
                     this.LOG.error(error);
-                    reject('   ERROR: Either queue name : ' + payload.queue + ' is not valid or could not created publisher');
+                    reject('Either queue name : ' + payload.queue + ' is not valid or could not created publisher');
                 }
             }
         });

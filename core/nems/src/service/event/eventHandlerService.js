@@ -40,11 +40,11 @@ module.exports = {
             success: [],
             failed: []
         };
-        _self.LOG.debug('   INFO: Starting process to handle events : ');
+        _self.LOG.debug('Starting process to handle events : ');
         input = _.merge(input, this.buildQuery());
         //_self.LOG.info('Event fetch query :', util.inspect(input.query, false, null));
         DAO.EventDao.get(input).then(events => {
-            _self.LOG.debug('   INFO: Total events to be processed : ', (events instanceof Array) ? events.length : 1);
+            _self.LOG.debug('Total events to be processed : ', (events instanceof Array) ? events.length : 1);
             if (events instanceof Array && events.length <= 0) {
                 callback('None of the events available');
             } else if (UTILS.isBlank(events)) {
@@ -105,7 +105,7 @@ module.exports = {
         Promise.all(promisses).then(result => {
             callback(request.response);
         }).catch(error => {
-            _self.LOG.error('   ERROR: Failed while saving success events into eventLog : ', error);
+            _self.LOG.error('Failed while saving success events into eventLog : ', error);
             callback(request.response);
         });
     },

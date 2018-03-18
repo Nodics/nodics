@@ -21,7 +21,7 @@ module.exports = {
 
     loadCommon: function() {
         if (!CONFIG || !SYSTEM || !NODICS) {
-            SYSTEM.LOG.error("   ERROR: System initialization error: configuration initializer failure.");
+            SYSTEM.LOG.error("System initialization error: configuration initializer failure.");
             process.exit(1);
         }
         utilsLoader.loadUtils();

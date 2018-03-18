@@ -18,9 +18,9 @@ module.exports = {
                 tenant: definition.tenant,
                 models: [definition]
             }).then(response => {
-                _self.LOG.info('   INFO: Job : executed successfuly');
+                _self.LOG.debug('Job : executed successfuly');
             }).catch(error => {
-                _self.LOG.error('   ERROR: Job : executed with error : ', error);
+                _self.LOG.error('Job : executed with error : ', error);
             });
         });
     },
@@ -40,7 +40,7 @@ module.exports = {
             };
             let nemsUrl = SERVICE.ModuleService.buildRequest(options);
             SERVICE.ModuleService.fetch(nemsUrl, (error, response) => {
-                _self.LOG.info('   INFO: Events processed with response : ', response);
+                _self.LOG.debug('Events processed with response : ', response);
                 let logMessage = '';
                 if (error) {
                     logMessage = error.toString();

@@ -102,7 +102,7 @@ module.exports = {
     },
 
     log: {
-        level: 'debug',
+        level: 'info',
         format: 'simple', //json or simple
         output: {
             console: true,
@@ -120,10 +120,11 @@ module.exports = {
             showLevel: true
         },
         fileConfig: {
-            filename: 'nodics.log',
-            timestamp: true,
-            json: false,
-            stringify: true
+            filename: 'nodics-%DATE%.log',
+            datePattern: 'YYYY-MM-DD',
+            zippedArchive: true,
+            maxSize: '20m',
+            maxFiles: '14d'
         },
         elasticConfig: {
 

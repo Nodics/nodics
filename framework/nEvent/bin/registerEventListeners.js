@@ -13,6 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
     init: function() {
+        SYSTEM.LOG.info('Registering events');
         let listeners = SYSTEM.loadFiles('/src/event/listeners.js');
         let modules = NODICS.getModules();
         _.each(modules, (value, moduleName) => {

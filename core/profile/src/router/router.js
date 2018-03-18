@@ -13,7 +13,7 @@ module.exports = {
     profile: {
         loadEnterprise: {
             getEnterprise: {
-                secured: false,
+                secured: true,
                 cache: {
                     enabled: false,
                     ttl: 20
@@ -27,7 +27,7 @@ module.exports = {
 
         authenticate: {
             authorize: {
-                secured: false,
+                secured: true,
                 key: '/authenticate',
                 method: 'POST',
                 handler: 'AuthenticationProviderController',
@@ -37,7 +37,7 @@ module.exports = {
 
         authorize: {
             authorize: {
-                secured: false,
+                secured: true,
                 key: '/authorize',
                 method: 'POST',
                 handler: 'AuthenticationProviderController',

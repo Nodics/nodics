@@ -20,7 +20,7 @@ const data = require('./loaders/dataLoader');
 
 module.exports = {
     init: function() {
-        SYSTEM.LOG.info('=> Staring process to load Modules');
+        SYSTEM.LOG.info('Staring process to load Modules');
         let _self = this;
         let moduleIndex = CONFIG.get('moduleIndex');
         Object.keys(moduleIndex).forEach(function(key) {
@@ -30,7 +30,7 @@ module.exports = {
     },
 
     loadModule: function(module) {
-        SYSTEM.LOG.info(' =>Staring process for module : ', module.name);
+        SYSTEM.LOG.debug('Staring process for module : ', module.name);
         dao.loadDao(module);
         service.loadServices(module);
         processDefinition.loadProcessDefinition(module);

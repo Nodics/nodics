@@ -12,6 +12,6 @@
 const sys = require('./system');
 
 module.exports.init = function() {
-    sys.LOG.info('=> Starting System loader process');
+    sys.LOG.info('Starting System loader process');
     sys.loadFiles('/bin/system.js', global.SYSTEM);
 };

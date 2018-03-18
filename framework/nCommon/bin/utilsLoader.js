@@ -11,7 +11,7 @@
 
 module.exports = {
     loadUtils: function() {
-        SYSTEM.LOG.info('=> Staring Utils loader process');
+        SYSTEM.LOG.info('Staring Utils loader process');
         SYSTEM.loadFiles('/src/utils/utils.js', global.UTILS);
     }
 };

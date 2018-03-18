@@ -15,7 +15,7 @@ const _ = require('lodash');
 module.exports = {
 
     buildRequest: function(options) {
-        this.LOG.info('   INFO: Building request url for module ', options.moduleName);
+        this.LOG.debug('Building request url for module ', options.moduleName);
         let header = {
             'content-type': options.contentType || CONFIG.get('defaultContentType')
         };
