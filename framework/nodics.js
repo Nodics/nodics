@@ -57,7 +57,9 @@ module.exports = {
     },
 
     initTestRuner: function() {
-        test.initTest().then(success => {}).catch(error => {});
+        test.initTest().then(success => {
+            //console.log(SERVICE);
+        }).catch(error => {});
     },
 
     startNodics: function(options) {

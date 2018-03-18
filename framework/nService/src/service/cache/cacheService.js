@@ -37,7 +37,7 @@ module.exports = {
     initApiCache: function(moduleObject, moduleName, cacheConfig) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (moduleObject.metaData.publish) {
+            if (moduleObject.metaData && moduleObject.metaData.publish) {
                 if (!moduleObject.apiCache &&
                     cacheConfig.apiCache.enabled) {
                     SERVICE[cacheConfig.apiCache.engine.toUpperCaseFirstChar() + 'CacheService']

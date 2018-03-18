@@ -36,7 +36,7 @@ module.exports = {
                     } else if (value) {
                         resolve(value);
                     } else {
-                        reject();
+                        reject(false);
                     }
                 });
             } catch (error) {
