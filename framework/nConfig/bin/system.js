@@ -337,6 +337,9 @@ module.exports = {
         let fileConfig = _.merge({}, logConfig.fileConfig);
         fileConfig.label = entityName;
         fileConfig.dirname = NODICS.getServerHome() + '/logs';
+        if (!fs.existsSync(fileConfig.dirname)) {
+            fs.mkdirSync(fileConfig.dirname);
+        }
         try {
             transport = new winston.transports.DailyRotateFile(fileConfig);
         } catch (error) {
