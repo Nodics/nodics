@@ -10,8 +10,9 @@
  */
 
 const _ = require('lodash');
+const path = require('path');
 const fs = require('fs');
-const path = require("path");
+const util = require('util');
 
 module.exports = {
     getFileNameWithoutExtension: function(filePath) {
@@ -19,47 +20,76 @@ module.exports = {
         return fileName.toUpperCaseFirstChar();
     },
 
-    schemaWalkThrough: function(options, callback) {
-        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-            if (moduleObject.models) {
-                _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
-                    if (schemaObject.model) {
-                        options.moduleName = moduleName;
-                        options.moduleObject = moduleObject;
-                        options.schemaName = schemaName;
-                        options.schemaObject = schemaObject;
-                        callback(options);
+    schemaWalkThrough: function(options) {
+        return new Promise((resolve, reject) => {
+            if (!fs.existsSync(options.currentDir)) {
+                fs.mkdirSync(options.currentDir);
+            } else if (NODICS.isModifed()) {
+                SYSTEM.removeDirectory(options.currentDir, false);
+                let allPromise = [];
+                _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                    if (moduleObject.models) {
+                        _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
+                            if (schemaObject.model) {
+                                options.moduleName = moduleName;
+                                options.moduleObject = moduleObject;
+                                options.schemaName = schemaName;
+                                options.schemaObject = schemaObject;
+                                allPromise.push(SYSTEM.createObject(options));
+                            }
+                        });
                     }
                 });
+                if (allPromise.length > 0) {
+                    Promise.all(allPromise).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            } else {
+                resolve(true);
             }
         });
     },
 
-    modelsWalkThrough: function(options, callback) {
-        if (options.moduleName) {
-            _.each(NODICS.getModules()[options.moduleName].rawSchema, (schemaObject, schemaName) => {
-                if (schemaObject.model) {
-                    options.schemaName = schemaName;
-                    options.schemaObject = schemaObject;
-                    callback(options);
-                }
-            });
-        } else {
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                if (moduleObject.models) {
-                    _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
-                        if (schemaObject.model) {
-                            options.moduleName = moduleName;
-                            options.moduleObject = moduleObject;
-                            options.schemaName = schemaName;
-                            options.schemaObject = schemaObject;
-                            callback(options);
+    createObject: function(options) {
+        return new Promise((resolve, reject) => {
+            let _self = this;
+            options.modelName = options.schemaName.toUpperCaseEachWord();
+            if (options.schemaObject.model) {
+                let entityName = options.modelName + options.postFix;
+                let fileName = options.currentDir + '/' + entityName + '.js';
+                let copyWrite = '/*\n' +
+                    '\tNodics - Enterprice Micro-Services Management Framework\n\n' +
+
+                    '\tCopyright (c) 2017 Nodics All rights reserved.\n\n' +
+
+                    '\tThis software is the confidential and proprietary information of Nodics ("Confidential Information")\n' +
+                    '\tYou shall not disclose such Confidential Information and shall use it only in accordance with the\n' +
+                    '\tterms of the license agreement you entered into with Nodics\n' +
+
+                    '*/\n\n';
+                let data = copyWrite + 'module.exports = ' + SYSTEM.replacePlaceholders(options).replace(/\\n/gm, '\n').replaceAll("\"", "") + ';';
+                data = data.replaceAll('= {', '= { \n\t').replaceAll('},', '},\n\t').replaceAll('}}', '}\n}');
+                fs.writeFile(fileName,
+                    data,
+                    'utf-8',
+                    function(error, success) {
+                        if (error) {
+                            SYSTEM.LOG.error('While creating object for file : ', fileName, ' : ', error);
+                            reject(error);
+                        } else {
+                            SYSTEM.LOG.debug('Creating class object for : ', fileName);
+                            DAO[entityName] = require(fileName);
+                            DAO[entityName].LOG = SYSTEM.createLogger(entityName);
+                            resolve(true);
                         }
                     });
-                }
-            });
-        }
-
+            }
+        });
     },
 
     replacePlaceholders: function(options) {
@@ -81,14 +111,7 @@ module.exports = {
             .replaceAll('FacadeName', options.modelName + 'Facade')
             .replaceAll("contextRoot", contextRoot)
             .replaceAll("controllerName", options.modelName + 'Controller');
-        return JSON.parse(commonDefinitionString, function(key, value) {
-            if (_(value).startsWith('function')) {
-                value = value.replace("function", key + ' = function');
-                return eval(value);
-            } else {
-                return value;
-            }
-        });
+        return commonDefinitionString;
     },
 
     startServers: function() {
@@ -130,5 +153,37 @@ module.exports = {
                 reject(error);
             }
         });
+    },
+
+    createFile: function(filePath, data) {
+        return new Promise((resolve, reject) => {
+            fs.writeFile(filePath, data, function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    },
+
+    removeDirectory: function(dirPath, removeSelf) {
+        if (removeSelf === undefined)
+            removeSelf = true;
+        try {
+            var files = fs.readdirSync(dirPath);
+        } catch (e) {
+            return;
+        }
+        if (files.length > 0)
+            for (var i = 0; i < files.length; i++) {
+                var filePath = dirPath + '/' + files[i];
+                if (fs.statSync(filePath).isFile())
+                    fs.unlinkSync(filePath);
+                else
+                    rmDir(filePath);
+            }
+        if (removeSelf)
+            fs.rmdirSync(dirPath);
     }
 };

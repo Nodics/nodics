@@ -62,13 +62,12 @@ module.exports = {
 
         defineDefaultGet: function(model, rawSchema) {
             model.statics.get = function(input) {
-                //this.LOG.info('------------------ : ');
                 let moduleObject = NODICS.getModules()[rawSchema.moduleName];
                 if (moduleObject.itemCache && rawSchema.cache && rawSchema.cache.enabled) {
                     return new Promise((resolve, reject) => {
                         let query = SERVICE.CacheService.createItemKey(input);
                         SERVICE.CacheService.getItem(rawSchema, moduleObject.itemCache, query).then(value => {
-                            this.LOG.info('      Fulfilled from Item cache');
+                            this.LOG.info('Fulfilled from Item cache');
                             value.cache = 'item hit';
                             resolve(value);
                         }).catch(error => {

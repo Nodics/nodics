@@ -32,17 +32,18 @@ module.exports = {
 
     loadModulesMetaData: function() {
         sys.getModulesMetaData();
-        sys.LOG.info('Modules : ');
+        let modules = '';
         _.each(CONFIG.get('moduleIndex'), (obj, key) => {
-            process.stdout.write(obj[0].name + ',');
+            modules = modules + obj[0].name + ',';
         });
-        process.stdout.write('\n');
+        sys.LOG.info('Modules: ', modules);
     },
 
     /*
      * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
      * will load properties from $MODULE/common/properties.js
      */
+
     loadCommonProperties: function() {
         return this.loadProperties('/config/properties.js');
     },

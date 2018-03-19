@@ -26,12 +26,20 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
     let _startTime = 0;
     let _entTime = 0;
     let _loggers = {};
+    let _isModified = false;
     this.LOG = {};
 
     let _nodics = {
         modules: {},
         dbs: {},
         validators: {}
+    };
+
+    this.setIsModified = function(isModified) {
+        _isModified = isModified;
+    };
+    this.isModifed = function() {
+        return _isModified;
     };
 
     this.setStartTime = function(time) {

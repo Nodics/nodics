@@ -17,6 +17,6 @@ module.exports = {
     },
     loadService: function() {
         SYSTEM.LOG.info('Starting Service Generation process');
-        service.init();
+        return service.init();
     }
 };

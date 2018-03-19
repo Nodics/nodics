@@ -12,34 +12,10 @@
 const _ = require('lodash');
 
 module.exports = {
-    /* 
-        buildDefaultHandler: function() {
-            return SYSTEM.loadFiles('/src/process/common.js');
-        },
-
-        buildProcessService: function() {
-            let process = global.PROCESS;
-            process['ProcessService'] = SYSTEM.loadFiles('/src/process/processService.js');
-        },
-    */
-    buildProcesses: function() {
-        _self = this;
-        global.PROCESS = SYSTEM.loadFiles('/src/process/processDefinition.js');
-        /*
-            let process = global.PROCESS;
-            _.each(processDefinitions, function(value, key) {
-                if (key !== 'defaultProcess') {
-                    tmpProcessHead = new CLASSES.ProcessHead(key, value, processDefinitions.defaultProcess);
-                    tmpProcessHead.buildProcess();
-                    process[key] = tmpProcessHead;
-                }
-            });
-        */
-    },
-
     init: function() {
-        // let commonHandlers = this.buildDefaultHandler();
-        // this.buildProcessService();
-        this.buildProcesses();
+        return new Promise((resolve, reject) => {
+            global.PROCESS = SYSTEM.loadFiles('/src/process/processDefinition.js');
+            resolve(true);
+        });
     }
 };

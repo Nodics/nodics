@@ -177,7 +177,7 @@ module.exports = {
 
     deploySchemas: function() {
         SYSTEM.LOG.debug('Starting schemas loading process');
-        let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js');
+        let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js', null, true);
         let options = {
             interceptors: SYSTEM.loadFiles('/src/schemas/interceptors.js'),
             daos: SYSTEM.loadFiles('/src/schemas/model.js'),

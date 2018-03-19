@@ -9,19 +9,24 @@
 
  */
 
-module.exports = {
-    generateDao: function(options) {
-        let _self = this;
-        options.modelName = options.schemaName.toUpperCaseEachWord();
-        if (options.schemaObject.model) {
-            let entityName = options.modelName + 'Dao';
-            DAO[entityName] = SYSTEM.replacePlaceholders(options);
-            DAO[entityName].LOG = SYSTEM.createLogger(entityName);
-        }
-    },
+const _ = require('lodash');
+const fs = require('fs');
+const path = require("path");
 
+module.exports = {
     init: function() {
-        let daoCommon = SYSTEM.loadFiles('/src/dao/common.js');
-        SYSTEM.schemaWalkThrough({ commonDefinition: daoCommon }, this.generateDao);
+        return new Promise((resolve, reject) => {
+            let daoCommon = SYSTEM.loadFiles('/src/dao/common.js');
+            let genDir = path.join(__dirname, '../src/dao/gen');
+            SYSTEM.schemaWalkThrough({
+                commonDefinition: daoCommon,
+                currentDir: genDir,
+                postFix: 'Dao'
+            }).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     }
 };

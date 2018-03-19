@@ -19,6 +19,7 @@ const winston = require('winston');
 require('winston-daily-rotate-file');
 const Elasticsearch = require('winston-elasticsearch');
 const props = require('../config/properties');
+const lastmodified = require('lastmodified');
 
 module.exports = {
     getActiveModules: function(options) {
@@ -77,17 +78,29 @@ module.exports = {
         if (!options.CUSTOM_HOME) {
             options.CUSTOM_HOME = process.env.CUSTOM_HOME || options.NODICS_HOME;
         }
+        let nodeHome = process.argv[0];
+        let nodicsHome = process.argv[1];
+        let clean = process.argv[2];
+        let appName = process.argv[3];
+        let envName = process.argv[4];
+        let serverName = process.argv[5];
+
+        if (clean && clean !== 'clean') {
+            serverName = envName;
+            envName = appName;
+            appName = clean;
+        }
         if (!options.NODICS_APP) {
-            if (process.argv[2]) {
-                options.NODICS_APP = process.argv[2];
+            if (appName) {
+                options.NODICS_APP = appName;
             } else {
                 console.warn('Could not found App Name, So starting with default "kickoff"');
                 options.NODICS_APP = 'kickoff';
             }
         }
         if (!options.NODICS_ENV) {
-            if (process.argv[3]) {
-                options.NODICS_ENV = process.argv[3];
+            if (envName) {
+                options.NODICS_ENV = envName;
             } else {
                 console.warn('Could not found Environment Name, So starting with default "local"');
                 options.NODICS_ENV = 'local';
@@ -95,8 +108,8 @@ module.exports = {
 
         }
         if (!options.NODICS_SEVER) {
-            if (process.argv[4]) {
-                options.NODICS_SEVER = process.argv[4];
+            if (serverName) {
+                options.NODICS_SEVER = serverName;
             } else {
                 options.NODICS_SEVER = 'sampleServer';
                 console.warn('Could not found Server Name, So starting with default "sampleServer"');
@@ -124,6 +137,9 @@ module.exports = {
         }
         //global.NODICS = new Nodics(options.NODICS_ENV, options.NODICS_HOME, options.NODICS_SEVER, options.argv);
         global.NODICS = new Nodics(options.NODICS_HOME, options.CUSTOM_HOME, options.NODICS_APP, options.NODICS_ENV, options.NODICS_SEVER, options.argv);
+        if (clean && clean === 'clean') {
+            NODICS.setIsModified(true);
+        }
         NODICS.setActiveModules(this.getActiveModules(options));
         global.CONFIG = new Config();
         CONFIG.setProperties({});

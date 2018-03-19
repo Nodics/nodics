@@ -9,19 +9,27 @@
 
  */
 
-module.exports = {
-    generateServices: function(options) {
-        let _self = this;
-        options.modelName = options.schemaName.toUpperCaseEachWord();
-        if (options.schemaObject.service) {
-            let entityName = options.modelName + 'Service';
-            SERVICE[entityName] = SYSTEM.replacePlaceholders(options);
-            SERVICE[entityName].LOG = SYSTEM.createLogger(entityName);
-        }
-    },
+const _ = require('lodash');
+const fs = require('fs');
+const path = require("path");
 
+module.exports = {
     init: function() {
-        let serviceCommon = SYSTEM.loadFiles('/src/service/common.js');
-        SYSTEM.schemaWalkThrough({ commonDefinition: serviceCommon }, this.generateServices);
+        return new Promise((resolve, reject) => {
+            let serviceCommon = SYSTEM.loadFiles('/src/service/common.js');
+            let genDir = path.join(__dirname, '../src/service/gen');
+            if (!fs.existsSync(genDir)) {
+                fs.mkdirSync(genDir);
+            }
+            SYSTEM.schemaWalkThrough({
+                commonDefinition: serviceCommon,
+                currentDir: genDir,
+                postFix: 'Service'
+            }).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     }
 };

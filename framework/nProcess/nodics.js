@@ -17,6 +17,6 @@ module.exports = {
     },
     loadProcess: function() {
         SYSTEM.LOG.info('Starting Process Defintion builder process');
-        processBuilder.init();
+        return processBuilder.init();
     }
 };

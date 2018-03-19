@@ -10,20 +10,26 @@
  */
 
 const _ = require('lodash');
+const fs = require('fs');
+const path = require("path");
 
 module.exports = {
-    generateFacades: function(options) {
-        let _self = this;
-        options.modelName = options.schemaName.toUpperCaseEachWord();
-        if (options.schemaObject.service) {
-            let entityName = options.modelName + 'Facade';
-            FACADE[entityName] = SYSTEM.replacePlaceholders(options);
-            FACADE[entityName].LOG = SYSTEM.createLogger(entityName);
-        }
-    },
-
     init: function() {
-        let facadeCommon = SYSTEM.loadFiles('/src/facade/common.js');
-        SYSTEM.schemaWalkThrough({ commonDefinition: facadeCommon }, this.generateFacades);
+        return new Promise((resolve, reject) => {
+            let serviceCommon = SYSTEM.loadFiles('/src/facade/common.js');
+            let genDir = path.join(__dirname, '../src/facade/gen');
+            if (!fs.existsSync(genDir)) {
+                fs.mkdirSync(genDir);
+            }
+            SYSTEM.schemaWalkThrough({
+                commonDefinition: serviceCommon,
+                currentDir: genDir,
+                postFix: 'Facade'
+            }).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     }
 };

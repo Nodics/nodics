@@ -19,4 +19,7 @@ module.exports = {
             'local'
         ]
     },
+    log: {
+        level: 'debug'
+    }
 };

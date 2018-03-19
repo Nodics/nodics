@@ -9,19 +9,28 @@
 
  */
 
+const _ = require('lodash');
+const fs = require('fs');
+const path = require("path");
+
 module.exports = {
-    generateControllers: function(options) {
-        let _self = this;
-        options.modelName = options.schemaName.toUpperCaseEachWord();
-        if (options.schemaObject.service) {
-            let entityName = options.modelName + 'Controller';
-            CONTROLLER[entityName] = SYSTEM.replacePlaceholders(options);
-            CONTROLLER[entityName].LOG = SYSTEM.createLogger(entityName);
-        }
-    },
 
     init: function() {
-        let controllerCommon = SYSTEM.loadFiles('/src/controller/common.js');
-        SYSTEM.schemaWalkThrough({ commonDefinition: controllerCommon }, this.generateControllers);
+        return new Promise((resolve, reject) => {
+            let serviceCommon = SYSTEM.loadFiles('/src/controller/common.js');
+            let genDir = path.join(__dirname, '../src/controller/gen');
+            if (!fs.existsSync(genDir)) {
+                fs.mkdirSync(genDir);
+            }
+            SYSTEM.schemaWalkThrough({
+                commonDefinition: serviceCommon,
+                currentDir: genDir,
+                postFix: 'Controller'
+            }).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     }
 };

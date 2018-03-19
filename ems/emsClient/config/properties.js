@@ -12,7 +12,7 @@
 module.exports = {
 
     emsClient: {
-        enabled: true,
+        enabled: false,
         type: 'activemq', //tibco, activemq, rebbitmq, Kafka
 
         tibco: {

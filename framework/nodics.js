@@ -32,23 +32,34 @@ module.exports = {
             SYSTEM.executePreScripts();
             common.loadCommon();
             db.loadDatabase().then(success => {
-                dao.loadDao();
-                services.loadService();
-                process.loadProcess();
-                facades.loadFacade();
-                controllers.loadController();
-                SYSTEM.loadModules();
-                event.loadListeners();
-                router.loadRouter();
-                SYSTEM.executePostScripts();
-                if (NODICS.isInitRequired()) {
-                    SERVICE.DataImportService.importInitData().then(success => {
-                        resolve(true);
+                let allPromise = [
+                    dao.loadDao(),
+                    services.loadService(),
+                    process.loadProcess(),
+                    facades.loadFacade(),
+                    controllers.loadController()
+                ];
+                if (allPromise.length > 0) {
+                    Promise.all(allPromise).then(success => {
+                        SYSTEM.loadModules();
+                        event.loadListeners();
+                        router.loadRouter();
+                        SYSTEM.executePostScripts();
+                        if (NODICS.isInitRequired()) {
+                            SERVICE.DataImportService.importInitData().then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
+                            resolve(true);
+                        }
                     }).catch(error => {
+                        SYSTEM.LOG.error('While generating default clesses : ', error);
                         reject(error);
                     });
                 } else {
-                    resolve(true);
+                    reject();
                 }
             }).catch(error => {
                 reject(error);
@@ -57,9 +68,7 @@ module.exports = {
     },
 
     initTestRuner: function() {
-        test.initTest().then(success => {
-            //console.log(SERVICE);
-        }).catch(error => {});
+        test.initTest().then(success => {}).catch(error => {});
     },
 
     startNodics: function(options) {
@@ -80,6 +89,7 @@ module.exports = {
             }).catch(error => {
                 SYSTEM.LOG.error('Nodics server error : ', error);
             });
+            //process.exit(1);
         }).catch(error => {
             SYSTEM.LOG.error('Nodics server error : ', error);
         });

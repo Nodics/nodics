@@ -28,10 +28,11 @@ module.exports = {
         }
         sys.LOG.info('Initializing Nodics, Node based enterprise application solution   ###');
         sys.LOG.info('---------------------------------------------------------------------------');
-        sys.LOG.info('SERVER_PATH : ', NODICS.getServerHome());
-        sys.LOG.info('NODICS_HOME : ', NODICS.getNodicsHome());
-        sys.LOG.info('NODICS_APP  : ', NODICS.getActiveApplication());
-        sys.LOG.info('NODICS_ENV  : ', NODICS.getActiveEnvironment());
+        sys.LOG.info('SERVER_PATH       : ', NODICS.getServerHome());
+        sys.LOG.info('NODICS_HOME       : ', NODICS.getNodicsHome());
+        sys.LOG.info('NODICS_APP        : ', NODICS.getActiveApplication());
+        sys.LOG.info('NODICS_ENV        : ', NODICS.getActiveEnvironment());
+        sys.LOG.info('NODICS_SERVER     : ', NODICS.getServerName());
         sys.LOG.info('---------------------------------------------------------------------------');
         propertyLoader.init();
         NODICS.setStartTime(startTime);
