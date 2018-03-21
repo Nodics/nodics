@@ -131,7 +131,8 @@ module.exports = {
                 loginId: {
                     type: "String",
                     required: true,
-                    unique: true
+                    unique: true,
+                    index: true
                 },
                 personId: {
                     type: 'String',
@@ -161,7 +162,8 @@ module.exports = {
                 loginId: {
                     type: "String",
                     required: true,
-                    unique: true
+                    unique: true,
+                    index: true
                 },
                 attempts: {
                     type: 'Number',
@@ -202,7 +204,11 @@ module.exports = {
             },
             definition: {
                 // ...
+            },
+            options: {
+                strict: true
             }
+
         },
 
         customer: {

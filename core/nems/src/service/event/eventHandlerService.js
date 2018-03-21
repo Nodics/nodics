@@ -117,15 +117,20 @@ module.exports = {
             processed.push(
                 new Promise((resolve, reject) => {
                     _self.broadcastEvent(event, (err, response) => {
-                        if (err) {
-                            event.state = ENUMS.EventState.ERROR;
-                            event.log.push(err.toString());
-                        } else {
-                            event.state = ENUMS.EventState.FINISHED;
-                            event.log.push('Published Successfully');
+                        try {
+                            if (err) {
+                                event.state = ENUMS.EventState.ERROR;
+                                event.log.push(err.toString());
+                            } else {
+                                event.state = ENUMS.EventState.FINISHED;
+                                event.log.push('Published Successfully');
+                            }
+                            event.hits = event.hits + 1;
+                            resolve(event);
+                        } catch (error) {
+                            _self.LOG.error('While preparing broadcasting events : ', error);
+                            resolve(event);
                         }
-                        event.hits = event.hits + 1;
-                        resolve(event);
                     });
                 })
             );
@@ -134,30 +139,39 @@ module.exports = {
         Promise.all(processed).then(result => {
             callback(null, result);
         }).catch(error => {
+            console.log(error);
             callback(error);
         });
     },
 
     broadcastEvent: function(event, callback) {
-        let options = {
-            moduleName: event.target,
-            methodName: 'POST',
-            apiName: 'event/handle',
-            requestBody: event,
-            isJsonResponse: true,
-            header: {
-                authToken: NODICS.getModule('nems').metaData.authToken
-            }
-        };
-        let requestUrl = SERVICE.ModuleService.buildRequest(options);
-        SERVICE.ModuleService.fetch(requestUrl).then(response => {
-            if (response.success) {
-                callback(null, response);
-            } else {
-                callback(JSON.stringify(response.errors));
-            }
-        }).catch(error => {
+        let _self = this;
+        try {
+            let options = {
+                connectionType: 'cluster',
+                clusterId: CONFIG.get('publishEventOnCluster') || 'cluster0',
+                moduleName: event.target,
+                methodName: 'POST',
+                apiName: 'event/handle',
+                requestBody: event,
+                isJsonResponse: true,
+                header: {
+                    authToken: NODICS.getModule('nems').metaData.authToken
+                }
+            };
+            let requestUrl = SERVICE.ModuleService.buildRequest(options);
+            SERVICE.ModuleService.fetch(requestUrl).then(response => {
+                if (response.success) {
+                    callback(null, response);
+                } else {
+                    callback(JSON.stringify(response.errors));
+                }
+            }).catch(error => {
+                callback(error);
+            });
+        } catch (error) {
+            _self.LOG.error('While broadcasting events : ', error);
             callback(error);
-        });
+        }
     }
 };

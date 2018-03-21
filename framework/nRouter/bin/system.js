@@ -38,67 +38,87 @@ module.exports = {
     },
 
     getServerConfiguration: function(moduleName) {
-        let moduleServerConfiguration = CONFIG.get('server')[moduleName];
-        if (!moduleServerConfiguration || CONFIG.get('server').runAsSingleModule) {
-            moduleServerConfiguration = CONFIG.get('server').default;
+        let config = CONFIG.get('server')[moduleName];
+        if (!config || !config.server) {
+            config = CONFIG.get('server').default.server;
+        } else {
+            config = CONFIG.get('server')[moduleName].server;
         }
-        return moduleServerConfiguration;
+        return config;
     },
 
+    getClusterConfiguration: function(moduleName, clusterId) {
+        let config = CONFIG.get('server')[moduleName];
+        if (!config || !config.server) {
+            if (CONFIG.get('server').default[clusterId]) {
+                config = CONFIG.get('server').default[clusterId];
+            } else {
+                config = CONFIG.get('server').default.server;
+            }
+        } else {
+            if (CONFIG.get('server')[moduleName][clusterId]) {
+                config = CONFIG.get('server')[moduleName][clusterId];
+            } else {
+                config = CONFIG.get('server')[moduleName].server;
+            }
+        }
+        return config;
+    },
+
+    getAbstractServerConfiguration: function(moduleName) {
+        let config = CONFIG.get('server')[moduleName];
+        if (!config || !config.server) {
+            config = CONFIG.get('server').default.abstract;
+        } else {
+            config = CONFIG.get('server')[moduleName].abstract;
+        }
+        return config;
+    },
+
+
     getHost: function(moduleName) {
-        return SYSTEM.getServerConfiguration(moduleName).server.httpHost;
+        return SYSTEM.getServerConfiguration(moduleName).httpHost;
     },
     getPort: function(moduleName) {
-        return SYSTEM.getServerConfiguration(moduleName).server.httpPort;
+        return SYSTEM.getServerConfiguration(moduleName).httpPort;
     },
 
     getSecuredHost: function(moduleName) {
-        return SYSTEM.getServerConfiguration(moduleName).server.httpsHost;
+        return SYSTEM.getServerConfiguration(moduleName).httpsHost;
     },
     getSecuredPort: function(moduleName) {
-        return SYSTEM.getServerConfiguration(moduleName).server.httpsPort;
+        return SYSTEM.getServerConfiguration(moduleName).httpsPort;
     },
 
     getAbstractHost: function(moduleName) {
-        let moduleServerConfiguration = SYSTEM.getServerConfiguration(moduleName);
-
-        if (UTILS.isBlank(moduleServerConfiguration.abstractServer)) {
-            moduleServerConfiguration = moduleServerConfiguration.server;
-        } else {
-            moduleServerConfiguration = moduleServerConfiguration.abstractServer;
-        }
-        return moduleServerConfiguration.httpHost;
+        return SYSTEM.getAbstractServerConfiguration(moduleName).httpHost;
     },
 
     getAbstractPort: function(moduleName) {
-        let moduleServerConfiguration = SYSTEM.getServerConfiguration(moduleName);
-
-        if (UTILS.isBlank(moduleServerConfiguration.abstractServer)) {
-            moduleServerConfiguration = moduleServerConfiguration.server;
-        } else {
-            moduleServerConfiguration = moduleServerConfiguration.abstractServer;
-        }
-        return moduleServerConfiguration.httpPort;
+        return SYSTEM.getAbstractServerConfiguration(moduleName).httpPort;
     },
     getAbstractSecuredHost: function(moduleName) {
-        let moduleServerConfiguration = SYSTEM.getServerConfiguration(moduleName);
-
-        if (UTILS.isBlank(moduleServerConfiguration.abstractServer)) {
-            moduleServerConfiguration = moduleServerConfiguration.server;
-        } else {
-            moduleServerConfiguration = moduleServerConfiguration.abstractServer;
-        }
-        return moduleServerConfiguration.httpsHost;
+        return SYSTEM.getAbstractServerConfiguration(moduleName).httpsHost;
     },
 
     getAbstractSecuredPort: function(moduleName) {
-        let moduleServerConfiguration = SYSTEM.getServerConfiguration(moduleName);
+        return SYSTEM.getAbstractServerConfiguration(moduleName).httpsPort;
+    },
 
-        if (UTILS.isBlank(moduleServerConfiguration.abstractServer)) {
-            moduleServerConfiguration = moduleServerConfiguration.server;
-        } else {
-            moduleServerConfiguration = moduleServerConfiguration.abstractServer;
-        }
-        return moduleServerConfiguration.httpsPort;
+
+
+    getClusterHost: function(moduleName, clusterId) {
+        return SYSTEM.getClusterConfiguration(moduleName, clusterId).httpHost;
+    },
+
+    getClusterPort: function(moduleName, clusterId) {
+        return SYSTEM.getClusterConfiguration(moduleName, clusterId).httpPort;
+    },
+    getClusterSecuredHost: function(moduleName, clusterId) {
+        return SYSTEM.getClusterConfiguration(moduleName, clusterId).httpsHost;
+    },
+
+    getClusterSecuredPort: function(moduleName, clusterId) {
+        return SYSTEM.getClusterConfiguration(moduleName, clusterId).httpsPort;
     }
 };

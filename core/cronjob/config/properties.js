@@ -29,20 +29,27 @@ module.exports = {
 
     server: {
         cronjob: {
-            abstractServer: {
-                httpHost: 'localhost',
-                httpPort: '3002',
-
-                httpsHost: 'localhost',
-                httpsPort: '3002'
-            },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3002,
+                httpPort: 3000,
 
                 httpsHost: 'localhost',
-                httpsPort: 3003
+                httpsPort: 3001
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: '3000',
 
+                httpsHost: 'localhost',
+                httpsPort: '3001'
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            cluster0: {
+                httpHost: 'localhost',
+                httpPort: '3000',
+
+                httpsHost: 'localhost',
+                httpsPort: '3001'
             }
         }
     },

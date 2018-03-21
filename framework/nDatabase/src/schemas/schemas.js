@@ -20,7 +20,8 @@ module.exports = {
             definition: {
                 enterpriseCode: {
                     type: 'String',
-                    required: true
+                    required: true,
+                    index: true
                 },
                 created: {
                     type: 'Date',

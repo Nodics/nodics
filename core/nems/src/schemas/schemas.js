@@ -8,6 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+let mongoose = require('mongoose');
 
 module.exports = {
     nems: {
@@ -49,14 +50,7 @@ module.exports = {
                 log: [{
                     type: 'String'
                 }],
-                params: [{
-                    key: {
-                        type: 'String'
-                    },
-                    value: {
-                        type: 'String'
-                    }
-                }]
+                params: [{}]
             }
         },
 
@@ -69,6 +63,18 @@ module.exports = {
             definition: {
 
             }
-        }
+        },
+        /*
+            temp: {
+                super: 'none',
+                model: true,
+                service: true,
+                event: false,
+                router: true,
+                definition: {
+
+                }
+            }
+        */
     }
 };

@@ -22,9 +22,18 @@ module.exports = {
         if (options.header) {
             _.merge(header, options.header);
         }
+        let url = SYSTEM.prepareUrl(options.moduleName);
+        if (options.connectionType === 'abstract') {
+            url = SYSTEM.prepareAbstractUrl(options.moduleName);
+        } else if (options.connectionType === 'cluster') {
+            if (!options.clusterId) {
+                options.clusterId = 'cluster0';
+            }
+            url = SYSTEM.prepareClusterUrl(options.moduleName, options.clusterId);
+        }
         return {
             method: options.methodName || 'GET',
-            uri: SYSTEM.prepareConnectionUrl(options.moduleName) + '/' + options.apiName,
+            uri: url + '/' + options.apiName,
             headers: header,
             body: options.requestBody,
             json: options.isJsonResponse || true
@@ -32,6 +41,7 @@ module.exports = {
     },
 
     fetch: function(requestUrl, callback) {
+        this.LOG.debug('Hitting module communication URL : ', JSON.stringify(requestUrl));
         if (callback) {
             requestPromise(requestUrl)
                 .then(response => {

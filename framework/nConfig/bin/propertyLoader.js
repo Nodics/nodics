@@ -23,7 +23,7 @@ module.exports = {
             var value = moduleIndex[key][0];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
-                sys.LOG.debug('Loading configration file from : ' + filePath);
+                sys.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
                 var commonPropertyFile = require(filePath);
                 config = _.merge(config, commonPropertyFile);
             }
@@ -60,15 +60,15 @@ module.exports = {
                 let evnTenantPropPath = envHome + '/config/' + tntName + '-properties.js';
                 let serverTenantPropPath = NODICS.getServerHome() + '/config/' + tntName + '-properties.js';
                 if (fs.existsSync(appTenantPropPath)) {
-                    sys.LOG.debug('Loading configration file from : ', appTenantPropPath);
+                    sys.LOG.debug('Loading configration file from : ', appTenantPropPath.replace(NODICS.getNodicsHome(), '.'));
                     mergedProperties = _.merge(mergedProperties, require(appTenantPropPath));
                 }
                 if (fs.existsSync(evnTenantPropPath)) {
-                    sys.LOG.debug('Loading configration file from : ', evnTenantPropPath);
+                    sys.LOG.debug('Loading configration file from : ', evnTenantPropPath.replace(NODICS.getNodicsHome(), '.'));
                     mergedProperties = _.merge(mergedProperties, require(evnTenantPropPath));
                 }
                 if (fs.existsSync(serverTenantPropPath)) {
-                    sys.LOG.debug('Loading configration file from : ', serverTenantPropPath);
+                    sys.LOG.debug('Loading configration file from : ', serverTenantPropPath.replace(NODICS.getNodicsHome(), '.'));
                     mergedProperties = _.merge(mergedProperties, require(serverTenantPropPath));
                 }
                 if (!mergedProperties.database) {
@@ -90,14 +90,14 @@ module.exports = {
         if (CONFIG.get('externalPropertyFile') && CONFIG.get('externalPropertyFile').length > 0) {
             CONFIG.get('externalPropertyFile').forEach(function(filePath) {
                 if (fs.existsSync(filePath)) {
-                    sys.LOG.debug('Loading configration file from : ' + filePath);
+                    sys.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
                     var commonPropertyFile = require(filePath);
                     CONFIG.get('installedTanents').forEach(function(tntName) {
                         let tntConfig = CONFIG.getProperties(tntName);
                         tntConfig = _.merge(tntConfig, commonPropertyFile);
                     });
                 } else {
-                    sys.LOG.warn('System cant find configuration at : ' + filePath);
+                    sys.LOG.warn('System cant find configuration at : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
                 }
             });
         }

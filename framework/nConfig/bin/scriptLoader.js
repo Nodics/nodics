@@ -46,22 +46,22 @@ module.exports = {
         var commonScriptFilePath = NODICS.getServerHome() + '/config/common/postscripts.js';
         var envScriptFilePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/postscripts.js';
         if (fs.existsSync(commonScriptFilePath)) {
-            SYSTEM.LOG.debug("Loading file from : " + commonScriptFilePath);
+            SYSTEM.LOG.debug("Loading file from : " + commonScriptFilePath.replace(NODICS.getNodicsHome(), '.'));
             mergedFile = _.merge(mergedFile, require(commonScriptFilePath));
         }
         if (fs.existsSync(envScriptFilePath)) {
-            SYSTEM.LOG.debug("Loading file from : " + envScriptFilePath);
+            SYSTEM.LOG.debug("Loading file from : " + envScriptFilePath.replace(NODICS.getNodicsHome(), '.'));
             mergedFile = _.merge(mergedFile, require(envScriptFilePath));
         }
 
         let commonTenantScriptFilePath = NODICS.getServerHome() + '/config/common/' + NODICS.getActiveTanent() + '-postscripts.js';
         if (fs.existsSync(commonTenantScriptFilePath)) {
-            SYSTEM.LOG.debug("Loading script file from : " + commonTenantScriptFilePath);
+            SYSTEM.LOG.debug("Loading script file from : " + commonTenantScriptFilePath.replace(NODICS.getNodicsHome(), '.'));
             mergedFile = _.merge(mergedFile, require(commonTenantScriptFilePath));
         }
         var envTenantScriptFilePath = NODICS.getServerHome() + '/config/env-' + NODICS.getActiveEnvironment() + '/' + NODICS.getActiveTanent() + '-postscripts.js';
         if (fs.existsSync(envTenantScriptFilePath)) {
-            SYSTEM.LOG.debug("Loading script file from : " + envTenantScriptFilePath);
+            SYSTEM.LOG.debug("Loading script file from : " + envTenantScriptFilePath.replace(NODICS.getNodicsHome(), '.'));
             mergedFile = _.merge(mergedFile, require(envTenantScriptFilePath));
         }
         return mergedFile;

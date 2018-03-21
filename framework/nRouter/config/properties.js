@@ -24,19 +24,27 @@ module.exports = {
         contextRoot: 'nodics',
         runAsSingleModule: true,
         default: {
-            abstractServer: {
-                httpHost: 'localhost',
-                httpPort: '3000',
-
-                httpsHost: 'localhost',
-                httpsPort: '3000'
-            },
             server: {
                 httpHost: 'localhost',
                 httpPort: 3000,
 
                 httpsHost: 'localhost',
                 httpsPort: 3001
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: '3000',
+
+                httpsHost: 'localhost',
+                httpsPort: '3001'
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            cluster0: {
+                httpHost: 'localhost',
+                httpPort: '3000',
+
+                httpsHost: 'localhost',
+                httpsPort: '3001'
             }
         }
     }

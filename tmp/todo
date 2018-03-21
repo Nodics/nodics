@@ -25,6 +25,7 @@ Todos:
     ✔ Data Import process @done(18-03-07 11:33)
     - Data Export process
 
+    ✔ Client for TibcoEMS @done(18-03-19 12:10)
     ✔ Client for ActiveMQ @done(18-03-05 22:53)
     ✔ Client for Kafka @done(18-03-05 22:53)
 
@@ -37,6 +38,7 @@ Todos:
     ✔ Password create, update and reset @done(18-03-12 12:41)
     ✔ Lock after secified login attempts @done(18-03-12 12:41)
     ✔ Password un-lock system @done(18-03-12 12:41)
+
     - Check data import with multi application, multi environment and multi server
     - Check Test loader with multi application, multi environment and multi server
 
@@ -53,7 +55,6 @@ Todos:
     - Monitoring tool
     https://www.nearform.com/blog/how-to-build-a-real-time-node-js-performance-monitoring-system/
       
-
 
 Todos:
   Documentation Points:
@@ -87,5 +88,6 @@ Todos:
       - ActiveMQ message push and pop
       - Kafka message push and pop
     - Full documentation and Real time support
+    - Winston Logger support with multi-transport and file level enable/disable 
 
     

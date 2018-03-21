@@ -61,7 +61,7 @@ module.exports = {
         let schemas = options.schemaObject;
         let models = options.modelObject;
         if (options.schemaDef.super === 'none') {
-            options.schemaObject[options.modelName] = new options.database.getSchema()(options.schemaDef.definition);
+            options.schemaObject[options.modelName] = new options.database.getSchema()(options.schemaDef.definition, options.schemaDef.options || {});
         } else {
             let superSchema = options.schemaDef.super;
             if (!options.schemaObject[superSchema]) {
@@ -71,7 +71,7 @@ module.exports = {
                 tmpOptions.modelName = superSchema;
                 this.resolveSchemaDependancy(tmpOptions);
             }
-            options.schemaObject[options.modelName] = options.schemaObject[superSchema].extend(options.schemaDef.definition);
+            options.schemaObject[options.modelName] = options.schemaObject[superSchema].extend(options.schemaDef.definition, options.schemaDef.options || {});
             options.schemaObject[options.modelName].LOG = SYSTEM.createLogger(options.modelName.toUpperCaseEachWord() + 'Interceptor');
         }
         if (options.schemaDef.model) {
@@ -102,7 +102,6 @@ module.exports = {
                     test: {}
                 };
             }
-
             if (!modelObject[tntName]) {
                 modelObject[tntName] = {
                     master: {},
