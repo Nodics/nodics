@@ -17,7 +17,6 @@ module.exports = {
 
     initTest: function() {
         let _self = this;
-        console.log('\n');
         SYSTEM.LOG.info('---------------------------------------------------------------------------');
         SYSTEM.LOG.info('=> Starting test case execution process   ###');
         SYSTEM.LOG.info('---------------------------------------------------------------------------');
@@ -45,7 +44,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let testConfig = CONFIG.get('test');
             if (testConfig.uTest.runOnStartup) {
-                SERVICE.TestExecutorService.executeUTest().then(success => {
+                SERVICE.TestExecutionService.executeUTest().then(success => {
                     SYSTEM.LOG.info('U-Test cases Executed successfully:');
                     resolve(true);
                 }).catch(error => {
@@ -61,7 +60,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let testConfig = CONFIG.get('test');
             if (testConfig.nTest.runOnStartup) {
-                SERVICE.TestExecutorService.executeNTest().then(success => {
+                SERVICE.TestExecutionService.executeNTest().then(success => {
                     SYSTEM.LOG.info('N-Test cases Executed successfully:');
                     resolve(true);
                 }).catch(error => {

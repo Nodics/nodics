@@ -55,8 +55,8 @@ module.exports = {
             testIfEqual: {
                 description: 'Testing equality...1',
                 test: function(done) {
-                    let val = 3;
-                    expect(val).to.equal(TEST.nTestPool.data.value);
+                    let val = 2;
+                    expect(val).to.equal(TEST.uTestPool.data.value);
                     done();
                 }
             }

@@ -16,7 +16,7 @@ module.exports = {
             tenant: requestContext.tenant,
             enterpriseCode: requestContext.enterpriseCode
         };
-        FACADE.TestRunnerFacade.runUTest(input, callback);
+        FACADE.TestExecutionFacade.runUTest(input, callback);
     },
 
     runNTest: function(requestContext, callback) {
@@ -24,6 +24,6 @@ module.exports = {
             tenant: requestContext.tenant,
             enterpriseCode: requestContext.enterpriseCode
         };
-        FACADE.TestRunnerFacade.runNTest(input, callback);
+        FACADE.TestExecutionFacade.runNTest(input, callback);
     }
 };

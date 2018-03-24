@@ -43,7 +43,7 @@ module.exports = {
     triggerEventHandlerJob: function(definition, cronJob, callback) {
         let _self = this;
         try {
-            SERVICE.ModuleService.fetch(SERVICE.ModuleService.buildRequest(this.prepareURL(definition, cronJob)),
+            SERVICE.ModuleService.fetch(this.prepareURL(definition, cronJob),
                 (error, response) => {
                     _self.LOG.debug('Events processed with response : ', response);
                     let logMessage = '';

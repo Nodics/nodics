@@ -18,9 +18,8 @@ module.exports = {
         }
     },
 
-    publish: function(request, callback) {
-        let eventDef = request.body || request;
-        let options = {
+    prepareURL: function(eventDef) {
+        return SERVICE.ModuleService.buildRequest({
             moduleName: 'nems',
             methodName: 'put',
             apiName: 'event/push',
@@ -29,10 +28,12 @@ module.exports = {
             header: {
                 enterpriseCode: eventDef.enterpriseCode
             }
-        };
+        });
+    },
 
-        let eventUrl = SERVICE.ModuleService.buildRequest(options);
+    publish: function(request, callback) {
+        let eventDef = request.body || request;
         this.LOG.debug('Publishing event to event server');
-        SERVICE.ModuleService.fetch(eventUrl, callback);
+        SERVICE.ModuleService.fetch(this.prepareURL(eventDef), callback);
     }
 };

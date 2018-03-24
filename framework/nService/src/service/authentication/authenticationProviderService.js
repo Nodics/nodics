@@ -51,25 +51,27 @@ module.exports = {
         });
     },
 
+    prepareURL: function(input) {
+        return SERVICE.ModuleService.buildRequest({
+            moduleName: 'profile',
+            methodName: 'POST',
+            apiName: 'authorize',
+            requestBody: {},
+            isJsonResponse: true,
+            header: {
+                authToken: input.authToken
+            }
+        });
+    },
+
     authorizeToken: function(request, callback) {
         let input = request.local || request;
         this.findToken(input).then(success => {
             callback(null, success);
         }).catch(error => {
             if (input.moduleName !== CONFIG.get('authorizationModuleName')) {
-                let options = {
-                    moduleName: 'profile',
-                    methodName: 'POST',
-                    apiName: 'authorize',
-                    requestBody: {},
-                    isJsonResponse: true,
-                    header: {
-                        authToken: input.authToken
-                    }
-                };
-                let requestUrl = SERVICE.ModuleService.buildRequest(options);
                 this.LOG.debug('Authorizing reqiuest for token :', input.authToken);
-                SERVICE.ModuleService.fetch(requestUrl, (error, response) => {
+                SERVICE.ModuleService.fetch(this.prepareURL(input), (error, response) => {
                     if (error) {
                         callback(error);
                     } else if (!response.success) {

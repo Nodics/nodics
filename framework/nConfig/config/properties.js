@@ -58,19 +58,6 @@ module.exports = {
 
     defaultContentType: 'application/json',
 
-    backgroundAuthModules: {
-        cronjob: {
-            enterpriseCode: 'default',
-            loginId: 'admin',
-            password: 'nodics'
-        },
-        nems: {
-            enterpriseCode: 'default',
-            loginId: 'admin',
-            password: 'nodics'
-        }
-    },
-
     cache: {
         default: {
             apiCache: {
@@ -116,7 +103,7 @@ module.exports = {
             colorize: true,
             timestamp: true,
             json: false,
-            stringify: false,
+            stringify: true,
             prettyPrint: true,
             depth: 5,
             humanReadableUnhandledException: true,
@@ -127,6 +114,8 @@ module.exports = {
             filename: 'nodics-%DATE%.log',
             datePattern: 'YYYY-MM-DD',
             zippedArchive: true,
+            json: false,
+            stringify: true,
             maxSize: '20m',
             maxFiles: '14d'
         },

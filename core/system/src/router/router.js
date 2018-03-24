@@ -41,14 +41,14 @@ module.exports = {
                 secured: true,
                 key: '/test/runUTest',
                 method: 'GET',
-                controller: 'TestRunnerController',
+                controller: 'TestExecutionController',
                 operation: 'runUTest'
             },
             runAllNTest: {
                 secured: true,
                 key: '/test/runNTest',
                 method: 'GET',
-                controller: 'TestRunnerController',
+                controller: 'TestExecutionController',
                 operation: 'runNTest'
             }
         },

@@ -139,7 +139,6 @@ module.exports = {
         Promise.all(processed).then(result => {
             callback(null, result);
         }).catch(error => {
-            console.log(error);
             callback(error);
         });
     },
@@ -162,8 +161,7 @@ module.exports = {
     broadcastEvent: function(event, callback) {
         let _self = this;
         try {
-
-            SERVICE.ModuleService.fetch(requestUrl).then(response => {
+            SERVICE.ModuleService.fetch(_self.prepareURL(event)).then(response => {
                 if (response.success) {
                     callback(null, response);
                 } else {

@@ -10,89 +10,52 @@
  */
 
 const _ = require('lodash');
-const util = require('util');
+const fs = require('fs');
 
 module.exports = {
-    /*loadData: function(module) {
-        this.loadInitData(module);
-        this.loadCoreData(module);
-        this.loadCommonSampleData(module);
-        this.loadEnvSampleData(module);
-
-        //console.log('Data :', util.inspect(DATA.core, false, null));
-    },*/
-
-    walkthroughModules: function() {
+    loadModules: function(dataType) {
         let _self = this;
-        let modulePromises = [];
-        Object.keys(moduleIndex).forEach(function(key) {
-            var value = moduleIndex[key][0];
-            modulePromises.push(_self.loadModule(value));
-        });
-    },
-
-    loadModule: function(module) {
-        return new Promise((resolve, reject) => {
-
-        });
-    },
-    loadInitData: function(module, data) {
-        SYSTEM.LOG.debug('Loading module core data');
-        let path = module.path + '/data/init';
-        SYSTEM.processFiles(path, "Data.js", (file) => {
-            let initDataFile = require(file);
-            _.each(initDataFile, (data, moduleName) => {
-                if (DATA.init[moduleName]) {
-                    _.merge(DATA.init[moduleName], data);
-                } else {
-                    DATA.init[moduleName] = data;
+        let data = {};
+        Object.keys(CONFIG.get('moduleIndex')).forEach(function(key) {
+            var value = CONFIG.get('moduleIndex')[key][0];
+            let path = value.path + '/data/dataConfig.js';
+            if (fs.existsSync(path)) {
+                let file = require(path);
+                let dataObject = file[dataType];
+                if (dataObject) {
+                    if (dataObject instanceof Array) {
+                        _self.loadFiles(dataObject, value, dataType, data);
+                    } else {
+                        _self.loadFiles(dataObject.common, value, dataType, data);
+                        _self.loadFiles(dataObject[NODICS.getActiveEnvironment()], value, dataType, data);
+                    }
                 }
-            });
+            }
         });
+        return data;
     },
 
-    loadCoreData: function(module) {
-        SYSTEM.LOG.debug('Loading module core data');
-        let path = module.path + '/data/core';
-        SYSTEM.processFiles(path, "Data.js", (file) => {
-            let coreDataFile = require(file);
-            _.each(coreDataFile, (data, moduleName) => {
-                if (DATA.core[moduleName]) {
-                    _.merge(DATA.core[moduleName], data);
-                } else {
-                    DATA.core[moduleName] = data;
+    loadFiles: function(list, module, dataType, data) {
+        let _self = this;
+        if (list.length > 0) {
+            list.forEach(file => {
+                if (!file.startsWith('/')) {
+                    file = '/' + file;
                 }
+                let filePath = module.path + '/data/' + dataType + file;
+                _self.loadData(filePath, data);
             });
-        });
+        }
     },
 
-    loadCommonSampleData: function(module) {
-        SYSTEM.LOG.debug('Loading module sample data');
-        let path = module.path + '/data/sample/common';
-        SYSTEM.processFiles(path, "Data.js", (file) => {
-            let commonSampleFile = require(file);
-            _.each(commonSampleFile, (data, moduleName) => {
-                if (DATA.sample[moduleName]) {
-                    _.merge(DATA.sample[moduleName], data);
-                } else {
-                    DATA.sample[moduleName] = data;
-                }
-            });
-        });
-    },
-
-    loadEnvSampleData: function(module) {
-        SYSTEM.LOG.debug('Loading module sample data');
-        let path = module.path + '/data/sample/evn/' + NODICS.getActiveEnvironment();
-        SYSTEM.processFiles(path, "Data.js", (file) => {
-            let commonSampleFile = require(file);
-            _.each(commonSampleFile, (data, moduleName) => {
-                if (DATA.sample[moduleName]) {
-                    _.merge(DATA.sample[moduleName], data);
-                } else {
-                    DATA.sample[moduleName] = data;
-                }
-            });
+    loadData: function(file, data) {
+        let coreDataFile = require(file);
+        _.each(coreDataFile, (value, moduleName) => {
+            if (data[moduleName]) {
+                _.merge(data[moduleName], value);
+            } else {
+                data[moduleName] = value;
+            }
         });
     }
 };

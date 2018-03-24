@@ -36,7 +36,6 @@ module.exports = {
         processDefinition.loadProcessDefinition(module);
         facade.loadFacades(module);
         controller.loadControllers(module);
-        data.loadData(module);
         test.loadTest(module);
 
         let moduleFile = require(module.path + '/nodics.js');

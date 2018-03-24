@@ -24,8 +24,6 @@ const lastmodified = require('lastmodified');
 module.exports = {
     getActiveModules: function(options) {
         try {
-
-
             let modules = [];
             let customPath = NODICS.getCustomHome();
             let appHome = customPath + '/' + NODICS.getActiveApplication();
@@ -51,7 +49,6 @@ module.exports = {
                 this.collectModulesList(serverHome, nodicsModulePath);
                 let mergedFile = {};
                 nodicsModulePath.forEach(function(modulePath) {
-                    console.log(modulePath);
                     if (fs.existsSync(modulePath + '/config/properties.js')) {
                         mergedFile = _.merge(mergedFile, require(modulePath + '/config/properties.js'));
                     }
@@ -147,9 +144,7 @@ module.exports = {
         if (clean && clean === 'clean') {
             NODICS.setIsModified(true);
         }
-        console.log('000002');
         NODICS.setActiveModules(this.getActiveModules(options));
-        console.log('000003');
         global.CONFIG = new Config();
         CONFIG.setProperties({});
 
@@ -173,12 +168,6 @@ module.exports = {
                 data: {},
                 suites: {} // This pool for all test cases
             }
-        };
-
-        global.DATA = {
-            init: {},
-            core: {},
-            sample: {}
         };
     },
 
@@ -368,7 +357,7 @@ module.exports = {
         try {
             transport = new winston.transports.DailyRotateFile(fileConfig);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
         return transport;
     },

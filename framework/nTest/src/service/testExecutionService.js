@@ -8,7 +8,6 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-
 /**
  * Initialize a `Runner` for the given `suite`.
  *
@@ -33,7 +32,38 @@ const Chai = require('chai');
 const Test = Mocha.Test;
 const expect = Chai.expect;
 
+
 module.exports = {
+
+    runUTest: function(input, callback) {
+        let _self = this;
+        if (callback) {
+            _self.executeUTest().then(success => {
+                _self.LOG.info('U-Test cases Executed successfully');
+                callback(null, 'U-Test cases Executed successfully');
+            }).catch(error => {
+                _self.LOG.error(error);
+                callback(error);
+            });
+        } else {
+            return _self.executeUTest();
+        }
+    },
+
+    runNTest: function(input, callback) {
+        let _self = this;
+        if (callback) {
+            _self.executeNTest().then(success => {
+                _self.LOG.info('N-Test cases Executed successfully');
+                callback(null, 'N-Test cases Executed successfully');
+            }).catch(error => {
+                _self.LOG.error(error);
+                callback(error);
+            });
+        } else {
+            return _self.executeNTest();
+        }
+    },
 
     executeUTest: function() {
         return new Promise((resolve, reject) => {
@@ -76,8 +106,6 @@ module.exports = {
                     let nTestMasterMocha = new Mocha();
                     let nTestMasterSuite = Mocha.Suite.create(nTestMasterMocha.suite, 'Starting master suite execution for N-Test');
                     this.createSuites(nTestMasterSuite, TEST.nTestPool);
-                    //TEST.nTestPool.nTestMasterMocha = nTestMasterMocha;
-
                     nTestMasterMocha.run(function(failures) {
                         process.on('exit', function() {
                             process.exit(failures);
@@ -88,7 +116,6 @@ module.exports = {
                     });
                 } catch (error) {
                     NODICS.setNTestRunning(false);
-                    //console.log('got error while starting N-Test case execution : ', error);
                     reject('got error while starting n-test case execution : ' + error);
                 }
             } else {

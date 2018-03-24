@@ -79,15 +79,15 @@ module.exports = {
         });
     },
 
-    importData: function(data) {
+    importData: function(dataType) {
         let _self = this;
+        let data = SERVICE.InternalDataLoadService.loadModules(dataType);
         return new Promise((resolve, reject) => {
             try {
-                let tmpData = _.merge({}, data);
-                let moduleName = Object.keys(tmpData)[0];
-                let moduleData = tmpData[moduleName];
-                delete tmpData[moduleName];
-                _self.importNextModule(moduleName, moduleData, tmpData).then(success => {
+                let moduleName = Object.keys(data)[0];
+                let moduleData = data[moduleName];
+                delete data[moduleName];
+                _self.importNextModule(moduleName, moduleData, data).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
@@ -100,64 +100,43 @@ module.exports = {
 
     importInitData: function(input, callback) {
         let _self = this;
-        if (!UTILS.isBlank(DATA.init)) {
-            if (callback) {
-                _self.importData(DATA.init).then(success => {
-                    callback(null, 'Initial Data imported successfully');
-                }).catch(error => {
-                    callback(error);
-                });
-            } else {
-                return _self.importData(DATA.init);
-            }
+        let dataType = 'init';
+        if (callback) {
+            this.importData(dataType).then(success => {
+                callback(null, 'Initial Data imported successfully');
+            }).catch(error => {
+                callback(error);
+            });
         } else {
-            if (callback) {
-                callback('There is no Initial data available to import');
-            } else {
-                return Promise.reject('There is no Initial data available to import');
-            }
+            return this.importData(dataType);
         }
     },
 
     importCoreData: function(input, callback) {
         let _self = this;
-        if (!UTILS.isBlank(DATA.core)) {
-            if (callback) {
-                _self.importData(DATA.core).then(success => {
-                    callback(null, 'Core Data imported successfully');
-                }).catch(error => {
-                    callback(error);
-                });
-            } else {
-                return _self.importData(DATA.core);
-            }
+        let dataType = 'core';
+        if (callback) {
+            this.importData(dataType).then(success => {
+                callback(null, 'Initial Data imported successfully');
+            }).catch(error => {
+                callback(error);
+            });
         } else {
-            if (callback) {
-                callback('There is no core data available to import');
-            } else {
-                return Promise.reject('There is no core data available to import');
-            }
+            return this.importData(dataType);
         }
     },
 
     importSampleData: function(input, callback) {
         let _self = this;
-        if (!UTILS.isBlank(DATA.sample)) {
-            if (callback) {
-                _self.importData(DATA.sample).then(success => {
-                    callback(null, 'Sample Data imported successfully');
-                }).catch(error => {
-                    callback(error);
-                });
-            } else {
-                return _self.importData(DATA.sample);
-            }
+        let dataType = 'core';
+        if (callback) {
+            this.importData(dataType).then(success => {
+                callback(null, 'Initial Data imported successfully');
+            }).catch(error => {
+                callback(error);
+            });
         } else {
-            if (callback) {
-                callback('There is no sample data available to import');
-            } else {
-                return Promise.reject('There is no sample data available to import');
-            }
+            return this.importData(dataType);
         }
     }
 };
