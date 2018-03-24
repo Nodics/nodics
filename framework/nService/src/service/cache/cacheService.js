@@ -14,6 +14,23 @@ const NodeCache = require("node-cache");
 
 module.exports = {
 
+    changeApiCacheConfiguration: function(request, callback) {
+        let input = request.local || request;
+        callback('not implemented yet, comming soon');
+    },
+
+    changeItemCacheConfiguration: function(request, callback) {
+        try {
+            let input = request.local || request;
+            let cacheConfig = CONFIG.get('cache').itemLevelCache;
+            cacheConfig[input.config.schemaName] = _.merge(cacheConfig[input.config.schemaName], input.config.cache || {});
+            callback(null, 'Cache has been updated successfully');
+        } catch (error) {
+            callback('Facing issue while updating item cache : ' + error.toString());
+        }
+    },
+
+
     initCache: function(moduleObject, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {

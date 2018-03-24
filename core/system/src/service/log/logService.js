@@ -21,7 +21,7 @@ module.exports = {
                 callback('Facing issue while setting log level');
             }
         } else {
-            return SYSTEM.changeLogLevel();
+            return SYSTEM.changeLogLevel(input);
         }
     }
 };

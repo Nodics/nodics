@@ -11,6 +11,14 @@
 
 module.exports = {
 
+    changeApiCacheConfiguration: function(request, callback) {
+        callback('not implemented yet, comming soon');
+    },
+
+    changeItemCacheConfiguration: function(request, callback) {
+        callback('not implemented yet, comming soon');
+    },
+
     flushApiCache: function(request, callback) {
         SERVICE.CacheService.flushApiCache(request, callback);
     },

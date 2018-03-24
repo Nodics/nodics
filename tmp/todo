@@ -23,6 +23,8 @@ Todos:
     ✔ Create default data import process @done(18-03-09 22:24)
 
     ✔ Data Import process @done(18-03-07 11:33)
+    https://hackernoon.com/functional-javascript-resolving-promises-sequentially-7aac18c4431e
+    http://bluebirdjs.com/docs/api/promise.each.html
     - Data Export process
 
     ✔ Client for TibcoEMS @done(18-03-19 12:10)
@@ -54,6 +56,9 @@ Todos:
 
     - Monitoring tool
     https://www.nearform.com/blog/how-to-build-a-real-time-node-js-performance-monitoring-system/
+
+
+    - Change Listener register definition
       
 
 Todos:

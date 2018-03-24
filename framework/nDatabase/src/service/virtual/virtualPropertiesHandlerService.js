@@ -45,6 +45,8 @@ module.exports = {
     },
 
     populate: function(property, method, document) {
-        document[property] = eval(method + '(document)');
+        let serviceName = method.substring(0, method.lastIndexOf('.'));
+        let operation = method.substring(method.lastIndexOf('.') + 1, method.length);
+        document[property] = SERVICE[serviceName][operation](document);
     }
 };

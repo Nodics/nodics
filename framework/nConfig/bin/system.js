@@ -339,9 +339,7 @@ module.exports = {
     },
     getLogTransports: function(entityName, logConfig) {
         let transports = [];
-        if (logConfig.output.console) {
-            transports.push(this.createConsoleTransport(entityName, logConfig));
-        }
+        transports.push(this.createConsoleTransport(entityName, logConfig));
         if (logConfig.output.file) {
             transports.push(this.createFileTransport(entityName, logConfig));
         }
@@ -361,7 +359,9 @@ module.exports = {
         let transport = {};
         let fileConfig = _.merge({}, logConfig.fileConfig);
         fileConfig.label = entityName;
-        fileConfig.dirname = NODICS.getServerHome() + '/logs';
+        if (fileConfig.dirname.startsWith('.')) {
+            fileConfig.dirname = NODICS.getServerHome() + '/logs';
+        }
         if (!fs.existsSync(fileConfig.dirname)) {
             fs.mkdirSync(fileConfig.dirname);
         }

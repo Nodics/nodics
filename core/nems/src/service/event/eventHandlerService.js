@@ -144,22 +144,25 @@ module.exports = {
         });
     },
 
+    prepareURL: function(event) {
+        return SERVICE.ModuleService.buildRequest({
+            connectionType: 'cluster',
+            clusterId: event.clusterId || CONFIG.get('publishEventOnCluster') || 'cluster0',
+            moduleName: event.target,
+            methodName: 'POST',
+            apiName: 'event/handle',
+            requestBody: event,
+            isJsonResponse: true,
+            header: {
+                authToken: NODICS.getModule('nems').metaData.authToken
+            }
+        });
+    },
+
     broadcastEvent: function(event, callback) {
         let _self = this;
         try {
-            let options = {
-                connectionType: 'cluster',
-                clusterId: CONFIG.get('publishEventOnCluster') || 'cluster0',
-                moduleName: event.target,
-                methodName: 'POST',
-                apiName: 'event/handle',
-                requestBody: event,
-                isJsonResponse: true,
-                header: {
-                    authToken: NODICS.getModule('nems').metaData.authToken
-                }
-            };
-            let requestUrl = SERVICE.ModuleService.buildRequest(options);
+
             SERVICE.ModuleService.fetch(requestUrl).then(response => {
                 if (response.success) {
                     callback(null, response);

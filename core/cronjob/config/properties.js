@@ -26,7 +26,7 @@ module.exports = {
             ]
         }
     },
-
+    activateEventBroadcastOnCluster: 'cluster0',
     server: {
         cronjob: {
             server: {

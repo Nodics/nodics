@@ -98,14 +98,17 @@ module.exports = {
                 host: 'localhost',
                 port: 6379
             }
+        },
+        itemLevelCache: {
+            //only placeholder
         }
     },
 
     log: {
+        enabled: true,
         level: 'info',
         format: 'simple', //json or simple
         output: {
-            console: true,
             file: true,
             elastic: false
         },
@@ -120,6 +123,7 @@ module.exports = {
             showLevel: true
         },
         fileConfig: {
+            dirname: '.',
             filename: 'nodics-%DATE%.log',
             datePattern: 'YYYY-MM-DD',
             zippedArchive: true,

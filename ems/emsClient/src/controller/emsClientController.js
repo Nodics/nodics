@@ -14,7 +14,7 @@ const _ = require('lodash');
 module.exports = {
     publish: function(request, callback) {
         if (!UTILS.isBlank(request.body)) {
-            request.local = _.merge(request.local, request.body);
+            request.local.payloads = request.body;
             return FACADE.EmsClientFacade.publish(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');

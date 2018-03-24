@@ -13,16 +13,30 @@ const _ = require('lodash');
 const util = require('util');
 
 module.exports = {
-    loadData: function(module) {
+    /*loadData: function(module) {
         this.loadInitData(module);
         this.loadCoreData(module);
         this.loadCommonSampleData(module);
         this.loadEnvSampleData(module);
 
         //console.log('Data :', util.inspect(DATA.core, false, null));
+    },*/
+
+    walkthroughModules: function() {
+        let _self = this;
+        let modulePromises = [];
+        Object.keys(moduleIndex).forEach(function(key) {
+            var value = moduleIndex[key][0];
+            modulePromises.push(_self.loadModule(value));
+        });
     },
 
-    loadInitData: function(module) {
+    loadModule: function(module) {
+        return new Promise((resolve, reject) => {
+
+        });
+    },
+    loadInitData: function(module, data) {
         SYSTEM.LOG.debug('Loading module core data');
         let path = module.path + '/data/init';
         SYSTEM.processFiles(path, "Data.js", (file) => {

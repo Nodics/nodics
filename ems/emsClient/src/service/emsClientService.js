@@ -33,14 +33,37 @@ module.exports = {
     publish: function(request, callback) {
         let input = request.local || request;
         let emsConfig = CONFIG.get('emsClient');
-        if (callback) {
-            SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(input).then(success => {
-                callback(null, 'Message published Successfully');
-            }).catch(error => {
-                callback(error);
+        if (input.payloads instanceof Array) {
+            let allPayloads = [];
+            input.payloads.forEach(element => {
+                allPayloads.push(SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(element));
             });
+            if (allPayloads.length > 0) {
+                Promise.all(allPayloads).then(success => {
+                    if (callback) {
+                        callback(null, 'Message published Successfully');
+                    } else {
+                        return Promise.resolve('Message published Successfully');
+                    }
+                }).catch(error => {
+                    if (callback) {
+                        callback(error);
+                    } else {
+                        return Promise.reject(error);
+                    }
+                });
+            }
         } else {
-            return SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(input);
+            if (callback) {
+                SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(input.payloads).then(success => {
+                    callback(null, 'Message published Successfully');
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                return SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(input.payloads);
+            }
         }
+
     }
 };

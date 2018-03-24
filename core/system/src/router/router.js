@@ -11,6 +11,22 @@
 
 module.exports = {
     system: {
+        changeCacheConfig: {
+            apiConfig: {
+                secured: true,
+                key: '/cache/api',
+                method: 'POST',
+                controller: 'CacheController',
+                operation: 'changeApiCacheConfiguration'
+            },
+            itemConfig: {
+                secured: true,
+                key: '/cache/item',
+                method: 'POST',
+                controller: 'CacheController',
+                operation: 'changeItemCacheConfiguration'
+            }
+        },
         changeLogLevel: {
             changeLevelPost: {
                 secured: true,

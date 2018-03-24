@@ -110,9 +110,9 @@ module.exports = {
                 }
             },
             virtualProperties: {
-                fullname: 'SERVICE.CronJobVirtualService.getFullName',
+                fullname: 'CronJobVirtualService.getFullName',
                 jobDetail: {
-                    fullname: 'SERVICE.CronJobVirtualService.getFullName'
+                    fullname: 'CronJobVirtualService.getFullName'
                 }
             },
             definition: {
