@@ -23,7 +23,10 @@ module.exports = {
             noLimit: true,
             query: CONFIG.get('cronjob').activeJobsQuery
         }, input);
-        SERVICE.CronJobService.get(input).then((models) => {
+        if (!input.modelName) {
+            input.modelName = 'cronJob';
+        }
+        SERVICE[input.modelName.toUpperCaseFirstChar() + 'Service'].get(input).then((models) => {
             if (callback) {
                 this.cronJobContainer.createCronJobs(models).then(success => {
                     callback(null, success);

@@ -14,6 +14,9 @@ const EventEmitter = require('events');
 module.exports = class EventService extends EventEmitter {
 
     registerListener(listenerDefinition) {
-        this.on(listenerDefinition.event, eval(listenerDefinition.listner));
+        let method = listenerDefinition.listener;
+        let serviceName = method.substring(0, method.lastIndexOf('.'));
+        let operation = method.substring(method.lastIndexOf('.') + 1, method.length);
+        this.on(listenerDefinition.event, SERVICE[serviceName][operation]);
     }
 };

@@ -45,6 +45,7 @@ module.exports = {
                         event.loadListeners();
                         router.loadRouter();
                         SYSTEM.executePostScripts();
+                        //NODICS.isInitRequired()
                         if (NODICS.isInitRequired()) {
                             SERVICE.DataImportService.importInitData().then(success => {
                                 resolve(true);

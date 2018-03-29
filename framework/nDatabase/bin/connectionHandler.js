@@ -26,7 +26,6 @@ module.exports = {
             //Register all posible event
             connection.on('connected', function() {
                 SYSTEM.LOG.info('Mongoose default connection open to ' + dbConfig.URI);
-                resolve(connection);
                 try {
                     if (type === 'master' && tntName === 'default') {
                         connection.db.collection('enterprisemodels', function(err, collection) {
@@ -34,13 +33,16 @@ module.exports = {
                                 if (count <= 0 || CONFIG.get('database').processInitialData) {
                                     NODICS.setInitRequired(true);
                                 }
+                                resolve(connection);
                             });
                         });
+                    } else {
+                        resolve(connection);
                     }
                 } catch (error) {
                     SYSTEM.LOG.error(' While checking if initialization required : ', error);
+                    resolve(connection);
                 }
-
             });
             connection.on('error', function(error) {
                 SYSTEM.LOG.error('Mongoose default connection error: ' + error);

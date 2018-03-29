@@ -58,7 +58,14 @@ Todos:
     https://www.nearform.com/blog/how-to-build-a-real-time-node-js-performance-monitoring-system/
 
 
-    - Change Listener register definition
+    ✔ Change Listener register definition @done(18-03-26 11:18)
+    ✔ Start cronJob with given optional Item model @done(18-03-26 14:59)
+    - Pass import data via Process to customize it further
+    - Plug Hot folder process
+    - Try to make process synchronous 
+    - I am live functionality (Server ping machanizm)
+    - Add EMS connectivity in Nodics Architecture diagrame
+    - Test app with individual port startup
       
 
 Todos:
@@ -94,5 +101,3 @@ Todos:
       - Kafka message push and pop
     - Full documentation and Real time support
     - Winston Logger support with multi-transport and file level enable/disable 
-
-    

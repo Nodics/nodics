@@ -189,6 +189,22 @@ module.exports = {
                     }
                 }
             }
+        },
+
+        importCronJob: {
+            super: 'cronJob',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            definition: {
+                location: {
+                    type: 'String'
+                },
+                process: {
+                    type: 'String'
+                },
+            }
         }
     }
 };

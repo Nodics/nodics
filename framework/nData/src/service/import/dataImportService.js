@@ -22,13 +22,7 @@ module.exports = {
             tenant: definition.tenant,
             models: models
         };
-        if (definition.operation === 'save') {
-            return SERVICE[definition.modelName.toUpperCaseFirstChar() + 'Service'].save(input);
-        } else if (definition.operation === 'update') {
-            return SERVICE[definition.modelName.toUpperCaseFirstChar() + 'Service'].update(input);
-        } else if (definition.operation === 'saveOrUpdate') {
-            return SERVICE[definition.modelName.toUpperCaseFirstChar() + 'Service'].saveOrUpdate(input);
-        }
+        return SERVICE[definition.modelName.toUpperCaseFirstChar() + 'Service'][definition.operation](input);
     },
 
     importGroup: function(groupName, groupData, tmpGroup) {
@@ -60,7 +54,24 @@ module.exports = {
             let groupName = Object.keys(tmpGroup)[0];
             let groupData = tmpGroup[groupName];
             delete tmpGroup[groupName];
-            _self.importGroup(groupName, groupData, tmpGroup).then(success => {
+            if (NODICS.getModule(moduleName)) {
+                _self.importGroup(groupName, groupData, tmpGroup).then(success => {
+                    if (!UTILS.isBlank(tmpData)) {
+                        let tmpModuleName = Object.keys(tmpData)[0];
+                        let tmpModuleData = tmpData[tmpModuleName];
+                        delete tmpData[tmpModuleName];
+                        _self.importNextModule(tmpModuleName, tmpModuleData, tmpData).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        resolve(true);
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
                 if (!UTILS.isBlank(tmpData)) {
                     let tmpModuleName = Object.keys(tmpData)[0];
                     let tmpModuleData = tmpData[tmpModuleName];
@@ -73,15 +84,12 @@ module.exports = {
                 } else {
                     resolve(true);
                 }
-            }).catch(error => {
-                reject(error);
-            });
+            }
         });
     },
 
-    importData: function(dataType) {
+    importData: function(daya) {
         let _self = this;
-        let data = SERVICE.InternalDataLoadService.loadModules(dataType);
         return new Promise((resolve, reject) => {
             try {
                 let moduleName = Object.keys(data)[0];
@@ -101,8 +109,9 @@ module.exports = {
     importInitData: function(input, callback) {
         let _self = this;
         let dataType = 'init';
+        let data = SERVICE.InternalDataLoadService.loadModules(dataType);
         if (callback) {
-            this.importData(dataType).then(success => {
+            this.importData(data).then(success => {
                 callback(null, 'Initial Data imported successfully');
             }).catch(error => {
                 callback(error);
@@ -115,8 +124,9 @@ module.exports = {
     importCoreData: function(input, callback) {
         let _self = this;
         let dataType = 'core';
+        let data = SERVICE.InternalDataLoadService.loadModules(dataType);
         if (callback) {
-            this.importData(dataType).then(success => {
+            this.importData(data).then(success => {
                 callback(null, 'Initial Data imported successfully');
             }).catch(error => {
                 callback(error);
@@ -128,9 +138,10 @@ module.exports = {
 
     importSampleData: function(input, callback) {
         let _self = this;
-        let dataType = 'core';
+        let dataType = 'sample';
+        let data = SERVICE.InternalDataLoadService.loadModules(dataType);
         if (callback) {
-            this.importData(dataType).then(success => {
+            this.importData(data).then(success => {
                 callback(null, 'Initial Data imported successfully');
             }).catch(error => {
                 callback(error);
