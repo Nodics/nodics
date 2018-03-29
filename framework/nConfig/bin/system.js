@@ -19,7 +19,6 @@ const winston = require('winston');
 require('winston-daily-rotate-file');
 const Elasticsearch = require('winston-elasticsearch');
 const props = require('../config/properties');
-const lastmodified = require('lastmodified');
 
 module.exports = {
     getActiveModules: function(options) {
