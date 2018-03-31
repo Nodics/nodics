@@ -63,8 +63,8 @@ Todos:
     - Pass import data via Process to customize it further
     - Plug Hot folder process
     - Try to make process synchronous 
-    - I am live functionality (Server ping machanizm)
-    - Add EMS connectivity in Nodics Architecture diagrame
+    ✔ I am live functionality (Server ping machanizm) @done(18-03-31 14:43)
+    ✔ Add EMS connectivity in Nodics Architecture diagrame @done(18-03-31 14:26)
     - Test app with individual port startup
       
 

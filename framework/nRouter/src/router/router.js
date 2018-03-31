@@ -144,6 +144,15 @@ module.exports = {
     },
 
     common: {
+        pingMe: {
+            iAmLive: {
+                secured: true,
+                key: '/ping',
+                method: 'GET',
+                handler: 'PingMeController',
+                operation: 'ping'
+            }
+        },
         flushAPICache: {
             flushAll: {
                 secured: true,
