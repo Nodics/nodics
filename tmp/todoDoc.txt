@@ -3,3 +3,11 @@ Microservices are a style of software architecture that involves delivering syst
 https://www.quora.com/What-are-some-disadvantages-of-a-microservice-architecture
 http://highscalability.com/blog/2014/4/8/microservices-not-a-free-lunch.html
 
+default:00, 01
+system:02, 03-
+profile:04, 05-
+nems:06, 07-
+cronjob:08, 09-
+ems:10, 11-
+
+

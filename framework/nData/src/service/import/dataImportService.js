@@ -88,7 +88,7 @@ module.exports = {
         });
     },
 
-    importData: function(daya) {
+    importData: function(data) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {

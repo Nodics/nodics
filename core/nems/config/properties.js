@@ -11,7 +11,7 @@
 
 module.exports = {
     backgroundAuthModules: {
-        nems1: {
+        nems: {
             enterpriseCode: 'default',
             loginId: 'admin',
             password: 'nodics'
@@ -24,25 +24,25 @@ module.exports = {
         nems: {
             server: {
                 httpHost: 'localhost',
-                httpPort: 3000,
+                httpPort: 3006,
 
                 httpsHost: 'localhost',
-                httpsPort: 3001
+                httpsPort: 3007
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: '3000',
+                httpPort: 3006,
 
                 httpsHost: 'localhost',
-                httpsPort: '3001'
+                httpsPort: 3007
             },
             //Clusters information is optional and will be managed for Backoffice application
             cluster0: {
                 httpHost: 'localhost',
-                httpPort: '3000',
+                httpPort: 3006,
 
                 httpsHost: 'localhost',
-                httpsPort: '3001'
+                httpsPort: 3007
             }
         }
     },

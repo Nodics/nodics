@@ -39,42 +39,33 @@ module.exports = {
 
     getServerConfiguration: function(moduleName) {
         let config = CONFIG.get('server')[moduleName];
-        if (!config || !config.server) {
+        if (config && config.server) {
+            config = config.server;
+        } else {
             config = CONFIG.get('server').default.server;
-        } else {
-            config = CONFIG.get('server')[moduleName].server;
-        }
-        return config;
-    },
-
-    getClusterConfiguration: function(moduleName, clusterId) {
-        let config = CONFIG.get('server')[moduleName];
-        if (!config || !config.server) {
-            if (CONFIG.get('server').default[clusterId]) {
-                config = CONFIG.get('server').default[clusterId];
-            } else {
-                config = CONFIG.get('server').default.server;
-            }
-        } else {
-            if (CONFIG.get('server')[moduleName][clusterId]) {
-                config = CONFIG.get('server')[moduleName][clusterId];
-            } else {
-                config = CONFIG.get('server')[moduleName].server;
-            }
         }
         return config;
     },
 
     getAbstractServerConfiguration: function(moduleName) {
         let config = CONFIG.get('server')[moduleName];
-        if (!config || !config.server) {
-            config = CONFIG.get('server').default.abstract;
+        if (config && config.abstract) {
+            config = config.abstract;
         } else {
-            config = CONFIG.get('server')[moduleName].abstract;
+            config = this.getServerConfiguration(moduleName);
         }
         return config;
     },
 
+    getClusterConfiguration: function(moduleName, clusterId) {
+        let config = CONFIG.get('server')[moduleName];
+        if (config && config[clusterId]) {
+            config = config[clusterId];
+        } else {
+            config = this.getAbstractServerConfiguration(moduleName);
+        }
+        return config;
+    },
 
     getHost: function(moduleName) {
         return SYSTEM.getServerConfiguration(moduleName).httpHost;

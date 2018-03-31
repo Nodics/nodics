@@ -39,25 +39,25 @@ module.exports = {
         cronjob: {
             server: {
                 httpHost: 'localhost',
-                httpPort: 3000,
+                httpPort: 3008,
 
                 httpsHost: 'localhost',
-                httpsPort: 3001
+                httpsPort: 3009
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: '3000',
+                httpPort: 3008,
 
                 httpsHost: 'localhost',
-                httpsPort: '3001'
+                httpsPort: 3009
             },
             //Clusters information is optional and will be managed for Backoffice application
             cluster0: {
                 httpHost: 'localhost',
-                httpPort: '3000',
+                httpPort: 3008,
 
                 httpsHost: 'localhost',
-                httpsPort: '3001'
+                httpsPort: 3009
             }
         }
     },

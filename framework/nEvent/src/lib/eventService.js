@@ -17,6 +17,8 @@ module.exports = class EventService extends EventEmitter {
         let method = listenerDefinition.listener;
         let serviceName = method.substring(0, method.lastIndexOf('.'));
         let operation = method.substring(method.lastIndexOf('.') + 1, method.length);
-        this.on(listenerDefinition.event, SERVICE[serviceName][operation]);
+        this.on(listenerDefinition.event, (event, callback) => {
+            SERVICE[serviceName][operation](event, callback);
+        });
     }
 };

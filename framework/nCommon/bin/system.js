@@ -128,7 +128,7 @@ module.exports = {
                     resolve(true);
                 } else {
                     let modules = NODICS.getModules();
-                    if (this.isBlank(NODICS.getModules())) {
+                    if (UTILS.isBlank(NODICS.getModules())) {
                         SYSTEM.LOG.error('Please define valid active modules');
                         process.exit(CONFIG.get('errorExitCode'));
                     }

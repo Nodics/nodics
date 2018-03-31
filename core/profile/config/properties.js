@@ -19,25 +19,25 @@ module.exports = {
         profile: {
             server: {
                 httpHost: 'localhost',
-                httpPort: 3000,
+                httpPort: 3004,
 
                 httpsHost: 'localhost',
-                httpsPort: 3001
+                httpsPort: 3005
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: '3000',
+                httpPort: 3004,
 
                 httpsHost: 'localhost',
-                httpsPort: '3001'
+                httpsPort: 3005
             },
             //Clusters information is optional and will be managed for Backoffice application
             cluster0: {
                 httpHost: 'localhost',
-                httpPort: '3000',
+                httpPort: 3004,
 
                 httpsHost: 'localhost',
-                httpsPort: '3001'
+                httpsPort: 3005
             }
         }
     },

@@ -51,9 +51,6 @@ Todos:
       ✔ Update individual entity log level @done(18-03-18 12:12)
     ✔ Changes in Router definitions @done(18-03-18 12:13)
 
-      https://stackoverflow.com/questions/12016474/node-js-logging
-      https://www.npmjs.com/package/loglevel
-
     - Monitoring tool
     https://www.nearform.com/blog/how-to-build-a-real-time-node-js-performance-monitoring-system/
 
@@ -63,9 +60,10 @@ Todos:
     - Pass import data via Process to customize it further
     - Plug Hot folder process
     - Try to make process synchronous 
+    ✔ Application debug --inspect @done(18-03-31 15:14)
     ✔ I am live functionality (Server ping machanizm) @done(18-03-31 14:43)
     ✔ Add EMS connectivity in Nodics Architecture diagrame @done(18-03-31 14:26)
-    - Test app with individual port startup
+    ✔ Test app with individual port startup @done(18-03-31 18:17)
       
 
 Todos:

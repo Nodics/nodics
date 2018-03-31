@@ -22,7 +22,7 @@ module.exports = {
     ],
     server: {
         contextRoot: 'nodics',
-        runAsSingleModule: true,
+        runAsSingleModule: false,
         default: {
             server: {
                 httpHost: 'localhost',
