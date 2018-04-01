@@ -64,6 +64,7 @@ Todos:
     ✔ I am live functionality (Server ping machanizm) @done(18-03-31 14:43)
     ✔ Add EMS connectivity in Nodics Architecture diagrame @done(18-03-31 14:26)
     ✔ Test app with individual port startup @done(18-03-31 18:17)
+    - Refector Person schema for last login and number of failed logins
       
 
 Todos:

@@ -150,7 +150,10 @@ module.exports = {
                 key: '/ping',
                 method: 'GET',
                 handler: 'PingMeController',
-                operation: 'ping'
+                operation: 'ping',
+                help: {
+
+                }
             }
         },
         flushAPICache: {

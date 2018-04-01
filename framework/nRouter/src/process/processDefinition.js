@@ -11,13 +11,19 @@
 
 module.exports = {
     requestHandlerProcess: {
-        startNode: "parseHeader",
+        startNode: "helpRequest",
         hardStop: true, //default value is false
         handleError: 'handleError',
         // define this node, within node definitions, 
         //else will take default 'handleError' one
 
         nodes: {
+            helpRequest: {
+                type: 'function',
+                process: 'RequestHandlerProcessService.helpRequest',
+                success: 'parseHeader',
+                failure: 'failureEnd'
+            },
             parseHeader: {
                 type: 'function',
                 process: 'RequestHandlerProcessService.parseHeader',

@@ -62,6 +62,41 @@ module.exports = {
         });
     },
 
+    retrieveActive: function(employee, enterprise) {
+        return new Promise((resolve, reject) => {
+            DAO.ActiveDao.get({
+                tenant: enterprise.tenant,
+                options: {
+                    query: {
+                        $and: [{
+                            loginId: employee.loginId,
+                        }, {
+                            personId: employee._id
+                        }]
+                    }
+                }
+            }).then(actives => {
+                if (actives.length <= 0) {
+                    resolve({
+                        loginId: employee.loginId,
+                        personId: employee._id,
+                        attempts: 0,
+                        active: true
+                    });
+                } else {
+                    resolve(actives[0]);
+                }
+            }).catch(error => {
+                resolve({
+                    loginId: employee.loginId,
+                    personId: employee._id,
+                    attempts: 0,
+                    active: true
+                });
+            });
+        });
+    },
+
     retrievePassword: function(employee, enterprise) {
         return new Promise((resolve, reject) => {
             DAO.PasswordDao.get({
@@ -89,28 +124,28 @@ module.exports = {
         });
     },
 
-    updateAuthData: function(employee, enterprise) {
+    updateAuthData: function(active, enterprise) {
         let _self = this;
-        employee.lastAttempt = new Date();
-        employee.updated = new Date();
-        DAO.EmployeeDao.update({
+        active.lastAttempt = new Date();
+        active.updated = new Date();
+        DAO.ActiveDao.saveOrUpdate({
             tenant: enterprise.tenant,
-            models: [employee]
+            models: [active]
         }).then(success => {
-            _self.LOG.debug('Employee data has been updated with current time');
+            _self.LOG.debug('Active data has been updated with current time');
         }).catch(error => {
-            _self.LOG.debug('While updating Employee data with current time : ', error);
+            _self.LOG.debug('While updating Active data with current time : ', error);
         });
     },
 
-    updateFailedAuthData: function(employee, enterprise) {
-        if (employee.attempts >= CONFIG.get('attemptsToLockAccount')) {
-            employee.locked = true;
-            employee.lockedTime = new Date();
+    updateFailedAuthData: function(active, enterprise) {
+        if (active.attempts < CONFIG.get('attemptsToLockAccount')) {
+            active.attempts = active.attempts + 1;
         } else {
-            employee.attempts = employee.attempts + 1;
+            active.locked = true;
+            active.lockedTime = new Date();
         }
-        this.updateAuthData(employee, enterprise);
+        this.updateAuthData(active, enterprise);
     },
 
     authenticate: function(request, callback) {
@@ -118,34 +153,38 @@ module.exports = {
         let _self = this;
         _self.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
             _self.retrieveEmployee(input.loginId, enterprise).then(employee => {
-                _self.retrievePassword(employee, enterprise).then(password => {
-                    if (employee.locked || !employee.active) {
+                _self.retrieveActive(employee, enterprise).then(active => {
+                    if (active.locked || !active.active) {
                         callback('Account is currently in locked state or has been disabled');
                     } else {
-                        SYSTEM.compareHash(input.password, password.password).then(match => {
-                            if (match) {
-                                employee.attempts = 1;
-                                _self.updateAuthData(employee, enterprise);
-                                try {
-                                    let key = enterprise._id + employee._id + (new Date()).getTime();
-                                    let hash = SYSTEM.generateHash(key);
-                                    _self.addToken(input.moduleName, input.source, hash, {
-                                        employee: employee,
-                                        enterprise: enterprise
-                                    }).then(success => {
-                                        callback(null, {
-                                            authToken: hash
+                        _self.retrievePassword(employee, enterprise).then(password => {
+                            SYSTEM.compareHash(input.password, password.password).then(match => {
+                                if (match) {
+                                    active.attempts = 0;
+                                    _self.updateAuthData(active, enterprise);
+                                    try {
+                                        let key = enterprise._id + employee._id + (new Date()).getTime();
+                                        let hash = SYSTEM.generateHash(key);
+                                        _self.addToken(input.moduleName, input.source, hash, {
+                                            employee: employee,
+                                            enterprise: enterprise
+                                        }).then(success => {
+                                            callback(null, {
+                                                authToken: hash
+                                            });
+                                        }).catch(error => {
+                                            callback(error);
                                         });
-                                    }).catch(error => {
-                                        callback(error);
-                                    });
-                                } catch (error) {
-                                    callback('Invalid authentication request : Internal error: ' + error);
+                                    } catch (error) {
+                                        callback('Invalid authentication request : Internal error: ' + error);
+                                    }
+                                } else {
+                                    _self.updateFailedAuthData(active, enterprise);
+                                    callback('Invalid authentication request : Given password is not valid');
                                 }
-                            } else {
-                                _self.updateFailedAuthData(employee, enterprise);
-                                callback('Invalid authentication request : Given password is not valid');
-                            }
+                            }).catch(error => {
+                                callback('Invalid authentication request : ' + error);
+                            });
                         }).catch(error => {
                             callback('Invalid authentication request : ' + error);
                         });

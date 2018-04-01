@@ -141,6 +141,48 @@ module.exports = {
             }
         },
 
+        active: {
+            super: 'none',
+            model: true,
+            service: false,
+            event: false,
+            router: false,
+            definition: {
+                loginId: {
+                    type: "String",
+                    required: true,
+                    unique: true,
+                    index: true
+                },
+                personId: {
+                    type: 'String',
+                    required: true
+                },
+                attempts: {
+                    type: 'Number',
+                    default: 1,
+                    validate: {
+                        validator: NODICS.getValidators().checkValidForAttempts,
+                        message: '{VALUE} is not a valid attempt! put 1 instead'
+                    }
+                },
+                lastAttempt: {
+                    type: 'Date'
+                },
+                locked: {
+                    type: 'Boolean',
+                    default: false
+                },
+                lockedTime: {
+                    type: 'Date'
+                },
+                active: {
+                    type: 'Boolean',
+                    default: true
+                },
+            }
+        },
+
         person: {
             super: 'base',
             model: false,
@@ -165,25 +207,7 @@ module.exports = {
                     unique: true,
                     index: true
                 },
-                attempts: {
-                    type: 'Number',
-                    default: 1,
-                    validate: {
-                        validator: NODICS.getValidators().checkValidForAttempts,
-                        message: '{VALUE} is not a valid attempt! put 1 instead'
-                    }
-                },
-                lastAttempt: {
-                    type: 'Date'
-                },
-                locked: {
-                    type: 'Boolean',
-                    default: false
-                },
-                lockedTime: {
-                    type: 'Date'
-                },
-                active: {
+                autoUnloack: {
                     type: 'Boolean',
                     default: true
                 },

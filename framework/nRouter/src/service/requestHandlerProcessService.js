@@ -31,6 +31,20 @@ module.exports = {
         }
     },
 
+    helpRequest: function(request, response, process) {
+        console.log(request.local.originalUrl);
+        if (request.local.originalUrl.endsWith('?help')) {
+            console.log('........');
+            response.success = true;
+            response.code = 'SUC001';
+            response.msg = 'Processed successfully';
+            response.result = { message: 'This is help' };
+            process.stop(request, response);
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     parseHeader: function(request, response, process) {
         this.LOG.debug('Parsing request header for : ', request.local.originalUrl);
         if (request.get('authToken')) {
