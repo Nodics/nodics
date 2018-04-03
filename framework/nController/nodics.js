@@ -16,7 +16,10 @@ module.exports = {
 
     },
     loadController: function() {
+        let _self = this;
         SYSTEM.LOG.info('Starting Controller Generation process');
-        return controller.init();
+        return controller.init().then(success => {}).catch(error => {
+            _self.LOG.error(error);
+        });
     }
 };

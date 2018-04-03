@@ -16,7 +16,10 @@ module.exports = {
 
     },
     loadFacade: function() {
+        let _self = this;
         SYSTEM.LOG.info('Starting Facade Generation process');
-        return facade.init();
+        return facade.init().then(success => {}).catch(error => {
+            _self.LOG.error(error);
+        });
     }
 };

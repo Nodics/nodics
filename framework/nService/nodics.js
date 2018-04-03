@@ -16,7 +16,10 @@ module.exports = {
 
     },
     loadService: function() {
+        let _self = this;
         SYSTEM.LOG.info('Starting Service Generation process');
-        return service.init();
+        return service.init().then(success => {}).catch(error => {
+            _self.LOG.error(error);
+        });
     }
 };

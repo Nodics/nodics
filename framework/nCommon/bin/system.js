@@ -24,7 +24,8 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (!fs.existsSync(options.currentDir)) {
                 fs.mkdirSync(options.currentDir);
-            } else if (NODICS.isModifed()) {
+            }
+            if (NODICS.isModifed()) {
                 SYSTEM.removeDirectory(options.currentDir, false);
                 let allPromise = [];
                 _.each(NODICS.getModules(), (moduleObject, moduleName) => {
@@ -85,10 +86,10 @@ module.exports = {
                     'utf-8',
                     function(error, success) {
                         if (error) {
-                            SYSTEM.LOG.error('While creating object for file : ', fileName, ' : ', error);
+                            SYSTEM.LOG.error('While creating object for file : ', fileName.replace(NODICS.getNodicsHome(), '.'), ' : ', error);
                             reject(error);
                         } else {
-                            SYSTEM.LOG.debug('Creating class object for : ', fileName);
+                            SYSTEM.LOG.debug('Creating class object for : ', fileName.replace(NODICS.getNodicsHome(), '.'));
                             DAO[entityName] = require(fileName);
                             DAO[entityName].LOG = SYSTEM.createLogger(entityName);
                             resolve(true);
