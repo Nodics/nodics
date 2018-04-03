@@ -16,6 +16,7 @@ const path = require("path");
 module.exports = {
     init: function() {
         return new Promise((resolve, reject) => {
+            let gVar = SYSTEM.getGlobalVariables('/src/service/common.js');
             let serviceCommon = SYSTEM.loadFiles('/src/service/common.js');
             let genDir = path.join(__dirname, '../src/service/gen');
             if (!fs.existsSync(genDir)) {
@@ -24,7 +25,8 @@ module.exports = {
             SYSTEM.schemaWalkThrough({
                 commonDefinition: serviceCommon,
                 currentDir: genDir,
-                postFix: 'Service'
+                postFix: 'Service',
+                gVar: gVar
             }).then(success => {
                 resolve(true);
             }).catch(error => {

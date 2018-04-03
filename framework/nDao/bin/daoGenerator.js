@@ -16,12 +16,14 @@ const path = require("path");
 module.exports = {
     init: function() {
         return new Promise((resolve, reject) => {
+            let gVar = SYSTEM.getGlobalVariables('/src/dao/common.js');
             let daoCommon = SYSTEM.loadFiles('/src/dao/common.js');
             let genDir = path.join(__dirname, '../src/dao/gen');
             SYSTEM.schemaWalkThrough({
                 commonDefinition: daoCommon,
                 currentDir: genDir,
-                postFix: 'Dao'
+                postFix: 'Dao',
+                gVar: gVar
             }).then(success => {
                 resolve(true);
             }).catch(error => {

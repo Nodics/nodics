@@ -32,9 +32,7 @@ module.exports = {
     },
 
     helpRequest: function(request, response, process) {
-        console.log(request.local.originalUrl);
         if (request.local.originalUrl.endsWith('?help')) {
-            console.log('........');
             response.success = true;
             response.code = 'SUC001';
             response.msg = 'Processed successfully';

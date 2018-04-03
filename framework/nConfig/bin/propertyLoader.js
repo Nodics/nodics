@@ -36,7 +36,8 @@ module.exports = {
         _.each(CONFIG.get('moduleIndex'), (obj, key) => {
             modules = modules + obj[0].name + ',';
         });
-        sys.LOG.info('Modules: ', modules);
+        sys.LOG.info('Modules:');
+        console.log(modules);
     },
 
     /*

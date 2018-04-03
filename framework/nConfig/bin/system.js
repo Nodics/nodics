@@ -19,6 +19,7 @@ const winston = require('winston');
 require('winston-daily-rotate-file');
 const Elasticsearch = require('winston-elasticsearch');
 const props = require('../config/properties');
+const readline = require('readline');
 
 module.exports = {
     getActiveModules: function(options) {
@@ -258,6 +259,30 @@ module.exports = {
             }
         });
         return mergedFile;
+    },
+
+    getGlobalVariables: function(fileName) {
+        let _self = this;
+        let gVar = {};
+        Object.keys(CONFIG.get('moduleIndex')).forEach(function(key) {
+            var value = CONFIG.get('moduleIndex')[key][0];
+            var filePath = value.path + fileName;
+            if (fs.existsSync(filePath)) {
+                _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+                fs.readFileSync(filePath).toString().split('\n').forEach((line) => {
+                    if (line.startsWith('const') || line.startsWith('let') || line.startsWith('var')) {
+                        let value = line.trim().split(' ');
+                        if (!gVar[value[1]]) {
+                            gVar[value[1]] = {
+                                value: line.trim()
+                            };
+                        }
+                    }
+                });
+            }
+        });
+        // console.log(gVar);
+        return gVar;
     },
 
     processFiles: function(filePath, filePostFix, callback) {

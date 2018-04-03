@@ -62,7 +62,7 @@ module.exports = {
             if (options.schemaObject.model) {
                 let entityName = options.modelName + options.postFix;
                 let fileName = options.currentDir + '/' + entityName + '.js';
-                let copyWrite = '/*\n' +
+                let data = '/*\n' +
                     '\tNodics - Enterprice Micro-Services Management Framework\n\n' +
 
                     '\tCopyright (c) 2017 Nodics All rights reserved.\n\n' +
@@ -72,8 +72,14 @@ module.exports = {
                     '\tterms of the license agreement you entered into with Nodics\n' +
 
                     '*/\n\n';
-                let data = copyWrite + 'module.exports = ' + SYSTEM.replacePlaceholders(options).replace(/\\n/gm, '\n').replaceAll("\"", "") + ';';
-                data = data.replaceAll('= {', '= { \n\t').replaceAll('},', '},\n\t').replaceAll('}}', '}\n}');
+                if (!UTILS.isBlank(options.gVar)) {
+                    _.each(options.gVar, (value, key) => {
+                        data = data + value.value + '\n';
+                    });
+                    data = data + '\n';
+                }
+                data = data + 'module.exports = ' + SYSTEM.replacePlaceholders(options).replace(/\\n/gm, '\n').replaceAll("\"", "") + ';';
+                data = data.replaceAll('= {', '= { \n\t').replaceAll('\',', '\',\n\t').replaceAll('},', '},\n\t').replaceAll('}}', '}\n}');
                 fs.writeFile(fileName,
                     data,
                     'utf-8',
@@ -96,6 +102,8 @@ module.exports = {
         var commonDefinitionString = JSON.stringify(options.commonDefinition, function(key, value) {
             if (typeof value === 'function') {
                 return value.toString();
+            } else if (typeof value === 'string') {
+                return '\'' + value + '\'';
             } else {
                 return value;
             }
