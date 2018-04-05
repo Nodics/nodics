@@ -11,9 +11,6 @@
 
 module.exports = {
 
-    createAuthCache: function(request) {
-
-    },
     retrieveEnterprise: function(enterpriseCode) {
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(enterpriseCode)) {
@@ -36,91 +33,6 @@ module.exports = {
                     reject(error);
                 });
             }
-        });
-    },
-
-    retrieveEmployee: function(loginId, enterprise) {
-        return new Promise((resolve, reject) => {
-            DAO.EmployeeDao.get({
-                tenant: enterprise.tenant,
-                options: {
-                    recursive: true,
-                    query: {
-                        loginId: loginId,
-                        enterpriseCode: enterprise.enterpriseCode
-                    }
-                }
-            }).then(employees => {
-                if (employees.length <= 0) {
-                    reject('Invalid login id');
-                } else {
-                    resolve(employees[0]);
-                }
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
-
-    retrieveActive: function(employee, enterprise) {
-        return new Promise((resolve, reject) => {
-            DAO.ActiveDao.get({
-                tenant: enterprise.tenant,
-                options: {
-                    query: {
-                        $and: [{
-                            loginId: employee.loginId,
-                        }, {
-                            personId: employee._id
-                        }]
-                    }
-                }
-            }).then(actives => {
-                if (actives.length <= 0) {
-                    resolve({
-                        loginId: employee.loginId,
-                        personId: employee._id,
-                        attempts: 0,
-                        active: true
-                    });
-                } else {
-                    resolve(actives[0]);
-                }
-            }).catch(error => {
-                resolve({
-                    loginId: employee.loginId,
-                    personId: employee._id,
-                    attempts: 0,
-                    active: true
-                });
-            });
-        });
-    },
-
-    retrievePassword: function(employee, enterprise) {
-        return new Promise((resolve, reject) => {
-            DAO.PasswordDao.get({
-                tenant: enterprise.tenant,
-                options: {
-                    query: {
-                        $and: [{
-                            loginId: employee.loginId,
-                        }, {
-                            personId: employee._id
-                        }, {
-                            enterpriseCode: enterprise.enterpriseCode
-                        }]
-                    }
-                }
-            }).then(passwords => {
-                if (passwords.length <= 0) {
-                    reject('Invalid password defail');
-                } else {
-                    resolve(passwords[0]);
-                }
-            }).catch(error => {
-                reject(error);
-            });
         });
     },
 
@@ -152,21 +64,34 @@ module.exports = {
         let input = request.local || request;
         let _self = this;
         _self.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
-            _self.retrieveEmployee(input.loginId, enterprise).then(employee => {
-                _self.retrieveActive(employee, enterprise).then(active => {
+            SERVICE.PersonService.findByLoginId({
+                tenant: enterprise.tenant,
+                loginId: input.loginId,
+                enterpriseCode: enterprise.enterpriseCode
+            }).then(person => {
+                SERVICE.PersonService.findActive({
+                    tenant: enterprise.tenant,
+                    loginId: input.loginId,
+                    _id: person._id
+                }).then(active => {
                     if (active.locked || !active.active) {
                         callback('Account is currently in locked state or has been disabled');
                     } else {
-                        _self.retrievePassword(employee, enterprise).then(password => {
+                        SERVICE.PersonService.findPassword({
+                            tenant: enterprise.tenant,
+                            enterpriseCode: enterprise.enterpriseCode,
+                            loginId: person.loginId,
+                            _id: person._id
+                        }).then(password => {
                             SYSTEM.compareHash(input.password, password.password).then(match => {
                                 if (match) {
                                     active.attempts = 0;
                                     _self.updateAuthData(active, enterprise);
                                     try {
-                                        let key = enterprise._id + employee._id + (new Date()).getTime();
+                                        let key = enterprise._id + person._id + (new Date()).getTime();
                                         let hash = SYSTEM.generateHash(key);
                                         _self.addToken(input.moduleName, input.source, hash, {
-                                            employee: employee,
+                                            person: person,
                                             enterprise: enterprise
                                         }).then(success => {
                                             callback(null, {

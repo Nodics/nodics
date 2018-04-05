@@ -21,7 +21,13 @@ module.exports = {
                 key: '/enterprise/get',
                 method: 'POST',
                 handler: 'EnterpriseController',
-                operation: 'getEnterprise'
+                operation: 'getEnterprise',
+                help: {
+                    requestType: 'secured',
+                    message: 'enterpriseCode need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/enterprise/get',
+                }
             }
         },
 
@@ -31,7 +37,13 @@ module.exports = {
                 key: '/authenticate',
                 method: 'POST',
                 handler: 'AuthenticationProviderController',
-                operation: 'authenticate'
+                operation: 'authenticate',
+                help: {
+                    requestType: 'secured',
+                    message: 'loginId, password and enterpriseCode need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/authenticate',
+                }
             }
         },
 
@@ -41,7 +53,13 @@ module.exports = {
                 key: '/authorize',
                 method: 'POST',
                 handler: 'AuthenticationProviderController',
-                operation: 'authorize'
+                operation: 'authorize',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/authorize',
+                }
             }
         }
     }

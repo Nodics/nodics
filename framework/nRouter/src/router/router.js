@@ -72,7 +72,13 @@ module.exports = {
                 key: '/schemaName',
                 method: 'GET',
                 controller: 'controllerName',
-                operation: 'get'
+                operation: 'get',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/moduleName/schemaName/',
+                }
             },
             postModel: {
                 secured: true,
@@ -83,7 +89,21 @@ module.exports = {
                 key: '/schemaName',
                 method: 'POST',
                 controller: 'controllerName',
-                operation: 'get'
+                operation: 'get',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/moduleName/schemaName/',
+                    body: {
+                        recursive: 'optional true/false - default is false',
+                        pageSize: 'optional default value is 10',
+                        pageNumber: 'optiona default value is 0',
+                        sort: '',
+                        select: '',
+                        query: 'optional MongoDB based conditions can be put here, default is {}'
+                    }
+                }
             },
             getById: {
                 secured: true,
@@ -94,23 +114,42 @@ module.exports = {
                 key: '/schemaName/id/:id',
                 method: 'GET',
                 controller: 'controllerName',
-                operation: 'getById'
+                operation: 'getById',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/moduleName/schemaName/id/:id',
+                }
             }
         },
         commonRemoveOperations: {
             deleteById: {
                 secured: true,
-                key: '/schemaName/id',
-                method: 'DELETE',
-                controller: 'controllerName',
-                operation: 'removeById'
-            },
-            deleteByIds: {
-                secured: true,
                 key: '/schemaName/id/:id',
                 method: 'DELETE',
                 controller: 'controllerName',
-                operation: 'removeById'
+                operation: 'removeById',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/moduleName/schemaName/id/:id',
+                }
+            },
+            deleteByIds: {
+                secured: true,
+                key: '/schemaName',
+                method: 'DELETE',
+                controller: 'controllerName',
+                operation: 'removeById',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/moduleName/schemaName',
+                    body: ['id1', 'id2', 'id3', '...id n']
+                }
             }
         },
         commonSaveOperations: {
@@ -119,7 +158,14 @@ module.exports = {
                 key: '/schemaName',
                 method: 'PUT',
                 controller: 'controllerName',
-                operation: 'save'
+                operation: 'save',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/moduleName/schemaName',
+                    body: '{ complete model object } or [{}, {}] array of models'
+                }
             }
         },
         commonUpdateOperations: {
@@ -128,7 +174,14 @@ module.exports = {
                 key: '/schemaName/update',
                 method: 'PUT',
                 controller: 'controllerName',
-                operation: 'update'
+                operation: 'update',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/moduleName/schemaName/update',
+                    body: '{ complete model object } or [{}, {}] array of models'
+                }
             }
         },
 
@@ -138,7 +191,14 @@ module.exports = {
                 key: '/schemaName/saveOrUpdate',
                 method: 'PUT',
                 controller: 'controllerName',
-                operation: 'saveOrUpdate'
+                operation: 'saveOrUpdate',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/moduleName/schemaName/saveOrUpdate',
+                    body: '{ complete model object } or [{}, {}] array of models'
+                }
             }
         }
     },
@@ -152,32 +212,29 @@ module.exports = {
                 handler: 'PingMeController',
                 operation: 'ping',
                 help: {
-
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/moduleName/ping',
+                    body: '{ complete model object } or [{}, {}] array of models'
                 }
             }
         },
+
         flushAPICache: {
             flushAll: {
                 secured: true,
                 key: '/cache/api/flush',
                 method: 'GET',
                 controller: 'CacheController',
-                operation: 'flushApiCache'
-            },
-            flushPrefix: {
-                secured: true,
-                key: '/cache/api/flush/:prefix',
-                method: 'GET',
-                controller: 'CacheController',
-                operation: 'flushApiCache'
-            },
-            flushKeys: {
-                secured: true,
-                key: '/cache/api/flush',
-                method: 'POST',
-                controller: 'CacheController',
-                operation: 'flushApiCacheKeys'
-            },
+                operation: 'flushApiCache',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/moduleName/cache/api/flush'
+                }
+            }
         },
 
         flushItemCache: {
@@ -186,21 +243,41 @@ module.exports = {
                 key: '/cache/item/flush',
                 method: 'GET',
                 controller: 'CacheController',
-                operation: 'flushItemCache'
+                operation: 'flushItemCache',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/moduleName/cache/item/flush'
+                }
             },
             flushPrefix: {
                 secured: true,
                 key: '/cache/item/flush/:prefix',
                 method: 'GET',
                 controller: 'CacheController',
-                operation: 'flushItemCache'
+                operation: 'flushItemCache',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/moduleName/cache/item/flush/:prefix',
+                    body: 'prefix could be schema name like schemaName or schemaName_tenant'
+                }
             },
             flushKeys: {
                 secured: true,
                 key: '/cache/item/flush',
                 method: 'POST',
                 controller: 'CacheController',
-                operation: 'flushItemCacheKeys'
+                operation: 'flushItemCacheKeys',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/moduleName/cache/item/flush',
+                    body: '[key1, key2, key3, key...n]'
+                }
             },
         }
     }

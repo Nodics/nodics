@@ -6,13 +6,13 @@ Todos:
       personSchema.virtual('fullName').get(function () {
         return this.name.first + ' ' + this.name.last;
       });
-    - Add hook for each layer and each method level
+    ✘ Add hook for each layer and each method level @cancelled(18-04-05 10:42)
     ✔ Start all Active cronJobs on start-up @done(18-03-09 22:25)
     ✔ Only active jobs need to be executed @done(18-03-12 23:36)
     ✔ Test cronJob update/remove while its running, if it is working fine @done(18-03-12 23:36)
     ✔ Make custom code seperate from Nodics Home directory @done(18-03-05 21:16)
     ✔ Define namespace capability - load cleasses from sub-folders @done(18-03-09 22:25)
-    - Add Service to return sample request object for all the services.
+    ✔ Add Service to return sample request object for all the services. @done(18-04-05 10:42)
     - Implement Jsdoc NPM to generate JavaScript Docs
     ✔ Make all framework load Prmoisify (Loading all modules in sequence) @done(18-03-05 22:50)
     ✔ Make item and API TTL at configuration level @done(18-03-04 22:39)
@@ -64,7 +64,10 @@ Todos:
     ✔ I am live functionality (Server ping machanizm) @done(18-03-31 14:43)
     ✔ Add EMS connectivity in Nodics Architecture diagrame @done(18-03-31 14:26)
     ✔ Test app with individual port startup @done(18-03-31 18:17)
-    - Refector Person schema for last login and number of failed logins
+    ✔ Refector Person schema for last login and number of failed logins @done(18-04-03 17:59)
+    ✔ Each router should return detail on ?help @done(18-04-05 10:42)
+
+    - Run individual test case from API for both type
       
 
 Todos:

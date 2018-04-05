@@ -36,7 +36,12 @@ module.exports = {
             response.success = true;
             response.code = 'SUC001';
             response.msg = 'Processed successfully';
-            response.result = { message: 'This is help' };
+            if (request.local.router.help) {
+                response.result = request.local.router.help;
+            } else {
+                response.result = 'Not defined';
+            }
+
             process.stop(request, response);
         } else {
             process.nextSuccess(request, response);

@@ -18,7 +18,7 @@ module.exports = {
             } else {
                 request.local.enterprise = result.enterprise;
                 request.local.enterpriseCode = result.enterprise.enterpriseCode;
-                request.local.employee = result.employee;
+                request.local.person = result.person;
                 request.local.tenant = result.enterprise.tenant;
                 process.nextSuccess(request, response);
             }

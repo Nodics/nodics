@@ -11,10 +11,105 @@
 
 module.exports = {
 
-    get: function(input) {
+    findByLoginId: function(input) {
         return new Promise((resolve, reject) => {
-
+            SERVICE.EmployeeService.get({
+                tenant: input.tenant,
+                options: {
+                    recursive: true,
+                    query: {
+                        loginId: input.loginId,
+                        enterpriseCode: input.enterpriseCode
+                    }
+                }
+            }).then(employees => {
+                if (employees.length <= 0) {
+                    SERVICE.CustomerService.get({
+                        tenant: input.tenant,
+                        options: {
+                            recursive: true,
+                            query: {
+                                loginId: input.loginId,
+                                enterpriseCode: input.enterpriseCode
+                            }
+                        }
+                    }).then(customers => {
+                        if (customers.length <= 0) {
+                            reject('Invalid login id');
+                        } else {
+                            resolve(customers[0]);
+                        }
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(employees[0]);
+                }
+            }).catch(error => {
+                reject(error);
+            });
         });
-    }
+    },
 
+    findActive: function(input) {
+        return new Promise((resolve, reject) => {
+            SERVICE.ActiveService.get({
+                tenant: input.tenant,
+                options: {
+                    query: {
+                        $and: [{
+                            loginId: input.loginId,
+                        }, {
+                            personId: input._id
+                        }]
+                    }
+                }
+            }).then(actives => {
+                if (actives.length <= 0) {
+                    resolve({
+                        loginId: input.loginId,
+                        personId: input._id,
+                        attempts: 0,
+                        active: true
+                    });
+                } else {
+                    resolve(actives[0]);
+                }
+            }).catch(error => {
+                resolve({
+                    loginId: input.loginId,
+                    personId: input._id,
+                    attempts: 0,
+                    active: true
+                });
+            });
+        });
+    },
+
+    findPassword: function(input) {
+        return new Promise((resolve, reject) => {
+            SERVICE.PasswordService.get({
+                tenant: input.tenant,
+                options: {
+                    query: {
+                        $and: [{
+                            loginId: input.loginId,
+                        }, {
+                            personId: input._id
+                        }, {
+                            enterpriseCode: input.enterpriseCode
+                        }]
+                    }
+                }
+            }).then(passwords => {
+                if (passwords.length <= 0) {
+                    reject('Invalid password detail');
+                } else {
+                    resolve(passwords[0]);
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
 };

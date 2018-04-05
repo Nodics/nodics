@@ -38,10 +38,28 @@ module.exports = {
                 defaultEmployee: {
                     _id: '121e7dd88ac6ed3d73a76712',
                     enterpriseCode: 'default',
-                    firstName: 'Himkar',
-                    middleName: 'Admin',
-                    lastName: 'Admin',
+                    firstName: 'Nodics',
+                    lastName: 'Employee',
                     loginId: 'admin',
+                    locked: false,
+                    active: true,
+                    attempts: 1
+                }
+            }
+        },
+
+        createDefaultCustomer: {
+            modelName: 'employee',
+            operation: 'saveOrUpdate', //save, update and saveOrUpdate
+            tenant: 'default',
+
+            models: {
+                defaultEmployee: {
+                    _id: '121e7dd88ac6ed3d73a76713',
+                    enterpriseCode: 'default',
+                    firstName: 'Nodics',
+                    lastName: 'Customer',
+                    loginId: 'guest',
                     locked: false,
                     active: true,
                     attempts: 1
@@ -55,66 +73,18 @@ module.exports = {
             tenant: 'default',
 
             models: {
-                defaultEmployee: {
+                defaultEmployeePassword: {
                     _id: '121e7dd88ac6ed3d73a76333',
                     personId: '121e7dd88ac6ed3d73a76712',
                     enterpriseCode: 'default',
                     loginId: 'admin',
                     password: 'nodics'
-                }
-            }
-        }
-    },
-
-    testModule: {
-
-        createDefaultEnterprise1: {
-            modelName: 'enterprise',
-            operation: 'saveOrUpdate', //save, update and saveOrUpdate
-            tenant: 'default',
-
-            models: {
-                defaultEnterprise: {
-                    _id: '111e7dd88ac6ed3d73a76722',
+                },
+                defaultCustomerPassword: {
+                    _id: '121e7dd88ac6ed3d73a76334',
+                    personId: '121e7dd88ac6ed3d73a76713',
                     enterpriseCode: 'default',
-                    name: 'Default1',
-                    description: 'Default1 Enterprise',
-                    tenant: 'default'
-                }
-            }
-        },
-
-        createDefaultEmployee1: {
-            modelName: 'employee',
-            operation: 'saveOrUpdate', //save, update and saveOrUpdate
-            tenant: 'default',
-
-            models: {
-                defaultEmployee: {
-                    _id: '121e7dd88ac6ed3d73a76722',
-                    enterpriseCode: 'default1',
-                    firstName: 'Himkar',
-                    middleName: 'Admin',
-                    lastName: 'Admin',
-                    loginId: 'admin1',
-                    locked: false,
-                    active: true,
-                    attempts: 1
-                }
-            }
-        },
-
-        createDefaultPassword1: {
-            modelName: 'password',
-            operation: 'saveOrUpdate', //save, update and saveOrUpdate
-            tenant: 'default',
-
-            models: {
-                defaultEmployee: {
-                    _id: '121e7dd88ac6ed3d73a76323',
-                    personId: '121e7dd88ac6ed3d73a76722',
-                    enterpriseCode: 'default1',
-                    loginId: 'admin1',
+                    loginId: 'guest',
                     password: 'nodics'
                 }
             }

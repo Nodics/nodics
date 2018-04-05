@@ -17,7 +17,25 @@ module.exports = {
                 key: '/event/push',
                 method: 'PUT',
                 controller: 'EventController',
-                operation: 'save'
+                operation: 'save',
+                help: {
+                    requestType: 'non-secured',
+                    message: 'enterpriseCode need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/nems/event/push',
+                    body: {
+                        enterpriseCode: 'default',
+                        event: 'testMe',
+                        source: 'cronjob',
+                        target: 'profile',
+                        clusterId: '0',
+                        state: 'NEW',
+                        type: 'ASYNC',
+                        params: {
+                            //any raw data, want to send to handler
+                        }
+                    }
+                }
             },
         },
         processEvent: {
@@ -26,7 +44,13 @@ module.exports = {
                 key: '/event/process',
                 method: 'GET',
                 controller: 'EventHandlerController',
-                operation: 'processEvents'
+                operation: 'processEvents',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/nems/event/process',
+                }
             }
         }
     }

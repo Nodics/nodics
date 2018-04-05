@@ -17,7 +17,18 @@ module.exports = {
                 key: '/publish',
                 method: 'POST',
                 controller: 'EmsClientController',
-                operation: 'publish'
+                operation: 'publish',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/emsClient/publish',
+                    body: {
+                        queue: 'Name of the queue',
+                        messages: 'Message to be send',
+                        partition: 'currently optional, its used for Kafka'
+                    }
+                }
             }
         }
     }
