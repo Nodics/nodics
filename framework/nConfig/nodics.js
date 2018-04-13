@@ -9,9 +9,6 @@
 
  */
 
-const propertyLoader = require('./bin/propertyLoader');
-const systemLoader = require('./bin/systemLoader');
-const scriptLoader = require('./bin/scriptLoader');
 const sys = require('./bin/system');
 
 module.exports = {
@@ -26,7 +23,7 @@ module.exports = {
             sys.LOG.error("System initialization error: options cann't be null or empty");
             process.exit(1);
         }
-        sys.LOG.info('Initializing Nodics, Node based enterprise application solution   ###');
+        sys.LOG.info('###   Initializing Nodics, Node based enterprise application solution   ###');
         sys.LOG.info('---------------------------------------------------------------------------');
         sys.LOG.info('SERVER_PATH       : ', NODICS.getServerHome());
         sys.LOG.info('NODICS_HOME       : ', NODICS.getNodicsHome());
@@ -34,18 +31,19 @@ module.exports = {
         sys.LOG.info('NODICS_ENV        : ', NODICS.getActiveEnvironment());
         sys.LOG.info('NODICS_SERVER     : ', NODICS.getServerName());
         sys.LOG.info('---------------------------------------------------------------------------');
-        propertyLoader.init();
+        sys.LOG.info('Starting Configuration loader process ##');
+        sys.loadModuleIndex();
+        sys.LOG.info('Loading modules meta data');
+        sys.loadModulesMetaData();
+        sys.LOG.info('Loading modules common configurations');
+        sys.loadConfigurations();
+        sys.loadExternalProperties();
         NODICS.setStartTime(startTime);
-        NODICS.setActiveTanent(CONFIG.get('activeTanent'));
-        sys.LOG.info("Starting Nodics with active tenant : ", CONFIG.get('activeTanent'));
-        systemLoader.init();
+        sys.LOG.info('Starting System loader process');
+        sys.loadFiles('/bin/system.js', global.SYSTEM);
         SYSTEM.LOG = SYSTEM.createLogger('SYSTEM');
         NODICS.LOG = SYSTEM.createLogger('NODICS');
-        SYSTEM.executePreScripts = function() {
-            scriptLoader.executePreScripts();
-        };
-        SYSTEM.executePostScripts = function() {
-            scriptLoader.executePostScripts();
-        };
+        SYSTEM.loadPreScript();
+        SYSTEM.loadPostScript();
     }
 };

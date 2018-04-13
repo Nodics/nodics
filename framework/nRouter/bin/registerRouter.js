@@ -16,20 +16,24 @@ module.exports = {
         let _self = this;
         let modules = NODICS.getModules();
         let routers = SYSTEM.loadFiles('/src/router/router.js');
-        _.each(modules, function(moduleObject, moduleName) {
-            let app = {};
-            if (CONFIG.get('server').runAsSingleModule) {
-                app = modules.default.app;
-            } else {
-                app = moduleObject.app;
-            }
-            SERVICE.CacheService.initCache(moduleObject, moduleName).then(() => {
-                _self.registerRouters(app, moduleObject, moduleName, routers);
-            }).catch(error => {
-                SYSTEM.LOG.error('got error while initializing cache for module : ', moduleName);
-                self.registerRouters(app, moduleObject, moduleName, routers);
-            });
+        return new Promise((resolve, reject) => {
+            _.each(modules, function(moduleObject, moduleName) {
+                let app = {};
+                if (CONFIG.get('server').runAsSingleModule) {
+                    app = modules.default.app;
+                } else {
+                    app = moduleObject.app;
+                }
+                SERVICE.CacheService.initCache(moduleObject, moduleName).then(() => {
+                    _self.registerRouters(app, moduleObject, moduleName, routers);
+                    resolve(true);
+                }).catch(error => {
+                    SYSTEM.LOG.error('got error while initializing cache for module : ', moduleName);
+                    self.registerRouters(app, moduleObject, moduleName, routers);
+                    reject(error);
+                });
 
+            });
         });
     },
 

@@ -11,7 +11,6 @@
 
 module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
     let _serverState = 'starting';
-    let _activeTenant = 'default';
     let _activeChannel = 'master';
     let _activeEnv = env;
     let _activeApp = app;
@@ -27,12 +26,36 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
     let _entTime = 0;
     let _loggers = {};
     let _isModified = false;
-    this.LOG = {};
+    let LOG = {};
+    let _preScripts = {};
+    let _postScript = {};
+    let _tenants = [];
 
     let _nodics = {
         modules: {},
         dbs: {},
         validators: {}
+    };
+
+    this.addTenant = function(tntName) {
+        _tenants.push(tntName);
+    };
+    this.getTenants = function() {
+        return _tenants;
+    };
+
+    this.setPreScripts = function(preScripts) {
+        _preScripts = preScripts;
+    };
+    this.getPreScripts = function() {
+        return _preScripts;
+    };
+
+    this.setPostScripts = function(postScripts) {
+        _postScripts = postScripts;
+    };
+    this.getPostScripts = function() {
+        return _postScripts;
     };
 
     this.setIsModified = function(isModified) {
@@ -137,18 +160,6 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
     };
     this.getServerState = function() {
         return _serverState;
-    };
-
-    this.setActiveTanent = function(tenant) {
-        if (CONFIG.get('installedTanents').includes(tenant)) {
-            _activeTenant = tenant;
-        } else {
-            SYSTEM.LOG.error('Given tenant not supported here : ', tenant);
-            process.exit(1);
-        }
-    };
-    this.getActiveTanent = function() {
-        return _activeTenant;
     };
 
     this.setActiveChannel = function(channel) {

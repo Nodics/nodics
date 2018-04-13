@@ -13,15 +13,19 @@ const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
-const Config = require('./config');
-const Nodics = require('./nodics');
+
 const winston = require('winston');
 require('winston-daily-rotate-file');
 const Elasticsearch = require('winston-elasticsearch');
-const props = require('../config/properties');
+
 const readline = require('readline');
+const UTILS = require('../src/utils/utils');
+const Nodics = require('./nodics');
+const Config = require('./config');
+const props = require('../config/properties');
 
 module.exports = {
+
     getActiveModules: function(options) {
         try {
             let modules = [];
@@ -40,13 +44,13 @@ module.exports = {
             this.LOG = this.createLogger('SYSTEM', prop.log);
             if (!fs.existsSync(moduleGroupsFilePath) || serverProperties.activeModules.updateGroups) {
                 var nodicsModulePath = [];
-                this.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
+                UTILS.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
                 if (NODICS.getCustomHome() !== NODICS.getNodicsHome()) {
-                    this.collectModulesList(NODICS.getCustomHome(), nodicsModulePath);
+                    UTILS.collectModulesList(NODICS.getCustomHome(), nodicsModulePath);
                 }
                 nodicsModulePath.push(appHome);
                 nodicsModulePath.push(envHome);
-                this.collectModulesList(serverHome, nodicsModulePath);
+                UTILS.collectModulesList(serverHome, nodicsModulePath);
                 let mergedFile = {};
                 nodicsModulePath.forEach(function(modulePath) {
                     if (fs.existsSync(modulePath + '/config/properties.js')) {
@@ -75,6 +79,7 @@ module.exports = {
             console.error('While preparing active module list : ', error);
         }
     },
+
     prepareOptions: function(options) {
         if (!options.NODICS_HOME) {
             options.NODICS_HOME = process.env.NODICS_HOME || process.cwd();
@@ -171,56 +176,64 @@ module.exports = {
         };
     },
 
-    subFolders: function(folder) {
-        return fs.readdirSync(folder)
-            .filter(subFolder => fs.statSync(path.join(folder, subFolder)).isDirectory())
-            .filter(subFolder => subFolder !== 'node_modules' && subFolder !== 'templates' && subFolder[0] !== '.')
-            .map(subFolder => path.join(folder, subFolder));
+    addModuleInActiveList: function(moduleName) {
+        //console.log(NODICS.getActiveModules());
+        NODICS.getActiveModules().push(moduleName);
+        //console.log(NODICS.getActiveModules());
     },
 
-    collectModulesList: function(folder, modulePathList) {
-        const hasPackageJson = fs.existsSync(path.join(folder, 'package.json'));
-        if (hasPackageJson) {
-            modulePathList.push(folder);
-        }
-        for (let subFolder of this.subFolders(folder)) {
-            if (!subFolder.endsWith(NODICS.getActiveApplication())) {
-                this.collectModulesList(subFolder, modulePathList);
-            }
-        }
-    },
-    sortModulesByIndex: function(moduleIndex) {
-        moduleIndex = _.groupBy(moduleIndex, function(element) {
-            return parseInt(element.index);
-        });
-        return moduleIndex;
-    },
-
-    getModulesMetaData: function() {
-        let _self = this;
-        let appHome = NODICS.getCustomHome() + '/' + NODICS.getActiveApplication();
-        let envHome = appHome + '/' + NODICS.getActiveEnvironment();
-        let config = CONFIG.getProperties();
-        let modules = NODICS.getModules();
-        let moduleIndex = [];
-        let metaData = {};
+    getAllModules: function(appHome, envHome) {
         var nodicsModulePath = [],
             serverModulePath = [appHome, envHome];
-
         //Get list of OOTB Active modules
-        this.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
+        UTILS.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
         if (NODICS.getCustomHome() !== NODICS.getNodicsHome()) {
-            this.collectModulesList(NODICS.getCustomHome(), nodicsModulePath);
+            UTILS.collectModulesList(NODICS.getCustomHome(), nodicsModulePath);
         }
         //Adding list of Custom Active modules
-        this.collectModulesList(NODICS.getServerHome(), serverModulePath);
+        UTILS.collectModulesList(NODICS.getServerHome(), serverModulePath);
 
-        nodicsModulePath = nodicsModulePath.concat(serverModulePath);
-        var counter = 0;
+        return nodicsModulePath.concat(serverModulePath);
+    },
+
+    loadModuleIndex: function() {
+        let _self = this;
+        let config = CONFIG.getProperties();
+        let appHome = NODICS.getCustomHome() + '/' + NODICS.getActiveApplication();
+        let envHome = appHome + '/' + NODICS.getActiveEnvironment();
+        let moduleIndex = [];
+        let nodicsModulePath = this.getAllModules(appHome, envHome);
         nodicsModulePath.forEach(function(modulePath) {
-            var moduleFile = require(modulePath + '/package.json');
+            let indexData = _self.addModuleIndex(modulePath);
+            if (indexData) {
+                moduleIndex.push(indexData);
+            }
+        });
+        config.rawModuleIndex = moduleIndex;
+        _self.finalizeModuleIndex();
+    },
+
+    finalizeModuleIndex: function() {
+        let config = CONFIG.getProperties();
+        config.moduleIndex = UTILS.sortModulesByIndex(config.rawModuleIndex);
+        let modules = {};
+        config.rawModuleIndex.forEach(module => {
+            modules[module.name] = module;
+        });
+        config.moduleList = modules;
+        let modulesStr = '';
+        _.each(CONFIG.get('moduleIndex'), (obj, key) => {
+            modulesStr = modulesStr + obj[0].name + ',';
+        });
+        this.LOG.info('Modules:');
+        console.log(modulesStr);
+    },
+
+    addModuleIndex: function(modulePath) {
+        let metaDataFile = modulePath + '/package.json';
+        if (fs.existsSync(metaDataFile)) {
+            let moduleFile = require(metaDataFile);
             if (NODICS.isModuleActive(moduleFile.name)) {
-                metaData[moduleFile.name] = moduleFile;
                 if (!moduleFile.index) {
                     this.LOG.error('Please update index property in package.json for module : ', moduleFile.name);
                     process.exit(1);
@@ -229,86 +242,107 @@ module.exports = {
                     this.LOG.error('Property index contain invalid value in package.json for module : ', moduleFile.name);
                     process.exit(1);
                 }
-                let indexData = {};
-                let moduleMetaData = {};
-
-                moduleMetaData.metaData = moduleFile;
-                moduleMetaData.modulePath = modulePath;
-                NODICS.addModule(moduleMetaData);
-
-                indexData.index = moduleFile.index;
-                indexData.name = moduleFile.name;
-                indexData.path = modulePath;
-                moduleIndex.push(indexData);
+                return {
+                    index: moduleFile.index,
+                    name: moduleFile.name,
+                    path: modulePath,
+                };
             }
-        });
-        config.moduleIndex = this.sortModulesByIndex(moduleIndex);
-        config.metaData = metaData;
+        }
     },
 
-    loadFiles: function(fileName, frameworkFile) {
+    loadModulesMetaData: function() {
         let _self = this;
-        let mergedFile = frameworkFile || {};
-        Object.keys(CONFIG.get('moduleIndex')).forEach(function(key) {
-            var value = CONFIG.get('moduleIndex')[key][0];
-            var filePath = value.path + fileName;
-            if (fs.existsSync(filePath)) {
-                _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
-                var commonPropertyFile = require(filePath);
-                mergedFile = _.merge(mergedFile, commonPropertyFile);
-            }
+        let config = CONFIG.getProperties();
+        let moduleIndex = config.moduleIndex;
+        Object.keys(moduleIndex).forEach(function(index) {
+            let group = moduleIndex[index];
+            group.forEach(module => {
+                _self.loadModuleMetaData(module.name);
+            });
         });
-        return mergedFile;
     },
 
-    getGlobalVariables: function(fileName) {
-        let _self = this;
-        let gVar = {};
-        Object.keys(CONFIG.get('moduleIndex')).forEach(function(key) {
-            var value = CONFIG.get('moduleIndex')[key][0];
-            var filePath = value.path + fileName;
+    /*
+     * This function is used to load module meta data if that module is active
+     */
+    loadModuleMetaData: function(moduleName) {
+        let config = CONFIG.getProperties();
+        let module = config.moduleList[moduleName];
+        if (module) {
+            let filePath = module.path + '/package.json';
             if (fs.existsSync(filePath)) {
-                _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
-                fs.readFileSync(filePath).toString().split('\n').forEach((line) => {
-                    if (line.startsWith('const') || line.startsWith('let') || line.startsWith('var')) {
-                        let value = line.trim().split(' ');
-                        if (!gVar[value[1]]) {
-                            gVar[value[1]] = {
-                                value: line.trim()
-                            };
-                        }
-                    }
+                this.LOG.debug('Loading metaData for ' + moduleName + ' from : ', filePath.replace(NODICS.getNodicsHome(), '.'));
+                let moduleFile = require(filePath);
+                NODICS.addModule({
+                    metaData: moduleFile,
+                    modulePath: module.path
                 });
             }
-        });
-        // console.log(gVar);
-        return gVar;
+        }
     },
 
-    processFiles: function(filePath, filePostFix, callback) {
+    /*
+     * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
+     * will load properties from $MODULE/common/properties.js
+     */
+
+    loadConfigurations: function(fileName) {
         let _self = this;
+        fileName = fileName || '/config/properties.js';
+        let config = CONFIG.getProperties();
+        let moduleIndex = config.moduleIndex;
+        Object.keys(moduleIndex).forEach(function(index) {
+            let group = moduleIndex[index];
+            group.forEach(module => {
+                _self.loadModuleConfiguration(module.name, fileName);
+            });
+        });
+    },
+
+    /*
+     * This function used to load configuration file for given moduleName
+     */
+    loadModuleConfiguration: function(moduleName, fileName) {
+        let config = CONFIG.getProperties();
+        let module = config.moduleList[moduleName];
+        if (module) {
+            this.loadConfiguration(module.path + fileName);
+        }
+    },
+
+    /*
+     * This function used to load configuration file
+     */
+    loadConfiguration: function(filePath) {
+        let config = CONFIG.getProperties();
         if (fs.existsSync(filePath)) {
-            let files = fs.readdirSync(filePath);
-            if (files) {
-                files.map(function(file) {
-                    return path.join(filePath, file);
-                }).filter(function(file) {
-                    if (fs.statSync(file).isDirectory()) {
-                        _self.processFiles(file, filePostFix, callback);
-                    } else {
-                        return fs.statSync(file).isFile();
+            this.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+            var propertyFile = require(filePath);
+            config = _.merge(config, propertyFile);
+        }
+    },
+
+    /*
+     * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
+     * will load properties from $APP_MODULE/config/env-{NODICS_ENV}/properties.js
+     */
+    loadExternalProperties: function(externalFiles, tntName) {
+        let _self = this;
+        let files = externalFiles || CONFIG.get('externalPropertyFile');
+        if (externalFiles && externalFiles.length > 0) {
+            externalFiles.forEach(function(filePath) {
+                if (fs.existsSync(filePath)) {
+                    _self.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+                    let props = CONFIG.getProperties();
+                    if (tntName) {
+                        props = CONFIG.getProperties(tntName);
                     }
-                }).filter(function(file) {
-                    if (!filePostFix || filePostFix === '*') {
-                        return true;
-                    } else {
-                        return file.endsWith(filePostFix);
-                    }
-                }).forEach(function(file) {
-                    _self.LOG.debug('Loading file from : ', file.replace(NODICS.getNodicsHome(), '.'));
-                    callback(file);
-                });
-            }
+                    _.merge(props, require(filePath));
+                } else {
+                    _self.LOG.warn('System cant find configuration at : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+                }
+            });
         }
     },
 
@@ -390,5 +424,100 @@ module.exports = {
         let elasticConfig = _.merge({}, logConfig.elasticConfig);
         elasticConfig.label = entityName;
         return new Elasticsearch(elasticConfig);
+    },
+
+    getGlobalVariables: function(fileName) {
+        let _self = this;
+        let gVar = {};
+        Object.keys(CONFIG.get('moduleIndex')).forEach(function(key) {
+            var value = CONFIG.get('moduleIndex')[key][0];
+            var filePath = value.path + fileName;
+            if (fs.existsSync(filePath)) {
+                _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+                fs.readFileSync(filePath).toString().split('\n').forEach((line) => {
+                    if (line.startsWith('const') || line.startsWith('let') || line.startsWith('var')) {
+                        let value = line.trim().split(' ');
+                        if (!gVar[value[1]]) {
+                            gVar[value[1]] = {
+                                value: line.trim()
+                            };
+                        }
+                    }
+                });
+            }
+        });
+        return gVar;
+    },
+
+    processFiles: function(filePath, filePostFix, callback) {
+        let _self = this;
+        if (fs.existsSync(filePath)) {
+            let files = fs.readdirSync(filePath);
+            if (files) {
+                files.map(function(file) {
+                    return path.join(filePath, file);
+                }).filter(function(file) {
+                    if (fs.statSync(file).isDirectory()) {
+                        _self.processFiles(file, filePostFix, callback);
+                    } else {
+                        return fs.statSync(file).isFile();
+                    }
+                }).filter(function(file) {
+                    if (!filePostFix || filePostFix === '*') {
+                        return true;
+                    } else {
+                        return file.endsWith(filePostFix);
+                    }
+                }).forEach(function(file) {
+                    _self.LOG.debug('Loading file from : ', file.replace(NODICS.getNodicsHome(), '.'));
+                    callback(file);
+                });
+            }
+        }
+    },
+    loadFiles: function(fileName, frameworkFile) {
+        let _self = this;
+        let mergedFile = frameworkFile || {};
+        Object.keys(CONFIG.get('moduleIndex')).forEach(function(key) {
+            var value = CONFIG.get('moduleIndex')[key][0];
+            var filePath = value.path + fileName;
+            if (fs.existsSync(filePath)) {
+                _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+                var commonPropertyFile = require(filePath);
+                mergedFile = _.merge(mergedFile, commonPropertyFile);
+            }
+        });
+        return mergedFile;
+    },
+
+    loadPreScript: function() {
+        SYSTEM.LOG.info('Starting Pre Scripts loader process');
+        NODICS.setPreScripts(this.loadFiles('/config/prescripts.js'));
+    },
+
+    executePreScripts: function() {
+        SYSTEM.LOG.info("Starting pre-script execution process");
+        var preScripts = NODICS.getPreScripts();
+        var methods = SYSTEM.getAllMethods(preScripts);
+        methods.forEach(function(instance) {
+            preScripts[instance]();
+        });
+        SYSTEM.LOG.info("Pre-Script executed successfully");
+    },
+
+    loadPostScript: function() {
+        SYSTEM.LOG.info('Starting Post Scripts loader process');
+        NODICS.setPostScripts(this.loadFiles('/config/postscripts.js'));
+    },
+
+    executePostScripts: function() {
+        SYSTEM.LOG.info("Starting post-script execution process");
+        var postScripts = NODICS.getPostScripts();
+        var methods = SYSTEM.getAllMethods(postScripts);
+        methods.forEach(function(instance) {
+            postScripts[instance]();
+        });
+        SYSTEM.LOG.info("Post-Script executed successfully");
     }
+
 };

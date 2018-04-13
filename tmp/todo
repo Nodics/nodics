@@ -67,6 +67,7 @@ Todos:
     ✔ Refector Person schema for last login and number of failed logins @done(18-04-03 17:59)
     ✔ Each router should return detail on ?help @done(18-04-05 10:42)
 
+    - Dont load test cases while server start-up instead while executing
     - Run individual test case from API for both type
       
 

@@ -9,8 +9,39 @@
 
  */
 
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
+
 module.exports = {
+
     isBlank: function(value) {
         return !value || !Object.keys(value).length;
-    }
+    },
+
+    subFolders: function(folder) {
+        return fs.readdirSync(folder)
+            .filter(subFolder => fs.statSync(path.join(folder, subFolder)).isDirectory())
+            .filter(subFolder => subFolder !== 'node_modules' && subFolder !== 'templates' && subFolder[0] !== '.')
+            .map(subFolder => path.join(folder, subFolder));
+    },
+
+    collectModulesList: function(folder, modulePathList) {
+        const hasPackageJson = fs.existsSync(path.join(folder, 'package.json'));
+        if (hasPackageJson) {
+            modulePathList.push(folder);
+        }
+        for (let subFolder of this.subFolders(folder)) {
+            if (!subFolder.endsWith(NODICS.getActiveApplication())) {
+                this.collectModulesList(subFolder, modulePathList);
+            }
+        }
+    },
+
+    sortModulesByIndex: function(moduleIndex) {
+        moduleIndex = _.groupBy(moduleIndex, function(element) {
+            return parseInt(element.index);
+        });
+        return moduleIndex;
+    },
 };

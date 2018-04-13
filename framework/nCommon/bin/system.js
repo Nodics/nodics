@@ -13,8 +13,248 @@ const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
+const Enum = require('./enum');
+
 
 module.exports = {
+
+    loadEnums: function() {
+        let enums = global.ENUMS;
+        let enumScript = {};
+        SYSTEM.loadFiles('/src/utils/enums.js', enumScript);
+
+        _.each(enumScript, function(value, key) {
+            let _option = SYSTEM.createEnumOptions(key, value);
+            if (_option) {
+                enums[key] = new Enum(value.definition, _option);
+            } else {
+                enums[key] = new Enum(value.definition);
+            }
+        });
+    },
+
+    createEnumOptions: function(key, enumValue) {
+        if (enumValue._options) {
+            let _option = {
+                name: enumValue._options.name || key,
+                separator: enumValue._options.separator || '|',
+                ignoreCase: enumValue._options.ignoreCase || false,
+                freez: enumValue._options.freez || false
+            };
+            if (enumValue._options.endianness) {
+                _option.endianness = enumValue._options.endianness;
+            }
+            return _option;
+        }
+    },
+
+    loadClasses: function() {
+        let classes = global.CLASSES;
+        let moduleIndex = CONFIG.get('moduleIndex');
+        Object.keys(moduleIndex).forEach(function(key) {
+            var value = moduleIndex[key][0];
+            SYSTEM.loadModuleClasses(value);
+        });
+        SYSTEM.generalizeClasses();
+    },
+    loadModuleClasses: function(module) {
+        let path = module.path + '/src/lib';
+        SYSTEM.processFiles(path, "*", (file) => {
+            if (!file.endsWith('classes.js')) {
+                let className = SYSTEM.getFileNameWithoutExtension(file);
+                if (CLASSES[className]) {
+                    CLASSES[className] = _.merge(CLASSES[className], require(file));
+                } else {
+                    CLASSES[className] = require(file);
+                }
+            }
+        }, 'classes.js');
+    },
+
+    generalizeClasses: function() {
+        let classesScripts = {};
+        SYSTEM.LOG.debug('Generalizing defined classes');
+        SYSTEM.loadFiles('/src/lib/classes.js', classesScripts);
+
+        var methods = SYSTEM.getAllMethods(classesScripts);
+        methods.forEach(function(instance) {
+            classesScripts[instance]();
+        });
+    },
+
+    loadModules: function() {
+        let moduleIndex = CONFIG.get('moduleIndex');
+        Object.keys(moduleIndex).forEach(function(key) {
+            var value = moduleIndex[key][0];
+            SYSTEM.loadModule(value.name);
+        });
+    },
+
+    loadModule: function(moduleName) {
+        SYSTEM.LOG.debug('Staring process for module : ', moduleName);
+        let module = CONFIG.getProperties().moduleList[moduleName];
+
+        SYSTEM.loadDao(module);
+        SYSTEM.loadServices(module);
+        SYSTEM.loadProcessDefinition(module);
+        SYSTEM.loadFacades(module);
+        SYSTEM.loadControllers(module);
+        SYSTEM.loadTest(module);
+        let moduleFile = require(module.path + '/nodics.js');
+        if (moduleFile.init) {
+            moduleFile.init();
+        }
+    },
+
+    loadDao: function(module) {
+        SYSTEM.LOG.debug('Loading all module DAO');
+        let path = module.path + '/src/dao';
+        SYSTEM.processFiles(path, "Dao.js", (file) => {
+            let daoName = SYSTEM.getFileNameWithoutExtension(file);
+            if (DAO[daoName]) {
+                DAO[daoName] = _.merge(DAO[daoName], require(file));
+            } else {
+                DAO[daoName] = require(file);
+                DAO[daoName].LOG = SYSTEM.createLogger(daoName);
+            }
+        });
+    },
+
+    loadServices: function(module) {
+        SYSTEM.LOG.debug('Loading all module services');
+        let path = module.path + '/src/service';
+        SYSTEM.processFiles(path, "Service.js", (file) => {
+            let serviceName = SYSTEM.getFileNameWithoutExtension(file);
+            if (SERVICE[serviceName]) {
+                SERVICE[serviceName] = _.merge(SERVICE[serviceName], require(file));
+            } else {
+                SERVICE[serviceName] = require(file);
+                SERVICE[serviceName].LOG = SYSTEM.createLogger(serviceName);
+            }
+        });
+    },
+
+    loadProcessDefinition: function(module) {
+        SYSTEM.LOG.debug('Loading all module process definitions');
+        let path = module.path + '/src/process';
+        SYSTEM.processFiles(path, "Definition.js", (file) => {
+            let processName = SYSTEM.getFileNameWithoutExtension(file);
+            if (PROCESS[processName]) {
+                PROCESS[processName] = _.merge(PROCESS[processName], require(file));
+            } else {
+                PROCESS[processName] = require(file);
+            }
+        });
+    },
+
+    loadFacades: function(module) {
+        SYSTEM.LOG.debug('Loading all module facades');
+        let path = module.path + '/src/facade';
+        SYSTEM.processFiles(path, "Facade.js", (file) => {
+            let facadeName = SYSTEM.getFileNameWithoutExtension(file);
+            if (FACADE[facadeName]) {
+                FACADE[facadeName] = _.merge(FACADE[facadeName], require(file));
+            } else {
+                FACADE[facadeName] = require(file);
+                FACADE[facadeName].LOG = SYSTEM.createLogger(facadeName);
+            }
+        });
+    },
+
+    loadControllers: function(module) {
+        SYSTEM.LOG.debug('Loading all module controllers');
+        let path = module.path + '/src/controller';
+        SYSTEM.processFiles(path, "Controller.js", (file) => {
+            let controllerName = SYSTEM.getFileNameWithoutExtension(file);
+            if (CONTROLLER[controllerName]) {
+                CONTROLLER[controllerName] = _.merge(CONTROLLER[controllerName], require(file));
+            } else {
+                CONTROLLER[controllerName] = require(file);
+                CONTROLLER[controllerName].LOG = SYSTEM.createLogger(controllerName);
+            }
+        });
+    },
+
+    loadTest: function(module) {
+        if (CONFIG.get('test').uTest.enabled) {
+            this.loadCommonTest(module);
+        }
+        if (CONFIG.get('test').nTest.enabled) {
+            this.loadEnvTest(module);
+        }
+    },
+
+    loadCommonTest: function(module) {
+        SYSTEM.LOG.debug('Loading module test cases');
+        let path = module.path + '/test/common';
+        SYSTEM.processFiles(path, "Test.js", (file) => {
+            let testFile = this.collectTest(require(file));
+            _.each(testFile, (testSuite, suiteName) => {
+                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                    if (TEST.nTestPool.suites[suiteName]) {
+                        TEST.nTestPool.suites[suiteName] = _.merge(TEST.nTestPool.suites[suiteName], testSuite);
+                    } else {
+                        TEST.nTestPool.suites[suiteName] = testSuite;
+                    }
+                } else {
+                    if (TEST.uTestPool.suites[suiteName]) {
+                        TEST.uTestPool.suites[suiteName] = _.merge(TEST.uTestPool.suites[suiteName], testSuite);
+                    } else {
+                        TEST.uTestPool.suites[suiteName] = testSuite;
+                    }
+                }
+            });
+        });
+    },
+
+    loadEnvTest: function(module) {
+        SYSTEM.LOG.debug('Loading test cases for ENV : ', NODICS.getActiveEnvironment());
+        let path = module.path + '/test/env/' + NODICS.getActiveEnvironment();
+        SYSTEM.processFiles(path, "Test.js", (file) => {
+            let testFile = this.collectTest(require(file));
+            _.each(testFile, (testSuite, suiteName) => {
+                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                    if (TEST.nTestPool.suites[suiteName]) {
+                        TEST.nTestPool.suites[suiteName] = _.merge(TEST.nTestPool.suites[suiteName], testSuite);
+                    } else {
+                        TEST.nTestPool.suites[suiteName] = testSuite;
+                    }
+                } else {
+                    if (TEST.uTestPool.suites[suiteName]) {
+                        TEST.uTestPool.suites[suiteName] = _.merge(TEST.uTestPool.suites[suiteName], testSuite);
+                    } else {
+                        TEST.uTestPool.suites[suiteName] = testSuite;
+                    }
+                }
+            });
+        });
+    },
+
+    collectTest: function(file) {
+        _.each(file, (testSuite, suiteName) => {
+            if (testSuite.data) {
+                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                    TEST.nTestPool.data = _.merge(TEST.nTestPool.data, testSuite.data);
+                } else {
+                    TEST.uTestPool.data = _.merge(TEST.uTestPool.data, testSuite.data);
+                }
+                delete testSuite.data;
+            }
+            _.each(testSuite, (testGroup, groupName) => {
+                if (testGroup.data) {
+                    if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                        TEST.nTestPool.data = _.merge(TEST.nTestPool.data, testGroup.data);
+                    } else {
+                        TEST.uTestPool.data = _.merge(TEST.uTestPool.data, testGroup.data);
+                    }
+                    delete testGroup.data;
+                }
+            });
+        });
+        return file;
+    },
+
+    /* =================================================================== */
     getFileNameWithoutExtension: function(filePath) {
         let fileName = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.indexOf("."));
         return fileName.toUpperCaseFirstChar();

@@ -10,7 +10,6 @@
  */
 
 const conHandler = require('./bin/connectionHandler');
-const schmeaLoader = require('./bin/schemaLoader');
 
 module.exports = {
     init: function() {
@@ -20,7 +19,18 @@ module.exports = {
         SYSTEM.LOG.info('Starting database configuration process');
         return new Promise((resolve, reject) => {
             conHandler.init().then(success => {
-                schmeaLoader.init();
+                SYSTEM.deployValidators();
+                SYSTEM.deploySchemas();
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    loadTenantDatabase: function() {
+        return new Promise((resolve, reject) => {
+            SYSTEM.createModuleDatabaseConnection().then(success => {
                 resolve(true);
             }).catch(error => {
                 reject(error);

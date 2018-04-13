@@ -43,24 +43,46 @@ module.exports = {
                     Promise.all(allPromise).then(success => {
                         SYSTEM.loadModules();
                         event.loadListeners();
-                        router.loadRouter();
-                        SYSTEM.executePostScripts();
-                        //NODICS.isInitRequired()
-                        if (NODICS.isInitRequired()) {
-                            SERVICE.DataImportService.importInitData().then(success => {
-                                resolve(true);
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        } else {
-                            resolve(true);
-                        }
+                        router.loadRouter().then(success => {
+                            SYSTEM.executePostScripts();
+                            //NODICS.isInitRequired()
+                            if (NODICS.isInitRequired()) {
+                                SERVICE.DataImportService.importInitData().then(success => {
+                                    SYSTEM.addTenants().then(success => {
+                                        db.loadTenantDatabase().then(success => {
+                                            resolve(true);
+                                        }).catch(error => {
+                                            console.log(error);
+                                            reject(error);
+                                        });
+                                    }).catch(error => {
+                                        console.log(error);
+                                        reject(error);
+                                    });
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            } else {
+                                SYSTEM.addTenants().then(success => {
+                                    db.loadTenantDatabase().then(success => {
+                                        resolve(true);
+                                    }).catch(error => {
+                                        console.log(error);
+                                        reject(error);
+                                    });
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            }
+                        }).catch(error => {
+                            reject(error);
+                        });
                     }).catch(error => {
                         SYSTEM.LOG.error('While generating default clesses : ', error);
                         reject(error);
                     });
                 } else {
-                    reject();
+                    reject('Facing issues while loading services');
                 }
             }).catch(error => {
                 reject(error);
@@ -87,7 +109,7 @@ module.exports = {
                 SYSTEM.LOG.error('Nodics server error : ', error);
             });
         }).catch(error => {
-            SYSTEM.LOG.error('Nodics server error : ', error);
+            SYSTEM.LOG.error('Nodics server not started properly : ', error);
         });
     }
 };

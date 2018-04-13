@@ -19,8 +19,15 @@ module.exports = {
     },
     loadRouter: function() {
         SYSTEM.LOG.info('Staring servers initialization process');
-        initServers.init();
-        serverConfig.init();
-        registerRouter.init();
+        return new Promise((resolve, reject) => {
+            initServers.init();
+            serverConfig.init();
+            registerRouter.init().then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+
     }
 };

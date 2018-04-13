@@ -93,7 +93,7 @@ module.exports = {
 
     log: {
         enabled: true,
-        level: 'info',
+        level: 'debug',
         format: 'simple', //json or simple
         output: {
             file: true,

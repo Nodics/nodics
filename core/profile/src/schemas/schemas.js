@@ -65,6 +65,20 @@ module.exports = {
                 }
             }
         },
+        tenant: {
+            super: 'base',
+            model: true,
+            service: true,
+            event: true,
+            cache: {
+                enabled: true,
+                ttl: 100
+            },
+            router: true,
+            definition: {
+
+            }
+        },
 
         enterprise: {
             super: 'base',

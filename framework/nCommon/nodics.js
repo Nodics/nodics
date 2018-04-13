@@ -9,11 +9,6 @@
 
  */
 
-const utilsLoader = require('./bin/utilsLoader');
-const enumLoader = require('./bin/enumLoader');
-const classesLoader = require('./bin/classesLoader');
-const moduleLoader = require('./bin/moduleLoader');
-
 module.exports = {
     init: function() {
 
@@ -24,12 +19,17 @@ module.exports = {
             SYSTEM.LOG.error("System initialization error: configuration initializer failure.");
             process.exit(1);
         }
-        utilsLoader.loadUtils();
-        enumLoader.loadEnums();
-        classesLoader.loadClasses();
 
-        SYSTEM.loadModules = function() {
-            moduleLoader.init();
-        };
+        SYSTEM.LOG.info('Staring Utils loader process');
+        SYSTEM.loadFiles('/src/utils/utils.js', global.UTILS);
+
+        SYSTEM.LOG.info('Staring Enums loader process');
+        SYSTEM.loadEnums();
+
+        SYSTEM.LOG.info('Staring Classes loader process');
+        SYSTEM.loadClasses();
+
+        SYSTEM.LOG.info('Staring process to load Modules');
+        SYSTEM.loadModules();
     }
 };
