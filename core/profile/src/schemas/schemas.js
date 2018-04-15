@@ -65,18 +65,39 @@ module.exports = {
                 }
             }
         },
+
         tenant: {
-            super: 'base',
+            super: 'none',
             model: true,
             service: true,
-            event: true,
+            event: false,
             cache: {
                 enabled: true,
                 ttl: 100
             },
             router: true,
             definition: {
-
+                created: {
+                    type: 'Date',
+                    default: new Date() //new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
+                },
+                updated: {
+                    type: 'Date',
+                    default: new Date() //new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
+                },
+                name: {
+                    type: 'String',
+                    required: true,
+                    unique: true
+                },
+                active: {
+                    type: 'Boolean',
+                    default: true
+                },
+                properties: {
+                    type: mongoose.Schema.Types.Mixed,
+                    required: true
+                }
             }
         },
 
@@ -91,6 +112,10 @@ module.exports = {
             },
             router: true,
             refSchema: {
+                tenant: {
+                    modelName: "TenantModel",
+                    type: 'one'
+                },
                 superEnterprise: {
                     modelName: "EnterpriseModel",
                     type: 'one'
@@ -111,13 +136,15 @@ module.exports = {
                 description: {
                     type: 'String'
                 },
-                tenant: {
-                    type: 'String',
-                    required: true
-                },
 
                 addresses: ["schemas['address']"],
                 contacts: ["schemas['contact']"],
+
+                tenant: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'TenantModel',
+                    required: true
+                },
 
                 superEnterprise: {
                     type: mongoose.Schema.Types.ObjectId,

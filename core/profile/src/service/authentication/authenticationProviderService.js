@@ -18,6 +18,7 @@ module.exports = {
             } else {
                 DAO.EnterpriseDao.get({
                     tenant: 'default',
+                    recursive: true,
                     options: {
                         query: {
                             enterpriseCode: enterpriseCode
@@ -41,7 +42,7 @@ module.exports = {
         active.lastAttempt = new Date();
         active.updated = new Date();
         DAO.ActiveDao.saveOrUpdate({
-            tenant: enterprise.tenant,
+            tenant: enterprise.tenant.name,
             models: [active]
         }).then(success => {
             _self.LOG.debug('Active data has been updated with current time');
@@ -51,7 +52,7 @@ module.exports = {
     },
 
     updateFailedAuthData: function(active, enterprise) {
-        if (active.attempts < CONFIG.get('attemptsToLockAccount')) {
+        if (active.attempts <= CONFIG.get('attemptsToLockAccount')) {
             active.attempts = active.attempts + 1;
         } else {
             active.locked = true;
@@ -65,12 +66,12 @@ module.exports = {
         let _self = this;
         _self.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
             SERVICE.PersonService.findByLoginId({
-                tenant: enterprise.tenant,
+                tenant: enterprise.tenant.name,
                 loginId: input.loginId,
                 enterpriseCode: enterprise.enterpriseCode
             }).then(person => {
                 SERVICE.PersonService.findActive({
-                    tenant: enterprise.tenant,
+                    tenant: enterprise.tenant.name,
                     loginId: input.loginId,
                     _id: person._id
                 }).then(active => {
@@ -78,14 +79,14 @@ module.exports = {
                         callback('Account is currently in locked state or has been disabled');
                     } else {
                         SERVICE.PersonService.findPassword({
-                            tenant: enterprise.tenant,
+                            tenant: enterprise.tenant.name,
                             enterpriseCode: enterprise.enterpriseCode,
                             loginId: person.loginId,
                             _id: person._id
                         }).then(password => {
                             SYSTEM.compareHash(input.password, password.password).then(match => {
                                 if (match) {
-                                    active.attempts = 0;
+                                    active.attempts = 1;
                                     _self.updateAuthData(active, enterprise);
                                     try {
                                         let key = enterprise._id + person._id + (new Date()).getTime();
@@ -115,10 +116,10 @@ module.exports = {
                         });
                     }
                 }).catch(error => {
-                    callback('Invalid authentication request : ' + error);
+                    callback('2Invalid authentication request : ' + error);
                 });
             }).catch(error => {
-                callback('Invalid authentication request : ' + error);
+                callback('1Invalid authentication request : ' + error);
             });
         }).catch(error => {
             callback('Invalid authentication request : ' + error);

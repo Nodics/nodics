@@ -24,7 +24,7 @@ module.exports = {
                 SERVICE.VirtualPropertiesHandlerService.populateVirtualProperties(schema.rawSchema, docs);
                 let moduleObject = NODICS.getModules()[schema.rawSchema.moduleName];
                 SYSTEM.buildItemLevelCache(schema.rawSchema);
-                if (moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
+                if (this.rawQuery && moduleObject.itemCache && schema.rawSchema.cache && schema.rawSchema.cache.enabled) {
                     SERVICE.CacheService.putItem(schema.rawSchema, moduleObject.itemCache, this.rawQuery, docs).then(success => {
                         schema.LOG.info('Item saved in item cache');
                     }).catch(error => {

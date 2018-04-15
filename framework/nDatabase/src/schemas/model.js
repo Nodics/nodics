@@ -51,7 +51,9 @@ module.exports = {
                                 query.populate(property);
                             });
                         }
-                        query.rawQuery = rawQuery;
+                        if (rawQuery) {
+                            query.rawQuery = rawQuery;
+                        }
                         resolve(query.lean().exec());
                     }).catch(error => {
                         reject(error);

@@ -156,7 +156,8 @@ module.exports = {
                 callback(null, 'cache for module : ' + moduleName + ', flushed successfully');
             }
         }).catch(error => {
-            this.LOG.error('While flushing cache for module : ', moduleName);
+            this.LOG.error('2While flushing cache for module : ', moduleName);
+            this.LOG.error(error);
             if (callback) {
                 callback(error);
             }
@@ -182,7 +183,8 @@ module.exports = {
                 callback(null, 'Cache for module : ' + moduleName + ', flushed successfully');
             }
         }).catch(error => {
-            _self.LOG.error('While flushing cache for module : ', moduleName);
+            _self.LOG.error('1While flushing cache for module : ', moduleName);
+            this.LOG.error(error);
             if (callback) {
                 callback(error);
             }
@@ -247,12 +249,14 @@ module.exports = {
         return this.put(cache, hash, response, options);
     },
     getItem: function(rawSchema, cache, query) {
+        //console.log(JSON.stringify(query));
         let hash = rawSchema.modelName + '_' +
             rawSchema.tenant + '_' +
             SYSTEM.generateHash(JSON.stringify(query));
         return this.get(cache, hash);
     },
     putItem: function(rawSchema, cache, query, value) {
+        //console.log(JSON.stringify(query));
         let hash = rawSchema.modelName + '_' +
             rawSchema.tenant + '_' +
             SYSTEM.generateHash(JSON.stringify(query));

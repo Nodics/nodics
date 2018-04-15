@@ -31,16 +31,21 @@ module.exports = {
                 clusterId: {
                     type: 'String'
                 },
+                targetType: {
+                    type: 'String',
+                    enum: ENUMS.TargetType.getEnumValue(),
+                    default: ENUMS.TargetType.MODULE.key
+                },
                 state: {
                     type: 'String',
                     enum: ENUMS.EventState.getEnumValue(),
-                    default: ENUMS.EventState.NEW,
+                    default: ENUMS.EventState.NEW.key,
                     index: true
                 },
                 type: {
                     type: 'String',
                     enum: ENUMS.EventType.getEnumValue(),
-                    default: ENUMS.EventType.ASYNC
+                    default: ENUMS.EventType.ASYNC.key
                 },
                 hits: {
                     type: 'Number',
@@ -50,7 +55,10 @@ module.exports = {
                 log: [{
                     type: 'String'
                 }],
-                params: [{}]
+                params: [{
+                    type: mongoose.Schema.Types.Mixed,
+                    required: false
+                }]
             }
         },
 
@@ -63,18 +71,6 @@ module.exports = {
             definition: {
 
             }
-        },
-        /*
-            temp: {
-                super: 'none',
-                model: true,
-                service: true,
-                event: false,
-                router: true,
-                definition: {
-
-                }
-            }
-        */
+        }
     }
 };

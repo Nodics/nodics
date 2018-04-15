@@ -117,7 +117,7 @@ module.exports = {
                 callback(error);
             });
         } else {
-            return this.importData(dataType);
+            return this.importData(data);
         }
     },
 
@@ -132,7 +132,7 @@ module.exports = {
                 callback(error);
             });
         } else {
-            return this.importData(dataType);
+            return this.importData(data);
         }
     },
 
@@ -147,7 +147,7 @@ module.exports = {
                 callback(error);
             });
         } else {
-            return this.importData(dataType);
+            return this.importData(data);
         }
     }
 };

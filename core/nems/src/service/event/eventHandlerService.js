@@ -42,7 +42,6 @@ module.exports = {
         };
         _self.LOG.debug('Starting process to handle events : ');
         input = _.merge(input, this.buildQuery());
-        //_self.LOG.info('Event fetch query :', util.inspect(input.query, false, null));
         DAO.EventDao.get(input).then(events => {
             _self.LOG.debug('Total events to be processed : ', (events instanceof Array) ? events.length : 1);
             if (events instanceof Array && events.length <= 0) {
@@ -143,6 +142,17 @@ module.exports = {
         });
     },
 
+    broadcastEvent: function(event, callback) {
+        let _self = this;
+        if (!event.targetType || event.targetType === ENUMS.TargetType.MODULE.key) {
+            _self.broadcastModuleEvent(event, callback);
+        } else if (event.targetType === ENUMS.TargetType.EACH_MODULE.key) {
+
+        } else if (event.targetType === ENUMS.TargetType.EACH_NODE.key) {
+
+        }
+    },
+
     prepareURL: function(event) {
         return SERVICE.ModuleService.buildRequest({
             connectionType: 'cluster',
@@ -158,7 +168,7 @@ module.exports = {
         });
     },
 
-    broadcastEvent: function(event, callback) {
+    broadcastModuleEvent: function(event, callback) {
         let _self = this;
         try {
             SERVICE.ModuleService.fetch(_self.prepareURL(event)).then(response => {

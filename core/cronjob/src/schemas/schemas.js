@@ -53,7 +53,7 @@ module.exports = {
                 triggerType: {
                     type: 'String',
                     enum: ENUMS.TriggerType.getEnumValue(),
-                    default: ENUMS.TriggerType.NEW
+                    default: ENUMS.TriggerType.STEPS.key
                 },
                 isActive: {
                     type: 'Boolean',

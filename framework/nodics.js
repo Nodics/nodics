@@ -8,7 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-
+const util = require('util');
 const config = require('./nConfig');
 const common = require('./nCommon');
 const db = require('./nDatabase');
@@ -45,18 +45,15 @@ module.exports = {
                         event.loadListeners();
                         router.loadRouter().then(success => {
                             SYSTEM.executePostScripts();
-                            //NODICS.isInitRequired()
                             if (NODICS.isInitRequired()) {
                                 SERVICE.DataImportService.importInitData().then(success => {
                                     SYSTEM.addTenants().then(success => {
                                         db.loadTenantDatabase().then(success => {
                                             resolve(true);
                                         }).catch(error => {
-                                            console.log(error);
                                             reject(error);
                                         });
                                     }).catch(error => {
-                                        console.log(error);
                                         reject(error);
                                     });
                                 }).catch(error => {
@@ -67,7 +64,6 @@ module.exports = {
                                     db.loadTenantDatabase().then(success => {
                                         resolve(true);
                                     }).catch(error => {
-                                        console.log(error);
                                         reject(error);
                                     });
                                 }).catch(error => {
@@ -102,6 +98,9 @@ module.exports = {
                     NODICS.setServerState('started');
                     SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
                     this.initTestRuner();
+                    //console.log(ENUMS.EventType.getEnumValue());
+                    //console.log(ENUMS.EventType.ASYNC.key);
+                    //console.log(util.inspect(NODICS.getDatabases(), false, null));
                 }).catch(error => {
                     SYSTEM.LOG.error('Failed to allocate default token with modules, check configuration : ', error);
                 });

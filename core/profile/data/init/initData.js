@@ -13,6 +13,48 @@ module.exports = {
 
     profile: {
 
+        createTenant: {
+            modelName: 'tenant',
+            operation: 'saveOrUpdate', //save, update and saveOrUpdate
+            tenant: 'default',
+
+            models: {
+                defaultTenant: {
+                    _id: '111e7dd88ac6ed3d73a73411',
+                    name: 'testOne',
+                    active: true,
+                    properties: {
+                        database: {
+                            default: {
+                                master: {
+                                    URI: 'mongodb://localhost:27017/testOne',
+                                    options: {
+                                        db: {
+                                            native_parser: true
+                                        },
+                                        server: {
+                                            poolSize: 5
+                                        }
+                                    }
+                                },
+                                test: {
+                                    URI: 'mongodb://localhost:27017/testOne',
+                                    options: {
+                                        db: {
+                                            native_parser: true
+                                        },
+                                        server: {
+                                            poolSize: 5
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
         createDefaultEnterprise: {
             modelName: 'enterprise',
             operation: 'saveOrUpdate', //save, update and saveOrUpdate
@@ -24,7 +66,14 @@ module.exports = {
                     enterpriseCode: 'default',
                     name: 'Default',
                     description: 'Default Enterprise',
-                    tenant: 'default'
+                    tenant: {
+                        _id: '111e7dd88ac6ed3d73a73311',
+                        name: 'default',
+                        active: true,
+                        properties: {
+                            tmpData: 'for default tenant data will be picked from property configuration'
+                        }
+                    }
                 }
             }
         },

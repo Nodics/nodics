@@ -49,19 +49,6 @@ module.exports = {
                         NODICS.setInitRequired(true);
                     } else if (type === 'master' && tntName === 'default') {
                         connection.db.collection('enterprisemodels', function(err, collection) {
-                            /*collection.find().toArray(function(err, data) {
-                                if (err || data.length <= 0) {
-                                    NODICS.setInitRequired(true);
-                                    resolve(connection);
-                                } else {
-                                    SYSTEM.addTenants(data).then(success => {
-                                        resolve(connection);
-                                    }).catch(error => {
-                                        SYSTEM.LOG.error(' While getting installed tenants : ', error);
-                                        resolve(connection);
-                                    });
-                                }
-                            });*/
                             collection.count({}, function(error, count) {
                                 if (count <= 0) {
                                     NODICS.setInitRequired(true);
@@ -146,15 +133,24 @@ module.exports = {
         });
     },
 
-    addTenants: function(tenantData) {
+    addTenants: function() {
         return new Promise((resolve, reject) => {
             NODICS.getModels('profile', 'default').TenantModel.get({}).then((tenantData) => {
                 if (!tenantData || tenantData.length <= 0) {
                     reject('Configure at least default tenant');
                 } else {
-                    tenantData.forEach(element => {
-                        NODICS.addTenant(element.name);
-                    });
+                    try {
+                        tenantData.forEach(element => {
+                            if (element.active) {
+                                NODICS.addTenant(element.name);
+                                let tntConfig = _.merge({}, CONFIG.getProperties());
+                                tntConfig = _.merge(tntConfig, element.properties);
+                                CONFIG.setProperties(tntConfig, element.name);
+                            }
+                        });
+                    } catch (error) {
+                        console.log(error);
+                    }
                     resolve(true);
                 }
             }).catch((error) => {
@@ -184,24 +180,28 @@ module.exports = {
         });
     },
 
-    createModuleDatabaseConnection: function(moduleName) {
+    createModuleDatabaseConnection: function() {
         return new Promise((resolve, reject) => {
             let modules = NODICS.getModules();
             let allModules = [];
-            _.each(modules, (value, moduleName) => {
-                if (CONFIG.get('database')[moduleName]) {
-                    allModules.push(_self.walkthroughTenants(moduleName));
-                }
-            });
-            if (allModules.length > 0) {
-                Promise.all(allModules).then(success => {
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
+            SYSTEM.createTenantDatabaseConnection('default').then(success => {
+                _.each(modules, (value, moduleName) => {
+                    if (CONFIG.get('database')[moduleName]) {
+                        allModules.push(SYSTEM.createTenantDatabaseConnection(moduleName));
+                    }
                 });
-            } else {
-                resolve(true);
-            }
+                if (allModules.length > 0) {
+                    Promise.all(allModules).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 
@@ -264,13 +264,13 @@ module.exports = {
                 SYSTEM.resolveSchemaDependancy(tmpOptions);
             }
             options.schemaObject[options.modelName] = options.schemaObject[superSchema].extend(options.schemaDef.definition, options.schemaDef.options || {});
-            options.schemaObject[options.modelName].LOG = SYSTEM.createLogger(options.modelName.toUpperCaseEachWord() + 'Interceptor');
         }
         if (options.schemaDef.model) {
             options.modelSchema = options.schemaObject[options.modelName];
             options.modelSchema.moduleName = options.schemaDef.moduleName;
             options.modelSchema.modelName = SYSTEM.createModelName(options.modelName);
             options.modelSchema.rawSchema = options.schemaDef;
+            options.modelSchema.LOG = SYSTEM.createLogger(options.modelName.toUpperCaseEachWord() + 'Interceptor');
             SYSTEM.registerSchemaMiddleWare(options);
             SYSTEM.createModelObject(options);
         }

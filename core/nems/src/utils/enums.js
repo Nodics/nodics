@@ -37,5 +37,19 @@ module.exports = {
             'SYNC',
             'ASYNC'
         ]
+    },
+    TargetType: {
+        _options: {
+            name: 'TargetType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'EACH_NODE',
+            'EACH_MODULE',
+            'MODULE'
+        ]
     }
 };
