@@ -349,7 +349,7 @@ module.exports = {
                 return value;
             }
         });
-        let contextRoot = CONFIG.get('server').contextRoot;
+        let contextRoot = CONFIG.get('server').options.contextRoot;
         commonDefinitionString = commonDefinitionString.replaceAll('moduleName', options.moduleName)
             .replaceAll('modelName', options.modelName + 'Model')
             .replaceAll('schemaName', options.schemaName)
@@ -366,36 +366,40 @@ module.exports = {
     startServers: function() {
         return new Promise((resolve, reject) => {
             try {
-                if (CONFIG.get('server').runAsSingleModule) {
+                if (CONFIG.get('server').options.runAsDefault) {
                     if (!NODICS.getModules().default || !NODICS.getModules().default.app) {
                         SYSTEM.LOG.error('Server configurations has not be initialized. Please verify.');
                         process.exit(CONFIG.get('errorExitCode'));
                     }
-                    const httpPort = SYSTEM.getPort('default');
+                    const httpPort = SYSTEM.getModuleServerConfig('default').getServer().getHttpPort();
                     SYSTEM.LOG.info('Starting Server for module : default on PORT : ', httpPort);
                     NODICS.getModules().default.app.listen(httpPort);
                     resolve(true);
                 } else {
-                    let modules = NODICS.getModules();
                     if (UTILS.isBlank(NODICS.getModules())) {
                         SYSTEM.LOG.error('Please define valid active modules');
                         process.exit(CONFIG.get('errorExitCode'));
                     }
-                    _.each(modules, function(value, moduleName) {
-                        if (value.metaData && value.metaData.publish) {
-                            if (!value.app) {
-                                SYSTEM.LOG.error('Server configurations has not be initialized for module : ', moduleName);
-                                process.exit(CONFIG.get('errorExitCode'));
+                    _.each(NODICS.getModules(), function(value, moduleName) {
+                        try {
+                            if (value.metaData && value.metaData.publish) {
+                                let moduleConfig = SYSTEM.getModuleServerConfig(moduleName);
+                                if (!value.app) {
+                                    SYSTEM.LOG.error('Server configurations has not be initialized for module : ', moduleName);
+                                    process.exit(CONFIG.get('errorExitCode'));
+                                }
+                                const httpPort = moduleConfig.getServer().getHttpPort();
+                                if (!httpPort) {
+                                    SYSTEM.LOG.error('Please define listening PORT for module: ', moduleName);
+                                    process.exit(CONFIG.get('errorExitCode'));
+                                }
+                                SYSTEM.LOG.info('Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
+                                value.app.listen(httpPort);
                             }
-                            const httpPort = SYSTEM.getPort(moduleName);
-                            if (!httpPort) {
-                                SYSTEM.LOG.error('Please define listening PORT for module: ', moduleName);
-                                process.exit(CONFIG.get('errorExitCode'));
-                            }
-                            SYSTEM.LOG.info('Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
-                            value.app.listen(httpPort);
+                            resolve(true);
+                        } catch (err) {
+                            reject(err);
                         }
-                        resolve(true);
                     });
                 }
             } catch (error) {

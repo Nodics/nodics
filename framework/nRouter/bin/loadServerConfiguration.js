@@ -16,7 +16,7 @@ module.exports = {
         SYSTEM.LOG.debug('Starting server configuration');
         let modules = NODICS.getModules();
         let commonConfig = SYSTEM.loadFiles('/src/router/appConfig.js');
-        if (CONFIG.get('server').runAsSingleModule) {
+        if (CONFIG.get('server').options.runAsDefault) {
             if (!modules.default || !modules.default.app) {
                 SYSTEM.LOG.error('Server configurations has not be initialized. Please verify.');
                 process.exit(CONFIG.get('errorExitCode'));

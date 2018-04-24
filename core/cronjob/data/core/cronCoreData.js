@@ -23,7 +23,8 @@ module.exports = {
                     enterpriseCode: 'default',
                     tenant: 'default',
                     name: 'publishEvents',
-                    clusterId: 0,
+                    nodeId: 0,
+                    targetNodeId: 0,
                     runOnInit: false,
                     jobDetail: {
                         startNode: 'SERVICE.EventHandlerJobService.runJob'

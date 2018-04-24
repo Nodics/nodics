@@ -15,7 +15,7 @@ module.exports = {
     init: function() {
         SYSTEM.LOG.info('Initializing servers');
         let modules = NODICS.getModules();
-        if (CONFIG.get('server').runAsSingleModule) {
+        if (CONFIG.get('server').options.runAsDefault) {
             SYSTEM.LOG.debug('Initializing single server for whole application. As CONFIG.server.runAsSingleModule set to true.');
             modules.default = {};
             modules.default.app = require('express')();

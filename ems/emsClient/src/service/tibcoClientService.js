@@ -117,7 +117,7 @@ module.exports = {
                     connectionFactory,
                     queue.outputQueue,
                     queue.targetModule,
-                    queue.clusterId,
+                    queue.nodeId,
                     evantUrl,
                     function(error, consumer) {
                         if (error) {

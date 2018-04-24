@@ -8,6 +8,9 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+
+const _ = require('lodash');
+
 const util = require('util');
 const config = require('./nConfig');
 const common = require('./nCommon');
@@ -42,6 +45,7 @@ module.exports = {
                 if (allPromise.length > 0) {
                     Promise.all(allPromise).then(success => {
                         SYSTEM.loadModules();
+                        SYSTEM.prepareModulesConfiguration();
                         event.loadListeners();
                         router.loadRouter().then(success => {
                             SYSTEM.executePostScripts();
@@ -99,8 +103,8 @@ module.exports = {
                     SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
                     this.initTestRuner();
                     //console.log(ENUMS.EventType.getEnumValue());
-                    //console.log(ENUMS.EventType.ASYNC.key);
-                    //console.log(util.inspect(NODICS.getDatabases(), false, null));
+                    //console.log(NODICS.getModules());
+                    //console.log(' ---- :', util.inspect(, false, null));
                 }).catch(error => {
                     SYSTEM.LOG.error('Failed to allocate default token with modules, check configuration : ', error);
                 });

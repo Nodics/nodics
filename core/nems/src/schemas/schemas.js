@@ -28,7 +28,7 @@ module.exports = {
                 target: {
                     type: 'String'
                 },
-                clusterId: {
+                nodeId: {
                     type: 'String'
                 },
                 targetType: {

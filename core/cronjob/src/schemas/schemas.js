@@ -13,7 +13,7 @@
     http://localhost:3005/nodics/cronjob {
         "code": "101",
         "state": "NEW",
-        "clusterId": "0",
+        "nodeId": "0",
         "priority": "10",
         "cronjobtmp": [{
             "name": "Nodics Framework"
@@ -144,7 +144,10 @@ module.exports = {
                 lastSuccessTime: {
                     type: 'Date'
                 },
-                clusterId: {
+                nodeId: {
+                    type: 'Number'
+                },
+                targetNodeId: {
                     type: 'Number'
                 },
                 priority: {

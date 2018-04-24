@@ -130,7 +130,7 @@ module.exports = {
                 event: queue.outputQueue,
                 source: 'kafkaMessageConsumed',
                 target: queue.targetModule,
-                clusterId: queue.clusterId,
+                nodeId: queue.nodeId,
                 state: "NEW",
                 type: "ASYNC",
                 params: [{

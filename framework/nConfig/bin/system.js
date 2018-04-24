@@ -518,6 +518,10 @@ module.exports = {
             postScripts[instance]();
         });
         SYSTEM.LOG.info("Post-Script executed successfully");
+    },
+
+    performAsync: function(callback) {
+        callback();
     }
 
 };

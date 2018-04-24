@@ -21,9 +21,15 @@ module.exports = {
         'initExtras'
     ],
     server: {
-        contextRoot: 'nodics',
-        runAsSingleModule: false,
+        options: {
+            contextRoot: 'nodics',
+            runAsDefault: false
+        },
         default: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
             server: {
                 httpHost: 'localhost',
                 httpPort: 3000,
@@ -39,12 +45,14 @@ module.exports = {
                 httpsPort: '3001'
             },
             //Clusters information is optional and will be managed for Backoffice application
-            cluster0: {
-                httpHost: 'localhost',
-                httpPort: '3000',
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: '3000',
 
-                httpsHost: 'localhost',
-                httpsPort: '3001'
+                    httpsHost: 'localhost',
+                    httpsPort: '3001'
+                }
             }
         }
     }

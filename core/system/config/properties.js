@@ -12,6 +12,10 @@
 module.exports = {
     server: {
         system: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
             server: {
                 httpHost: 'localhost',
                 httpPort: 3002,
@@ -27,12 +31,14 @@ module.exports = {
                 httpsPort: 3003
             },
             //Clusters information is optional and will be managed for Backoffice application
-            cluster0: {
-                httpHost: 'localhost',
-                httpPort: 3002,
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3002,
 
-                httpsHost: 'localhost',
-                httpsPort: 3003
+                    httpsHost: 'localhost',
+                    httpsPort: 3003
+                }
             }
         }
     }

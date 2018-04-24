@@ -10,33 +10,33 @@
  */
 
 module.exports = {
-    prepareUrl: function(moduleName, secured) {
+    /*prepareUrl: function(moduleName, secured) {
         if (secured) {
             return 'https://' +
                 SYSTEM.getSecuredHost(moduleName) + ':' +
                 SYSTEM.getSecuredPort(moduleName) + '/' +
-                CONFIG.get('server').contextRoot + '/' +
+                CONFIG.get('server').options.contextRoot + '/' +
                 moduleName;
         } else {
             return 'http://' +
                 SYSTEM.getHost(moduleName) + ':' +
                 SYSTEM.getPort(moduleName) + '/' +
-                CONFIG.get('server').contextRoot + '/' +
+                CONFIG.get('server').options.contextRoot + '/' +
                 moduleName;
         }
     },
-    prepareClusterUrl: function(moduleName, clusterId, secured) {
+    prepareNodeUrl: function(moduleName, nodeId, secured) {
         if (secured) {
             return 'https://' +
-                SYSTEM.getClusterSecuredHost(moduleName, clusterId) + ':' +
-                SYSTEM.getClusterSecuredPort(moduleName, clusterId) + '/' +
-                CONFIG.get('server').contextRoot + '/' +
+                SYSTEM.getClusterSecuredHost(moduleName, nodeId) + ':' +
+                SYSTEM.getClusterSecuredPort(moduleName, nodeId) + '/' +
+                CONFIG.get('server').options.contextRoot + '/' +
                 moduleName;
         } else {
             return 'http://' +
-                SYSTEM.getClusterHost(moduleName, clusterId) + ':' +
-                SYSTEM.getClusterPort(moduleName, clusterId) + '/' +
-                CONFIG.get('server').contextRoot + '/' +
+                SYSTEM.getClusterHost(moduleName, nodeId) + ':' +
+                SYSTEM.getClusterPort(moduleName, nodeId) + '/' +
+                CONFIG.get('server').options.contextRoot + '/' +
                 moduleName;
         }
     },
@@ -46,14 +46,14 @@ module.exports = {
             return 'https://' +
                 SYSTEM.getAbstractSecuredHost(moduleName) + ':' +
                 SYSTEM.getAbstractSecuredPort(moduleName) + '/' +
-                CONFIG.get('server').contextRoot + '/' +
+                CONFIG.get('server').options.contextRoot + '/' +
                 moduleName;
         } else {
             return 'http://' +
                 SYSTEM.getAbstractHost(moduleName) + ':' +
                 SYSTEM.getAbstractPort(moduleName) + '/' +
-                CONFIG.get('server').contextRoot + '/' +
+                CONFIG.get('server').options.contextRoot + '/' +
                 moduleName;
         }
-    }
+    }*/
 };

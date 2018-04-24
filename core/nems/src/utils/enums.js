@@ -25,6 +25,7 @@ module.exports = {
             'ERROR'
         ]
     },
+
     EventType: {
         _options: {
             name: 'EventState',
@@ -38,6 +39,7 @@ module.exports = {
             'ASYNC'
         ]
     },
+
     TargetType: {
         _options: {
             name: 'TargetType',

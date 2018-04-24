@@ -69,7 +69,7 @@ module.exports = function(definition, trigger, context, timeZone) {
                     }
                     SERVICE.JobHandlerService.handleJobTriggered(_definition, _self);
                     try {
-                        if (NODICS.getServerState() === 'started' && CONFIG.get('clusterId') === _definition.clusterId) {
+                        if (NODICS.getServerState() === 'started' && CONFIG.get('nodeId') === _definition.nodeId) {
                             eval(_definition.jobDetail.startNode + '(_definition, _self)');
                         }
                     } catch (error) {
@@ -84,7 +84,7 @@ module.exports = function(definition, trigger, context, timeZone) {
             onComplete: function() {
                 if (!_paused) {
                     try {
-                        if (_running && NODICS.getServerState() === 'started' && CONFIG.get('clusterId') === _definition.clusterId) {
+                        if (_running && NODICS.getServerState() === 'started' && CONFIG.get('nodeId') === _definition.nodeId) {
                             eval(_definition.jobDetail.endNode + '(_definition, _self)');
                         }
                     } catch (error) {

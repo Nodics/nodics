@@ -26,9 +26,15 @@ module.exports = {
     },
 
     prepareURL: function(definition, cronJob) {
+        let connectionType = 'abstract';
+        let nodeId = '0';
+        if (definition.targetNodeId) {
+            connectionType = 'node';
+            nodeId = definition.targetNodeId;
+        }
         return SERVICE.ModuleService.buildRequest({
-            connectionType: 'cluster',
-            clusterId: CONFIG.get('activateEventBroadcastOnCluster') || 'cluster0',
+            connectionType: connectionType,
+            nodeId: nodeId,
             moduleName: 'nems',
             methodName: 'GET',
             apiName: 'event/process',

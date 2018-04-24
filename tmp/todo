@@ -69,6 +69,8 @@ Todos:
 
     - Dont load test cases while server start-up instead while executing
     - Run individual test case from API for both type
+    - Make context root at module server level, for communicating between modules
+    - Document complete server configuration for start and connect
       
 
 Todos:
@@ -104,3 +106,4 @@ Todos:
       - Kafka message push and pop
     - Full documentation and Real time support
     - Winston Logger support with multi-transport and file level enable/disable 
+    - Configuration each modules server to connect each other

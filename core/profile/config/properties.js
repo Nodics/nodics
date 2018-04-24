@@ -17,6 +17,10 @@ module.exports = {
     authTokenLife: 60 * 5,
     server: {
         profile: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
             server: {
                 httpHost: 'localhost',
                 httpPort: 3004,
@@ -32,12 +36,14 @@ module.exports = {
                 httpsPort: 3005
             },
             //Clusters information is optional and will be managed for Backoffice application
-            cluster0: {
-                httpHost: 'localhost',
-                httpPort: 3004,
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3004,
 
-                httpsHost: 'localhost',
-                httpsPort: 3005
+                    httpsHost: 'localhost',
+                    httpsPort: 3005
+                }
             }
         }
     },

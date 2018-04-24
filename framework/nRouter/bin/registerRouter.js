@@ -19,7 +19,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             _.each(modules, function(moduleObject, moduleName) {
                 let app = {};
-                if (CONFIG.get('server').runAsSingleModule) {
+                if (CONFIG.get('server').options.runAsDefault) {
                     app = modules.default.app;
                 } else {
                     app = moduleObject.app;
@@ -50,7 +50,7 @@ module.exports = {
                                     let tmpRouterDef = _.merge({}, routerDef);
                                     tmpRouterDef.key = tmpRouterDef.key.replaceAll('schemaName', schemaName.toLowerCase());
                                     tmpRouterDef.controller = tmpRouterDef.controller.replaceAll('controllerName', schemaName.toUpperCaseEachWord() + 'Controller');
-                                    tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
+                                    tmpRouterDef.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + tmpRouterDef.key;
                                     tmpRouterDef.moduleName = moduleName;
                                     tmpRouterDef.moduleObject = moduleObject;
                                     eval(routers.operations[functionName](app, tmpRouterDef));
@@ -68,7 +68,7 @@ module.exports = {
                             if (routerName !== 'options') {
                                 let functionName = routerDef.method.toLowerCase();
                                 let tmpRouterDef = _.merge({}, routerDef);
-                                tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
+                                tmpRouterDef.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + tmpRouterDef.key;
                                 tmpRouterDef.moduleName = moduleName;
                                 tmpRouterDef.moduleObject = moduleObject;
                                 eval(routers.operations[functionName](app, tmpRouterDef));
@@ -85,7 +85,7 @@ module.exports = {
                             if (routerName !== 'options') {
                                 let functionName = routerDef.method.toLowerCase();
                                 let tmpRouterDef = _.merge({}, routerDef);
-                                tmpRouterDef.url = '/' + CONFIG.get('server').contextRoot + '/' + moduleName + tmpRouterDef.key;
+                                tmpRouterDef.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + tmpRouterDef.key;
                                 tmpRouterDef.moduleName = moduleName;
                                 tmpRouterDef.moduleObject = moduleObject;
                                 eval(routers.operations[functionName](app, tmpRouterDef));

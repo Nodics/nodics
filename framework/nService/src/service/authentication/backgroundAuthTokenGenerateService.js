@@ -46,7 +46,8 @@ module.exports = {
             let moduleObject = NODICS.getModule(moduleName);
             if (moduleObject) {
                 config.source = moduleName;
-                SERVICE.ModuleService.fetch(_self.prepareURL(config)).then(success => {
+                let requestUrl = _self.prepareURL(config);
+                SERVICE.ModuleService.fetch(requestUrl).then(success => {
                     if (success.success) {
                         moduleObject.metaData.authToken = success.result.authToken;
                         if (!UTILS.isBlank(modules)) {
@@ -62,7 +63,7 @@ module.exports = {
                         reject('Authentication failed for given data');
                     }
                 }).catch(error => {
-                    this.LOG.error('While hitting url: ', requestUrl);
+                    this.LOG.error('While hitting url: ', JSON.stringify(requestUrl));
                     this.LOG.error(error);
                     reject(error);
                 });

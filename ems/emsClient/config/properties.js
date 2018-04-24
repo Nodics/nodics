@@ -13,6 +13,10 @@ module.exports = {
 
     server: {
         emsClient: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
             server: {
                 httpHost: 'localhost',
                 httpPort: 3010,
@@ -28,12 +32,14 @@ module.exports = {
                 httpsPort: 3011
             },
             //Clusters information is optional and will be managed for Backoffice application
-            cluster0: {
-                httpHost: 'localhost',
-                httpPort: 3010,
+            node: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3010,
 
-                httpsHost: 'localhost',
-                httpsPort: 3011
+                    httpsHost: 'localhost',
+                    httpsPort: 3011
+                }
             }
         }
     },
@@ -53,7 +59,7 @@ module.exports = {
                 inputQueue: 'nodicsApplicationInput',
                 outputQueue: 'nodicsApplicationOutput',
                 targetModule: 'emsClient',
-                clusterId: '0'
+                nodeId: '0'
             }]
         },
 
@@ -73,13 +79,13 @@ module.exports = {
                 inputQueue: 'nodicsApplicationInput',
                 outputQueue: 'nodicsApplicationOutput',
                 targetModule: 'emsClient',
-                clusterId: '0'
+                nodeId: '0'
             }, {
                 messageType: "intData",
                 inputQueue: "nodicsIntInput",
                 outputQueue: "nodicsIntOutput",
                 targetModule: 'emsClient',
-                clusterId: '0'
+                nodeId: '0'
             }]
         },
 
@@ -112,7 +118,7 @@ module.exports = {
                     encoding: 'buffer'
                 },
                 targetModule: 'emsClient',
-                clusterId: '0'
+                nodeId: '0'
             }]
         }
     }

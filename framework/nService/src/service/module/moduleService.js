@@ -22,20 +22,12 @@ module.exports = {
         if (options.header) {
             _.merge(header, options.header);
         }
-        let url = SYSTEM.prepareUrl(options.moduleName);
-        if (options.connectionType === 'abstract') {
-            url = SYSTEM.prepareAbstractUrl(options.moduleName);
-        } else if (options.connectionType === 'cluster') {
-            if (!options.clusterId) {
-                options.clusterId = 'cluster0';
-            }
-            url = SYSTEM.prepareClusterUrl(options.moduleName, options.clusterId);
-        }
+        let url = SYSTEM.prepareUrl(options);
         return {
             method: options.methodName || 'GET',
             uri: url + '/' + options.apiName,
             headers: header,
-            body: options.requestBody,
+            body: options.requestBody || {},
             json: options.isJsonResponse || true
         };
     },

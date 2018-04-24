@@ -8,6 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const _ = require('lodash');
 
 module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
     let _serverState = 'starting';

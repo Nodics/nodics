@@ -28,7 +28,7 @@ module.exports = {
                         event: 'testMe',
                         source: 'cronjob',
                         target: 'profile',
-                        clusterId: '0',
+                        nodeId: '0',
                         state: 'NEW',
                         type: 'ASYNC',
                         params: {

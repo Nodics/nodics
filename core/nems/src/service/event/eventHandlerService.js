@@ -155,8 +155,8 @@ module.exports = {
 
     prepareURL: function(event) {
         return SERVICE.ModuleService.buildRequest({
-            connectionType: 'cluster',
-            clusterId: event.clusterId || CONFIG.get('publishEventOnCluster') || 'cluster0',
+            connectionType: 'node',
+            nodeId: event.nodeId || CONFIG.get('publishEventOnNode') || '0',
             moduleName: event.target,
             methodName: 'POST',
             apiName: 'event/handle',
@@ -184,5 +184,18 @@ module.exports = {
             _self.LOG.error('While broadcasting events : ', error);
             callback(error);
         }
-    }
+    },
+
+    broadcastEachModuleEvent: function(event, callback) {
+        let _self = this;
+        try {
+            let allModule = [];
+            _.each(NODICS.getModules(), (moduleObj, moduleName) => {
+                console.log(moduleName);
+            });
+        } catch (error) {
+            _self.LOG.error('While broadcasting events : ', error);
+            callback(error);
+        }
+    },
 };

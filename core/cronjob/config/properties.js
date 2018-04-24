@@ -34,9 +34,12 @@ module.exports = {
             ]
         }
     },
-    activateEventBroadcastOnCluster: 'cluster0',
     server: {
         cronjob: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
             server: {
                 httpHost: 'localhost',
                 httpPort: 3008,
@@ -52,12 +55,14 @@ module.exports = {
                 httpsPort: 3009
             },
             //Clusters information is optional and will be managed for Backoffice application
-            cluster0: {
-                httpHost: 'localhost',
-                httpPort: 3008,
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3008,
 
-                httpsHost: 'localhost',
-                httpsPort: 3009
+                    httpsHost: 'localhost',
+                    httpsPort: 3009
+                }
             }
         }
     },

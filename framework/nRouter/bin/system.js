@@ -10,6 +10,8 @@
  */
 
 module.exports = {
+    serversConfigPool: '',
+
     executeRouterConfig: function(app, scripts) {
         if (scripts.initProperties && typeof scripts.initProperties === "function") {
             scripts.initProperties(app);
@@ -37,6 +39,61 @@ module.exports = {
         }
     },
 
+    prepareModulesConfiguration: function() {
+        let _self = this;
+        SYSTEM.performAsync(() => {
+            _self.serversConfigPool = new CLASSES.ModulesConfigurationContainer();
+            _self.serversConfigPool.prepareModulesConfiguration();
+        });
+    },
+
+    getModuleServerConfig: function(moduleName) {
+        if (this.serversConfigPool.getModule(moduleName)) {
+            let moduleConfig = this.serversConfigPool.getModule(moduleName);
+            if (moduleConfig.getOptions() && moduleConfig.getOptions().connectToDefault) {
+                moduleConfig = this.serversConfigPool.getModule('default');
+            }
+            return moduleConfig;
+        } else {
+            throw new Error('Invalid module name : ' + moduleName + ' Please re-validate');
+        }
+    },
+
+    getURL: function(nodeConfig, secured) {
+        if (secured) {
+            return 'https://' +
+                nodeConfig.getHttpHost() +
+                ':' +
+                nodeConfig.getHttpPort();
+        } else {
+            return 'http://' +
+                nodeConfig.getHttpHost() +
+                ':' +
+                nodeConfig.getHttpPort();
+        }
+    },
+
+    prepareUrl: function(options) {
+        let url = '';
+        try {
+            let moduleConfig = this.getModuleServerConfig(options.moduleName);
+            let contextRoot = moduleConfig.getOptions().contextRoot || CONFIG.get('server').options.contextRoot;
+            if (options.connectionType === 'node') {
+                if (!options.nodeId) {
+                    options.nodeId = '0';
+                }
+                url = this.getURL(moduleConfig.getNode(options.nodeId));
+            } else {
+                url = this.getURL(moduleConfig.getAbstractServer());
+            }
+            url += '/' + contextRoot + '/' + options.moduleName;
+        } catch (error) {
+            this.LOG.error('While Preparing URL for :', options.moduleName, ' : ', error);
+        }
+        return url;
+    },
+
+    /*
     getServerConfiguration: function(moduleName) {
         let config = CONFIG.get('server')[moduleName];
         if (config && config.server) {
@@ -57,10 +114,10 @@ module.exports = {
         return config;
     },
 
-    getClusterConfiguration: function(moduleName, clusterId) {
+    getNodeConfiguration: function(moduleName, nodeId) {
         let config = CONFIG.get('server')[moduleName];
-        if (config && config[clusterId]) {
-            config = config[clusterId];
+        if (config && config.nodes && config.nodes[nodeId]) {
+            config = config.nodes[nodeId];
         } else {
             config = this.getAbstractServerConfiguration(moduleName);
         }
@@ -98,18 +155,18 @@ module.exports = {
 
 
 
-    getClusterHost: function(moduleName, clusterId) {
-        return SYSTEM.getClusterConfiguration(moduleName, clusterId).httpHost;
+    getNodeHost: function(moduleName, nodeId) {
+        return SYSTEM.getClusterConfiguration(moduleName, nodeId).httpHost;
     },
 
-    getClusterPort: function(moduleName, clusterId) {
-        return SYSTEM.getClusterConfiguration(moduleName, clusterId).httpPort;
+    getNodePort: function(moduleName, nodeId) {
+        return SYSTEM.getClusterConfiguration(moduleName, nodeId).httpPort;
     },
-    getClusterSecuredHost: function(moduleName, clusterId) {
-        return SYSTEM.getClusterConfiguration(moduleName, clusterId).httpsHost;
+    getNodeSecuredHost: function(moduleName, nodeId) {
+        return SYSTEM.getClusterConfiguration(moduleName, nodeId).httpsHost;
     },
 
-    getClusterSecuredPort: function(moduleName, clusterId) {
-        return SYSTEM.getClusterConfiguration(moduleName, clusterId).httpsPort;
-    }
+    getNodeSecuredPort: function(moduleName, nodeId) {
+        return SYSTEM.getClusterConfiguration(moduleName, nodeId).httpsPort;
+    }*/
 };

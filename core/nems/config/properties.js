@@ -19,9 +19,13 @@ module.exports = {
     },
 
     eventFetchSize: 100,
-    publishEventOnCluster: 'cluster0',
+    publishEventOnNode: '0',
     server: {
         nems: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
             server: {
                 httpHost: 'localhost',
                 httpPort: 3006,
@@ -37,12 +41,14 @@ module.exports = {
                 httpsPort: 3007
             },
             //Clusters information is optional and will be managed for Backoffice application
-            cluster0: {
-                httpHost: 'localhost',
-                httpPort: 3006,
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3006,
 
-                httpsHost: 'localhost',
-                httpsPort: 3007
+                    httpsHost: 'localhost',
+                    httpsPort: 3007
+                }
             }
         }
     },
