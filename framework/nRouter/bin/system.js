@@ -46,6 +46,9 @@ module.exports = {
             _self.serversConfigPool.prepareModulesConfiguration();
         });
     },
+    getModulesPool: function() {
+        return this.serversConfigPool;
+    },
 
     getModuleServerConfig: function(moduleName) {
         if (this.serversConfigPool.getModule(moduleName)) {
@@ -78,11 +81,12 @@ module.exports = {
         try {
             let moduleConfig = this.getModuleServerConfig(options.moduleName);
             let contextRoot = moduleConfig.getOptions().contextRoot || CONFIG.get('server').options.contextRoot;
-            if (options.connectionType === 'node') {
-                if (!options.nodeId) {
-                    options.nodeId = '0';
+            if (options.nodeId && options.nodeId > 0) {
+                if (moduleConfig.getNode(options.nodeId)) {
+                    url = this.getURL(moduleConfig.getNode(options.nodeId));
+                } else {
+                    this.LOG.error('Invalid node id : ' + options.nodeId + ' while preparing URL for module : ' + options.moduleName);
                 }
-                url = this.getURL(moduleConfig.getNode(options.nodeId));
             } else {
                 url = this.getURL(moduleConfig.getAbstractServer());
             }
@@ -91,82 +95,5 @@ module.exports = {
             this.LOG.error('While Preparing URL for :', options.moduleName, ' : ', error);
         }
         return url;
-    },
-
-    /*
-    getServerConfiguration: function(moduleName) {
-        let config = CONFIG.get('server')[moduleName];
-        if (config && config.server) {
-            config = config.server;
-        } else {
-            config = CONFIG.get('server').default.server;
-        }
-        return config;
-    },
-
-    getAbstractServerConfiguration: function(moduleName) {
-        let config = CONFIG.get('server')[moduleName];
-        if (config && config.abstract) {
-            config = config.abstract;
-        } else {
-            config = this.getServerConfiguration(moduleName);
-        }
-        return config;
-    },
-
-    getNodeConfiguration: function(moduleName, nodeId) {
-        let config = CONFIG.get('server')[moduleName];
-        if (config && config.nodes && config.nodes[nodeId]) {
-            config = config.nodes[nodeId];
-        } else {
-            config = this.getAbstractServerConfiguration(moduleName);
-        }
-        return config;
-    },
-
-    getHost: function(moduleName) {
-        return SYSTEM.getServerConfiguration(moduleName).httpHost;
-    },
-    getPort: function(moduleName) {
-        return SYSTEM.getServerConfiguration(moduleName).httpPort;
-    },
-
-    getSecuredHost: function(moduleName) {
-        return SYSTEM.getServerConfiguration(moduleName).httpsHost;
-    },
-    getSecuredPort: function(moduleName) {
-        return SYSTEM.getServerConfiguration(moduleName).httpsPort;
-    },
-
-    getAbstractHost: function(moduleName) {
-        return SYSTEM.getAbstractServerConfiguration(moduleName).httpHost;
-    },
-
-    getAbstractPort: function(moduleName) {
-        return SYSTEM.getAbstractServerConfiguration(moduleName).httpPort;
-    },
-    getAbstractSecuredHost: function(moduleName) {
-        return SYSTEM.getAbstractServerConfiguration(moduleName).httpsHost;
-    },
-
-    getAbstractSecuredPort: function(moduleName) {
-        return SYSTEM.getAbstractServerConfiguration(moduleName).httpsPort;
-    },
-
-
-
-    getNodeHost: function(moduleName, nodeId) {
-        return SYSTEM.getClusterConfiguration(moduleName, nodeId).httpHost;
-    },
-
-    getNodePort: function(moduleName, nodeId) {
-        return SYSTEM.getClusterConfiguration(moduleName, nodeId).httpPort;
-    },
-    getNodeSecuredHost: function(moduleName, nodeId) {
-        return SYSTEM.getClusterConfiguration(moduleName, nodeId).httpsHost;
-    },
-
-    getNodeSecuredPort: function(moduleName, nodeId) {
-        return SYSTEM.getClusterConfiguration(moduleName, nodeId).httpsPort;
-    }*/
+    }
 };

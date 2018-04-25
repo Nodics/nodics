@@ -53,9 +53,9 @@ module.exports = function(moduleName) {
         return _abstractServer;
     };
 
-    this.addNode = function(nodeName, nodeConfig) {
+    this.addNode = function(nodeId, nodeConfig) {
         if (UTILS.isBlank(_nodes)) {
-            _nodes[nodeName] = new CLASSES.NodeConfiguration(nodeName,
+            _nodes[nodeId] = new CLASSES.NodeConfiguration(nodeId,
                 nodeConfig.httpHost,
                 nodeConfig.httpsHost,
                 nodeConfig.httpPort,
@@ -66,10 +66,10 @@ module.exports = function(moduleName) {
                     node.getHttpPort() === nodeConfig.httpPort ||
                     node.getHttpsHost() === nodeConfig.httpsHost ||
                     node.getHttpsPort() === nodeConfig.httpsPort) {
-                    throw new Error('Invalid node configuration for ', nodeName, ' in module : ', _moduleName);
+                    throw new Error('Invalid node configuration for ', nodeId, ' in module : ', _moduleName);
                 }
             });
-            _nodes[nodeName] = new CLASSES.NodeConfiguration(nodeName,
+            _nodes[nodeId] = new CLASSES.NodeConfiguration(nodeId,
                 nodeConfig.httpHost,
                 nodeConfig.httpsHost,
                 nodeConfig.httpPort,

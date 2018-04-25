@@ -16,6 +16,10 @@ module.exports = function() {
     let _modules = {};
     this.LOG = SYSTEM.createLogger('ExternalModulesContainer');
 
+    this.getModules = function() {
+        return _modules;
+    };
+
     this.prepareModulesConfiguration = function() {
         let _self = this;
         _.each(CONFIG.get('server'), (moduleConfig, moduleName) => {

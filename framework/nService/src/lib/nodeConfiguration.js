@@ -9,8 +9,8 @@
 
  */
 
-module.exports = function(nodeName, httpHost, httpsHost, httpPort, httpsPort) {
-    let _nodeName = nodeName;
+module.exports = function(nodeId, httpHost, httpsHost, httpPort, httpsPort) {
+    let _nodeId = nodeId;
     let _httpHost = httpHost;
     let _httpsHost = httpsHost;
     let _httpPort = httpPort;
@@ -18,8 +18,8 @@ module.exports = function(nodeName, httpHost, httpsHost, httpPort, httpsPort) {
 
     this.LOG = SYSTEM.createLogger('ExternalNode');
 
-    this.getNodeName = function() {
-        return _nodeName;
+    this.getNodeId = function() {
+        return _nodeId;
     };
 
     this.getHttpHost = function() {

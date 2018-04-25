@@ -71,6 +71,7 @@ Todos:
     - Run individual test case from API for both type
     - Make context root at module server level, for communicating between modules
     - Document complete server configuration for start and connect
+    - Test events and other communicating properly for nodeis and abstract
       
 
 Todos:

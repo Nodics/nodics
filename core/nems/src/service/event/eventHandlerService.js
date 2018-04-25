@@ -122,7 +122,13 @@ module.exports = {
                                 event.log.push(err.toString());
                             } else {
                                 event.state = ENUMS.EventState.FINISHED;
-                                event.log.push('Published Successfully');
+                                if (response instanceof Array) {
+                                    response.forEach(element => {
+                                        event.log.push(element.result);
+                                    });
+                                } else {
+                                    event.log.push(response.result);
+                                }
                             }
                             event.hits = event.hits + 1;
                             resolve(event);
@@ -147,16 +153,15 @@ module.exports = {
         if (!event.targetType || event.targetType === ENUMS.TargetType.MODULE.key) {
             _self.broadcastModuleEvent(event, callback);
         } else if (event.targetType === ENUMS.TargetType.EACH_MODULE.key) {
-
+            _self.broadcastEachModuleEvent(event, callback);
         } else if (event.targetType === ENUMS.TargetType.EACH_NODE.key) {
-
+            _self.broadcastEachNodeEvent(event, callback);
         }
     },
 
     prepareURL: function(event) {
         return SERVICE.ModuleService.buildRequest({
-            connectionType: 'node',
-            nodeId: event.nodeId || CONFIG.get('publishEventOnNode') || '0',
+            nodeId: event.nodeId || '-1',
             moduleName: event.target,
             methodName: 'POST',
             apiName: 'event/handle',
@@ -189,12 +194,54 @@ module.exports = {
     broadcastEachModuleEvent: function(event, callback) {
         let _self = this;
         try {
-            let allModule = [];
-            _.each(NODICS.getModules(), (moduleObj, moduleName) => {
-                console.log(moduleName);
+            let allPromise = [];
+            _.each(SYSTEM.getModulesPool().getModules(), (moduleObj, moduleName) => {
+                if (moduleName != 'default') {
+                    event.target = moduleName;
+                    event.nodeId = event.nodeId || '-1';
+                    allPromise.push(
+                        SERVICE.ModuleService.fetch(_self.prepareURL(event))
+                    );
+                }
             });
+            if (allPromise.length > 0) {
+                Promise.all(allPromise).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            }
         } catch (error) {
-            _self.LOG.error('While broadcasting events : ', error);
+            _self.LOG.error('While broadcasting event to each module : ', error);
+            callback(error);
+        }
+    },
+
+    broadcastEachNodeEvent: function(event, callback) {
+        let _self = this;
+        try {
+            let allPromise = [];
+            _.each(SYSTEM.getModulesPool().getModules(), (moduleObj, moduleName) => {
+                if (moduleName != 'default') {
+                    event.target = moduleName;
+                    let nodes = SYSTEM.getModulesPool().getModule(moduleName).getNodes();
+                    _.each(nodes, (node, nodeId) => {
+                        event.nodeId = nodeId;
+                        allPromise.push(
+                            SERVICE.ModuleService.fetch(_self.prepareURL(event))
+                        );
+                    });
+                }
+            });
+            if (allPromise.length > 0) {
+                Promise.all(allPromise).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            }
+        } catch (error) {
+            _self.LOG.error('While broadcasting event to each node : ', error);
             callback(error);
         }
     },

@@ -51,7 +51,7 @@ module.exports = {
         try {
             SERVICE.ModuleService.fetch(this.prepareURL(definition, cronJob),
                 (error, response) => {
-                    _self.LOG.debug('Events processed with response : ', response);
+                    _self.LOG.debug('Events processed with response');
                     let logMessage = '';
                     if (error) {
                         logMessage = error.toString();

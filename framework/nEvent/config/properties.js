@@ -12,5 +12,6 @@
 module.exports = {
     event: {
         publishAllActive: true,
+        ignoreIfNoLister: true
     }
 };

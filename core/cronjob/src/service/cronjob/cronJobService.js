@@ -78,7 +78,9 @@ module.exports = {
             query: CONFIG.get('cronjob').activeJobsQuery
         }, input);
         input = _.merge(input, request);
+        console.log(input.query);
         SERVICE.CronJobService.get(input).then((models) => {
+            console.log(models);
             if (callback) {
                 this.cronJobContainer.runCronJobs(models).then(success => {
                     callback(null, success);
