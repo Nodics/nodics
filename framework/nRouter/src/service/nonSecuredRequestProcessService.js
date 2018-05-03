@@ -19,7 +19,7 @@ module.exports = {
                     process.error(request, response, error || 'Enterprise code is not valid');
                 } else {
                     request.local.enterprise = response;
-                    request.local.tenant = response.tenant;
+                    request.local.tenant = response.tenant.name;
                     process.nextSuccess(request, response);
                 }
             });

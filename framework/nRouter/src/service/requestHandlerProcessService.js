@@ -8,6 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const _ = require('lodash');
 
 module.exports = {
 
@@ -66,6 +67,7 @@ module.exports = {
 
     parseBody: function(request, response, process) {
         this.LOG.debug('Parsing request body : ', request.local.originalUrl);
+        _.merge(request.local, request.body || {});
         process.nextSuccess(request, response);
     },
 

@@ -15,11 +15,19 @@ module.exports = {
     init: function() {
         SYSTEM.LOG.info('Registering events');
         let listeners = SYSTEM.loadFiles('/src/event/listeners.js');
-        let modules = NODICS.getModules();
-        _.each(modules, (value, moduleName) => {
+        let commonListeners = listeners.common;
+        _.each(NODICS.getModules(), (value, moduleName) => {
             value.eventService = new CLASSES.EventService();
-            if (listeners[moduleName]) {
-                _.each(listeners[moduleName], (listenerDefinition, listenerName) => {
+            if (commonListeners) {
+                _.each(commonListeners, (listenerDefinition, listenerName) => {
+                    listenerDefinition.moduleName = moduleName;
+                    value.eventService.registerListener(listenerDefinition);
+                });
+            }
+            let moduleListeners = listeners[moduleName];
+            if (moduleListeners) {
+                _.each(moduleListeners, (listenerDefinition, listenerName) => {
+                    listenerDefinition.moduleName = moduleName;
                     value.eventService.registerListener(listenerDefinition);
                 });
             }

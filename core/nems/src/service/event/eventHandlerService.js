@@ -44,19 +44,24 @@ module.exports = {
         input = _.merge(input, this.buildQuery());
         DAO.EventDao.get(input).then(events => {
             _self.LOG.debug('Total events to be processed : ', (events instanceof Array) ? events.length : 1);
-            if (events instanceof Array && events.length <= 0) {
+            if ((events instanceof Array) && (events.length <= 0)) {
                 callback('None of the events available');
             } else if (UTILS.isBlank(events)) {
                 callback('None of the events available');
             } else {
-                _self.broadcastEvents(events, (error, processedEvents) => {
-                    _self.handleProcessedEvents(input, processedEvents, (message) => {
-                        callback(null, message);
-                    });
-                });
+                _self.processSyncEvents(input, events, callback);
             }
         }).catch(error => {
             callback(error);
+        });
+    },
+
+    processSyncEvents: function(input, events, callback) {
+        let _self = this;
+        _self.broadcastEvents(events, (error, processedEvents) => {
+            _self.handleProcessedEvents(input, processedEvents, (message) => {
+                callback(null, message);
+            });
         });
     },
 
@@ -74,8 +79,10 @@ module.exports = {
                 delete event._id;
                 delete event.__v;
                 delete event.__t;
+                event.type = 'ASYNC';
                 success.push(event);
             } else {
+                event.type = 'ASYNC';
                 failed.push(event);
                 request.response.failed.push(event._id);
             }

@@ -10,5 +10,42 @@
  */
 
 module.exports = {
-
+    nems: {
+        event: {
+            handleAsyncEvents: function(schema, modelName) {
+                schema.post('save', function(next) {
+                    let events = [];
+                    if ((this instanceof Array)) {
+                        this.forEach(element => {
+                            if (element.type === ENUMS.EventType.SYNC.key) {
+                                events.push(element);
+                            }
+                        });
+                    } else {
+                        if (this.type === ENUMS.EventType.SYNC.key) {
+                            events.push(this);
+                        }
+                    }
+                    if (events.length > 0) {
+                        let input = {
+                            tenant: 'default',
+                            response: {
+                                success: [],
+                                failed: []
+                            }
+                        };
+                        SERVICE.EventHandlerService.processSyncEvents(input, events, (error, response) => {
+                            if (next && typeof next === "function") {
+                                next();
+                            }
+                        });
+                    } else {
+                        if (next && typeof next === "function") {
+                            next();
+                        }
+                    }
+                });
+            }
+        }
+    }
 };

@@ -14,15 +14,15 @@ const _ = require('lodash');
 module.exports = {
     processLOG: SYSTEM.createLogger('ProcessHead'),
     handleSucessEnd: function(request, response) {
-        this.LOG.debug('   WARN: This is default success handler, will not perform anything ');
+        this.LOG.warn('This is default success handler, will not perform anything ');
     },
 
     handleFailureEnd: function(request, response) {
-        this.LOG.debug('   WARN: This is default failure handler, will not perform anything ');
+        this.LOG.warn('This is default failure handler, will not perform anything ');
     },
 
     handleErrorEnd: function(request, response) {
-        this.LOG.debug('   WARN: This is default error handler, will not perform anything ');
+        this.LOG.warn('This is default error handler, will not perform anything ');
     },
     startProcess: function(processName, request, response, callback) {
         let success = false;

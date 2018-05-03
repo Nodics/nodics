@@ -14,7 +14,6 @@ module.exports = {
     attemptsToLockAccount: 5,
     encryptSaltLength: 10,
     authorizationModuleName: 'profile',
-    authTokenLife: 60 * 5,
     server: {
         profile: {
             options: {
@@ -49,10 +48,11 @@ module.exports = {
     },
 
     cache: {
+        makeAuthTokenLocal: true,
         authTokenTTL: 60 * 60,
         authToken: {
             stdTTL: 60 * 60,
-            checkperiod: 180,
+            checkperiod: 1,
             errorOnMissing: false,
             useClones: true
         },

@@ -134,6 +134,7 @@ module.exports = {
     },
 
     addTenants: function() {
+
         return new Promise((resolve, reject) => {
             NODICS.getModels('profile', 'default').TenantModel.get({}).then((tenantData) => {
                 if (!tenantData || tenantData.length <= 0) {
@@ -149,7 +150,7 @@ module.exports = {
                             }
                         });
                     } catch (error) {
-                        console.log(error);
+                        SYSTEM.LOG.error(error);
                     }
                     resolve(true);
                 }

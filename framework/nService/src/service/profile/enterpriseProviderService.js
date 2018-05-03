@@ -11,15 +11,17 @@
 
 module.exports = {
 
-    prepareURL: function(config) {
+    prepareURL: function(input) {
         return SERVICE.ModuleService.buildRequest({
             moduleName: 'profile',
             methodName: 'POST',
             apiName: 'enterprise/get',
-            requestBody: {},
+            requestBody: {
+                recursive: true
+            },
             isJsonResponse: true,
             header: {
-                enterpriseCode: request.local.enterpriseCode
+                enterpriseCode: input.enterpriseCode
             }
         });
     },

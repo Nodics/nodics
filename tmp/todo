@@ -67,11 +67,15 @@ Todos:
     ✔ Refector Person schema for last login and number of failed logins @done(18-04-03 17:59)
     ✔ Each router should return detail on ?help @done(18-04-05 10:42)
 
+    ✔ Store auth token in each module @done(18-04-27 13:10)
+    ✔ Invalidate auth token from each module @done(18-04-27 13:10)
+
+    
     - Dont load test cases while server start-up instead while executing
     - Run individual test case from API for both type
-    - Make context root at module server level, for communicating between modules
+    ✔ Make context root at module server level, for communicating between modules @done(18-04-27 13:10)
     - Document complete server configuration for start and connect
-    - Test events and other communicating properly for nodeis and abstract
+    ✔ Test events and other communicating properly for nodeId and abstract @done(18-04-27 13:11)
       
 
 Todos:
