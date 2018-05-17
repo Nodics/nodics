@@ -10,11 +10,11 @@
  */
 
 module.exports = {
-    init: function() {
+    init: function () {
 
     },
 
-    loadCommon: function() {
+    loadCommon: function () {
         if (!CONFIG || !SYSTEM || !NODICS) {
             SYSTEM.LOG.error("System initialization error: configuration initializer failure.");
             process.exit(1);
@@ -28,8 +28,5 @@ module.exports = {
 
         SYSTEM.LOG.info('Staring Classes loader process');
         SYSTEM.loadClasses();
-
-        SYSTEM.LOG.info('Staring process to load Modules');
-        SYSTEM.loadModules();
     }
 };

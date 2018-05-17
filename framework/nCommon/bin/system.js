@@ -18,12 +18,12 @@ const Enum = require('./enum');
 
 module.exports = {
 
-    loadEnums: function() {
+    loadEnums: function () {
         let enums = global.ENUMS;
         let enumScript = {};
         SYSTEM.loadFiles('/src/utils/enums.js', enumScript);
 
-        _.each(enumScript, function(value, key) {
+        _.each(enumScript, function (value, key) {
             let _option = SYSTEM.createEnumOptions(key, value);
             if (_option) {
                 enums[key] = new Enum(value.definition, _option);
@@ -33,7 +33,7 @@ module.exports = {
         });
     },
 
-    createEnumOptions: function(key, enumValue) {
+    createEnumOptions: function (key, enumValue) {
         if (enumValue._options) {
             let _option = {
                 name: enumValue._options.name || key,
@@ -48,16 +48,16 @@ module.exports = {
         }
     },
 
-    loadClasses: function() {
+    loadClasses: function () {
         let classes = global.CLASSES;
         let moduleIndex = CONFIG.get('moduleIndex');
-        Object.keys(moduleIndex).forEach(function(key) {
+        Object.keys(moduleIndex).forEach(function (key) {
             var value = moduleIndex[key][0];
             SYSTEM.loadModuleClasses(value);
         });
         SYSTEM.generalizeClasses();
     },
-    loadModuleClasses: function(module) {
+    loadModuleClasses: function (module) {
         let path = module.path + '/src/lib';
         SYSTEM.processFiles(path, "*", (file) => {
             if (!file.endsWith('classes.js')) {
@@ -71,26 +71,26 @@ module.exports = {
         }, 'classes.js');
     },
 
-    generalizeClasses: function() {
+    generalizeClasses: function () {
         let classesScripts = {};
         SYSTEM.LOG.debug('Generalizing defined classes');
         SYSTEM.loadFiles('/src/lib/classes.js', classesScripts);
 
         var methods = SYSTEM.getAllMethods(classesScripts);
-        methods.forEach(function(instance) {
+        methods.forEach(function (instance) {
             classesScripts[instance]();
         });
     },
 
-    loadModules: function() {
+    loadModules: function () {
         let moduleIndex = CONFIG.get('moduleIndex');
-        Object.keys(moduleIndex).forEach(function(key) {
+        Object.keys(moduleIndex).forEach(function (key) {
             var value = moduleIndex[key][0];
             SYSTEM.loadModule(value.name);
         });
     },
 
-    loadModule: function(moduleName) {
+    loadModule: function (moduleName) {
         SYSTEM.LOG.debug('Staring process for module : ', moduleName);
         let module = CONFIG.getProperties().moduleList[moduleName];
 
@@ -106,7 +106,7 @@ module.exports = {
         }
     },
 
-    loadDao: function(module) {
+    loadDao: function (module) {
         SYSTEM.LOG.debug('Loading all module DAO');
         let path = module.path + '/src/dao';
         SYSTEM.processFiles(path, "Dao.js", (file) => {
@@ -120,7 +120,7 @@ module.exports = {
         });
     },
 
-    loadServices: function(module) {
+    loadServices: function (module) {
         SYSTEM.LOG.debug('Loading all module services');
         let path = module.path + '/src/service';
         SYSTEM.processFiles(path, "Service.js", (file) => {
@@ -134,7 +134,7 @@ module.exports = {
         });
     },
 
-    loadProcessDefinition: function(module) {
+    loadProcessDefinition: function (module) {
         SYSTEM.LOG.debug('Loading all module process definitions');
         let path = module.path + '/src/process';
         SYSTEM.processFiles(path, "Definition.js", (file) => {
@@ -147,7 +147,7 @@ module.exports = {
         });
     },
 
-    loadFacades: function(module) {
+    loadFacades: function (module) {
         SYSTEM.LOG.debug('Loading all module facades');
         let path = module.path + '/src/facade';
         SYSTEM.processFiles(path, "Facade.js", (file) => {
@@ -161,7 +161,7 @@ module.exports = {
         });
     },
 
-    loadControllers: function(module) {
+    loadControllers: function (module) {
         SYSTEM.LOG.debug('Loading all module controllers');
         let path = module.path + '/src/controller';
         SYSTEM.processFiles(path, "Controller.js", (file) => {
@@ -175,7 +175,7 @@ module.exports = {
         });
     },
 
-    loadTest: function(module) {
+    loadTest: function (module) {
         if (CONFIG.get('test').uTest.enabled) {
             this.loadCommonTest(module);
         }
@@ -184,7 +184,7 @@ module.exports = {
         }
     },
 
-    loadCommonTest: function(module) {
+    loadCommonTest: function (module) {
         SYSTEM.LOG.debug('Loading module test cases');
         let path = module.path + '/test/common';
         SYSTEM.processFiles(path, "Test.js", (file) => {
@@ -207,7 +207,7 @@ module.exports = {
         });
     },
 
-    loadEnvTest: function(module) {
+    loadEnvTest: function (module) {
         SYSTEM.LOG.debug('Loading test cases for ENV : ', NODICS.getActiveEnvironment());
         let path = module.path + '/test/env/' + NODICS.getActiveEnvironment();
         SYSTEM.processFiles(path, "Test.js", (file) => {
@@ -230,7 +230,7 @@ module.exports = {
         });
     },
 
-    collectTest: function(file) {
+    collectTest: function (file) {
         _.each(file, (testSuite, suiteName) => {
             if (testSuite.data) {
                 if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
@@ -254,13 +254,12 @@ module.exports = {
         return file;
     },
 
-    /* =================================================================== */
-    getFileNameWithoutExtension: function(filePath) {
-        let fileName = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.indexOf("."));
+    getFileNameWithoutExtension: function (filePath) {
+        let fileName = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf("."));
         return fileName.toUpperCaseFirstChar();
     },
 
-    schemaWalkThrough: function(options) {
+    schemaWalkThrough: function (options) {
         return new Promise((resolve, reject) => {
             if (!fs.existsSync(options.currentDir)) {
                 fs.mkdirSync(options.currentDir);
@@ -296,7 +295,7 @@ module.exports = {
         });
     },
 
-    createObject: function(options) {
+    createObject: function (options) {
         return new Promise((resolve, reject) => {
             let _self = this;
             options.modelName = options.schemaName.toUpperCaseEachWord();
@@ -324,7 +323,7 @@ module.exports = {
                 fs.writeFile(fileName,
                     data,
                     'utf-8',
-                    function(error, success) {
+                    function (error, success) {
                         if (error) {
                             SYSTEM.LOG.error('While creating object for file : ', fileName.replace(NODICS.getNodicsHome(), '.'), ' : ', error);
                             reject(error);
@@ -339,8 +338,8 @@ module.exports = {
         });
     },
 
-    replacePlaceholders: function(options) {
-        var commonDefinitionString = JSON.stringify(options.commonDefinition, function(key, value) {
+    replacePlaceholders: function (options) {
+        var commonDefinitionString = JSON.stringify(options.commonDefinition, function (key, value) {
             if (typeof value === 'function') {
                 return value.toString();
             } else if (typeof value === 'string') {
@@ -363,7 +362,7 @@ module.exports = {
         return commonDefinitionString;
     },
 
-    startServers: function() {
+    startServers: function () {
         return new Promise((resolve, reject) => {
             try {
                 if (CONFIG.get('server').options.runAsDefault) {
@@ -380,7 +379,7 @@ module.exports = {
                         SYSTEM.LOG.error('Please define valid active modules');
                         process.exit(CONFIG.get('errorExitCode'));
                     }
-                    _.each(NODICS.getModules(), function(value, moduleName) {
+                    _.each(NODICS.getModules(), function (value, moduleName) {
                         try {
                             if (value.metaData && value.metaData.publish) {
                                 let moduleConfig = SYSTEM.getModuleServerConfig(moduleName);
@@ -408,9 +407,9 @@ module.exports = {
         });
     },
 
-    createFile: function(filePath, data) {
+    createFile: function (filePath, data) {
         return new Promise((resolve, reject) => {
-            fs.writeFile(filePath, data, function(err) {
+            fs.writeFile(filePath, data, function (err) {
                 if (err) {
                     reject(err);
                 } else {
@@ -420,7 +419,7 @@ module.exports = {
         });
     },
 
-    removeDirectory: function(dirPath, removeSelf) {
+    removeDirectory: function (dirPath, removeSelf) {
         if (removeSelf === undefined)
             removeSelf = true;
         try {
