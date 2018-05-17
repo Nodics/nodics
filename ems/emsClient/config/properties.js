@@ -10,6 +10,35 @@
  */
 
 module.exports = {
+    /*database: {
+        emsClient: {
+            databaseType: 'mongodb', //for Cassandra use 'cassandra'
+            mongodb: {
+                master: {
+                    URI: 'mongodb://localhost:27017/emsClientMaster',
+                    options: {
+                        db: {
+                            native_parser: true
+                        },
+                        server: {
+                            poolSize: 5
+                        }
+                    }
+                },
+                test: {
+                    URI: 'mongodb://localhost:27017/emsClientTest',
+                    options: {
+                        db: {
+                            native_parser: true
+                        },
+                        server: {
+                            poolSize: 5
+                        }
+                    }
+                }
+            }
+        }
+    },*/
 
     server: {
         emsClient: {

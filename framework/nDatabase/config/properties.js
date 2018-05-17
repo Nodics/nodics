@@ -13,25 +13,28 @@ module.exports = {
     database: {
         processInitialData: false,
         default: {
-            master: {
-                URI: 'mongodb://localhost:27017/nodicsMaster',
-                options: {
-                    db: {
-                        native_parser: true
-                    },
-                    server: {
-                        poolSize: 5
+            databaseType: 'mongodb', //for Cassandra use 'cassandra'
+            mongodb: {
+                master: {
+                    URI: 'mongodb://localhost:27017/nodicsMaster',
+                    options: {
+                        db: {
+                            native_parser: true
+                        },
+                        server: {
+                            poolSize: 5
+                        }
                     }
-                }
-            },
-            test: {
-                URI: 'mongodb://localhost:27017/nodicsTest',
-                options: {
-                    db: {
-                        native_parser: true
-                    },
-                    server: {
-                        poolSize: 5
+                },
+                test: {
+                    URI: 'mongodb://localhost:27017/nodicsTest',
+                    options: {
+                        db: {
+                            native_parser: true
+                        },
+                        server: {
+                            poolSize: 5
+                        }
                     }
                 }
             }

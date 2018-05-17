@@ -25,11 +25,11 @@ const router = require('./nRouter');
 const test = require('./nTest');
 
 module.exports = {
-    init: function() {
+    init: function () {
         ////
     },
 
-    initFrameworkExecute: function(options) {
+    initFrameworkExecute: function (options) {
         return new Promise((resolve, reject) => {
             config.loadConfig(options);
             SYSTEM.executePreScripts();
@@ -52,7 +52,7 @@ module.exports = {
                             if (NODICS.isInitRequired()) {
                                 SERVICE.DataImportService.importInitData().then(success => {
                                     SYSTEM.addTenants().then(success => {
-                                        db.loadTenantDatabase().then(success => {
+                                        SYSTEM.loadTenantDatabase().then(success => {
                                             resolve(true);
                                         }).catch(error => {
                                             reject(error);
@@ -65,7 +65,7 @@ module.exports = {
                                 });
                             } else {
                                 SYSTEM.addTenants().then(success => {
-                                    db.loadTenantDatabase().then(success => {
+                                    SYSTEM.loadTenantDatabase().then(success => {
                                         resolve(true);
                                     }).catch(error => {
                                         reject(error);
@@ -90,11 +90,11 @@ module.exports = {
         });
     },
 
-    initTestRuner: function() {
+    initTestRuner: function () {
         test.initTest().then(success => {}).catch(error => {});
     },
 
-    startNodics: function(options) {
+    startNodics: function (options) {
         this.initFrameworkExecute(options).then(success => {
             SYSTEM.startServers().then(success => {
                 SERVICE.BackgroundAuthTokenGenerateService.generateAuthToken(CONFIG.get('backgroundAuthModules')).then(success => {
@@ -102,9 +102,6 @@ module.exports = {
                     NODICS.setServerState('started');
                     SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
                     this.initTestRuner();
-                    //console.log(ENUMS.EventType.getEnumValue());
-                    //console.log(NODICS.getModules());
-                    //console.log(' ---- :', util.inspect(, false, null));
                 }).catch(error => {
                     SYSTEM.LOG.error('Failed to allocate default token with modules, check configuration : ', error);
                 });

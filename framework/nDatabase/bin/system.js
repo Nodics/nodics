@@ -15,7 +15,7 @@ const extend = require('mongoose-schema-extend');
 
 module.exports = {
 
-    validateDatabaseConfiguration: function(dbName) {
+    validateDatabaseConfiguration: function (dbName) {
         var flag = true;
         if (!dbName) {
             dbName = 'default';
@@ -31,7 +31,26 @@ module.exports = {
         return flag;
     },
 
-    createConnection: function(dbConfig, tntName, type) {
+    prepareDatabaseList: function () {
+        let modules = NODICS.getModules();
+        let dbModules = ['default'];
+        _.each(modules, (value, moduleName) => {
+            if (CONFIG.get('database')[moduleName]) {
+                dbModules.push(moduleName);
+            }
+        });
+        return dbModules;
+    },
+
+    createConnection: function (dbType, dbConfig, tntName, type) {
+        if (dbType === 'mysql') {
+
+        } else {
+            return this.createMongoDBConnection(dbConfig, tntName, type);
+        }
+    },
+
+    createMongoDBConnection: function (dbConfig, tntName, type) {
         return new Promise((resolve, reject) => {
             SYSTEM.LOG.debug('Creating ', type, ' database connection for tenant : ', tntName, ' URI : ', dbConfig.URI);
             let connection = '';
@@ -42,60 +61,47 @@ module.exports = {
                 connection = mongoose.createConnection(dbConfig.URI);
             }
             //Register all posible event
-            connection.on('connected', function() {
+            connection.on('connected', function () {
                 SYSTEM.LOG.info('Mongoose default connection open to ' + dbConfig.URI);
-                try {
-                    if (CONFIG.get('database').processInitialData) {
-                        NODICS.setInitRequired(true);
-                    } else if (type === 'master' && tntName === 'default') {
-                        connection.db.collection('enterprisemodels', function(err, collection) {
-                            collection.count({}, function(error, count) {
-                                if (count <= 0) {
-                                    NODICS.setInitRequired(true);
-                                }
-                                resolve(connection);
-                            });
-                        });
-                    } else {
-                        resolve(connection);
-                    }
-                } catch (error) {
-                    SYSTEM.LOG.error(' While checking if initialization required : ', error);
-                    resolve(connection);
-                }
+                resolve(connection);
             });
-            connection.on('error', function(error) {
+            connection.on('error', function (error) {
                 SYSTEM.LOG.error('Mongoose default connection error: ' + error);
                 reject('Mongoose default connection error: ' + error);
             });
-            connection.on('disconnected', function() {
+            connection.on('disconnected', function () {
                 SYSTEM.LOG.info('Mongoose default connection disconnected');
             });
         });
     },
 
-    createDatabase: function(moduleName, tntName) {
+    createDatabase: function (moduleName, tntName) {
         let _self = this;
         return new Promise((resolve, reject) => {
             let tntDB = {};
             let dbConfig = NODICS.getDatabaseConfiguration(moduleName, tntName);
+            let dbType = dbConfig.databaseType;
+            if (dbType !== 'mongodb') {
+                SYSTEM.LOG.error('Found invalid database type: ', dbType, ' for module: ', moduleName);
+                process.exit(1);
+            }
             let testConfig = CONFIG.get('test');
             let masterDatabase = new CLASSES.Database();
             let testDatabase = null;
 
             masterDatabase.setName(moduleName);
-            masterDatabase.setURI(dbConfig.master.URI);
-            masterDatabase.setOptions(dbConfig.master.options);
-            _self.createConnection(dbConfig.master, tntName, 'master').then(connection => {
+            masterDatabase.setURI(dbConfig[dbType].master.URI);
+            masterDatabase.setOptions(dbConfig[dbType].master.options);
+            _self.createConnection(dbType, dbConfig[dbType].master, tntName, 'master').then(connection => {
                 masterDatabase.setConnection(connection);
                 masterDatabase.setSchema(mongoose.Schema);
                 if (testConfig.enabled && testConfig.uTest.enabled) {
                     testDatabase = new CLASSES.Database();
-                    if (dbConfig.test) {
+                    if (dbConfig[dbType].test) {
                         testDatabase.setName(moduleName);
-                        testDatabase.setURI(dbConfig.test.URI);
-                        testDatabase.setOptions(dbConfig.test.options);
-                        _self.createConnection(dbConfig.test, tntName, 'test').then(conn => {
+                        testDatabase.setURI(dbConfig[dbType].test.URI);
+                        testDatabase.setOptions(dbConfig[dbType].test.options);
+                        _self.createConnection(dbType, dbConfig[dbType].test, tntName, 'test').then(conn => {
                             testDatabase.setConnection(conn);
                             testDatabase.setSchema(mongoose.Schema);
                             NODICS.addTenantDatabase(moduleName, tntName, {
@@ -107,7 +113,7 @@ module.exports = {
                             reject('Could not connect test database : ' + error);
                         });
                     } else {
-                        let testDB = NODICS.getDatabase().test;
+                        let testDB = NODICS.getDatabase('default', tntName).test;
                         if (!testDB) {
                             SYSTEM.LOG.error('Default test database configuration not found. Please velidate database configuration');
                             process.exit(CONFIG.get('errorExitCode'));
@@ -133,8 +139,31 @@ module.exports = {
         });
     },
 
-    addTenants: function() {
+    createTenantDatabase: function (tntName) {
+        return new Promise((resolve, reject) => {
+            let dbModules = SYSTEM.prepareDatabaseList();
+            dbModules.splice(dbModules.indexOf('default'), 1);
+            SYSTEM.createDatabase('default', tntName).then(success => {
+                let allModules = [];
+                dbModules.forEach(moduleName => {
+                    allModules.push(SYSTEM.createDatabase(moduleName, tntName));
+                });
+                if (allModules.length > 0) {
+                    Promise.all(allModules).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            }).catch(error => {
+                reject('Could not found any database configuration, Please configure at least default one');
+            });
+        });
+    },
 
+    addTenants: function () {
         return new Promise((resolve, reject) => {
             NODICS.getModels('profile', 'default').TenantModel.get({}).then((tenantData) => {
                 if (!tenantData || tenantData.length <= 0) {
@@ -155,18 +184,19 @@ module.exports = {
                     resolve(true);
                 }
             }).catch((error) => {
+                SYSTEM.LOG.error(error);
                 reject('Configure at least default tenant');
             });
         });
     },
 
-    createTenantDatabaseConnection: function(moduleName) {
+    createTenantDatabaseConnection: function () {
         return new Promise((resolve, reject) => {
             let allTenant = [];
             let tenants = NODICS.getTenants() || [];
-            tenants.forEach(function(tntName) {
+            tenants.forEach(function (tntName) {
                 if (tntName !== 'default') {
-                    allTenant.push(SYSTEM.createDatabase(moduleName, tntName));
+                    allTenant.push(SYSTEM.createTenantDatabase(tntName));
                 }
             });
             if (allTenant.length > 0) {
@@ -181,57 +211,53 @@ module.exports = {
         });
     },
 
-    createModuleDatabaseConnection: function() {
+    loadTenantDatabase: function () {
         return new Promise((resolve, reject) => {
-            let modules = NODICS.getModules();
-            let allModules = [];
-            SYSTEM.createTenantDatabaseConnection('default').then(success => {
-                _.each(modules, (value, moduleName) => {
-                    if (CONFIG.get('database')[moduleName]) {
-                        allModules.push(SYSTEM.createTenantDatabaseConnection(moduleName));
-                    }
-                });
-                if (allModules.length > 0) {
-                    Promise.all(allModules).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    resolve(true);
+            SYSTEM.createTenantDatabaseConnection().then(success => {
+                let tenants = NODICS.getTenants().slice(0);
+                var index = tenants.indexOf('default');
+                if (index > -1) {
+                    tenants.splice(index, 1);
                 }
+                let options = {
+                    tenants: tenants,
+                    interceptors: SYSTEM.loadFiles('/src/schemas/interceptors.js'),
+                    daos: SYSTEM.loadFiles('/src/schemas/model.js'),
+                };
+                SYSTEM.createSchemas(options);
+                resolve(true);
             }).catch(error => {
                 reject(error);
             });
         });
     },
 
-    deployValidators: function() {
+    deployValidators: function () {
         SYSTEM.LOG.debug('Starting validators loading process');
         NODICS.setValidators(SYSTEM.loadFiles('/src/schemas/validators.js'));
     },
 
 
-    interceptorMiddleware: function(interceptors, moduleSchema, modelName) {
+    interceptorMiddleware: function (interceptors, moduleSchema, modelName) {
         if (!UTILS.isBlank(interceptors)) {
             let interceptorFunctions = SYSTEM.getAllMethods(interceptors);
-            interceptorFunctions.forEach(function(operationName) {
+            interceptorFunctions.forEach(function (operationName) {
                 interceptors[operationName](moduleSchema, modelName);
             });
         }
     },
 
-    modelDaoMiddleware: function(dao, moduleSchema, schemaDef) {
+    modelDaoMiddleware: function (dao, moduleSchema, schemaDef) {
         if (!UTILS.isBlank(dao)) {
             let daoFunctions = SYSTEM.getAllMethods(dao);
-            daoFunctions.forEach(function(operationName) {
+            daoFunctions.forEach(function (operationName) {
                 dao[operationName](moduleSchema, schemaDef);
                 dao[operationName](moduleSchema, schemaDef);
             });
         }
     },
 
-    registerSchemaMiddleWare: function(options) {
+    registerSchemaMiddleWare: function (options) {
         SYSTEM.interceptorMiddleware(options.interceptors.default, options.modelSchema, options.modelName);
         if (options.interceptors[options.moduleName]) {
             SYSTEM.interceptorMiddleware(options.interceptors[options.moduleName].default, options.modelSchema, options.modelName);
@@ -245,12 +271,12 @@ module.exports = {
         }
     },
 
-    createModelObject: function(options) {
+    createModelObject: function (options) {
         let modelName = SYSTEM.createModelName(options.modelName);
         options.modelObject[modelName] = options.database.getConnection().model(modelName, options.modelSchema);
     },
 
-    createSchema: function(options) {
+    createSchema: function (options) {
         let schemas = options.schemaObject;
         let models = options.modelObject;
         if (options.schemaDef.super === 'none') {
@@ -277,9 +303,9 @@ module.exports = {
         }
     },
 
-    resolveSchemaDependancy: function(options) {
+    resolveSchemaDependancy: function (options) {
         let flag = false;
-        options.tenants.forEach(function(tntName) {
+        options.tenants.forEach(function (tntName) {
             flag = false;
             options.schemaDef.tenant = tntName;
             if (SYSTEM.validateSchemaDefinition(options.modelName, options.schemaDef)) {
@@ -321,9 +347,9 @@ module.exports = {
         return flag;
     },
 
-    traverseSchemas: function(options) {
+    traverseSchemas: function (options) {
         let cloneSchema = _.merge({}, options.rawSchema);
-        _.each(options.rawSchema, function(valueIn, keyIn) {
+        _.each(options.rawSchema, function (valueIn, keyIn) {
             options.modelName = keyIn;
             options.schemaDef = valueIn;
             options.schemaDef.moduleName = options.moduleName;
@@ -335,7 +361,7 @@ module.exports = {
         return cloneSchema;
     },
 
-    extractRawSchema: function(options) {
+    extractRawSchema: function (options) {
         options.rawSchema = _.merge({}, options.moduleObject.rawSchema);
         let loop = true;
         let counter = 0;
@@ -347,7 +373,7 @@ module.exports = {
         } while (loop && counter++ < 10);
     },
 
-    createSchemas: function(options) {
+    createSchemas: function (options) {
         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
             if (moduleObject.rawSchema) {
                 if (!moduleObject.schemas) {
@@ -363,7 +389,7 @@ module.exports = {
         });
     },
 
-    deploySchemas: function(tenants) {
+    deploySchemas: function (tenants) {
         SYSTEM.LOG.debug('Starting schemas loading process');
         let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js', null, true);
         let options = {
@@ -373,7 +399,7 @@ module.exports = {
             tenants: tenants || ['default']
         };
         let modules = NODICS.getModules();
-        Object.keys(mergedSchema).forEach(function(key) {
+        Object.keys(mergedSchema).forEach(function (key) {
             if (key !== 'default') {
                 let moduleObject = modules[key];
                 if (!moduleObject) {
@@ -387,17 +413,17 @@ module.exports = {
     },
 
 
-    createModelName: function(modelName) {
+    createModelName: function (modelName) {
         var name = modelName.toUpperCaseFirstChar() + 'Model';
         return name;
     },
 
-    getModelName: function(modelName) {
+    getModelName: function (modelName) {
         var name = modelName.toUpperCaseFirstChar().replace("Model", "");
         return name;
     },
 
-    validateSchemaDefinition: function(modelName, schemaDefinition) {
+    validateSchemaDefinition: function (modelName, schemaDefinition) {
         let flag = true;
         if (!schemaDefinition.super) {
             this.LOG.error('Invalid schema definition for : ' + modelName + ', please define super attribute');
@@ -408,7 +434,7 @@ module.exports = {
         }
     },
 
-    buildItemLevelCache: function(rawSchema) {
+    buildItemLevelCache: function (rawSchema) {
         let itemLevelCache = CONFIG.get('cache').itemLevelCache[rawSchema.modelName];
         if (itemLevelCache) {
             rawSchema.cache = itemLevelCache;

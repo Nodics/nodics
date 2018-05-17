@@ -12,10 +12,10 @@
 const conHandler = require('./bin/connectionHandler');
 
 module.exports = {
-    init: function() {
+    init: function () {
 
     },
-    loadDatabase: function() {
+    loadDatabase: function () {
         SYSTEM.LOG.info('Starting database configuration process');
         return new Promise((resolve, reject) => {
             conHandler.init().then(success => {
@@ -27,25 +27,4 @@ module.exports = {
             });
         });
     },
-
-    loadTenantDatabase: function() {
-        return new Promise((resolve, reject) => {
-            SYSTEM.createModuleDatabaseConnection().then(success => {
-                let tenants = NODICS.getTenants().slice(0);
-                var index = tenants.indexOf('default');
-                if (index > -1) {
-                    tenants.splice(index, 1);
-                }
-                let options = {
-                    tenants: tenants,
-                    interceptors: SYSTEM.loadFiles('/src/schemas/interceptors.js'),
-                    daos: SYSTEM.loadFiles('/src/schemas/model.js'),
-                };
-                SYSTEM.createSchemas(options);
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
 };

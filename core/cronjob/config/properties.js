@@ -10,6 +10,36 @@
  */
 
 module.exports = {
+    /*database: {
+            cronjob: {
+            databaseType: 'mongodb', //for Cassandra use 'cassandra'
+            mongodb: {
+                master: {
+                    URI: 'mongodb://localhost:27017/cronJobMaster',
+                    options: {
+                        db: {
+                            native_parser: true
+                        },
+                        server: {
+                            poolSize: 5
+                        }
+                    }
+                },
+                test: {
+                    URI: 'mongodb://localhost:27017/cronJobTest',
+                    options: {
+                        db: {
+                            native_parser: true
+                        },
+                        server: {
+                            poolSize: 5
+                        }
+                    }
+                }
+            }
+        }
+    },*/
+
     backgroundAuthModules: {
         cronjob: {
             enterpriseCode: 'default',
@@ -22,13 +52,25 @@ module.exports = {
         runOnStartup: false,
         waitTime: 100,
         activeJobsQuery: {
-            $and: [
-                { "triggers.isActive": true },
-                { "active.start": { $lt: new Date() } },
+            $and: [{
+                    "triggers.isActive": true
+                },
                 {
-                    $or: [
-                        { "active.end": { $gte: new Date() } },
-                        { "active.end": { $exists: false } }
+                    "active.start": {
+                        $lt: new Date()
+                    }
+                },
+                {
+                    $or: [{
+                            "active.end": {
+                                $gte: new Date()
+                            }
+                        },
+                        {
+                            "active.end": {
+                                $exists: false
+                            }
+                        }
                     ]
                 }
             ]

@@ -12,36 +12,34 @@
 const _ = require('lodash');
 
 module.exports = {
-    createDefaultDatabases: function() {
+    createDefaultDatabases: function () {
         const _self = this;
+        if (!SYSTEM.validateDatabaseConfiguration()) {
+            process.exit(CONFIG.get('errorExitCode'));
+        }
         return new Promise((resolve, reject) => {
-            if (!SYSTEM.validateDatabaseConfiguration()) {
-                process.exit(CONFIG.get('errorExitCode'));
-            }
-            SYSTEM.createDatabase('default', 'default').then(success => {
-                let modules = NODICS.getModules();
-                let allModules = [];
-                _.each(modules, (value, moduleName) => {
-                    if (CONFIG.get('database')[moduleName]) {
-                        allModules.push(SYSTEM.createDatabase(moduleName, 'default'));
-                    }
-                });
-                if (allModules.length > 0) {
-                    Promise.all(allModules).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
+            SYSTEM.createTenantDatabase('default').then(success => {
+                let db = NODICS.getDatabase('profile', 'default');
+                if (db.master) {
+                    let profileDBClient = db.master.getConnection();
+                    profileDBClient.db.collection('enterprisemodels', function (err, collection) {
+                        collection.count({}, function (error, count) {
+                            if (count <= 0) {
+                                NODICS.setInitRequired(true);
+                            }
+                            resolve(true);
+                        });
                     });
                 } else {
-                    resolve(true);
+                    reject('Something went wrong while identifying if initial data required');
                 }
             }).catch(error => {
-                reject(error);
+                reject('Something went wrong while creating database');
             });
         });
     },
 
-    init: function() {
+    init: function () {
         SYSTEM.LOG.info("Starting Database creating process");
         return this.createDefaultDatabases();
     }

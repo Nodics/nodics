@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
 
-    insertData: function(definition) {
+    insertData: function (definition) {
         let models = [];
         _.each(definition.models, (model, name) => {
             models.push(model);
@@ -25,7 +25,7 @@ module.exports = {
         return SERVICE[definition.modelName.toUpperCaseFirstChar() + 'Service'][definition.operation](input);
     },
 
-    importGroup: function(groupName, groupData, tmpGroup) {
+    importGroup: function (groupName, groupData, tmpGroup) {
         let _self = this;
         return new Promise((resolve, reject) => {
             _self.insertData(groupData).then(success => {
@@ -47,7 +47,7 @@ module.exports = {
         });
     },
 
-    importNextModule: function(moduleName, moduleData, tmpData) {
+    importNextModule: function (moduleName, moduleData, tmpData) {
         let _self = this;
         return new Promise((resolve, reject) => {
             let tmpGroup = _.merge({}, moduleData);
@@ -88,7 +88,7 @@ module.exports = {
         });
     },
 
-    importData: function(data) {
+    importData: function (data) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -106,7 +106,7 @@ module.exports = {
         });
     },
 
-    importInitData: function(input, callback) {
+    importInitData: function (input, callback) {
         let _self = this;
         let dataType = 'init';
         let data = SERVICE.InternalDataLoadService.loadModules(dataType);
@@ -121,7 +121,7 @@ module.exports = {
         }
     },
 
-    importCoreData: function(input, callback) {
+    importCoreData: function (input, callback) {
         let _self = this;
         let dataType = 'core';
         let data = SERVICE.InternalDataLoadService.loadModules(dataType);
@@ -136,7 +136,7 @@ module.exports = {
         }
     },
 
-    importSampleData: function(input, callback) {
+    importSampleData: function (input, callback) {
         let _self = this;
         let dataType = 'sample';
         let data = SERVICE.InternalDataLoadService.loadModules(dataType);

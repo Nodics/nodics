@@ -26,25 +26,28 @@ module.exports = {
                     properties: {
                         database: {
                             default: {
-                                master: {
-                                    URI: 'mongodb://localhost:27017/testOne',
-                                    options: {
-                                        db: {
-                                            native_parser: true
-                                        },
-                                        server: {
-                                            poolSize: 5
+                                databaseType: 'mongodb', //for Cassandra use 'cassandra'
+                                mongodb: {
+                                    master: {
+                                        URI: 'mongodb://localhost:27017/testOneMaster',
+                                        options: {
+                                            db: {
+                                                native_parser: true
+                                            },
+                                            server: {
+                                                poolSize: 5
+                                            }
                                         }
-                                    }
-                                },
-                                test: {
-                                    URI: 'mongodb://localhost:27017/testOne',
-                                    options: {
-                                        db: {
-                                            native_parser: true
-                                        },
-                                        server: {
-                                            poolSize: 5
+                                    },
+                                    test: {
+                                        URI: 'mongodb://localhost:27017/testOneTest',
+                                        options: {
+                                            db: {
+                                                native_parser: true
+                                            },
+                                            server: {
+                                                poolSize: 5
+                                            }
                                         }
                                     }
                                 }

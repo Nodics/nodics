@@ -11,6 +11,36 @@
 
 module.exports = {
 
+    /*database: {
+        profile: {
+            databaseType: 'mongodb', //for Cassandra use 'cassandra'
+            mongodb: {
+                master: {
+                    URI: 'mongodb://localhost:27017/profileMaster',
+                    options: {
+                        db: {
+                            native_parser: true
+                        },
+                        server: {
+                            poolSize: 5
+                        }
+                    }
+                },
+                test: {
+                    URI: 'mongodb://localhost:27017/profileTest',
+                    options: {
+                        db: {
+                            native_parser: true
+                        },
+                        server: {
+                            poolSize: 5
+                        }
+                    }
+                }
+            }
+        }
+    },*/
+
     attemptsToLockAccount: 5,
     encryptSaltLength: 10,
     authorizationModuleName: 'profile',

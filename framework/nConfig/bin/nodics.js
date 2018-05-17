@@ -10,7 +10,7 @@
  */
 const _ = require('lodash');
 
-module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
+module.exports = function (nodicsHome, customHome, app, env, serverName, argvs) {
     let _serverState = 'starting';
     let _activeChannel = 'master';
     let _activeEnv = env;
@@ -38,132 +38,132 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
         validators: {}
     };
 
-    this.addTenant = function(tntName) {
+    this.addTenant = function (tntName) {
         _tenants.push(tntName);
     };
-    this.getTenants = function() {
+    this.getTenants = function () {
         return _tenants;
     };
 
-    this.setPreScripts = function(preScripts) {
+    this.setPreScripts = function (preScripts) {
         _preScripts = preScripts;
     };
-    this.getPreScripts = function() {
+    this.getPreScripts = function () {
         return _preScripts;
     };
 
-    this.setPostScripts = function(postScripts) {
+    this.setPostScripts = function (postScripts) {
         _postScripts = postScripts;
     };
-    this.getPostScripts = function() {
+    this.getPostScripts = function () {
         return _postScripts;
     };
 
-    this.setIsModified = function(isModified) {
+    this.setIsModified = function (isModified) {
         _isModified = isModified;
     };
-    this.isModifed = function() {
+    this.isModifed = function () {
         return _isModified;
     };
 
-    this.setStartTime = function(time) {
+    this.setStartTime = function (time) {
         _startTime = time;
     };
-    this.getStartTime = function() {
+    this.getStartTime = function () {
         return _startTime;
     };
-    this.setEndTime = function(time) {
+    this.setEndTime = function (time) {
         _entTime = time;
     };
-    this.getEndTime = function() {
+    this.getEndTime = function () {
         return _entTime;
     };
 
-    this.getStartDuration = function() {
+    this.getStartDuration = function () {
         return (_entTime - _startTime);
     };
 
-    this.addLogger = function(entityName, logger) {
+    this.addLogger = function (entityName, logger) {
         _loggers[entityName] = logger;
     };
 
-    this.getLogger = function(entityName) {
+    this.getLogger = function (entityName) {
         return _loggers[entityName];
     };
 
-    this.getLoggers = function() {
+    this.getLoggers = function () {
         return _loggers;
     };
 
-    this.setInitRequired = function(flag) {
+    this.setInitRequired = function (flag) {
         _initRequired = flag;
     };
 
-    this.isInitRequired = function() {
+    this.isInitRequired = function () {
         return _initRequired;
     };
 
-    this.setNTestRunning = function(isRunning) {
+    this.setNTestRunning = function (isRunning) {
         _nTestRunning = isRunning;
     };
 
-    this.isNTestRunning = function() {
+    this.isNTestRunning = function () {
         return _nTestRunning;
     };
 
-    this.getArguments = function() {
+    this.getArguments = function () {
         return _argvs;
     };
 
-    this.getNodicsHome = function() {
+    this.getNodicsHome = function () {
         return _nodicsHome;
     };
 
-    this.getCustomHome = function() {
+    this.getCustomHome = function () {
         return _customHome;
     };
 
-    this.getServerName = function() {
+    this.getServerName = function () {
         return _serverName;
     };
 
-    this.getServerHome = function() {
+    this.getServerHome = function () {
         return _serverHome;
     };
 
-    this.setServerHome = function(serverHome) {
+    this.setServerHome = function (serverHome) {
         _serverHome = serverHome;
     };
 
-    this.getActiveEnvironment = function() {
+    this.getActiveEnvironment = function () {
         return _activeEnv;
     };
 
-    this.getActiveApplication = function() {
+    this.getActiveApplication = function () {
         return _activeApp;
     };
 
-    this.setActiveModules = function(activeModules) {
+    this.setActiveModules = function (activeModules) {
         _activeModules = activeModules;
     };
-    this.getActiveModules = function() {
+    this.getActiveModules = function () {
         return _activeModules;
     };
-    this.isModuleActive = function(moduleName) {
+    this.isModuleActive = function (moduleName) {
         if (_activeModules.indexOf(moduleName) > -1) {
             return true;
         }
         return false;
     };
 
-    this.setServerState = function(serverState) {
+    this.setServerState = function (serverState) {
         _serverState = serverState;
     };
-    this.getServerState = function() {
+    this.getServerState = function () {
         return _serverState;
     };
 
-    this.setActiveChannel = function(channel) {
+    this.setActiveChannel = function (channel) {
         if (channel === 'master' || channel === 'test') {
             _activeChannel = channel;
         } else {
@@ -171,40 +171,40 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
             process.exit(1);
         }
     };
-    this.getActiveChannel = function() {
+    this.getActiveChannel = function () {
         return _activeChannel;
     };
 
-    this.setModules = function(modules) {
+    this.setModules = function (modules) {
         _nodics.modules = modules;
     };
-    this.getModules = function() {
+    this.getModules = function () {
         return _nodics.modules;
     };
 
-    this.addModule = function(moduleObject) {
+    this.addModule = function (moduleObject) {
         _nodics.modules[moduleObject.metaData.name] = moduleObject;
     };
-    this.getModule = function(moduleName) {
+    this.getModule = function (moduleName) {
         return _nodics.modules[moduleName];
     };
 
-    this.setDatabases = function(databases) {
+    this.setDatabases = function (databases) {
         _nodics.dbs = databases;
     };
 
-    this.getDatabases = function() {
+    this.getDatabases = function () {
         return _nodics.dbs;
     };
 
-    this.addDatabase = function(moduleName, database) {
+    this.addDatabase = function (moduleName, database) {
         if (!moduleName) {
             moduleName = 'default';
         }
         _nodics.dbs[moduleName] = database;
     };
 
-    this.addTenantDatabase = function(moduleName, tenant, database) {
+    this.addTenantDatabase = function (moduleName, tenant, database) {
         if (!moduleName) {
             moduleName = 'default';
         }
@@ -214,14 +214,14 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
         _nodics.dbs[moduleName][tenant] = database;
     };
 
-    this.setValidators = function(validators) {
+    this.setValidators = function (validators) {
         _nodics.validators = validators;
     };
-    this.getValidators = function() {
+    this.getValidators = function () {
         return _nodics.validators;
     };
 
-    this.getModels = function(moduleName, tenant) {
+    this.getModels = function (moduleName, tenant) {
         if (tenant && !UTILS.isBlank(tenant)) {
             let modules = this.getModule(moduleName);
             if (this.getActiveChannel() === 'master') {
@@ -233,20 +233,21 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
         }
     };
 
-    this.getDatabase = function(moduleName, tenant) {
-        let database = {};
-        if (moduleName && _nodics.dbs[moduleName]) {
-            database = _nodics.dbs[moduleName];
+    this.getDatabase = function (moduleName, tenant) {
+        if (tenant && !UTILS.isBlank(tenant)) {
+            let database = {};
+            if (moduleName && _nodics.dbs[moduleName]) {
+                database = _nodics.dbs[moduleName];
+            } else {
+                database = _nodics.dbs.default;
+            }
+            return database[tenant];
         } else {
-            database = _nodics.dbs.default;
+            throw new Error('Invalid tenant id...');
         }
-        if (!tenant) {
-            tenant = this.getActiveTanent();
-        }
-        return database[tenant];
     };
 
-    this.getDatabaseConfiguration = function(moduleName, tenant) {
+    this.getDatabaseConfiguration = function (moduleName, tenant) {
         let properties = CONFIG.get('database', tenant);
         if (properties[moduleName]) {
             return properties[moduleName];
@@ -255,7 +256,7 @@ module.exports = function(nodicsHome, customHome, app, env, serverName, argvs) {
         }
     };
 
-    this.getDefaultAuthToken = function(moduleName) {
+    this.getDefaultAuthToken = function (moduleName) {
         let moduleObject = this.getModule(moduleName);
         if (moduleObject) {
             if (moduleObject.metaData.authToken) {
