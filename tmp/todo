@@ -76,7 +76,12 @@ Todos:
     ✔ Make context root at module server level, for communicating between modules @done(18-04-27 13:10)
     - Document complete server configuration for start and connect
     ✔ Test events and other communicating properly for nodeId and abstract @done(18-04-27 13:11)
-      
+    
+Todos:
+  Cassandra Support task:
+    - Configure conection setting separate for mongodb and cassandra
+    - Create schema file separate for both mongo and cassandra (mongodbSchema and cassandraSchema)
+
 
 Todos:
   Documentation Points:

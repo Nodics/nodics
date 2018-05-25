@@ -29,6 +29,7 @@
         "lodash": "^4.17.5",
         "mocha": "^4.1.0",
         "mocha-suit": "^0.5.3",
+        "mongodb": "^3.1.0-beta4",
         "mongoose": "^4.13.12",
         "mongoose-schema-extend": "0.2.0",
         "node-cache": "^4.1.1",
