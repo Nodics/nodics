@@ -82,6 +82,15 @@ Todos:
     - Configure conection setting separate for mongodb and cassandra
     - Create schema file separate for both mongo and cassandra (mongodbSchema and cassandraSchema)
 
+Todos:
+  Data Import Process:
+    Initial Data Import Process:
+    Code Data Import Process:
+    Sample Data Import Process:
+  
+  Data Export Process:
+    
+
 
 Todos:
   Documentation Points:
