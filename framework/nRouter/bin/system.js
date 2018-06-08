@@ -12,7 +12,7 @@
 module.exports = {
     serversConfigPool: '',
 
-    executeRouterConfig: function(app, scripts) {
+    executeRouterConfig: function (app, scripts) {
         if (scripts.initProperties && typeof scripts.initProperties === "function") {
             scripts.initProperties(app);
         }
@@ -39,18 +39,18 @@ module.exports = {
         }
     },
 
-    prepareModulesConfiguration: function() {
+    prepareModulesConfiguration: function () {
         let _self = this;
         SYSTEM.performAsync(() => {
             _self.serversConfigPool = new CLASSES.ModulesConfigurationContainer();
             _self.serversConfigPool.prepareModulesConfiguration();
         });
     },
-    getModulesPool: function() {
+    getModulesPool: function () {
         return this.serversConfigPool;
     },
 
-    getModuleServerConfig: function(moduleName) {
+    getModuleServerConfig: function (moduleName) {
         if (this.serversConfigPool.getModule(moduleName)) {
             let moduleConfig = this.serversConfigPool.getModule(moduleName);
             if (moduleConfig.getOptions() && moduleConfig.getOptions().connectToDefault) {
@@ -62,7 +62,7 @@ module.exports = {
         }
     },
 
-    getURL: function(nodeConfig, secured) {
+    getURL: function (nodeConfig, secured) {
         if (secured) {
             return 'https://' +
                 nodeConfig.getHttpHost() +
@@ -76,7 +76,7 @@ module.exports = {
         }
     },
 
-    prepareUrl: function(options) {
+    prepareUrl: function (options) {
         let url = '';
         try {
             let moduleConfig = this.getModuleServerConfig(options.moduleName);

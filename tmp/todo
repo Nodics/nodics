@@ -76,6 +76,11 @@ Todos:
     ✔ Make context root at module server level, for communicating between modules @done(18-04-27 13:10)
     - Document complete server configuration for start and connect
     ✔ Test events and other communicating properly for nodeId and abstract @done(18-04-27 13:11)
+
+Todos:
+  Multi-Language Support:
+    - Support schema to define multi language support
+    - Support Nodics to fetch langauge specific data on each query
     
 Todos:
   Cassandra Support task:

@@ -10,17 +10,5 @@
  */
 
 module.exports = {
-    activeModules: {
-        updateGroups: true,
-        groups: ['core', 'ems'], // Group 'framework' will be included automatically
-        modules: [
-            'sampleServer',
-            'storefront',
-            'kickoff',
-            'local'
-        ]
-    },
-    log: {
-        level: 'debug'
-    }
+
 };

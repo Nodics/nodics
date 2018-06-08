@@ -10,51 +10,36 @@
  */
 
 module.exports = {
-    webRootDirName: 'web',
-    routerInitFunction: [
-        'initProperties',
-        'initSession',
-        'initLogger',
-        'initCache',
-        'initBodyParser',
-        'initHeaders',
-        'initErrorRoutes',
-        'initExtras'
-    ],
     server: {
-        options: {
-            contextRoot: 'nodics',
-            runAsDefault: false
-        },
-        default: {
+        storefront: {
             options: {
                 contextRoot: 'nodics',
                 connectToDefault: false
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3000,
+                httpPort: 3011,
 
                 httpsHost: 'localhost',
-                httpsPort: 3001
+                httpsPort: 3012
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: '3000',
+                httpPort: 3011,
 
                 httpsHost: 'localhost',
-                httpsPort: '3001'
+                httpsPort: 3012
             },
             //Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',
-                    httpPort: '3000',
+                    httpPort: 3011,
 
                     httpsHost: 'localhost',
-                    httpsPort: '3001'
+                    httpsPort: 3012
                 }
             }
         }
-    }
+    },
 };

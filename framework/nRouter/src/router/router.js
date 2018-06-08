@@ -9,9 +9,16 @@
 
  */
 
+const express = require('express');
+var path = require('path');
+
 module.exports = {
     operations: {
-        get: function(app, routerDef) {
+        registerWeb: function (app, moduleObject) {
+            let webRootDirName = CONFIG.get('webRootDirName') || 'web';
+            app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, express.static(path.join(moduleObject.modulePath, '/' + webRootDirName)));
+        },
+        get: function (app, routerDef) {
             if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).get((req, res, next) => {
                     SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
@@ -30,7 +37,7 @@ module.exports = {
                 });
             }
         },
-        post: function(app, routerDef) {
+        post: function (app, routerDef) {
             if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).post((req, res, next) => {
                     SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
@@ -49,12 +56,12 @@ module.exports = {
                 });
             }
         },
-        delete: function(app, routerDef) {
+        delete: function (app, routerDef) {
             app.route(routerDef.url).delete((req, res) => {
                 SERVICE.RequestHandlerProcessService.startRequestHandlerProcess(req, res, routerDef);
             });
         },
-        put: function(app, routerDef) {
+        put: function (app, routerDef) {
             app.route(routerDef.url).put((req, res) => {
                 SERVICE.RequestHandlerProcessService.startRequestHandlerProcess(req, res, routerDef);
             });

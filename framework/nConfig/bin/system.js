@@ -13,12 +13,9 @@ const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
-
 const winston = require('winston');
 require('winston-daily-rotate-file');
 const Elasticsearch = require('winston-elasticsearch');
-
-const readline = require('readline');
 const UTILS = require('../src/utils/utils');
 const Nodics = require('./nodics');
 const Config = require('./config');
@@ -26,9 +23,12 @@ const props = require('../config/properties');
 
 module.exports = {
 
-    getActiveModules: function(options) {
+    getActiveModules: function (options) {
         try {
             let modules = [];
+            console.log(NODICS.getNodicsHome());
+            console.log(NODICS.getCustomHome(), ' : ', NODICS.getActiveApplication(), ' : ', NODICS.getActiveEnvironment(), ' : ', NODICS.getServerName());
+            //process.exit(1);
             let customPath = NODICS.getCustomHome();
             let appHome = customPath + '/' + NODICS.getActiveApplication();
             let envHome = appHome + '/' + NODICS.getActiveEnvironment();
@@ -52,7 +52,7 @@ module.exports = {
                 nodicsModulePath.push(envHome);
                 UTILS.collectModulesList(serverHome, nodicsModulePath);
                 let mergedFile = {};
-                nodicsModulePath.forEach(function(modulePath) {
+                nodicsModulePath.forEach(function (modulePath) {
                     if (fs.existsSync(modulePath + '/config/properties.js')) {
                         mergedFile = _.merge(mergedFile, require(modulePath + '/config/properties.js'));
                     }
@@ -80,15 +80,13 @@ module.exports = {
         }
     },
 
-    prepareOptions: function(options) {
+    prepareOptions: function (options) {
         if (!options.NODICS_HOME) {
             options.NODICS_HOME = process.env.NODICS_HOME || process.cwd();
         }
         if (!options.CUSTOM_HOME) {
             options.CUSTOM_HOME = process.env.CUSTOM_HOME || options.NODICS_HOME;
         }
-        let nodeHome = process.argv[0];
-        let nodicsHome = process.argv[1];
         let clean = process.argv[2];
         let appName = process.argv[3];
         let envName = process.argv[4];
@@ -166,23 +164,29 @@ module.exports = {
 
         global.TEST = {
             nTestPool: {
-                data: {}, //All the test cases, those needs to be executed in secific environment.
-                suites: {} //Best usecase could be testing all created pages     
+                data: {
+                    //All the test cases, those needs to be executed in secific environment.
+                },
+                suites: {
+                    //Best usecase could be testing all created pages     
+                }
             },
             uTestPool: {
-                data: {},
-                suites: {} // This pool for all test cases
+                data: {
+                    // This pool for all test cases
+                },
+                suites: {
+                    // This pool for all test cases
+                }
             }
         };
     },
 
-    addModuleInActiveList: function(moduleName) {
-        //console.log(NODICS.getActiveModules());
+    addModuleInActiveList: function (moduleName) {
         NODICS.getActiveModules().push(moduleName);
-        //console.log(NODICS.getActiveModules());
     },
 
-    getAllModules: function(appHome, envHome) {
+    getAllModules: function (appHome, envHome) {
         var nodicsModulePath = [],
             serverModulePath = [appHome, envHome];
         //Get list of OOTB Active modules
@@ -196,14 +200,14 @@ module.exports = {
         return nodicsModulePath.concat(serverModulePath);
     },
 
-    loadModuleIndex: function() {
+    loadModuleIndex: function () {
         let _self = this;
         let config = CONFIG.getProperties();
         let appHome = NODICS.getCustomHome() + '/' + NODICS.getActiveApplication();
         let envHome = appHome + '/' + NODICS.getActiveEnvironment();
         let moduleIndex = [];
         let nodicsModulePath = this.getAllModules(appHome, envHome);
-        nodicsModulePath.forEach(function(modulePath) {
+        nodicsModulePath.forEach(function (modulePath) {
             let indexData = _self.addModuleIndex(modulePath);
             if (indexData) {
                 moduleIndex.push(indexData);
@@ -213,7 +217,7 @@ module.exports = {
         _self.finalizeModuleIndex();
     },
 
-    finalizeModuleIndex: function() {
+    finalizeModuleIndex: function () {
         let config = CONFIG.getProperties();
         config.moduleIndex = UTILS.sortModulesByIndex(config.rawModuleIndex);
         let modules = {};
@@ -229,7 +233,7 @@ module.exports = {
         console.log(modulesStr);
     },
 
-    addModuleIndex: function(modulePath) {
+    addModuleIndex: function (modulePath) {
         let metaDataFile = modulePath + '/package.json';
         if (fs.existsSync(metaDataFile)) {
             let moduleFile = require(metaDataFile);
@@ -251,11 +255,11 @@ module.exports = {
         }
     },
 
-    loadModulesMetaData: function() {
+    loadModulesMetaData: function () {
         let _self = this;
         let config = CONFIG.getProperties();
         let moduleIndex = config.moduleIndex;
-        Object.keys(moduleIndex).forEach(function(index) {
+        Object.keys(moduleIndex).forEach(function (index) {
             let group = moduleIndex[index];
             group.forEach(module => {
                 _self.loadModuleMetaData(module.name);
@@ -266,7 +270,7 @@ module.exports = {
     /*
      * This function is used to load module meta data if that module is active
      */
-    loadModuleMetaData: function(moduleName) {
+    loadModuleMetaData: function (moduleName) {
         let config = CONFIG.getProperties();
         let module = config.moduleList[moduleName];
         if (module) {
@@ -287,12 +291,12 @@ module.exports = {
      * will load properties from $MODULE/common/properties.js
      */
 
-    loadConfigurations: function(fileName) {
+    loadConfigurations: function (fileName) {
         let _self = this;
         fileName = fileName || '/config/properties.js';
         let config = CONFIG.getProperties();
         let moduleIndex = config.moduleIndex;
-        Object.keys(moduleIndex).forEach(function(index) {
+        Object.keys(moduleIndex).forEach(function (index) {
             let group = moduleIndex[index];
             group.forEach(module => {
                 _self.loadModuleConfiguration(module.name, fileName);
@@ -303,7 +307,7 @@ module.exports = {
     /*
      * This function used to load configuration file for given moduleName
      */
-    loadModuleConfiguration: function(moduleName, fileName) {
+    loadModuleConfiguration: function (moduleName, fileName) {
         let config = CONFIG.getProperties();
         let module = config.moduleList[moduleName];
         if (module) {
@@ -314,7 +318,7 @@ module.exports = {
     /*
      * This function used to load configuration file
      */
-    loadConfiguration: function(filePath) {
+    loadConfiguration: function (filePath) {
         let config = CONFIG.getProperties();
         if (fs.existsSync(filePath)) {
             this.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
@@ -327,11 +331,11 @@ module.exports = {
      * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
      * will load properties from $APP_MODULE/config/env-{NODICS_ENV}/properties.js
      */
-    loadExternalProperties: function(externalFiles, tntName) {
+    loadExternalProperties: function (externalFiles, tntName) {
         let _self = this;
         let files = externalFiles || CONFIG.get('externalPropertyFile');
         if (externalFiles && externalFiles.length > 0) {
-            externalFiles.forEach(function(filePath) {
+            externalFiles.forEach(function (filePath) {
                 if (fs.existsSync(filePath)) {
                     _self.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
                     let props = CONFIG.getProperties();
@@ -346,13 +350,13 @@ module.exports = {
         }
     },
 
-    getAllMethods: function(envScripts) {
-        return Object.getOwnPropertyNames(envScripts).filter(function(prop) {
+    getAllMethods: function (envScripts) {
+        return Object.getOwnPropertyNames(envScripts).filter(function (prop) {
             return typeof envScripts[prop] == 'function';
         });
     },
 
-    changeLogLevel: function(input) {
+    changeLogLevel: function (input) {
         let logger = NODICS.getLogger(input.entityName);
         if (logger) {
             logger.level = input.logLevel;
@@ -360,7 +364,7 @@ module.exports = {
         }
         return false;
     },
-    createLogger: function(entityName, logConfig) {
+    createLogger: function (entityName, logConfig) {
         logConfig = logConfig || CONFIG.get('log');
         let entityLevel = logConfig['logLevel' + entityName];
         let config = this.getLoggerConfiguration(entityName, entityLevel, logConfig);
@@ -369,7 +373,7 @@ module.exports = {
         return logger;
     },
 
-    getLoggerConfiguration: function(entityName, level, logConfig) {
+    getLoggerConfiguration: function (entityName, level, logConfig) {
         return {
             level: level || logConfig.level || 'info',
             //format: //SYSTEM.getLogFormat(logConfig),
@@ -377,14 +381,14 @@ module.exports = {
         };
     },
 
-    getLogFormat: function(logConfig) {
+    getLogFormat: function (logConfig) {
         if (logConfig.format == 'json') {
             return winston.format.json();
         } else {
             return winston.format.simple();
         }
     },
-    getLogTransports: function(entityName, logConfig) {
+    getLogTransports: function (entityName, logConfig) {
         let transports = [];
         transports.push(this.createConsoleTransport(entityName, logConfig));
         if (logConfig.output.file) {
@@ -396,13 +400,13 @@ module.exports = {
         return transports;
     },
 
-    createConsoleTransport: function(entityName, logConfig) {
+    createConsoleTransport: function (entityName, logConfig) {
         let consoleConfig = _.merge({}, logConfig.consoleConfig);
         consoleConfig.label = entityName;
         return new winston.transports.Console(consoleConfig);
     },
 
-    createFileTransport: function(entityName, logConfig) {
+    createFileTransport: function (entityName, logConfig) {
         let transport = {};
         let fileConfig = _.merge({}, logConfig.fileConfig);
         fileConfig.label = entityName;
@@ -420,16 +424,16 @@ module.exports = {
         return transport;
     },
 
-    createElasticTransport: function(entityName, logConfig) {
+    createElasticTransport: function (entityName, logConfig) {
         let elasticConfig = _.merge({}, logConfig.elasticConfig);
         elasticConfig.label = entityName;
         return new Elasticsearch(elasticConfig);
     },
 
-    getGlobalVariables: function(fileName) {
+    getGlobalVariables: function (fileName) {
         let _self = this;
         let gVar = {};
-        Object.keys(CONFIG.get('moduleIndex')).forEach(function(key) {
+        Object.keys(CONFIG.get('moduleIndex')).forEach(function (key) {
             var value = CONFIG.get('moduleIndex')[key][0];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
@@ -449,36 +453,36 @@ module.exports = {
         return gVar;
     },
 
-    processFiles: function(filePath, filePostFix, callback) {
+    processFiles: function (filePath, filePostFix, callback) {
         let _self = this;
         if (fs.existsSync(filePath)) {
             let files = fs.readdirSync(filePath);
             if (files) {
-                files.map(function(file) {
+                files.map(function (file) {
                     return path.join(filePath, file);
-                }).filter(function(file) {
+                }).filter(function (file) {
                     if (fs.statSync(file).isDirectory()) {
                         _self.processFiles(file, filePostFix, callback);
                     } else {
                         return fs.statSync(file).isFile();
                     }
-                }).filter(function(file) {
+                }).filter(function (file) {
                     if (!filePostFix || filePostFix === '*') {
                         return true;
                     } else {
                         return file.endsWith(filePostFix);
                     }
-                }).forEach(function(file) {
+                }).forEach(function (file) {
                     _self.LOG.debug('Loading file from : ', file.replace(NODICS.getNodicsHome(), '.'));
                     callback(file);
                 });
             }
         }
     },
-    loadFiles: function(fileName, frameworkFile) {
+    loadFiles: function (fileName, frameworkFile) {
         let _self = this;
         let mergedFile = frameworkFile || {};
-        Object.keys(CONFIG.get('moduleIndex')).forEach(function(key) {
+        Object.keys(CONFIG.get('moduleIndex')).forEach(function (key) {
             var value = CONFIG.get('moduleIndex')[key][0];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
@@ -490,37 +494,37 @@ module.exports = {
         return mergedFile;
     },
 
-    loadPreScript: function() {
+    loadPreScript: function () {
         SYSTEM.LOG.info('Starting Pre Scripts loader process');
         NODICS.setPreScripts(this.loadFiles('/config/prescripts.js'));
     },
 
-    executePreScripts: function() {
+    executePreScripts: function () {
         SYSTEM.LOG.info("Starting pre-script execution process");
         var preScripts = NODICS.getPreScripts();
         var methods = SYSTEM.getAllMethods(preScripts);
-        methods.forEach(function(instance) {
+        methods.forEach(function (instance) {
             preScripts[instance]();
         });
         SYSTEM.LOG.info("Pre-Script executed successfully");
     },
 
-    loadPostScript: function() {
+    loadPostScript: function () {
         SYSTEM.LOG.info('Starting Post Scripts loader process');
         NODICS.setPostScripts(this.loadFiles('/config/postscripts.js'));
     },
 
-    executePostScripts: function() {
+    executePostScripts: function () {
         SYSTEM.LOG.info("Starting post-script execution process");
         var postScripts = NODICS.getPostScripts();
         var methods = SYSTEM.getAllMethods(postScripts);
-        methods.forEach(function(instance) {
+        methods.forEach(function (instance) {
             postScripts[instance]();
         });
         SYSTEM.LOG.info("Post-Script executed successfully");
     },
 
-    performAsync: function(callback) {
+    performAsync: function (callback) {
         callback();
     }
 

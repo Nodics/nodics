@@ -12,12 +12,12 @@
 const _ = require('lodash');
 
 module.exports = {
-    init: function() {
+    init: function () {
         let _self = this;
         let modules = NODICS.getModules();
         let routers = SYSTEM.loadFiles('/src/router/router.js');
         return new Promise((resolve, reject) => {
-            _.each(modules, function(moduleObject, moduleName) {
+            _.each(modules, function (moduleObject, moduleName) {
                 let app = {};
                 if (CONFIG.get('server').options.runAsDefault) {
                     app = modules.default.app;
@@ -37,14 +37,20 @@ module.exports = {
         });
     },
 
-    registerRouters: function(app, moduleObject, moduleName, routers) {
+    registerRouters: function (app, moduleObject, moduleName, routers) {
         if (app && moduleObject.metaData && moduleObject.metaData.publish) {
+            try {
+                routers.operations.registerWeb(app, moduleObject);
+            } catch (error) {
+                console.log(error);
+            }
+
             // Execute common routers for each required Schema
             _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
                 if (schemaObject.service && schemaObject.router) {
-                    _.each(routers.default, function(group, groupName) {
+                    _.each(routers.default, function (group, groupName) {
                         if (groupName !== 'options') {
-                            _.each(group, function(routerDef, routerName) {
+                            _.each(group, function (routerDef, routerName) {
                                 if (routerName !== 'options') {
                                     let functionName = routerDef.method.toLowerCase();
                                     let tmpRouterDef = _.merge({}, routerDef);
@@ -62,9 +68,9 @@ module.exports = {
             });
             // Register module common routers, means routers needs to be available in all modules
             if (!UTILS.isBlank(routers.common)) {
-                _.each(routers.common, function(group, groupName) {
+                _.each(routers.common, function (group, groupName) {
                     if (groupName !== 'options') {
-                        _.each(group, function(routerDef, routerName) {
+                        _.each(group, function (routerDef, routerName) {
                             if (routerName !== 'options') {
                                 let functionName = routerDef.method.toLowerCase();
                                 let tmpRouterDef = _.merge({}, routerDef);
@@ -79,9 +85,9 @@ module.exports = {
             }
             // Register all module specific routers here
             if (!UTILS.isBlank(routers[moduleName])) {
-                _.each(routers[moduleName], function(group, groupName) {
+                _.each(routers[moduleName], function (group, groupName) {
                     if (groupName !== 'options') {
-                        _.each(group, function(routerDef, routerName) {
+                        _.each(group, function (routerDef, routerName) {
                             if (routerName !== 'options') {
                                 let functionName = routerDef.method.toLowerCase();
                                 let tmpRouterDef = _.merge({}, routerDef);

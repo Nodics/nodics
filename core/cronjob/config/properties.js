@@ -53,26 +53,26 @@ module.exports = {
         waitTime: 100,
         activeJobsQuery: {
             $and: [{
-                    "triggers.isActive": true
-                },
-                {
-                    "active.start": {
-                        $lt: new Date()
+                "triggers.isActive": true
+            },
+            {
+                "active.start": {
+                    $lt: new Date()
+                }
+            },
+            {
+                $or: [{
+                    "active.end": {
+                        $gte: new Date()
                     }
                 },
                 {
-                    $or: [{
-                            "active.end": {
-                                $gte: new Date()
-                            }
-                        },
-                        {
-                            "active.end": {
-                                $exists: false
-                            }
-                        }
-                    ]
+                    "active.end": {
+                        $exists: false
+                    }
                 }
+                ]
+            }
             ]
         }
     },
