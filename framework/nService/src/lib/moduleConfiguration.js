@@ -11,49 +11,50 @@
 
 const _ = require('lodash');
 
-module.exports = function(moduleName) {
+module.exports = function (moduleName) {
 
     let _moduleName = moduleName;
     let _options = {};
     let _server = {};
     let _abstractServer = {};
     let _nodes = {};
+    let _isServerRunning = false;
     this.LOG = SYSTEM.createLogger('ExternalModule');
 
-    this.getModuleName = function() {
+    this.getModuleName = function () {
         return _moduleName;
     };
 
-    this.addOptions = function(options) {
+    this.addOptions = function (options) {
         _options = options;
     };
-    this.getOptions = function() {
+    this.getOptions = function () {
         return _options;
     };
 
-    this.addServer = function(serverConfig) {
+    this.addServer = function (serverConfig) {
         _server = new CLASSES.NodeConfiguration('server',
             serverConfig.httpHost,
             serverConfig.httpsHost,
             serverConfig.httpPort,
             serverConfig.httpsPort);
     };
-    this.getServer = function() {
+    this.getServer = function () {
         return _server;
     };
 
-    this.addAbstractServer = function(abstractConfig) {
+    this.addAbstractServer = function (abstractConfig) {
         _abstractServer = new CLASSES.NodeConfiguration('abstractServer',
             abstractConfig.httpHost,
             abstractConfig.httpsHost,
             abstractConfig.httpPort,
             abstractConfig.httpsPort);
     };
-    this.getAbstractServer = function() {
+    this.getAbstractServer = function () {
         return _abstractServer;
     };
 
-    this.addNode = function(nodeId, nodeConfig) {
+    this.addNode = function (nodeId, nodeConfig) {
         if (UTILS.isBlank(_nodes)) {
             _nodes[nodeId] = new CLASSES.NodeConfiguration(nodeId,
                 nodeConfig.httpHost,
@@ -76,14 +77,22 @@ module.exports = function(moduleName) {
                 nodeConfig.httpsPort);
         }
     };
-    this.getNodes = function() {
+    this.getNodes = function () {
         return _nodes;
     };
-    this.getNode = function(nodeId) {
+    this.getNode = function (nodeId) {
         if (_nodes[nodeId]) {
             return _nodes[nodeId];
         } else {
             throw new Error('Invalid node id : ', nodeId, ' , please validate');
         }
     };
+
+    this.setIsServerRunning = function (isServerRunning) {
+        _isServerRunning = isServerRunning;
+    }
+
+    this.isServerRunning = function () {
+        return _isServerRunning;
+    }
 };

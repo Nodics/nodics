@@ -91,7 +91,7 @@ module.exports = {
     },
 
     initTestRuner: function () {
-        test.initTest().then(success => {}).catch(error => {});
+        test.initTest().then(success => { }).catch(error => { });
     },
 
     startNodics: function (options) {

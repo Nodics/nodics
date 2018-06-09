@@ -12,12 +12,13 @@
 const initServers = require('./bin/initializeServers');
 const serverConfig = require('./bin/loadServerConfiguration');
 const registerRouter = require('./bin/registerRouter');
+const _ = require('lodash');
 
 module.exports = {
-    init: function() {
+    init: function () {
 
     },
-    loadRouter: function() {
+    loadRouter: function () {
         SYSTEM.LOG.info('Staring servers initialization process');
         return new Promise((resolve, reject) => {
             initServers.init();

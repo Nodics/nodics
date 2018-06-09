@@ -10,35 +10,6 @@
  */
 
 module.exports = {
-    /*database: {
-        nems: {
-            databaseType: 'mongodb', //for Cassandra use 'cassandra'
-            mongodb: {
-                master: {
-                    URI: 'mongodb://localhost:27017/nemsMaster',
-                    options: {
-                        db: {
-                            native_parser: true
-                        },
-                        server: {
-                            poolSize: 5
-                        }
-                    }
-                },
-                test: {
-                    URI: 'mongodb://localhost:27017/nemsTest',
-                    options: {
-                        db: {
-                            native_parser: true
-                        },
-                        server: {
-                            poolSize: 5
-                        }
-                    }
-                }
-            }
-        }
-    },*/
 
     backgroundAuthModules: {
         nems: {

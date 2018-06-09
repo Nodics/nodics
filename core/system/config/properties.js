@@ -11,38 +11,8 @@
 
 module.exports = {
 
-    /* database: {
-         system: {
-             databaseType: 'mongodb', //for Cassandra use 'cassandra'
-             mongodb: {
-                 master: {
-                     URI: 'mongodb://localhost:27017/systemMaster',
-                     options: {
-                         db: {
-                             native_parser: true
-                         },
-                         server: {
-                             poolSize: 5
-                         }
-                     }
-                 },
-                 test: {
-                     URI: 'mongodb://localhost:27017/systemTest',
-                     options: {
-                         db: {
-                             native_parser: true
-                         },
-                         server: {
-                             poolSize: 5
-                         }
-                     }
-                 }
-             }
-         }
-     },*/
-
     server: {
-        system: {
+        /*system: {
             options: {
                 contextRoot: 'nodics',
                 connectToDefault: false
@@ -71,6 +41,6 @@ module.exports = {
                     httpsPort: 3003
                 }
             }
-        }
+        }*/
     }
 };

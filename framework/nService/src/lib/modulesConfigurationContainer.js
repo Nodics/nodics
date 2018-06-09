@@ -11,16 +11,16 @@
 
 const _ = require('lodash');
 
-module.exports = function() {
+module.exports = function () {
 
     let _modules = {};
     this.LOG = SYSTEM.createLogger('ExternalModulesContainer');
 
-    this.getModules = function() {
+    this.getModules = function () {
         return _modules;
     };
 
-    this.prepareModulesConfiguration = function() {
+    this.prepareModulesConfiguration = function () {
         let _self = this;
         _.each(CONFIG.get('server'), (moduleConfig, moduleName) => {
             if (moduleName !== 'options') {
@@ -34,7 +34,7 @@ module.exports = function() {
         });
     };
 
-    this.addModule = function(moduleName, moduleConfig) {
+    this.addModule = function (moduleName, moduleConfig) {
         let _self = this;
         if (!moduleConfig.server) {
             throw new Error('1Invalid server configuration for module : ', moduleName);
@@ -59,7 +59,7 @@ module.exports = function() {
         _modules[moduleName] = moduleObj;
     };
 
-    this.getModule = function(moduleName) {
+    this.getModule = function (moduleName) {
         if (_modules[moduleName]) {
             return _modules[moduleName];
         } else {
@@ -67,7 +67,15 @@ module.exports = function() {
         }
     };
 
-    this.removeModule = function(moduleName) {
+    this.isAvailableModuleConfig = function (moduleName) {
+        if (_modules[moduleName]) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    this.removeModule = function (moduleName) {
         delete _modules[moduleName];
     };
 };

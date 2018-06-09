@@ -10,35 +10,6 @@
  */
 
 module.exports = {
-    /*database: {
-            cronjob: {
-            databaseType: 'mongodb', //for Cassandra use 'cassandra'
-            mongodb: {
-                master: {
-                    URI: 'mongodb://localhost:27017/cronJobMaster',
-                    options: {
-                        db: {
-                            native_parser: true
-                        },
-                        server: {
-                            poolSize: 5
-                        }
-                    }
-                },
-                test: {
-                    URI: 'mongodb://localhost:27017/cronJobTest',
-                    options: {
-                        db: {
-                            native_parser: true
-                        },
-                        server: {
-                            poolSize: 5
-                        }
-                    }
-                }
-            }
-        }
-    },*/
 
     backgroundAuthModules: {
         cronjob: {

@@ -12,18 +12,30 @@
 const _ = require('lodash');
 
 module.exports = {
-    init: function() {
+    init: function () {
         SYSTEM.LOG.info('Initializing servers');
         let modules = NODICS.getModules();
         if (CONFIG.get('server').options.runAsDefault) {
             SYSTEM.LOG.debug('Initializing single server for whole application. As CONFIG.server.runAsSingleModule set to true.');
-            modules.default = {};
+            if (!modules.default) {
+                modules.default = {};
+            }
             modules.default.app = require('express')();
         } else {
-            _.each(modules, function(value, moduleName) {
+            _.each(modules, function (value, moduleName) {
                 if (value.metaData.publish) {
-                    SYSTEM.LOG.debug('Initializing server for module : ', moduleName);
-                    value.app = require('express')();
+                    if (SYSTEM.getModulesPool().isAvailableModuleConfig(moduleName)) {
+                        SYSTEM.LOG.debug('Initializing server for module : ', moduleName);
+                        value.app = require('express')();
+                    } else {
+                        SYSTEM.LOG.warn('Module : ', moduleName, ' initializing with default');
+                        if (!modules.default) {
+                            modules.default = {};
+                        }
+                        if (!modules.default.app) {
+                            modules.default.app = require('express')();
+                        }
+                    }
                 }
             });
         }

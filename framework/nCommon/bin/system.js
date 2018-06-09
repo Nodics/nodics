@@ -370,22 +370,24 @@ module.exports = {
                         SYSTEM.LOG.error('Server configurations has not be initialized. Please verify.');
                         process.exit(CONFIG.get('errorExitCode'));
                     }
-                    const httpPort = SYSTEM.getModuleServerConfig('default').getServer().getHttpPort();
+                    let moduleConfig = SYSTEM.getModuleServerConfig('default');
+                    const httpPort = moduleConfig.getServer().getHttpPort();
                     SYSTEM.LOG.info('Starting Server for module : default on PORT : ', httpPort);
                     NODICS.getModules().default.app.listen(httpPort);
+                    moduleConfig.setIsServerRunning(true);
                     resolve(true);
                 } else {
-                    if (UTILS.isBlank(NODICS.getModules())) {
-                        SYSTEM.LOG.error('Please define valid active modules');
-                        process.exit(CONFIG.get('errorExitCode'));
-                    }
-                    _.each(NODICS.getModules(), function (value, moduleName) {
-                        try {
+                    try {
+                        _.each(NODICS.getModules(), function (value, moduleName) {
                             if (value.metaData && value.metaData.publish) {
-                                let moduleConfig = SYSTEM.getModuleServerConfig(moduleName);
-                                if (!value.app) {
-                                    SYSTEM.LOG.error('Server configurations has not be initialized for module : ', moduleName);
-                                    process.exit(CONFIG.get('errorExitCode'));
+                                let app = {};
+                                let moduleConfig;
+                                if (SYSTEM.getModulesPool().isAvailableModuleConfig(moduleName)) {
+                                    moduleConfig = SYSTEM.getModuleServerConfig(moduleName);
+                                    app = value.app;
+                                } else {
+                                    moduleConfig = SYSTEM.getModuleServerConfig('default');
+                                    app = NODICS.getModules().default.app;
                                 }
                                 const httpPort = moduleConfig.getServer().getHttpPort();
                                 if (!httpPort) {
@@ -393,13 +395,16 @@ module.exports = {
                                     process.exit(CONFIG.get('errorExitCode'));
                                 }
                                 SYSTEM.LOG.info('Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
-                                value.app.listen(httpPort);
+                                if (!moduleConfig.isServerRunning()) {
+                                    app.listen(httpPort);
+                                    moduleConfig.setIsServerRunning(true);
+                                }
                             }
-                            resolve(true);
-                        } catch (err) {
-                            reject(err);
-                        }
-                    });
+                        });
+                        resolve(true);
+                    } catch (err) {
+                        reject(err);
+                    }
                 }
             } catch (error) {
                 reject(error);

@@ -46,19 +46,20 @@ module.exports = {
             _self.serversConfigPool.prepareModulesConfiguration();
         });
     },
+
     getModulesPool: function () {
         return this.serversConfigPool;
     },
 
     getModuleServerConfig: function (moduleName) {
-        if (this.serversConfigPool.getModule(moduleName)) {
+        if (this.serversConfigPool.isAvailableModuleConfig(moduleName)) {
             let moduleConfig = this.serversConfigPool.getModule(moduleName);
             if (moduleConfig.getOptions() && moduleConfig.getOptions().connectToDefault) {
                 moduleConfig = this.serversConfigPool.getModule('default');
             }
             return moduleConfig;
         } else {
-            throw new Error('Invalid module name : ' + moduleName + ' Please re-validate');
+            return this.serversConfigPool.getModule('default');
         }
     },
 
