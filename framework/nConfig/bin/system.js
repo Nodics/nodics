@@ -66,13 +66,16 @@ module.exports = {
             }
             let moduleData = require(moduleGroupsFilePath);
             modules = moduleData.framework;
-            serverProperties.activeModules.groups.forEach((groupName) => {
-                if (!moduleData[groupName]) {
-                    console.error('Invalid module group : ', groupName);
-                    process.exit(1);
-                }
-                modules = modules.concat(moduleData[groupName]);
-            });
+            if (serverProperties.activeModules.groups) {
+                serverProperties.activeModules.groups.forEach((groupName) => {
+                    if (!moduleData[groupName]) {
+                        console.error('Invalid module group : ', groupName);
+                        process.exit(1);
+                    }
+                    modules = modules.concat(moduleData[groupName]);
+                });
+            }
+
             modules = modules.concat(serverProperties.activeModules.modules);
             return modules;
         } catch (error) {
@@ -187,17 +190,17 @@ module.exports = {
     },
 
     getAllModules: function (appHome, envHome) {
-        var nodicsModulePath = [],
-            serverModulePath = [appHome, envHome];
+        var nodicsModulePath = [];
+        //serverModulePath = [appHome, envHome];
         //Get list of OOTB Active modules
         UTILS.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
         if (NODICS.getCustomHome() !== NODICS.getNodicsHome()) {
             UTILS.collectModulesList(NODICS.getCustomHome(), nodicsModulePath);
         }
         //Adding list of Custom Active modules
-        UTILS.collectModulesList(NODICS.getServerHome(), serverModulePath);
+        //UTILS.collectModulesList(NODICS.getServerHome(), serverModulePath);
 
-        return nodicsModulePath.concat(serverModulePath);
+        return nodicsModulePath;//.concat(serverModulePath);
     },
 
     loadModuleIndex: function () {
@@ -206,7 +209,8 @@ module.exports = {
         let appHome = NODICS.getCustomHome() + '/' + NODICS.getActiveApplication();
         let envHome = appHome + '/' + NODICS.getActiveEnvironment();
         let moduleIndex = [];
-        let nodicsModulePath = this.getAllModules(appHome, envHome);
+        let nodicsModulePath = _self.getAllModules(appHome, envHome);
+        console.log(nodicsModulePath);
         nodicsModulePath.forEach(function (modulePath) {
             let indexData = _self.addModuleIndex(modulePath);
             if (indexData) {
@@ -215,6 +219,7 @@ module.exports = {
         });
         config.rawModuleIndex = moduleIndex;
         _self.finalizeModuleIndex();
+        //console.log(moduleIndex);
     },
 
     finalizeModuleIndex: function () {
@@ -258,7 +263,7 @@ module.exports = {
     loadModulesMetaData: function () {
         let _self = this;
         let config = CONFIG.getProperties();
-        let moduleIndex = config.moduleIndex;
+        let moduleIndex = CONFIG.get('moduleIndex');
         Object.keys(moduleIndex).forEach(function (index) {
             let group = moduleIndex[index];
             group.forEach(module => {

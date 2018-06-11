@@ -1,0 +1,20 @@
+{
+    "name": "storeServer",
+    "index": "1026",
+    "publish": false,
+    "description": "Nodics applicaion module. It will hold all configuration and storeServer point to start nodics",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "storeServer"
+    ],
+    "author": "authorName",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "repository URL"
+    },
+    "dependencies": {}
+}

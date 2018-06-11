@@ -12,11 +12,11 @@
 const sys = require('./bin/system');
 
 module.exports = {
-    init: function() {
+    init: function () {
 
     },
 
-    loadConfig: function(options) {
+    loadConfig: function (options) {
         let startTime = new Date();
         sys.prepareOptions(options);
         if (!NODICS) {
@@ -34,6 +34,7 @@ module.exports = {
         sys.LOG.info('Starting Configuration loader process ##');
         sys.loadModuleIndex();
         sys.LOG.info('Loading modules meta data');
+        //console.log(CONFIG.get('moduleIndex'));
         sys.loadModulesMetaData();
         sys.LOG.info('Loading modules common configurations');
         sys.loadConfigurations();

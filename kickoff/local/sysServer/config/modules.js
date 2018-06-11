@@ -1,0 +1,16 @@
+module.exports = { core: [ 'core', 'cronjob', 'nems', 'profile', 'system' ],
+  ems: [ 'emsClient' ],
+  framework: 
+   [ 'framework',
+     'nconfig',
+     'ncommon',
+     'ndatabase',
+     'ndao',
+     'nservice',
+     'nprocess',
+     'nevent',
+     'nfacade',
+     'ncontroller',
+     'nrouter',
+     'nData',
+     'ntest' ] };
