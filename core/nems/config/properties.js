@@ -22,7 +22,7 @@ module.exports = {
     eventFetchSize: 100,
     publishEventOnNode: '0',
     server: {
-        nems: {
+        /*nems: {
             options: {
                 contextRoot: 'nodics',
                 connectToDefault: false
@@ -51,7 +51,7 @@ module.exports = {
                     httpsPort: 3007
                 }
             }
-        }
+        }*/
     },
 
     cache: {
