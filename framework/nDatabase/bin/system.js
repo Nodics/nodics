@@ -165,28 +165,76 @@ module.exports = {
 
     addTenants: function () {
         return new Promise((resolve, reject) => {
-            NODICS.getModels('profile', 'default').TenantModel.get({}).then((tenantData) => {
-                if (!tenantData || tenantData.length <= 0) {
-                    reject('Configure at least default tenant');
-                } else {
-                    try {
-                        tenantData.forEach(element => {
-                            if (element.active) {
-                                NODICS.addTenant(element.name);
-                                let tntConfig = _.merge({}, CONFIG.getProperties());
-                                tntConfig = _.merge(tntConfig, element.properties);
-                                CONFIG.setProperties(tntConfig, element.name);
-                            }
-                        });
-                    } catch (error) {
+            if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+                NODICS.getModels(CONFIG.get('profileModuleName'), 'default').TenantModel.get({}).then((tenantData) => {
+                    SYSTEM.handleTenants(tenantData).then(success => {
+                        resolve(success);
+                    }).catch((error) => {
                         SYSTEM.LOG.error(error);
-                    }
+                        reject('Configure at least default tenant');
+                    });
+                }).catch((error) => {
+                    SYSTEM.LOG.error(error);
+                    reject('Configure at least default tenant');
+                });
+            } else {
+                SYSTEM.fetchTenants().then(tenantData => {
+                    SYSTEM.handleTenants(tenantData).then(success => {
+                        resolve(success);
+                    }).catch((error) => {
+                        resolve(true);
+                    });
+                }).catch(error => {
                     resolve(true);
-                }
-            }).catch((error) => {
-                SYSTEM.LOG.error(error);
-                reject('Configure at least default tenant');
+                });
+            }
+        });
+    },
+
+    fetchTenants: function () {
+        return new Promise((resolve, reject) => {
+            let requestUrl = SERVICE.ModuleService.buildRequest({
+                moduleName: 'profile',
+                methodName: 'GET',
+                apiName: 'tenant/get',
+                requestBody: {},
+                isJsonResponse: true,
             });
+            try {
+                SERVICE.ModuleService.fetch(requestUrl, (error, response) => {
+                    if (error) {
+                        SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
+                        resolve([]);
+                    } else {
+                        resolve(response.result);
+                    }
+                });
+            } catch (error) {
+                SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
+                resolve([]);
+            }
+        });
+    },
+
+    handleTenants: function (tenantData) {
+        return new Promise((resolve, reject) => {
+            if (!tenantData || tenantData.length <= 0) {
+                reject('Configure at least default tenant');
+            } else {
+                try {
+                    tenantData.forEach(element => {
+                        if (element.active) {
+                            NODICS.addTenant(element.name);
+                            let tntConfig = _.merge({}, CONFIG.getProperties());
+                            tntConfig = _.merge(tntConfig, element.properties);
+                            CONFIG.setProperties(tntConfig, element.name);
+                        }
+                    });
+                } catch (error) {
+                    SYSTEM.LOG.error(error);
+                }
+                resolve(true);
+            }
         });
     },
 

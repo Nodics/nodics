@@ -14,7 +14,7 @@ const _ = require('lodash');
 
 module.exports = {
 
-    buildRequest: function(options) {
+    buildRequest: function (options) {
         this.LOG.debug('Building request url for module ', options.moduleName);
         let header = {
             'content-type': options.contentType || CONFIG.get('defaultContentType')
@@ -32,16 +32,20 @@ module.exports = {
         };
     },
 
-    fetch: function(requestUrl, callback) {
+    fetch: function (requestUrl, callback) {
         this.LOG.debug('Hitting module communication URL : ', JSON.stringify(requestUrl));
         if (callback) {
-            requestPromise(requestUrl)
-                .then(response => {
-                    callback(null, response, requestUrl);
-                })
-                .catch(error => {
-                    callback(error, null, requestUrl);
-                });
+            try {
+                requestPromise(requestUrl)
+                    .then(response => {
+                        callback(null, response, requestUrl);
+                    })
+                    .catch(error => {
+                        callback(error, null, requestUrl);
+                    });
+            } catch (error) {
+                callback(error, null, requestUrl);
+            }
         } else {
             return requestPromise(requestUrl);
         }

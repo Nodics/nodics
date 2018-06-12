@@ -11,10 +11,10 @@
 const NodeCache = require("node-cache");
 
 module.exports = {
-    invalidateAuthToken: function(event, callback) {
+    invalidateAuthToken: function (event, callback) {
         let moduleObject = NODICS.getModule(event.target);
         if (moduleObject.authCache && moduleObject.authCache.get(event.params[0].key)) {
-            moduleObject.authCache.del(event.params[0].key, function(err, count) {
+            moduleObject.authCache.del(event.params[0].key, function (err, count) {
                 if (err) {
                     this.LOG.error('While invalidating cache key : ', err);
                     callback(err);
@@ -27,7 +27,7 @@ module.exports = {
         }
     },
 
-    addToken: function(moduleName, source, hash, value) {
+    addToken: function (moduleName, source, hash, value) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -38,8 +38,8 @@ module.exports = {
                 }
                 if (!moduleObject.authCache) {
                     moduleObject.authCache = new NodeCache(CONFIG.get('cache').authToken);
-                    if (moduleName === CONFIG.get('authorizationModuleName')) {
-                        moduleObject.authCache.on("expired", function(key, value) {
+                    if (moduleName === CONFIG.get('profileModuleName')) {
+                        moduleObject.authCache.on("expired", function (key, value) {
                             value = JSON.parse(value);
                             let event = {
                                 enterpriseCode: value.enterprise.enterpriseCode,
@@ -72,7 +72,7 @@ module.exports = {
         });
     },
 
-    findToken: function(request) {
+    findToken: function (request) {
         return new Promise((resolve, reject) => {
             try {
                 let moduleObject = NODICS.getModule(request.moduleName);
@@ -92,7 +92,7 @@ module.exports = {
         });
     },
 
-    prepareURL: function(input) {
+    prepareURL: function (input) {
         return SERVICE.ModuleService.buildRequest({
             moduleName: 'profile',
             methodName: 'POST',
@@ -105,13 +105,13 @@ module.exports = {
         });
     },
 
-    authorizeToken: function(request, callback) {
+    authorizeToken: function (request, callback) {
         let _self = this;
         let input = request.local || request;
         this.findToken(input).then(success => {
             callback(null, success);
         }).catch(error => {
-            if (input.moduleName !== CONFIG.get('authorizationModuleName')) {
+            if (input.moduleName !== CONFIG.get('profileModuleName')) {
                 this.LOG.debug('Authorizing request for token :', input.authToken);
                 SERVICE.ModuleService.fetch(this.prepareURL(input), (error, response) => {
                     if (error) {

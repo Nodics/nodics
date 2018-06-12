@@ -12,7 +12,6 @@
 module.exports = {
     attemptsToLockAccount: 5,
     encryptSaltLength: 10,
-    authorizationModuleName: 'profile',
     server: {
         profile: {
             options: {

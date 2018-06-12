@@ -19,20 +19,31 @@ module.exports = {
         }
         return new Promise((resolve, reject) => {
             SYSTEM.createTenantDatabase('default').then(success => {
-                let db = NODICS.getDatabase('profile', 'default');
-                if (db.master) {
-                    let profileDBClient = db.master.getConnection();
-                    profileDBClient.db.collection('enterprisemodels', function (err, collection) {
-                        collection.count({}, function (error, count) {
-                            if (count <= 0) {
-                                NODICS.setInitRequired(true);
-                            }
+                try {
+                    if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+                        let db = NODICS.getDatabase(CONFIG.get('profileModuleName'), 'default');
+                        if (db && db.master) {
+                            SYSTEM.LOG.info('Checking if initialization required');
+                            let profileDBClient = db.master.getConnection();
+                            profileDBClient.db.collection('enterprisemodels', function (err, collection) {
+                                collection.count({}, function (error, count) {
+                                    if (count <= 0) {
+                                        NODICS.setInitRequired(true);
+                                    }
+                                    resolve(true);
+                                });
+                            });
+                        } else {
                             resolve(true);
-                        });
-                    });
-                } else {
-                    reject('Something went wrong while identifying if initial data required');
+                        }
+                    } else {
+                        resolve(true);
+                    }
+                } catch (error) {
+                    //console.log(error);
+                    reject(error);
                 }
+
             }).catch(error => {
                 reject('Something went wrong while creating database');
             });

@@ -185,6 +185,7 @@ module.exports = function (nodicsHome, customHome, app, env, serverName, argvs) 
     this.addModule = function (moduleObject) {
         _nodics.modules[moduleObject.metaData.name] = moduleObject;
     };
+
     this.getModule = function (moduleName) {
         return _nodics.modules[moduleName];
     };
@@ -233,6 +234,14 @@ module.exports = function (nodicsHome, customHome, app, env, serverName, argvs) 
         }
     };
 
+    this.getModuleDatabase = function (moduleName, tenant) {
+        if (tenant && !UTILS.isBlank(tenant)) {
+            let database = _nodics.dbs[moduleName];
+            return database ? database[tenant] : database;
+        } else {
+            throw new Error('Invalid tenant id...');
+        }
+    }
     this.getDatabase = function (moduleName, tenant) {
         if (tenant && !UTILS.isBlank(tenant)) {
             let database = {};

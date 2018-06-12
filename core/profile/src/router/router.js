@@ -11,7 +11,7 @@
 
 module.exports = {
     profile: {
-        loadEnterprise: {
+        loadDefaults: {
             getEnterprise: {
                 secured: true,
                 cache: {
@@ -27,6 +27,22 @@ module.exports = {
                     message: 'enterpriseCode need to set within header',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/enterprise/get',
+                }
+            },
+            getTenants: {
+                secured: true,
+                cache: {
+                    enabled: true,
+                    ttl: 200
+                },
+                key: '/tenant/get',
+                method: 'GET',
+                handler: 'TenantController',
+                operation: 'getTenants',
+                help: {
+                    requestType: 'secured',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/profile/tenant/get',
                 }
             }
         },

@@ -10,5 +10,81 @@
  */
 
 module.exports = {
+    activeModules: {
+        updateGroups: true,
+        //groups: ['core', 'ems'], // Group 'framework' will be included automatically
+        modules: [
+            'profile',
+            'sysServer',
+            'kickoff',
+            'local'
+        ]
+    },
+    log: {
+        level: 'debug'
+    },
 
+    server: {
+        default: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3004,
+
+                httpsHost: 'localhost',
+                httpsPort: 3005
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3004,
+
+                httpsHost: 'localhost',
+                httpsPort: 3005
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3004,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3005
+                }
+            }
+        },
+
+        /*profile: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3022,
+
+                httpsHost: 'localhost',
+                httpsPort: 3023
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3022,
+
+                httpsHost: 'localhost',
+                httpsPort: 3023
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                httpPort: 3022,
+
+                httpsHost: 'localhost',
+                httpsPort: 3023
+                }
+            }
+        }*/
+    }
 };

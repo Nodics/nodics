@@ -58,6 +58,8 @@ module.exports = {
 
     defaultContentType: 'application/json',
 
+    profileModuleName: 'profile',
+
     cache: {
         default: {
             apiCache: {
