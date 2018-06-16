@@ -10,5 +10,81 @@
  */
 
 module.exports = {
+    activeModules: {
+        updateGroups: true,
+        //groups: ['core', 'ems'], // Group 'framework' will be included automatically
+        modules: [
+            'cronjob',
+            'cronServer',
+            'kickoff',
+            'local'
+        ]
+    },
+    log: {
+        level: 'debug'
+    },
 
+    server: {
+        default: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3008,
+
+                httpsHost: 'localhost',
+                httpsPort: 3009
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3008,
+
+                httpsHost: 'localhost',
+                httpsPort: 3009
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3008,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3009
+                }
+            }
+        },
+
+        /*cronjob: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3010,
+
+                httpsHost: 'localhost',
+                httpsPort: 3011
+            },
+            abstract: {
+               httpHost: 'localhost',
+                httpPort: 3010,
+
+                httpsHost: 'localhost',
+                httpsPort: 3011
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                   httpHost: 'localhost',
+                httpPort: 3010,
+
+                httpsHost: 'localhost',
+                httpsPort: 3011
+                }
+            }
+        }*/
+    }
 };

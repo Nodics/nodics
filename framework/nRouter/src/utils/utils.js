@@ -8,7 +8,21 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const fs = require('fs');
 
 module.exports = {
 
+    removeDir: function (path) {
+        if (fs.existsSync(path)) {
+            fs.readdirSync(path).forEach(function (file, index) {
+                var curPath = path + "/" + file;
+                if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                    UTILS.removeDir(curPath);
+                } else {
+                    fs.unlinkSync(curPath);
+                }
+            });
+            fs.rmdirSync(path);
+        }
+    }
 };

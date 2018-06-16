@@ -26,13 +26,11 @@ module.exports = {
     getActiveModules: function (options) {
         try {
             let modules = [];
-            console.log(NODICS.getNodicsHome());
-            console.log(NODICS.getCustomHome(), ' : ', NODICS.getActiveApplication(), ' : ', NODICS.getActiveEnvironment(), ' : ', NODICS.getServerName());
-            //process.exit(1);
             let customPath = NODICS.getCustomHome();
             let appHome = customPath + '/' + NODICS.getActiveApplication();
             let envHome = appHome + '/' + NODICS.getActiveEnvironment();
             let serverHome = envHome + '/' + NODICS.getServerName();
+
             NODICS.setServerHome(serverHome);
             let moduleGroupsFilePath = serverHome + '/config/modules.js';
             let serverProperties = {};
@@ -75,7 +73,6 @@ module.exports = {
                     modules = modules.concat(moduleData[groupName]);
                 });
             }
-
             modules = modules.concat(serverProperties.activeModules.modules);
             return modules;
         } catch (error) {
@@ -191,16 +188,11 @@ module.exports = {
 
     getAllModules: function (appHome, envHome) {
         var nodicsModulePath = [];
-        //serverModulePath = [appHome, envHome];
-        //Get list of OOTB Active modules
         UTILS.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
         if (NODICS.getCustomHome() !== NODICS.getNodicsHome()) {
             UTILS.collectModulesList(NODICS.getCustomHome(), nodicsModulePath);
         }
-        //Adding list of Custom Active modules
-        //UTILS.collectModulesList(NODICS.getServerHome(), serverModulePath);
-
-        return nodicsModulePath;//.concat(serverModulePath);
+        return nodicsModulePath;
     },
 
     loadModuleIndex: function () {
@@ -210,7 +202,6 @@ module.exports = {
         let envHome = appHome + '/' + NODICS.getActiveEnvironment();
         let moduleIndex = [];
         let nodicsModulePath = _self.getAllModules(appHome, envHome);
-        console.log(nodicsModulePath);
         nodicsModulePath.forEach(function (modulePath) {
             let indexData = _self.addModuleIndex(modulePath);
             if (indexData) {
@@ -219,7 +210,6 @@ module.exports = {
         });
         config.rawModuleIndex = moduleIndex;
         _self.finalizeModuleIndex();
-        //console.log(moduleIndex);
     },
 
     finalizeModuleIndex: function () {
@@ -478,12 +468,13 @@ module.exports = {
                         return file.endsWith(filePostFix);
                     }
                 }).forEach(function (file) {
-                    _self.LOG.debug('Loading file from : ', file.replace(NODICS.getNodicsHome(), '.'));
+                    _self.LOG.debug(' Loading file from : ', file.replace(NODICS.getNodicsHome(), '.'));
                     callback(file);
                 });
             }
         }
     },
+
     loadFiles: function (fileName, frameworkFile) {
         let _self = this;
         let mergedFile = frameworkFile || {};

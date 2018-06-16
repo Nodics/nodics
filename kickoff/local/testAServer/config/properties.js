@@ -10,23 +10,23 @@
  */
 
 module.exports = {
-    webRootDirName: 'web',
-    webDistDirName: 'dist',
-    routerInitFunction: [
-        'initProperties',
-        'initSession',
-        'initLogger',
-        'initCache',
-        'initBodyParser',
-        'initHeaders',
-        'initErrorRoutes',
-        'initExtras'
-    ],
+    activeModules: {
+        updateGroups: true,
+        //groups: ['core', 'ems'], // Group 'framework' will be included automatically
+        modules: [
+            'profile',
+            'emsClient',
+            'storefront',
+            'testAServer',
+            'kickoff',
+            'local'
+        ]
+    },
+    log: {
+        level: 'debug'
+    },
+
     server: {
-        options: {
-            contextRoot: 'nodics',
-            runAsDefault: false
-        },
         default: {
             options: {
                 contextRoot: 'nodics',
@@ -41,19 +41,19 @@ module.exports = {
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: '3000',
+                httpPort: 3000,
 
                 httpsHost: 'localhost',
-                httpsPort: '3001'
+                httpsPort: 3001
             },
             //Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',
-                    httpPort: '3000',
+                    httpPort: 3000,
 
                     httpsHost: 'localhost',
-                    httpsPort: '3001'
+                    httpsPort: 3001
                 }
             }
         }

@@ -10,5 +10,81 @@
  */
 
 module.exports = {
+    activeModules: {
+        updateGroups: true,
+        //groups: ['core', 'ems'], // Group 'framework' will be included automatically
+        modules: [
+            'emsClient',
+            'emsServer',
+            'kickoff',
+            'local'
+        ]
+    },
+    log: {
+        level: 'debug'
+    },
 
+    server: {
+        default: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3016,
+
+                httpsHost: 'localhost',
+                httpsPort: 3017
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3016,
+
+                httpsHost: 'localhost',
+                httpsPort: 3017
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3016,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3017
+                }
+            }
+        },
+
+        /*emsClient: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3018,
+
+                httpsHost: 'localhost',
+                httpsPort: 3019
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3018,
+
+                httpsHost: 'localhost',
+                httpsPort: 3019
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                httpPort: 3018,
+
+                httpsHost: 'localhost',
+                httpsPort: 3019
+                }
+            }
+        }*/
+    }
 };

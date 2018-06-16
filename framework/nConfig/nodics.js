@@ -34,7 +34,6 @@ module.exports = {
         sys.LOG.info('Starting Configuration loader process ##');
         sys.loadModuleIndex();
         sys.LOG.info('Loading modules meta data');
-        //console.log(CONFIG.get('moduleIndex'));
         sys.loadModulesMetaData();
         sys.LOG.info('Loading modules common configurations');
         sys.loadConfigurations();

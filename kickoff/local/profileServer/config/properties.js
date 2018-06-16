@@ -15,7 +15,7 @@ module.exports = {
         //groups: ['core', 'ems'], // Group 'framework' will be included automatically
         modules: [
             'profile',
-            'sysServer',
+            'profileServer',
             'kickoff',
             'local'
         ]

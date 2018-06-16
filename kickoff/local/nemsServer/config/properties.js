@@ -10,5 +10,81 @@
  */
 
 module.exports = {
+    activeModules: {
+        updateGroups: true,
+        //groups: ['core', 'ems'], // Group 'framework' will be included automatically
+        modules: [
+            'nems',
+            'nemsServer',
+            'kickoff',
+            'local'
+        ]
+    },
+    log: {
+        level: 'debug'
+    },
 
+    server: {
+        default: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3012,
+
+                httpsHost: 'localhost',
+                httpsPort: 3013
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3012,
+
+                httpsHost: 'localhost',
+                httpsPort: 3013
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3012,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3013
+                }
+            }
+        },
+
+        /*nems: {
+            options: {
+                contextRoot: 'nodics',
+                connectToDefault: false
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3014,
+
+                httpsHost: 'localhost',
+                httpsPort: 3015
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3014,
+
+                httpsHost: 'localhost',
+                httpsPort: 3015
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                httpPort: 3014,
+
+                httpsHost: 'localhost',
+                httpsPort: 3015
+                }
+            }
+        }*/
+    }
 };

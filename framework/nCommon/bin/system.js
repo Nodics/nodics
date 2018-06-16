@@ -10,11 +10,12 @@
  */
 
 const _ = require('lodash');
-const path = require('path');
 const fs = require('fs');
-const util = require('util');
 const Enum = require('./enum');
 
+
+var https = require('https');
+var http = require('http');
 
 module.exports = {
 
@@ -372,8 +373,11 @@ module.exports = {
                     }
                     let moduleConfig = SYSTEM.getModuleServerConfig('default');
                     const httpPort = moduleConfig.getServer().getHttpPort();
-                    SYSTEM.LOG.info('Starting Server for module : default on PORT : ', httpPort);
-                    NODICS.getModules().default.app.listen(httpPort);
+                    const httpsPort = moduleConfig.getServer().getHttpsPort();
+                    //SYSTEM.LOG.info('Starting HTTP Server for module : default on PORT : ', httpPort);
+                    SYSTEM.registerListenEvents('default', httpPort, true, http.createServer(NODICS.getModules().default.app)).listen(httpPort);
+                    //SYSTEM.LOG.info('Starting HTTPS Server for module : default on PORT : ', httpsPort);
+                    SYSTEM.registerListenEvents('default', httpPort, true, https.createServer(NODICS.getModules().default.app)).listen(httpsPort);
                     moduleConfig.setIsServerRunning(true);
                     resolve(true);
                 } else {
@@ -390,13 +394,14 @@ module.exports = {
                                     app = NODICS.getModules().default.app;
                                 }
                                 const httpPort = moduleConfig.getServer().getHttpPort();
+                                const httpsPort = moduleConfig.getServer().getHttpsPort();
                                 if (!httpPort) {
                                     SYSTEM.LOG.error('Please define listening PORT for module: ', moduleName);
                                     process.exit(CONFIG.get('errorExitCode'));
                                 }
-                                SYSTEM.LOG.info('Starting Server for module : ', moduleName, ' on PORT : ', httpPort);
                                 if (!moduleConfig.isServerRunning()) {
-                                    app.listen(httpPort);
+                                    SYSTEM.registerListenEvents(moduleName, httpPort, false, http.createServer(app)).listen(httpPort);
+                                    SYSTEM.registerListenEvents(moduleName, httpsPort, true, https.createServer(app)).listen(httpsPort);
                                     moduleConfig.setIsServerRunning(true);
                                 }
                             }
@@ -410,6 +415,16 @@ module.exports = {
                 reject(error);
             }
         });
+    },
+
+    registerListenEvents: function (moduleName, port, isSecure, server) {
+        server.on('error', function (error) {
+            isSecure ? SYSTEM.LOG.error('Failed to start HTTPS Server for module : ', moduleName, ' on PORT : ', port) : SYSTEM.LOG.error('Failed to start HTTP Server for module : ', moduleName, ' on PORT : ', port);
+        });
+        server.on('listening', function () {
+            isSecure ? SYSTEM.LOG.info('Starting HTTPS Server for module : ', moduleName, ' on PORT : ', port) : SYSTEM.LOG.info('Starting HTTP Server for module : ', moduleName, ' on PORT : ', port);
+        });
+        return server;
     },
 
     createFile: function (filePath, data) {

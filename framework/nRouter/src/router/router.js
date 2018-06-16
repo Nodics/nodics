@@ -15,7 +15,7 @@ var path = require('path');
 module.exports = {
     operations: {
         registerWeb: function (app, moduleObject) {
-            let webRootDirName = CONFIG.get('webRootDirName') || 'web';
+            let webRootDirName = CONFIG.get('webDistDirName') || 'dist';
             app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, express.static(path.join(moduleObject.modulePath, '/' + webRootDirName)));
         },
         get: function (app, routerDef) {
