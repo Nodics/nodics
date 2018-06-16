@@ -12,13 +12,21 @@
 const controller = require('./bin/controllerGenerator');
 
 module.exports = {
-    init: function() {
+    init: function () {
 
     },
-    loadController: function() {
+    genController: function () {
         let _self = this;
         SYSTEM.LOG.info('Starting Controller Generation process');
-        return controller.init().then(success => {}).catch(error => {
+        return controller.gen().then(success => { }).catch(error => {
+            _self.LOG.error(error);
+        });
+    },
+
+    loadController: function () {
+        let _self = this;
+        SYSTEM.LOG.info('Starting Controller Generation process');
+        return controller.init().then(success => { }).catch(error => {
             _self.LOG.error(error);
         });
     }

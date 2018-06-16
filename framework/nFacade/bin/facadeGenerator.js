@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require("path");
 
 module.exports = {
-    init: function() {
+    gen: function () {
         return new Promise((resolve, reject) => {
             let gVar = SYSTEM.getGlobalVariables('/src/facade/common.js');
             let serviceCommon = SYSTEM.loadFiles('/src/facade/common.js');
@@ -24,6 +24,29 @@ module.exports = {
             }
             SYSTEM.schemaWalkThrough({
                 commonDefinition: serviceCommon,
+                type: 'service',
+                currentDir: genDir,
+                postFix: 'Facade',
+                gVar: gVar
+            }).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    init: function () {
+        return new Promise((resolve, reject) => {
+            let gVar = SYSTEM.getGlobalVariables('/src/facade/common.js');
+            let serviceCommon = SYSTEM.loadFiles('/src/facade/common.js');
+            let genDir = path.join(__dirname, '../src/facade/gen');
+            if (!fs.existsSync(genDir)) {
+                fs.mkdirSync(genDir);
+            }
+            SYSTEM.schemaWalkThrough({
+                commonDefinition: serviceCommon,
+                type: 'service',
                 currentDir: genDir,
                 postFix: 'Facade',
                 gVar: gVar

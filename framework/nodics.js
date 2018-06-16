@@ -10,8 +10,6 @@
  */
 
 const _ = require('lodash');
-
-const util = require('util');
 const config = require('./nConfig');
 const common = require('./nCommon');
 const db = require('./nDatabase');
@@ -29,41 +27,46 @@ module.exports = {
         ////
     },
 
+    cleanAll: function (options) {
+        config.cleanAll(options);
+        common.cleanAll();
+    },
+
+    buildAll: function (options) {
+        config.buildAll(options);
+        SYSTEM.executePreScripts();
+        common.buildAll();
+        db.loadOnlySchema().then(success => {
+            let allPromise = [
+                dao.genDao(),
+                services.genService(),
+                facades.genFacade(),
+                controllers.genController()
+            ];
+            if (allPromise.length > 0) {
+                Promise.all(allPromise).then(success => {
+                    router.buildAll();
+                }).catch(error => {
+                    SYSTEM.LOG.error('While generating classes : ', error);
+                });
+            }
+        });
+    },
+
     initFrameworkExecute: function (options) {
         return new Promise((resolve, reject) => {
-            config.loadConfig(options);
+            config.start(options);
             SYSTEM.executePreScripts();
-            common.loadCommon();
+            common.start();
             db.loadDatabase().then(success => {
-                let allPromise = [
-                    dao.loadDao(),
-                    services.loadService(),
-                    process.loadProcess(),
-                    facades.loadFacade(),
-                    controllers.loadController()
-                ];
-                if (allPromise.length > 0) {
-                    Promise.all(allPromise).then(success => {
-                        SYSTEM.loadModules();
-                        SYSTEM.prepareModulesConfiguration();
-                        event.loadListeners();
-                        router.loadRouter().then(success => {
-                            SYSTEM.executePostScripts();
-                            if (NODICS.isInitRequired()) {
-                                SERVICE.DataImportService.importInitData().then(success => {
-                                    SYSTEM.addTenants().then(success => {
-                                        SYSTEM.loadTenantDatabase().then(success => {
-                                            resolve(true);
-                                        }).catch(error => {
-                                            reject(error);
-                                        });
-                                    }).catch(error => {
-                                        reject(error);
-                                    });
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            } else {
+                SYSTEM.loadModules();
+                process.loadProcess().then(success => {
+                    SYSTEM.prepareModulesConfiguration();
+                    event.loadListeners();
+                    router.loadRouter().then(success => {
+                        SYSTEM.executePostScripts();
+                        if (NODICS.isInitRequired()) {
+                            SERVICE.DataImportService.importInitData().then(success => {
                                 SYSTEM.addTenants().then(success => {
                                     SYSTEM.loadTenantDatabase().then(success => {
                                         resolve(true);
@@ -73,17 +76,26 @@ module.exports = {
                                 }).catch(error => {
                                     reject(error);
                                 });
-                            }
-                        }).catch(error => {
-                            reject(error);
-                        });
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
+                            SYSTEM.addTenants().then(success => {
+                                SYSTEM.loadTenantDatabase().then(success => {
+                                    resolve(true);
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }
                     }).catch(error => {
-                        SYSTEM.LOG.error('While generating default clesses : ', error);
                         reject(error);
                     });
-                } else {
-                    reject('Facing issues while loading services');
-                }
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });
@@ -94,7 +106,7 @@ module.exports = {
         test.initTest().then(success => { }).catch(error => { });
     },
 
-    startNodics: function (options) {
+    start: function (options) {
         this.initFrameworkExecute(options).then(success => {
             SYSTEM.startServers().then(success => {
                 SERVICE.BackgroundAuthTokenGenerateService.generateAuthToken(CONFIG.get('backgroundAuthModules')).then(success => {

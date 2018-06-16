@@ -26,8 +26,6 @@ module.exports = function (nodicsHome, customHome, app, env, serverName, argvs) 
     let _startTime = 0;
     let _entTime = 0;
     let _loggers = {};
-    let _isModified = false;
-    let LOG = {};
     let _preScripts = {};
     let _postScript = {};
     let _tenants = [];
@@ -57,13 +55,6 @@ module.exports = function (nodicsHome, customHome, app, env, serverName, argvs) 
     };
     this.getPostScripts = function () {
         return _postScripts;
-    };
-
-    this.setIsModified = function (isModified) {
-        _isModified = isModified;
-    };
-    this.isModifed = function () {
-        return _isModified;
     };
 
     this.setStartTime = function (time) {

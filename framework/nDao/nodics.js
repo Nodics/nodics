@@ -12,15 +12,21 @@
 const daoGenerator = require('./bin/daoGenerator');
 
 module.exports = {
-    init: function() {
+    init: function () {
 
     },
 
-    loadDao: function() {
-        let _self = this;
+    genDao: function () {
         SYSTEM.LOG.info('Starting Dao generation process.');
-        return daoGenerator.init().then(success => {}).catch(error => {
-            _self.LOG.error(error);
+        return daoGenerator.gen().then(success => { }).catch(error => {
+            SYSTEM.LOG.error(error);
+        });
+    },
+
+    loadDao: function () {
+        SYSTEM.LOG.info('Starting Dao generation process.');
+        return daoGenerator.init().then(success => { }).catch(error => {
+            SYSTEM.LOG.error(error);
         });
     }
 };

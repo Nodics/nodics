@@ -18,6 +18,18 @@ module.exports = {
     init: function () {
 
     },
+    cleanAll: function () {
+
+    },
+
+    buildAll: function () {
+        _.each(NODICS.getModules(), function (moduleObject, moduleName) {
+            if (moduleObject.metaData && moduleObject.metaData.publish) {
+                SYSTEM.buildWebResource(moduleObject);
+            }
+        });
+    },
+
     loadRouter: function () {
         SYSTEM.LOG.info('Staring servers initialization process');
         return new Promise((resolve, reject) => {

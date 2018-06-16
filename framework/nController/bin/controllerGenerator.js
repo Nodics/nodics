@@ -15,7 +15,7 @@ const path = require("path");
 
 module.exports = {
 
-    init: function() {
+    gen: function () {
         return new Promise((resolve, reject) => {
             let gVar = SYSTEM.getGlobalVariables('/src/controller/common.js');
             let serviceCommon = SYSTEM.loadFiles('/src/controller/common.js');
@@ -25,6 +25,30 @@ module.exports = {
             }
             SYSTEM.schemaWalkThrough({
                 commonDefinition: serviceCommon,
+                type: 'router',
+                currentDir: genDir,
+                postFix: 'Controller',
+                gVar: gVar
+            }).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+
+    init: function () {
+        return new Promise((resolve, reject) => {
+            let gVar = SYSTEM.getGlobalVariables('/src/controller/common.js');
+            let serviceCommon = SYSTEM.loadFiles('/src/controller/common.js');
+            let genDir = path.join(__dirname, '../src/controller/gen');
+            if (!fs.existsSync(genDir)) {
+                fs.mkdirSync(genDir);
+            }
+            SYSTEM.schemaWalkThrough({
+                commonDefinition: serviceCommon,
+                type: 'router',
                 currentDir: genDir,
                 postFix: 'Controller',
                 gVar: gVar

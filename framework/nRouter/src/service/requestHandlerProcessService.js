@@ -12,7 +12,7 @@ const _ = require('lodash');
 
 module.exports = {
 
-    startRequestHandlerProcess: function(request, response, routerDef) {
+    startRequestHandlerProcess: function (request, response, routerDef) {
         try {
             request.local = {
                 requestId: SYSTEM.generateUniqueCode(),
@@ -28,11 +28,12 @@ module.exports = {
             };
             SERVICE.ProcessService.startProcess('requestHandlerProcess', request, {});
         } catch (error) {
+            console.log(error);
             response.json(error);
         }
     },
 
-    helpRequest: function(request, response, process) {
+    helpRequest: function (request, response, process) {
         if (request.local.originalUrl.endsWith('?help')) {
             response.success = true;
             response.code = 'SUC001';
@@ -42,14 +43,13 @@ module.exports = {
             } else {
                 response.result = 'Not defined';
             }
-
             process.stop(request, response);
         } else {
             process.nextSuccess(request, response);
         }
     },
 
-    parseHeader: function(request, response, process) {
+    parseHeader: function (request, response, process) {
         this.LOG.debug('Parsing request header for : ', request.local.originalUrl);
         if (request.get('authToken')) {
             request.local.authToken = request.get('authToken');
@@ -65,13 +65,13 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    parseBody: function(request, response, process) {
+    parseBody: function (request, response, process) {
         this.LOG.debug('Parsing request body : ', request.local.originalUrl);
         _.merge(request.local, request.body || {});
         process.nextSuccess(request, response);
     },
 
-    handleSpecialRequest: function(request, response, process) {
+    handleSpecialRequest: function (request, response, process) {
         let _self = this;
         this.LOG.debug('Handling special request : ', request.local.originalUrl);
         if (request.local.special) {
@@ -101,14 +101,14 @@ module.exports = {
                                 request,
                                 response,
                                 request.local.router.cache).then(cuccess => {
-                                if (cache) {
-                                    response.cache = 'item hit';
-                                }
-                                process.stop(request, response);
-                            }).catch(error => {
-                                _self.LOG.error('While pushing data into Item cache : ', error);
-                                process.stop(request, response);
-                            });
+                                    if (cache) {
+                                        response.cache = 'item hit';
+                                    }
+                                    process.stop(request, response);
+                                }).catch(error => {
+                                    _self.LOG.error('While pushing data into Item cache : ', error);
+                                    process.stop(request, response);
+                                });
                         } else {
                             if (cache) {
                                 response.cache = 'item hit';
@@ -125,7 +125,7 @@ module.exports = {
         }
     },
 
-    redirectRequest: function(request, response, process) {
+    redirectRequest: function (request, response, process) {
         this.LOG.debug('Redirecting secured/non-secured request  : ', request.local.originalUrl);
         if (request.local.secured) {
             this.LOG.debug('Handling secured request');
@@ -136,7 +136,7 @@ module.exports = {
         }
     },
 
-    handleRequest: function(request, response, process) {
+    handleRequest: function (request, response, process) {
         let _self = this;
         _self.LOG.debug('processing your request : ', request.local.originalUrl);
         try {
@@ -172,16 +172,16 @@ module.exports = {
                             request,
                             response,
                             request.local.router.cache).then(cuccess => {
-                            if (cache) {
-                                request.local.cache = 'item hit';
-                            } else {
-                                request.local.cache = 'mis';
-                            }
-                            process.nextSuccess(request, response);
-                        }).catch(error => {
-                            _self.LOG.error('While pushing data into Item cache : ', error);
-                            process.nextSuccess(request, response);
-                        });
+                                if (cache) {
+                                    request.local.cache = 'item hit';
+                                } else {
+                                    request.local.cache = 'mis';
+                                }
+                                process.nextSuccess(request, response);
+                            }).catch(error => {
+                                _self.LOG.error('While pushing data into Item cache : ', error);
+                                process.nextSuccess(request, response);
+                            });
                     } else {
                         if (cache) {
                             response.cache = 'item hit';
@@ -206,17 +206,17 @@ module.exports = {
         }
     },
 
-    handleSucessEnd: function(request, response) {
+    handleSucessEnd: function (request, response) {
         this.LOG.debug('Request has been processed successfully : ', request.local.originalUrl);
         request.local.httpResponse.json(response);
     },
 
-    handleFailureEnd: function(request, response) {
+    handleFailureEnd: function (request, response) {
         this.LOG.debug('Request has been processed with some failures : ', request.local.originalUrl);
         request.local.httpResponse.json(response);
     },
 
-    handleErrorEnd: function(request, response) {
+    handleErrorEnd: function (request, response) {
         this.LOG.debug('Request has been processed and got errors : ', request.local.originalUrl);
         request.local.httpResponse.json(response);
     }

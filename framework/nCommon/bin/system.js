@@ -107,6 +107,28 @@ module.exports = {
         }
     },
 
+    cleanModules: function () {
+        let moduleIndex = CONFIG.get('moduleIndex');
+        Object.keys(moduleIndex).forEach(function (key) {
+            var value = moduleIndex[key][0];
+            SYSTEM.cleanModule(value.name);
+        });
+    },
+
+    cleanModule: function (moduleName) {
+        SYSTEM.LOG.debug('Cleaning module : ', moduleName);
+        let module = CONFIG.getProperties().moduleList[moduleName];
+        SYSTEM.cleanDao(module);
+        SYSTEM.cleanService(module);
+        SYSTEM.cleanFacade(module);
+        SYSTEM.cleanController(module);
+        SYSTEM.cleanDist(module);
+        let moduleFile = require(module.path + '/nodics.js');
+        if (moduleFile.clean) {
+            moduleFile.clean();
+        }
+    },
+
     loadDao: function (module) {
         SYSTEM.LOG.debug('Loading all module DAO');
         let path = module.path + '/src/dao';
@@ -119,6 +141,32 @@ module.exports = {
                 DAO[daoName].LOG = SYSTEM.createLogger(daoName);
             }
         });
+    },
+
+    cleanDao: function (module) {
+        SYSTEM.LOG.debug('Cleaning  all module DAO');
+        UTILS.removeDir(path.join(module.path + '/src/dao/gen'));
+    },
+
+    cleanService: function (module) {
+        SYSTEM.LOG.debug('Cleaning  all module Service');
+        UTILS.removeDir(path.join(module.path + '/src/service/gen'));
+    },
+
+    cleanFacade: function (module) {
+        SYSTEM.LOG.debug('Cleaning  all module Facade');
+        UTILS.removeDir(path.join(module.path + '/src/facade/gen'));
+    },
+
+    cleanController: function (module) {
+        SYSTEM.LOG.debug('Cleaning  all module controller');
+        UTILS.removeDir(path.join(module.path + '/src/controller/gen'));
+    },
+
+
+    cleanDist: function (module) {
+        SYSTEM.LOG.debug('Cleaning  all module Dist');
+        UTILS.removeDir(path.join(module.path + '/dist'));
     },
 
     loadServices: function (module) {
@@ -265,31 +313,26 @@ module.exports = {
             if (!fs.existsSync(options.currentDir)) {
                 fs.mkdirSync(options.currentDir);
             }
-            if (NODICS.isModifed()) {
-                SYSTEM.removeDirectory(options.currentDir, false);
-                let allPromise = [];
-                _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                    if (moduleObject.models) {
-                        _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
-                            if (schemaObject.model) {
-                                options.moduleName = moduleName;
-                                options.moduleObject = moduleObject;
-                                options.schemaName = schemaName;
-                                options.schemaObject = schemaObject;
-                                allPromise.push(SYSTEM.createObject(options));
-                            }
-                        });
-                    }
-                });
-                if (allPromise.length > 0) {
-                    Promise.all(allPromise).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
+            let allPromise = [];
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                if (moduleObject.rawSchema) {
+                    _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
+                        if (schemaObject.model) {
+                            options.moduleName = moduleName;
+                            options.moduleObject = moduleObject;
+                            options.schemaName = schemaName;
+                            options.schemaObject = schemaObject;
+                            allPromise.push(SYSTEM.createObject(options));
+                        }
                     });
-                } else {
-                    resolve(true);
                 }
+            });
+            if (allPromise.length > 0) {
+                Promise.all(allPromise).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
             } else {
                 resolve(true);
             }
@@ -298,7 +341,6 @@ module.exports = {
 
     createObject: function (options) {
         return new Promise((resolve, reject) => {
-            let _self = this;
             options.modelName = options.schemaName.toUpperCaseEachWord();
             if (options.schemaObject.model) {
                 let entityName = options.modelName + options.postFix;
@@ -330,11 +372,11 @@ module.exports = {
                             reject(error);
                         } else {
                             SYSTEM.LOG.debug('Creating class object for : ', fileName.replace(NODICS.getNodicsHome(), '.'));
-                            DAO[entityName] = require(fileName);
-                            DAO[entityName].LOG = SYSTEM.createLogger(entityName);
                             resolve(true);
                         }
                     });
+            } else {
+                resolve(true);
             }
         });
     },
@@ -374,9 +416,7 @@ module.exports = {
                     let moduleConfig = SYSTEM.getModuleServerConfig('default');
                     const httpPort = moduleConfig.getServer().getHttpPort();
                     const httpsPort = moduleConfig.getServer().getHttpsPort();
-                    //SYSTEM.LOG.info('Starting HTTP Server for module : default on PORT : ', httpPort);
                     SYSTEM.registerListenEvents('default', httpPort, true, http.createServer(NODICS.getModules().default.app)).listen(httpPort);
-                    //SYSTEM.LOG.info('Starting HTTPS Server for module : default on PORT : ', httpsPort);
                     SYSTEM.registerListenEvents('default', httpPort, true, https.createServer(NODICS.getModules().default.app)).listen(httpsPort);
                     moduleConfig.setIsServerRunning(true);
                     resolve(true);
@@ -437,25 +477,5 @@ module.exports = {
                 }
             });
         });
-    },
-
-    removeDirectory: function (dirPath, removeSelf) {
-        if (removeSelf === undefined)
-            removeSelf = true;
-        try {
-            var files = fs.readdirSync(dirPath);
-        } catch (e) {
-            return;
-        }
-        if (files.length > 0)
-            for (var i = 0; i < files.length; i++) {
-                var filePath = dirPath + '/' + files[i];
-                if (fs.statSync(filePath).isFile())
-                    fs.unlinkSync(filePath);
-                else
-                    rmDir(filePath);
-            }
-        if (removeSelf)
-            fs.rmdirSync(dirPath);
     }
 };

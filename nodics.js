@@ -12,13 +12,17 @@
 const FRAMEWORK = require('./framework');
 
 module.exports = {
-    start: (function() {
-        //{ CUSTOM_HOME: path.join(__dirname, '../custom') }
-        FRAMEWORK.startNodics({});
-    })(),
-    /*
-        startNodics: function(options) {
-            FRAMEWORK.startNodics(options);
-        },
-    */
+
+    cleanAll: function () {
+        //console.log(process.argv);
+        FRAMEWORK.cleanAll({});
+    },
+
+    buildAll: function () {
+        FRAMEWORK.buildAll({});
+    },
+
+    start: function () {
+        FRAMEWORK.start({});
+    }
 };

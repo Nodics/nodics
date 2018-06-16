@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
 
-    prepareURL: function(config) {
+    prepareURL: function (config) {
         return SERVICE.ModuleService.buildRequest({
             moduleName: 'profile',
             methodName: 'POST',
@@ -22,7 +22,7 @@ module.exports = {
         });
     },
 
-    generateAuthToken: function(modules) {
+    generateAuthToken: function (modules) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!UTILS.isBlank(modules)) {
@@ -40,7 +40,7 @@ module.exports = {
         });
     },
 
-    authTokenForModule: function(moduleName, config, modules) {
+    authTokenForModule: function (moduleName, config, modules) {
         let _self = this;
         return new Promise((resolve, reject) => {
             let moduleObject = NODICS.getModule(moduleName);

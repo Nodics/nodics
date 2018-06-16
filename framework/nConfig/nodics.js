@@ -16,7 +16,7 @@ module.exports = {
 
     },
 
-    loadConfig: function (options) {
+    common: function (options) {
         let startTime = new Date();
         sys.prepareOptions(options);
         if (!NODICS) {
@@ -43,6 +43,19 @@ module.exports = {
         sys.loadFiles('/bin/system.js', global.SYSTEM);
         SYSTEM.LOG = SYSTEM.createLogger('SYSTEM');
         NODICS.LOG = SYSTEM.createLogger('NODICS');
+    },
+
+    cleanAll: function (options) {
+        this.common(options);
+    },
+
+    buildAll: function (options) {
+        this.common(options);
+        SYSTEM.loadPreScript();
+    },
+
+    start: function (options) {
+        this.common(options);
         SYSTEM.loadPreScript();
         SYSTEM.loadPostScript();
     }

@@ -14,13 +14,14 @@ const fs = require('fs');
 const path = require("path");
 
 module.exports = {
-    init: function() {
+    gen: function () {
         return new Promise((resolve, reject) => {
             let gVar = SYSTEM.getGlobalVariables('/src/dao/common.js');
             let daoCommon = SYSTEM.loadFiles('/src/dao/common.js');
             let genDir = path.join(__dirname, '../src/dao/gen');
             SYSTEM.schemaWalkThrough({
                 commonDefinition: daoCommon,
+                type: 'model',
                 currentDir: genDir,
                 postFix: 'Dao',
                 gVar: gVar
@@ -30,5 +31,8 @@ module.exports = {
                 reject(error);
             });
         });
+    },
+    init: function () {
+        return this.gen(true);
     }
 };

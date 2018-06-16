@@ -14,12 +14,12 @@ const NodeCache = require("node-cache");
 
 module.exports = {
 
-    changeApiCacheConfiguration: function(request, callback) {
+    changeApiCacheConfiguration: function (request, callback) {
         let input = request.local || request;
         callback('not implemented yet, comming soon');
     },
 
-    changeItemCacheConfiguration: function(request, callback) {
+    changeItemCacheConfiguration: function (request, callback) {
         try {
             let input = request.local || request;
             let cacheConfig = CONFIG.get('cache').itemLevelCache;
@@ -31,7 +31,7 @@ module.exports = {
     },
 
 
-    initCache: function(moduleObject, moduleName) {
+    initCache: function (moduleObject, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
             let cache = CONFIG.get('cache');
@@ -51,7 +51,7 @@ module.exports = {
         });
     },
 
-    initApiCache: function(moduleObject, moduleName, cacheConfig) {
+    initApiCache: function (moduleObject, moduleName, cacheConfig) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (moduleObject.metaData && moduleObject.metaData.publish) {
@@ -93,7 +93,7 @@ module.exports = {
         });
     },
 
-    initItemCache: function(moduleObject, moduleName, cacheConfig) {
+    initItemCache: function (moduleObject, moduleName, cacheConfig) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (moduleObject.rawSchema) {
@@ -149,7 +149,7 @@ module.exports = {
         }
     },
 
-    flush: function(cache, prefix, moduleName, callback) {
+    flush: function (cache, prefix, moduleName, callback) {
         SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix).then(success => {
             this.LOG.debug('Cache for module : ', moduleName, ', flushed successfully');
             if (callback) {
@@ -164,18 +164,18 @@ module.exports = {
         });
     },
 
-    flushApiCacheKeys: function(request, callback) {
+    flushApiCacheKeys: function (request, callback) {
         callback('Not supported for API cache');
     },
 
-    flushItemCacheKeys: function(request, callback) {
+    flushItemCacheKeys: function (request, callback) {
         let moduleObject = NODICS.getModules()[request.moduleName];
         if (moduleObject.itemCache) {
             return this.flushKeys(moduleObject.itemCache, request.keys, request.moduleName, callback);
         }
     },
 
-    flushKeys: function(cache, keys, moduleName, callback) {
+    flushKeys: function (cache, keys, moduleName, callback) {
         let _self = this;
         SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].flushKeys(cache.client, keys).then(success => {
             _self.LOG.debug('Cache for module : ' + moduleName + ', flushed successfully');
@@ -191,7 +191,7 @@ module.exports = {
         });
     },
 
-    get: function(cache, hash) {
+    get: function (cache, hash) {
         this.LOG.debug('Getting value for key : ', hash);
         try {
             return SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].get(cache.client, hash);
@@ -202,7 +202,7 @@ module.exports = {
         }
     },
 
-    put: function(cache, hash, value, options) {
+    put: function (cache, hash, value, options) {
         this.LOG.debug('Putting value for key : ', hash);
         try {
             return SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].put(cache.client, hash, value, options);
@@ -213,7 +213,7 @@ module.exports = {
         }
     },
 
-    createApiKey: function(request) {
+    createApiKey: function (request) {
         let key = request.originalUrl;
         let method = request.method;
         if (method === 'POST' || method === 'post') {
@@ -230,7 +230,7 @@ module.exports = {
         return method + '-' + key;
     },
 
-    createItemKey: function(input) {
+    createItemKey: function (input) {
         return {
             pageSize: input.pageSize || CONFIG.get('defaultPageSize'),
             pageNumber: input.pageNumber || CONFIG.get('defaultPageNumber'),
@@ -240,22 +240,22 @@ module.exports = {
         };
     },
 
-    getApi: function(cache, request, response) {
+    getApi: function (cache, request, response) {
         let hash = SYSTEM.generateHash(this.createApiKey(request));
         return this.get(cache, hash);
     },
-    putApi: function(cache, request, response, options) {
+    putApi: function (cache, request, response, options) {
         let hash = SYSTEM.generateHash(this.createApiKey(request));
         return this.put(cache, hash, response, options);
     },
-    getItem: function(rawSchema, cache, query) {
+    getItem: function (rawSchema, cache, query) {
         //console.log(JSON.stringify(query));
         let hash = rawSchema.modelName + '_' +
             rawSchema.tenant + '_' +
             SYSTEM.generateHash(JSON.stringify(query));
         return this.get(cache, hash);
     },
-    putItem: function(rawSchema, cache, query, value) {
+    putItem: function (rawSchema, cache, query, value) {
         //console.log(JSON.stringify(query));
         let hash = rawSchema.modelName + '_' +
             rawSchema.tenant + '_' +

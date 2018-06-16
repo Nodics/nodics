@@ -87,66 +87,38 @@ module.exports = {
         if (!options.CUSTOM_HOME) {
             options.CUSTOM_HOME = process.env.CUSTOM_HOME || options.NODICS_HOME;
         }
-        let clean = process.argv[2];
-        let appName = process.argv[3];
-        let envName = process.argv[4];
-        let serverName = process.argv[5];
-
-        if (clean && clean !== 'clean') {
-            serverName = envName;
-            envName = appName;
-            appName = clean;
-        }
-        if (!options.NODICS_APP) {
-            if (appName) {
-                options.NODICS_APP = appName;
-            } else {
-                console.warn('Could not found App Name, So starting with default "kickoff"');
-                options.NODICS_APP = 'kickoff';
+        let appName = 'kickoff';
+        let envName = 'local';
+        let serverName = 'sampleServer';
+        console.log(process.argv);
+        process.argv.forEach(element => {
+            if (element.startsWith('--A')) {
+                appName = element.replace('--A', '');
+            } else if (element.startsWith('--APP')) {
+                appName = element.replace('--APP', '');
+            } else if (element.startsWith('--E')) {
+                envName = element.replace('--E', '');
+            } else if (element.startsWith('--ENV')) {
+                envName = element.replace('--ENV', '');
+            } else if (element.startsWith('--S')) {
+                serverName = element.replace('--S', '');
+            } else if (element.startsWith('--SERVER')) {
+                serverName = element.replace('--SERVER', '');
             }
+        });
+        if (!options.NODICS_APP) {
+            options.NODICS_APP = appName;
         }
         if (!options.NODICS_ENV) {
-            if (envName) {
-                options.NODICS_ENV = envName;
-            } else {
-                console.warn('Could not found Environment Name, So starting with default "local"');
-                options.NODICS_ENV = 'local';
-            }
-
+            options.NODICS_ENV = envName;
         }
         if (!options.NODICS_SEVER) {
-            if (serverName) {
-                options.NODICS_SEVER = serverName;
-            } else {
-                options.NODICS_SEVER = 'sampleServer';
-                console.warn('Could not found Server Name, So starting with default "sampleServer"');
-            }
-
+            options.NODICS_SEVER = serverName;
         }
         if (process.argv) {
             options.argv = process.argv;
         }
-        if (!options.NODICS_HOME) {
-            console.error('Please pass valid NODICS_HOME. It can be pass as options or set to evn variable');
-            process.exit(1);
-        }
-        if (!options.NODICS_APP) {
-            console.error('Could not found valid application name to run');
-            process.exit(1);
-        }
-        if (!options.NODICS_ENV) {
-            console.error('Could not found valid environmnet name to run');
-            process.exit(1);
-        }
-        if (!options.NODICS_SEVER) {
-            console.error('Could not found valid server name to run');
-            process.exit(1);
-        }
-        //global.NODICS = new Nodics(options.NODICS_ENV, options.NODICS_HOME, options.NODICS_SEVER, options.argv);
         global.NODICS = new Nodics(options.NODICS_HOME, options.CUSTOM_HOME, options.NODICS_APP, options.NODICS_ENV, options.NODICS_SEVER, options.argv);
-        if (clean && clean === 'clean') {
-            NODICS.setIsModified(true);
-        }
         NODICS.setActiveModules(this.getActiveModules(options));
         global.CONFIG = new Config();
         CONFIG.setProperties({});

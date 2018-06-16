@@ -437,6 +437,22 @@ module.exports = {
         });
     },
 
+    deployRawSchemas: function () {
+        SYSTEM.LOG.debug('Starting schemas loading process');
+        let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js', null, true);
+        let modules = NODICS.getModules();
+        Object.keys(mergedSchema).forEach(function (key) {
+            if (key !== 'default') {
+                let moduleObject = modules[key];
+                if (!moduleObject) {
+                    SYSTEM.LOG.error('Module name : ', key, ' is not valid. Please define a valide module name in schema');
+                    process.exit(CONFIG.get('errorExitCode'));
+                }
+                moduleObject.rawSchema = _.merge(mergedSchema[key], mergedSchema.default);
+            }
+        });
+    },
+
     deploySchemas: function (tenants) {
         SYSTEM.LOG.debug('Starting schemas loading process');
         let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js', null, true);

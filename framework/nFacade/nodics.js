@@ -12,13 +12,21 @@
 const facade = require('./bin/facadeGenerator');
 
 module.exports = {
-    init: function() {
+    init: function () {
 
     },
-    loadFacade: function() {
+    genFacade: function () {
         let _self = this;
         SYSTEM.LOG.info('Starting Facade Generation process');
-        return facade.init().then(success => {}).catch(error => {
+        return facade.gen().then(success => { }).catch(error => {
+            _self.LOG.error(error);
+        });
+    },
+
+    loadFacade: function () {
+        let _self = this;
+        SYSTEM.LOG.info('Starting Facade Generation process');
+        return facade.init().then(success => { }).catch(error => {
             _self.LOG.error(error);
         });
     }

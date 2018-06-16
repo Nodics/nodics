@@ -27,4 +27,12 @@ module.exports = {
             });
         });
     },
+
+    loadOnlySchema: function () {
+        SYSTEM.LOG.info('Starting database configuration process');
+        return new Promise((resolve, reject) => {
+            SYSTEM.deployRawSchemas();
+            resolve(true);
+        });
+    },
 };

@@ -14,7 +14,7 @@ module.exports = {
 
     },
 
-    loadCommon: function () {
+    common: function () {
         if (!CONFIG || !SYSTEM || !NODICS) {
             SYSTEM.LOG.error("System initialization error: configuration initializer failure.");
             process.exit(1);
@@ -26,7 +26,21 @@ module.exports = {
         SYSTEM.LOG.info('Staring Enums loader process');
         SYSTEM.loadEnums();
 
+    },
+
+    start: function () {
+        this.common();
+
         SYSTEM.LOG.info('Staring Classes loader process');
         SYSTEM.loadClasses();
+    },
+
+    cleanAll: function () {
+        this.common();
+        SYSTEM.cleanModules();
+    },
+
+    buildAll: function () {
+        this.common();
     }
 };
