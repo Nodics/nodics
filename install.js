@@ -11,9 +11,8 @@
 
 var fs = require('fs');
 var copy = require('recursive-copy');
-var path = require('path');
 
-var help = function() {
+var help = function () {
     console.log('----------------------------------');
     console.log('This process help you to generate Application or module for your application');
     console.log('');
@@ -28,7 +27,7 @@ var help = function() {
     console.log('----------------------------------');
 };
 
-var createApplication = function(appName, appPath) {
+var createApplication = function (appName, appPath) {
     let sourcePath = __dirname + '/framework/nCommon/templates/app';
     let destPath = __dirname + '/' + appName;
     if (appPath) {
@@ -41,7 +40,7 @@ var createApplication = function(appName, appPath) {
     copyDir(sourcePath, destPath, appName);
 };
 
-var createModule = function(moduleName, appName) {
+var createModule = function (moduleName, appName) {
     let sourcePath = __dirname + '/framework/nCommon/templates/module';
     let destPath = __dirname + appName;
     if (!fs.existsSync(destPath)) {
@@ -56,26 +55,26 @@ var createModule = function(moduleName, appName) {
     copyDir(sourcePath, destPath, moduleName);
 };
 
-var copyDir = function(sourcePath, destPath, appName) {
+var copyDir = function (sourcePath, destPath, appName) {
     var options = {
         overwrite: true,
         expand: true,
         dot: true,
         junk: true,
-        filter: function(file) {
+        filter: function (file) {
             return true;
         },
-        rename: function(filePath) {
+        rename: function (filePath) {
             return filePath;
         },
-        transform: function(src, dest, stats) {}
+        transform: function (src, dest, stats) { }
     };
 
     copy(sourcePath, destPath, options)
-        .on(copy.events.COPY_FILE_START, function(copyOperation) {
+        .on(copy.events.COPY_FILE_START, function (copyOperation) {
             //console.info('Copying file ' + copyOperation.src + '...');
         })
-        .on(copy.events.COPY_FILE_COMPLETE, function(copyOperation) {
+        .on(copy.events.COPY_FILE_COMPLETE, function (copyOperation) {
             fs.readFile(copyOperation.dest, 'utf8', (error, content) => {
                 if (error) {
                     console.log('Got error in file : ', copyOperation.dest, ' --- ', error);
@@ -85,27 +84,27 @@ var copyDir = function(sourcePath, destPath, appName) {
                 fs.writeFile(copyOperation.dest,
                     content.replace('customApplication', appName),
                     'utf8',
-                    function(err) {
+                    function (err) {
                         if (err) return console.log(err);
                     });
             });
         })
-        .on(copy.events.ERROR, function(error, copyOperation) {
+        .on(copy.events.ERROR, function (error, copyOperation) {
             console.error('Unable to copy ' + copyOperation.dest);
         })
-        .then(function(results) {
+        .then(function (results) {
             console.log('------------------------------------------------------------------------------------');
             console.log('Module has been generated at : ', destPath, ' - ', results.length + ' file(s) copied');
             console.log("Please visit package.json file and update index value, before executing");
             console.log('------------------------------------------------------------------------------------');
 
         })
-        .catch(function(error) {
+        .catch(function (error) {
             return console.error('Copy failed: ' + error);
         });
 };
 
-module.exports = (function() {
+module.exports = (function () {
     if (!process.argv[2]) {
         console.log('Please pass command to be executed');
         return help();

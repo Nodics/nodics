@@ -29,6 +29,7 @@ module.exports = {
                     }
                     if (!UTILS.isBlank(app)) {
                         try {
+
                             routers.operations.registerWeb(app, moduleObject);
                             try {
                                 SERVICE.CacheService.initCache(moduleObject, moduleName).then(() => {

@@ -9,12 +9,6 @@
 
  */
 
-const fs = require('fs');
-const path = require('path');
-const getDirName = require('path').dirname;
-const mkdirp = require('mkdirp');
-const babel = require("babel-core");
-
 module.exports = {
     serversConfigPool: '',
 
@@ -102,53 +96,5 @@ module.exports = {
             this.LOG.error('While Preparing URL for :', options.moduleName, ' : ', error);
         }
         return url;
-    },
-
-    buildWebResource: function (moduleObject) {
-        let modulePath = moduleObject.modulePath;
-        let webSourcePath = modulePath + '/' + CONFIG.get('webRootDirName');
-        let webDistPath = modulePath + '/' + CONFIG.get('webDistDirName');
-        if (fs.existsSync(webDistPath)) {
-            UTILS.removeDir(webDistPath);
-        }
-        SYSTEM.processFiles(webSourcePath, "*", (file) => {
-            let fileRelativePath = file.replace(webSourcePath, '');
-            let distFilePath = path.join(webDistPath, fileRelativePath);
-            let distDir = getDirName(distFilePath);
-            mkdirp(distDir, function (error) {
-                if (error) {
-                    reject(error);
-                } else {
-                    if (file.endsWith('.js')) {
-                        babel.transformFile(file, {
-                            presets: ['es2015', "vue", ["env", {
-                                "targets": {
-                                    "node": "current"
-                                }
-                            }]], //presets: ['es2015', 'react'],
-                            babelrc: false
-                        }, (err, result) => {
-                            if (err) {
-                                SYSTEM.LOG.error('While transpiling file : ', file);
-                            } else {
-                                fs.writeFile(distFilePath, result.code, 'utf-8', function (err, success) {
-                                    if (err) {
-                                        SYSTEM.LOG.error('Not able to write file : ', distFilePath, err);
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        fs.copyFile(file, distFilePath, function (err) {
-                            if (err) {
-                                SYSTEM.LOG.error('Not able to copy file : ', file, ' into dist directory');
-                            } else {
-                                SYSTEM.LOG.debug('Copied file : ', file, ' into dist directory');
-                            }
-                        });
-                    }
-                }
-            });
-        });
     }
 };

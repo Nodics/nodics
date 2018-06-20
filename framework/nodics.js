@@ -32,6 +32,26 @@ module.exports = {
         common.cleanAll();
     },
 
+    genApp: function () {
+
+    },
+
+    genGroup: function () {
+
+    },
+
+    genModule: function () {
+
+    },
+
+    genModuleReact: function () {
+
+    },
+
+    genModuleVue: function () {
+
+    },
+
     buildAll: function (options) {
         config.buildAll(options);
         SYSTEM.executePreScripts();

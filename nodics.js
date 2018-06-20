@@ -14,7 +14,6 @@ const FRAMEWORK = require('./framework');
 module.exports = {
 
     cleanAll: function () {
-        //console.log(process.argv);
         FRAMEWORK.cleanAll({});
     },
 
@@ -24,5 +23,25 @@ module.exports = {
 
     start: function () {
         FRAMEWORK.start({});
+    },
+
+    genApp: function () {
+        FRAMEWORK.genApp({});
+    },
+
+    genGroup: function () {
+        FRAMEWORK.genGroup({});
+    },
+
+    genModule: function () {
+        FRAMEWORK.genModule({});
+    },
+
+    genModuleReact: function () {
+        FRAMEWORK.genModuleReact({});
+    },
+
+    genModuleVue: function () {
+        FRAMEWORK.genModuleVue({});
     }
 };

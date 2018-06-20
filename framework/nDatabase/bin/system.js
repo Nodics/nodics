@@ -327,18 +327,28 @@ module.exports = {
     createSchema: function (options) {
         let schemas = options.schemaObject;
         let models = options.modelObject;
+        let rawSchema = NODICS.getModule(options.moduleName).rawSchema;
         if (options.schemaDef.super === 'none') {
             options.schemaObject[options.modelName] = new options.database.getSchema()(options.schemaDef.definition, options.schemaDef.options || {});
         } else {
             let superSchema = options.schemaDef.super;
             if (!options.schemaObject[superSchema]) {
-                let rawSchema = NODICS.getModule(options.moduleName).rawSchema;
                 let tmpOptions = _.merge({}, options);
                 tmpOptions.schemaDef = rawSchema[superSchema];
                 tmpOptions.modelName = superSchema;
                 SYSTEM.resolveSchemaDependancy(tmpOptions);
             }
-            options.schemaObject[options.modelName] = options.schemaObject[superSchema].extend(options.schemaDef.definition, options.schemaDef.options || {});
+            try {
+                let tmpDef = _.merge({}, rawSchema[superSchema].definition);
+                _.merge(tmpDef, options.schemaDef.definition);
+                rawSchema[options.modelName].definition = tmpDef;
+                //console.log(options.modelName, '  : Current  : ', rawSchema[options.modelName]);
+                options.schemaObject[options.modelName] = new options.database.getSchema()(rawSchema[options.modelName].definition, rawSchema[options.modelName].options || {});
+                //options.schemaObject[superSchema].extend(options.schemaDef.definition, options.schemaDef.options || {});
+
+            } catch (error) {
+                SYSTEM.LOG.error('While generating models : ', error);
+            }
         }
         if (options.schemaDef.model) {
             options.modelSchema = options.schemaObject[options.modelName];
@@ -397,6 +407,7 @@ module.exports = {
 
     traverseSchemas: function (options) {
         let cloneSchema = _.merge({}, options.rawSchema);
+
         _.each(options.rawSchema, function (valueIn, keyIn) {
             options.modelName = keyIn;
             options.schemaDef = valueIn;

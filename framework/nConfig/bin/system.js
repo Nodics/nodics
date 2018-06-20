@@ -90,20 +90,19 @@ module.exports = {
         let appName = 'kickoff';
         let envName = 'local';
         let serverName = 'sampleServer';
-        console.log(process.argv);
         process.argv.forEach(element => {
-            if (element.startsWith('--A')) {
-                appName = element.replace('--A', '');
-            } else if (element.startsWith('--APP')) {
-                appName = element.replace('--APP', '');
-            } else if (element.startsWith('--E')) {
-                envName = element.replace('--E', '');
-            } else if (element.startsWith('--ENV')) {
-                envName = element.replace('--ENV', '');
-            } else if (element.startsWith('--S')) {
-                serverName = element.replace('--S', '');
-            } else if (element.startsWith('--SERVER')) {
-                serverName = element.replace('--SERVER', '');
+            if (element.startsWith('A=')) {
+                appName = element.replace('A=', '');
+            } else if (element.startsWith('APP=')) {
+                appName = element.replace('APP=', '');
+            } else if (element.startsWith('E=')) {
+                envName = element.replace('E=', '');
+            } else if (element.startsWith('ENV=')) {
+                envName = element.replace('ENV==', '');
+            } else if (element.startsWith('S=')) {
+                serverName = element.replace('S=', '');
+            } else if (element.startsWith('SERVER=')) {
+                serverName = element.replace('SERVER=', '');
             }
         });
         if (!options.NODICS_APP) {

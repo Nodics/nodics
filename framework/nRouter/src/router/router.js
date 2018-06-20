@@ -10,13 +10,21 @@
  */
 
 const express = require('express');
-var path = require('path');
+const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     operations: {
         registerWeb: function (app, moduleObject) {
-            let webRootDirName = CONFIG.get('webDistDirName') || 'dist';
-            app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, express.static(path.join(moduleObject.modulePath, '/' + webRootDirName)));
+            if (moduleObject.metaData.web) {
+                moduleObject.webRootDirName = CONFIG.get('webRootDirName');
+                moduleObject.webLibDirName = CONFIG.get('webLibDirName');
+                moduleConfig = CONFIG.get(moduleObject.metaData.name);
+                let webpackConfig = moduleConfig.getWebpackConfig(moduleObject);
+                const compiler = webpack(webpackConfig);
+                app.use(require('webpack-dev-middleware')(compiler, moduleConfig.webpackCompilerOptions));
+                app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, express.static(path.join(moduleObject.modulePath, '/' + moduleObject.webRootDirName)));
+            }
         },
         get: function (app, routerDef) {
             if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {

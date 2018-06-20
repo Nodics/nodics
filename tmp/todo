@@ -81,7 +81,7 @@ Todos:
     
 Todos:
   Multi-Language Support:
-    - Support schema to define multi language support
+    - Support schema to define multi language support (https://www.npmjs.com/package/mongoose-intl)
     - Support Nodics to fetch langauge specific data on each query
     
 Todos:
@@ -91,7 +91,11 @@ Todos:
 
 Todos:
   Data Import Process:
+    - Load all active data, while calling import service, not while server startup
+    - Load data only for modules are active for that instance
+    
     Initial Data Import Process:
+      
     Code Data Import Process:
     Sample Data Import Process:
   
@@ -133,3 +137,6 @@ Todos:
     - Full documentation and Real time support
     - Winston Logger support with multi-transport and file level enable/disable 
     - Configuration each modules server to connect each other
+
+
+    https://medium.com/styled-components/the-simple-guide-to-server-side-rendering-react-with-styled-components-d31c6b2b8fbf

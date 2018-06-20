@@ -1,11 +1,12 @@
 {
-    "name": "storefront",
-    "index": "1001",
+    "name": "admin",
+    "index": "1002",
     "publish": true,
+    "web": true,
     "description": "Nodics applicaion module. It will hold all configuration and storefront point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "storefront"
+        "admin"
     ],
     "author": "authorName",
     "main": "nodics.js",
