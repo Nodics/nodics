@@ -8,8 +8,8 @@
         "app": "node -e 'require(\"./nodics\").genApp()'",
         "group": "node -e 'require(\"./nodics\").genGroup()'",
         "module": "node -e 'require(\"./nodics\").genModule()'",
-        "module:react": "node -e 'require(\"./nodics\").genModuleReact()'",
-        "module:vue": "node -e 'require(\"./nodics\").genModuleVue()'",
+        "module:react": "node -e 'require(\"./nodics\").genReactModule()'",
+        "module:vue": "node -e 'require(\"./nodics\").genVueModule()'",
         "clean": "node -e 'require(\"./nodics\").cleanAll()'",
         "build": "node -e 'require(\"./nodics\").buildAll()'",
         "start": "node -e 'require(\"./nodics\").start()'"

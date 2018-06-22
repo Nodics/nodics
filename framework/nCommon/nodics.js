@@ -8,6 +8,8 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const infra = require('./bin/infra');
+
 
 module.exports = {
     init: function () {
@@ -42,5 +44,21 @@ module.exports = {
 
     buildAll: function () {
         this.common();
+    },
+
+    generateModuleGroup: function () {
+        infra.generateTarget('app');
+    },
+
+    generateModule: function () {
+        infra.generateTarget('module');
+    },
+
+    generateReactModule: function () {
+        infra.generateTarget('moduleReact');
+    },
+
+    generateVueModule: function () {
+        infra.generateTarget('moduleVue');
     }
 };

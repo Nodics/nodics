@@ -16,6 +16,7 @@ module.exports = {
         modules: [
             'sampleServer',
             'admin',
+            'storefront',
             'kickoff',
             'local'
         ]

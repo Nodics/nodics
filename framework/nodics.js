@@ -9,7 +9,6 @@
 
  */
 
-//const _ = require('lodash');
 const config = require('./nConfig');
 const common = require('./nCommon');
 const db = require('./nDatabase');
@@ -32,24 +31,29 @@ module.exports = {
         common.cleanAll();
     },
 
-    genApp: function () {
-
+    genApp: function (options) {
+        config.common(options);
+        common.generateModuleGroup();
     },
 
-    genGroup: function () {
-
+    genGroup: function (options) {
+        config.common(options);
+        common.generateModuleGroup();
     },
 
-    genModule: function () {
-
+    genModule: function (options) {
+        config.common(options);
+        common.generateModule(options);
     },
 
-    genModuleReact: function () {
-
+    genReactModule: function (options) {
+        config.common(options);
+        common.generateReactModule(options);
     },
 
-    genModuleVue: function () {
-
+    genVueModule: function (options) {
+        config.common(options);
+        common.generateVueModule(options);
     },
 
     buildAll: function (options) {

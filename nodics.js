@@ -37,11 +37,11 @@ module.exports = {
         FRAMEWORK.genModule({});
     },
 
-    genModuleReact: function () {
-        FRAMEWORK.genModuleReact({});
+    genReactModule: function () {
+        FRAMEWORK.genReactModule({});
     },
 
-    genModuleVue: function () {
-        FRAMEWORK.genModuleVue({});
+    genVueModule: function () {
+        FRAMEWORK.genVueModule({});
     }
 };

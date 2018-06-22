@@ -13,7 +13,6 @@ const _ = require('lodash');
 const fs = require('fs');
 const Enum = require('./enum');
 
-
 var https = require('https');
 var http = require('http');
 

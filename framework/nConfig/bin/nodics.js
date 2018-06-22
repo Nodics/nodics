@@ -72,8 +72,7 @@ module.exports = function () {
             throw new Error('Invalid module meta data properties, verify name and index');
         }
         if (isNaN(metaData.index)) {
-            this.LOG.error('Property index contain invalid value in package.json for module : ', moduleFile.name);
-            process.exit(1);
+            throw new Error('Property index contain invalid value in package.json for module : ' + metaData.name);
         }
         _rawModules[metaData.name] = {
             path: path,

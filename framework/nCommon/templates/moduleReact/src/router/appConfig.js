@@ -10,21 +10,30 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        framework: [
-            'framework',
-            'nconfig',
-            'ncommon',
-            'ndatabase',
-            'ndao',
-            'nservice',
-            'nprocess',
-            'nevent',
-            'nfacade',
-            'ncontroller',
-            'nrouter',
-            'ndata',
-            'ntest'
-        ]
+    admin: {
+        initProperties: function (app) {
+
+        },
+        initSession: function (app) {
+
+        },
+        initLogger: function (app) {
+
+        },
+        initCache: function (app) {
+
+        },
+        initBodyParser: function (app) {
+
+        },
+        initHeaders: function (app) {
+
+        },
+        initErrorRoutes: function (app) {
+
+        },
+        initExtras: function (app) {
+
+        }
     }
 };
