@@ -8,32 +8,137 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-const _ = require('lodash');
+//const _ = require('lodash');
 
-module.exports = function (nodicsHome, customHome, app, env, serverName, argvs) {
-    let _serverState = 'starting';
-    let _activeChannel = 'master';
-    let _activeEnv = env;
-    let _activeApp = app;
-    let _nodicsHome = nodicsHome;
-    let _serverName = serverName;
-    let _serverHome = '';
-    let _customHome = customHome;
-    let _argvs = argvs;
-    let _activeModules = [];
-    let _nTestRunning = false;
-    let _initRequired = false;
+module.exports = function () {
+
     let _startTime = 0;
     let _entTime = 0;
+    let _rawModules = {};
+    let _serverState = 'starting';
+    let _activeChannel = 'master';
+    let _nTestRunning = false;
+    let _initRequired = false;
     let _loggers = {};
     let _preScripts = {};
-    let _postScript = {};
     let _tenants = [];
 
     let _nodics = {
         modules: {},
         dbs: {},
         validators: {}
+    };
+
+    this.init = function (options) {
+        if (!options.NODICS_HOME) {
+            options.NODICS_HOME = process.env.NODICS_HOME || process.cwd();
+        }
+        _options = options;
+        _nodicsHome = options.NODICS_HOME;
+
+        if (!options.CUSTOM_HOME) {
+            options.CUSTOM_HOME = process.env.CUSTOM_HOME || options.NODICS_HOME;
+        }
+        _customHome = options.CUSTOM_HOME;
+    };
+
+    this.initEnvironment = function () {
+        _serverName = 'sampleServer';
+        process.argv.forEach(element => {
+            if (element.startsWith('S=')) {
+                _serverName = element.replace('S=', '');
+            } else if (element.startsWith('SERVER=')) {
+                _serverName = element.replace('SERVER=', '');
+            }
+        });
+        _serverPath = this.getRawModule(_serverName).path;
+        _envName = this.getRawModule(_serverName).parent;
+        _envPath = this.getRawModule(_envName).path;
+
+        _appName = this.getRawModule(_envName).parent;
+        _appPath = this.getRawModule(_appName).path;
+
+    }
+
+    this.getNodicsHome = function () {
+        return _nodicsHome;
+    }
+
+    this.addRawModule = function (metaData, path, parent) {
+        if (!metaData || !path) {
+            throw new Error('Invalid module meta data or path');
+        }
+        if (!metaData.name || !metaData.index) {
+            throw new Error('Invalid module meta data properties, verify name and index');
+        }
+        if (isNaN(metaData.index)) {
+            this.LOG.error('Property index contain invalid value in package.json for module : ', moduleFile.name);
+            process.exit(1);
+        }
+        _rawModules[metaData.name] = {
+            path: path,
+            index: metaData.index,
+            parent: parent,
+            metaData: metaData
+        }
+    }
+
+    this.getRawModule = function (moduleName) {
+        return _rawModules[moduleName];
+    }
+
+    this.getRawModules = function () {
+        return _rawModules;
+    };
+
+
+    this.setStartTime = function (time) {
+        _startTime = time;
+    };
+    this.getStartTime = function () {
+        return _startTime;
+    };
+    this.setEndTime = function (time) {
+        _entTime = time;
+    };
+    this.getEndTime = function () {
+        return _entTime;
+    };
+
+    this.getStartDuration = function () {
+        return (_entTime - _startTime);
+    };
+
+    this.getServerName = function () {
+        return _serverName;
+    };
+
+    this.getServerPath = function () {
+        return _serverPath;
+    };
+
+    this.getArguments = function () {
+        return _argvs;
+    };
+
+    this.getCustomHome = function () {
+        return _customHome;
+    };
+
+    this.getEnvironmentName = function () {
+        return _envName;
+    };
+
+    this.getEnvironmentPath = function () {
+        return _envPath;
+    };
+
+    this.getApplicationName = function () {
+        return _appName;
+    };
+
+    this.getApplicationPath = function () {
+        return _appPath;
     };
 
     this.addTenant = function (tntName) {
@@ -57,23 +162,6 @@ module.exports = function (nodicsHome, customHome, app, env, serverName, argvs) 
         return _postScripts;
     };
 
-    this.setStartTime = function (time) {
-        _startTime = time;
-    };
-    this.getStartTime = function () {
-        return _startTime;
-    };
-    this.setEndTime = function (time) {
-        _entTime = time;
-    };
-    this.getEndTime = function () {
-        return _entTime;
-    };
-
-    this.getStartDuration = function () {
-        return (_entTime - _startTime);
-    };
-
     this.addLogger = function (entityName, logger) {
         _loggers[entityName] = logger;
     };
@@ -84,6 +172,42 @@ module.exports = function (nodicsHome, customHome, app, env, serverName, argvs) 
 
     this.getLoggers = function () {
         return _loggers;
+    };
+
+    this.setActiveModules = function (activeModules) {
+        _activeModules = activeModules;
+    };
+    this.getActiveModules = function () {
+        return _activeModules;
+    };
+    this.isModuleActive = function (moduleName) {
+        if (_activeModules.indexOf(moduleName) > -1) {
+            return true;
+        }
+        return false;
+    };
+
+    this.setIndexedModules = function (indexedModules) {
+        _indexedModules = indexedModules;
+    };
+
+    this.getIndexedModules = function () {
+        return _indexedModules;
+    };
+
+    this.setModules = function (modules) {
+        _nodics.modules = modules;
+    };
+    this.getModules = function () {
+        return _nodics.modules;
+    };
+
+    this.addModule = function (moduleObject) {
+        _nodics.modules[moduleObject.metaData.name] = moduleObject;
+    };
+
+    this.getModule = function (moduleName) {
+        return _nodics.modules[moduleName];
     };
 
     this.setInitRequired = function (flag) {
@@ -100,51 +224,6 @@ module.exports = function (nodicsHome, customHome, app, env, serverName, argvs) 
 
     this.isNTestRunning = function () {
         return _nTestRunning;
-    };
-
-    this.getArguments = function () {
-        return _argvs;
-    };
-
-    this.getNodicsHome = function () {
-        return _nodicsHome;
-    };
-
-    this.getCustomHome = function () {
-        return _customHome;
-    };
-
-    this.getServerName = function () {
-        return _serverName;
-    };
-
-    this.getServerHome = function () {
-        return _serverHome;
-    };
-
-    this.setServerHome = function (serverHome) {
-        _serverHome = serverHome;
-    };
-
-    this.getActiveEnvironment = function () {
-        return _activeEnv;
-    };
-
-    this.getActiveApplication = function () {
-        return _activeApp;
-    };
-
-    this.setActiveModules = function (activeModules) {
-        _activeModules = activeModules;
-    };
-    this.getActiveModules = function () {
-        return _activeModules;
-    };
-    this.isModuleActive = function (moduleName) {
-        if (_activeModules.indexOf(moduleName) > -1) {
-            return true;
-        }
-        return false;
     };
 
     this.setServerState = function (serverState) {
@@ -166,20 +245,7 @@ module.exports = function (nodicsHome, customHome, app, env, serverName, argvs) 
         return _activeChannel;
     };
 
-    this.setModules = function (modules) {
-        _nodics.modules = modules;
-    };
-    this.getModules = function () {
-        return _nodics.modules;
-    };
 
-    this.addModule = function (moduleObject) {
-        _nodics.modules[moduleObject.metaData.name] = moduleObject;
-    };
-
-    this.getModule = function (moduleName) {
-        return _nodics.modules[moduleName];
-    };
 
     this.setDatabases = function (databases) {
         _nodics.dbs = databases;

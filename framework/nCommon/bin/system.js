@@ -51,7 +51,7 @@ module.exports = {
 
     loadClasses: function () {
         let classes = global.CLASSES;
-        let moduleIndex = CONFIG.get('moduleIndex');
+        let moduleIndex = NODICS.getIndexedModules();
         Object.keys(moduleIndex).forEach(function (key) {
             var value = moduleIndex[key][0];
             SYSTEM.loadModuleClasses(value);
@@ -84,7 +84,7 @@ module.exports = {
     },
 
     loadModules: function () {
-        let moduleIndex = CONFIG.get('moduleIndex');
+        let moduleIndex = NODICS.getIndexedModules();
         Object.keys(moduleIndex).forEach(function (key) {
             var value = moduleIndex[key][0];
             SYSTEM.loadModule(value.name);
@@ -93,7 +93,7 @@ module.exports = {
 
     loadModule: function (moduleName) {
         SYSTEM.LOG.debug('Staring process for module : ', moduleName);
-        let module = CONFIG.getProperties().moduleList[moduleName];
+        let module = NODICS.getRawModule(moduleName);
 
         SYSTEM.loadDao(module);
         SYSTEM.loadServices(module);
@@ -108,7 +108,7 @@ module.exports = {
     },
 
     cleanModules: function () {
-        let moduleIndex = CONFIG.get('moduleIndex');
+        let moduleIndex = NODICS.getIndexedModules();
         Object.keys(moduleIndex).forEach(function (key) {
             var value = moduleIndex[key][0];
             SYSTEM.cleanModule(value.name);
@@ -117,7 +117,7 @@ module.exports = {
 
     cleanModule: function (moduleName) {
         SYSTEM.LOG.debug('Cleaning module : ', moduleName);
-        let module = CONFIG.getProperties().moduleList[moduleName];
+        let module = NODICS.getRawModule(moduleName);
         SYSTEM.cleanDao(module);
         SYSTEM.cleanService(module);
         SYSTEM.cleanFacade(module);

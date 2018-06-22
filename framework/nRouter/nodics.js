@@ -23,11 +23,7 @@ module.exports = {
     },
 
     buildAll: function () {
-        _.each(NODICS.getModules(), function (moduleObject, moduleName) {
-            if (moduleObject.metaData && moduleObject.metaData.publish) {
-                SYSTEM.buildWebResource(moduleObject);
-            }
-        });
+
     },
 
     loadRouter: function () {

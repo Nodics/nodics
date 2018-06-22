@@ -29,7 +29,6 @@ module.exports = {
                     }
                     if (!UTILS.isBlank(app)) {
                         try {
-
                             routers.operations.registerWeb(app, moduleObject);
                             try {
                                 SERVICE.CacheService.initCache(moduleObject, moduleName).then(() => {
@@ -44,12 +43,6 @@ module.exports = {
                                 SYSTEM.LOG.error('While initializing cache or router registration process for module : ', moduleName);
                                 reject(error);
                             }
-
-                            /*SYSTEM.buildWebResource(moduleObject, app).then(success => {
-
-                            }).catch(error => {
-                                console.log('--11111 : ', error);
-                            });*/
                         } catch (error) {
                             SYSTEM.LOG.error('While registration process of web path for module : ', moduleName);
                             reject(error);

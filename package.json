@@ -1,6 +1,7 @@
 {
     "name": "nodics",
     "version": "0.0.1",
+    "index": "0",
     "description": "Nodics, A Node based enterprise application solution",
     "main": "nodics.js",
     "scripts": {

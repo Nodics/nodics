@@ -23,102 +23,31 @@ const props = require('../config/properties');
 
 module.exports = {
 
-    getActiveModules: function (options) {
-        try {
-            let modules = [];
-            let customPath = NODICS.getCustomHome();
-            let appHome = customPath + '/' + NODICS.getActiveApplication();
-            let envHome = appHome + '/' + NODICS.getActiveEnvironment();
-            let serverHome = envHome + '/' + NODICS.getServerName();
+    loadAllModules: function () {
+        this.collectModulesList(NODICS.getNodicsHome());
+    },
 
-            NODICS.setServerHome(serverHome);
-            let moduleGroupsFilePath = serverHome + '/config/modules.js';
-            let serverProperties = {};
-            serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
-            serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
-            serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
-            //Starting Log for System and Nodics
-            let prop = _.merge(props, serverProperties);
-            this.LOG = this.createLogger('SYSTEM', prop.log);
-            if (!fs.existsSync(moduleGroupsFilePath) || serverProperties.activeModules.updateGroups) {
-                var nodicsModulePath = [];
-                UTILS.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
-                if (NODICS.getCustomHome() !== NODICS.getNodicsHome()) {
-                    UTILS.collectModulesList(NODICS.getCustomHome(), nodicsModulePath);
-                }
-                nodicsModulePath.push(appHome);
-                nodicsModulePath.push(envHome);
-                UTILS.collectModulesList(serverHome, nodicsModulePath);
-                let mergedFile = {};
-                nodicsModulePath.forEach(function (modulePath) {
-                    if (fs.existsSync(modulePath + '/config/properties.js')) {
-                        mergedFile = _.merge(mergedFile, require(modulePath + '/config/properties.js'));
-                    }
-                });
-                if (!_.isEmpty(mergedFile.moduleGroups)) {
-                    if (fs.existsSync(moduleGroupsFilePath)) {
-                        fs.unlinkSync(moduleGroupsFilePath);
-                    }
-                    fs.writeFileSync(moduleGroupsFilePath, 'module.exports = ' + util.inspect(mergedFile.moduleGroups) + ';', 'utf8');
-                }
-            }
-            let moduleData = require(moduleGroupsFilePath);
-            modules = moduleData.framework;
-            if (serverProperties.activeModules.groups) {
-                serverProperties.activeModules.groups.forEach((groupName) => {
-                    if (!moduleData[groupName]) {
-                        console.error('Invalid module group : ', groupName);
-                        process.exit(1);
-                    }
-                    modules = modules.concat(moduleData[groupName]);
-                });
-            }
-            modules = modules.concat(serverProperties.activeModules.modules);
-            return modules;
-        } catch (error) {
-            console.error('While preparing active module list : ', error);
+    subFolders: function (folder) {
+        return fs.readdirSync(folder)
+            .filter(subFolder => fs.statSync(path.join(folder, subFolder)).isDirectory())
+            .filter(subFolder => subFolder !== 'node_modules' && subFolder !== 'templates' && subFolder[0] !== '.')
+            .map(subFolder => path.join(folder, subFolder));
+    },
+
+    collectModulesList: function (folder, parent) {
+        let metaDataPath = path.join(folder, 'package.json');
+        if (fs.existsSync(metaDataPath)) {
+            let metaData = require(metaDataPath);
+            NODICS.addRawModule(metaData, folder, parent);
+            parent = metaData.name;
+        }
+        for (let subFolder of this.subFolders(folder)) {
+            this.collectModulesList(subFolder, parent);
         }
     },
 
-    prepareOptions: function (options) {
-        if (!options.NODICS_HOME) {
-            options.NODICS_HOME = process.env.NODICS_HOME || process.cwd();
-        }
-        if (!options.CUSTOM_HOME) {
-            options.CUSTOM_HOME = process.env.CUSTOM_HOME || options.NODICS_HOME;
-        }
-        let appName = 'kickoff';
-        let envName = 'local';
-        let serverName = 'sampleServer';
-        process.argv.forEach(element => {
-            if (element.startsWith('A=')) {
-                appName = element.replace('A=', '');
-            } else if (element.startsWith('APP=')) {
-                appName = element.replace('APP=', '');
-            } else if (element.startsWith('E=')) {
-                envName = element.replace('E=', '');
-            } else if (element.startsWith('ENV=')) {
-                envName = element.replace('ENV==', '');
-            } else if (element.startsWith('S=')) {
-                serverName = element.replace('S=', '');
-            } else if (element.startsWith('SERVER=')) {
-                serverName = element.replace('SERVER=', '');
-            }
-        });
-        if (!options.NODICS_APP) {
-            options.NODICS_APP = appName;
-        }
-        if (!options.NODICS_ENV) {
-            options.NODICS_ENV = envName;
-        }
-        if (!options.NODICS_SEVER) {
-            options.NODICS_SEVER = serverName;
-        }
-        if (process.argv) {
-            options.argv = process.argv;
-        }
-        global.NODICS = new Nodics(options.NODICS_HOME, options.CUSTOM_HOME, options.NODICS_APP, options.NODICS_ENV, options.NODICS_SEVER, options.argv);
-        NODICS.setActiveModules(this.getActiveModules(options));
+    prepareOptions: function () {
+        NODICS.setActiveModules(this.getActiveModules());
         global.CONFIG = new Config();
         CONFIG.setProperties({});
 
@@ -153,9 +82,58 @@ module.exports = {
         };
     },
 
-    addModuleInActiveList: function (moduleName) {
-        NODICS.getActiveModules().push(moduleName);
+    getActiveModules: function (options) {
+        try {
+            let modules = [];
+            let appHome = NODICS.getApplicationPath();
+            let envHome = NODICS.getEnvironmentPath();
+            let serverHome = NODICS.getServerPath();
+
+            let moduleGroupsFilePath = serverHome + '/config/modules.js';
+            let serverProperties = {};
+            serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
+            serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
+            serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
+            let prop = _.merge(props, serverProperties);
+            this.LOG = this.createLogger('SYSTEM', prop.log);
+            if (!fs.existsSync(moduleGroupsFilePath) || serverProperties.activeModules.updateGroups) {
+                let mergedFile = {};
+                _.each(NODICS.getRawModules(), (moduleObject, moduleName) => {
+                    if (fs.existsSync(moduleObject.path + '/config/properties.js')) {
+                        mergedFile = _.merge(mergedFile, require(moduleObject.path + '/config/properties.js'));
+                    }
+                });
+                if (!_.isEmpty(mergedFile.moduleGroups)) {
+                    if (fs.existsSync(moduleGroupsFilePath)) {
+                        fs.unlinkSync(moduleGroupsFilePath);
+                    }
+                    fs.writeFileSync(moduleGroupsFilePath, 'module.exports = ' + util.inspect(mergedFile.moduleGroups) + ';', 'utf8');
+                }
+            }
+            let moduleData = require(moduleGroupsFilePath);
+            modules = moduleData.framework;
+            if (serverProperties.activeModules.groups) {
+                serverProperties.activeModules.groups.forEach((groupName) => {
+                    if (!moduleData[groupName]) {
+                        console.error('Invalid module group : ', groupName);
+                        process.exit(1);
+                    }
+                    modules = modules.concat(moduleData[groupName]);
+                });
+            }
+            modules = modules.concat(serverProperties.activeModules.modules);
+            return modules;
+        } catch (error) {
+            console.error('While preparing active module list : ', error);
+        }
     },
+    /*
+    
+    
+        addModuleInActiveList: function (moduleName) {
+            NODICS.getActiveModules().push(moduleName);
+        },
+        
 
     getAllModules: function (appHome, envHome) {
         var nodicsModulePath = [];
@@ -165,66 +143,37 @@ module.exports = {
         }
         return nodicsModulePath;
     },
-
+*/
     loadModuleIndex: function () {
         let _self = this;
         let config = CONFIG.getProperties();
-        let appHome = NODICS.getCustomHome() + '/' + NODICS.getActiveApplication();
-        let envHome = appHome + '/' + NODICS.getActiveEnvironment();
         let moduleIndex = [];
-        let nodicsModulePath = _self.getAllModules(appHome, envHome);
-        nodicsModulePath.forEach(function (modulePath) {
-            let indexData = _self.addModuleIndex(modulePath);
-            if (indexData) {
-                moduleIndex.push(indexData);
+        _.each(NODICS.getRawModules(), (moduleObject, moduleName) => {
+            if (NODICS.isModuleActive(moduleObject.metaData.name)) {
+                moduleIndex.push({
+                    index: moduleObject.index,
+                    name: moduleName,
+                    path: moduleObject.path,
+                });
             }
         });
-        config.rawModuleIndex = moduleIndex;
-        _self.finalizeModuleIndex();
+        NODICS.setIndexedModules(UTILS.sortModulesByIndex(moduleIndex));
+        _self.printModuleSequence(moduleIndex);
     },
 
-    finalizeModuleIndex: function () {
-        let config = CONFIG.getProperties();
-        config.moduleIndex = UTILS.sortModulesByIndex(config.rawModuleIndex);
-        let modules = {};
-        config.rawModuleIndex.forEach(module => {
-            modules[module.name] = module;
-        });
-        config.moduleList = modules;
+    printModuleSequence: function (moduleIndex) {
         let modulesStr = '';
-        _.each(CONFIG.get('moduleIndex'), (obj, key) => {
+        _.each(NODICS.getIndexedModules(), (obj, key) => {
             modulesStr = modulesStr + obj[0].name + ',';
         });
-        this.LOG.info('Modules:');
-        console.log(modulesStr);
+        console.log('Modules: ', modulesStr);
     },
 
-    addModuleIndex: function (modulePath) {
-        let metaDataFile = modulePath + '/package.json';
-        if (fs.existsSync(metaDataFile)) {
-            let moduleFile = require(metaDataFile);
-            if (NODICS.isModuleActive(moduleFile.name)) {
-                if (!moduleFile.index) {
-                    this.LOG.error('Please update index property in package.json for module : ', moduleFile.name);
-                    process.exit(1);
-                }
-                if (isNaN(moduleFile.index)) {
-                    this.LOG.error('Property index contain invalid value in package.json for module : ', moduleFile.name);
-                    process.exit(1);
-                }
-                return {
-                    index: moduleFile.index,
-                    name: moduleFile.name,
-                    path: modulePath,
-                };
-            }
-        }
-    },
+
 
     loadModulesMetaData: function () {
         let _self = this;
-        let config = CONFIG.getProperties();
-        let moduleIndex = CONFIG.get('moduleIndex');
+        let moduleIndex = NODICS.getIndexedModules();
         Object.keys(moduleIndex).forEach(function (index) {
             let group = moduleIndex[index];
             group.forEach(module => {
@@ -237,18 +186,12 @@ module.exports = {
      * This function is used to load module meta data if that module is active
      */
     loadModuleMetaData: function (moduleName) {
-        let config = CONFIG.getProperties();
-        let module = config.moduleList[moduleName];
+        let module = NODICS.getRawModule(moduleName);
         if (module) {
-            let filePath = module.path + '/package.json';
-            if (fs.existsSync(filePath)) {
-                this.LOG.debug('Loading metaData for ' + moduleName + ' from : ', filePath.replace(NODICS.getNodicsHome(), '.'));
-                let moduleFile = require(filePath);
-                NODICS.addModule({
-                    metaData: moduleFile,
-                    modulePath: module.path
-                });
-            }
+            NODICS.addModule({
+                metaData: module.metaData,
+                modulePath: module.path
+            });
         }
     },
 
@@ -260,8 +203,7 @@ module.exports = {
     loadConfigurations: function (fileName) {
         let _self = this;
         fileName = fileName || '/config/properties.js';
-        let config = CONFIG.getProperties();
-        let moduleIndex = config.moduleIndex;
+        let moduleIndex = NODICS.getIndexedModules();
         Object.keys(moduleIndex).forEach(function (index) {
             let group = moduleIndex[index];
             group.forEach(module => {
@@ -274,8 +216,7 @@ module.exports = {
      * This function used to load configuration file for given moduleName
      */
     loadModuleConfiguration: function (moduleName, fileName) {
-        let config = CONFIG.getProperties();
-        let module = config.moduleList[moduleName];
+        let module = NODICS.getRawModule(moduleName);
         if (module) {
             this.loadConfiguration(module.path + fileName);
         }
@@ -377,7 +318,7 @@ module.exports = {
         let fileConfig = _.merge({}, logConfig.fileConfig);
         fileConfig.label = entityName;
         if (fileConfig.dirname.startsWith('.')) {
-            fileConfig.dirname = NODICS.getServerHome() + '/logs';
+            fileConfig.dirname = NODICS.getServerPath() + '/logs';
         }
         if (!fs.existsSync(fileConfig.dirname)) {
             fs.mkdirSync(fileConfig.dirname);
@@ -399,8 +340,8 @@ module.exports = {
     getGlobalVariables: function (fileName) {
         let _self = this;
         let gVar = {};
-        Object.keys(CONFIG.get('moduleIndex')).forEach(function (key) {
-            var value = CONFIG.get('moduleIndex')[key][0];
+        Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
+            var value = NODICS.getIndexedModules()[key][0];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
                 _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
@@ -449,8 +390,8 @@ module.exports = {
     loadFiles: function (fileName, frameworkFile) {
         let _self = this;
         let mergedFile = frameworkFile || {};
-        Object.keys(CONFIG.get('moduleIndex')).forEach(function (key) {
-            var value = CONFIG.get('moduleIndex')[key][0];
+        Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
+            var value = NODICS.getIndexedModules()[key][0];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
                 _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));

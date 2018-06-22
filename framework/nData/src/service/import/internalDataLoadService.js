@@ -13,11 +13,11 @@ const _ = require('lodash');
 const fs = require('fs');
 
 module.exports = {
-    loadModules: function(dataType) {
+    loadModules: function (dataType) {
         let _self = this;
         let data = {};
-        Object.keys(CONFIG.get('moduleIndex')).forEach(function(key) {
-            var value = CONFIG.get('moduleIndex')[key][0];
+        Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
+            var value = NODICS.getIndexedModules()[key][0];
             let path = value.path + '/data/dataConfig.js';
             if (fs.existsSync(path)) {
                 let file = require(path);
@@ -35,7 +35,7 @@ module.exports = {
         return data;
     },
 
-    loadFiles: function(list, module, dataType, data) {
+    loadFiles: function (list, module, dataType, data) {
         let _self = this;
         if (list.length > 0) {
             list.forEach(file => {
@@ -48,7 +48,7 @@ module.exports = {
         }
     },
 
-    loadData: function(file, data) {
+    loadData: function (file, data) {
         let coreDataFile = require(file);
         _.each(coreDataFile, (value, moduleName) => {
             if (data[moduleName]) {

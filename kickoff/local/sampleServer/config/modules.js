@@ -1,5 +1,5 @@
 module.exports = { core: [ 'core', 'cronjob', 'nems', 'profile' ],
-  ems: [ 'emsClient' ],
+  ems: [ 'emsClient', 'ems' ],
   framework: 
    [ 'framework',
      'nconfig',

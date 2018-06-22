@@ -11,6 +11,9 @@
 
 module.exports = {
     moduleGroups: {
-        ems: ['emsClient']
+        ems: [
+            'emsClient',
+            'ems'
+        ]
     }
 };
