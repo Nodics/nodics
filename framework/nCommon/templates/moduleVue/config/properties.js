@@ -19,10 +19,10 @@ module.exports = {
                 mode: 'development',
                 devtool: 'inline-source-map',
                 entry: {
-                    home: path.join(moduleObject.modulePath, moduleObject.webRootDirName, 'js/index.js')
+                    home: path.join(moduleObject.modulePath, moduleObject.webRootDirName, 'pages/index.js')
                 },
                 output: {
-                    path: path.join(moduleObject.modulePath, moduleObject.webRootDirName, moduleObject.webLibDirName),
+                    path: path.join(moduleObject.modulePath, moduleObject.webDistDirName),
                     publicPath: '/',
                     filename: 'bundle.js'
                 },

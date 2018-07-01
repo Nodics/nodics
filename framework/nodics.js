@@ -145,7 +145,7 @@ module.exports = {
                 SYSTEM.LOG.error('Nodics server error : ', error);
             });
         }).catch(error => {
-            SYSTEM.LOG.error('Nodics server not started properly : ', error);
+            console.log('Nodics server not started properly : ', error);
         });
     }
 };

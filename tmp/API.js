@@ -1,423 +1,138 @@
-{
-    nodics: {
-        metaData: {
-            name: 'nodics',
-            index: '0',
-            description: 'Nodics, An Node based enterprise application solution',
-            homepage: 'http://www.nodics.com/',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            scripts: {},
-            repository: [Object],
-            dependencies: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics'
+
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var CopyWebpackPlugin = require('copy-webpack-plugin');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+var path = require('path');
+var webpack = require('webpack');
+
+const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJS = require("uglify-js");
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+
+const entryPathObj = {
+    "home": './src/home',
+    "signup": './src/signup',
+    "pdp": './src/pdp',
+    "plp": './src/plp',
+    "search": './src/search',
+    "cart": './src/cart',
+    "profile": './src/profile',
+    "compare": './src/compare',
+    "checkout": './src/checkout',
+    "thankyou": './src/thankyou',
+    "payment": './src/payment',
+    "error": './src/error',
+    "static": './src/static',
+    "storelogin": './src/storelogin',
+    "storelocator": './src/storelocator'
+}
+
+const entryHtmlPlugins = Object.keys(entryPathObj).map(function (key) {
+    return new HtmlWebpackPlugin({
+        template: `./html/${key}.html`,
+        chunks: [key],
+        filename: `html/${key}.html`,
+        cache: true,
+        hash: true
+    })
+});
+
+module.exports = {
+    // This is the "main" file which should include all other modules
+    entry: entryPathObj,
+    // Where should the compiled file go?
+    output: {
+        // To the `dist` folder
+        // With the filename `build.js` so it's dist/build.js
+        path: path.join(__dirname, 'hybrisdist'),
+        filename: 'js/[name].build.js',
+        publicPath: '../'
     },
-    core: {
-        metaData: {
-            name: 'core',
-            index: '100',
-            description: 'Nodics configuration module. It will hold all framework moduls and services',
-            homepage: 'http://www.nodics.com/nodics/framework/',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/core'
+    devtool: 'source-map',
+    module: {
+        // Special compilation rules
+        loaders: [
+            {
+                test: /\.js$/,
+                loader: 'babel',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue'
+            },
+            {
+                test: /\.less$/,
+                loader: 'vue'
+            },
+            {
+                test: /\.css$/,
+                loader: 'vue'
+            },
+            {
+                test: /\.html$/,
+                loader: 'html-loader'
+            },
+            { test: /\.jpg$/, loader: "file-loader" },
+            { test: /\.png$/, loader: "url-loader?mimetype=image/png" }
+        ]
     },
-    cronjob: {
-        metaData: {
-            name: 'cronjob',
-            index: '101',
-            publish: 'true',
-            description: 'Nodics configuration module. It will hold all user\'s model and services',
-            homepage: 'http://www.nodics.com/nodics/user/',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/core/cronjob',
-        app: {
-            [EventEmitter: app]
-            domain: undefined,
-            _events: [Object],
-            _maxListeners: undefined,
-            setMaxListeners: [Function: setMaxListeners],
-            getMaxListeners: [Function: getMaxListeners],
-            emit: [Function: emit],
-            addListener: [Function: addListener],
-            on: [Function: addListener],
-            prependListener: [Function: prependListener],
-            once: [Function: once],
-            prependOnceListener: [Function: prependOnceListener],
-            removeListener: [Function: removeListener],
-            removeAllListeners: [Function: removeAllListeners],
-            listeners: [Function: listeners],
-            listenerCount: [Function: listenerCount],
-            eventNames: [Function: eventNames],
-            init: [Function: init],
-            defaultConfiguration: [Function: defaultConfiguration],
-            lazyrouter: [Function: lazyrouter],
-            handle: [Function: handle],
-            use: [Function: use],
-            route: [Function: route],
-            engine: [Function: engine],
-            param: [Function: param],
-            set: [Function: set],
-            path: [Function: path],
-            enabled: [Function: enabled],
-            disabled: [Function: disabled],
-            enable: [Function: enable],
-            disable: [Function: disable],
-            acl: [Function],
-            bind: [Function],
-            checkout: [Function],
-            connect: [Function],
-            copy: [Function],
-            delete: [Function],
-            get: [Function],
-            head: [Function],
-            link: [Function],
-            lock: [Function],
-            'm-search': [Function],
-            merge: [Function],
-            mkactivity: [Function],
-            mkcalendar: [Function],
-            mkcol: [Function],
-            move: [Function],
-            notify: [Function],
-            options: [Function],
-            patch: [Function],
-            post: [Function],
-            propfind: [Function],
-            proppatch: [Function],
-            purge: [Function],
-            put: [Function],
-            rebind: [Function],
-            report: [Function],
-            search: [Function],
-            subscribe: [Function],
-            trace: [Function],
-            unbind: [Function],
-            unlink: [Function],
-            unlock: [Function],
-            unsubscribe: [Function],
-            all: [Function: all],
-            del: [Function],
-            render: [Function: render],
-            listen: [Function: listen],
-            request: [Object],
-            response: [Object],
-            cache: {},
-            engines: {},
-            settings: [Object],
-            _eventsCount: 1,
-            locals: [Object],
-            mountpath: '/',
-            _router: [Object]
+    vue: {
+        loaders: {
+            js: 'babel',
+            exclude: /node_modules/,
+            css: ExtractTextPlugin.extract("css"),
+            less: ExtractTextPlugin.extract('css!less')
         }
     },
-    user: {
-        metaData: {
-            name: 'user',
-            index: '110',
-            publish: 'true',
-            description: 'Nodics configuration module. It will hold all user\'s model and services',
-            homepage: 'http://www.nodics.com/nodics/user/',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/core/user',
-        app: {
-            [EventEmitter: app]
-            domain: undefined,
-            _events: [Object],
-            _maxListeners: undefined,
-            setMaxListeners: [Function: setMaxListeners],
-            getMaxListeners: [Function: getMaxListeners],
-            emit: [Function: emit],
-            addListener: [Function: addListener],
-            on: [Function: addListener],
-            prependListener: [Function: prependListener],
-            once: [Function: once],
-            prependOnceListener: [Function: prependOnceListener],
-            removeListener: [Function: removeListener],
-            removeAllListeners: [Function: removeAllListeners],
-            listeners: [Function: listeners],
-            listenerCount: [Function: listenerCount],
-            eventNames: [Function: eventNames],
-            init: [Function: init],
-            defaultConfiguration: [Function: defaultConfiguration],
-            lazyrouter: [Function: lazyrouter],
-            handle: [Function: handle],
-            use: [Function: use],
-            route: [Function: route],
-            engine: [Function: engine],
-            param: [Function: param],
-            set: [Function: set],
-            path: [Function: path],
-            enabled: [Function: enabled],
-            disabled: [Function: disabled],
-            enable: [Function: enable],
-            disable: [Function: disable],
-            acl: [Function],
-            bind: [Function],
-            checkout: [Function],
-            connect: [Function],
-            copy: [Function],
-            delete: [Function],
-            get: [Function],
-            head: [Function],
-            link: [Function],
-            lock: [Function],
-            'm-search': [Function],
-            merge: [Function],
-            mkactivity: [Function],
-            mkcalendar: [Function],
-            mkcol: [Function],
-            move: [Function],
-            notify: [Function],
-            options: [Function],
-            patch: [Function],
-            post: [Function],
-            propfind: [Function],
-            proppatch: [Function],
-            purge: [Function],
-            put: [Function],
-            rebind: [Function],
-            report: [Function],
-            search: [Function],
-            subscribe: [Function],
-            trace: [Function],
-            unbind: [Function],
-            unlink: [Function],
-            unlock: [Function],
-            unsubscribe: [Function],
-            all: [Function: all],
-            del: [Function],
-            render: [Function: render],
-            listen: [Function: listen],
-            request: [Object],
-            response: [Object],
-            cache: {},
-            engines: {},
-            settings: [Object],
-            _eventsCount: 1,
-            locals: [Object],
-            mountpath: '/',
-            _router: [Object]
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.common.js'
         }
     },
-    framework: {
-        metaData: {
-            name: 'framework',
-            index: '20',
-            description: 'Nodics configuration module. It will hold all framework moduls and services',
-            homepage: 'http://www.nodics.com/nodics/framework/',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework'
-    },
-    ncommon: {
-        metaData: {
-            name: 'ncommon',
-            index: '2',
-            description: 'Nodics configuration module. It will hold all common and environment specific configuration',
-            homepage: 'http://www.nodics.com/nodics/framework/ncommon',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            contributors: [],
-            dependencies: [],
-            repository: [Object],
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License'
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework/nCommon'
-    },
-    nconfig: {
-        metaData: {
-            name: 'nconfig',
-            index: '1',
-            description: 'Nodics configuration module. It will hold all common and environment specific configuration',
-            homepage: 'http://www.nodics.com/nodics/framework/nconfig',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework/nConfig'
-    },
-    ncontroller: {
-        metaData: {
-            name: 'ncontroller',
-            index: '9',
-            description: 'Nodics configuration module. It will hold all Database related configuration',
-            homepage: 'http://www.nodics.com/nodics/framework/ndatabase',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework/nController'
-    },
-    ncronjob: {
-        metaData: {
-            name: 'ncronjob',
-            index: '7',
-            description: 'Nodics configuration module. It will hold all Database related configuration',
-            homepage: 'http://www.nodics.com/nodics/framework/ndatabase',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework/nCronJob'
-    },
-    ndao: {
-        metaData: {
-            name: 'ndao',
-            index: '4',
-            description: 'This module is responsible to generate Service layer for all generated Dao',
-            homepage: 'http://www.nodics.com/nodics/framework/ndao',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework/nDao'
-    },
-    ndatabase: {
-        metaData: {
-            name: 'ndatabase',
-            index: '3',
-            description: 'Nodics configuration module. It will hold all Database related configuration',
-            homepage: 'http://www.nodics.com/nodics/framework/ndatabase',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework/nDatabase'
-    },
-    nfacade: {
-        metaData: {
-            name: 'nfacade',
-            index: '8',
-            description: 'Nodics configuration module. It will hold all Database related configuration',
-            homepage: 'http://www.nodics.com/nodics/framework/ndatabase',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework/nFacade'
-    },
-    nprocess: {
-        metaData: {
-            name: 'nprocess',
-            index: '6',
-            description: 'Nodics configuration module. It will hold all Database related configuration',
-            homepage: 'http://www.nodics.com/nodics/framework/ndatabase',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework/nProcess'
-    },
-    nrouter: {
-        metaData: {
-            name: 'nrouter',
-            index: '10',
-            description: 'This module is responsible to setup express routers for all modules',
-            homepage: 'http://www.nodics.com/nodics/framework/nrouter',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework/nRouter'
-    },
-    nservice: {
-        metaData: {
-            name: 'nservice',
-            index: '5',
-            description: 'Nodics configuration module. It will hold all Database related configuration',
-            homepage: 'http://www.nodics.com/nodics/framework/ndatabase',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/framework/nService'
-    },
-    server: {
-        metaData: {
-            name: 'server',
-            index: '1000',
-            description: 'Nodics applicaion module. It will hold all configuration and server point to start nodics',
-            homepage: 'http://www.nodics.com/nodics/server/',
-            keywords: [Array],
-            author: 'Himkar Dwivedi <himkar.dwivedi@nodics.com>',
-            main: 'nodics.js',
-            version: '0.0.1',
-            private: true,
-            license: 'MIT License',
-            repository: [Object],
-            dependencies: [Object]
-        },
-        modulePath: '/Users/baba/apps/HimProjects/nodics/server'
-    }
+    plugins: [
+        new ExtractTextPlugin("css/[name].build.css"),
+        new OptimizeCssAssetsPlugin(),
+        new CopyWebpackPlugin([
+            { from: './static', to: 'static' },
+            { from: './vendor/font-awesome-4.7.0/fonts', to: 'fonts' },
+            { from: './vendor/bootstrap/fonts', to: 'fonts' },
+            { from: './vendor/roboto/fonts', to: 'fonts' },
+            { from: './vendor', to: 'vendor' },
+            { from: './config', to: 'config' },
+            { from: './index.html', to: 'index.html' }
+
+        ]),
+        new webpack.DefinePlugin({
+            'serverPath': JSON.stringify("")
+        }),
+        new MergeIntoSingleFilePlugin({
+            files: {
+                "css/lib.bundle.css": ['./vendor/bootstrap/css/bootstrap.min.css',
+                    './vendor/bootstrap-datepicker/css/datepicker.css',
+                    './vendor/font-awesome-4.7.0/css/font-awesome.min.css',
+                    './vendor/slick/slick.css',
+                    './vendor/roboto/roboto.css',
+                    './vendor/toastr/toastr.min.css',
+                    './vendor/animate.css/animate.min.css'
+                ],
+                "js/lib.bundle.js": ['./vendor/jquery/jquery-3.2.1.min.js',
+                    './vendor/bootstrap/js/bootstrap.min.js',
+                    './vendor/bootstrap-datepicker/js/bootstrap-datepicker.js',
+                    './vendor/slick/slick.min.js',
+                    './vendor/easyzoom/easyzoom.js',
+                    './vendor/toastr/toastr.min.js'
+                ]
+            },
+            transform: {
+                'js/lib.bundle.js': code => UglifyJS.minify(code).code
+            }
+        })
+
+        , new UglifyJsPlugin({
+            test: /\.js($|\?)/i,
+            sourceMap: true
+        })
+    ].concat(entryHtmlPlugins)
 }

@@ -11,7 +11,6 @@
 
 const _ = require('lodash');
 const mongoose = require('mongoose');
-const extend = require('mongoose-schema-extend');
 
 module.exports = {
 

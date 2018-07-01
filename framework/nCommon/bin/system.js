@@ -57,6 +57,7 @@ module.exports = {
         });
         SYSTEM.generalizeClasses();
     },
+
     loadModuleClasses: function (module) {
         let path = module.path + '/src/lib';
         SYSTEM.processFiles(path, "*", (file) => {

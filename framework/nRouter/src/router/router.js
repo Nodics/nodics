@@ -17,13 +17,22 @@ module.exports = {
     operations: {
         registerWeb: function (app, moduleObject) {
             if (moduleObject.metaData.web) {
-                moduleObject.webRootDirName = CONFIG.get('webRootDirName');
-                moduleObject.webLibDirName = CONFIG.get('webLibDirName');
-                moduleConfig = CONFIG.get(moduleObject.metaData.name);
-                let webpackConfig = moduleConfig.getWebpackConfig(moduleObject);
-                const compiler = webpack(webpackConfig);
-                app.use(require('webpack-dev-middleware')(compiler, moduleConfig.webpackCompilerOptions));
-                app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, express.static(path.join(moduleObject.modulePath, '/' + moduleObject.webRootDirName)));
+                try {
+                    moduleObject.webRootDirName = CONFIG.get('webRootDirName');
+                    moduleObject.webDistDirName = CONFIG.get('webDistDirName');
+                    moduleConfig = CONFIG.get(moduleObject.metaData.name);
+                    moduleObject.pages = UTILS.getPages(moduleObject.metaData.name);
+                    moduleObject.entryHtmlPlugins = moduleConfig.getHtmlWebpackPlugin(moduleObject);
+                    let webpackConfig = moduleConfig.getWebpackConfig(moduleObject);
+                    const compiler = webpack(webpackConfig);
+                    app.use(require('webpack-dev-middleware')(compiler, {
+                        publicPath: webpackConfig.output.publicPath,
+                        writeToDisk: true
+                    }));
+                    app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, express.static(path.join(moduleObject.modulePath, '/' + moduleObject.webRootDirName)));
+                } catch (error) {
+                    console.log(error);
+                }
             }
         },
         get: function (app, routerDef) {

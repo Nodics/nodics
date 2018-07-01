@@ -3,9 +3,6 @@ Todos:
   New:
     ✔ Update updated timestamp for each item update @done(18-03-04 23:42)
     ✔ Handle Dynamic property handler - Dynamic Attributs can be handled via Mongoose virtuals, Like: @done(18-03-05 18:13)
-      personSchema.virtual('fullName').get(function () {
-        return this.name.first + ' ' + this.name.last;
-      });
     ✘ Add hook for each layer and each method level @cancelled(18-04-05 10:42)
     ✔ Start all Active cronJobs on start-up @done(18-03-09 22:25)
     ✔ Only active jobs need to be executed @done(18-03-12 23:36)
@@ -71,7 +68,7 @@ Todos:
     ✔ Invalidate auth token from each module @done(18-04-27 13:10)
 
     
-    - Dont load test cases while server start-up instead while executing
+    - Don't load test cases while server start-up instead while executing
     - Run individual test case from API for both type
     ✔ Make context root at module server level, for communicating between modules @done(18-04-27 13:10)
     - Document complete server configuration for start and connect
@@ -83,6 +80,13 @@ Todos:
   Multi-Language Support:
     - Support schema to define multi language support (https://www.npmjs.com/package/mongoose-intl)
     - Support Nodics to fetch langauge specific data on each query
+
+  Event Processing System:
+    - Test Asynchronous events
+    - Build Sync events process
+
+  Tenant Management:
+    - As soon as new tenant got register, make it live within system
     
 Todos:
   Cassandra Support task:
@@ -90,6 +94,15 @@ Todos:
     - Create schema file separate for both mongo and cassandra (mongodbSchema and cassandraSchema)
 
 Todos:
+  - Trigger import process from API or internal service call
+  - Configuration hold an array of Paths from where data needs to be read and data type like: init, core or sample
+  - Load Module specific data from file
+  - Load data sequentially
+  - Need manage data internal dependancy
+  - Need to manage Multi file upload
+  - Need to manage Big file upload
+  - Define data definition in seperate files
+  
   Data Import Process:
     - Load all active data, while calling import service, not while server startup
     - Load data only for modules are active for that instance

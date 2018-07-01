@@ -11,10 +11,9 @@ class App extends React.Component {
     }
 
     render() {
-        console.log(':::::::')
         return (
             <div>
-                <h1>React Admin setup complete</h1>
+                <h1>React Admin setup complete something</h1>
             </div>
         )
     }

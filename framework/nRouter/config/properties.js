@@ -11,7 +11,7 @@
 
 module.exports = {
     webRootDirName: 'web',
-    webLibDirName: 'lib',
+    webDistDirName: 'lib',
     routerInitFunction: [
         'initProperties',
         'initSession',

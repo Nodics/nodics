@@ -13,7 +13,7 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <h1>React customApplication Setup Complete</h1>
+                <h1>React customApplication setup complete something</h1>
             </div>
         )
     }

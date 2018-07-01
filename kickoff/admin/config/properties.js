@@ -9,8 +9,9 @@
 
  */
 
+const fs = require('fs');
 const path = require('path');
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     admin: {
@@ -18,13 +19,11 @@ module.exports = {
             return {
                 mode: 'development',
                 devtool: 'inline-source-map',
-                entry: {
-                    home: path.join(moduleObject.modulePath, moduleObject.webRootDirName, 'js/index.js')
-                },
+                entry: moduleObject.pages,
                 output: {
-                    path: path.join(moduleObject.modulePath, moduleObject.webRootDirName, moduleObject.webLibDirName),
-                    publicPath: '/',
-                    filename: 'bundle.js'
+                    path: path.join(moduleObject.modulePath, moduleObject.webRootDirName, moduleObject.webDistDirName),
+                    publicPath: moduleObject.webDistDirName,
+                    filename: '[name].build.js'
                 },
                 module: {
                     rules: [
@@ -34,12 +33,30 @@ module.exports = {
                             loaders: ['babel-loader?presets[]=es2015,presets[]=react']
                         }
                     ]
-                }
+                },
+                plugins: [
+
+                ].concat(this.getHtmlWebpackPlugin(moduleObject))
             }
         },
-        webpackCompilerOptions: {
-            publicPath: '/',
-            writeToDisk: true
+
+        getHtmlWebpackPlugin: function (moduleObject) {
+            htmlPlugins = [];
+            let defaultHbs = moduleObject.modulePath + '/' + moduleObject.webRootDirName + '/hbs/default.hbs'
+            Object.keys(moduleObject.pages).map(key => {
+                let template = moduleObject.modulePath + '/' + moduleObject.webRootDirName + '/hbs/' + key + '.hbs'
+                if (!fs.existsSync(template)) {
+                    template = defaultHbs;
+                }
+                htmlPlugins.push(new HtmlWebpackPlugin({
+                    template: template,
+                    chunks: [key],
+                    filename: moduleObject.modulePath + '/' + moduleObject.webRootDirName + '/' + key + '.html',
+                    cache: true,
+                    hash: true
+                }));
+            });
+            return htmlPlugins;
         }
     }
 };
