@@ -113,6 +113,11 @@ Todos:
     Sample Data Import Process:
   
   Data Export Process:
+
+  Authorization Process:
+    - Keep authentication credantials mapped with authToken
+    - On expiration, re-generate authToken
+    - Change all current implementation for backoffice processes
     
 
 

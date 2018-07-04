@@ -40,7 +40,9 @@ module.exports = {
                     } else {
                         let name = element.substring(0, element.lastIndexOf("."));
                         name = name.replace('.', '');
-                        fileList[name] = file;
+                        if (!UTILS.isBlank(name)) {
+                            fileList[name] = file;
+                        }
                     }
                 });
             }
