@@ -89,20 +89,23 @@ module.exports = {
                     event.loadListeners();
                     router.loadRouter().then(success => {
                         SYSTEM.executePostScripts();
-                        //console.log(NODICS.getRawModules());
-                        //console.log(NODICS.getActiveModules());
                         if (true) {
-                            SERVICE.DataImportService.importInitData().then(success => {
+                            console.log('---------------------------');
+                            SERVICE.ImportService.importInitData({}).then(success => {
+                                console.log('----- Imported Successfully : ', success);
                                 SYSTEM.addTenants().then(success => {
                                     SYSTEM.loadTenantDatabase().then(success => {
                                         resolve(true);
                                     }).catch(error => {
+                                        SYSTEM.LOG.error('Not able to load tenants : ', error);
                                         reject(error);
                                     });
                                 }).catch(error => {
+                                    SYSTEM.LOG.error('Not able to add tenants : ', error);
                                     reject(error);
                                 });
                             }).catch(error => {
+                                SYSTEM.LOG.error('Initial data import fails: ', error);
                                 reject(error);
                             });
                         } else {
@@ -110,9 +113,11 @@ module.exports = {
                                 SYSTEM.loadTenantDatabase().then(success => {
                                     resolve(true);
                                 }).catch(error => {
+                                    SYSTEM.LOG.error('Not able to load tenants : ', error);
                                     reject(error);
                                 });
                             }).catch(error => {
+                                SYSTEM.LOG.error('Not able to add tenants : ', error);
                                 reject(error);
                             });
                         }
@@ -147,7 +152,9 @@ module.exports = {
                 SYSTEM.LOG.error('Nodics server error : ', error);
             });
         }).catch(error => {
-            console.log('Nodics server not started properly : ', error);
+            console.error('Nodics server not started properly : ', error);
+            console.log(process);
+            throw new Error('Nodics server not started properly : ' + error);
         });
     }
 };

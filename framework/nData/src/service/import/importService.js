@@ -9,100 +9,88 @@
 
  */
 
-const _ = require('lodash');
-const fs = require('fs');
-
 module.exports = {
 
-    /*
-     * This function will return list of files from all modules grouped by file name
-     * @argument - moduleList - list of modules to be processed
-     * @return - object hold files based on thier name
-    **/
-    getInternalFiles: function (moduleList, dataType) {
-        return new Promise((resolve, reject) => {
+    importData: function (input) {
+        if (!input.modules && !input.path) {
+            return Promise.reject('Please validate request. Mandate property modules or path not found');
+        } else {
             try {
-                if (!moduleList || moduleList.length == 0) {
-                    reject('Invalid list of modules to be proccesses');
-                } else {
-                    let fileList = [];
-                    _.each(NODICS.getIndexedModules(), (modules, moduleIndex) => {
-                        modules.forEach(element => {
-                            if (moduleList.includes(element.name)) {
-                                let moduleFiles = {};
-                                let dataFilesRoot = element.path;
-                                if (dataType === 'core') {
-                                    dataFilesRoot = dataFilesRoot + '/data/core'
-                                } else if (dataType === 'sample') {
-                                    dataFilesRoot = dataFilesRoot + '/data/sample'
-                                } else {
-                                    dataFilesRoot = dataFilesRoot + '/data/init'
-                                }
-                                UTILS.getAllFile(dataFilesRoot, moduleFiles);
-                                _.each(moduleFiles, (dataFile, name) => {
-                                    if (fileList[name]) {
-                                        fileList[name].push(dataFile);
-                                    } else {
-                                        fileList[name] = [dataFile];
-                                    }
-                                });
-                            }
-                        });
-                    });
-                    resolve(fileList);
-                }
+                return new Promise((resolve, reject) => {
+                    input.promise = {
+                        resolve: resolve,
+                        reject: reject
+                    }
+                    SERVICE.ProcessService.startProcess('defaultDataImportProcess', input, {});
+                });
             } catch (error) {
-                reject(error);
+                return Promise.reject(error);
             }
-        });
+        }
     },
+
+    importInitData: function (request, callback) {
+        let input = request.local || request;
+        input.dataType = 'init';
+
+        if (callback) {
+            his.importData(input).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return this.importData(input);
+        }
+    },
+
+    importCoreData: function (request, callback) {
+        let input = request.local || request;
+        input.dataType = 'core';
+        if (callback) {
+            his.importData(input).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return this.importData(input);
+        }
+    },
+
+    importSampleData: function (request, callback) {
+        let input = request.local || request;
+        input.dataType = 'sample';
+        if (callback) {
+            his.importData(input).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return this.importData(input);
+        }
+    }
 
     /*
-     * This function will return list of files from given path grouped by file name
-     * @argument - path - path to the external directory
-     * @return - object hold files based on thier name
-    **/
-    getExternalFiles: function (path) {
-        return new Promise((resolve, reject) => {
-            try {
-                if (fs.existsSync(path)) {
-                    let fileList = [];
-                    let moduleFiles = {};
-                    UTILS.getAllFile(path, moduleFiles);
-                    _.each(moduleFiles, (dataFile, name) => {
-                        if (fileList[name]) {
-                            fileList[name].push(dataFile);
-                        } else {
-                            fileList[name] = [dataFile];
-                        }
-                    });
-                    resolve(fileList);
-                } else {
-                    reject('Given path :' + path + ' is not valid');
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    },
-
-    processDataImport: function (input, callback) {
-        let _self = this;
-
-
-
-
-
-        let dataType = 'init';
-        SERVICE.InternalDataLoadService.getInternalFiles(['profile', 'sampleServer']).then(fileList => {
-            console.log(fileList);
-        }).catch(error => {
-            console.log(error);
-        });
-        SERVICE.InternalDataLoadService.getExternalFiles(NODICS.getNodicsHome() + '/tmp').then(fileList => {
-            console.log(fileList);
-        }).catch(error => {
-            console.log(error);
-        });
-    },
+        processDataImport: function (input, callback) {
+            let _self = this;
+    
+    
+    
+    
+    
+            let dataType = 'init';
+            SERVICE.InternalDataLoadService.getInternalFiles(['profile', 'sampleServer']).then(fileList => {
+                console.log(fileList);
+            }).catch(error => {
+                console.log(error);
+            });
+            SERVICE.InternalDataLoadService.getExternalFiles(NODICS.getNodicsHome() + '/tmp').then(fileList => {
+                console.log(fileList);
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+    */
 };

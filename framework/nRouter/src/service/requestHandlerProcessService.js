@@ -28,7 +28,6 @@ module.exports = {
             };
             SERVICE.ProcessService.startProcess('requestHandlerProcess', request, {});
         } catch (error) {
-            console.log(error);
             response.json(error);
         }
     },

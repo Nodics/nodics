@@ -26,8 +26,11 @@ module.exports = {
             redirectToImportType: {
                 type: 'function',
                 process: 'DefaultDataImportProc.redirectToImportType',
-                success: 'importFromFileProcess',
-                failure: 'handleDirectImport'
+                success: {
+                    fileImport: 'importFromFileProcess',
+                    directImport: 'importFromDirectProcess'
+                },
+                failure: 'failureEnd'
             },
             importFromFileProcess: {
                 type: 'process',
@@ -74,30 +77,72 @@ module.exports = {
     },
 
     importFromFileProcess: {
-        startNode: "placeholder",
+        startNode: "loadInternalDataFileList",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
 
         nodes: {
             loadInternalDataFileList: {
                 type: 'function',
-                process: 'DirectDataImportProc.placeholder',
-                success: 'successEnd',
+                process: 'ProcessFilesImportProc.loadInternalDataFileList',
+                success: 'loadExternalDataFileList',
                 failure: 'failureEnd'
             },
             loadExternalDataFileList: {
                 type: 'function',
-                process: 'DirectDataImportProc.placeholder',
-                success: 'successEnd',
+                process: 'ProcessFilesImportProc.loadExternalDataFileList',
+                success: 'mergeFileList',
                 failure: 'failureEnd'
             },
             mergeFileList: {
                 type: 'function',
-                process: 'DirectDataImportProc.placeholder',
+                process: 'ProcessFilesImportProc.mergeFileList',
+                success: 'processFiles',
+                failure: 'failureEnd'
+            },
+            processFiles: {
+                type: 'function',
+                process: 'ProcessFilesImportProc.processFiles',
+                success: 'successEnd',
+                failure: 'failureEnd'
+            }
+
+        }
+    },
+
+    fileImportProcess: {
+        startNode: "loadFileData",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            loadFileData: {
+                type: 'function',
+                process: 'ProcessFileImportProc.loadFileData',
+                success: 'importFileData',
+                failure: 'failureEnd'
+            },
+            importFileData: {
+                type: 'function',
+                process: 'ProcessFileImportProc.importFileData',
                 success: 'successEnd',
                 failure: 'failureEnd'
             },
 
+            successEnd: {
+                type: 'function',
+                process: 'ProcessFileImportProc.handleSucessEnd'
+            },
+
+            failureEnd: {
+                type: 'function',
+                process: 'ProcessFileImportProc.handleFailureEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                process: 'ProcessFileImportProc.handleErrorEnd'
+            }
         }
-    }
+    },
 };

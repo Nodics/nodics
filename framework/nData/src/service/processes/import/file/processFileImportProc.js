@@ -10,24 +10,13 @@
  */
 
 module.exports = {
-    validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request');
-        if (!request.modules && !request.path) {
-            return request.promise.reject('Please validate request. Mandate property modules or path not found');
-        } else {
-            process.nextSuccess(request, response);
-        }
+    loadFileData: function (request, response, process) {
+        this.LOG.debug('Passing through placeholder');
+        process.nextSuccess(request, response);
     },
 
-    redirectToImportType: function (request, response, process) {
-        this.LOG.debug('Checking target process to handle request');
-        if (request.local.secured) {
-            this.LOG.debug('Redirecting to importFromFileProcess');
-            response.targetNode = 'fileImport';
-        } else {
-            this.LOG.debug('Redirecting to importFromDirectProcess');
-            response.targetNode = 'directImport';
-        }
+    importFileData: function (request, response, process) {
+        this.LOG.debug('Passing through placeholder');
         process.nextSuccess(request, response);
     },
 
@@ -45,5 +34,4 @@ module.exports = {
         this.LOG.debug('Request has been processed and got errors : ');
         request.local.httpResponse.json(response);
     }
-
 };

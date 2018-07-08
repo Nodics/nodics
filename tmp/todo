@@ -87,6 +87,10 @@ Todos:
 
   Tenant Management:
     - As soon as new tenant got register, make it live within system
+
+  Process Changes:
+    ✔ Support multiple success node redirect @done(18-07-08 14:23)
+    ✔ Support multiple failure node redirect @done(18-07-08 14:23)
     
 Todos:
   Cassandra Support task:

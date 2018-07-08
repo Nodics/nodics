@@ -11,15 +11,16 @@
 
 module.exports = {
 
-    importInitData: function(input, callback) {
-        SERVICE.DataImportService.importInitData(input, callback);
+    importInitData: function (input, callback) {
+        //SERVICE.DataImportService.importInitData(input, callback);
+        SERVICE.ImportService.importInitData(input, callback);
     },
 
-    importCoreData: function(input, callback) {
+    importCoreData: function (input, callback) {
         SERVICE.DataImportService.importCoreData(input, callback);
     },
 
-    importSampleData: function(input, callback) {
+    importSampleData: function (input, callback) {
         SERVICE.DataImportService.importSampleData(input, callback);
     }
 
