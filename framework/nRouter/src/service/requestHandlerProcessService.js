@@ -129,11 +129,12 @@ module.exports = {
         this.LOG.debug('Redirecting secured/non-secured request  : ', request.local.originalUrl);
         if (request.local.secured) {
             this.LOG.debug('Handling secured request');
-            process.nextSuccess(request, response);
+            response.targetNode = 'securedRequest';
         } else {
             this.LOG.debug('Handling non-secured request');
-            process.nextFailure(request, response);
+            response.targetNode = 'nonSecureRequest';
         }
+        process.nextSuccess(request, response);
     },
 
     handleRequest: function (request, response, process) {

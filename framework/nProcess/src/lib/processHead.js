@@ -71,7 +71,7 @@ module.exports = function (name, processDefinition, callback) {
     };
 
     this.prepareNextNode = function () {
-        if (_currentNode.getSuccess()) {
+        if (_currentNode.getSuccess() && !UTILS.isObject(_currentNode.getSuccess())) {
             if (_nodeList[_currentNode.getSuccess()]) {
                 _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
             } else {
@@ -80,7 +80,7 @@ module.exports = function (name, processDefinition, callback) {
         } else {
             _nextSuccessNode = null;
         }
-        if (_currentNode.getFailure()) {
+        if (_currentNode.getFailure() && !UTILS.isObject(_currentNode.getSuccess())) {
             if (_nodeList[_currentNode.getFailure()]) {
                 _nextFailureNode = _nodeList[_currentNode.getFailure()];
             } else {
@@ -93,14 +93,52 @@ module.exports = function (name, processDefinition, callback) {
 
     this.nextSuccess = function (processRequest, processResponse) {
         _preNode = _currentNode;
-        _currentNode = _nextSuccessNode;
-        this.next(processRequest, processResponse);
+        if (!_nextSuccessNode || _nextSuccessNode === null) {
+            let targetNode = processResponse.targetNode
+            this.LOG.debug('Processing target node : ', targetNode);
+            processResponse.targetNode = 'none';
+            if (targetNode && targetNode !== 'none' && UTILS.isObject(_currentNode.getSuccess())) {
+                if (!_currentNode.getSuccess()[targetNode]) {
+                    this.LOG.error('Invalid node configuration for: ' + targetNode);
+                    this.error(processRequest, processResponse, 'Invalid node configuration for: ' + targetNode);
+                } else {
+                    _nextSuccessNode = _nodeList[_currentNode.getSuccess()[targetNode]];
+                    _currentNode = _nextSuccessNode;
+                    this.next(processRequest, processResponse);
+                }
+            }
+        } else {
+            _currentNode = _nextSuccessNode;
+            this.next(processRequest, processResponse);
+        }
+
     };
 
     this.nextFailure = function (processRequest, processResponse) {
         _preNode = _currentNode;
+        if (!_nextFailureNode || _nextFailureNode === null) {
+            let targetNode = processResponse.targetNode
+            this.LOG.debug('Processing target node : ', targetNode);
+            processResponse.targetNode = 'none';
+            if (targetNode && targetNode !== 'none' && UTILS.isObject(_currentNode.getFailure())) {
+                if (!_currentNode.getFailure()[targetNode]) {
+                    this.LOG.error('Invalid node configuration for: ' + targetNode);
+                    this.error(processRequest, processResponse, 'Invalid node configuration for: ' + targetNode);
+                } else {
+                    _nextFailureNode = _nodeList[_currentNode.getFailure()[targetNode]];
+                    _currentNode = _nextFailureNode;
+                    this.next(processRequest, processResponse);
+                }
+            }
+        } else {
+            _currentNode = _nextFailureNode;
+            this.next(processRequest, processResponse);
+        }
+        /*
+        _preNode = _currentNode;
         _currentNode = _nextFailureNode;
         this.next(processRequest, processResponse);
+        */
     };
 
     this.stop = function (processRequest, processResponse) {
@@ -124,7 +162,6 @@ module.exports = function (name, processDefinition, callback) {
         let serviceName = _currentNode.getProcess().substring(0, _currentNode.getProcess().lastIndexOf('.'));
         let operation = _currentNode.getProcess().substring(_currentNode.getProcess().lastIndexOf('.') + 1, _currentNode.getProcess().length);
         SERVICE[serviceName][operation](processRequest, processResponse);
-        //eval(_currentNode.getProcess())(processRequest, processResponse);
         if (_callback && !_done) {
             _callback();
         }
@@ -162,11 +199,6 @@ module.exports = function (name, processDefinition, callback) {
                 }
             } else {
                 try {
-                    let targetNode = processResponse.targetNode
-                    processResponse.targetNode = 'none';
-                    if (!targetNode || targetNode === 'none') {
-                        targetNode = _currentNode.getProcess();
-                    }
                     SERVICE.ProcessService.startProcess(_currentNode.getProcess(), processRequest, processResponse, () => {
                         if (_hardStop && !UTILS.isBlank(processResponse.errors)) {
                             _self.nextFailure(processRequest, processResponse);

@@ -48,10 +48,12 @@ module.exports = {
             redirectRequest: {
                 type: 'function',
                 process: 'RequestHandlerProcessService.redirectRequest',
-                success: 'handleSecuredRequest',
+                success: {
+                    securedRequest: 'handleSecuredRequest',
+                    nonSecureRequest: 'handleNonSecuredRequest'
+                },
                 failure: 'handleNonSecuredRequest'
             },
-
             handleSecuredRequest: {
                 type: 'process',
                 process: 'handleSecuredRequestProcess',
@@ -65,7 +67,6 @@ module.exports = {
                 success: 'handleRequest',
                 failure: 'failureEnd'
             },
-
             handleRequest: {
                 type: 'function',
                 process: 'RequestHandlerProcessService.handleRequest',

@@ -230,10 +230,10 @@ module.exports = {
     common: {
         pingMe: {
             iAmLive: {
-                secured: true,
+                secured: false,
                 key: '/ping',
                 method: 'GET',
-                handler: 'PingMeController',
+                controller: 'PingMeController',
                 operation: 'ping',
                 help: {
                     requestType: 'secured',
