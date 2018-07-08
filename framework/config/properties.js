@@ -24,7 +24,8 @@ module.exports = {
             'ncontroller',
             'nrouter',
             'ndata',
-            'ntest'
+            'ntest',
+            'system'
         ]
     }
 };

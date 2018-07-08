@@ -10,8 +10,7 @@
  */
 
 module.exports = {
-
-    importDataHandlerService: {
-        js: 'ImportJSFormatDataService'
+    init: function(options) {
+        // 
     }
 };

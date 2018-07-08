@@ -11,7 +11,7 @@
 
 const _ = require('lodash');
 
-module.exports = function(name, processDefinition, callback) {
+module.exports = function (name, processDefinition, callback) {
     let _processId = 'id';
     let _processDefinition = processDefinition;
     let _self = this;
@@ -29,26 +29,26 @@ module.exports = function(name, processDefinition, callback) {
     let _done = false;
     let _nodeLog = SYSTEM.createLogger('ProcessNode');
 
-    this.setProcessId = function(id) {
+    this.setProcessId = function (id) {
         _processId = id;
     };
 
-    this.getProcessId = function() {
+    this.getProcessId = function () {
         return _processId;
     };
 
-    this.getNodeName = function() {
+    this.getNodeName = function () {
         if (_currentNode) {
             return _currentNode.getName();
         }
         return null;
     };
-    this.getProcessName = function() {
+    this.getProcessName = function () {
         return _processName;
     };
-    this.buildProcess = function() {
+    this.buildProcess = function () {
         let _self = this;
-        _.each(_processDefinition.nodes, function(value, key) {
+        _.each(_processDefinition.nodes, function (value, key) {
             _nodeList[key] = new CLASSES.ProcessNode(key, value);
             _nodeList[key].LOG = _nodeLog;
         });
@@ -70,7 +70,7 @@ module.exports = function(name, processDefinition, callback) {
 
     };
 
-    this.prepareNextNode = function() {
+    this.prepareNextNode = function () {
         if (_currentNode.getSuccess()) {
             if (_nodeList[_currentNode.getSuccess()]) {
                 _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
@@ -91,25 +91,25 @@ module.exports = function(name, processDefinition, callback) {
         }
     };
 
-    this.nextSuccess = function(processRequest, processResponse) {
+    this.nextSuccess = function (processRequest, processResponse) {
         _preNode = _currentNode;
         _currentNode = _nextSuccessNode;
         this.next(processRequest, processResponse);
     };
 
-    this.nextFailure = function(processRequest, processResponse) {
+    this.nextFailure = function (processRequest, processResponse) {
         _preNode = _currentNode;
         _currentNode = _nextFailureNode;
         this.next(processRequest, processResponse);
     };
 
-    this.stop = function(processRequest, processResponse) {
+    this.stop = function (processRequest, processResponse) {
         _preNode = _currentNode;
         _currentNode = _successEndNode;
         this.next(processRequest, processResponse);
     };
 
-    this.error = function(processRequest, processResponse, err) {
+    this.error = function (processRequest, processResponse, err) {
         this.LOG.debug('Error occured while processing node', _currentNode.getName(), ' - ', err);
         _preNode = _currentNode;
         _currentNode = _handleError;
@@ -131,7 +131,7 @@ module.exports = function(name, processDefinition, callback) {
         _done = true;
     };
 
-    this.start = function(id, processRequest, processResponse) {
+    this.start = function (id, processRequest, processResponse) {
         this.LOG.debug('Starting process with process id : ', id);
         _processId = id;
         _currentNode = _nodeList[_startNode];
@@ -142,7 +142,8 @@ module.exports = function(name, processDefinition, callback) {
         this.next(processRequest, processResponse);
     };
 
-    this.next = function(processRequest, processResponse) {
+    this.next = function (processRequest, processResponse) {
+        let _self = this;
         if (_currentNode) {
             this.prepareNextNode();
             if (_currentNode.getType() === 'function') {
@@ -150,7 +151,6 @@ module.exports = function(name, processDefinition, callback) {
                     let serviceName = _currentNode.getProcess().substring(0, _currentNode.getProcess().lastIndexOf('.'));
                     let operation = _currentNode.getProcess().substring(_currentNode.getProcess().lastIndexOf('.') + 1, _currentNode.getProcess().length);
                     SERVICE[serviceName][operation](processRequest, processResponse, this);
-                    //eval(_currentNode.getProcess())(processRequest, processResponse, this);
                     if (!_nextSuccessNode) {
                         if (_callback && !_done) {
                             _callback();
@@ -162,8 +162,11 @@ module.exports = function(name, processDefinition, callback) {
                 }
             } else {
                 try {
-                    let _self = this;
-                    let proName = _currentNode.getProcess();
+                    let targetNode = processResponse.targetNode
+                    processResponse.targetNode = 'none';
+                    if (!targetNode || targetNode === 'none') {
+                        targetNode = _currentNode.getProcess();
+                    }
                     SERVICE.ProcessService.startProcess(_currentNode.getProcess(), processRequest, processResponse, () => {
                         if (_hardStop && !UTILS.isBlank(processResponse.errors)) {
                             _self.nextFailure(processRequest, processResponse);

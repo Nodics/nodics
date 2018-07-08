@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    changeApiCacheConfiguration: function(request, callback) {
+    changeApiCacheConfiguration: function (request, callback) {
         if (!UTILS.isBlank(request.body)) {
             request.local.config = request.body;
             FACADE.CacheFacade.changeApiCacheConfiguration(request, callback);
@@ -20,7 +20,7 @@ module.exports = {
         }
     },
 
-    changeItemCacheConfiguration: function(request, callback) {
+    changeItemCacheConfiguration: function (request, callback) {
         if (!UTILS.isBlank(request.body)) {
             request.local.config = request.body;
             FACADE.CacheFacade.changeItemCacheConfiguration(request, callback);
@@ -29,7 +29,7 @@ module.exports = {
         }
     },
 
-    flushApiCache: function(request, callback) {
+    flushApiCache: function (request, callback) {
         if (request.params.prefix) {
             request.local.prefix = request.params.prefix;
         } else if (request.body) {
@@ -38,7 +38,7 @@ module.exports = {
         FACADE.CacheFacade.flushApiCache(request, callback);
     },
 
-    flushItemCache: function(request, callback) {
+    flushItemCache: function (request, callback) {
         if (request.params.prefix) {
             request.local.prefix = request.params.prefix;
         } else if (request.body) {
@@ -47,14 +47,14 @@ module.exports = {
         FACADE.CacheFacade.flushItemCache(request, callback);
     },
 
-    flushApiCacheKeys: function(request, callback) {
+    flushApiCacheKeys: function (request, callback) {
         if (request.body) {
             request.local.keys = request.body;
         }
         FACADE.CacheFacade.flushApiCacheKeys(request, callback);
     },
 
-    flushItemCacheKeys: function(request, callback) {
+    flushItemCacheKeys: function (request, callback) {
         if (request.body) {
             request.local.keys = request.body;
         }

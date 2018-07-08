@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    importInitData: function(requestContext, callback) {
+    importInitData: function (requestContext, callback) {
         let input = {
             tenant: requestContext.tenant,
             enterprise: requestContext.enterprise,
@@ -20,7 +20,7 @@ module.exports = {
         FACADE.DataImportFacade.importInitData(input, callback);
     },
 
-    importCoreData: function(requestContext, callback) {
+    importCoreData: function (requestContext, callback) {
         let input = {
             tenant: requestContext.tenant,
             enterprise: requestContext.enterprise,
@@ -30,7 +30,7 @@ module.exports = {
         FACADE.DataImportFacade.importCoreData(input, callback);
     },
 
-    importSampleData: function(requestContext, callback) {
+    importSampleData: function (requestContext, callback) {
         let input = {
             tenant: requestContext.tenant,
             enterprise: requestContext.enterprise,

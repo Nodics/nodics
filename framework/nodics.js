@@ -89,7 +89,9 @@ module.exports = {
                     event.loadListeners();
                     router.loadRouter().then(success => {
                         SYSTEM.executePostScripts();
-                        if (NODICS.isInitRequired()) {
+                        //console.log(NODICS.getRawModules());
+                        //console.log(NODICS.getActiveModules());
+                        if (true) {
                             SERVICE.DataImportService.importInitData().then(success => {
                                 SYSTEM.addTenants().then(success => {
                                     SYSTEM.loadTenantDatabase().then(success => {

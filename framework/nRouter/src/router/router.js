@@ -101,7 +101,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/moduleName/schemaName/',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/',
                 }
             },
             postModel: {
@@ -118,7 +118,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/moduleName/schemaName/',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/',
                     body: {
                         recursive: 'optional true/false - default is false',
                         pageSize: 'optional default value is 10',
@@ -143,7 +143,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/moduleName/schemaName/id/:id',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
                 }
             }
         },
@@ -158,7 +158,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'DELETE',
-                    url: 'http://host:port/nodics/moduleName/schemaName/id/:id',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
                 }
             },
             deleteByIds: {
@@ -171,7 +171,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'DELETE',
-                    url: 'http://host:port/nodics/moduleName/schemaName',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName',
                     body: ['id1', 'id2', 'id3', '...id n']
                 }
             }
@@ -187,7 +187,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'PUT',
-                    url: 'http://host:port/nodics/moduleName/schemaName',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName',
                     body: '{ complete model object } or [{}, {}] array of models'
                 }
             }
@@ -203,7 +203,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'PUT',
-                    url: 'http://host:port/nodics/moduleName/schemaName/update',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/update',
                     body: '{ complete model object } or [{}, {}] array of models'
                 }
             }
@@ -220,7 +220,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'PUT',
-                    url: 'http://host:port/nodics/moduleName/schemaName/saveOrUpdate',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/saveOrUpdate',
                     body: '{ complete model object } or [{}, {}] array of models'
                 }
             }
@@ -239,7 +239,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/moduleName/ping',
+                    url: 'http://host:port/nodics/{moduleName}/ping',
                     body: '{ complete model object } or [{}, {}] array of models'
                 }
             }
@@ -256,7 +256,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/moduleName/cache/api/flush'
+                    url: 'http://host:port/nodics/{moduleName}/cache/api/flush'
                 }
             }
         },
@@ -272,7 +272,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/moduleName/cache/item/flush'
+                    url: 'http://host:port/nodics/{moduleName}/cache/item/flush'
                 }
             },
             flushPrefix: {
@@ -285,7 +285,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/moduleName/cache/item/flush/:prefix',
+                    url: 'http://host:port/nodics/{moduleName}/cache/item/flush/:prefix',
                     body: 'prefix could be schema name like schemaName or schemaName_tenant'
                 }
             },
@@ -299,7 +299,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/moduleName/cache/item/flush',
+                    url: 'http://host:port/nodics/{moduleName}/cache/item/flush',
                     body: '[key1, key2, key3, key...n]'
                 }
             },
@@ -325,7 +325,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/system/cache/item',
+                    url: 'http://host:port/nodics/{moduleName}/cache/item',
                     body: {
                         schemaName: 'like enterprise',
                         cache: {
@@ -347,138 +347,11 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/system/log/level',
+                    url: 'http://host:port/nodics/{moduleName}/log/level',
                     body: {
                         entityName: 'like EnterpriseService',
                         logLevel: 'like info, debug, error and all valid log levels'
                     }
-                }
-            }
-        },
-        testRunner: {
-            runAllUTest: {
-                secured: true,
-                key: '/test/runUTest',
-                method: 'GET',
-                controller: 'TestExecutionController',
-                operation: 'runUTest',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/system/test/runUTest',
-                }
-            },
-            runAllNTest: {
-                secured: true,
-                key: '/test/runNTest',
-                method: 'GET',
-                controller: 'TestExecutionController',
-                operation: 'runNTest',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/system/test/runNTest',
-                }
-            }
-        },
-        importInitData: {
-            importInit: {
-                secured: true,
-                key: '/import/init',
-                method: 'GET',
-                handler: 'DataImportController',
-                operation: 'importInitData',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/system/import/init',
-                }
-            },
-        },
-        importCoreData: {
-            importGet: {
-                secured: true,
-                key: '/import/core',
-                method: 'GET',
-                controller: 'DataImportController',
-                operation: 'importCoreData',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/system/import/core',
-                }
-            },
-            importPost: {
-                secured: true,
-                key: '/import/core',
-                method: 'POST',
-                controller: 'DataImportController',
-                operation: 'importCoreData',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/system/import/core',
-                }
-            }
-        },
-        importSampleData: {
-            importGet: {
-                secured: true,
-                key: '/import/sample',
-                method: 'GET',
-                controller: 'DataImportController',
-                operation: 'importSampleData',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/system/import/sample',
-                }
-            },
-            importPost: {
-                secured: true,
-                key: '/import/sample',
-                method: 'POST',
-                controller: 'DataImportController',
-                operation: 'importSampleData',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/system/import/sample',
-                }
-            }
-        },
-        dataExport: {
-            exportGet: {
-                secured: true,
-                key: '/export',
-                method: 'GET',
-                controller: 'DataExportController',
-                operation: 'export',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/system/export',
-                }
-            },
-            exportPost: {
-                secured: true,
-                key: '/export',
-                method: 'POST',
-                controller: 'DataExportController',
-                operation: 'export',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/system/export',
                 }
             }
         }

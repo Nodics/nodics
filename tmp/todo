@@ -104,6 +104,7 @@ Todos:
   - Define data definition in seperate files
   
   Data Import Process:
+    - If model has macro defined, got to model define in rawSchema and fine relation type, and relation model name.
     - Load all active data, while calling import service, not while server startup
     - Load data only for modules are active for that instance
     
@@ -119,7 +120,13 @@ Todos:
     - On expiration, re-generate authToken
     - Change all current implementation for backoffice processes
     
+  Cache Configuration:
+    - Change cache configuration at module level
+    - Invalidate API and Item cache at module level
 
+  Change Log configuration:
+    - Change log configuration at module level
+    - Enable/Disable log level at module level
 
 Todos:
   Documentation Points:

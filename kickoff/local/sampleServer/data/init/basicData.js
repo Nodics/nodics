@@ -10,8 +10,16 @@
  */
 
 module.exports = {
-
-    importDataHandlerService: {
-        js: 'ImportJSFormatDataService'
+    profile: {
+        createDefaultEnterprise: {
+            macros: {
+                tenant: {
+                    rule: {
+                        name: '?0',
+                        active: '?1'
+                    }
+                }
+            }
+        }
     }
-};
+}

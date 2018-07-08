@@ -1,0 +1,20 @@
+{
+    "name": "system",
+    "index": "13",
+    "publish": false,
+    "description": "Nodics applicaion module. It will hold all configuration and system point to start nodics",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "system"
+    ],
+    "author": "authorName",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "repository URL"
+    },
+    "dependencies": {}
+}

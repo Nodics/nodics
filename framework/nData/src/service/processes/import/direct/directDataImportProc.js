@@ -10,8 +10,8 @@
  */
 
 module.exports = {
-
-    importDataHandlerService: {
-        js: 'ImportJSFormatDataService'
+    placeholder: function (request, response, process) {
+        this.LOG.debug('Passing through placeholder');
+        process.nextSuccess(request, response);
     }
 };

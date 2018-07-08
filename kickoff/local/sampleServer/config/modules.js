@@ -13,4 +13,5 @@ module.exports = { core: [ 'core', 'cronjob', 'nems', 'profile' ],
      'ncontroller',
      'nrouter',
      'ndata',
-     'ntest' ] };
+     'ntest',
+     'system' ] };
