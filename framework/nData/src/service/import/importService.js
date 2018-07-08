@@ -12,20 +12,16 @@
 module.exports = {
 
     importData: function (input) {
-        if (!input.modules && !input.path) {
-            return Promise.reject('Please validate request. Mandate property modules or path not found');
-        } else {
-            try {
-                return new Promise((resolve, reject) => {
-                    input.promise = {
-                        resolve: resolve,
-                        reject: reject
-                    }
-                    SERVICE.ProcessService.startProcess('defaultDataImportProcess', input, {});
-                });
-            } catch (error) {
-                return Promise.reject(error);
-            }
+        try {
+            return new Promise((resolve, reject) => {
+                input.promise = {
+                    resolve: resolve,
+                    reject: reject
+                }
+                SERVICE.PipelineService.startPipeline('defaultDataImportPipeline', input, {});
+            });
+        } catch (error) {
+            return Promise.reject(error);
         }
     },
 

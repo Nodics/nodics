@@ -9,23 +9,13 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
-    moduleGroups: {
-        framework: [
-            'framework',
-            'nconfig',
-            'ncommon',
-            'ndatabase',
-            'ndao',
-            'nservice',
-            'npipeline',
-            'nevent',
-            'nfacade',
-            'ncontroller',
-            'nrouter',
-            'ndata',
-            'ntest',
-            'system'
-        ]
+    init: function () {
+        return new Promise((resolve, reject) => {
+            global.PIPELINE = SYSTEM.loadFiles('/src/pipelines/pipelinesDefinition.js');
+            resolve(true);
+        });
     }
 };

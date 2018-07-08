@@ -14,7 +14,7 @@ const common = require('./nCommon');
 const db = require('./nDatabase');
 const dao = require('./nDao');
 const services = require('./nService');
-const process = require('./nProcess');
+const pipeline = require('./nPipeline');
 const event = require('./nEvent');
 const facades = require('./nFacade');
 const controllers = require('./nController');
@@ -84,15 +84,13 @@ module.exports = {
             common.start();
             db.loadDatabase().then(success => {
                 SYSTEM.loadModules();
-                process.loadProcess().then(success => {
+                pipeline.loadPipelines().then(success => {
                     SYSTEM.prepareModulesConfiguration();
                     event.loadListeners();
                     router.loadRouter().then(success => {
                         SYSTEM.executePostScripts();
                         if (true) {
-                            console.log('---------------------------');
                             SERVICE.ImportService.importInitData({}).then(success => {
-                                console.log('----- Imported Successfully : ', success);
                                 SYSTEM.addTenants().then(success => {
                                     SYSTEM.loadTenantDatabase().then(success => {
                                         resolve(true);
@@ -153,8 +151,8 @@ module.exports = {
             });
         }).catch(error => {
             console.error('Nodics server not started properly : ', error);
-            console.log(process);
-            throw new Error('Nodics server not started properly : ' + error);
+            process.exit(1);
+            //throw new Error('Nodics server not started properly : ' + error);
         });
     }
 };

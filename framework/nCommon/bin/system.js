@@ -97,7 +97,7 @@ module.exports = {
 
         SYSTEM.loadDao(module);
         SYSTEM.loadServices(module);
-        SYSTEM.loadProcessDefinition(module);
+        SYSTEM.loadPipelinesDefinition(module);
         SYSTEM.loadFacades(module);
         SYSTEM.loadControllers(module);
         SYSTEM.loadTest(module);
@@ -183,15 +183,15 @@ module.exports = {
         });
     },
 
-    loadProcessDefinition: function (module) {
+    loadPipelinesDefinition: function (module) {
         SYSTEM.LOG.debug('Loading all module process definitions');
-        let path = module.path + '/src/process';
+        let path = module.path + '/src/pipelines';
         SYSTEM.processFiles(path, "Definition.js", (file) => {
             let processName = SYSTEM.getFileNameWithoutExtension(file);
-            if (PROCESS[processName]) {
-                PROCESS[processName] = _.merge(PROCESS[processName], require(file));
+            if (PIPELINE[processName]) {
+                PIPELINE[processName] = _.merge(PIPELINE[processName], require(file));
             } else {
-                PROCESS[processName] = require(file);
+                PIPELINE[processName] = require(file);
             }
         });
     },

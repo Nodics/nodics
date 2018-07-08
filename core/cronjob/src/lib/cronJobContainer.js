@@ -10,13 +10,13 @@
  */
 
 const _ = require('lodash');
-module.exports = function() {
+module.exports = function () {
     let _jobPool = {};
-    let _jobLOG = SYSTEM.createLogger('ProcessHead');
+    let _jobLOG = SYSTEM.createLogger('PipelineHead');
 
     this.LOG = SYSTEM.createLogger('CronJobContainer');
 
-    this.createCronJobs = function(definitions) {
+    this.createCronJobs = function (definitions) {
         return new Promise((resolve, reject) => {
             let _self = this;
             let _success = {};
@@ -42,7 +42,7 @@ module.exports = function() {
         });
     };
 
-    this.createCronJob = function(authToken, definition) {
+    this.createCronJob = function (authToken, definition) {
         let _self = this;
         return new Promise((resolve, reject) => {
             let currentDate = new Date();
@@ -57,7 +57,7 @@ module.exports = function() {
             } else {
                 if (!_jobPool[definition.name]) {
                     let cronJobs = [];
-                    definition.triggers.forEach(function(value) {
+                    definition.triggers.forEach(function (value) {
                         if (value.isActive && CONFIG.get('nodeId') === definition.nodeId) {
                             let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
                             tmpCronJob.LOG = _jobLOG;
@@ -79,7 +79,7 @@ module.exports = function() {
         });
     };
 
-    this.updateCronJobs = function(definitions) {
+    this.updateCronJobs = function (definitions) {
         return new Promise((resolve, reject) => {
             let _self = this;
             let _success = {};
@@ -105,7 +105,7 @@ module.exports = function() {
         });
     };
 
-    this.updateCronJob = function(authToken, definition) {
+    this.updateCronJob = function (authToken, definition) {
         let _self = this;
         return new Promise((resolve, reject) => {
             let currentDate = new Date();
@@ -141,7 +141,7 @@ module.exports = function() {
         });
     };
 
-    this.runCronJobs = function(definitions) {
+    this.runCronJobs = function (definitions) {
         return new Promise((resolve, reject) => {
             let _self = this;
             let success = {};
@@ -167,7 +167,7 @@ module.exports = function() {
         });
     };
 
-    this.runCronJob = function(authToken, definition) {
+    this.runCronJob = function (authToken, definition) {
         return new Promise((resolve, reject) => {
             let currentDate = new Date();
             if (UTILS.isBlank(definition)) {
@@ -182,7 +182,7 @@ module.exports = function() {
                 let _running = false;
                 if (_jobPool[definition.name] && _jobPool[definition.name][0].isRunning()) {
                     _running = _jobPool[definition.name][0].isRunning();
-                    _jobPool[definition.name].forEach(function(job) {
+                    _jobPool[definition.name].forEach(function (job) {
                         job.pauseCronJob();
                     });
                 }
@@ -193,7 +193,7 @@ module.exports = function() {
                 tmpCronJob.init(true);
                 tmpCronJob.setJobPool(_jobPool);
                 if (_jobPool[definition.name] && _running) {
-                    _jobPool[definition.name].forEach(function(job) {
+                    _jobPool[definition.name].forEach(function (job) {
                         job.resumeCronJob();
                     });
                 }
@@ -202,7 +202,7 @@ module.exports = function() {
         });
     };
 
-    this.startCronJobs = function(jobNames) {
+    this.startCronJobs = function (jobNames) {
         let _self = this;
         let _success = {};
         let _failed = {};
@@ -223,9 +223,9 @@ module.exports = function() {
         };
     };
 
-    this.startCronJob = function(jobName) {
+    this.startCronJob = function (jobName) {
         if (jobName && _jobPool[jobName]) {
-            _jobPool[jobName].forEach(function(cronJob) {
+            _jobPool[jobName].forEach(function (cronJob) {
                 cronJob.startCronJob();
             });
         } else {
@@ -233,7 +233,7 @@ module.exports = function() {
         }
     };
 
-    this.stopCronJobs = function(jobNames) {
+    this.stopCronJobs = function (jobNames) {
         let _self = this;
         let _success = {};
         let _failed = {};
@@ -254,9 +254,9 @@ module.exports = function() {
         };
     };
 
-    this.stopCronJob = function(jobName) {
+    this.stopCronJob = function (jobName) {
         if (jobName && _jobPool[jobName]) {
-            _jobPool[jobName].forEach(function(cronJob) {
+            _jobPool[jobName].forEach(function (cronJob) {
                 cronJob.stopCronJob();
             });
         } else {
@@ -264,7 +264,7 @@ module.exports = function() {
         }
     };
 
-    this.removeCronJobs = function(jobNames) {
+    this.removeCronJobs = function (jobNames) {
         let _self = this;
         let _success = {};
         let _failed = {};
@@ -285,9 +285,9 @@ module.exports = function() {
         };
     };
 
-    this.removeCronJob = function(jobName) {
+    this.removeCronJob = function (jobName) {
         if (jobName && _jobPool[jobName]) {
-            _jobPool[jobName].forEach(function(cronJob) {
+            _jobPool[jobName].forEach(function (cronJob) {
                 cronJob.stopCronJob();
             });
             delete _jobPool[jobName];
@@ -296,7 +296,7 @@ module.exports = function() {
         }
     };
 
-    this.pauseCronJobs = function(jobNames) {
+    this.pauseCronJobs = function (jobNames) {
         let _self = this;
         let _success = {};
         let _failed = {};
@@ -317,9 +317,9 @@ module.exports = function() {
         };
     };
 
-    this.pauseCronJob = function(jobName) {
+    this.pauseCronJob = function (jobName) {
         if (jobName && _jobPool[jobName]) {
-            _jobPool[jobName].forEach(function(cronJob) {
+            _jobPool[jobName].forEach(function (cronJob) {
                 cronJob.pauseCronJob();
             });
         } else {
@@ -327,7 +327,7 @@ module.exports = function() {
         }
     };
 
-    this.resumeCronJobs = function(jobNames) {
+    this.resumeCronJobs = function (jobNames) {
         let _self = this;
         let _success = {};
         let _failed = {};
@@ -348,9 +348,9 @@ module.exports = function() {
         };
     };
 
-    this.resumeCronJob = function(jobName) {
+    this.resumeCronJob = function (jobName) {
         if (jobName && _jobPool[jobName]) {
-            _jobPool[jobName].forEach(function(cronJob) {
+            _jobPool[jobName].forEach(function (cronJob) {
                 cronJob.resumeCronJob();
             });
         } else {

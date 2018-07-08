@@ -58,7 +58,7 @@ module.exports = {
 
         global.DAO = {};
         global.SERVICE = {};
-        global.PROCESS = {};
+        global.PIPELINE = {};
         global.FACADE = {};
         global.CONTROLLER = {};
 

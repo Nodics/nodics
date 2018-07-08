@@ -9,23 +9,14 @@
 
  */
 
+const pipelineBuilder = require('./bin/pipelineDefinitionBuilder');
+
 module.exports = {
-    moduleGroups: {
-        framework: [
-            'framework',
-            'nconfig',
-            'ncommon',
-            'ndatabase',
-            'ndao',
-            'nservice',
-            'npipeline',
-            'nevent',
-            'nfacade',
-            'ncontroller',
-            'nrouter',
-            'ndata',
-            'ntest',
-            'system'
-        ]
+    init: function () {
+
+    },
+    loadPipelines: function () {
+        SYSTEM.LOG.info('Starting Pipelines Defintion builder process');
+        return pipelineBuilder.init();
     }
 };
