@@ -14,22 +14,32 @@ const fs = require('fs');
 
 module.exports = {
 
-    /*
-     * This function will return list of files from all modules grouped by file name
-     * @argument - moduleList - list of modules to be processed
-     * @return - object hold files based on thier name
-    **/
-    getInternalFiles: function (moduleList, dataType) {
+    getDataHeaders: function (path, fileList) {
+        if (fs.existsSync(path)) {
+            let moduleFiles = {};
+            UTILS.getAllHeaderFiles(path, moduleFiles);
+            _.each(moduleFiles, (dataFile, name) => {
+                if (fileList[name]) {
+                    fileList[name].push(dataFile);
+                } else {
+                    fileList[name] = [dataFile];
+                }
+            });
+            return fileList;
+        }
+    },
+
+    getInternalDataHeaders: function (moduleList, dataType) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 if (!moduleList || moduleList.length == 0) {
                     reject('Invalid list of modules to be proccesses');
                 } else {
-                    let fileList = [];
+                    let fileList = {};
                     _.each(NODICS.getIndexedModules(), (modules, moduleIndex) => {
                         modules.forEach(element => {
                             if (moduleList.includes(element.name)) {
-                                let moduleFiles = {};
                                 let dataFilesRoot = element.path;
                                 if (dataType === 'core') {
                                     dataFilesRoot = dataFilesRoot + '/data/core'
@@ -38,14 +48,7 @@ module.exports = {
                                 } else {
                                     dataFilesRoot = dataFilesRoot + '/data/init'
                                 }
-                                UTILS.getAllFile(dataFilesRoot, moduleFiles);
-                                _.each(moduleFiles, (dataFile, name) => {
-                                    if (fileList[name]) {
-                                        fileList[name].push(dataFile);
-                                    } else {
-                                        fileList[name] = [dataFile];
-                                    }
-                                });
+                                _self.getDataHeaders(dataFilesRoot, fileList);
                             }
                         });
                     });
@@ -62,20 +65,14 @@ module.exports = {
      * @argument - path - path to the external directory
      * @return - object hold files based on thier name
     **/
-    getExternalFiles: function (path) {
+
+    getExternalDataHeaders: function (path) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 if (fs.existsSync(path)) {
-                    let fileList = [];
-                    let moduleFiles = {};
-                    UTILS.getAllFile(path, moduleFiles);
-                    _.each(moduleFiles, (dataFile, name) => {
-                        if (fileList[name]) {
-                            fileList[name].push(dataFile);
-                        } else {
-                            fileList[name] = [dataFile];
-                        }
-                    });
+                    let fileList = {};
+                    _self.getDataHeaders(path, fileList);
                     resolve(fileList);
                 } else {
                     reject('Given path :' + path + ' is not valid');
@@ -84,5 +81,90 @@ module.exports = {
                 reject(error);
             }
         });
+    },
+
+    getDataFiles: function (path, fileList) {
+        if (fs.existsSync(path)) {
+            let moduleFiles = {};
+            UTILS.getAllDataFiles(path, moduleFiles);
+            _.each(moduleFiles, (dataFile, name) => {
+                if (fileList[name]) {
+                    fileList[name].push(dataFile);
+                } else {
+                    fileList[name] = [dataFile];
+                }
+            });
+            return fileList;
+        }
+    },
+
+    /*
+     * This function will return list of files from all modules grouped by file name
+     * @argument - moduleList - list of modules to be processed
+     * @return - object hold files based on thier name
+    **/
+    getInternalFiles: function (moduleList, dataType) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                if (!moduleList || moduleList.length == 0) {
+                    reject('Invalid list of modules to be proccesses');
+                } else {
+                    let fileList = {};
+                    _.each(NODICS.getIndexedModules(), (modules, moduleIndex) => {
+                        modules.forEach(element => {
+                            if (moduleList.includes(element.name)) {
+                                let dataFilesRoot = element.path;
+                                if (dataType === 'core') {
+                                    dataFilesRoot = dataFilesRoot + '/data/core'
+                                } else if (dataType === 'sample') {
+                                    dataFilesRoot = dataFilesRoot + '/data/sample'
+                                } else {
+                                    dataFilesRoot = dataFilesRoot + '/data/init'
+                                }
+                                _self.getDataFiles(dataFilesRoot, fileList);
+                            }
+                        });
+                    });
+                    resolve(fileList);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    /*
+     * This function will return list of files from given path grouped by file name
+     * @argument - path - path to the external directory
+     * @return - object hold files based on thier name
+    **/
+
+    getExternalFiles: function (path) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                if (fs.existsSync(path)) {
+                    let fileList = {};
+                    _self.getDataFiles(path, fileList);
+                    resolve(fileList);
+                } else {
+                    reject('Given path :' + path + ' is not valid');
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    isImportPending: function (headers) {
+        let pending = false;
+        _.each(headers, (header, headerName) => {
+            if (!header.done || header.done === false) {
+                pending = true;
+                return false;
+            }
+        })
+        return pending;
     }
 };

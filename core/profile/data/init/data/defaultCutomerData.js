@@ -10,9 +10,14 @@
  */
 
 module.exports = {
-
-    targetPipelineForFileType: {
-        js: 'processJsFileImportPipeline',
-        csv: 'processCsvFileImportPipeline'
+    record0: {
+        _id: '121e7dd88ac6ed3d73a76713',
+        enterpriseCode: 'default',
+        firstName: 'Nodics',
+        lastName: 'Customer',
+        loginId: 'guest',
+        locked: false,
+        active: true,
+        attempts: 1
     }
 };

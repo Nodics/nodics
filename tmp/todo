@@ -87,6 +87,7 @@ Todos:
 
   Tenant Management:
     - As soon as new tenant got register, make it live within system
+    - If tenant is not associated with any Enterprise, Don't load it
 
   Process Changes:
     ✔ Support multiple success node redirect @done(18-07-08 14:23)
@@ -111,6 +112,8 @@ Todos:
     - If model has macro defined, got to model define in rawSchema and fine relation type, and relation model name.
     - Load all active data, while calling import service, not while server startup
     - Load data only for modules are active for that instance
+    - https://stackoverflow.com/questions/42896447/parse-large-json-file-in-nodejs-and-handle-each-object-independently
+    - Split into files, if file size is greater than specific size
     
     Initial Data Import Process:
       
@@ -123,6 +126,8 @@ Todos:
     - Keep authentication credantials mapped with authToken
     - On expiration, re-generate authToken
     - Change all current implementation for backoffice processes
+    - Backoffice process shouldn't ask authToken at startup, generate and regenerate at first hit or on expiration
+    - Authentication from external source (Feasibility and Implementation)
     
   Cache Configuration:
     - Change cache configuration at module level

@@ -14,11 +14,15 @@ module.exports = {
     importData: function (input) {
         try {
             return new Promise((resolve, reject) => {
-                input.promise = {
-                    resolve: resolve,
-                    reject: reject
+                let response = {
+                    dataImportInitializerPipeline: {
+                        promise: {
+                            resolve: resolve,
+                            reject: reject
+                        }
+                    }
                 }
-                SERVICE.PipelineService.startPipeline('defaultDataImportPipeline', input, {});
+                SERVICE.PipelineService.startPipeline('dataImportInitializerPipeline', input, response);
             });
         } catch (error) {
             return Promise.reject(error);

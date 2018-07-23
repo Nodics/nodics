@@ -10,10 +10,14 @@
  */
 
 module.exports = {
-    init: ['initData.js'],
-    core: ['/profileCoreData.js'],
-    sample: {
-        common: [],
-        local: []
+    record0: {
+        _id: '121e7dd88ac6ed3d73a76712',
+        enterpriseCode: 'default',
+        firstName: 'Nodics',
+        lastName: 'Employee',
+        loginId: 'admin',
+        locked: false,
+        active: true,
+        attempts: 1
     }
 };

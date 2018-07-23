@@ -25,7 +25,6 @@ module.exports = {
         this.LOG.warn('This is default error handler, will not perform anything ');
     },
     startPipeline: function (pipelineName, request, response, callback) {
-        let success = false;
         if (pipelineName !== 'defaultPipeline' && PIPELINE[pipelineName]) {
             response.errors = {};
             let id = SYSTEM.generateUniqueCode();
@@ -37,7 +36,6 @@ module.exports = {
                 pipeline.LOG = this.pipelineLOG;
                 pipeline.buildPipeline();
                 pipeline.start(id, request, response);
-                success = true;
             } catch (err) {
                 this.LOG.error('Error while creating pipeline : ', id, ' - ', err);
                 response.errors.PROC_ERR_0000 = {

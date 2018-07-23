@@ -10,9 +10,8 @@
  */
 
 module.exports = {
-
-    targetPipelineForFileType: {
-        js: 'processJsFileImportPipeline',
-        csv: 'processCsvFileImportPipeline'
+    verifyFinalModel: function (request, response, process) {
+        this.LOG.debug('Finalizing final data model');
+        process.nextSuccess(request, response);
     }
-};
+}

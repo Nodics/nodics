@@ -11,27 +11,27 @@
 
 module.exports = {
     loadFileData: function (request, response, process) {
-        this.LOG.debug('Passing through placeholder');
+        this.LOG.debug('Loading data from JS file: ', request.fileName);
         process.nextSuccess(request, response);
     },
 
     importFileData: function (request, response, process) {
-        this.LOG.debug('Passing through placeholder');
+        this.LOG.debug('Importing data from JS file: ', request.fileName);
         process.nextSuccess(request, response);
     },
 
     handleSucessEnd: function (request, response) {
-        this.LOG.debug('Request has been processed successfully : ');
-        request.local.httpResponse.json(response);
+        this.LOG.debug('JS file import Process Request has been processed successfully');
+        response.processCsvFileImportPipeline.promise.resolve(response);
     },
 
     handleFailureEnd: function (request, response) {
-        this.LOG.debug('Request has been processed with some failures : ');
-        request.local.httpResponse.json(response);
+        this.LOG.debug('JS file import  Process Request has been processed with some failures : ');
+        response.processCsvFileImportPipeline.promise.reject(response);
     },
 
     handleErrorEnd: function (request, response) {
-        this.LOG.debug('Request has been processed and got errors : ');
-        request.local.httpResponse.json(response);
+        this.LOG.debug('JS file import  Process Request has been processed and got errors : ');
+        response.processCsvFileImportPipeline.promise.reject(response);
     }
 };

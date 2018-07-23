@@ -105,8 +105,8 @@ module.exports = {
             colorize: true,
             timestamp: true,
             json: false,
-            stringify: true,
-            prettyPrint: true,
+            stringify: false,
+            prettyPrint: false,
             depth: 5,
             humanReadableUnhandledException: true,
             showLevel: true

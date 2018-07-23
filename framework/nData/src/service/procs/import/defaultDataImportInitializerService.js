@@ -21,8 +21,10 @@ module.exports = {
 
     redirectToImportType: function (request, response, process) {
         this.LOG.debug('Checking target process to handle request');
-        if (request.local.secured) {
+        if (request.modules || request.path) {
             this.LOG.debug('Redirecting to importFromFileProcess');
+            request.internal = {};
+            request.external = {};
             response.targetNode = 'fileImport';
         } else {
             this.LOG.debug('Redirecting to importFromDirectProcess');
@@ -32,18 +34,17 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response) {
-        this.LOG.debug('Request has been processed successfully : ');
-        request.local.httpResponse.json(response);
+        this.LOG.debug('Request has been processed successfully');
+        response.dataImportInitializerPipeline.promise.resolve(response);
     },
 
     handleFailureEnd: function (request, response) {
         this.LOG.debug('Request has been processed with some failures : ');
-        request.local.httpResponse.json(response);
+        response.dataImportInitializerPipeline.promise.reject(response);
     },
 
     handleErrorEnd: function (request, response) {
         this.LOG.debug('Request has been processed and got errors : ');
-        request.local.httpResponse.json(response);
+        response.dataImportInitializerPipeline.promise.reject(response);
     }
-
 };

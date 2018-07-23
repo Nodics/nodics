@@ -90,7 +90,9 @@ module.exports = {
                     router.loadRouter().then(success => {
                         SYSTEM.executePostScripts();
                         if (true) {
-                            SERVICE.ImportService.importInitData({}).then(success => {
+                            SERVICE.ImportService.importInitData({
+                                modules: NODICS.getActiveModules()
+                            }).then(success => {
                                 SYSTEM.addTenants().then(success => {
                                     SYSTEM.loadTenantDatabase().then(success => {
                                         resolve(true);

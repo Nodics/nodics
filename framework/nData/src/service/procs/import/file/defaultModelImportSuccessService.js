@@ -10,9 +10,8 @@
  */
 
 module.exports = {
-
-    targetPipelineForFileType: {
-        js: 'processJsFileImportPipeline',
-        csv: 'processCsvFileImportPipeline'
+    updateSuccessRow: function (request, response, process) {
+        this.LOG.debug('Loading data from JS file: ', request.fileName);
+        process.nextSuccess(request, response);
     }
 };
