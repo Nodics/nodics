@@ -89,7 +89,7 @@ module.exports = {
                     event.loadListeners();
                     router.loadRouter().then(success => {
                         SYSTEM.executePostScripts();
-                        if (true) {
+                        if (NODICS.isInitRequired()) {
                             SERVICE.ImportService.importInitData({
                                 modules: NODICS.getActiveModules()
                             }).then(success => {

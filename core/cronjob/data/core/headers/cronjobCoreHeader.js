@@ -10,10 +10,17 @@
  */
 
 module.exports = {
-    init: [],
-    core: ['/cronCoreData.js'],
-    sample: {
-        common: [],
-        local: []
+    cronjob: {
+        eventPublishJob: {
+            options: {
+                modelName: 'cronJob',
+                operation: 'saveOrUpdate', //save, update and saveOrUpdate
+                tenant: 'default',
+                dataFilePrefix: 'eventPublishJob'
+            },
+            rule: {
+                name: 'name'
+            }
+        }
     }
 };

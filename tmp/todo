@@ -77,6 +77,7 @@ Todos:
     - Keep only default App server configuration, that can be redefined in respective servers
     
 Todos:
+  - Test merge process for multi hiererchy function definitions within service
   Multi-Language Support:
     - Support schema to define multi language support (https://www.npmjs.com/package/mongoose-intl)
     - Support Nodics to fetch langauge specific data on each query

@@ -101,7 +101,7 @@ module.exports = {
                 });
             } else {
                 _self.LOG.debug('Done import for files for header : ', request.headerName);
-                console.log(request.headerName, '    ---------    done', )
+                //console.log(request.headerName, '    ---------    done', )
                 header.done = true;
                 resolve(true);
             }

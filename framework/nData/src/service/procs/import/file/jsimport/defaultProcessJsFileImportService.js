@@ -94,6 +94,7 @@ module.exports = {
                 }
             }
             request.currentRecord = options.currentRecord;
+            request.currentModel = request.finalData[request.currentRecord];
             SERVICE.PipelineService.startPipeline('modelImportPipeline', request, response);
         });
     },

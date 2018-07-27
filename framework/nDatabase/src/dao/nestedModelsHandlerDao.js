@@ -17,7 +17,7 @@ module.exports = {
         request.models
         request.rawSchema
     */
-    performNestedSchema: function(request, callback) {
+    performNestedSchema: function (request, callback) {
         let options = {
             refSchema: _.merge({}, request.rawSchema.refSchema),
             request: request,
@@ -37,7 +37,7 @@ module.exports = {
         }
     },
 
-    performSubModel: function(options) {
+    performSubModel: function (options) {
         if (UTILS.isBlank(options.refSchema)) {
             options.request.input.models = options.resoledModels;
             options.callback(options.request.input);
@@ -55,7 +55,7 @@ module.exports = {
         }
     },
 
-    performNextSubModel: function(options) {
+    performNextSubModel: function (options) {
         if (!UTILS.isBlank(options.refSchema)) {
             DAO.NestedModelsHandlerDao.performSubModel(options);
         } else if (options.models.length > 0) {
@@ -69,7 +69,7 @@ module.exports = {
         }
     },
 
-    saveSubModel: function(options, subModel) {
+    saveSubModel: function (options, subModel) {
         let input = {
             tenant: options.request.tenant,
             models: subModel
@@ -86,7 +86,7 @@ module.exports = {
         });
     },
 
-    updateSubModel: function(options, subModel) {
+    updateSubModel: function (options, subModel) {
         let input = {
             tenant: options.request.tenant,
             models: subModel
@@ -102,7 +102,7 @@ module.exports = {
             options.request.reject(error);
         });
     },
-    saveOrUpdateSubModel: function(options, subModel) {
+    saveOrUpdateSubModel: function (options, subModel) {
         let input = {
             tenant: options.request.tenant,
             models: subModel
@@ -119,7 +119,7 @@ module.exports = {
         });
     },
 
-    createModels: function(input, option) {
+    createModels: function (input, option) {
         let finalModels = [];
         if (input.models instanceof Array) {
             finalModels = input.models;
@@ -134,7 +134,7 @@ module.exports = {
                     return input._self.create(model);
                 }
             })
-        ).then(function(models) {
+        ).then(function (models) {
             input.resolve(models);
         }).catch((error) => {
             input.reject(error);
