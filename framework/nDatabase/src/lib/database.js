@@ -9,50 +9,67 @@
 
  */
 
-module.exports = function() {
+module.exports = function () {
     let _name = '';
     let _uri = '';
     let _options = {};
     let _connection = {};
+    let _collections = [];
+    let _colectionList = [];
     let _schema = {};
 
-    this.setName = function(name) {
+    this.setCollections = function (collections) {
+        _collections = collections;
+        collections.forEach(element => {
+            _colectionList.push(element.name);
+        });
+    };
+
+    this.getCollections = function () {
+        return _collections;
+    };
+
+    this.getCollectionList = function () {
+        return _colectionList;
+    };
+
+    this.setName = function (name) {
         _name = name;
     };
 
-    this.getName = function(name) {
+    this.getName = function (name) {
         return _name;
     };
 
-    this.setURI = function(uri) {
+    this.setURI = function (uri) {
         _uri = uri;
     };
 
-    this.getRUI = function() {
+    this.getRUI = function () {
         return _uri;
     };
 
-    this.setOptions = function(options) {
+    this.setOptions = function (options) {
         _options = options;
     };
 
-    this.getOptions = function() {
+    this.getOptions = function () {
         return _options;
     };
 
-    this.setConnection = function(connection) {
+    this.setConnection = function (connection) {
         _connection = connection;
     };
 
-    this.getConnection = function() {
+    this.getConnection = function () {
         return _connection;
     };
 
-    this.setSchema = function(schema) {
+    this.setSchema = function (schema) {
         _schema = schema;
     };
 
-    this.getSchema = function() {
+    this.getSchema = function () {
         return _schema;
     };
 };

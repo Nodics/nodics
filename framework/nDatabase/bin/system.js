@@ -10,7 +10,8 @@
  */
 
 const _ = require('lodash');
-const mongoose = require('mongoose');
+const MongoClient = require('mongodb').MongoClient;
+
 
 module.exports = {
 
@@ -51,17 +52,40 @@ module.exports = {
 
     createMongoDBConnection: function (dbConfig, tntName, type) {
         return new Promise((resolve, reject) => {
-            SYSTEM.LOG.debug('Creating ', type, ' database connection for tenant : ', tntName, ' URI : ', dbConfig.URI);
-            let connection = '';
+            SYSTEM.LOG.debug('Creating ', type, ' database connection for tenant: ', tntName, ' URI: ', dbConfig.URI, ' DB Name: ', dbConfig.databaseName);
+            let mongoClient = new MongoClient(dbConfig.URI, dbConfig.options || {});
+            mongoClient.connect().then(client => {
+                SYSTEM.LOG.info('MongoDB default connection open to ' + dbConfig.URI, ' for database: ', dbConfig.databaseName);
+                let db = client.db(dbConfig.databaseName);
+                db.listCollections({}, {
+                    nameOnly: true
+                }).toArray((error, collections) => {
+                    if (error) {
+                        SYSTEM.LOG.error('While fetching list of collections: ' + error);
+                        reject('While fetching list of collections: ' + error);
+                    } else {
+                        resolve({
+                            connection: db,
+                            collections: collections
+                        });
+                    }
+                });
+            }).catch(error => {
+                SYSTEM.LOG.error('MongoDB default connection error: ' + error);
+                reject('MongoDB default connection error: ' + error);
+            });
+
+            /*let connection = '';
             mongoose.Promise = global.Promise;
+            let url = dbConfig.URI + '/' + dbConfig.databaseName;
             if (dbConfig.options) {
-                connection = mongoose.createConnection(dbConfig.URI, dbConfig.options);
+                connection = mongoose.createConnection(url, dbConfig.options);
             } else {
-                connection = mongoose.createConnection(dbConfig.URI);
+                connection = mongoose.createConnection(url);
             }
             //Register all posible event
             connection.on('connected', function () {
-                SYSTEM.LOG.info('Mongoose default connection open to ' + dbConfig.URI);
+                SYSTEM.LOG.info('Mongoose default connection open to ' + url);
                 resolve(connection);
             });
             connection.on('error', function (error) {
@@ -70,14 +94,13 @@ module.exports = {
             });
             connection.on('disconnected', function () {
                 SYSTEM.LOG.info('Mongoose default connection disconnected');
-            });
+            });*/
         });
     },
 
     createDatabase: function (moduleName, tntName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            let tntDB = {};
             let dbConfig = NODICS.getDatabaseConfiguration(moduleName, tntName);
             let dbType = dbConfig.databaseType;
             if (dbType !== 'mongodb') {
@@ -91,18 +114,18 @@ module.exports = {
             masterDatabase.setName(moduleName);
             masterDatabase.setURI(dbConfig[dbType].master.URI);
             masterDatabase.setOptions(dbConfig[dbType].master.options);
-            _self.createConnection(dbType, dbConfig[dbType].master, tntName, 'master').then(connection => {
-                masterDatabase.setConnection(connection);
-                masterDatabase.setSchema(mongoose.Schema);
+            _self.createConnection(dbType, dbConfig[dbType].master, tntName, 'master').then(result => {
+                masterDatabase.setConnection(result.connection);
+                masterDatabase.setCollections(result.collections);
                 if (testConfig.enabled && testConfig.uTest.enabled) {
                     testDatabase = new CLASSES.Database();
                     if (dbConfig[dbType].test) {
                         testDatabase.setName(moduleName);
                         testDatabase.setURI(dbConfig[dbType].test.URI);
                         testDatabase.setOptions(dbConfig[dbType].test.options);
-                        _self.createConnection(dbType, dbConfig[dbType].test, tntName, 'test').then(conn => {
-                            testDatabase.setConnection(conn);
-                            testDatabase.setSchema(mongoose.Schema);
+                        _self.createConnection(dbType, dbConfig[dbType].test, tntName, 'test').then(response => {
+                            testDatabase.setConnection(response.connection);
+                            testDatabase.setCollections(result.collections);
                             NODICS.addTenantDatabase(moduleName, tntName, {
                                 master: masterDatabase,
                                 test: testDatabase
@@ -161,6 +184,231 @@ module.exports = {
             });
         });
     },
+
+    modelMiddleware: function (modelGroup, collection, schemaDef) {
+        if (!UTILS.isBlank(modelGroup)) {
+            let modelFunctions = SYSTEM.getAllMethods(modelGroup);
+            modelFunctions.forEach(function (operationName) {
+                modelGroup[operationName](collection, schemaDef);
+            });
+        }
+    },
+
+    registerModelMiddleWare: function (options, collection, rawSchema) {
+        let rawModels = NODICS.getRawModels();
+        SYSTEM.modelMiddleware(rawModels.default, collection, rawSchema);
+        if (rawModels[options.moduleName]) {
+            SYSTEM.modelMiddleware(rawModels[options.moduleName].default, collection, rawSchema);
+            SYSTEM.modelMiddleware(rawModels[options.moduleName][options.schemaName], collection, rawSchema);
+        }
+    },
+
+    createModel: function (options, dataBase) {
+        return new Promise((resolve, reject) => {
+            let schema = options.moduleObject.rawSchema[options.schemaName];
+            let schemaOptions = {};
+            if (schema.options && schema.options[options.dbType]) {
+                schemaOptions = schema.options[options.dbType];
+            }
+            dataBase.getConnection().createCollection(options.modelName, schemaOptions).then(collection => {
+                collection.modelName = options.modelName;
+                collection.schemaName = options.schemaName;
+                SYSTEM.registerModelMiddleWare(options, collection, schema);
+                resolve(collection);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    retrieveModel: function (options, dataBase) {
+        return new Promise((resolve, reject) => {
+            console.log('   -- For model: ', options.modelName, '    database: ', dataBase.getName());
+            if (dataBase.getCollectionList().includes(options.modelName)) {
+                let collection = dataBase.getConnection().collection(options.modelName);
+                let schema = options.moduleObject.rawSchema[options.schemaName];
+                collection.modelName = options.modelName;
+                collection.schemaName = options.schemaName;
+                SYSTEM.registerModelMiddleWare(options, collection, schema);
+                resolve(collection);
+            } else {
+                SYSTEM.createModel(options, dataBase).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            }
+        });
+    },
+
+    buildModel: function (options) {
+        return new Promise((resolve, reject) => {
+            options.modelName = SYSTEM.createModelName(options.schemaName);
+            if (options.dataBase.master) {
+                SYSTEM.retrieveModel(options, options.dataBase.master).then(success => {
+                    if (!options.moduleObject.models[options.tenant].master) {
+                        options.moduleObject.models[options.tenant].master = {};
+                    }
+                    options.moduleObject.models[options.tenant].master[options.modelName] = success;
+                    if (options.dataBase.test) {
+                        SYSTEM.retrieveModel(options, options.dataBase.test).then(success => {
+                            if (!options.moduleObject.models[options.tenant].test) {
+                                options.moduleObject.models[options.tenant].test = {};
+                            }
+                            options.moduleObject.models[options.tenant].test[options.modelName] = success;
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        resolve(true);
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                SYSTEM.LOG.warn('Invalid database configuration for module: ', options.moduleName, ' and tenant: ', options.tenant);
+                resolve(true);
+            }
+        });
+    },
+
+    buildModels: function (options) {
+        return new Promise((resolve, reject) => {
+            options.schemaName = options.schemas.shift();
+            SYSTEM.buildModel(options).then(success => {
+                if (options.schemas.length > 0) {
+                    SYSTEM.buildModels(options).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(success);
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildModelsForModule: function (tenant, moduleName) {
+        return new Promise((resolve, reject) => {
+            let moduleObject = NODICS.getModule(moduleName);
+            let dbConfig = NODICS.getDatabaseConfiguration(moduleName, tenant);
+            let dbType = dbConfig.databaseType;
+            if (moduleObject && moduleObject.rawSchema) {
+                if (!moduleObject.models) {
+                    moduleObject.models = {};
+                }
+                if (!moduleObject.models[tenant]) {
+                    moduleObject.models[tenant] = {};
+                }
+                let options = {
+                    dbConfig: dbConfig,
+                    dbType: dbType,
+                    tenant: tenant,
+                    moduleName: moduleName,
+                    moduleObject: moduleObject,
+                    dataBase: NODICS.getDatabase(moduleName, tenant),
+                    schemas: Object.keys(moduleObject.rawSchema),
+
+                }
+                console.log('-- For module: ', moduleName);
+                SYSTEM.buildModels(options).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    buildModelsForModules: function (tenant, modules) {
+        return new Promise((resolve, reject) => {
+            let moduleName = modules.shift();
+            SYSTEM.buildModelsForModule(tenant, moduleName).then(success => {
+                if (modules.length > 0) {
+                    SYSTEM.buildModelsForModules(tenant, modules).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(success)
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildModelsForTenant: function (tenant) {
+        return new Promise((resolve, reject) => {
+            SYSTEM.buildModelsForModules(tenant, NODICS.getActiveModules()).then(success => {
+                let moduleObject = NODICS.getModels('profile', 'default');
+                _.each(moduleObject, (collection, name) => {
+                    collection.findItem();
+                });
+
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildModelsForTenants: function (tenants = ['default']) {
+        return new Promise((resolve, reject) => {
+            let tenant = tenants.shift();
+            SYSTEM.buildModelsForTenant(tenant).then(success => {
+                if (tenants.length > 0) {
+                    SYSTEM.buildModelsForTenants(tenants).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    })
+                } else {
+                    resolve(success);
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildSchemas: function () {
+        SYSTEM.LOG.debug('Starting schemas loading process');
+        let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js', null, true);
+        let modules = NODICS.getModules();
+        Object.keys(mergedSchema).forEach(function (key) {
+            if (key !== 'default') {
+                let moduleObject = modules[key];
+                if (!moduleObject) {
+                    SYSTEM.LOG.error('Module name : ', key, ' is not valid. Please define a valide module name in schema');
+                    process.exit(CONFIG.get('errorExitCode'));
+                }
+                moduleObject.rawSchema = mergedSchema[key];
+            }
+        });
+        NODICS.setRawModels(SYSTEM.loadFiles('/src/schemas/model.js'));
+    },
+
+
+
+    createModelName: function (modelName) {
+        var name = modelName.toUpperCaseFirstChar() + 'Model';
+        return name;
+    },
+
+    getModelName: function (modelName) {
+        var name = modelName.toUpperCaseFirstChar().replace("Model", "");
+        return name;
+    },
+
+    // ******************************************
 
     addTenants: function () {
         return new Promise((resolve, reject) => {
@@ -481,21 +729,15 @@ module.exports = {
                     process.exit(CONFIG.get('errorExitCode'));
                 }
                 moduleObject.rawSchema = _.merge(mergedSchema[key], mergedSchema.default);
+
             }
         });
-        SYSTEM.createSchemas(options);
+        //SYSTEM.createSchemas(options);
     },
 
+    // **********************************************************
 
-    createModelName: function (modelName) {
-        var name = modelName.toUpperCaseFirstChar() + 'Model';
-        return name;
-    },
 
-    getModelName: function (modelName) {
-        var name = modelName.toUpperCaseFirstChar().replace("Model", "");
-        return name;
-    },
 
     validateSchemaDefinition: function (modelName, schemaDefinition) {
         let flag = true;

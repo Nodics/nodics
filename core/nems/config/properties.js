@@ -77,6 +77,30 @@ module.exports = {
                 port: 6379
             }
         }
-    }
+    },
+
+    /*database: {
+        nems: {
+            databaseType: 'mongodb', //for Cassandra use 'cassandra'
+            mongodb: {
+                master: {
+                    URI: 'mongodb://localhost:27017',
+                    databaseName: 'nemsMaster',
+                    options: {
+                        useNewUrlParser: true,
+                        poolSize: 5
+                    }
+                },
+                test: {
+                    URI: 'mongodb://localhost:27017',
+                    databaseName: 'nemsTest',
+                    options: {
+                        useNewUrlParser: true,
+                        poolSize: 5
+                    }
+                }
+            }
+        }
+    },*/
 
 };

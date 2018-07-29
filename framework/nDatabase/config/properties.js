@@ -16,17 +16,21 @@ module.exports = {
             databaseType: 'mongodb', //for Cassandra use 'cassandra'
             mongodb: {
                 master: {
-                    URI: 'mongodb://localhost:27017/nodicsMaster',
+                    URI: 'mongodb://localhost:27017',
+                    databaseName: 'nodicsMaster',
                     options: {
-                        native_parser: true,
-                        poolSize: 5
+                        useNewUrlParser: true,
+                        poolSize: 5,
+                        ignoreUndefined: true
                     }
                 },
                 test: {
                     URI: 'mongodb://localhost:27017/nodicsTest',
+                    databaseName: 'nodicsTest',
                     options: {
-                        native_parser: true,
-                        poolSize: 5
+                        useNewUrlParser: true,
+                        poolSize: 5,
+                        ignoreUndefined: true
                     }
                 }
             }

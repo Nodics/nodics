@@ -40,7 +40,7 @@ module.exports = {
             tenant: header.options.tenant,
             models: models
         };
-        SERVICE[header.options.modelName.toUpperCaseFirstChar() + 'Service'][header.options.operation](input).then(success => {
+        SERVICE['Default' + header.options.modelName.toUpperCaseFirstChar() + 'Service'][header.options.operation](input).then(success => {
             //console.log('Successfuly imported data');
             process.nextSuccess(request, response);
         }).catch(error => {

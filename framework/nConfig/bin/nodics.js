@@ -15,6 +15,7 @@ module.exports = function () {
     let _startTime = 0;
     let _entTime = 0;
     let _rawModules = {};
+    let _rawModels = {};
     let _serverState = 'starting';
     let _activeChannel = 'master';
     let _nTestRunning = false;
@@ -82,9 +83,15 @@ module.exports = function () {
         }
     }
 
+    this.setRawModels = function (rawModels) {
+        _rawModels = rawModels;
+    };
+    this.getRawModels = function () {
+        return _rawModels;
+    };
     this.getRawModule = function (moduleName) {
         return _rawModules[moduleName];
-    }
+    };
 
     this.getRawModules = function () {
         return _rawModules;
@@ -177,7 +184,7 @@ module.exports = function () {
         _activeModules = activeModules;
     };
     this.getActiveModules = function () {
-        return _activeModules;
+        return [].concat(_activeModules);
     };
     this.isModuleActive = function (moduleName) {
         if (_activeModules.indexOf(moduleName) > -1) {
@@ -283,8 +290,9 @@ module.exports = function () {
             let modules = this.getModule(moduleName);
             if (this.getActiveChannel() === 'master') {
                 return modules.models[tenant].master;
+            } else {
+                return modules.models[tenant].test;
             }
-            return modules.models[tenant].test;
         } else {
             throw new Error('Invalid tenant id...');
         }

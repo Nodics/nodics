@@ -89,7 +89,8 @@ module.exports = {
                     event.loadListeners();
                     router.loadRouter().then(success => {
                         SYSTEM.executePostScripts();
-                        if (NODICS.isInitRequired()) {
+                        //NODICS.isInitRequired()
+                        if (true) {
                             SERVICE.ImportService.importInitData({
                                 modules: NODICS.getActiveModules()
                             }).then(success => {
@@ -139,7 +140,7 @@ module.exports = {
 
     start: function (options) {
         this.initFrameworkExecute(options).then(success => {
-            SYSTEM.startServers().then(success => {
+            /*SYSTEM.startServers().then(success => {
                 SERVICE.BackgroundAuthTokenGenerateService.generateAuthToken(CONFIG.get('backgroundAuthModules')).then(success => {
                     NODICS.setEndTime(new Date());
                     NODICS.setServerState('started');
@@ -150,7 +151,8 @@ module.exports = {
                 });
             }).catch(error => {
                 SYSTEM.LOG.error('Nodics server error : ', error);
-            });
+            });*/
+            SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
         }).catch(error => {
             console.error('Nodics server not started properly : ', error);
             process.exit(1);

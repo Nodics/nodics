@@ -12,42 +12,42 @@
 const _ = require('lodash');
 
 module.exports = {
-    get: function(request, callback) {
+    get: function (request, callback) {
         if (!UTILS.isBlank(request.body)) {
             request.local = _.merge(request.local || {}, request.body);
         }
         if (!request.local.recursive) {
             request.local.recursive = request.get('recursive') || false;
         }
-        FACADE.FacadeName.get(request, callback);
+        FACADE.DefaultFacadeName.get(request, callback);
     },
 
-    getById: function(request, callback) {
+    getById: function (request, callback) {
         if (request.params.id) {
             request.local.id = request.params.id;
             request.local.recursive = request.get('recursive') || false;
-            FACADE.FacadeName.getById(request, callback);
+            FACADE.DefaultFacadeName.getById(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
         }
     },
 
-    save: function(request, callback) {
+    save: function (request, callback) {
         request.local.models = request.body;
-        FACADE.FacadeName.save(request, callback);
+        FACADE.DefaultFacadeName.save(request, callback);
     },
 
-    removeById: function(request, callback) {
+    removeById: function (request, callback) {
         request.local.ids = [];
         if (request.params.id) {
             request.local.ids.push(request.params.id);
         } else {
             request.local.ids = request.body;
         }
-        FACADE.FacadeName.removeById(request, callback);
+        FACADE.DefaultFacadeName.removeById(request, callback);
     },
 
-    update: function(request, callback) {
+    update: function (request, callback) {
         if (!UTILS.isBlank(request.body)) {
             request.local.models = [];
             if (_.isArray(request.local.body)) {
@@ -55,13 +55,13 @@ module.exports = {
             } else {
                 request.local.models.push(request.body);
             }
-            FACADE.FacadeName.update(request, callback);
+            FACADE.DefaultFacadeName.update(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
         }
     },
 
-    saveOrUpdate: function(request, callback) {
+    saveOrUpdate: function (request, callback) {
         if (!UTILS.isBlank(request.body)) {
             request.local.models = [];
             if (_.isArray(request.body)) {
@@ -69,7 +69,7 @@ module.exports = {
             } else {
                 request.local.models.push(request.body);
             }
-            FACADE.FacadeName.saveOrUpdate(request, callback);
+            FACADE.DefaultFacadeName.saveOrUpdate(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
         }

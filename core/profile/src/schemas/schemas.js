@@ -18,31 +18,7 @@ module.exports = {
             model: true,
             service: true,
             event: true,
-            router: true,
-            definition: {
-                flatNo: {
-                    type: 'String'
-                },
-                blockNo: {
-                    type: 'String'
-                },
-                building: {
-                    type: 'String'
-                },
-                locality: {
-                    type: 'String'
-                },
-                city: {
-                    type: 'String'
-                },
-                state: {
-                    type: 'String'
-                },
-                zipCode: {
-                    type: 'String'
-                },
-                contacts: ["schemas['contact']"]
-            }
+            router: true
         },
 
         contact: {
@@ -50,20 +26,7 @@ module.exports = {
             model: true,
             service: true,
             event: true,
-            router: true,
-            definition: {
-                contactType: {
-                    type: 'String',
-                    required: true
-                },
-                prefix: {
-                    type: 'String'
-                },
-                contactNo: {
-                    type: 'String',
-                    required: true
-                }
-            }
+            router: true
         },
 
         tenant: {
@@ -75,30 +38,7 @@ module.exports = {
                 enabled: true,
                 ttl: 100
             },
-            router: true,
-            definition: {
-                created: {
-                    type: 'Date',
-                    default: new Date() //new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
-                },
-                updated: {
-                    type: 'Date',
-                    default: new Date() //new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
-                },
-                name: {
-                    type: 'String',
-                    required: true,
-                    unique: true
-                },
-                active: {
-                    type: 'Boolean',
-                    default: true
-                },
-                properties: {
-                    type: mongoose.Schema.Types.Mixed,
-                    required: true
-                }
-            }
+            router: true
         },
 
         enterprise: {
@@ -124,37 +64,6 @@ module.exports = {
                     modelName: "EnterpriseModel",
                     type: 'many'
                 }
-            },
-            definition: {
-                enterpriseCode: {
-                    unique: true
-                },
-                name: {
-                    type: 'String',
-                    required: true
-                },
-                description: {
-                    type: 'String'
-                },
-
-                addresses: ["schemas['address']"],
-                contacts: ["schemas['contact']"],
-
-                tenant: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'TenantModel',
-                    required: true
-                },
-
-                superEnterprise: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'EnterpriseModel'
-                },
-
-                subEnterprises: [{
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'EnterpriseModel'
-                }]
             }
         },
 
@@ -163,23 +72,7 @@ module.exports = {
             model: true,
             service: true,
             event: true,
-            router: true,
-            definition: {
-                password: {
-                    type: "String",
-                    required: true
-                },
-                loginId: {
-                    type: "String",
-                    required: true,
-                    unique: true,
-                    index: true
-                },
-                personId: {
-                    type: 'String',
-                    required: true
-                }
-            }
+            router: true
         },
 
         active: {
@@ -187,41 +80,7 @@ module.exports = {
             model: true,
             service: false,
             event: false,
-            router: false,
-            definition: {
-                loginId: {
-                    type: "String",
-                    required: true,
-                    unique: true,
-                    index: true
-                },
-                personId: {
-                    type: 'String',
-                    required: true
-                },
-                attempts: {
-                    type: 'Number',
-                    default: 1,
-                    validate: {
-                        validator: NODICS.getValidators().checkValidForAttempts,
-                        message: '{VALUE} is not a valid attempt! put 1 instead'
-                    }
-                },
-                lastAttempt: {
-                    type: 'Date'
-                },
-                locked: {
-                    type: 'Boolean',
-                    default: false
-                },
-                lockedTime: {
-                    type: 'Date'
-                },
-                active: {
-                    type: 'Boolean',
-                    default: true
-                },
-            }
+            router: false
         },
 
         person: {
@@ -229,32 +88,7 @@ module.exports = {
             model: false,
             service: false,
             event: false,
-            router: false,
-            definition: {
-                firstName: {
-                    type: "String",
-                    required: true
-                },
-                middleName: {
-                    type: "String"
-                },
-                lastName: {
-                    type: "String",
-                    required: true
-                },
-                loginId: {
-                    type: "String",
-                    required: true,
-                    unique: true,
-                    index: true
-                },
-                autoUnloack: {
-                    type: 'Boolean',
-                    default: true
-                },
-                addresses: ["schemas['address']"],
-                contacts: ["schemas['contact']"],
-            }
+            router: false
         },
 
         employee: {
@@ -262,18 +96,7 @@ module.exports = {
             model: true,
             service: true,
             event: true,
-            router: true,
-            cache: {
-                enabled: true,
-                ttl: 100
-            },
-            definition: {
-                // ...
-            },
-            options: {
-                strict: true
-            }
-
+            router: true
         },
 
         customer: {
@@ -285,9 +108,6 @@ module.exports = {
             cache: {
                 enabled: true,
                 ttl: 20
-            },
-            definition: {
-                // ...
             }
         }
     }

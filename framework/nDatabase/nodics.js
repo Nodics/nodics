@@ -19,9 +19,12 @@ module.exports = {
         SYSTEM.LOG.info('Starting database configuration process');
         return new Promise((resolve, reject) => {
             conHandler.init().then(success => {
-                SYSTEM.deployValidators();
-                SYSTEM.deploySchemas();
-                resolve(true);
+                SYSTEM.buildSchemas();
+                SYSTEM.buildModelsForTenants().then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });
@@ -31,7 +34,7 @@ module.exports = {
     loadOnlySchema: function () {
         SYSTEM.LOG.info('Starting database configuration process');
         return new Promise((resolve, reject) => {
-            SYSTEM.deployRawSchemas();
+            SYSTEM.buildSchemas();
             resolve(true);
         });
     },

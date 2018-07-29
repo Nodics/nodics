@@ -24,15 +24,11 @@ module.exports = {
                         let db = NODICS.getDatabase(CONFIG.get('profileModuleName'), 'default');
                         if (db && db.master) {
                             SYSTEM.LOG.info('Checking if initialization required');
-                            let profileDBClient = db.master.getConnection();
-                            profileDBClient.db.collection('enterprisemodels', function (err, collection) {
-                                collection.count({}, function (error, count) {
-                                    if (count <= 0) {
-                                        NODICS.setInitRequired(true);
-                                    }
-                                    resolve(true);
-                                });
-                            });
+                            if (!db.master.getCollectionList() || db.master.getCollectionList().length <= 0) {
+                                SYSTEM.LOG.info('System requires initial data to be imported');
+                                NODICS.setInitRequired(true);
+                            }
+                            resolve(true);
                         } else {
                             resolve(true);
                         }
@@ -40,7 +36,6 @@ module.exports = {
                         resolve(true);
                     }
                 } catch (error) {
-                    //console.log(error);
                     reject(error);
                 }
 

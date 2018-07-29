@@ -15,25 +15,19 @@ module.exports = {
             databaseType: 'mongodb', //for Cassandra use 'cassandra'
             mongodb: {
                 master: {
-                    URI: 'mongodb://localhost:27017/emsClientMaster',
+                    URI: 'mongodb://localhost:27017',
+                    databaseName: 'emsClientMaster',
                     options: {
-                        db: {
-                            native_parser: true
-                        },
-                        server: {
-                            poolSize: 5
-                        }
+                        useNewUrlParser: true,
+                        poolSize: 5
                     }
                 },
                 test: {
-                    URI: 'mongodb://localhost:27017/emsClientTest',
+                    URI: 'mongodb://localhost:27017',
+                    databaseName: 'emsClientTest',
                     options: {
-                        db: {
-                            native_parser: true
-                        },
-                        server: {
-                            poolSize: 5
-                        }
+                        useNewUrlParser: true,
+                        poolSize: 5
                     }
                 }
             }

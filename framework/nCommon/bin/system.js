@@ -344,7 +344,7 @@ module.exports = {
             options.modelName = options.schemaName.toUpperCaseEachWord();
             if (options.schemaObject.model) {
                 let entityName = options.modelName + options.postFix;
-                let fileName = options.currentDir + '/' + entityName + '.js';
+                let fileName = options.currentDir + '/Default' + entityName + '.js';
                 let data = '/*\n' +
                     '\tNodics - Enterprice Micro-Services Management Framework\n\n' +
 
@@ -398,10 +398,10 @@ module.exports = {
             .replaceAll('modelVar', options.modelName)
             .replaceAll('daoName', options.modelName + 'Dao')
             .replaceAll('mdulName', options.moduleName)
-            .replaceAll('ServiceName', options.modelName + 'Service')
-            .replaceAll('FacadeName', options.modelName + 'Facade')
+            .replaceAll('ServiceName', 'Default' + options.modelName + 'Service')
+            .replaceAll('FacadeName', 'Default' + options.modelName + 'Facade')
             .replaceAll("contextRoot", contextRoot)
-            .replaceAll("controllerName", options.modelName + 'Controller');
+            .replaceAll("controllerName", 'Default' + options.modelName + 'Controller');
         return commonDefinitionString;
     },
 

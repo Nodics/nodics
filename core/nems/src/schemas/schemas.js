@@ -17,49 +17,7 @@ module.exports = {
             model: true,
             service: true,
             event: false,
-            router: true,
-            definition: {
-                event: {
-                    type: 'String'
-                },
-                source: {
-                    type: 'String'
-                },
-                target: {
-                    type: 'String'
-                },
-                nodeId: {
-                    type: 'String'
-                },
-                targetType: {
-                    type: 'String',
-                    enum: ENUMS.TargetType.getEnumValue(),
-                    default: ENUMS.TargetType.MODULE.key
-                },
-                state: {
-                    type: 'String',
-                    enum: ENUMS.EventState.getEnumValue(),
-                    default: ENUMS.EventState.NEW.key,
-                    index: true
-                },
-                type: {
-                    type: 'String',
-                    enum: ENUMS.EventType.getEnumValue(),
-                    default: ENUMS.EventType.ASYNC.key
-                },
-                hits: {
-                    type: 'Number',
-                    default: 0,
-                    index: true
-                },
-                log: [{
-                    type: 'String'
-                }],
-                params: [{
-                    type: mongoose.Schema.Types.Mixed,
-                    required: false
-                }]
-            }
+            router: true
         },
 
         eventLog: {
@@ -67,10 +25,7 @@ module.exports = {
             model: true,
             service: true,
             event: false,
-            router: false,
-            definition: {
-
-            }
+            router: false
         }
     }
 };

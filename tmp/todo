@@ -95,6 +95,10 @@ Todos:
     ✔ Support multiple failure node redirect @done(18-07-08 14:23)
     
 Todos:
+  - Provide validators from both Nodics and Schema level
+  - Provide default value initializer from both level
+  - Create update service to update Schema related changes, like validators, indexes and all
+  - Add Watcher configuration at schema level, and push notifications to EMS
   Cassandra Support task:
     - Configure conection setting separate for mongodb and cassandra
     - Create schema file separate for both mongo and cassandra (mongodbSchema and cassandraSchema)
@@ -175,3 +179,6 @@ Todos:
 
 
     https://medium.com/styled-components/the-simple-guide-to-server-side-rendering-react-with-styled-components-d31c6b2b8fbf
+
+Issues:
+  - listCollections return whole collection object with 
