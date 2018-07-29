@@ -14,7 +14,7 @@ const _ = require('lodash');
 module.exports = {
 
     prepareURL: function (config) {
-        return SERVICE.ModuleService.buildRequest({
+        return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'profile',
             methodName: 'POST',
             apiName: 'authenticate',
@@ -47,7 +47,7 @@ module.exports = {
             if (moduleObject) {
                 config.source = moduleName;
                 let requestUrl = _self.prepareURL(config);
-                SERVICE.ModuleService.fetch(requestUrl).then(success => {
+                SERVICE.DefaultModuleService.fetch(requestUrl).then(success => {
                     if (success.success) {
                         moduleObject.metaData.authToken = success.result.authToken;
                         if (!UTILS.isBlank(modules)) {
@@ -60,7 +60,7 @@ module.exports = {
                             resolve(success);
                         }
                     } else {
-                        reject('Authentication failed for given data');
+                        reject(success);
                     }
                 }).catch(error => {
                     this.LOG.error('While hitting url: ', JSON.stringify(requestUrl));

@@ -80,7 +80,7 @@ module.exports = {
             try {
                 CONTROLLER[request.local.router.handler][request.local.router.operation](request, (error, result) => {
                     if (error) {
-                        _self.LOG.error('Got error while handling special request : ', error);
+                        //_self.LOG.error('Got error while handling special request : ', error);
                         process.error(request, response, error);
                     } else {
                         let cache = false;
@@ -212,12 +212,12 @@ module.exports = {
     },
 
     handleFailureEnd: function (request, response) {
-        this.LOG.debug('Request has been processed with some failures : ', request.local.originalUrl);
+        this.LOG.error('Request has been processed with some failures : ', request.local.originalUrl);
         request.local.httpResponse.json(response);
     },
 
     handleErrorEnd: function (request, response) {
-        this.LOG.debug('Request has been processed and got errors : ', request.local.originalUrl);
+        this.LOG.error('Request has been processed and got errors : ', request.local.originalUrl);
         request.local.httpResponse.json(response);
     }
 };

@@ -12,10 +12,10 @@
 const _ = require('lodash');
 
 module.exports = {
-    publish: function(request, callback) {
+    publish: function (request, callback) {
         if (!UTILS.isBlank(request.body)) {
             request.local.payloads = request.body;
-            return FACADE.EmsClientFacade.publish(request, callback);
+            return FACADE.DefaultEmsClientFacade.publish(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
             callback('Please validate your request, it is not a valid one. Request should contain body: {queue:queueName, message:message}');

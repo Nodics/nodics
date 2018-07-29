@@ -11,17 +11,17 @@
 
 module.exports = {
 
-    authenticate: function(request, callback) {
+    authenticate: function (request, callback) {
         request.local.loginId = request.get('loginId');
         request.local.password = request.get('password');
         request.local.enterpriseCode = request.get('enterpriseCode');
         request.local.source = request.get('source');
-        FACADE.AuthenticationProviderFacade.authenticate(request, callback);
+        FACADE.DefaultAuthenticationProviderFacade.authenticate(request, callback);
 
     },
 
-    authorize: function(request, callback) {
-        FACADE.AuthenticationProviderFacade.authorize(request, callback);
+    authorize: function (request, callback) {
+        FACADE.DefaultAuthenticationProviderFacade.authorize(request, callback);
 
     }
 };

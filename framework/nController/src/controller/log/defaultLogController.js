@@ -10,7 +10,11 @@
  */
 
 module.exports = {
-    changeLogLevel: function(request, callback) {
-        SERVICE.LogService.changeLogLevel(request, callback);
+    changeLogLevel: function (request, callback) {
+        if (request.body) {
+            request.local.logLevel = request.body.logLevel;
+            request.local.entityName = request.body.entityName;
+            FACADE.DefaultLogFacade.changeLogLevel(request, callback);
+        }
     }
 };

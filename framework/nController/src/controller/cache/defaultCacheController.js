@@ -14,7 +14,7 @@ module.exports = {
     changeApiCacheConfiguration: function (request, callback) {
         if (!UTILS.isBlank(request.body)) {
             request.local.config = request.body;
-            FACADE.CacheFacade.changeApiCacheConfiguration(request, callback);
+            FACADE.DefaultCacheFacade.changeApiCacheConfiguration(request, callback);
         } else {
             callback('Please verify your request, this not a valid one');
         }
@@ -23,7 +23,7 @@ module.exports = {
     changeItemCacheConfiguration: function (request, callback) {
         if (!UTILS.isBlank(request.body)) {
             request.local.config = request.body;
-            FACADE.CacheFacade.changeItemCacheConfiguration(request, callback);
+            FACADE.DefaultCacheFacade.changeItemCacheConfiguration(request, callback);
         } else {
             callback('Please verify your request, this not a valid one');
         }
@@ -35,7 +35,7 @@ module.exports = {
         } else if (request.body) {
             request.local.keys = request.body;
         }
-        FACADE.CacheFacade.flushApiCache(request, callback);
+        FACADE.DefaultCacheFacade.flushApiCache(request, callback);
     },
 
     flushItemCache: function (request, callback) {
@@ -44,20 +44,20 @@ module.exports = {
         } else if (request.body) {
             request.local.keys = request.body;
         }
-        FACADE.CacheFacade.flushItemCache(request, callback);
+        FACADE.DefaultCacheFacade.flushItemCache(request, callback);
     },
 
     flushApiCacheKeys: function (request, callback) {
         if (request.body) {
             request.local.keys = request.body;
         }
-        FACADE.CacheFacade.flushApiCacheKeys(request, callback);
+        FACADE.DefaultCacheFacade.flushApiCacheKeys(request, callback);
     },
 
     flushItemCacheKeys: function (request, callback) {
         if (request.body) {
             request.local.keys = request.body;
         }
-        FACADE.CacheFacade.flushItemCacheKeys(request, callback);
+        FACADE.DefaultCacheFacade.flushItemCacheKeys(request, callback);
     }
 };

@@ -11,12 +11,12 @@
 
 module.exports = {
 
-    retrieveEnterprise: function(enterpriseCode) {
+    retrieveEnterprise: function (enterpriseCode) {
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(enterpriseCode)) {
                 reject('Enterprise Code is invalid or null');
             } else {
-                DAO.EnterpriseDao.get({
+                SERVICE.DefaultEnterpriseService.get({
                     tenant: 'default',
                     recursive: true,
                     options: {
@@ -28,7 +28,22 @@ module.exports = {
                     if (enterprises.length <= 0) {
                         reject('Invalid enterprise code');
                     } else {
-                        resolve(enterprises[0]);
+                        let enterprise = enterprises[0];
+                        SERVICE.DefaultTenantService.get({
+                            tenant: 'default',
+                            options: {
+                                query: {
+                                    _id: enterprise.tenant
+                                }
+                            }
+                        }).then(tenants => {
+                            if (tenants.length <= 0) {
+                                reject('Invalid Tenant Id');
+                            } else {
+                                enterprise.tenant = tenants[0];
+                                resolve(enterprise);
+                            }
+                        });
                     }
                 }).catch(error => {
                     reject(error);
@@ -37,11 +52,11 @@ module.exports = {
         });
     },
 
-    updateAuthData: function(active, enterprise) {
+    updateAuthData: function (active, enterprise) {
         let _self = this;
         active.lastAttempt = new Date();
         active.updated = new Date();
-        DAO.ActiveDao.saveOrUpdate({
+        SERVICE.DefaultActiveService.save({
             tenant: enterprise.tenant.name,
             models: [active]
         }).then(success => {
@@ -51,7 +66,7 @@ module.exports = {
         });
     },
 
-    updateFailedAuthData: function(active, enterprise) {
+    updateFailedAuthData: function (active, enterprise) {
         if (active.attempts <= CONFIG.get('attemptsToLockAccount')) {
             active.attempts = active.attempts + 1;
         } else {
@@ -61,16 +76,16 @@ module.exports = {
         this.updateAuthData(active, enterprise);
     },
 
-    authenticate: function(request, callback) {
+    authenticate: function (request, callback) {
         let input = request.local || request;
         let _self = this;
         _self.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
-            SERVICE.PersonService.findByLoginId({
+            SERVICE.DefaultPersonService.findByLoginId({
                 tenant: enterprise.tenant.name,
                 loginId: input.loginId,
                 enterpriseCode: enterprise.enterpriseCode
             }).then(person => {
-                SERVICE.PersonService.findActive({
+                SERVICE.DefaultPersonService.findActive({
                     tenant: enterprise.tenant.name,
                     loginId: input.loginId,
                     _id: person._id
@@ -78,7 +93,7 @@ module.exports = {
                     if (active.locked || !active.active) {
                         callback('Account is currently in locked state or has been disabled');
                     } else {
-                        SERVICE.PersonService.findPassword({
+                        SERVICE.DefaultPersonService.findPassword({
                             tenant: enterprise.tenant.name,
                             enterpriseCode: enterprise.enterpriseCode,
                             loginId: person.loginId,
@@ -126,7 +141,7 @@ module.exports = {
         });
     },
 
-    authorize: function(request, callback) {
+    authorize: function (request, callback) {
         let input = request.local || request;
         this.findToken(input).then(success => {
             callback(null, success);

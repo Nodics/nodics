@@ -14,7 +14,7 @@ module.exports = {
         defaultTenant: {
             options: {
                 modelName: 'tenant',
-                operation: 'saveOrUpdate', //save, update and saveOrUpdate
+                operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultTenantData'
             },
@@ -25,7 +25,7 @@ module.exports = {
         defaultEnterprise: {
             options: {
                 modelName: 'enterprise',
-                operation: 'saveOrUpdate', //save, update and saveOrUpdate
+                operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultEnterpriseData'
             },
@@ -44,7 +44,7 @@ module.exports = {
         defaultEmployee: {
             options: {
                 modelName: 'employee',
-                operation: 'saveOrUpdate', //save, update and saveOrUpdate
+                operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultEmployeeData'
             },
@@ -55,7 +55,7 @@ module.exports = {
         defaultCustomer: {
             options: {
                 modelName: 'customer',
-                operation: 'saveOrUpdate', //save, update and saveOrUpdate
+                operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultCutomerData'
             },
@@ -66,7 +66,7 @@ module.exports = {
         defaultPassword: {
             options: {
                 modelName: 'password',
-                operation: 'saveOrUpdate', //save, update and saveOrUpdate
+                operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultPasswordData'
             },

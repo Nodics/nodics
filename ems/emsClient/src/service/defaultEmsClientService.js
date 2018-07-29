@@ -11,11 +11,12 @@
 
 module.exports = {
 
-    init: function() {
+    init: function () {
         let _self = this;
         let emsConfig = CONFIG.get('emsClient');
         if (emsConfig.enabled && emsConfig.type) {
-            SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].init(emsConfig[emsConfig.type]).then(success => {
+            let conf = emsConfig[emsConfig.type];
+            SERVICE[conf.handler].init(conf).then(success => {
                 _self.LOG.debug('Successfully established connection with : ', emsConfig.type);
             }).catch(error => {
                 _self.LOG.error(error);
@@ -30,13 +31,14 @@ module.exports = {
             partition: payload.partition || 0
         };
     */
-    publish: function(request, callback) {
+    publish: function (request, callback) {
         let input = request.local || request;
         let emsConfig = CONFIG.get('emsClient');
+        let conf = emsConfig[emsConfig.type];
         if (input.payloads instanceof Array) {
             let allPayloads = [];
             input.payloads.forEach(element => {
-                allPayloads.push(SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(element));
+                allPayloads.push(SERVICE[conf.handler].publish(element));
             });
             if (allPayloads.length > 0) {
                 Promise.all(allPayloads).then(success => {
@@ -55,13 +57,13 @@ module.exports = {
             }
         } else {
             if (callback) {
-                SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(input.payloads).then(success => {
+                SERVICE[conf.handler].publish(input.payloads).then(success => {
                     callback(null, 'Message published Successfully');
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                return SERVICE[emsConfig.type.toUpperCaseFirstChar() + 'ClientService'].publish(input.payloads);
+                return SERVICE[conf.handler].publish(input.payloads);
             }
         }
 

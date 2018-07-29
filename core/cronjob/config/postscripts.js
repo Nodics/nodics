@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    startJobsOnStartup: function() {
-        SERVICE.CronJobService.startOnStartup();
+    startJobsOnStartup: function () {
+        SERVICE.DefaultCronJobService.startOnStartup();
     }
 };

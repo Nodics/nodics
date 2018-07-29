@@ -11,9 +11,9 @@
 
 module.exports = {
 
-    findByLoginId: function(input) {
+    findByLoginId: function (input) {
         return new Promise((resolve, reject) => {
-            SERVICE.EmployeeService.get({
+            SERVICE.DefaultEmployeeService.get({
                 tenant: input.tenant,
                 options: {
                     recursive: true,
@@ -24,7 +24,7 @@ module.exports = {
                 }
             }).then(employees => {
                 if (employees.length <= 0) {
-                    SERVICE.CustomerService.get({
+                    SERVICE.DefaultCustomerService.get({
                         tenant: input.tenant,
                         options: {
                             recursive: true,
@@ -51,9 +51,9 @@ module.exports = {
         });
     },
 
-    findActive: function(input) {
+    findActive: function (input) {
         return new Promise((resolve, reject) => {
-            SERVICE.ActiveService.get({
+            SERVICE.DefaultActiveService.get({
                 tenant: input.tenant,
                 options: {
                     query: {
@@ -86,9 +86,9 @@ module.exports = {
         });
     },
 
-    findPassword: function(input) {
+    findPassword: function (input) {
         return new Promise((resolve, reject) => {
-            SERVICE.PasswordService.get({
+            SERVICE.DefaultPasswordService.get({
                 tenant: input.tenant,
                 options: {
                     query: {

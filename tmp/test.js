@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const assert = require('assert');
-
+const _ = require('lodash');
 // Connection URL
 const url = 'mongodb://localhost:27017';
 
@@ -28,7 +28,7 @@ MongoClient.connect(url, { useNewUrlParser: true }, function (err, client) {
   console.log(result)
   client.close()
   })*/
-  insertDocuments(db, function (result) {
+  updateDocuments(db, function (result) {
     console.log(result);
     client.close();
   });
@@ -38,7 +38,7 @@ const removeDocuments = function (db, callback) {
   // Get the documents collection
   const collection = db.collection('documents');
   // Peform a simple find and return all the documents
-  collection.deleteMany({_id: '5b07482aa46fb30b5a295f7b'}, function (err, docs) {
+  collection.deleteMany({ _id: '5b07482aa46fb30b5a295f7b' }, function (err, docs) {
     assert.equal(null, err);
     callback(docs.result);
   });
@@ -48,7 +48,7 @@ const findDocuments = function (db, callback) {
   // Get the documents collection
   const collection = db.collection('documents');
   // Peform a simple find and return all the documents
-  collection.find({_id: ObjectId('5b07482aa46fb30b5a295f7c')}).toArray(function (err, docs) {
+  collection.find({ _id: ObjectId('5b07482aa46fb30b5a295f7c') }).toArray(function (err, docs) {
     assert.equal(null, err);
     callback(docs);
   });
@@ -66,7 +66,7 @@ const insertDocument = function (db, callback) {
     assert.equal(1, result.result.n);
     assert.equal(1, result.ops.length);
     console.log('Inserted 1 document into the collection');
-    callback({result: result.result, ops: result.ops});
+    callback({ result: result.result, ops: result.ops });
   });
 };
 
@@ -95,3 +95,53 @@ const insertDocuments = function (db, callback) {
     callback(result);
   });
 };
+
+const updateDocuments = function (db, callback) {
+  const collection = db.collection('documents');
+  let query = {
+    '_id.tmc': 'add.streat'
+  }
+  //console.log(query);
+  let models = [{
+    '_id': ObjectId('5b07482aa46fb30b5a295f73'),
+    firstName: 'Steve1',
+    lastName: 'Jobs',
+    add: {
+      streat: 'something',
+      pin: '3453454546'
+    }
+  }];
+  console.log(models);
+  models.forEach((model => {
+    if (model._id) {
+      let query = _.merge({}, { '_id': '_id' });
+      _.each(query, (value, property) => {
+        let tmp = '';
+        if (value.indexOf('.') > 0) {
+          let values = value.split('.');
+          tmp = model;
+          values.forEach(element => {
+            if (tmp[element]) {
+              tmp = tmp[element];
+            } else {
+              throw new Error('Invalid property value for: ' + property + ' in ' + JSON.stringify(model));
+            }
+          });
+        } else {
+          tmp = model[value];
+        }
+        query[property] = tmp;
+      });
+      console.log('query: ', query);
+      collection.findOneAndUpdate(query, {
+        $set: model
+      }, {
+          upsert: true
+        }).then(result => {
+          console.log('Success Result: ', result);
+        }).catch(error => {
+          console.log('Error Result: ', error);
+        })
+    }
+  }));
+}

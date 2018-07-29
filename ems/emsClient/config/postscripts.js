@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    runJavaApp: function() {
-        SERVICE.EmsClientService.init();
+    runJavaApp: function () {
+        SERVICE.DefaultEmsClientService.init();
     }
 };

@@ -11,7 +11,11 @@
 
 module.exports = {
 
-    getTenants: function (request, callback) {
-        FACADE.TenantFacade.get(request, callback);
+    authenticate: function (request, callback) {
+        SERVICE.DefaultAuthenticationProviderService.authenticate(request, callback);
+    },
+
+    authorize: function (request, callback) {
+        SERVICE.DefaultAuthenticationProviderService.authorize(request, callback);
     }
 };

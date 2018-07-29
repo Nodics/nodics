@@ -72,6 +72,7 @@ module.exports = {
         type: 'activemq', //tibco, activemq, rebbitmq, Kafka
 
         tibco: {
+            handler: 'DefaultTibcoClientService',
             options: {
                 url: "tcp://10.106.207.92:7222",
                 username: "admin",
@@ -87,6 +88,7 @@ module.exports = {
         },
 
         activemq: {
+            handler: 'DefaultActivemqClientService',
             options: {
                 host: 'localhost',
                 port: 61613,
@@ -113,6 +115,7 @@ module.exports = {
         },
 
         kafka: {
+            handler: 'DefaultKafkaClientService',
             publisherType: 1, // 0 for normal, 1 for HighLevel Producer
             consumerType: 0, // 0 for normal, 1 for HighLevel Producer
             options: {

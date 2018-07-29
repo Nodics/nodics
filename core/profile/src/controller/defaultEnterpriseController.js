@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    getEnterprise: function(request, callback) {
+    getEnterprise: function (request, callback) {
         let enterpriseCode = request.local.enterpriseCode;
         if (UTILS.isBlank(enterpriseCode)) {
             callback('Invalid enterprise code');
@@ -20,7 +20,7 @@ module.exports = {
             request.local.query = {
                 enterpriseCode: enterpriseCode
             };
-            FACADE.EnterpriseFacade.get(request, callback);
+            FACADE.DefaultEnterpriseFacade.get(request, callback);
         }
     }
 };

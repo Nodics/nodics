@@ -20,7 +20,7 @@ module.exports = {
                 },
                 key: '/enterprise/get',
                 method: 'POST',
-                handler: 'EnterpriseController',
+                handler: 'DefaultEnterpriseController',
                 operation: 'getEnterprise',
                 help: {
                     requestType: 'secured',
@@ -37,7 +37,7 @@ module.exports = {
                 },
                 key: '/tenant/get',
                 method: 'GET',
-                handler: 'TenantController',
+                handler: 'DefaultTenantController',
                 operation: 'getTenants',
                 help: {
                     requestType: 'secured',
@@ -52,7 +52,7 @@ module.exports = {
                 secured: true,
                 key: '/authenticate',
                 method: 'POST',
-                handler: 'AuthenticationProviderController',
+                handler: 'DefaultAuthenticationProviderController',
                 operation: 'authenticate',
                 help: {
                     requestType: 'secured',
@@ -68,7 +68,7 @@ module.exports = {
                 secured: true,
                 key: '/authorize',
                 method: 'POST',
-                handler: 'AuthenticationProviderController',
+                handler: 'DefaultAuthenticationProviderController',
                 operation: 'authorize',
                 help: {
                     requestType: 'secured',

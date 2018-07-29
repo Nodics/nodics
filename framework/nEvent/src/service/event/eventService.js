@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    handleEvent: function(request, callback) {
+    handleEvent: function (request, callback) {
         let event = request.body;
         if (!NODICS.getModule(event.target).eventService.emit(event.event, event, callback)) {
             if (CONFIG.get('event').ignoreIfNoLister) {
@@ -22,8 +22,8 @@ module.exports = {
         }
     },
 
-    prepareURL: function(eventDef) {
-        return SERVICE.ModuleService.buildRequest({
+    prepareURL: function (eventDef) {
+        return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'nems',
             methodName: 'put',
             apiName: 'event/push',
@@ -35,9 +35,9 @@ module.exports = {
         });
     },
 
-    publish: function(request, callback) {
+    publish: function (request, callback) {
         let eventDef = request.body || request;
         this.LOG.debug('Publishing event to event server');
-        SERVICE.ModuleService.fetch(this.prepareURL(eventDef), callback);
+        SERVICE.DefaultModuleService.fetch(this.prepareURL(eventDef), callback);
     }
 };

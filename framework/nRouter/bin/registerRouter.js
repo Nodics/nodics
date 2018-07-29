@@ -31,7 +31,7 @@ module.exports = {
                         try {
                             routers.operations.registerWeb(app, moduleObject);
                             try {
-                                SERVICE.CacheService.initCache(moduleObject, moduleName).then(() => {
+                                SERVICE.DefaultCacheService.initCache(moduleObject, moduleName).then(() => {
                                     _self.registerRouters(app, moduleObject, moduleName, routers);
                                     resolve(true);
                                 }).catch(error => {

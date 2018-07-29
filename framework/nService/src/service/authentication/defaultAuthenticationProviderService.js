@@ -93,7 +93,7 @@ module.exports = {
     },
 
     prepareURL: function (input) {
-        return SERVICE.ModuleService.buildRequest({
+        return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'profile',
             methodName: 'POST',
             apiName: 'authorize',
@@ -113,7 +113,7 @@ module.exports = {
         }).catch(error => {
             if (input.moduleName !== CONFIG.get('profileModuleName')) {
                 this.LOG.debug('Authorizing request for token :', input.authToken);
-                SERVICE.ModuleService.fetch(this.prepareURL(input), (error, response) => {
+                SERVICE.DefaultModuleService.fetch(this.prepareURL(input), (error, response) => {
                     if (error) {
                         callback(error);
                     } else if (!response.success) {

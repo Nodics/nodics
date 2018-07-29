@@ -10,12 +10,7 @@
  */
 
 module.exports = {
-
-    authenticate: function(request, callback) {
-        SERVICE.AuthenticationProviderService.authenticate(request, callback);
-    },
-
-    authorize: function(request, callback) {
-        SERVICE.AuthenticationProviderService.authorize(request, callback);
+    changeLogLevel: function (request, callback) {
+        SERVICE.DefaultLogService.changeLogLevel(request, callback);
     }
 };

@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    runJob: function(definition, cronJob) {
+    runJob: function (definition, cronJob) {
         let _self = this;
         this.triggerEventHandlerJob(definition, cronJob, () => {
             DAO.CronJobDao.update({
@@ -25,14 +25,14 @@ module.exports = {
         });
     },
 
-    prepareURL: function(definition, cronJob) {
+    prepareURL: function (definition, cronJob) {
         let connectionType = 'abstract';
         let nodeId = '0';
         if (definition.targetNodeId) {
             connectionType = 'node';
             nodeId = definition.targetNodeId;
         }
-        return SERVICE.ModuleService.buildRequest({
+        return SERVICE.DefaultModuleService.buildRequest({
             connectionType: connectionType,
             nodeId: nodeId,
             moduleName: 'nems',
@@ -46,10 +46,10 @@ module.exports = {
         });
     },
 
-    triggerEventHandlerJob: function(definition, cronJob, callback) {
+    triggerEventHandlerJob: function (definition, cronJob, callback) {
         let _self = this;
         try {
-            SERVICE.ModuleService.fetch(this.prepareURL(definition, cronJob),
+            SERVICE.DefaultModuleService.fetch(this.prepareURL(definition, cronJob),
                 (error, response) => {
                     _self.LOG.debug('Events processed with response');
                     let logMessage = '';

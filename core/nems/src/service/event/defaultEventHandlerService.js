@@ -14,7 +14,7 @@ const util = require('util');
 
 module.exports = {
 
-    buildQuery: function() {
+    buildQuery: function () {
         return {
             recursive: false,
             pageSize: CONFIG.get('eventFetchSize'),
@@ -33,7 +33,7 @@ module.exports = {
         };
     },
 
-    processEvents: function(request, callback) {
+    processEvents: function (request, callback) {
         let _self = this;
         let input = request.local || request;
         input.response = {
@@ -56,7 +56,7 @@ module.exports = {
         });
     },
 
-    processSyncEvents: function(input, events, callback) {
+    processSyncEvents: function (input, events, callback) {
         let _self = this;
         _self.broadcastEvents(events, (error, processedEvents) => {
             _self.handleProcessedEvents(input, processedEvents, (message) => {
@@ -65,7 +65,7 @@ module.exports = {
         });
     },
 
-    handleProcessedEvents: function(request, processedEvents, callback) {
+    handleProcessedEvents: function (request, processedEvents, callback) {
         let _self = this;
         let success = [];
         let successIds = [];
@@ -116,7 +116,7 @@ module.exports = {
         });
     },
 
-    broadcastEvents: function(events, callback) {
+    broadcastEvents: function (events, callback) {
         let _self = this;
         let processed = [];
         events.forEach(event => {
@@ -155,7 +155,7 @@ module.exports = {
         });
     },
 
-    broadcastEvent: function(event, callback) {
+    broadcastEvent: function (event, callback) {
         let _self = this;
         if (!event.targetType || event.targetType === ENUMS.TargetType.MODULE.key) {
             _self.broadcastModuleEvent(event, callback);
@@ -166,8 +166,8 @@ module.exports = {
         }
     },
 
-    prepareURL: function(event) {
-        return SERVICE.ModuleService.buildRequest({
+    prepareURL: function (event) {
+        return SERVICE.DefaultModuleService.buildRequest({
             nodeId: event.nodeId || '-1',
             moduleName: event.target,
             methodName: 'POST',
@@ -180,10 +180,10 @@ module.exports = {
         });
     },
 
-    broadcastModuleEvent: function(event, callback) {
+    broadcastModuleEvent: function (event, callback) {
         let _self = this;
         try {
-            SERVICE.ModuleService.fetch(_self.prepareURL(event)).then(response => {
+            SERVICE.DefaultModuleService.fetch(_self.prepareURL(event)).then(response => {
                 if (response.success) {
                     callback(null, response);
                 } else {
@@ -198,7 +198,7 @@ module.exports = {
         }
     },
 
-    broadcastEachModuleEvent: function(event, callback) {
+    broadcastEachModuleEvent: function (event, callback) {
         let _self = this;
         try {
             let allPromise = [];
@@ -207,7 +207,7 @@ module.exports = {
                     event.target = moduleName;
                     event.nodeId = event.nodeId || '-1';
                     allPromise.push(
-                        SERVICE.ModuleService.fetch(_self.prepareURL(event))
+                        SERVICE.DefaultModuleService.fetch(_self.prepareURL(event))
                     );
                 }
             });
@@ -224,7 +224,7 @@ module.exports = {
         }
     },
 
-    broadcastEachNodeEvent: function(event, callback) {
+    broadcastEachNodeEvent: function (event, callback) {
         let _self = this;
         try {
             let allPromise = [];
@@ -235,7 +235,7 @@ module.exports = {
                     _.each(nodes, (node, nodeId) => {
                         event.nodeId = nodeId;
                         allPromise.push(
-                            SERVICE.ModuleService.fetch(_self.prepareURL(event))
+                            SERVICE.DefaultModuleService.fetch(_self.prepareURL(event))
                         );
                     });
                 }

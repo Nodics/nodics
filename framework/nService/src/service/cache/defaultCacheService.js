@@ -10,7 +10,6 @@
  */
 
 const _ = require('lodash');
-const NodeCache = require("node-cache");
 
 module.exports = {
 

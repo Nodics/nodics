@@ -10,11 +10,8 @@
  */
 
 module.exports = {
-    changeLogLevel: function(request, callback) {
-        if (request.body) {
-            request.local.logLevel = request.body.logLevel;
-            request.local.entityName = request.body.entityName;
-            FACADE.LogFacade.changeLogLevel(request, callback);
-        }
+
+    publish: function (input, callback) {
+        return SERVICE.DefaultEmsClientService.publish(input, callback);
     }
 };

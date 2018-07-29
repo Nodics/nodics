@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    publish: function(input, callback) {
-        return SERVICE.EmsClientService.publish(input, callback);
+    getTenants: function (request, callback) {
+        FACADE.DefaultTenantFacade.get(request, callback);
     }
 };

@@ -10,27 +10,15 @@
  */
 
 module.exports = {
-    get: function(input) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.get(input);
+    get: function (input) {
+        return NODICS.getModels('moduleName', input.tenant).modelName.getItems(input);
     },
 
-    getById: function(input) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.getById(input);
+    save: function (input) {
+        return NODICS.getModels('moduleName', input.tenant).modelName.saveItems(input);
     },
 
-    save: function(input) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.save(input);
-    },
-
-    removeById: function(input) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.removeById(input);
-    },
-
-    update: function(input) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.update(input);
-    },
-
-    saveOrUpdate: function(input) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.saveOrUpdate(input);
+    remove: function (input) {
+        return NODICS.getModels('moduleName', input.tenant).modelName.removeItems(input);
     }
 };

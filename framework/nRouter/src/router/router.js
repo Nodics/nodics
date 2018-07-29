@@ -95,7 +95,7 @@ module.exports = {
                 },
                 key: '/schemaName',
                 method: 'GET',
-                controller: 'controllerName',
+                controller: 'DefaultcontrollerName',
                 operation: 'get',
                 help: {
                     requestType: 'secured',
@@ -112,7 +112,7 @@ module.exports = {
                 },
                 key: '/schemaName',
                 method: 'POST',
-                controller: 'controllerName',
+                controller: 'DefaultcontrollerName',
                 operation: 'get',
                 help: {
                     requestType: 'secured',
@@ -137,8 +137,8 @@ module.exports = {
                 },
                 key: '/schemaName/id/:id',
                 method: 'GET',
-                controller: 'controllerName',
-                operation: 'getById',
+                controller: 'DefaultcontrollerName',
+                operation: 'get',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -148,12 +148,12 @@ module.exports = {
             }
         },
         commonRemoveOperations: {
-            deleteById: {
+            removeById: {
                 secured: true,
                 key: '/schemaName/id/:id',
                 method: 'DELETE',
-                controller: 'controllerName',
-                operation: 'removeById',
+                controller: 'DefaultcontrollerName',
+                operation: 'remove',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -161,12 +161,12 @@ module.exports = {
                     url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
                 }
             },
-            deleteByIds: {
+            removeByIds: {
                 secured: true,
                 key: '/schemaName',
                 method: 'DELETE',
-                controller: 'controllerName',
-                operation: 'removeById',
+                controller: 'DefaultcontrollerName',
+                operation: 'remove',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -181,46 +181,13 @@ module.exports = {
                 secured: true,
                 key: '/schemaName',
                 method: 'PUT',
-                controller: 'controllerName',
+                controller: 'DefaultcontrollerName',
                 operation: 'save',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'PUT',
                     url: 'http://host:port/nodics/{moduleName}/schemaName',
-                    body: '{ complete model object } or [{}, {}] array of models'
-                }
-            }
-        },
-        commonUpdateOperations: {
-            saveModels: {
-                secured: true,
-                key: '/schemaName/update',
-                method: 'PUT',
-                controller: 'controllerName',
-                operation: 'update',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'PUT',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/update',
-                    body: '{ complete model object } or [{}, {}] array of models'
-                }
-            }
-        },
-
-        commonSaveOrUpdateOperations: {
-            saveModels: {
-                secured: true,
-                key: '/schemaName/saveOrUpdate',
-                method: 'PUT',
-                controller: 'controllerName',
-                operation: 'saveOrUpdate',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'PUT',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/saveOrUpdate',
                     body: '{ complete model object } or [{}, {}] array of models'
                 }
             }

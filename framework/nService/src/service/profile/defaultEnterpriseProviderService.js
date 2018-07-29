@@ -11,8 +11,8 @@
 
 module.exports = {
 
-    prepareURL: function(input) {
-        return SERVICE.ModuleService.buildRequest({
+    prepareURL: function (input) {
+        return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'profile',
             methodName: 'POST',
             apiName: 'enterprise/get',
@@ -26,9 +26,9 @@ module.exports = {
         });
     },
 
-    loadEnterprise: function(request, callback) {
+    loadEnterprise: function (request, callback) {
         let input = request.local || request;
-        SERVICE.ModuleService.fetch(this.prepareURL(input), (error, response) => {
+        SERVICE.DefaultModuleService.fetch(this.prepareURL(input), (error, response) => {
             if (error) {
                 callback(error, null);
             } else if (!response.success) {

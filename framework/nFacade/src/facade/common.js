@@ -11,26 +11,14 @@
 
 module.exports = {
     get: function (request, callback) {
-        return SERVICE.DefaultServiceName.get(request, callback);
-    },
-
-    getById: function (request, callback) {
-        return SERVICE.DefaultServiceName.getById(request, callback);
+        return SERVICE.ServiceName.get(request, callback);
     },
 
     save: function (request, callback) {
-        return SERVICE.DefaultServiceName.save(request, callback);
+        return SERVICE.ServiceName.save(request, callback);
     },
 
-    removeById: function (request, callback) {
-        return SERVICE.DefaultServiceName.removeById(request, callback);
-    },
-
-    update: function (request, callback) {
-        return SERVICE.DefaultServiceName.update(request, callback);
-    },
-
-    saveOrUpdate: function (request, callback) {
-        return SERVICE.DefaultServiceName.saveOrUpdate(request, callback);
+    remove: function (request, callback) {
+        return SERVICE.ServiceName.removeById(request, callback);
     }
 };

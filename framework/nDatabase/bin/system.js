@@ -189,6 +189,7 @@ module.exports = {
         if (!UTILS.isBlank(modelGroup)) {
             let modelFunctions = SYSTEM.getAllMethods(modelGroup);
             modelFunctions.forEach(function (operationName) {
+                //console.log('1 : ', modelGroup[operationName]);
                 modelGroup[operationName](collection, schemaDef);
             });
         }
@@ -223,7 +224,7 @@ module.exports = {
 
     retrieveModel: function (options, dataBase) {
         return new Promise((resolve, reject) => {
-            console.log('   -- For model: ', options.modelName, '    database: ', dataBase.getName());
+            //console.log('   -- For model: ', options.modelName, '    database: ', dataBase.getName());
             if (dataBase.getCollectionList().includes(options.modelName)) {
                 let collection = dataBase.getConnection().collection(options.modelName);
                 let schema = options.moduleObject.rawSchema[options.schemaName];
@@ -314,7 +315,6 @@ module.exports = {
                     schemas: Object.keys(moduleObject.rawSchema),
 
                 }
-                console.log('-- For module: ', moduleName);
                 SYSTEM.buildModels(options).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -348,11 +348,6 @@ module.exports = {
     buildModelsForTenant: function (tenant) {
         return new Promise((resolve, reject) => {
             SYSTEM.buildModelsForModules(tenant, NODICS.getActiveModules()).then(success => {
-                let moduleObject = NODICS.getModels('profile', 'default');
-                _.each(moduleObject, (collection, name) => {
-                    collection.findItem();
-                });
-
                 resolve(success);
             }).catch(error => {
                 reject(error);
@@ -408,12 +403,10 @@ module.exports = {
         return name;
     },
 
-    // ******************************************
-
     addTenants: function () {
         return new Promise((resolve, reject) => {
             if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                NODICS.getModels(CONFIG.get('profileModuleName'), 'default').TenantModel.get({}).then((tenantData) => {
+                NODICS.getModels(CONFIG.get('profileModuleName'), 'default').TenantModel.getItems({}).then((tenantData) => {
                     SYSTEM.handleTenants(tenantData).then(success => {
                         resolve(success);
                     }).catch((error) => {
@@ -440,7 +433,7 @@ module.exports = {
 
     fetchTenants: function () {
         return new Promise((resolve, reject) => {
-            let requestUrl = SERVICE.ModuleService.buildRequest({
+            let requestUrl = SERVICE.DefaultModuleService.buildRequest({
                 moduleName: 'profile',
                 methodName: 'GET',
                 apiName: 'tenant/get',
@@ -448,7 +441,7 @@ module.exports = {
                 isJsonResponse: true,
             });
             try {
-                SERVICE.ModuleService.fetch(requestUrl, (error, response) => {
+                SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
                     if (error) {
                         SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
                         resolve([]);
@@ -507,6 +500,7 @@ module.exports = {
     },
 
     loadTenantDatabase: function () {
+        let _self = this;
         return new Promise((resolve, reject) => {
             SYSTEM.createTenantDatabaseConnection().then(success => {
                 let tenants = NODICS.getTenants().slice(0);
@@ -514,18 +508,19 @@ module.exports = {
                 if (index > -1) {
                     tenants.splice(index, 1);
                 }
-                let options = {
-                    tenants: tenants,
-                    interceptors: SYSTEM.loadFiles('/src/schemas/interceptors.js'),
-                    daos: SYSTEM.loadFiles('/src/schemas/model.js'),
-                };
-                SYSTEM.createSchemas(options);
-                resolve(true);
+                _self.buildModelsForTenants(tenants).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });
         });
     },
+
+    // ******************************************
+
 
     deployValidators: function () {
         SYSTEM.LOG.debug('Starting validators loading process');

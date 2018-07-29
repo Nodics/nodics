@@ -396,7 +396,7 @@ module.exports = {
             .replaceAll('modelName', options.modelName + 'Model')
             .replaceAll('schemaName', options.schemaName)
             .replaceAll('modelVar', options.modelName)
-            .replaceAll('daoName', options.modelName + 'Dao')
+            .replaceAll('DaoName', 'Default' + options.modelName + 'Dao')
             .replaceAll('mdulName', options.moduleName)
             .replaceAll('ServiceName', 'Default' + options.modelName + 'Service')
             .replaceAll('FacadeName', 'Default' + options.modelName + 'Facade')
