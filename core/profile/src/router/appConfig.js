@@ -11,30 +11,28 @@
 
 module.exports = {
     profile: {
-        initSession: function(app) {
-            //console.log('======================== Registering User App');
+        initSession: function (app) {
             /*app.use(function(req, res, next) {
-                console.log('======================== > ');
                 next();
             });*/
         },
-        initLogger: function(app) {
-            //console.log(' User initLogger');
+        initLogger: function (app) {
+
         },
-        initCache: function(app) {
-            //console.log(' User initCache');
+        initCache: function (app) {
+
         },
-        initBodyParser: function(app) {
-            //console.log(' User initBodyParser');
+        initBodyParser: function (app) {
+
         },
-        initHeaders: function(app) {
-            //console.log(' User initHeaders');
+        initHeaders: function (app) {
+
         },
-        initErrorRoutes: function(app) {
-            //console.log(' User initErrorRoutes');
+        initErrorRoutes: function (app) {
+
         },
-        initExtras: function(app) {
-            //console.log(' User initExtras');
+        initExtras: function (app) {
+
         }
     }
 };

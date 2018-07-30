@@ -11,7 +11,6 @@
 
 module.exports = {
     record0: {
-        _id: '111e7dd88ac6ed3d73a73411',
         name: 'testOne',
         active: true,
         properties: {
@@ -41,7 +40,6 @@ module.exports = {
         }
     },
     record1: {
-        _id: '111e7dd88ac6ed3d73a73311',
         name: 'default',
         active: true,
         properties: {

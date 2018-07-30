@@ -189,7 +189,6 @@ module.exports = {
         if (!UTILS.isBlank(modelGroup)) {
             let modelFunctions = SYSTEM.getAllMethods(modelGroup);
             modelFunctions.forEach(function (operationName) {
-                //console.log('1 : ', modelGroup[operationName]);
                 modelGroup[operationName](collection, schemaDef);
             });
         }
@@ -224,10 +223,11 @@ module.exports = {
 
     retrieveModel: function (options, dataBase) {
         return new Promise((resolve, reject) => {
-            //console.log('   -- For model: ', options.modelName, '    database: ', dataBase.getName());
             if (dataBase.getCollectionList().includes(options.modelName)) {
                 let collection = dataBase.getConnection().collection(options.modelName);
                 let schema = options.moduleObject.rawSchema[options.schemaName];
+                collection.moduleName = options.moduleName;
+                collection.rawSchema = schema;
                 collection.modelName = options.modelName;
                 collection.schemaName = options.schemaName;
                 SYSTEM.registerModelMiddleWare(options, collection, schema);
@@ -406,14 +406,16 @@ module.exports = {
     addTenants: function () {
         return new Promise((resolve, reject) => {
             if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                NODICS.getModels(CONFIG.get('profileModuleName'), 'default').TenantModel.getItems({}).then((tenantData) => {
+                SERVICE.DefaultTenantService.get({
+                    tenant: 'default'
+                }).then(tenantData => {
                     SYSTEM.handleTenants(tenantData).then(success => {
                         resolve(success);
                     }).catch((error) => {
                         SYSTEM.LOG.error(error);
                         reject('Configure at least default tenant');
                     });
-                }).catch((error) => {
+                }).catch(error => {
                     SYSTEM.LOG.error(error);
                     reject('Configure at least default tenant');
                 });
@@ -584,10 +586,7 @@ module.exports = {
                 let tmpDef = _.merge({}, rawSchema[superSchema].definition);
                 _.merge(tmpDef, options.schemaDef.definition);
                 rawSchema[options.modelName].definition = tmpDef;
-                //console.log(options.modelName, '  : Current  : ', rawSchema[options.modelName]);
                 options.schemaObject[options.modelName] = new options.database.getSchema()(rawSchema[options.modelName].definition, rawSchema[options.modelName].options || {});
-                //options.schemaObject[superSchema].extend(options.schemaDef.definition, options.schemaDef.options || {});
-
             } catch (error) {
                 SYSTEM.LOG.error('While generating models : ', error);
             }

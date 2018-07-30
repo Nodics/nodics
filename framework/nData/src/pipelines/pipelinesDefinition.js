@@ -155,12 +155,12 @@ module.exports = {
             evaluateHeaderOptions: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.evaluateHeaderOptions',
-                success: 'evaluateHeaderRules',
+                success: 'evaluateHeaderQuery',
                 failure: 'failureEnd'
             },
-            evaluateHeaderRules: {
+            evaluateHeaderQuery: {
                 type: 'function',
-                handler: 'DefaultHeaderProcessService.evaluateHeaderRules',
+                handler: 'DefaultHeaderProcessService.evaluateHeaderQuery',
                 success: 'evaluateHeaderMacros',
                 failure: 'failureEnd'
             },

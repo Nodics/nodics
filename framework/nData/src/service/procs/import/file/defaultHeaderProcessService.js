@@ -24,8 +24,9 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    evaluateHeaderRules: function (request, response, process) {
+    evaluateHeaderQuery: function (request, response, process) {
         this.LOG.debug('Evaluating header rules');
+        let header = request[request.importType].headers[request.headerName];
         process.nextSuccess(request, response);
     },
 
@@ -62,7 +63,6 @@ module.exports = {
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    console.log('1: ', error);
                     process.nextSuccess(request, response);
                 });
             } else {
@@ -101,7 +101,6 @@ module.exports = {
                 });
             } else {
                 _self.LOG.debug('Done import for files for header : ', request.headerName);
-                //console.log(request.headerName, '    ---------    done', )
                 header.done = true;
                 resolve(true);
             }

@@ -14,8 +14,8 @@ const _ = require('lodash');
 
 module.exports = {
     default: {
-        defineDefaultGet: function (model, rawSchema) {
-            model.getItems = function (input) {
+        defineDefaultGet: function (collection, rawSchema) {
+            collection.getItems = function (input) {
                 return new Promise((resolve, reject) => {
                     if (!input.options) {
                         input.options = {};
@@ -31,20 +31,54 @@ module.exports = {
             }
         },
 
-        defineDefaultSave: function (model, rawSchema) {
-            model.saveItems = function (input) {
+        defineDefaultSave: function (collection, rawSchema) {
+            collection.saveItem = function (input) {
                 return new Promise((resolve, reject) => {
-                    if (!input.models) {
-                        reject('Invalid list of models to save');
+                    if (!input.model) {
+                        reject('Invalid model value to save');
                     } else {
                         try {
-                            this.saveAllItems(input, [].concat(input.models), [], (error, result) => {
-                                if (error) {
-                                    reject(error);
-                                } else {
+                            let model = input.model;
+                            if (input.query && !UTILS.isBlank(input.query)) {
+                                let query = _.merge({}, input.query);
+                                _.each(query, (propertyName, property) => {
+                                    let value = '';
+                                    if (propertyName.indexOf('.') > 0) {
+                                        let propertyNames = propertyName.split('.');
+                                        value = model;
+                                        propertyNames.forEach(element => {
+                                            if (value[element]) {
+                                                value = value[element];
+                                            } else {
+                                                throw new Error('Invalid property value for: ' + property + ' in ' + JSON.stringify(model));
+                                            }
+                                        });
+                                    } else {
+                                        value = model[propertyName];
+                                    }
+                                    query[property] = value;
+                                });
+                                this.saveByQuery(query, model).then(result => {
                                     resolve(result);
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            } else if (model._id) {
+                                let query = {
+                                    _id: model._id
                                 }
-                            });
+                                this.saveByQuery(query, model).then(result => {
+                                    resolve(result);
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            } else {
+                                this.createItem(model).then(result => {
+                                    resolve(result);
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            }
                         } catch (error) {
                             reject(error);
                         }
@@ -53,70 +87,32 @@ module.exports = {
             }
         },
 
-        defineDefaultSaveAll: function (model, rawSchema) {
-            model.saveAllItems = function (input, models, success, callback) {
-                let model = models.shift();
-                if (input.query && !UTILS.isBlank(input.query)) {
-                    let query = _.merge({}, input.query);
-                    _.each(query, (propertyName, property) => {
-                        let value = '';
-                        if (propertyName.indexOf('.') > 0) {
-                            let propertyNames = propertyName.split('.');
-                            value = model;
-                            propertyNames.forEach(element => {
-                                if (value[element]) {
-                                    value = value[element];
-                                } else {
-                                    throw new Error('Invalid property value for: ' + property + ' in ' + JSON.stringify(model));
-                                }
-                            });
-                        } else {
-                            value = model[propertyName];
-                        }
-                        query[property] = propertyName;
+        defineDefaultSaveByQuery: function (collection, rawSchema) {
+            collection.saveByQuery = function (query, model) {
+                return new Promise((resolve, reject) => {
+                    this.findOneAndUpdate(query, { $set: model }, { upsert: true }).then(result => {
+                        resolve(result);
+                    }).catch(error => {
+                        reject(error);
                     });
-                    this.saveByQuery(query, model, success, callback);
-                } else if (model._id) {
-                    let query = {
-                        _id: model._id
-                    }
-                    this.saveByQuery(query, model, success, callback);
-                } else {
-                    this.create(model, callback);
-                }
+                });
             }
         },
 
-        defineDefaultSaveByQuery: function (model, rawSchema) {
-            model.saveByQuery = function (query, model, success, callback) {
-                this.findOneAndUpdate(query, { $set: model }, { upsert: true }).then(result => {
-                    model._id = result.upserted;
-                    success.push(model);
-                    if (models.length > 0) {
-                        this.saveAll(input, models, success, callback);
-                    } else {
-                        callback(null, success);
-                    }
-                }).catch(error => {
-                    callback(error);
-                })
-
+        defineDefaultCreate: function (collection, rawSchema) {
+            collection.createItem = function (model) {
+                return new Promise((resolve, reject) => {
+                    this.insertOne(model, {}).then(result => {
+                        resolve(result);
+                    }).catch(error => {
+                        reject(error);
+                    })
+                });
             }
         },
 
-        defineDefaultCreate: function (model, rawSchema) {
-            model.create = function (model, callback) {
-                this.insertOne(model, {}).then(result => {
-                    callback(null, result);
-                }).catch(error => {
-                    callback(error);
-                })
-
-            }
-        },
-
-        defineDefaultRemove: function (model, rawSchema) {
-            model.remove = function (input) {
+        defineDefaultRemove: function (collection, rawSchema) {
+            collection.removeItems = function (input) {
                 return new Promise((resolve, reject) => {
                     let query = '';
                     if (input.query) {
@@ -130,6 +126,18 @@ module.exports = {
                     }
                     this.deleteMany(query, {}).then(response => {
                         resolve(response);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
+            }
+        },
+
+        defineDefaultUpdate: function (collection, rawSchema) {
+            collection.updateItems = function (query, model) {
+                return new Promise((resolve, reject) => {
+                    this.updateMany(query, { $set: model }, { upsert: false }).then(result => {
+                        resolve(result);
                     }).catch(error => {
                         reject(error);
                     });

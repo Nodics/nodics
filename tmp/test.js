@@ -27,11 +27,23 @@ MongoClient.connect(url, { useNewUrlParser: true }, function (err, client) {
   insertDocument(db, function (result) {
   console.log(result)
   client.close()
-  })*/
+  })
   updateDocuments(db, function (result) {
     console.log(result);
     client.close();
   });
+  */
+
+  let array = [{
+    name: 'himkar',
+    lname: 'dwivedi'
+  }, {
+    name: 'himkar1',
+    lname: 'dwivedi1'
+  }];
+  let model = array[1];
+  model.lname = 'Pandey';
+  console.log(array);
 });
 
 const removeDocuments = function (db, callback) {

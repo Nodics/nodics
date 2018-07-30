@@ -11,10 +11,9 @@
 
 module.exports = {
     record0: {
-        _id: '121e7dd88ac6ed3d73a76712',
         enterpriseCode: 'default',
         firstName: 'Nodics',
-        lastName: 'Employee',
+        lastName: 'Employeeupdated',
         loginId: 'admin',
         locked: false,
         active: true,

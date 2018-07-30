@@ -53,16 +53,19 @@ module.exports = {
             router: true,
             refSchema: {
                 tenant: {
-                    modelName: "TenantModel",
-                    type: 'one'
+                    schemaName: "tenant",
+                    type: 'one',
+                    propertyName: 'name'
                 },
                 superEnterprise: {
-                    modelName: "EnterpriseModel",
-                    type: 'one'
+                    schemaName: "enterprise",
+                    type: 'one',
+                    propertyName: 'name'
                 },
                 subEnterprises: {
-                    modelName: "EnterpriseModel",
-                    type: 'many'
+                    schemaName: "enterprise",
+                    type: 'many',
+                    propertyName: 'name'
                 }
             }
         },

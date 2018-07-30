@@ -11,7 +11,6 @@
 
 module.exports = {
     record0: {
-        _id: '121e7dd88ac6ed3d73a76713',
         enterpriseCode: 'default',
         firstName: 'Nodics',
         lastName: 'Customer',

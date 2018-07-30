@@ -23,12 +23,7 @@ module.exports = {
         let header = request[request.importType].headers[request.headerName].header;
         let record = request.currentRecord;
         let model = request.currentModel;
-
-        //console.log('Header : ', header.options);
-        //console.log('Current Record Name: ', record);
-        //console.log('Current Model: ', model);
         let models = [];
-
         if (UTILS.isArray(model)) {
             _.each(model, (modelObject, name) => {
                 models.push(modelObject);
@@ -38,13 +33,12 @@ module.exports = {
         }
         input = {
             tenant: header.options.tenant,
+            query: header.query,
             models: models
         };
         SERVICE['Default' + header.options.modelName.toUpperCaseFirstChar() + 'Service'][header.options.operation](input).then(success => {
-            //console.log('Successfuly imported data');
             process.nextSuccess(request, response);
         }).catch(error => {
-            //console.log('Import Error: ', error);
             process.nextSuccess(request, response);
         });
     },

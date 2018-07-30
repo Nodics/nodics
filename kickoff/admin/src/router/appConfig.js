@@ -26,17 +26,13 @@ module.exports = {
 
         },
         initBodyParser: function (app) {
-            //console.log('-------------------- : ', path.join(__dirname, '../../public'));
             app.use(bodyParser.urlencoded({ extended: true }));
             app.use(bodyParser.json());
-            //app.use('/web', express.static(path.join(__dirname, '../../public')));
         },
         initHeaders: function (app) {
-            //console.log(' Default initHeaders');
         },
         initErrorRoutes: function (app) {
             /*app.use(function(param, req, res, next) {
-                console.log('----------------------- > ', param);
                 next('This is custom value');
             });*/
         },

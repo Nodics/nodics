@@ -28,22 +28,7 @@ module.exports = {
                     if (enterprises.length <= 0) {
                         reject('Invalid enterprise code');
                     } else {
-                        let enterprise = enterprises[0];
-                        SERVICE.DefaultTenantService.get({
-                            tenant: 'default',
-                            options: {
-                                query: {
-                                    _id: enterprise.tenant
-                                }
-                            }
-                        }).then(tenants => {
-                            if (tenants.length <= 0) {
-                                reject('Invalid Tenant Id');
-                            } else {
-                                enterprise.tenant = tenants[0];
-                                resolve(enterprise);
-                            }
-                        });
+                        resolve(enterprises[0]);
                     }
                 }).catch(error => {
                     reject(error);
@@ -131,10 +116,10 @@ module.exports = {
                         });
                     }
                 }).catch(error => {
-                    callback('2Invalid authentication request : ' + error);
+                    callback('Invalid authentication request : ' + error);
                 });
             }).catch(error => {
-                callback('1Invalid authentication request : ' + error);
+                callback('Invalid authentication request : ' + error);
             });
         }).catch(error => {
             callback('Invalid authentication request : ' + error);

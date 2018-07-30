@@ -18,7 +18,7 @@ module.exports = {
                 tenant: 'default',
                 dataFilePrefix: 'defaultTenantData'
             },
-            rule: {
+            query: {
                 name: 'name'
             }
         },
@@ -29,7 +29,7 @@ module.exports = {
                 tenant: 'default',
                 dataFilePrefix: 'defaultEnterpriseData'
             },
-            rule: {
+            query: {
                 enterpriseCode: 'enterpriseCode'
             },
             macros: {
@@ -48,8 +48,9 @@ module.exports = {
                 tenant: 'default',
                 dataFilePrefix: 'defaultEmployeeData'
             },
-            rule: {
-                loginId: 'loginId'
+            query: {
+                loginId: 'loginId',
+                enterpriseCode: 'enterpriseCode'
             }
         },
         defaultCustomer: {
@@ -59,7 +60,7 @@ module.exports = {
                 tenant: 'default',
                 dataFilePrefix: 'defaultCutomerData'
             },
-            rule: {
+            query: {
                 loginId: 'loginId'
             }
         },
@@ -70,7 +71,7 @@ module.exports = {
                 tenant: 'default',
                 dataFilePrefix: 'defaultPasswordData'
             },
-            rule: {
+            query: {
                 loginId: 'loginId'
             },
             macros: {

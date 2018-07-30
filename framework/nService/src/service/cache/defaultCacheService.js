@@ -248,14 +248,12 @@ module.exports = {
         return this.put(cache, hash, response, options);
     },
     getItem: function (rawSchema, cache, query) {
-        //console.log(JSON.stringify(query));
         let hash = rawSchema.modelName + '_' +
             rawSchema.tenant + '_' +
             SYSTEM.generateHash(JSON.stringify(query));
         return this.get(cache, hash);
     },
     putItem: function (rawSchema, cache, query, value) {
-        //console.log(JSON.stringify(query));
         let hash = rawSchema.modelName + '_' +
             rawSchema.tenant + '_' +
             SYSTEM.generateHash(JSON.stringify(query));

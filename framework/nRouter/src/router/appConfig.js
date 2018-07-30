@@ -13,36 +13,33 @@ const bodyParser = require('body-parser');
 
 module.exports = {
     default: {
-        initProperties: function(app) {
+        initProperties: function (app) {
             /* app.use(function(req, res, next) {
-                 console.log('======================== > ');
                  next('Done initProperties');
              });*/
         },
-        initSession: function(app) {
-            //console.log(' Default initSession');
+        initSession: function (app) {
+
         },
-        initLogger: function(app) {
-            //console.log(' Default initLogger');
+        initLogger: function (app) {
+
         },
-        initCache: function(app) {
-            // console.log(' Default initCache');
+        initCache: function (app) {
+
         },
-        initBodyParser: function(app) {
+        initBodyParser: function (app) {
             app.use(bodyParser.urlencoded({ extended: true }));
             app.use(bodyParser.json());
-            //console.log(' Default initBodyParser');
         },
-        initHeaders: function(app) {
-            //console.log(' Default initHeaders');
+        initHeaders: function (app) {
+
         },
-        initErrorRoutes: function(app) {
+        initErrorRoutes: function (app) {
             /*app.use(function(param, req, res, next) {
-                console.log('----------------------- > ', param);
                 next('This is custom value');
             });*/
         },
-        initExtras: function(app) {
+        initExtras: function (app) {
 
         }
     }

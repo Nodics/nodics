@@ -71,26 +71,4 @@ module.exports = {
             return this.importData(input);
         }
     }
-
-    /*
-        processDataImport: function (input, callback) {
-            let _self = this;
-    
-    
-    
-    
-    
-            let dataType = 'init';
-            SERVICE.InternalDataLoadService.getInternalFiles(['profile', 'sampleServer']).then(fileList => {
-                console.log(fileList);
-            }).catch(error => {
-                console.log(error);
-            });
-            SERVICE.InternalDataLoadService.getExternalFiles(NODICS.getNodicsHome() + '/tmp').then(fileList => {
-                console.log(fileList);
-            }).catch(error => {
-                console.log(error);
-            });
-        },
-    */
 };

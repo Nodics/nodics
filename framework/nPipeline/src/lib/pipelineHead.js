@@ -70,12 +70,13 @@ module.exports = function (name, pipelineDefinition, callback) {
 
     };
 
-    this.prepareNextNode = function () {
+    this.prepareNextNode = function (pipelineRequest, pipelineResponse) {
         if (_currentNode.getSuccess() && !UTILS.isObject(_currentNode.getSuccess())) {
             if (_nodeList[_currentNode.getSuccess()]) {
                 _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
             } else {
                 this.LOG.error('Pipeline link is broken : invalid node line : ', _currentNode.getSuccess());
+                this.error(pipelineRequest, pipelineResponse, 'Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess())
             }
         } else {
             _nextSuccessNode = null;
@@ -85,6 +86,7 @@ module.exports = function (name, pipelineDefinition, callback) {
                 _nextFailureNode = _nodeList[_currentNode.getFailure()];
             } else {
                 this.LOG.error('Pipeline link is broken : invalid node line : ', _currentNode.getFailure());
+                this.error(pipelineRequest, pipelineResponse, 'Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess())
             }
         } else {
             _nextFailureNode = null;
@@ -182,7 +184,7 @@ module.exports = function (name, pipelineDefinition, callback) {
     this.next = function (pipelineRequest, pipelineResponse) {
         let _self = this;
         if (_currentNode) {
-            this.prepareNextNode();
+            this.prepareNextNode(pipelineRequest, pipelineResponse);
             if (_currentNode.getType() === 'function') {
                 try {
                     let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));

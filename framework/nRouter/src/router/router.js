@@ -31,7 +31,7 @@ module.exports = {
                     }));
                     app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, express.static(path.join(moduleObject.modulePath, '/' + moduleObject.webRootDirName)));
                 } catch (error) {
-                    console.log(error);
+                    SYSTEM.LOG.error(error);
                 }
             }
         },

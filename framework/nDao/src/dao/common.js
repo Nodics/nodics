@@ -11,14 +11,76 @@
 
 module.exports = {
     get: function (input) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.getItems(input);
+        try {
+            return new Promise((resolve, reject) => {
+                input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
+                let response = {
+                    modelsGetInitializerPipeline: {
+                        promise: {
+                            resolve: resolve,
+                            reject: reject
+                        }
+                    }
+                }
+                SERVICE.PipelineService.startPipeline('modelsGetInitializerPipeline', input, response);
+            });
+        } catch (error) {
+            return Promise.reject(error);
+        }
     },
 
     save: function (input) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.saveItems(input);
+        try {
+            return new Promise((resolve, reject) => {
+                input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
+                let response = {
+                    modelsSaveInitializerPipeline: {
+                        promise: {
+                            resolve: resolve,
+                            reject: reject
+                        }
+                    }
+                }
+                SERVICE.PipelineService.startPipeline('modelsSaveInitializerPipeline', input, response);
+            });
+        } catch (error) {
+            return Promise.reject(error);
+        }
     },
 
     remove: function (input) {
-        return NODICS.getModels('moduleName', input.tenant).modelName.removeItems(input);
+        try {
+            return new Promise((resolve, reject) => {
+                let response = {
+                    dataImportInitializerPipeline: {
+                        promise: {
+                            resolve: resolve,
+                            reject: reject
+                        }
+                    }
+                }
+                SERVICE.PipelineService.startPipeline('modelsRemoveInitializerPipeline', input, response);
+            });
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    },
+
+    update: function (input) {
+        try {
+            return new Promise((resolve, reject) => {
+                let response = {
+                    dataImportInitializerPipeline: {
+                        promise: {
+                            resolve: resolve,
+                            reject: reject
+                        }
+                    }
+                }
+                SERVICE.PipelineService.startPipeline('modelsUpdateInitializerPipeline', input, response);
+            });
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
 };

@@ -11,10 +11,9 @@
 
 module.exports = {
     record0: {
-        _id: '111e7dd88ac6ed3d73a76711',
         enterpriseCode: 'default',
         name: 'Default',
         description: 'Default Enterprise',
-        tenant: '111e7dd88ac6ed3d73a73311'
+        tenant: 'default'
     }
 };
