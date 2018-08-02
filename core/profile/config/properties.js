@@ -65,15 +65,21 @@ module.exports = {
                 fallback: true,
                 engine: 'local'
             },
-            localOptions: {
-                stdTTL: 100,
-                checkperiod: 10,
-                errorOnMissing: false,
-                useClones: true
+            local: {
+                handler: 'DefaultLocalCacheService',
+                options: {
+                    stdTTL: 100,
+                    checkperiod: 10,
+                    errorOnMissing: false,
+                    useClones: true
+                }
             },
-            redisOptions: {
-                host: 'localhost',
-                port: 6379
+            redis: {
+                handler: 'DefaultRedisCacheService',
+                options: {
+                    host: 'localhost',
+                    port: 6379
+                }
             }
         },
         itemLevelCache: {

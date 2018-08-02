@@ -21,6 +21,7 @@ module.exports = {
             conHandler.init().then(success => {
                 SYSTEM.buildSchemas();
                 SYSTEM.buildModelsForTenants().then(success => {
+                    SYSTEM.prepareInterceptors();
                     resolve(true);
                 }).catch(error => {
                     reject(error);

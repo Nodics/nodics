@@ -67,6 +67,12 @@ module.exports = {
                     type: 'many',
                     propertyName: 'name'
                 }
+            },
+            virtualProperties: {
+                fullname: 'DefaultEnterpriseVirtualService.getFullName',
+                tenant: {
+                    fullname: 'DefaultEnterpriseVirtualService.getFullName'
+                }
             }
         },
 

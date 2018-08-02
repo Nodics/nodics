@@ -31,6 +31,10 @@ module.exports = {
         return flag;
     },
 
+    prepareInterceptors: function () {
+        SYSTEM.LOG.debug('Starting interceptors loading process');
+        NODICS.setInterceptors(SYSTEM.loadFiles('/src/schemas/interceptors.js'));
+    },
     prepareDatabaseList: function () {
         let modules = NODICS.getModules();
         let dbModules = ['default'];
@@ -74,27 +78,6 @@ module.exports = {
                 SYSTEM.LOG.error('MongoDB default connection error: ' + error);
                 reject('MongoDB default connection error: ' + error);
             });
-
-            /*let connection = '';
-            mongoose.Promise = global.Promise;
-            let url = dbConfig.URI + '/' + dbConfig.databaseName;
-            if (dbConfig.options) {
-                connection = mongoose.createConnection(url, dbConfig.options);
-            } else {
-                connection = mongoose.createConnection(url);
-            }
-            //Register all posible event
-            connection.on('connected', function () {
-                SYSTEM.LOG.info('Mongoose default connection open to ' + url);
-                resolve(connection);
-            });
-            connection.on('error', function (error) {
-                SYSTEM.LOG.error('Mongoose default connection error: ' + error);
-                reject('Mongoose default connection error: ' + error);
-            });
-            connection.on('disconnected', function () {
-                SYSTEM.LOG.info('Mongoose default connection disconnected');
-            });*/
         });
     },
 

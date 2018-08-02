@@ -13,21 +13,21 @@ const NodeCache = require("node-cache");
 
 module.exports = {
 
-    initApiCache: function(options, moduleName) {
+    initApiCache: function (localCacheConfig, moduleName) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Initializing local API Cache instance for module: ', moduleName);
-            resolve(new NodeCache(options));
+            resolve(new NodeCache(localCacheConfig.options));
         });
     },
 
-    initItemCache: function(options, moduleName) {
+    initItemCache: function (localCacheConfig, moduleName) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Initializing local Item Cache instance for module: ', moduleName);
-            resolve(new NodeCache(options));
+            resolve(new NodeCache(localCacheConfig.options));
         });
     },
 
-    get: function(client, hashKey) {
+    get: function (client, hashKey) {
         return new Promise((resolve, reject) => {
             try {
                 client.get(hashKey, (error, value) => {
@@ -46,7 +46,7 @@ module.exports = {
         });
     },
 
-    put: function(client, hashKey, value, options) {
+    put: function (client, hashKey, value, options) {
         return new Promise((resolve, reject) => {
             try {
                 if (options && options.ttl) {
@@ -56,16 +56,17 @@ module.exports = {
                 }
                 resolve();
             } catch (error) {
+                console.log('---------------------', error);
                 reject(error);
             }
 
         });
     },
 
-    flush: function(client, prefix) {
+    flush: function (client, prefix) {
         return new Promise((resolve, reject) => {
             if (prefix) {
-                client.keys(function(err, cacheKeys) {
+                client.keys(function (err, cacheKeys) {
                     cacheKeys.forEach(key => {
                         if (key.startsWith(prefix)) {
                             client.del(key);
@@ -80,7 +81,7 @@ module.exports = {
         });
     },
 
-    flushKeys: function(client, keys) {
+    flushKeys: function (client, keys) {
         return new Promise((resolve, reject) => {
             client.del(keys);
             resolve(true);

@@ -10,5 +10,15 @@
  */
 
 module.exports = {
+    handleProfilePreSave: function (model, options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
 
+    handleProfilePostSave: function (model, options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
 };

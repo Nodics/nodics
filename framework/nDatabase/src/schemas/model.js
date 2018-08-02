@@ -17,10 +17,7 @@ module.exports = {
         defineDefaultGet: function (collection, rawSchema) {
             collection.getItems = function (input) {
                 return new Promise((resolve, reject) => {
-                    if (!input.options) {
-                        input.options = {};
-                    }
-                    this.find(input.options.query || {}, {}).toArray((error, result) => {
+                    this.find(input.query, input.queryOptions).toArray((error, result) => {
                         if (error) {
                             reject(error);
                         } else {

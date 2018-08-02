@@ -127,23 +127,7 @@ module.exports = {
             console.error('While preparing active module list : ', error);
         }
     },
-    /*
-    
-    
-        addModuleInActiveList: function (moduleName) {
-            NODICS.getActiveModules().push(moduleName);
-        },
-        
 
-    getAllModules: function (appHome, envHome) {
-        var nodicsModulePath = [];
-        UTILS.collectModulesList(NODICS.getNodicsHome(), nodicsModulePath);
-        if (NODICS.getCustomHome() !== NODICS.getNodicsHome()) {
-            UTILS.collectModulesList(NODICS.getCustomHome(), nodicsModulePath);
-        }
-        return nodicsModulePath;
-    },
-*/
     loadModuleIndex: function () {
         let _self = this;
         let config = CONFIG.getProperties();
@@ -157,11 +141,11 @@ module.exports = {
                 });
             }
         });
-        NODICS.setIndexedModules(UTILS.sortModulesByIndex(moduleIndex));
-        _self.printModuleSequence(moduleIndex);
+        NODICS.setIndexedModules(UTILS.sortModules(moduleIndex, 'index'));
+        _self.printModuleSequence();
     },
 
-    printModuleSequence: function (moduleIndex) {
+    printModuleSequence: function () {
         let modulesStr = '';
         _.each(NODICS.getIndexedModules(), (obj, key) => {
             modulesStr = modulesStr + obj[0].name + ',';

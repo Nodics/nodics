@@ -14,15 +14,7 @@ module.exports = {
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for saving model');
         if (!request.model) {
-            response.success = false;
-            delete response.result;
-            delete response.msg;
-            delete response.code;
-            response.errors.PROC_ERR_0003 = {
-                code: 'ERR003',
-                msg: 'Model to be saved can not be null in request'
-            };
-            process.nextFailure(request, response);
+            process.error(request, response, error);
         } else {
             process.nextSuccess(request, response);
         }
@@ -30,7 +22,18 @@ module.exports = {
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre model interceptors');
-        process.nextSuccess(request, response);
+        let moduleName = request.moduleName || request.collection.moduleName;
+        let modelName = request.collection.modelName;
+        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        if (interceptors && interceptors.preSave) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(request, response, [].concat(interceptors.preSave)).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            })
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     buildQuery: function (request, response, process) {
@@ -50,7 +53,18 @@ module.exports = {
 
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post model interceptors');
-        process.nextSuccess(request, response);
+        let moduleName = request.moduleName || request.collection.moduleName;
+        let modelName = request.collection.modelName;
+        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        if (interceptors && interceptors.postSave) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(request, response, [].concat(interceptors.postSave)).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            })
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     invalidateCache: function (request, response, process) {
@@ -64,12 +78,12 @@ module.exports = {
     },
 
     handleFailureEnd: function (request, response) {
-        this.LOG.debug('Request has been processed with some failures');
+        this.LOG.debug('Request has been processed with some failures: ', response.errors);
         response.modelSaveInitializerPipeline.promise.reject(response);
     },
 
     handleErrorEnd: function (request, response) {
-        this.LOG.debug('Request has been processed and got errors');
+        this.LOG.debug('Request has been processed and got errors: ', response.errors);
         response.modelSaveInitializerPipeline.promise.reject(response);
     }
 };

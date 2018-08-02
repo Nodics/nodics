@@ -127,6 +127,9 @@ Todos:
   
   Data Export Process:
 
+  Cache:
+    - Check process to update cache configuration via API
+
   Authorization Process:
     - Keep authentication credantials mapped with authToken
     - On expiration, re-generate authToken

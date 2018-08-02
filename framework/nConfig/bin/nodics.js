@@ -8,7 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-//const _ = require('lodash');
+const _ = require('lodash');
 
 module.exports = function () {
 
@@ -27,7 +27,8 @@ module.exports = function () {
     let _nodics = {
         modules: {},
         dbs: {},
-        validators: {}
+        validators: {},
+        interceptors: {}
     };
 
     this.init = function (options) {
@@ -281,17 +282,74 @@ module.exports = function () {
     this.setValidators = function (validators) {
         _nodics.validators = validators;
     };
+
     this.getValidators = function () {
         return _nodics.validators;
     };
 
+    this.setInterceptors = function (interceptors) {
+        let defaultInterceptors = _.merge({}, interceptors.default);
+        _.each(this.getModules(), (moduleObject, moduleName) => {
+            if (!_nodics.interceptors[moduleName]) {
+                _nodics.interceptors[moduleName] = {};
+            }
+            let moduleInterceptors = _.merge({}, interceptors[moduleName]);
+            let moduleDefault = _.merge(_.merge({}, defaultInterceptors), moduleInterceptors.default || {});
+            _.each(moduleObject.models, (tenantObject, tenantName) => {
+                _.each(tenantObject.master, (model, modelName) => {
+                    let modelInterceptors = _.merge({}, moduleInterceptors[model.schemaName]);
+                    if (!_nodics.interceptors[moduleName][modelName]) {
+                        _nodics.interceptors[moduleName][modelName] = {};
+                    }
+                    let interceptorPool = _nodics.interceptors[moduleName][modelName];
+                    _.each(moduleDefault, (interceptor, interceptorName) => {
+                        if (!interceptorPool[interceptor.type]) {
+                            interceptorPool[interceptor.type] = [];
+                        }
+                        interceptorPool[interceptor.type].push(interceptor);
+                    });
+                    _.each(modelInterceptors, (interceptor, interceptorName) => {
+                        if (!interceptorPool[interceptor.type]) {
+                            interceptorPool[interceptor.type] = [];
+                        }
+                        interceptorPool[interceptor.type].push(interceptor);
+                    });
+                });
+            });
+        });
+        _.each(_nodics.interceptors, (moduleInterceptors, moduleName) => {
+            _.each(moduleInterceptors, (modelInterceptors, modelName) => {
+                _.each(modelInterceptors, (typeInterceptors, typeName) => {
+                    let indexedInterceptors = UTILS.sortModules(typeInterceptors, 'index');
+                    let list = [];
+                    if (indexedInterceptors) {
+                        _.each(indexedInterceptors, (intList, index) => {
+                            list = list.concat(intList);
+                        });
+                        modelInterceptors[typeName] = list;
+                    }
+                });
+            });
+        });
+    };
+
+    this.getInterceptors = function (moduleName, modelName) {
+        if (!_nodics.interceptors[moduleName]) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else if (!_nodics.interceptors[moduleName][modelName]) {
+            throw new Error('Invalid model name: ' + modelName);
+        } else {
+            return _nodics.interceptors[moduleName][modelName]
+        }
+    };
+
     this.getModels = function (moduleName, tenant) {
         if (tenant && !UTILS.isBlank(tenant)) {
-            let modules = this.getModule(moduleName);
+            let moduleObject = this.getModule(moduleName);
             if (this.getActiveChannel() === 'master') {
-                return modules.models[tenant].master;
+                return moduleObject.models[tenant].master;
             } else {
-                return modules.models[tenant].test;
+                return moduleObject.models[tenant].test;
             }
         } else {
             throw new Error('Invalid tenant id...');

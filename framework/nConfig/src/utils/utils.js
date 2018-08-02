@@ -41,9 +41,9 @@ module.exports = {
         }
     },
 
-    sortModulesByIndex: function (moduleIndex) {
+    sortModules: function (moduleIndex, property) {
         moduleIndex = _.groupBy(moduleIndex, function (element) {
-            return parseInt(element.index);
+            return parseInt(element[property]);
         });
         return moduleIndex;
     },

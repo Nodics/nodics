@@ -32,6 +32,12 @@ module.exports = {
             lookupCache: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.lookupCache',
+                success: 'applyPreInterceptors',
+                failure: 'failureEnd'
+            },
+            applyPreInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelsGetInitializerService.applyPreInterceptors',
                 success: 'executeQuery',
                 failure: 'failureEnd'
             },
@@ -44,6 +50,18 @@ module.exports = {
             populateSubModels: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.populateSubModels',
+                success: 'populateVirtualProperties',
+                failure: 'failureEnd'
+            },
+            populateVirtualProperties: {
+                type: 'function',
+                handler: 'DefaultModelsGetInitializerService.populateVirtualProperties',
+                success: 'applyPostInterceptors',
+                failure: 'failureEnd'
+            },
+            applyPostInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelsGetInitializerService.applyPostInterceptors',
                 success: 'updateCache',
                 failure: 'failureEnd'
             },

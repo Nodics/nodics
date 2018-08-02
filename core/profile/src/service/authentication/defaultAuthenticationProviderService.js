@@ -18,8 +18,8 @@ module.exports = {
             } else {
                 SERVICE.DefaultEnterpriseService.get({
                     tenant: 'default',
-                    recursive: true,
                     options: {
+                        recursive: true,
                         query: {
                             enterpriseCode: enterpriseCode
                         }

@@ -92,13 +92,8 @@ module.exports = {
                 tenant: input.tenant,
                 options: {
                     query: {
-                        $and: [{
-                            loginId: input.loginId,
-                        }, {
-                            personId: input._id
-                        }, {
-                            enterpriseCode: input.enterpriseCode
-                        }]
+                        loginId: input.loginId,
+                        enterpriseCode: input.enterpriseCode
                     }
                 }
             }).then(passwords => {

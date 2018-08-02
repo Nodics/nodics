@@ -18,6 +18,10 @@ var http = require('http');
 
 module.exports = {
 
+    configureCache: function () {
+
+    },
+
     loadEnums: function () {
         let enums = global.ENUMS;
         let enumScript = {};
@@ -49,7 +53,6 @@ module.exports = {
     },
 
     loadClasses: function () {
-        let classes = global.CLASSES;
         let moduleIndex = NODICS.getIndexedModules();
         Object.keys(moduleIndex).forEach(function (key) {
             var value = moduleIndex[key][0];

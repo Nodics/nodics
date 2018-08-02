@@ -11,5 +11,6 @@
 
 module.exports = {
     defaultPageSize: 10,
-    defaultPageNumber: 0
+    defaultPageNumber: 0,
+    queryMaxTimeMS: 1000,
 };

@@ -12,22 +12,103 @@
 module.exports = {
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating get request');
-        process.nextSuccess(request, response);
+        this.LOG.debug('Validating get request: ');
+        let error = [];
+        let options = input.options;
+        if (options && options.projection) {
+            if (!UTILS.isObject(options.projection)) {
+                error.push('Invalid select value');
+            }
+        }
+        if (options && options.sort) {
+            if (!UTILS.isObject(options.sort)) {
+                error.push('Invalid sort value');
+            }
+        }
+        if (error.length > 0) {
+            response.error = error;
+            process.nextFailure(request, response);
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     buildOptions: function (request, response, process) {
         this.LOG.debug('Building query options');
+        let inputOptions = request.options || {};
+        let queryOptions = {};
+        let pageSize = inputOptions.pageSize || CONFIG.get('defaultPageSize');
+        let pageNumber = inputOptions.pageNumber || CONFIG.get('defaultPageNumber');
+        queryOptions.limit = pageSize;
+        queryOptions.skip = pageSize * pageNumber;
+        queryOptions.explain = inputOptions.explain || false;
+        queryOptions.snapshot = inputOptions.snapshot || false;
+
+        if (inputOptions.sort) {
+            queryOptions.sort = inputOptions.sort;
+        }
+        if (inputOptions.projection) {
+            queryOptions.projection = inputOptions.projection;
+        }
+        if (inputOptions.hint) {
+            queryOptions.hint = inputOptions.hint;
+        }
+        if (inputOptions.timeout === true) {
+            queryOptions.timeout = true,
+                queryOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS')
+        }
+        request.queryOptions = queryOptions;
+        request.query = inputOptions.query || {};
         process.nextSuccess(request, response);
     },
 
     lookupCache: function (request, response, process) {
         this.LOG.debug('Item lookup into cache system');
-        process.nextSuccess(request, response);
+        let moduleObject = NODICS.getModules()[request.collection.moduleName];
+        if (moduleObject.itemCache &&
+            request.collection.rawSchema.cache &&
+            request.collection.rawSchema.cache.enabled) {
+            request.cacheKeyHash = SERVICE.DefaultCacheService.createItemKey(request);
+            let input = {
+                tenant: request.tenant,
+                schemaName: request.collection.schemaName,
+                moduleName: request.collection.moduleName,
+                moduleObject: moduleObject,
+                cacheClient: moduleObject.itemCache,
+                hashKey: request.cacheKeyHash,
+            }
+            SERVICE.DefaultCacheService.get(input).then(value => {
+                this.LOG.info('Fulfilled from Item cache');
+                value.cache = 'item hit';
+                response.result = value;
+                //console.log(value);
+                process.stop(request, response);
+            }).catch(error => {
+                process.nextSuccess(request, response);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPreInterceptors: function (request, response, process) {
+        this.LOG.debug('Applying pre model interceptors');
+        let moduleName = request.moduleName || request.collection.moduleName;
+        let modelName = request.collection.modelName;
+        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        if (interceptors && interceptors.preGet) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(request, response, [].concat(interceptors.preGet)).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            })
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     executeQuery: function (request, response, process) {
-        this.LOG.debug('Executing query: ', request.query);
+        this.LOG.debug('Executing query');
         request.collection.getItems(request).then(success => {
             response.result = success;
             process.nextSuccess(request, response);
@@ -40,7 +121,8 @@ module.exports = {
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
         let rawSchema = request.collection.rawSchema;
-        if (request.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
+        let inputOptions = request.options || {};
+        if (inputOptions.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
             this.populateModels(request, response, response.result, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -50,6 +132,54 @@ module.exports = {
         } else {
             process.nextSuccess(request, response);
         }
+    },
+
+    populateVirtualProperties: function (request, response, process) {
+        this.LOG.debug('Populating virtual properties');
+        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.collection.rawSchema, response.result);
+        process.nextSuccess(request, response);
+    },
+
+    applyPostInterceptors: function (request, response, process) {
+        this.LOG.debug('Applying post model interceptors');
+        let moduleName = request.moduleName || request.collection.moduleName;
+        let modelName = request.collection.modelName;
+        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        if (interceptors && interceptors.postGet) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(request, response, [].concat(interceptors.postGet)).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            })
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    updateCache: function (request, response, process) {
+        this.LOG.debug('Updating cache for new Items');
+        let moduleObject = NODICS.getModules()[request.collection.moduleName];
+        if (request.cacheKeyHash &&
+            moduleObject.itemCache &&
+            request.collection.rawSchema.cache &&
+            request.collection.rawSchema.cache.enabled) {
+            let input = {
+                tenant: request.tenant,
+                schemaName: request.collection.schemaName,
+                moduleName: request.collection.moduleName,
+                moduleObject: moduleObject,
+                cacheClient: moduleObject.itemCache,
+                hashKey: request.cacheKeyHash,
+                docs: response.result,
+                itemCacheOptions: request.collection.rawSchema.cache
+            }
+            SERVICE.DefaultCacheService.put(input).then(success => {
+                this.LOG.info('Item saved in item cache');
+            }).catch(error => {
+                this.LOG.error('While saving item in item cache : ', error);
+            });
+        }
+        process.nextSuccess(request, response);
     },
 
     populateModels: function (request, response, models, index) {
@@ -124,12 +254,6 @@ module.exports = {
                 }
             }
         });
-    },
-
-    updateCache: function (request, response, process) {
-        this.LOG.debug('Updating cache for new Items');
-        //console.log(response.result);
-        process.nextSuccess(request, response);
     },
 
     handleSucessEnd: function (request, response) {

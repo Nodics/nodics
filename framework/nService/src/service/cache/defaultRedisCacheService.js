@@ -13,41 +13,41 @@ const redis = require("redis");
 
 module.exports = {
 
-    initApiCache: function(options, moduleName) {
+    initApiCache: function (redisCacheConfig, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
             _self.LOG.info('Initializing Redis API Cache instance for module: ', moduleName);
-            let client = redis.createClient(options);
+            let client = redis.createClient(redisCacheConfig.options);
             client.on("error", err => {
                 reject(err);
             });
             client.on("connect", success => {
                 resolve(client);
             });
-            client.on("ready", function(err) {
+            client.on("ready", function (err) {
                 _self.LOG.debug('Item redis client is ready for module : ', moduleName);
             });
         });
     },
 
-    initItemCache: function(options, moduleName) {
+    initItemCache: function (redisCacheConfig, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
             _self.LOG.debug('Initializing Redis Item Cache instance for module: ', moduleName);
-            let client = redis.createClient(options);
+            let client = redis.createClient(redisCacheConfig.options);
             client.on("error", err => {
                 reject(err);
             });
             client.on("connect", success => {
                 resolve(client);
             });
-            client.on("ready", function(err) {
+            client.on("ready", function (err) {
                 _self.LOG.debug('Item redis client is ready for module : ', moduleName);
             });
         });
     },
 
-    get: function(client, hashKey) {
+    get: function (client, hashKey) {
         return new Promise((resolve, reject) => {
             try {
                 client.get(hashKey, (error, value) => {
@@ -66,7 +66,7 @@ module.exports = {
         });
     },
 
-    put: function(client, hashKey, value, options) {
+    put: function (client, hashKey, value, options) {
         return new Promise((resolve, reject) => {
             try {
                 if (options.ttl) {
@@ -82,13 +82,13 @@ module.exports = {
         });
     },
 
-    flush: function(client, prefix) {
+    flush: function (client, prefix) {
         return new Promise((resolve, reject) => {
             if (prefix) {
                 if (!prefix.endsWith('*')) {
                     prefix += '*';
                 }
-                client.keys(function(err, cacheKeys) {
+                client.keys(function (err, cacheKeys) {
                     if (cacheKeys) {
                         cacheKeys.forEach(key => {
                             client.del(key);
@@ -103,7 +103,7 @@ module.exports = {
         });
     },
 
-    flushKeys: function(client, keys) {
+    flushKeys: function (client, keys) {
         return new Promise((resolve, reject) => {
             client.del(keys);
             resolve(true);
