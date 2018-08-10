@@ -30,7 +30,7 @@ module.exports = {
         },
 
         tenant: {
-            super: 'none',
+            super: 'init',
             model: true,
             service: true,
             event: false,
@@ -55,17 +55,17 @@ module.exports = {
                 tenant: {
                     schemaName: "tenant",
                     type: 'one',
-                    propertyName: 'name'
+                    propertyName: '_id'
                 },
                 superEnterprise: {
                     schemaName: "enterprise",
                     type: 'one',
-                    propertyName: 'name'
+                    propertyName: '_id'
                 },
                 subEnterprises: {
                     schemaName: "enterprise",
                     type: 'many',
-                    propertyName: 'name'
+                    propertyName: '_id'
                 }
             },
             virtualProperties: {
@@ -85,7 +85,7 @@ module.exports = {
         },
 
         active: {
-            super: 'none',
+            super: 'init',
             model: true,
             service: false,
             event: false,

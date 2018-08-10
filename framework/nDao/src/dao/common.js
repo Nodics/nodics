@@ -10,7 +10,8 @@
  */
 
 module.exports = {
-    get: function (input) {
+    get: function (request) {
+        let input = request.local || request;
         try {
             return new Promise((resolve, reject) => {
                 input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
@@ -29,7 +30,8 @@ module.exports = {
         }
     },
 
-    save: function (input) {
+    save: function (request) {
+        let input = request.local || request;
         try {
             return new Promise((resolve, reject) => {
                 input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
@@ -48,7 +50,8 @@ module.exports = {
         }
     },
 
-    remove: function (input) {
+    remove: function (request) {
+        let input = request.local || request;
         try {
             return new Promise((resolve, reject) => {
                 let response = {

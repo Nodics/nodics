@@ -34,9 +34,19 @@ module.exports = {
             },
             macros: {
                 tenant: {
+                    options: {
+                        model: 'tenant',
+                        returnProperty: '_id'
+                    },
                     rule: {
-                        name: '?0',
-                        active: '?1'
+                        name: {
+                            type: 'String',
+                            index: 0,
+                        },
+                        active: {
+                            type: 'boolean',
+                            index: 1
+                        }
                     }
                 }
             }
@@ -61,7 +71,8 @@ module.exports = {
                 dataFilePrefix: 'defaultCutomerData'
             },
             query: {
-                loginId: 'loginId'
+                loginId: 'loginId',
+                enterpriseCode: 'enterpriseCode'
             }
         },
         defaultPassword: {
@@ -72,21 +83,8 @@ module.exports = {
                 dataFilePrefix: 'defaultPasswordData'
             },
             query: {
-                loginId: 'loginId'
-            },
-            macros: {
-                personId: {
-                    models: [{
-                        model: 'employee',
-                        returnProperty: '_id'
-                    }, {
-                        model: 'customer',
-                        returnProperty: '_id'
-                    }],
-                    rule: {
-                        loginId: '?0'
-                    }
-                }
+                loginId: 'loginId',
+                enterpriseCode: 'enterpriseCode'
             }
         }
     }

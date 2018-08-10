@@ -14,7 +14,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating get request: ');
         let error = [];
-        let options = input.options;
+        let options = request.options;
         if (options && options.projection) {
             if (!UTILS.isObject(options.projection)) {
                 error.push('Invalid select value');
@@ -113,8 +113,7 @@ module.exports = {
             response.result = success;
             process.nextSuccess(request, response);
         }).catch(error => {
-            response.error = error;
-            process.nextFailure(request, response);
+            process.error(request, response, error);
         });
     },
 
@@ -122,7 +121,10 @@ module.exports = {
         this.LOG.debug('Populating sub models');
         let rawSchema = request.collection.rawSchema;
         let inputOptions = request.options || {};
-        if (inputOptions.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
+        if (response.result &&
+            response.result.length > 0 &&
+            inputOptions.recursive === true &&
+            !UTILS.isBlank(rawSchema.refSchema)) {
             this.populateModels(request, response, response.result, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -159,7 +161,9 @@ module.exports = {
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
         let moduleObject = NODICS.getModules()[request.collection.moduleName];
-        if (request.cacheKeyHash &&
+        if (response.result &&
+            response.result.length > 0 &&
+            request.cacheKeyHash &&
             moduleObject.itemCache &&
             request.collection.rawSchema.cache &&
             request.collection.rawSchema.cache.enabled) {

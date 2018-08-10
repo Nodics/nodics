@@ -47,15 +47,7 @@ module.exports = {
             response.result = success;
             process.nextSuccess(request, response);
         }).catch(error => {
-            response.success = false;
-            delete response.result;
-            delete response.msg;
-            delete response.code;
-            response.errors.PROC_ERR_0003 = {
-                code: 'ERR003',
-                msg: error
-            };
-            process.nextFailure(request, response);
+            process.error(request, response, error);
         });
     },
 

@@ -11,27 +11,53 @@
 
 module.exports = {
     default: {
-        base: {
-            super: 'none',
-            model: false,
-            service: false,
-            event: false,
-            router: false,
+        init: {
             definition: {
-                enterpriseCode: {
-                    type: 'String',
-                    required: true,
-                    index: true
+                code: {
+                    type: 'string',
+                    required: true
                 },
                 created: {
-                    type: 'Date',
-                    default: new Date() //new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
+                    type: 'date',
+                    required: true,
+                    default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp'
                 },
                 updated: {
-                    type: 'Date',
-                    default: new Date() //new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
+                    type: 'date',
+                    required: true,
+                    default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp'
+                }
+            },
+            indexes: {
+                indexCode: {
+                    name: 'code',
+                    options: {
+                        unique: true
+                    }
                 }
             }
-        }
+        },
+        base: {
+            super: 'init',
+            definition: {
+                enterpriseCode: {
+                    type: 'string',
+                    required: true
+                }
+            },
+            indexes: {
+                indexEnterpriseCode: {
+                    name: 'enterpriseCode',
+                    options: {
+                        unique: true
+                    }
+                }
+            },
+            options: {
+                validationLevel: 'moderate',
+                validationAction: 'error'
+            }
+        },
+
     }
 };

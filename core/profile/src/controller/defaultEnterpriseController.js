@@ -16,10 +16,17 @@ module.exports = {
         if (UTILS.isBlank(enterpriseCode)) {
             callback('Invalid enterprise code');
         } else {
-            request.local.tenant = 'default';
-            request.local.query = {
-                enterpriseCode: enterpriseCode
-            };
+            if (!request.local.tenant) {
+                request.local.tenant = 'default';
+            }
+            if (!request.local.options) {
+                request.local.options = {
+                    recursive: true,
+                    query: {
+                        enterpriseCode: enterpriseCode
+                    }
+                };
+            }
             FACADE.DefaultEnterpriseFacade.get(request, callback);
         }
     }

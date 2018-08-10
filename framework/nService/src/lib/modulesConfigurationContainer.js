@@ -37,7 +37,7 @@ module.exports = function () {
     this.addModule = function (moduleName, moduleConfig) {
         let _self = this;
         if (!moduleConfig.server) {
-            throw new Error('1Invalid server configuration for module : ', moduleName);
+            throw new Error('Invalid server configuration for module : ', moduleName);
         }
         if (!moduleConfig.abstractServer) {
             moduleConfig.abstractServer = moduleConfig.server;

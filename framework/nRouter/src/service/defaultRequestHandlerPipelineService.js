@@ -78,9 +78,10 @@ module.exports = {
                 request.local.tenant = 'default';
             }
             try {
+                //console.log(request.local.router.handler, ' 1 ', request.local.router.operation);
                 CONTROLLER[request.local.router.handler][request.local.router.operation](request, (error, result) => {
                     if (error) {
-                        //_self.LOG.error('Got error while handling special request : ', error);
+                        console.log('Got error while handling special request : ', error);
                         process.error(request, response, error);
                     } else {
                         let cache = false;
@@ -117,6 +118,7 @@ module.exports = {
                     }
                 });
             } catch (error) {
+                console.log(error);
                 process.error(request, response, error);
             }
         } else {

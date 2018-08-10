@@ -67,6 +67,14 @@ Todos:
     ✔ Store auth token in each module @done(18-04-27 13:10)
     ✔ Invalidate auth token from each module @done(18-04-27 13:10)
 
+    - Pipeline error handling
+    - Verify Save and Get pipeline and sub pipelines
+    - Save sub models and update references
+    - Default Value validators
+    - Create primery keys
+    - Create Indexes
+    - Schema Validators
+    - Implement update pipeline
     
     - Don't load test cases while server start-up instead while executing
     - Run individual test case from API for both type
@@ -185,3 +193,20 @@ Todos:
 
 Issues:
   - listCollections return whole collection object with 
+
+BakwasKeeda:
+  - db.createUser( { user: "bakwaskeeda", pwd: "bakwaskeeda@15021981", roles: [ { role: "readWriteAnyDatabase", db: "admin" }, { role: "userAdminAnyDatabase", db: "admin" } ] } )
+  127.0.0.1:27017 - mongodb
+  Successfully added user: {
+    "user" : "bakwaskeeda",
+    "roles" : [
+      {
+        "role" : "readWriteAnyDatabase",
+        "db" : "admin"
+      },
+      {
+        "role" : "userAdminAnyDatabase",
+        "db" : "admin"
+      }
+    ]
+  }

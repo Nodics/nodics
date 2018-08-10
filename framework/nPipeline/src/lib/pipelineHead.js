@@ -150,24 +150,31 @@ module.exports = function (name, pipelineDefinition, callback) {
     };
 
     this.error = function (pipelineRequest, pipelineResponse, err) {
-        // this.LOG.error('Error occured while processing  pipeline node', _currentNode.getName(), ' - ', err);
-        _preNode = _currentNode;
-        _currentNode = _handleError;
-        pipelineResponse.success = false;
-        pipelineResponse.errors.PROC_ERR_0001 = {
-            code: 'PROC_ERR_0001',
-            message: 'PROC_ERR_0001',
-            pipelineName: _pipelineName,
-            nodeName: _preNode.getName(),
-            error: err.toString()
-        };
-        let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
-        let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
-        SERVICE[serviceName][operation](pipelineRequest, pipelineResponse);
-        if (_callback && !_done) {
-            _callback();
+        try {
+            if (!pipelineResponse.errors) {
+                pipelineResponse.errors = {};
+            }
+            _preNode = _currentNode;
+            _currentNode = _handleError;
+            pipelineResponse.success = false;
+            pipelineResponse.errors.PROC_ERR_0001 = {
+                code: 'PROC_ERR_0001',
+                message: 'PROC_ERR_0001',
+                pipelineName: _pipelineName,
+                nodeName: _preNode.getName(),
+                error: err.toString()
+            };
+            let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
+            let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
+            SERVICE[serviceName][operation](pipelineRequest, pipelineResponse);
+            if (_callback && !_done) {
+                _callback();
+            }
+            _done = true;
+        } catch (error) {
+            this.LOG.error(error);
         }
-        _done = true;
+
     };
 
     this.start = function (id, pipelineRequest, pipelineResponse) {
@@ -177,6 +184,9 @@ module.exports = function (name, pipelineDefinition, callback) {
         if (!_currentNode) {
             this.LOG.error('Node link is broken for node : ', _startNode, ' for pipeline : ', _pipelineName);
             pipeline.exit(CONFIG.get('errorExitCode'));
+        }
+        if (!pipelineResponse.errors) {
+            pipelineResponse.errors = [];
         }
         this.next(pipelineRequest, pipelineResponse);
     };

@@ -46,8 +46,8 @@ module.exports = {
         request.collection.saveItem(request).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
-            response.error = error;
-            process.nextFailure(request, response);
+            console.log(request.collection.modelName, '  :  ', error);
+            process.error(request, response, error);
         });
     },
 
@@ -61,7 +61,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
-            })
+            });
         } else {
             process.nextSuccess(request, response);
         }

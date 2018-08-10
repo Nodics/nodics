@@ -14,6 +14,6 @@ module.exports = {
         enterpriseCode: 'default',
         name: 'Default',
         description: 'Default Enterprise',
-        tenant: 'default'
+        tenant: 'default:true'
     }
 };

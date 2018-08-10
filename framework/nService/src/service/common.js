@@ -11,14 +11,38 @@
 
 module.exports = {
     get: function (request, callback) {
-        return DAO.DaoName.get(request, callback);
+        if (callback) {
+            DAO.DaoName.get(request, callback).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return DAO.DaoName.get(request, callback);
+        }
     },
 
     save: function (request, callback) {
-        return DAO.DaoName.save(request, callback);
+        if (callback) {
+            DAO.DaoName.save(request, callback).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return DAO.DaoName.save(request, callback);
+        }
     },
 
     remove: function (request, callback) {
-        return DAO.DaoName.remove(request, callback);
+        if (callback) {
+            DAO.DaoName.remove(request, callback).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return DAO.DaoName.remove(request, callback);
+        }
     }
 };

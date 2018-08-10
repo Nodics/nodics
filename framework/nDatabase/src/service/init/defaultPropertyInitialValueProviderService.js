@@ -10,8 +10,8 @@
  */
 
 module.exports = {
-    ping: function (request, callback) {
-        console.log('2');
-        callback(null, request.local.moduleName + ' is live buddy');
+    getCurrentTimestamp: function () {
+        return new Date();
     }
-};
+
+}

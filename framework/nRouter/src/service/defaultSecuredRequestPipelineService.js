@@ -12,7 +12,8 @@ module.exports = {
 
     authorizeAuthToken: function (request, response, process) {
         this.LOG.debug('Authorizing auth token : ', request.local.authToken);
-        SERVICE.AuthenticationProviderService.authorizeToken(request, (error, result) => {
+        SERVICE.DefaultAuthenticationProviderService.authorizeToken(request, (error, result) => {
+            console.log(result, '-------------', error);
             if (error) {
                 process.error(request, response, error);
             } else {

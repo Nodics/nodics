@@ -150,6 +150,7 @@ module.exports = {
                                 }
                             }
                             request.internal.headers[headerName].header = _.merge(request.internal.headers[headerName].header, header);
+                            request.internal.headers[headerName].header.options.moduleName = moduleName;
                         });
                     }
                 });
@@ -177,6 +178,7 @@ module.exports = {
                                 }
                             }
                             request.external.headers[headerName].header = _.merge(request.external.headers[headerName].header, header);
+                            request.external.headers[headerName].header.options.moduleName = moduleName;
                         });
                     }
                 });
@@ -292,7 +294,7 @@ module.exports = {
     processHeaders: function (request, response, options) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            let phaseLimit = CONFIG.get('dataImportPhasesLimit') || 1;
+            let phaseLimit = CONFIG.get('dataImportPhasesLimit') || 5;
             if (request[options.importType] && options.phase < phaseLimit) {
                 let headers = request[options.importType].headers;
                 if (options.pendingHeaders && options.pendingHeaders.length > 0 && headers && !UTILS.isBlank(headers)) {

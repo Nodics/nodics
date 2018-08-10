@@ -20,34 +20,34 @@ module.exports = {
         nodes: {
             helpRequest: {
                 type: 'function',
-                handler: 'RequestHandlerPipelineService.helpRequest',
+                handler: 'DefaultRequestHandlerPipelineService.helpRequest',
                 success: 'parseHeader',
                 failure: 'failureEnd'
             },
             parseHeader: {
                 type: 'function',
-                handler: 'RequestHandlerPipelineService.parseHeader',
+                handler: 'DefaultRequestHandlerPipelineService.parseHeader',
                 success: 'parseBody',
                 failure: 'failureEnd'
             },
 
             parseBody: {
                 type: 'function',
-                handler: 'RequestHandlerPipelineService.parseBody',
+                handler: 'DefaultRequestHandlerPipelineService.parseBody',
                 success: 'handleSpecialRequest',
                 failure: 'failureEnd'
             },
 
             handleSpecialRequest: {
                 type: 'function',
-                handler: 'RequestHandlerPipelineService.handleSpecialRequest',
+                handler: 'DefaultRequestHandlerPipelineService.handleSpecialRequest',
                 success: 'redirectRequest',
                 failure: 'failureEnd'
             },
 
             redirectRequest: {
                 type: 'function',
-                handler: 'RequestHandlerPipelineService.redirectRequest',
+                handler: 'DefaultRequestHandlerPipelineService.redirectRequest',
                 success: {
                     securedRequest: 'handleSecuredRequest',
                     nonSecureRequest: 'handleNonSecuredRequest'
@@ -69,24 +69,24 @@ module.exports = {
             },
             handleRequest: {
                 type: 'function',
-                handler: 'RequestHandlerPipelineService.handleRequest',
+                handler: 'DefaultRequestHandlerPipelineService.handleRequest',
                 success: 'successEnd',
                 failure: 'failureEnd'
             },
 
             successEnd: {
                 type: 'function',
-                handler: 'RequestHandlerPipelineService.handleSucessEnd'
+                handler: 'DefaultRequestHandlerPipelineService.handleSucessEnd'
             },
 
             failureEnd: {
                 type: 'function',
-                handler: 'RequestHandlerPipelineService.handleFailureEnd'
+                handler: 'DefaultRequestHandlerPipelineService.handleFailureEnd'
             },
 
             handleError: {
                 type: 'function',
-                handler: 'RequestHandlerPipelineService.handleErrorEnd'
+                handler: 'DefaultRequestHandlerPipelineService.handleErrorEnd'
             }
         }
     },
@@ -98,19 +98,19 @@ module.exports = {
         nodes: {
             validateAuthToken: {
                 type: 'function',
-                handler: 'SecuredRequestPipelineService.validateAuthToken',
+                handler: 'DefaultSecuredRequestPipelineService.validateAuthToken',
                 success: 'authorizeAuthToken',
                 failure: 'failureEnd'
             },
             authorizeAuthToken: {
                 type: 'function',
-                handler: 'SecuredRequestPipelineService.authorizeAuthToken',
+                handler: 'DefaultSecuredRequestPipelineService.authorizeAuthToken',
                 success: 'validateTenantId',
                 failure: 'failureEnd'
             },
             validateTenantId: {
                 type: 'function',
-                handler: 'NonSecuredRequestPipelineService.validateTenantId',
+                handler: 'DefaultNonSecuredRequestPipelineService.validateTenantId',
                 success: 'successEnd',
                 failure: 'failureEnd'
             }
@@ -124,19 +124,19 @@ module.exports = {
         nodes: {
             validateEnterpriseCode: {
                 type: 'function',
-                handler: 'NonSecuredRequestPipelineService.validateEnterpriseCode',
+                handler: 'DefaultNonSecuredRequestPipelineService.validateEnterpriseCode',
                 success: 'loadEnterpriseCode',
                 failure: 'failureEnd'
             },
             loadEnterpriseCode: {
                 type: 'function',
-                handler: 'NonSecuredRequestPipelineService.loadEnterpriseCode',
+                handler: 'DefaultNonSecuredRequestPipelineService.loadEnterpriseCode',
                 success: 'validateTenantId',
                 failure: 'failureEnd'
             },
             validateTenantId: {
                 type: 'function',
-                handler: 'NonSecuredRequestPipelineService.validateTenantId',
+                handler: 'DefaultNonSecuredRequestPipelineService.validateTenantId',
                 success: 'successEnd',
                 failure: 'failureEnd'
             }

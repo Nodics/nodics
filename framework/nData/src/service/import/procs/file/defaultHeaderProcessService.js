@@ -26,7 +26,7 @@ module.exports = {
 
     evaluateHeaderQuery: function (request, response, process) {
         this.LOG.debug('Evaluating header rules');
-        let header = request[request.importType].headers[request.headerName];
+        //let header = request[request.importType].headers[request.headerName];
         process.nextSuccess(request, response);
     },
 
@@ -37,6 +37,8 @@ module.exports = {
 
     loadRawSchema: function (request, response, process) {
         this.LOG.debug('Loading raw schema for header');
+        let header = request[request.importType].headers[request.headerName].header;
+        header.rawSchema = NODICS.getModule(header.options.moduleName).rawSchema[header.options.modelName];
         process.nextSuccess(request, response);
     },
 
@@ -47,14 +49,6 @@ module.exports = {
 
     processHeaderFiles: function (request, response, process) {
         this.LOG.debug('Triggering process to import all files for header');
-        /*
-            request.phase = options.phase;
-            request.importType = options.importType;
-            request.headerName = options.headerName;
-            let header = request[options.importType].headers[options.headerName];
-            header.done = true;
-        */
-
         try {
             let header = request[request.importType].headers[request.headerName];
             if (!UTILS.isBlank(header.dataFiles)) {
@@ -119,18 +113,6 @@ module.exports = {
                 }
             };
             SERVICE.PipelineService.startPipeline(fileTypePipeline, request, response);
-            /*  
-             request.phase = options.phase;
-             request.importType = options.importType;
-             request.headerName = options.headerName;
-             SERVICE.PipelineService.startPipeline('processHeaderPipeline', request, response);
-            // options.filename Actual Files group name
-
-            if (request.fileName === 'defaultEmployeeData' && request.phase < 4) {
-                reject('-------------------reject');
-            } else {
-                resolve(true);
-            }*/
         });
     },
 

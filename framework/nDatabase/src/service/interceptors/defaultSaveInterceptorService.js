@@ -44,8 +44,8 @@ module.exports = {
                 }).catch(error => {
                     this.LOG.error('While publishing model update event: ', error);
                 });
-                resolve(true);
             }
+            resolve(true);
         });
     },
     /*

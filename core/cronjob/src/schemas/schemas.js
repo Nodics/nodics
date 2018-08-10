@@ -12,7 +12,7 @@
 module.exports = {
     cronjob: {
         trigger: {
-            super: 'none',
+            super: 'init',
             model: true,
             service: false,
             router: false

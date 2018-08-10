@@ -46,11 +46,11 @@ module.exports = {
                         next();
                     });
                 }, (req, res) => {
-                    SERVICE.RequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 });
             } else {
                 app.route(routerDef.url).get((req, res) => {
-                    SERVICE.RequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 });
             }
         },
@@ -65,22 +65,22 @@ module.exports = {
                         next();
                     });
                 }, (req, res) => {
-                    SERVICE.RequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 });
             } else {
                 app.route(routerDef.url).post((req, res) => {
-                    SERVICE.RequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 });
             }
         },
         delete: function (app, routerDef) {
             app.route(routerDef.url).delete((req, res) => {
-                SERVICE.RequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
             });
         },
         put: function (app, routerDef) {
             app.route(routerDef.url).put((req, res) => {
-                SERVICE.RequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
             });
         }
     },
@@ -200,7 +200,7 @@ module.exports = {
                 secured: false,
                 key: '/ping',
                 method: 'GET',
-                controller: 'PingMeController',
+                controller: 'DefaultPingMeController',
                 operation: 'ping',
                 help: {
                     requestType: 'secured',
@@ -233,7 +233,7 @@ module.exports = {
                 secured: true,
                 key: '/cache/item/flush',
                 method: 'GET',
-                controller: 'CacheController',
+                controller: 'DefaultCacheController',
                 operation: 'flushItemCache',
                 help: {
                     requestType: 'secured',
@@ -246,7 +246,7 @@ module.exports = {
                 secured: true,
                 key: '/cache/item/flush/:prefix',
                 method: 'GET',
-                controller: 'CacheController',
+                controller: 'DefaultCacheController',
                 operation: 'flushItemCache',
                 help: {
                     requestType: 'secured',
@@ -260,7 +260,7 @@ module.exports = {
                 secured: true,
                 key: '/cache/item/flush',
                 method: 'POST',
-                controller: 'CacheController',
+                controller: 'DefaultCacheController',
                 operation: 'flushItemCacheKeys',
                 help: {
                     requestType: 'secured',
@@ -276,7 +276,7 @@ module.exports = {
                 secured: true,
                 key: '/cache/api',
                 method: 'POST',
-                controller: 'CacheController',
+                controller: 'DefaultCacheController',
                 operation: 'changeApiCacheConfiguration',
                 help: {
                     message: 'not supported currently',
@@ -286,7 +286,7 @@ module.exports = {
                 secured: true,
                 key: '/cache/item',
                 method: 'POST',
-                controller: 'CacheController',
+                controller: 'DefaultCacheController',
                 operation: 'changeItemCacheConfiguration',
                 help: {
                     requestType: 'secured',
@@ -308,7 +308,7 @@ module.exports = {
                 secured: true,
                 key: '/log/level',
                 method: 'POST',
-                controller: 'LogController',
+                controller: 'DefaultLogController',
                 operation: 'changeLogLevel',
                 help: {
                     requestType: 'secured',

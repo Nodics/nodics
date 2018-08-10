@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+const util = require('util');
 const MongoClient = require('mongodb').MongoClient;
 
 
@@ -186,18 +187,132 @@ module.exports = {
         }
     },
 
+    prepareCassandraDBOptions: function (options) {
+
+    },
+
+    prepareMongoDBOptions: function (options) {
+        let schema = options.moduleObject.rawSchema[options.schemaName];
+        let indexedFields = {};
+        let defaultValues = {};
+        let jsonSchema = {
+            bsonType: 'object',
+            required: [],
+            properties: {}
+        };
+        Object.keys(schema.definition).forEach(propertyName => {
+            let property = _.merge({}, schema.definition[propertyName]);
+            jsonSchema.properties[propertyName] = {};
+            if (property.type) {
+                jsonSchema.properties[propertyName].bsonType = property.type;
+                delete property.type;
+            }
+            if (property.required && property.required === true) {
+                jsonSchema.required.push(propertyName);
+                delete property.required;
+            }
+            if (property.default) {
+                defaultValues[propertyName] = property.default
+                delete property.default;
+            }
+            if (UTILS.isBlank(property)) {
+                _.merge(jsonSchema.properties[propertyName], property);
+            }
+            if (!property.description) {
+                jsonSchema.properties[propertyName].description = 'must be a ' + jsonSchema.properties[propertyName].bsonType;
+                if (jsonSchema.required.includes(propertyName)) {
+                    jsonSchema.properties[propertyName].description += ' and is required';
+                } else {
+                    jsonSchema.properties[propertyName].description += ' and is not required';
+                }
+            }
+
+        });
+
+        Object.keys(schema.indexes).forEach(propertyName => {
+            let indexConfig = schema.indexes[propertyName];
+            indexedFields[indexConfig.name] = {};
+            indexedFields[indexConfig.name].field = {};
+            indexedFields[indexConfig.name].field[indexConfig.name] = 1;
+            indexedFields[indexConfig.name].options = indexConfig.options;
+        });
+
+        schema.schemaOptions = {};
+        schema.schemaOptions[options.tenant] = {};
+        schema.schemaOptions[options.tenant] = {
+            options: {
+                validator: {
+                    '$jsonSchema': jsonSchema
+                }
+            },
+            indexedFields: indexedFields,
+            defaultValues: defaultValues
+        }
+    },
+
+    prepareDatabaseOptions: function (options) {
+        if (options.dbType === 'mongodb') {
+            return SYSTEM.prepareMongoDBOptions(options);
+        } else {
+            return SYSTEM.prepareCassandraDBOptions(options);
+        }
+    },
+
+    createIndex: function (options) {
+        return new Promise((resolve, reject) => {
+            let indexConfig = options.indexedFields[options.indexField];
+            options.dataBase.getConnection().ensureIndex(
+                options.modelName,
+                indexConfig.field,
+                indexConfig.options
+            ).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    createIndexes: function (options) {
+        return new Promise((resolve, reject) => {
+            if (options.indexedFieldList.length > 0) {
+                options.indexField = options.indexedFieldList.shift();
+                SYSTEM.createIndex(options).then(success => {
+                    SYSTEM.createIndexes(options).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
     createModel: function (options, dataBase) {
         return new Promise((resolve, reject) => {
             let schema = options.moduleObject.rawSchema[options.schemaName];
-            let schemaOptions = {};
-            if (schema.options && schema.options[options.dbType]) {
-                schemaOptions = schema.options[options.dbType];
+            let schemaOptions = schema.schemaOptions[options.tenant];
+            let tmpOptions = schema.options || {};
+            if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
+                tmpOptions = _.merge(tmpOptions, schemaOptions.options);
             }
-            dataBase.getConnection().createCollection(options.modelName, schemaOptions).then(collection => {
+            dataBase.getConnection().createCollection(options.modelName, tmpOptions).then(collection => {
                 collection.modelName = options.modelName;
                 collection.schemaName = options.schemaName;
-                SYSTEM.registerModelMiddleWare(options, collection, schema);
-                resolve(collection);
+                SYSTEM.createIndexes({
+                    indexedFields: schemaOptions.indexedFields,
+                    indexedFieldList: Object.keys(schemaOptions.indexedFields),
+                    modelName: options.modelName,
+                    dataBase: dataBase
+                }).then(success => {
+                    SYSTEM.registerModelMiddleWare(options, collection, schema);
+                    resolve(collection);
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });
@@ -229,6 +344,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             options.modelName = SYSTEM.createModelName(options.schemaName);
             if (options.dataBase.master) {
+                SYSTEM.prepareDatabaseOptions(options);
                 SYSTEM.retrieveModel(options, options.dataBase.master).then(success => {
                     if (!options.moduleObject.models[options.tenant].master) {
                         options.moduleObject.models[options.tenant].master = {};
@@ -357,9 +473,53 @@ module.exports = {
         });
     },
 
+    resolveSchemaDependancy: function (mergedSchema, rawSchema, schemaName, schema) {
+        if (schema.super) {
+            let superSchemaName = schema.super;
+            let superSchema = rawSchema[superSchemaName];
+            if (superSchema) {
+                let finalSchema = {};
+                if (mergedSchema[schemaName]) {
+                    finalSchema = mergedSchema[schemaName];
+                } else {
+                    finalSchema = SYSTEM.resolveSchemaDependancy(mergedSchema, rawSchema, superSchemaName, superSchema);
+                }
+                mergedSchema[schemaName] = _.merge(_.merge({}, finalSchema), schema);
+                return mergedSchema[schemaName];
+            } else {
+                throw new Error('Invalid super schema definition for: ' + schemaName);
+            }
+        } else {
+            mergedSchema[schemaName] = schema;
+            return schema;
+        }
+    },
+    resolveModuleSchemaDependancy: function (moduleName, rawSchema) {
+        let mergedSchema = {};
+        Object.keys(rawSchema).forEach(schemaName => {
+            if (!mergedSchema[schemaName]) {
+                SYSTEM.resolveSchemaDependancy(mergedSchema, rawSchema, schemaName, rawSchema[schemaName]);
+            }
+        });
+        return mergedSchema;
+    },
+
+    validateSchemaDefinition: function (modelName, schemaDefinition) {
+        let flag = true;
+        if (!schemaDefinition.super) {
+            this.LOG.error('Invalid schema definition for : ' + modelName + ', please define super attribute');
+            flag = false;
+        } else if (!schemaDefinition.definition) {
+            this.LOG.error('Invalid schema definition for : ' + modelName + ', please define definition attribute');
+            flag = false;
+        }
+        return flag;
+    },
+
     buildSchemas: function () {
         SYSTEM.LOG.debug('Starting schemas loading process');
         let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js', null, true);
+        let defaultSchema = mergedSchema.default || {};
         let modules = NODICS.getModules();
         Object.keys(mergedSchema).forEach(function (key) {
             if (key !== 'default') {
@@ -368,7 +528,8 @@ module.exports = {
                     SYSTEM.LOG.error('Module name : ', key, ' is not valid. Please define a valide module name in schema');
                     process.exit(CONFIG.get('errorExitCode'));
                 }
-                moduleObject.rawSchema = mergedSchema[key];
+                moduleObject.rawSchema = SYSTEM.resolveModuleSchemaDependancy(key, _.merge(_.merge({}, defaultSchema), mergedSchema[key]));
+                //console.log('=> Final Module: ', key, ' Schema: ', moduleObject.rawSchema);
             }
         });
         NODICS.setRawModels(SYSTEM.loadFiles('/src/schemas/model.js'));
@@ -502,235 +663,5 @@ module.exports = {
                 reject(error);
             });
         });
-    },
-
-    // ******************************************
-
-
-    deployValidators: function () {
-        SYSTEM.LOG.debug('Starting validators loading process');
-        NODICS.setValidators(SYSTEM.loadFiles('/src/schemas/validators.js'));
-    },
-
-
-    interceptorMiddleware: function (interceptors, moduleSchema, modelName) {
-        if (!UTILS.isBlank(interceptors)) {
-            let interceptorFunctions = SYSTEM.getAllMethods(interceptors);
-            interceptorFunctions.forEach(function (operationName) {
-                interceptors[operationName](moduleSchema, modelName);
-            });
-        }
-    },
-
-    modelDaoMiddleware: function (dao, moduleSchema, schemaDef) {
-        if (!UTILS.isBlank(dao)) {
-            let daoFunctions = SYSTEM.getAllMethods(dao);
-            daoFunctions.forEach(function (operationName) {
-                dao[operationName](moduleSchema, schemaDef);
-                dao[operationName](moduleSchema, schemaDef);
-            });
-        }
-    },
-
-    registerSchemaMiddleWare: function (options) {
-        SYSTEM.interceptorMiddleware(options.interceptors.default, options.modelSchema, options.modelName);
-        if (options.interceptors[options.moduleName]) {
-            SYSTEM.interceptorMiddleware(options.interceptors[options.moduleName].default, options.modelSchema, options.modelName);
-            SYSTEM.interceptorMiddleware(options.interceptors[options.moduleName][options.modelName], options.modelSchema, options.modelName);
-        }
-
-        SYSTEM.modelDaoMiddleware(options.daos.default, options.modelSchema, options.schemaDef);
-        if (options.daos[options.moduleName]) {
-            SYSTEM.modelDaoMiddleware(options.daos[options.moduleName].default, options.modelSchema, options.schemaDef);
-            SYSTEM.modelDaoMiddleware(options.daos[options.moduleName][options.modelName], options.modelSchema, options.schemaDef);
-        }
-    },
-
-    createModelObject: function (options) {
-        let modelName = SYSTEM.createModelName(options.modelName);
-        options.modelObject[modelName] = options.database.getConnection().model(modelName, options.modelSchema);
-    },
-
-    createSchema: function (options) {
-        let schemas = options.schemaObject;
-        let models = options.modelObject;
-        let rawSchema = NODICS.getModule(options.moduleName).rawSchema;
-        if (options.schemaDef.super === 'none') {
-            options.schemaObject[options.modelName] = new options.database.getSchema()(options.schemaDef.definition, options.schemaDef.options || {});
-        } else {
-            let superSchema = options.schemaDef.super;
-            if (!options.schemaObject[superSchema]) {
-                let tmpOptions = _.merge({}, options);
-                tmpOptions.schemaDef = rawSchema[superSchema];
-                tmpOptions.modelName = superSchema;
-                SYSTEM.resolveSchemaDependancy(tmpOptions);
-            }
-            try {
-                let tmpDef = _.merge({}, rawSchema[superSchema].definition);
-                _.merge(tmpDef, options.schemaDef.definition);
-                rawSchema[options.modelName].definition = tmpDef;
-                options.schemaObject[options.modelName] = new options.database.getSchema()(rawSchema[options.modelName].definition, rawSchema[options.modelName].options || {});
-            } catch (error) {
-                SYSTEM.LOG.error('While generating models : ', error);
-            }
-        }
-        if (options.schemaDef.model) {
-            options.modelSchema = options.schemaObject[options.modelName];
-            options.modelSchema.moduleName = options.schemaDef.moduleName;
-            options.modelSchema.modelName = SYSTEM.createModelName(options.modelName);
-            options.modelSchema.rawSchema = options.schemaDef;
-            options.modelSchema.LOG = SYSTEM.createLogger(options.modelName.toUpperCaseEachWord() + 'Interceptor');
-            SYSTEM.registerSchemaMiddleWare(options);
-            SYSTEM.createModelObject(options);
-        }
-    },
-
-    resolveSchemaDependancy: function (options) {
-        let flag = false;
-        options.tenants.forEach(function (tntName) {
-            flag = false;
-            options.schemaDef.tenant = tntName;
-            if (SYSTEM.validateSchemaDefinition(options.modelName, options.schemaDef)) {
-                process.exit(CONFIG.get('errorExitCode'));
-            }
-            let database = NODICS.getDatabase(options.moduleName, tntName);
-            let schemaObject = NODICS.getModule(options.moduleName).schemas;
-            let modelObject = NODICS.getModule(options.moduleName).models;
-            if (!schemaObject[tntName]) {
-                schemaObject[tntName] = {
-                    master: {},
-                    test: {}
-                };
-            }
-            if (!modelObject[tntName]) {
-                modelObject[tntName] = {
-                    master: {},
-                    test: {}
-                };
-            }
-            if (schemaObject[tntName].master[options.modelName] && schemaObject[tntName].test[options.modelName]) {
-                return true;
-            }
-            if (!schemaObject[tntName].master[options.modelName]) {
-                options.database = database.master;
-                options.schemaObject = schemaObject[tntName].master;
-                options.modelObject = modelObject[tntName].master;
-                SYSTEM.createSchema(options);
-                flag = true;
-            }
-            if (!schemaObject[tntName].test[options.modelName] && database.test) {
-                options.database = database.test;
-                options.schemaObject = schemaObject[tntName].test;
-                options.modelObject = modelObject[tntName].test;
-                SYSTEM.createSchema(options);
-                flag = true;
-            }
-        });
-        return flag;
-    },
-
-    traverseSchemas: function (options) {
-        let cloneSchema = _.merge({}, options.rawSchema);
-
-        _.each(options.rawSchema, function (valueIn, keyIn) {
-            options.modelName = keyIn;
-            options.schemaDef = valueIn;
-            options.schemaDef.moduleName = options.moduleName;
-            options.schemaDef.modelName = keyIn;
-            if (SYSTEM.resolveSchemaDependancy(options)) {
-                delete cloneSchema[keyIn];
-            }
-        });
-        return cloneSchema;
-    },
-
-    extractRawSchema: function (options) {
-        options.rawSchema = _.merge({}, options.moduleObject.rawSchema);
-        let loop = true;
-        let counter = 0;
-        do {
-            options.rawSchema = SYSTEM.traverseSchemas(options);
-            if (_.isEmpty(options.rawSchema)) {
-                loop = false;
-            }
-        } while (loop && counter++ < 10);
-    },
-
-    createSchemas: function (options) {
-        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-            if (moduleObject.rawSchema) {
-                if (!moduleObject.schemas) {
-                    moduleObject.schemas = {};
-                }
-                if (!moduleObject.models) {
-                    moduleObject.models = {};
-                }
-                options.moduleName = moduleName;
-                options.moduleObject = moduleObject;
-                SYSTEM.extractRawSchema(options);
-            }
-        });
-    },
-
-    deployRawSchemas: function () {
-        SYSTEM.LOG.debug('Starting schemas loading process');
-        let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js', null, true);
-        let modules = NODICS.getModules();
-        Object.keys(mergedSchema).forEach(function (key) {
-            if (key !== 'default') {
-                let moduleObject = modules[key];
-                if (!moduleObject) {
-                    SYSTEM.LOG.error('Module name : ', key, ' is not valid. Please define a valide module name in schema');
-                    process.exit(CONFIG.get('errorExitCode'));
-                }
-                moduleObject.rawSchema = _.merge(mergedSchema[key], mergedSchema.default);
-            }
-        });
-    },
-
-    deploySchemas: function (tenants) {
-        SYSTEM.LOG.debug('Starting schemas loading process');
-        let mergedSchema = SYSTEM.loadFiles('/src/schemas/schemas.js', null, true);
-        let options = {
-            interceptors: SYSTEM.loadFiles('/src/schemas/interceptors.js'),
-            daos: SYSTEM.loadFiles('/src/schemas/model.js'),
-            schemas: mergedSchema,
-            tenants: tenants || ['default']
-        };
-        let modules = NODICS.getModules();
-        Object.keys(mergedSchema).forEach(function (key) {
-            if (key !== 'default') {
-                let moduleObject = modules[key];
-                if (!moduleObject) {
-                    SYSTEM.LOG.error('Module name : ', key, ' is not valid. Please define a valide module name in schema');
-                    process.exit(CONFIG.get('errorExitCode'));
-                }
-                moduleObject.rawSchema = _.merge(mergedSchema[key], mergedSchema.default);
-
-            }
-        });
-        //SYSTEM.createSchemas(options);
-    },
-
-    // **********************************************************
-
-
-
-    validateSchemaDefinition: function (modelName, schemaDefinition) {
-        let flag = true;
-        if (!schemaDefinition.super) {
-            this.LOG.error('Invalid schema definition for : ' + modelName + ', please define super attribute');
-            flag = false;
-        } else if (!schemaDefinition.definition) {
-            this.LOG.error('Invalid schema definition for : ' + modelName + ', please define definition attribute');
-            flag = false;
-        }
-    },
-
-    buildItemLevelCache: function (rawSchema) {
-        let itemLevelCache = CONFIG.get('cache').itemLevelCache[rawSchema.modelName];
-        if (itemLevelCache) {
-            rawSchema.cache = itemLevelCache;
-        }
     }
 };
