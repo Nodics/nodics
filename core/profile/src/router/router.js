@@ -30,7 +30,7 @@ module.exports = {
                 }
             },
             getTenants: {
-                secured: true,
+                secured: false,
                 cache: {
                     enabled: true,
                     ttl: 200

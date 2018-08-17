@@ -79,9 +79,12 @@ module.exports = {
             }
             try {
                 CONTROLLER[request.local.router.handler][request.local.router.operation](request, (error, result) => {
+                    console.log('1');
                     if (error) {
+                        console.log('2');
                         process.error(request, response, error);
                     } else {
+                        console.log('3: ', result);
                         let cache = false;
                         if (result.cache) {
                             cache = true;
@@ -95,7 +98,7 @@ module.exports = {
                             let options = {
                                 ttl: request.local.router.ttl
                             };
-                            SERVICE.CacheService.putApi(request.local.router.moduleObject.apiCache,
+                            SERVICE.DefaultCacheService.putApi(request.local.router.moduleObject.apiCache,
                                 request,
                                 response,
                                 request.local.router.cache).then(cuccess => {
@@ -111,14 +114,17 @@ module.exports = {
                             if (cache) {
                                 response.cache = 'item hit';
                             }
+                            console.log('11');
                             process.stop(request, response);
                         }
                     }
                 });
             } catch (error) {
+                console.log('4');
                 process.error(request, response, error);
             }
         } else {
+            console.log('5');
             process.nextSuccess(request, response);
         }
     },
@@ -167,7 +173,7 @@ module.exports = {
                         let options = {
                             ttl: request.local.router.ttl
                         };
-                        SERVICE.CacheService.putApi(request.local.router.moduleObject.apiCache,
+                        SERVICE.DefaultCacheService.putApi(request.local.router.moduleObject.apiCache,
                             request,
                             response,
                             request.local.router.cache).then(cuccess => {

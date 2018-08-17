@@ -64,6 +64,19 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    removeVirtualProperties: function (request, response, process) {
+        this.LOG.debug('Removing virtual properties from model');
+        let rawSchema = request.collection.rawSchema;
+        if (!UTILS.isBlank(rawSchema.virtualProperties)) {
+            _.each(rawSchema.virtualProperties, (method, property) => {
+                if (request.model[property]) {
+                    delete request.model[property];
+                }
+            });
+        }
+        process.nextSuccess(request, response);
+    },
+
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model');
         request.collection.saveItem(request).then(success => {

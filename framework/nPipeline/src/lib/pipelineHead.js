@@ -152,7 +152,7 @@ module.exports = function (name, pipelineDefinition, callback) {
                 success: false,
                 pipelineName: _pipelineName,
                 nodeName: _preNode.getName(),
-                error: err
+                error: err.toString()
             };
             let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
             let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);

@@ -12,7 +12,8 @@
 const _ = require('lodash');
 
 module.exports = {
-    populateVirtualProperties: function(rawSchema, documents) {
+
+    populateVirtualProperties: function (rawSchema, documents) {
         if (!UTILS.isBlank(rawSchema.virtualProperties)) {
             if (documents instanceof Array) {
                 documents.forEach(document => {
@@ -23,14 +24,14 @@ module.exports = {
             }
         }
     },
-    populateProperties: function(rawSchema, document) {
+    populateProperties: function (rawSchema, document) {
         let _self = this;
         _.each(rawSchema.virtualProperties, (method, property) => {
             _self.populateProperty(property, method, document);
         });
     },
 
-    populateProperty: function(property, method, document) {
+    populateProperty: function (property, method, document) {
         let _self = this;
         if (method instanceof Object) {
             let doc = document[property];
@@ -44,7 +45,7 @@ module.exports = {
         }
     },
 
-    populate: function(property, method, document) {
+    populate: function (property, method, document) {
         let serviceName = method.substring(0, method.lastIndexOf('.'));
         let operation = method.substring(method.lastIndexOf('.') + 1, method.length);
         document[property] = SERVICE[serviceName][operation](document);

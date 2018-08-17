@@ -165,6 +165,13 @@ module.exports = {
             applyDefaultValues: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.applyDefaultValues',
+                success: 'removeVirtualProperties',
+                failure: 'failureEnd'
+            },
+
+            removeVirtualProperties: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.removeVirtualProperties',
                 success: 'saveModel',
                 failure: 'failureEnd'
             },

@@ -38,7 +38,7 @@ module.exports = {
         get: function (app, routerDef) {
             if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).get((req, res, next) => {
-                    SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
+                    SERVICE.DefaultCacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
                         SYSTEM.LOG.info('      Fulfilled from API cache');
                         value.cache = 'api hit';
                         res.json(value);
@@ -57,7 +57,7 @@ module.exports = {
         post: function (app, routerDef) {
             if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {
                 app.route(routerDef.url).post((req, res, next) => {
-                    SERVICE.CacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
+                    SERVICE.DefaultCacheService.getApi(routerDef.moduleObject.apiCache, req, res).then(value => {
                         SYSTEM.LOG.info('      Fulfilled from API cache');
                         value.cache = 'api hit';
                         res.json(value);
@@ -200,7 +200,7 @@ module.exports = {
                 secured: false,
                 key: '/ping',
                 method: 'GET',
-                controller: 'DefaultPingMeController',
+                handler: 'DefaultPingMeController',
                 operation: 'ping',
                 help: {
                     requestType: 'secured',

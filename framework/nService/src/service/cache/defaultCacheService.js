@@ -10,7 +10,6 @@
  */
 
 const _ = require('lodash');
-const NodeCache = require("node-cache");
 
 module.exports = {
 
@@ -56,7 +55,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (moduleObject.metaData && moduleObject.metaData.publish) {
                 if (!moduleObject.apiCache || cacheConfig.apiCache.enabled) {
-                    let apiCacheConfig = cacheConfig[cacheConfig.apiCache.engine]
+                    let apiCacheConfig = cacheConfig[cacheConfig.apiCache.engine];
                     SERVICE[apiCacheConfig.handler].initApiCache(apiCacheConfig, moduleName).then(value => {
                         moduleObject.apiCache = {
                             type: cacheConfig.apiCache.engine,
@@ -225,18 +224,29 @@ module.exports = {
 
     createItemKey: function (input) {
         let options = _.merge({}, input.queryOptions);
+        if (input.options) {
+            options.recursive = input.options.recursive || false;
+        }
         options.query = input.query;
         return input.collection.schemaName + '_' +
             input.tenant + '_' +
-            SYSTEM.generateHash(JSON.stringify(options.query));
+            SYSTEM.generateHash(JSON.stringify(options));
     },
 
     getApi: function (cache, request, response) {
         let hash = SYSTEM.generateHash(this.createApiKey(request));
-        return this.get(cache, hash);
+        return this.get({
+            cacheClient: cache,
+            hashKey: hash
+        });
     },
     putApi: function (cache, request, response, options) {
         let hash = SYSTEM.generateHash(this.createApiKey(request));
-        return this.put(cache, hash, response, options);
+        return this.put({
+            cacheClient: cache,
+            hashKey: hash,
+            docs: response,
+            itemCacheOptions: options
+        });
     }
 };

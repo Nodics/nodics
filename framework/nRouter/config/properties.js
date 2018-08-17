@@ -25,7 +25,7 @@ module.exports = {
     server: {
         options: {
             contextRoot: 'nodics',
-            runAsDefault: false
+            runAsDefault: true
         },
         default: {
             options: {
