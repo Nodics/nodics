@@ -26,7 +26,6 @@ module.exports = {
 
     evaluateHeaderQuery: function (request, response, process) {
         this.LOG.debug('Evaluating header rules');
-        //let header = request[request.importType].headers[request.headerName];
         process.nextSuccess(request, response);
     },
 
@@ -57,6 +56,7 @@ module.exports = {
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
+                    response.errors.push(error);
                     process.nextSuccess(request, response);
                 });
             } else {
@@ -64,15 +64,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            response.success = false;
-            delete response.result;
-            delete response.msg;
-            delete response.code;
-            response.errors.PROC_ERR_0003 = {
-                code: 'ERR003',
-                msg: error
-            };
-            process.nextFailure(request, response);
+            process.error(request, response, error);
         }
     },
 
@@ -106,28 +98,35 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let fileObj = header.dataFiles[request.fileName];
             let fileTypePipeline = CONFIG.get('targetPipelineForFileType')[fileObj.type];
-            response[fileTypePipeline] = {
+            let output = {};
+
+            output[fileTypePipeline] = {
                 promise: {
                     resolve: resolve,
                     reject: reject
                 }
             };
-            SERVICE.PipelineService.startPipeline(fileTypePipeline, request, response);
+            SERVICE.DefaultPipelineService.startPipeline(fileTypePipeline, request, output);
         });
     },
 
     handleSucessEnd: function (request, response) {
-        this.LOG.debug('Header Process Request has been processed successfully');
-        response.headerProcessPipeline.promise.resolve(response);
+        if (response.errors.length > 0) {
+            this.LOG.error('Header Process Request has been processed and got errors');
+            response.headerProcessPipeline.promise.reject(response.errors);
+        } else {
+            this.LOG.debug('Header Process Request has been processed successfully');
+            response.headerProcessPipeline.promise.resolve(response);
+        }
     },
 
     handleFailureEnd: function (request, response) {
-        this.LOG.debug('Header Process Request has been processed with some failures : ');
-        response.headerProcessPipeline.promise.reject(response);
+        this.LOG.error('Header Process Request has been processed with some failures');
+        response.headerProcessPipeline.promise.reject(response.errors);
     },
 
     handleErrorEnd: function (request, response) {
-        this.LOG.debug('Header Process Request has been processed and got errors : ');
-        response.headerProcessPipeline.promise.reject(response);
+        this.LOG.error('Header Process Request has been processed and got errors');
+        response.headerProcessPipeline.promise.reject(response.result);
     }
 };

@@ -19,7 +19,7 @@ module.exports = {
                 dataFilePrefix: 'defaultTenantData'
             },
             query: {
-                name: 'name'
+                code: 'code'
             }
         },
         defaultEnterprise: {
@@ -30,7 +30,7 @@ module.exports = {
                 dataFilePrefix: 'defaultEnterpriseData'
             },
             query: {
-                enterpriseCode: 'enterpriseCode'
+                code: 'code'
             },
             macros: {
                 tenant: {

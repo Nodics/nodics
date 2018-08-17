@@ -137,33 +137,22 @@ module.exports = {
         });
     },
 
-    flushApiCache(request, callback) {
+    flushApiCache(request) {
         let moduleObject = NODICS.getModules()[request.moduleName];
         if (moduleObject.apiCache) {
-            return this.flush(moduleObject.apiCache, request.prefix, request.moduleName, callback);
+            return this.flush(moduleObject.apiCache, request.prefix, request.moduleName);
         }
     },
 
-    flushItemCache(request, callback) {
+    flushItemCache(request) {
         let moduleObject = NODICS.getModules()[request.moduleName];
         if (moduleObject.itemCache) {
-            return this.flush(moduleObject.itemCache, request.prefix, request.moduleName, callback);
+            return this.flush(moduleObject.itemCache, request.prefix, request.moduleName);
         }
     },
 
-    flush: function (cache, prefix, moduleName, callback) {
-        SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix).then(success => {
-            this.LOG.debug('Cache for module : ', moduleName, ', flushed successfully');
-            if (callback) {
-                callback(null, 'cache for module : ' + moduleName + ', flushed successfully');
-            }
-        }).catch(error => {
-            this.LOG.error('2While flushing cache for module : ', moduleName);
-            this.LOG.error(error);
-            if (callback) {
-                callback(error);
-            }
-        });
+    flush: function (cache, prefix, moduleName) {
+        return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix);
     },
 
     flushApiCacheKeys: function (request, callback) {

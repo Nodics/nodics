@@ -67,6 +67,7 @@ module.exports = {
             }).then(actives => {
                 if (actives.length <= 0) {
                     resolve({
+                        code: input.loginId,
                         loginId: input.loginId,
                         personId: input._id,
                         attempts: 0,

@@ -18,7 +18,7 @@ module.exports = {
                 callback(error);
             });
         } else {
-            return DAO.DaoName.get(request, callback);
+            return DAO.DaoName.get(request);
         }
     },
 
@@ -30,7 +30,7 @@ module.exports = {
                 callback(error);
             });
         } else {
-            return DAO.DaoName.save(request, callback);
+            return DAO.DaoName.save(request);
         }
     },
 
@@ -42,7 +42,7 @@ module.exports = {
                 callback(error);
             });
         } else {
-            return DAO.DaoName.remove(request, callback);
+            return DAO.DaoName.remove(request);
         }
     }
 };

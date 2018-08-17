@@ -13,7 +13,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.modules && !request.path) {
-            return request.promise.reject('Please validate request. Mandate property modules or path not found');
+            process.error(request, response, 'Please validate request. Mandate property modules or path not found');
         } else {
             process.nextSuccess(request, response);
         }
@@ -45,6 +45,6 @@ module.exports = {
 
     handleErrorEnd: function (request, response) {
         this.LOG.debug('Request has been processed and got errors : ');
-        response.dataImportInitializerPipeline.promise.reject(response);
+        response.dataImportInitializerPipeline.promise.reject(response.result);
     }
 };

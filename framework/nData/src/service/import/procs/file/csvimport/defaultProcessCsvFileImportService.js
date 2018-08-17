@@ -21,17 +21,17 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response) {
-        this.LOG.debug('JS file import Process Request has been processed successfully');
+        this.LOG.debug('CSV file import Process Request has been processed successfully');
         response.processCsvFileImportPipeline.promise.resolve(response);
     },
 
     handleFailureEnd: function (request, response) {
-        this.LOG.debug('JS file import  Process Request has been processed with some failures : ');
+        this.LOG.debug('CSV file import  Process Request has been processed with some failures : ');
         response.processCsvFileImportPipeline.promise.reject(response);
     },
 
     handleErrorEnd: function (request, response) {
-        this.LOG.debug('JS file import  Process Request has been processed and got errors : ');
+        this.LOG.debug('CSV file import  Process Request has been processed and got errors : ');
         response.processCsvFileImportPipeline.promise.reject(response);
     }
 };

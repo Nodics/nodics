@@ -16,7 +16,7 @@ module.exports = {
                 secured: false,
                 key: '/event/push',
                 method: 'PUT',
-                controller: 'EventController',
+                controller: 'DefaultEventController',
                 operation: 'save',
                 help: {
                     requestType: 'non-secured',
@@ -43,7 +43,7 @@ module.exports = {
                 secured: true,
                 key: '/event/process',
                 method: 'GET',
-                controller: 'EventHandlerController',
+                controller: 'DefaultEventHandlerController',
                 operation: 'processEvents',
                 help: {
                     requestType: 'secured',

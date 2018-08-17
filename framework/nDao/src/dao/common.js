@@ -22,8 +22,8 @@ module.exports = {
                             reject: reject
                         }
                     }
-                }
-                SERVICE.PipelineService.startPipeline('modelsGetInitializerPipeline', input, response);
+                };
+                SERVICE.DefaultPipelineService.startPipeline('modelsGetInitializerPipeline', input, response);
             });
         } catch (error) {
             return Promise.reject(error);
@@ -42,8 +42,8 @@ module.exports = {
                             reject: reject
                         }
                     }
-                }
-                SERVICE.PipelineService.startPipeline('modelsSaveInitializerPipeline', input, response);
+                };
+                SERVICE.DefaultPipelineService.startPipeline('modelsSaveInitializerPipeline', input, response);
             });
         } catch (error) {
             return Promise.reject(error);
@@ -61,8 +61,8 @@ module.exports = {
                             reject: reject
                         }
                     }
-                }
-                SERVICE.PipelineService.startPipeline('modelsRemoveInitializerPipeline', input, response);
+                };
+                SERVICE.DefaultPipelineService.startPipeline('modelsRemoveInitializerPipeline', input, response);
             });
         } catch (error) {
             return Promise.reject(error);
@@ -79,8 +79,8 @@ module.exports = {
                             reject: reject
                         }
                     }
-                }
-                SERVICE.PipelineService.startPipeline('modelsUpdateInitializerPipeline', input, response);
+                };
+                SERVICE.DefaultPipelineService.startPipeline('modelsUpdateInitializerPipeline', input, response);
             });
         } catch (error) {
             return Promise.reject(error);

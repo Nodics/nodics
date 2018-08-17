@@ -25,11 +25,10 @@ module.exports = {
                     refSchema: header.rawSchema.refSchema,
                     properties: Object.keys(header.macros),
                     macros: header.macros
-                }
+                };
                 this.resolveRelation(request, response, options).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    console.log('-----:', error);
                     process.error(request, response, error);
                 });
             } else {
@@ -74,7 +73,7 @@ module.exports = {
                             values: model[property].split(','),
                             macro: options.macros[property],
                             result: []
-                        }
+                        };
                         _self.resolveOneToManyRelation(request, response, input).then(success => {
                             model[property] = success;
                             _self.resolveRelation(request, response, options).then(success => {
@@ -84,14 +83,14 @@ module.exports = {
                             });
                         }).catch(error => {
                             reject(error);
-                        })
+                        });
                     }
                 } else {
                     this.resolveRelation(request, response, options).then(success => {
                         resolve(true);
                     }).catch(error => {
                         reject(error);
-                    })
+                    });
                 }
             } else {
                 resolve(true);
@@ -160,16 +159,16 @@ module.exports = {
                 options: {
                     query: query
                 }
-            }
-            SERVICE['Default' + options.macro.options.model.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {
-                if (success && success.length > 0) {
+            };
+            SERVICE['Default' + options.macro.options.model.toUpperCaseFirstChar() + 'Service'].get(input).then(result => {
+                if (result.length <= 0) {
+                    reject('None ' + options.macro.options.model.toUpperCaseFirstChar() + 's found');
+                } else {
                     let data = [];
-                    success.forEach(element => {
+                    result.forEach(element => {
                         data.push(element[options.macro.options.returnProperty || '_id']);
                     });
                     resolve(data);
-                } else {
-                    reject('Could not found any data');
                 }
             }).catch(error => {
                 reject(error);
@@ -180,7 +179,6 @@ module.exports = {
     insertData: function (request, response, process) {
         this.LOG.debug('Initiating data model import process');
         let header = request[request.importType].headers[request.headerName].header;
-        let record = request.currentRecord;
         let model = request.currentModel;
         let models = [];
         if (UTILS.isArray(model)) {
@@ -195,40 +193,29 @@ module.exports = {
             query: header.query,
             models: models
         };
-        SERVICE['Default' + header.options.modelName.toUpperCaseFirstChar() + 'Service'][header.options.operation](input).then(success => {
-            if (success.success) {
-                process.nextSuccess(request, response);
-            } else {
-                _.merge(response.errors || {}, success.errors);
-                process.nextFailure(request, response);
-            }
+        SERVICE['Default' + header.options.modelName.toUpperCaseFirstChar() + 'Service'][header.options.operation](input).then(result => {
+            response.success.concat(result);
+            process.nextSuccess(request, response);
         }).catch(error => {
-            _.merge(response.errors, {
-                PROC_ERR_000:
-                {
-                    code: 'PROC_ERR_0001',
-                    message: 'PROC_ERR_0001',
-                    pipelineName: 'modelSaveInitializerPipeline',
-                    nodeName: 'saveModel',
-                    error: 'MongoError: Document failed validation'
-                }
-            });
             process.error(request, response, error);
         });
     },
 
     handleSucessEnd: function (request, response) {
         this.LOG.debug('Import Model Process Request has been processed successfully');
-        response.modelImportPipeline.promise.resolve(response);
+        response.modelImportPipeline.promise.resolve({
+            success: response.success,
+            errors: response.errors
+        });
     },
 
     handleFailureEnd: function (request, response) {
-        this.LOG.debug('Import Model Process Request has been processed with some failures : ');
-        response.modelImportPipeline.promise.reject(response);
+        this.LOG.debug('Import Model Process Request has been processed with some failures');
+        response.modelImportPipeline.promise.reject(response.result);
     },
 
     handleErrorEnd: function (request, response) {
-        this.LOG.debug('Import Model Process Request has been processed and got errors : ');
-        response.modelImportPipeline.promise.reject(response);
+        this.LOG.debug('Import Model Process Request has been processed and got errors');
+        response.modelImportPipeline.promise.reject(response.result.error);
     }
 };

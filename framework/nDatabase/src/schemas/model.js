@@ -16,15 +16,19 @@ module.exports = {
         defineDefaultGet: function (collection, rawSchema) {
             collection.getItems = function (input) {
                 return new Promise((resolve, reject) => {
-                    this.find(input.query, input.queryOptions).toArray((error, result) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(result);
-                        }
-                    });
+                    try {
+                        this.find(input.query, input.queryOptions).toArray((error, result) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(result);
+                            }
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
                 });
-            }
+            };
         },
 
         defineDefaultSave: function (collection, rawSchema) {
@@ -62,7 +66,7 @@ module.exports = {
                             } else if (model._id) {
                                 let query = {
                                     _id: model._id
-                                }
+                                };
                                 this.saveByQuery(query, model).then(result => {
                                     resolve(result);
                                 }).catch(error => {
@@ -80,7 +84,7 @@ module.exports = {
                         }
                     }
                 });
-            }
+            };
         },
 
         defineDefaultSaveByQuery: function (collection, rawSchema) {
@@ -92,7 +96,7 @@ module.exports = {
                         reject(error);
                     });
                 });
-            }
+            };
         },
 
         defineDefaultCreate: function (collection, rawSchema) {
@@ -102,9 +106,9 @@ module.exports = {
                         resolve(result);
                     }).catch(error => {
                         reject(error);
-                    })
+                    });
                 });
-            }
+            };
         },
 
         defineDefaultRemove: function (collection, rawSchema) {
@@ -118,7 +122,7 @@ module.exports = {
                             _id: {
                                 $in: input.ids
                             }
-                        }
+                        };
                     }
                     this.deleteMany(query, {}).then(response => {
                         resolve(response);
@@ -126,7 +130,7 @@ module.exports = {
                         reject(error);
                     });
                 });
-            }
+            };
         },
 
         defineDefaultUpdate: function (collection, rawSchema) {
@@ -138,7 +142,7 @@ module.exports = {
                         reject(error);
                     });
                 });
-            }
+            };
         }
     }
 };

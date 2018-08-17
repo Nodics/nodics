@@ -11,22 +11,22 @@
 
 module.exports = {
 
-    validateEvent: function(event) {
+    validateEvent: function (event) {
         if (UTILS.isBlank(event)) {
             throw Error('Event can not be empty');
         }
         return true;
     },
 
-    handleEvent: function(request, callback) {
-        if (CONTROLLER.EventController.validateEvent(request.body)) {
-            FACADE.EventFacade.handleEvent(request, callback);
+    handleEvent: function (request, callback) {
+        if (CONTROLLER.DefaultEventController.validateEvent(request.body)) {
+            FACADE.DefaultEventFacade.handleEvent(request, callback);
         }
     },
 
-    publish: function(request, callback) {
-        if (CONTROLLER.EventController.validateEvent(request.body)) {
-            FACADE.EventFacade.publish(request, callback);
+    publish: function (request, callback) {
+        if (CONTROLLER.DefaultEventController.validateEvent(request.body)) {
+            FACADE.DefaultEventFacade.publish(request, callback);
         }
     }
 };

@@ -32,21 +32,12 @@ module.exports = {
     importFileData: function (request, response, process) {
         this.LOG.debug('Initiating import process for file: ', request.fileName);
         let header = request[request.importType].headers[request.headerName];
-        let fileObj = header.dataFiles[request.fileName];
         this.importModels(request, response, {
             pendingRecords: Object.keys(request.finalData)
         }).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
-            response.success = false;
-            delete response.result;
-            delete response.msg;
-            delete response.code;
-            response.errors.PROC_ERR_0003 = {
-                code: 'ERR003',
-                msg: error
-            };
-            process.nextFailure(request, response);
+            process.error(request, response, error);
         });
     },
 
@@ -78,24 +69,25 @@ module.exports = {
     },
 
     importNextModel: function (request, response, options, resolve, reject) {
-        this.importModels(request, response, options).then(success => {
-            resolve(success);
+        this.importModels(request, response, options).then(result => {
+            resolve(result);
         }).catch(error => {
             reject(error);
-        })
+        });
     },
 
     importModel: function (request, response, options) {
         return new Promise((resolve, reject) => {
-            response.modelImportPipeline = {
-                promise: {
-                    resolve: resolve,
-                    reject: reject
-                }
-            }
             request.currentRecord = options.currentRecord;
             request.currentModel = request.finalData[request.currentRecord];
-            SERVICE.PipelineService.startPipeline('modelImportPipeline', request, response);
+            SERVICE.DefaultPipelineService.startPipeline('modelImportPipeline', request, {
+                modelImportPipeline: {
+                    promise: {
+                        resolve: resolve,
+                        reject: reject
+                    }
+                }
+            });
         });
     },
 
@@ -105,12 +97,12 @@ module.exports = {
     },
 
     handleFailureEnd: function (request, response) {
-        this.LOG.debug('JS file import  Process Request has been processed with some failures : ');
-        response.processJsFileImportPipeline.promise.reject(response);
+        this.LOG.error('JS file import  Process Request has been processed with some failures');
+        response.processJsFileImportPipeline.promise.reject(response.errors);
     },
 
     handleErrorEnd: function (request, response) {
-        this.LOG.debug('JS file import  Process Request has been processed and got errors : ');
-        response.processJsFileImportPipeline.promise.reject(response);
+        this.LOG.error('JS file import  Process Request has been processed and got errors');
+        response.processJsFileImportPipeline.promise.reject(response.result.error);
     }
 };

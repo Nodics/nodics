@@ -47,34 +47,5 @@ module.exports = {
             }
             resolve(true);
         });
-    },
-    /*
-    
-    
-        handlePreSave: function (model, options) {
-            return new Promise((resolve, reject) => {
-                resolve(true);
-            });
-        },
-    
-        handlePreSaveOne: function (model, options) {
-            return new Promise((resolve, reject) => {
-                //console.log('Interceptor -> handlePreSaveOne');
-                resolve(true);
-            });
-        },
-    
-        handlePostSave: function (model, options) {
-            return new Promise((resolve, reject) => {
-                //console.log('Interceptor -> handlePostSave');
-                resolve(true);
-            });
-        },
-    
-        handlePostSaveOne: function (model, options) {
-            return new Promise((resolve, reject) => {
-                //console.log('Interceptor -> handlePostSaveOne');
-                resolve(true);
-            });
-        }*/
+    }
 };

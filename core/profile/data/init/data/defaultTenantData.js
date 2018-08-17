@@ -11,6 +11,7 @@
 
 module.exports = {
     record0: {
+        code: 'testOne',
         name: 'testOne',
         active: true,
         properties: {
@@ -40,6 +41,7 @@ module.exports = {
         }
     },
     record1: {
+        code: 'default',
         name: 'default',
         active: true,
         properties: {

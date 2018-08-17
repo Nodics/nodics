@@ -11,11 +11,11 @@
 
 module.exports = {
 
-    handleEvent: function(request, callback) {
-        SERVICE.EventService.handleEvent(request, callback);
+    handleEvent: function (request, callback) {
+        SERVICE.DefaultEventService.handleEvent(request, callback);
     },
 
-    publish: function(request, callback) {
-        SERVICE.EventService.publish(request, callback);
+    publish: function (request, callback) {
+        SERVICE.DefaultEventService.publish(request, callback);
     }
 };

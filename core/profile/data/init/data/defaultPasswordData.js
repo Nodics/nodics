@@ -11,12 +11,14 @@
 
 module.exports = {
     record0: {
+        code: 'admin',
         personId: '121e7dd88ac6ed3d73a76712',
         enterpriseCode: 'default',
         loginId: 'admin',
         password: 'nodics'
     },
     record1: {
+        code: 'guest',
         personId: '121e7dd88ac6ed3d73a76713',
         enterpriseCode: 'default',
         loginId: 'guest',

@@ -158,6 +158,13 @@ module.exports = {
             buildQuery: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.buildQuery',
+                success: 'applyDefaultValues',
+                failure: 'failureEnd'
+            },
+
+            applyDefaultValues: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.applyDefaultValues',
                 success: 'saveModel',
                 failure: 'failureEnd'
             },
@@ -179,6 +186,13 @@ module.exports = {
             invalidateCache: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.invalidateCache',
+                success: 'triggerModelChangeEvent',
+                failure: 'failureEnd'
+            },
+
+            triggerModelChangeEvent: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.triggerModelChangeEvent',
                 success: 'successEnd',
                 failure: 'failureEnd'
             },

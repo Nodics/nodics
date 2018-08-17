@@ -15,17 +15,17 @@ module.exports = {
             successEnd: {
                 name: 'successEnd',
                 type: 'function',
-                handler: 'PipelineService.handleSucessEnd'
+                handler: 'DefaultPipelineService.handleSucessEnd'
             },
             failureEnd: {
                 name: 'failureEnd',
                 type: 'function',
-                handler: 'PipelineService.handleFailureEnd'
+                handler: 'DefaultPipelineService.handleFailureEnd'
             },
             handleError: {
                 name: 'handleError',
                 type: 'function',
-                handler: 'PipelineService.handleErrorEnd'
+                handler: 'DefaultPipelineService.handleErrorEnd'
             }
         }
     }

@@ -18,14 +18,15 @@ module.exports = {
                     let input = {
                         collection: request.collection,
                         model: request.model,
-                        interceptor: interceptor
-                    }
+                        interceptor: interceptor,
+                        result: response.result
+                    };
                     this.executeInterceptor(input).then(success => {
                         this.executeInterceptors(request, response, preInterceptorList).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);
-                        })
+                        });
                     }).catch(error => {
                         reject(error);
                     });
@@ -41,6 +42,6 @@ module.exports = {
     executeInterceptor: function (input) {
         let serviceName = input.interceptor.handler.substring(0, input.interceptor.handler.indexOf('.'));
         let functionName = input.interceptor.handler.substring(input.interceptor.handler.indexOf('.') + 1, input.interceptor.handler.length);
-        return SERVICE[serviceName][functionName](input.model);
+        return SERVICE[serviceName][functionName](input.model, input.result);
     }
 };

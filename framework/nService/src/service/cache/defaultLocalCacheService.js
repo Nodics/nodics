@@ -56,7 +56,6 @@ module.exports = {
                 }
                 resolve();
             } catch (error) {
-                console.log('---------------------', error);
                 reject(error);
             }
 

@@ -11,6 +11,7 @@
 
 module.exports = {
     record0: {
+        code: 'guest',
         enterpriseCode: 'default',
         firstName: 'Nodics',
         lastName: 'Customer',

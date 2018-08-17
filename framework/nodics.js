@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 const config = require('./nConfig');
 const common = require('./nCommon');
 const db = require('./nDatabase');
@@ -91,7 +93,7 @@ module.exports = {
                         SYSTEM.executePostScripts();
                         //NODICS.isInitRequired()
                         if (true) {
-                            SERVICE.ImportService.importInitData({
+                            SERVICE.DefaultImportService.importInitData({
                                 modules: NODICS.getActiveModules()
                             }).then(success => {
                                 SYSTEM.addTenants().then(success => {

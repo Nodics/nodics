@@ -11,6 +11,7 @@
 
 module.exports = {
     record0: {
+        code: 'admin',
         enterpriseCode: 'default',
         firstName: 'Nodics',
         lastName: 'Employeeupdated',

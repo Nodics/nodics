@@ -13,21 +13,16 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating get request: ');
-        let error = [];
+        let errors = [];
         let options = request.options;
         if (options && options.projection) {
             if (!UTILS.isObject(options.projection)) {
-                error.push('Invalid select value');
+                process.error(request, response, 'Invalid select value');
             }
-        }
-        if (options && options.sort) {
+        } else if (options && options.sort) {
             if (!UTILS.isObject(options.sort)) {
-                error.push('Invalid sort value');
+                process.error(request, response, 'Invalid sort value');
             }
-        }
-        if (error.length > 0) {
-            response.error = error;
-            process.nextFailure(request, response);
         } else {
             process.nextSuccess(request, response);
         }
@@ -54,8 +49,8 @@ module.exports = {
             queryOptions.hint = inputOptions.hint;
         }
         if (inputOptions.timeout === true) {
-            queryOptions.timeout = true,
-                queryOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS')
+            queryOptions.timeout = true;
+            queryOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS');
         }
         request.queryOptions = queryOptions;
         request.query = inputOptions.query || {};
@@ -63,7 +58,7 @@ module.exports = {
     },
 
     lookupCache: function (request, response, process) {
-        this.LOG.debug('Item lookup into cache system');
+        this.LOG.debug('Item lookup into cache system : ', request.collection.moduleName);
         let moduleObject = NODICS.getModules()[request.collection.moduleName];
         if (moduleObject.itemCache &&
             request.collection.rawSchema.cache &&
@@ -76,14 +71,13 @@ module.exports = {
                 moduleObject: moduleObject,
                 cacheClient: moduleObject.itemCache,
                 hashKey: request.cacheKeyHash,
-            }
+            };
             SERVICE.DefaultCacheService.get(input).then(value => {
                 this.LOG.info('Fulfilled from Item cache');
-                value.cache = 'item hit';
                 response.result = value;
-                //console.log(value);
                 process.stop(request, response);
             }).catch(error => {
+                response.errors.push(error);
                 process.nextSuccess(request, response);
             });
         } else {
@@ -97,11 +91,13 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(request, response, [].concat(interceptors.preGet)).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            })
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(request,
+                response,
+                [].concat(interceptors.preGet)).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
         } else {
             process.nextSuccess(request, response);
         }
@@ -109,8 +105,8 @@ module.exports = {
 
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing query');
-        request.collection.getItems(request).then(success => {
-            response.result = success;
+        request.collection.getItems(request).then(result => {
+            response.result = result;
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -128,8 +124,7 @@ module.exports = {
             this.populateModels(request, response, response.result, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.error = error;
-                process.nextFailure(request, response);
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -152,7 +147,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
-            })
+            });
         } else {
             process.nextSuccess(request, response);
         }
@@ -176,7 +171,7 @@ module.exports = {
                 hashKey: request.cacheKeyHash,
                 docs: response.result,
                 itemCacheOptions: request.collection.rawSchema.cache
-            }
+            };
             SERVICE.DefaultCacheService.put(input).then(success => {
                 this.LOG.info('Item saved in item cache');
             }).catch(error => {
@@ -219,26 +214,30 @@ module.exports = {
                 } else {
                     query[propertyObject.propertyName] = {
                         '$in': model[property]
-                    }
+                    };
                 }
                 let input = {
                     tenant: request.tenant,
                     options: {
                         query: query
                     }
-                }
-                SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {
-                    if (propertyObject.type === 'one') {
-                        model[property] = success[0];
+                };
+                SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(result => {
+                    if (result.length > 0) {
+                        if (propertyObject.type === 'one') {
+                            model[property] = result[0];
+                        } else {
+                            model[property] = result;
+                        }
                     } else {
-                        model[property] = success;
+                        model[property] = null;
                     }
                     if (propertiesList.length > 0) {
                         _self.populateProperties(request, response, model, propertiesList).then(success => {
                             resolve(true);
                         }).catch(error => {
                             reject(error);
-                        })
+                        });
                     } else {
                         resolve(true);
                     }
@@ -252,7 +251,7 @@ module.exports = {
                         resolve(true);
                     }).catch(error => {
                         reject(error);
-                    })
+                    });
                 } else {
                     resolve(true);
                 }
@@ -267,11 +266,11 @@ module.exports = {
 
     handleFailureEnd: function (request, response) {
         this.LOG.debug('Request has been processed with some failures');
-        response.modelsGetInitializerPipeline.promise.reject(response.error);
+        response.modelsGetInitializerPipeline.promise.resolve(response.errors);
     },
 
     handleErrorEnd: function (request, response) {
         this.LOG.debug('Request has been processed and got errors');
-        response.modelsGetInitializerPipeline.promise.reject(response.errors);
+        response.modelsGetInitializerPipeline.promise.reject(response.result.error);
     }
 };

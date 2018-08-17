@@ -26,7 +26,6 @@ module.exports = {
     },
     startPipeline: function (pipelineName, request, response, callback) {
         if (pipelineName !== 'defaultPipeline' && PIPELINE[pipelineName]) {
-            response.errors = {};
             let id = SYSTEM.generateUniqueCode();
             // TODO: Make this id unique to track nested pipeline management - will implement in Future
             try {
@@ -38,11 +37,11 @@ module.exports = {
                 pipeline.start(id, request, response);
             } catch (err) {
                 this.LOG.error('Error while creating pipeline : ', id, ' - ', err);
-                response.errors.PROC_ERR_0000 = {
+                response.errors.push({
                     code: 'PROC_ERR_0000',
                     message: 'PROC_ERR_0000',
                     error: err.toString()
-                };
+                });
                 throw new Error('Error while creating pipeline : ', id, ' - ', err);
             }
         }

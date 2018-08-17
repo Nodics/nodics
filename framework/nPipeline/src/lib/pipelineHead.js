@@ -136,11 +136,6 @@ module.exports = function (name, pipelineDefinition, callback) {
             _currentNode = _nextFailureNode;
             this.next(pipelineRequest, pipelineResponse);
         }
-        /*
-        _preNode = _currentNode;
-        _currentNode = _nextFailureNode;
-        this.next(pipelineRequest, pipelineResponse);
-        */
     };
 
     this.stop = function (pipelineRequest, pipelineResponse) {
@@ -151,18 +146,13 @@ module.exports = function (name, pipelineDefinition, callback) {
 
     this.error = function (pipelineRequest, pipelineResponse, err) {
         try {
-            if (!pipelineResponse.errors) {
-                pipelineResponse.errors = {};
-            }
             _preNode = _currentNode;
             _currentNode = _handleError;
-            pipelineResponse.success = false;
-            pipelineResponse.errors.PROC_ERR_0001 = {
-                code: 'PROC_ERR_0001',
-                message: 'PROC_ERR_0001',
+            pipelineResponse.result = {
+                success: false,
                 pipelineName: _pipelineName,
                 nodeName: _preNode.getName(),
-                error: err.toString()
+                error: err
             };
             let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
             let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
@@ -178,12 +168,15 @@ module.exports = function (name, pipelineDefinition, callback) {
     };
 
     this.start = function (id, pipelineRequest, pipelineResponse) {
-        this.LOG.debug('Starting pipeline with pipeline id : ', id);
+        this.LOG.debug('Starting pipeline with pipeline id : ', _pipelineName);
         _pipelineId = id;
         _currentNode = _nodeList[_startNode];
         if (!_currentNode) {
             this.LOG.error('Node link is broken for node : ', _startNode, ' for pipeline : ', _pipelineName);
             pipeline.exit(CONFIG.get('errorExitCode'));
+        }
+        if (!pipelineResponse.success) {
+            pipelineResponse.success = [];
         }
         if (!pipelineResponse.errors) {
             pipelineResponse.errors = [];
@@ -207,11 +200,12 @@ module.exports = function (name, pipelineDefinition, callback) {
                         _done = true;
                     }
                 } catch (error) {
+                    this.LOG.error(error);
                     this.error(pipelineRequest, pipelineResponse, error);
                 }
             } else {
                 try {
-                    SERVICE.PipelineService.startPipeline(_currentNode.getHandler(), pipelineRequest, pipelineResponse, () => {
+                    SERVICE.DefaultPipelineService.startPipeline(_currentNode.getHandler(), pipelineRequest, pipelineResponse, () => {
                         if (_hardStop && !UTILS.isBlank(pipelineResponse.errors)) {
                             _self.nextFailure(pipelineRequest, pipelineResponse);
                         } else {
@@ -219,6 +213,7 @@ module.exports = function (name, pipelineDefinition, callback) {
                         }
                     });
                 } catch (error) {
+                    this.LOG.error(error);
                     if (_hardStop) {
                         _self.error(pipelineRequest, pipelineResponse, error);
                     } else {

@@ -12,6 +12,10 @@
 module.exports = {
     default: {
         init: {
+            model: false,
+            service: false,
+            event: false,
+            router: false,
             definition: {
                 code: {
                     type: 'string',
@@ -39,18 +43,14 @@ module.exports = {
         },
         base: {
             super: 'init',
+            model: false,
+            service: false,
+            event: false,
+            router: false,
             definition: {
                 enterpriseCode: {
                     type: 'string',
                     required: true
-                }
-            },
-            indexes: {
-                indexEnterpriseCode: {
-                    name: 'enterpriseCode',
-                    options: {
-                        unique: true
-                    }
                 }
             },
             options: {

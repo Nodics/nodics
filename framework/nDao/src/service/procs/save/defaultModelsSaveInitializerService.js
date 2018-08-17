@@ -12,17 +12,9 @@
 module.exports = {
 
     validateInput: function (request, response, process) {
-        this.LOG.debug('Validating input for saving model');
+        this.LOG.debug('Validating input for saving models');
         if (!request.models && !request.model) {
-            response.success = false;
-            delete response.result;
-            delete response.msg;
-            delete response.code;
-            response.errors.PROC_ERR_0003 = {
-                code: 'ERR003',
-                msg: 'Models to be saved can not be null in request'
-            };
-            process.nextFailure(request, response);
+            process.error(request, response, 'Models to be saved can not be null in request');
         } else {
             process.nextSuccess(request, response);
         }
@@ -41,10 +33,7 @@ module.exports = {
         } else {
             models.push(request.model);
         }
-        request.success = [];
-        request.failed = [];
         this.handleModelsSave(request, response, models).then(success => {
-            response.result = success;
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -56,7 +45,7 @@ module.exports = {
             let model = models.shift();
             try {
                 this.handleModelSave(request, response, model).then(success => {
-                    request.success.push(success);
+                    response.success.push(success);
                     if (models.length > 0) {
                         this.handleModelsSave(request, response, models).then(success => {
                             resolve(true);
@@ -67,17 +56,7 @@ module.exports = {
                         resolve(true);
                     }
                 }).catch(error => {
-                    model.error = error;
-                    request.failed.push(model);
-                    if (models.length > 0) {
-                        this.handleModelsSave(request, response, models).then(success => {
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        resolve(true);
-                    }
+                    reject(error);
                 });
             } catch (error) {
                 reject(error);
@@ -90,13 +69,15 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 request.model = model;
-                response.modelSaveInitializerPipeline = {
-                    promise: {
-                        resolve: resolve,
-                        reject: reject
+                response = {
+                    modelSaveInitializerPipeline: {
+                        promise: {
+                            resolve: resolve,
+                            reject: reject
+                        }
                     }
-                }
-                SERVICE.PipelineService.startPipeline('modelSaveInitializerPipeline', request, response);
+                };
+                SERVICE.DefaultPipelineService.startPipeline('modelSaveInitializerPipeline', request, response);
             } catch (error) {
                 reject(error);
             }
@@ -111,16 +92,16 @@ module.exports = {
 
     handleSucessEnd: function (request, response) {
         this.LOG.debug('Request has been processed successfully');
-        response.modelsSaveInitializerPipeline.promise.resolve(response);
+        response.modelsSaveInitializerPipeline.promise.resolve(response.success);
     },
 
     handleFailureEnd: function (request, response) {
-        this.LOG.debug('Request has been processed with some failures');
-        response.modelsSaveInitializerPipeline.promise.reject(response);
+        this.LOG.error('Request has been processed with some failures');
+        response.modelsSaveInitializerPipeline.promise.reject(response.success);
     },
 
     handleErrorEnd: function (request, response) {
-        this.LOG.debug('Request has been processed and got errors');
-        response.modelsSaveInitializerPipeline.promise.reject(response);
+        this.LOG.error('Request has been processed and got errors');
+        response.modelsSaveInitializerPipeline.promise.reject(response.result.error);
     }
 };

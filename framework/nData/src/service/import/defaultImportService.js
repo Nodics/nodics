@@ -21,8 +21,8 @@ module.exports = {
                             reject: reject
                         }
                     }
-                }
-                SERVICE.PipelineService.startPipeline('dataImportInitializerPipeline', input, response);
+                };
+                SERVICE.DefaultPipelineService.startPipeline('dataImportInitializerPipeline', input, response);
             });
         } catch (error) {
             return Promise.reject(error);

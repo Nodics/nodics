@@ -17,19 +17,11 @@ module.exports = {
     loadInternalHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of header files from modules to be imported');
         if (request.modules) {
-            SERVICE.ImportUtilityService.getInternalDataHeaders(request.modules, request.dataType).then(success => {
+            SERVICE.DefaultImportUtilityService.getInternalDataHeaders(request.modules, request.dataType).then(success => {
                 request.internal.headerFiles = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.success = false;
-                delete response.result;
-                delete response.msg;
-                delete response.code;
-                response.errors.PROC_ERR_0003 = {
-                    code: 'ERR003',
-                    msg: error
-                };
-                process.nextFailure(request, response);
+                process.error(request, response, error);
             });
         }
     },
@@ -37,19 +29,11 @@ module.exports = {
     loadInternalDataFileList: function (request, response, process) {
         this.LOG.debug('Loading list of data files from modules to be imported');
         if (request.modules) {
-            SERVICE.ImportUtilityService.getInternalFiles(request.modules, request.dataType).then(success => {
+            SERVICE.DefaultImportUtilityService.getInternalFiles(request.modules, request.dataType).then(success => {
                 request.internal.dataFiles = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.success = false;
-                delete response.result;
-                delete response.msg;
-                delete response.code;
-                response.errors.PROC_ERR_0003 = {
-                    code: 'ERR003',
-                    msg: error
-                };
-                process.nextFailure(request, response);
+                process.error(request, response, error);
             });
         }
     },
@@ -57,19 +41,11 @@ module.exports = {
     loadExternalHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of files from Path to be imported');
         if (request.path) {
-            SERVICE.ImportUtilityService.getExternalDataHeaders(request.path).then(success => {
+            SERVICE.DefaultImportUtilityService.getExternalDataHeaders(request.path).then(success => {
                 request.external.headerFiles = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.success = false;
-                delete response.result;
-                delete response.msg;
-                delete response.code;
-                response.errors.PROC_ERR_0003 = {
-                    code: 'ERR003',
-                    msg: error
-                };
-                process.nextFailure(request, response);
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -79,19 +55,11 @@ module.exports = {
     loadExternalDataFileList: function (request, response, process) {
         this.LOG.debug('Loading list of files from Path to be imported');
         if (request.path) {
-            SERVICE.ImportUtilityService.getExternalFiles(request.path).then(success => {
+            SERVICE.DefaultImportUtilityService.getExternalFiles(request.path).then(success => {
                 request.external.dataFiles = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.success = false;
-                delete response.result;
-                delete response.msg;
-                delete response.code;
-                response.errors.PROC_ERR_0003 = {
-                    code: 'ERR003',
-                    msg: error
-                };
-                process.nextFailure(request, response);
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -107,7 +75,7 @@ module.exports = {
                     type: fileType,
                     list: list,
                     processedRecords: []
-                }
+                };
             });
         }
 
@@ -118,7 +86,7 @@ module.exports = {
                     type: fileType,
                     list: list,
                     processedRecords: []
-                }
+                };
             });
         }
 
@@ -147,7 +115,7 @@ module.exports = {
                                 request.internal.headers[headerName] = {
                                     header: {},
                                     dataFiles: {}
-                                }
+                                };
                             }
                             request.internal.headers[headerName].header = _.merge(request.internal.headers[headerName].header, header);
                             request.internal.headers[headerName].header.options.moduleName = moduleName;
@@ -175,7 +143,7 @@ module.exports = {
                                 request.external.headers[headerName] = {
                                     header: {},
                                     dataFiles: {}
-                                }
+                                };
                             }
                             request.external.headers[headerName].header = _.merge(request.external.headers[headerName].header, header);
                             request.external.headers[headerName].header.options.moduleName = moduleName;
@@ -184,7 +152,6 @@ module.exports = {
                 });
             });
         }
-
         process.nextSuccess(request, response);
     },
 
@@ -224,32 +191,22 @@ module.exports = {
                     importType: 'internal',
                     pendingHeaders: Object.keys(request.internal.headers)
                 }).then(success => {
-                    process.nextSuccess(request, response);
+                    if (response.errors.length > 0) {
+                        this.LOG.error('Internal data inport failed, with following errors: ');
+                        this.LOG.error(response.errors);
+                        process.error(request, response, response.errors);
+                    } else {
+                        process.nextSuccess(request, response);
+                    }
                 }).catch(error => {
-                    response.success = false;
-                    delete response.result;
-                    delete response.msg;
-                    delete response.code;
-                    response.errors.PROC_ERR_0003 = {
-                        code: 'ERR003',
-                        msg: error
-                    };
-                    process.nextFailure(request, response);
+                    process.error(request, response, error);
                 });
             } else {
                 this.LOG.debug('No data found from internal path to import');
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            response.success = false;
-            delete response.result;
-            delete response.msg;
-            delete response.code;
-            response.errors.PROC_ERR_0003 = {
-                code: 'ERR003',
-                msg: error
-            };
-            process.nextFailure(request, response);
+            process.error(request, response, error);
         }
     },
 
@@ -262,32 +219,23 @@ module.exports = {
                     importType: 'external',
                     pendingHeaders: Object.keys(request.external.headers)
                 }).then(success => {
+                    if (response.errors.length > 0) {
+                        this.LOG.error('External data inport failed, with following errors: ');
+                        this.LOG.error(response.errors);
+                        process.error(request, response, response.errors);
+                    } else {
+                        process.nextSuccess(request, response);
+                    }
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    response.success = false;
-                    delete response.result;
-                    delete response.msg;
-                    delete response.code;
-                    response.errors.PROC_ERR_0003 = {
-                        code: 'ERR003',
-                        msg: error
-                    };
-                    process.nextFailure(request, response);
+                    process.error(request, response, error);
                 });
             } else {
                 this.LOG.debug('No data found from external path to import');
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            response.success = false;
-            delete response.result;
-            delete response.msg;
-            delete response.code;
-            response.errors.PROC_ERR_0003 = {
-                code: 'ERR003',
-                msg: error
-            };
-            process.nextFailure(request, response);
+            process.error(request, response, error);
         }
     },
 
@@ -309,7 +257,13 @@ module.exports = {
                         }).then(success => {
                             _self.processNextHeader(request, response, options, resolve, reject);
                         }).catch(error => {
-                            reject(error);
+                            if (options.phase >= phaseLimit - 1) {
+                                error.forEach(element => {
+                                    response.errors.push(element);
+                                });
+                                response.errors.concat(error);
+                            }
+                            _self.processNextHeader(request, response, options, resolve, reject);
                         });
                     } else {
                         _self.processNextHeader(request, response, options, resolve, reject);
@@ -327,7 +281,7 @@ module.exports = {
         let headers = request[options.importType].headers;
         let phaseLimit = CONFIG.get('dataImportPhasesLimit') || 5;
         if (options.pendingHeaders && options.pendingHeaders.length <= 0) {
-            if (SERVICE.ImportUtilityService.isImportPending(headers)) {
+            if (SERVICE.DefaultImportUtilityService.isImportPending(headers)) {
                 options.phase = options.phase + 1;
                 options.pendingHeaders = Object.keys(request[options.importType].headers);
             } else {
@@ -344,16 +298,17 @@ module.exports = {
     processHeader: function (request, response, options) {
         this.LOG.debug('Processing header name : ', options.headerName);
         return new Promise((resolve, reject) => {
-            response.headerProcessPipeline = {
-                promise: {
-                    resolve: resolve,
-                    reject: reject
-                }
-            }
             request.phase = options.phase;
             request.importType = options.importType;
             request.headerName = options.headerName;
-            SERVICE.PipelineService.startPipeline('headerProcessPipeline', request, response);
+            SERVICE.DefaultPipelineService.startPipeline('headerProcessPipeline', request, {
+                headerProcessPipeline: {
+                    promise: {
+                        resolve: resolve,
+                        reject: reject
+                    }
+                }
+            });
         });
     }
 };

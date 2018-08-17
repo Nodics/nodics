@@ -212,7 +212,7 @@ module.exports = {
                 delete property.required;
             }
             if (property.default) {
-                defaultValues[propertyName] = property.default
+                defaultValues[propertyName] = property.default;
                 delete property.default;
             }
             if (UTILS.isBlank(property)) {
@@ -237,7 +237,9 @@ module.exports = {
             indexedFields[indexConfig.name].options = indexConfig.options;
         });
 
-        schema.schemaOptions = {};
+        if (!schema.schemaOptions) {
+            schema.schemaOptions = {};
+        }
         schema.schemaOptions[options.tenant] = {};
         schema.schemaOptions[options.tenant] = {
             options: {
@@ -247,7 +249,7 @@ module.exports = {
             },
             indexedFields: indexedFields,
             defaultValues: defaultValues
-        }
+        };
     },
 
     prepareDatabaseOptions: function (options) {
@@ -300,8 +302,6 @@ module.exports = {
                 tmpOptions = _.merge(tmpOptions, schemaOptions.options);
             }
             dataBase.getConnection().createCollection(options.modelName, tmpOptions).then(collection => {
-                collection.modelName = options.modelName;
-                collection.schemaName = options.schemaName;
                 SYSTEM.createIndexes({
                     indexedFields: schemaOptions.indexedFields,
                     indexedFieldList: Object.keys(schemaOptions.indexedFields),
@@ -321,13 +321,9 @@ module.exports = {
 
     retrieveModel: function (options, dataBase) {
         return new Promise((resolve, reject) => {
+            let schema = options.moduleObject.rawSchema[options.schemaName];
             if (dataBase.getCollectionList().includes(options.modelName)) {
                 let collection = dataBase.getConnection().collection(options.modelName);
-                let schema = options.moduleObject.rawSchema[options.schemaName];
-                collection.moduleName = options.moduleName;
-                collection.rawSchema = schema;
-                collection.modelName = options.modelName;
-                collection.schemaName = options.schemaName;
                 SYSTEM.registerModelMiddleWare(options, collection, schema);
                 resolve(collection);
             } else {
@@ -343,18 +339,27 @@ module.exports = {
     buildModel: function (options) {
         return new Promise((resolve, reject) => {
             options.modelName = SYSTEM.createModelName(options.schemaName);
-            if (options.dataBase.master) {
+            let schema = options.moduleObject.rawSchema[options.schemaName];
+            if (options.dataBase.master && schema.model === true) {
                 SYSTEM.prepareDatabaseOptions(options);
                 SYSTEM.retrieveModel(options, options.dataBase.master).then(success => {
                     if (!options.moduleObject.models[options.tenant].master) {
                         options.moduleObject.models[options.tenant].master = {};
                     }
+                    success.moduleName = options.moduleName;
+                    success.rawSchema = schema;
+                    success.modelName = options.modelName;
+                    success.schemaName = options.schemaName;
                     options.moduleObject.models[options.tenant].master[options.modelName] = success;
                     if (options.dataBase.test) {
                         SYSTEM.retrieveModel(options, options.dataBase.test).then(success => {
                             if (!options.moduleObject.models[options.tenant].test) {
                                 options.moduleObject.models[options.tenant].test = {};
                             }
+                            success.moduleName = options.moduleName;
+                            success.rawSchema = schema;
+                            success.modelName = options.modelName;
+                            success.schemaName = options.schemaName;
                             options.moduleObject.models[options.tenant].test[options.modelName] = success;
                             resolve(true);
                         }).catch(error => {
@@ -529,7 +534,6 @@ module.exports = {
                     process.exit(CONFIG.get('errorExitCode'));
                 }
                 moduleObject.rawSchema = SYSTEM.resolveModuleSchemaDependancy(key, _.merge(_.merge({}, defaultSchema), mergedSchema[key]));
-                //console.log('=> Final Module: ', key, ' Schema: ', moduleObject.rawSchema);
             }
         });
         NODICS.setRawModels(SYSTEM.loadFiles('/src/schemas/model.js'));
