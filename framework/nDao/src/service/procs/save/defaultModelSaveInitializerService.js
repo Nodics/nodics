@@ -68,13 +68,29 @@ module.exports = {
         this.LOG.debug('Removing virtual properties from model');
         let rawSchema = request.collection.rawSchema;
         if (!UTILS.isBlank(rawSchema.virtualProperties)) {
-            _.each(rawSchema.virtualProperties, (method, property) => {
-                if (request.model[property]) {
-                    delete request.model[property];
-                }
-            });
+            this.excludeProperty(request.model, rawSchema.virtualProperties);
         }
         process.nextSuccess(request, response);
+    },
+
+    excludeProperty: function (model, virtualProperties) {
+        let _self = this;
+        _.each(virtualProperties, (value, property) => {
+            if (UTILS.isObject(value)) {
+                let subModel = model[property];
+                if (subModel && UTILS.isArray(subModel)) {
+                    subModel.forEach(element => {
+                        _self.excludeProperty(element, value);
+                    });
+                } else if (subModel && UTILS.isObject(subModel)) {
+                    _self.excludeProperty(subModel, value);
+                }
+            } else {
+                if (model[property]) {
+                    delete model[property];
+                }
+            }
+        });
     },
 
     saveModel: function (request, response, process) {

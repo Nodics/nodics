@@ -117,6 +117,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (options.values && options.values.length > 0) {
+                console.log('--------------- Values : ', options.values);
                 let value = options.values.shift();
                 this.fetchModel(request, response, {
                     property: options.property,
