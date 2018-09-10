@@ -23,18 +23,18 @@ MongoClient.connect(url, { useNewUrlParser: true }, function (err, client) {
     console.log('Find : ', result)
     client.close()
   })
-
   insertDocument(db, function (result) {
-  console.log(result)
-  client.close()
-  })
-  updateDocuments(db, function (result) {
     console.log(result);
     client.close();
   });
   */
+  updateDocuments(db, function (error, result) {
+    console.log(error, ' Result: ', result);
+    client.close();
+  });
 
-  let array = [{
+
+  /*let array = [{
     name: 'himkar',
     lname: 'dwivedi'
   }, {
@@ -43,7 +43,7 @@ MongoClient.connect(url, { useNewUrlParser: true }, function (err, client) {
   }];
   let model = array[1];
   model.lname = 'Pandey';
-  console.log(array);
+  console.log(array);*/
 });
 
 const removeDocuments = function (db, callback) {
@@ -75,8 +75,8 @@ const insertDocument = function (db, callback) {
     lastName: 'Bond1'
   }, function (err, result) {
     assert.equal(err, null);
-    assert.equal(1, result.result.n);
-    assert.equal(1, result.ops.length);
+    //assert.equal(1, result.result.n);
+    //assert.equal(1, result.ops.length);
     console.log('Inserted 1 document into the collection');
     callback({ result: result.result, ops: result.ops });
   });
@@ -110,21 +110,23 @@ const insertDocuments = function (db, callback) {
 
 const updateDocuments = function (db, callback) {
   const collection = db.collection('documents');
-  let query = {
+  /*let query = {
     '_id.tmc': 'add.streat'
-  }
+  };*/
   //console.log(query);
-  let models = [{
-    '_id': ObjectId('5b07482aa46fb30b5a295f73'),
-    firstName: 'Steve1',
-    lastName: 'Jobs',
-    add: {
-      streat: 'something',
-      pin: '3453454546'
-    }
-  }];
-  console.log(models);
-  models.forEach((model => {
+  let models = {
+    _id: ObjectId('5b94c89df6cbf344796de7e4'),
+    firstName: 'James1',
+    lastName: 'Bond2'
+  };
+  collection.findOneAndUpdate({
+    _id: models._id
+  }, { $set: models }, { upsert: true }).then(result => {
+    callback(null, result);
+  }).catch(error => {
+    callback(error);
+  });
+  /*models.forEach((model => {
     if (model._id) {
       let query = _.merge({}, { '_id': '_id' });
       _.each(query, (value, property) => {
@@ -155,5 +157,5 @@ const updateDocuments = function (db, callback) {
           console.log('Error Result: ', error);
         })
     }
-  }));
-}
+  }));*/
+};

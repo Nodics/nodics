@@ -20,64 +20,51 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.validateRequest',
-                success: 'buildOptions',
-                failure: 'failureEnd'
+                success: 'buildOptions'
             },
             buildOptions: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.buildOptions',
-                success: 'lookupCache',
-                failure: 'failureEnd'
+                success: 'lookupCache'
             },
             lookupCache: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.lookupCache',
-                success: 'applyPreInterceptors',
-                failure: 'failureEnd'
+                success: 'applyPreInterceptors'
             },
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.applyPreInterceptors',
-                success: 'executeQuery',
-                failure: 'failureEnd'
+                success: 'executeQuery'
             },
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.executeQuery',
-                success: 'populateSubModels',
-                failure: 'failureEnd'
+                success: 'populateSubModels'
             },
             populateSubModels: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.populateSubModels',
-                success: 'populateVirtualProperties',
-                failure: 'failureEnd'
+                success: 'populateVirtualProperties'
             },
             populateVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.populateVirtualProperties',
-                success: 'applyPostInterceptors',
-                failure: 'failureEnd'
+                success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.applyPostInterceptors',
-                success: 'updateCache',
-                failure: 'failureEnd'
+                success: 'updateCache'
             },
             updateCache: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.updateCache',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.handleSucessEnd'
-            },
-            failureEnd: {
-                type: 'function',
-                handler: 'DefaultModelsGetInitializerService.handleFailureEnd'
             },
             handleError: {
                 type: 'function',
@@ -95,37 +82,33 @@ module.exports = {
             validateInput: {
                 type: 'function',
                 handler: 'DefaultModelsSaveInitializerService.validateInput',
-                success: 'preProcessor',
-                failure: 'failureEnd'
+                success: 'handleNestedModelsSave'
+            },
+            handleNestedModelsSave: {
+                type: 'function',
+                handler: 'DefaultModelsSaveInitializerService.handleNestedModelsSave',
+                success: 'preProcessor'
             },
             preProcessor: {
                 type: 'function',
                 handler: 'DefaultModelsSaveInitializerService.preProcessor',
-                success: 'processModels',
-                failure: 'failureEnd'
+                success: 'processModels'
             },
             processModels: {
                 type: 'function',
                 handler: 'DefaultModelsSaveInitializerService.processModels',
-                success: 'postProcessor',
-                failure: 'failureEnd'
+                success: 'postProcessor'
             },
 
             postProcessor: {
                 type: 'function',
                 handler: 'DefaultModelsSaveInitializerService.postProcessor',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
 
             successEnd: {
                 type: 'function',
                 handler: 'DefaultModelsSaveInitializerService.handleSucessEnd'
-            },
-
-            failureEnd: {
-                type: 'function',
-                handler: 'DefaultModelsSaveInitializerService.handleFailureEnd'
             },
 
             handleError: {
@@ -144,74 +127,60 @@ module.exports = {
             validateModel: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.validateModel',
-                success: 'applyPreInterceptors',
-                failure: 'failureEnd'
+                success: 'applyPreInterceptors'
             },
 
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.applyPreInterceptors',
-                success: 'buildQuery',
-                failure: 'failureEnd'
+                success: 'buildQuery'
             },
 
             buildQuery: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.buildQuery',
-                success: 'applyDefaultValues',
-                failure: 'failureEnd'
+                success: 'applyDefaultValues'
             },
 
             applyDefaultValues: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.applyDefaultValues',
-                success: 'removeVirtualProperties',
-                failure: 'failureEnd'
+                success: 'removeVirtualProperties'
             },
 
             removeVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.removeVirtualProperties',
-                success: 'saveModel',
-                failure: 'failureEnd'
+                success: 'saveModel'
             },
 
             saveModel: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.saveModel',
-                success: 'applyPostInterceptors',
-                failure: 'failureEnd'
+                success: 'applyPostInterceptors'
             },
 
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.applyPostInterceptors',
-                success: 'invalidateCache',
-                failure: 'failureEnd'
+                success: 'invalidateCache'
             },
 
             invalidateCache: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.invalidateCache',
-                success: 'triggerModelChangeEvent',
-                failure: 'failureEnd'
+                success: 'triggerModelChangeEvent'
             },
 
             triggerModelChangeEvent: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.triggerModelChangeEvent',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
 
             successEnd: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.handleSucessEnd'
-            },
-
-            failureEnd: {
-                type: 'function',
-                handler: 'DefaultModelSaveInitializerService.handleFailureEnd'
             },
 
             handleError: {

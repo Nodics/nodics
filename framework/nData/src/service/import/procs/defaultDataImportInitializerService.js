@@ -33,18 +33,13 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    handleSucessEnd: function (request, response) {
+    handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        response.dataImportInitializerPipeline.promise.resolve(response);
+        process.resolve(response.success);
     },
 
-    handleFailureEnd: function (request, response) {
-        this.LOG.debug('Request has been processed with some failures : ');
-        response.dataImportInitializerPipeline.promise.reject(response);
-    },
-
-    handleErrorEnd: function (request, response) {
-        this.LOG.debug('Request has been processed and got errors : ');
-        response.dataImportInitializerPipeline.promise.reject(response.result);
+    handleErrorEnd: function (request, response, process) {
+        this.LOG.error('Request has been processed and got errors');
+        process.reject(response.errors);
     }
 };

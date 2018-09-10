@@ -8,6 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const ObjectId = require('mongodb').ObjectId;
 
 const _ = require('lodash');
 
@@ -91,8 +92,7 @@ module.exports = {
                     event.loadListeners();
                     router.loadRouter().then(success => {
                         SYSTEM.executePostScripts();
-                        //NODICS.isInitRequired()
-                        if (true) {
+                        if (NODICS.isInitRequired()) {
                             SERVICE.DefaultImportService.importInitData({
                                 modules: NODICS.getActiveModules()
                             }).then(success => {
@@ -154,7 +154,6 @@ module.exports = {
             }).catch(error => {
                 SYSTEM.LOG.error('Nodics server error : ', error);
             });
-            //SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
         }).catch(error => {
             console.error('Nodics server not started properly : ', error);
             process.exit(1);

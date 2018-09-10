@@ -13,7 +13,6 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating get request: ');
-        let errors = [];
         let options = request.options;
         if (options && options.projection) {
             if (!UTILS.isObject(options.projection)) {
@@ -73,8 +72,14 @@ module.exports = {
                 hashKey: request.cacheKeyHash,
             };
             SERVICE.DefaultCacheService.get(input).then(value => {
-                this.LOG.info('Fulfilled from Item cache');
-                response.result = value;
+                this.LOG.info('Fulfilled from Item cache : ');
+                if (value && UTILS.isArray(value)) {
+                    value.forEach(element => {
+                        response.success.push(element);
+                    });
+                } else {
+                    response.success.push(value);
+                }
                 process.stop(request, response);
             }).catch(error => {
                 response.errors.push(error);
@@ -91,8 +96,10 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(request,
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(
+                request,
                 response,
+                request.success,
                 [].concat(interceptors.preGet)).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
@@ -106,7 +113,13 @@ module.exports = {
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing query');
         request.collection.getItems(request).then(result => {
-            response.result = result;
+            if (result && UTILS.isArray(result)) {
+                result.forEach(element => {
+                    response.success.push(element);
+                });
+            } else {
+                response.success.push(result);
+            }
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -117,11 +130,11 @@ module.exports = {
         this.LOG.debug('Populating sub models');
         let rawSchema = request.collection.rawSchema;
         let inputOptions = request.options || {};
-        if (response.result &&
-            response.result.length > 0 &&
+        if (response.success &&
+            response.success.length > 0 &&
             inputOptions.recursive === true &&
             !UTILS.isBlank(rawSchema.refSchema)) {
-            this.populateModels(request, response, response.result, 0).then(success => {
+            this.populateModels(request, response, response.success, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -133,7 +146,7 @@ module.exports = {
 
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
-        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.collection.rawSchema, response.result);
+        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.collection.rawSchema, response.success);
         process.nextSuccess(request, response);
     },
 
@@ -143,11 +156,15 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.postGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(request, response, [].concat(interceptors.postGet)).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(
+                request,
+                response,
+                request.success,
+                [].concat(interceptors.postGet)).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
         } else {
             process.nextSuccess(request, response);
         }
@@ -156,8 +173,8 @@ module.exports = {
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
         let moduleObject = NODICS.getModules()[request.collection.moduleName];
-        if (response.result &&
-            response.result.length > 0 &&
+        if (response.success &&
+            response.success.length > 0 &&
             request.cacheKeyHash &&
             moduleObject.itemCache &&
             request.collection.rawSchema.cache &&
@@ -169,7 +186,7 @@ module.exports = {
                 moduleObject: moduleObject,
                 cacheClient: moduleObject.itemCache,
                 hashKey: request.cacheKeyHash,
-                docs: response.result,
+                docs: response.success,
                 itemCacheOptions: request.collection.rawSchema.cache
             };
             SERVICE.DefaultCacheService.put(input).then(success => {
@@ -186,15 +203,19 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let model = models[index];
             if (model) {
-                _self.populateProperties(request, response, model, Object.keys(request.collection.rawSchema.refSchema)).then(success => {
-                    _self.populateModels(request, response, models, index + 1).then(success => {
-                        resolve(success);
+                _self.populateProperties(
+                    request,
+                    response,
+                    model,
+                    Object.keys(request.collection.rawSchema.refSchema)).then(success => {
+                        _self.populateModels(request, response, models, index + 1).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
                     }).catch(error => {
                         reject(error);
                     });
-                }).catch(error => {
-                    reject(error);
-                });
             } else {
                 resolve(true);
             }
@@ -259,18 +280,13 @@ module.exports = {
         });
     },
 
-    handleSucessEnd: function (request, response) {
+    handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        response.modelsGetInitializerPipeline.promise.resolve(response.result);
+        process.resolve(response.success);
     },
 
-    handleFailureEnd: function (request, response) {
-        this.LOG.debug('Request has been processed with some failures');
-        response.modelsGetInitializerPipeline.promise.resolve(response.errors);
-    },
-
-    handleErrorEnd: function (request, response) {
+    handleErrorEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed and got errors');
-        response.modelsGetInitializerPipeline.promise.reject(response.result.error);
+        process.reject(response.errors);
     }
 };

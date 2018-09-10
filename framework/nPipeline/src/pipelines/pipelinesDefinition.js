@@ -17,11 +17,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultPipelineService.handleSucessEnd'
             },
-            failureEnd: {
-                name: 'failureEnd',
-                type: 'function',
-                handler: 'DefaultPipelineService.handleFailureEnd'
-            },
             handleError: {
                 name: 'handleError',
                 type: 'function',

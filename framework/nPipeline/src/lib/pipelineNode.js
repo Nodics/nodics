@@ -15,8 +15,7 @@ module.exports = function (name, pipelineNode) {
     let _type = pipelineNode.type || 'function';
     let _handler = pipelineNode.handler;
     let _success = pipelineNode.success;
-    let _failure = pipelineNode.failure;
-    let _targetNodes = pipelineNode.target
+    let _targetNodes = pipelineNode.target;
 
     if (!_handler) {
         throw new Error("Handler property for node : " + _name + " can't be null or blank");
@@ -38,11 +37,7 @@ module.exports = function (name, pipelineNode) {
         return _success;
     };
 
-    this.getFailure = function () {
-        return _failure;
-    };
-
     this.getTargetNodes = function () {
         return _targetNodes;
-    }
-}
+    };
+};

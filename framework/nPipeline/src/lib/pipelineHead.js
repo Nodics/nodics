@@ -11,22 +11,19 @@
 
 const _ = require('lodash');
 
-module.exports = function (name, pipelineDefinition, callback) {
+module.exports = function (name, pipelineDefinition) {
     let _pipelineId = 'id';
     let _pipelineDefinition = pipelineDefinition;
-    let _self = this;
     let _pipelineName = name;
     let _startNode = pipelineDefinition.startNode;
     let _hardStop = pipelineDefinition.hardStop || false;
     let _currentNode = {};
     let _handleError = {};
     let _nodeList = {};
-    let _preNode = {};
     let _nextSuccessNode = {};
-    let _nextFailureNode = {};
     let _successEndNode = {};
-    let _callback = callback;
-    let _done = false;
+    let _resolve = null;
+    let _reject = null;
     let _nodeLog = SYSTEM.createLogger('PipelineNode');
 
     this.setPipelineId = function (id) {
@@ -43,11 +40,12 @@ module.exports = function (name, pipelineDefinition, callback) {
         }
         return null;
     };
+
     this.getPipelineName = function () {
         return _pipelineName;
     };
+
     this.buildPipeline = function () {
-        let _self = this;
         _.each(_pipelineDefinition.nodes, function (value, key) {
             _nodeList[key] = new CLASSES.PipelineNode(key, value);
             _nodeList[key].LOG = _nodeLog;
@@ -70,157 +68,131 @@ module.exports = function (name, pipelineDefinition, callback) {
 
     };
 
-    this.prepareNextNode = function (pipelineRequest, pipelineResponse) {
-        if (_currentNode.getSuccess() && !UTILS.isObject(_currentNode.getSuccess())) {
-            if (_nodeList[_currentNode.getSuccess()]) {
-                _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
-            } else {
-                this.LOG.error('Pipeline link is broken : invalid node line : ', _currentNode.getSuccess());
-                this.error(pipelineRequest, pipelineResponse, 'Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess())
-            }
-        } else {
-            _nextSuccessNode = null;
-        }
-        if (_currentNode.getFailure() && !UTILS.isObject(_currentNode.getSuccess())) {
-            if (_nodeList[_currentNode.getFailure()]) {
-                _nextFailureNode = _nodeList[_currentNode.getFailure()];
-            } else {
-                this.LOG.error('Pipeline link is broken : invalid node line : ', _currentNode.getFailure());
-                this.error(pipelineRequest, pipelineResponse, 'Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess())
-            }
-        } else {
-            _nextFailureNode = null;
-        }
-    };
-
-    this.nextSuccess = function (pipelineRequest, pipelineResponse) {
-        _preNode = _currentNode;
-        if (!_nextSuccessNode || _nextSuccessNode === null) {
-            let targetNode = pipelineResponse.targetNode
-            this.LOG.debug('Processing pipeline target node : ', targetNode);
-            pipelineResponse.targetNode = 'none';
-            if (targetNode && targetNode !== 'none' && UTILS.isObject(_currentNode.getSuccess())) {
-                if (!_currentNode.getSuccess()[targetNode]) {
-                    this.LOG.error('Invalid node configuration for: ' + targetNode);
-                    this.error(pipelineRequest, pipelineResponse, 'Invalid node configuration for: ' + targetNode);
-                } else {
-                    _nextSuccessNode = _nodeList[_currentNode.getSuccess()[targetNode]];
-                    _currentNode = _nextSuccessNode;
-                    this.next(pipelineRequest, pipelineResponse);
-                }
-            }
-        } else {
-            _currentNode = _nextSuccessNode;
-            this.next(pipelineRequest, pipelineResponse);
-        }
-
-    };
-
-    this.nextFailure = function (pipelineRequest, pipelineResponse) {
-        _preNode = _currentNode;
-        if (!_nextFailureNode || _nextFailureNode === null) {
-            let targetNode = pipelineResponse.targetNode
-            this.LOG.debug('Processing target node : ', targetNode);
-            pipelineResponse.targetNode = 'none';
-            if (targetNode && targetNode !== 'none' && UTILS.isObject(_currentNode.getFailure())) {
-                if (!_currentNode.getFailure()[targetNode]) {
-                    this.LOG.error('Invalid node configuration for: ' + targetNode);
-                    this.error(pipelineRequest, pipelineResponse, 'Invalid node configuration for: ' + targetNode);
-                } else {
-                    _nextFailureNode = _nodeList[_currentNode.getFailure()[targetNode]];
-                    _currentNode = _nextFailureNode;
-                    this.next(pipelineRequest, pipelineResponse);
-                }
-            }
-        } else {
-            _currentNode = _nextFailureNode;
-            this.next(pipelineRequest, pipelineResponse);
-        }
-    };
-
-    this.stop = function (pipelineRequest, pipelineResponse) {
-        _preNode = _currentNode;
-        _currentNode = _successEndNode;
-        this.next(pipelineRequest, pipelineResponse);
-    };
-
-    this.error = function (pipelineRequest, pipelineResponse, err) {
-        try {
-            _preNode = _currentNode;
-            _currentNode = _handleError;
-            pipelineResponse.result = {
-                success: false,
-                pipelineName: _pipelineName,
-                nodeName: _preNode.getName(),
-                error: err.toString()
-            };
-            let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
-            let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
-            SERVICE[serviceName][operation](pipelineRequest, pipelineResponse);
-            if (_callback && !_done) {
-                _callback();
-            }
-            _done = true;
-        } catch (error) {
-            this.LOG.error(error);
-        }
-
-    };
-
-    this.start = function (id, pipelineRequest, pipelineResponse) {
+    this.start = function (id, request, response, resolve, reject) {
         this.LOG.debug('Starting pipeline with pipeline id : ', _pipelineName);
+        _resolve = resolve;
+        _reject = reject;
         _pipelineId = id;
         _currentNode = _nodeList[_startNode];
         if (!_currentNode) {
             this.LOG.error('Node link is broken for node : ', _startNode, ' for pipeline : ', _pipelineName);
             pipeline.exit(CONFIG.get('errorExitCode'));
         }
-        if (!pipelineResponse.success) {
-            pipelineResponse.success = [];
+        if (!response.success) {
+            response.success = [];
         }
-        if (!pipelineResponse.errors) {
-            pipelineResponse.errors = [];
+        if (!response.errors) {
+            response.errors = [];
         }
-        this.next(pipelineRequest, pipelineResponse);
+        this.next(request, response);
     };
 
-    this.next = function (pipelineRequest, pipelineResponse) {
+    this.nextSuccess = function (request, response) {
+        _preNode = _currentNode;
+        if (!_nextSuccessNode || _nextSuccessNode === null) {
+            let targetNode = response.targetNode;
+            this.LOG.debug('Processing pipeline target node : ', targetNode);
+            response.targetNode = 'none';
+            if (targetNode && targetNode !== 'none' && UTILS.isObject(_currentNode.getSuccess())) {
+                if (!_currentNode.getSuccess()[targetNode]) {
+                    this.LOG.error('Invalid node configuration for: ' + targetNode);
+                    this.error(request, response, 'Invalid node configuration for: ' + targetNode);
+                } else {
+                    _nextSuccessNode = _nodeList[_currentNode.getSuccess()[targetNode]];
+                    _currentNode = _nextSuccessNode;
+                    this.next(request, response);
+                }
+            }
+        } else {
+            _currentNode = _nextSuccessNode;
+            this.next(request, response);
+        }
+    };
+
+    this.stop = function (request, response) {
+        _preNode = _currentNode;
+        _currentNode = _successEndNode;
+        this.next(request, response);
+    };
+
+    this.error = function (request, response, err) {
+        _preNode = _currentNode;
+        _currentNode = _handleError;
+        if (err) {
+            if (UTILS.isArray(err)) {
+                err.forEach(element => {
+                    response.errors.push(element);
+                });
+            } else {
+                response.errors.push(err);
+            }
+        }
+        this.next(request, response);
+    };
+
+    this.resolve = function (response) {
+        _resolve(response);
+    };
+
+    this.reject = function (response) {
+        _reject(response);
+    };
+
+    this.prepareNextNode = function (request, response) {
+        if (_currentNode.getSuccess() && !UTILS.isObject(_currentNode.getSuccess())) {
+            if (_nodeList[_currentNode.getSuccess()]) {
+                _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
+            } else {
+                this.LOG.error('Pipeline link is broken : invalid node line : ', _currentNode.getSuccess());
+                this.error(request, response, 'Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess());
+            }
+        } else {
+            _nextSuccessNode = null;
+        }
+    };
+
+    this.next = function (request, response) {
         let _self = this;
         if (_currentNode) {
-            this.prepareNextNode(pipelineRequest, pipelineResponse);
+            this.prepareNextNode(request, response);
             if (_currentNode.getType() === 'function') {
                 try {
                     let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
                     let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
-                    SERVICE[serviceName][operation](pipelineRequest, pipelineResponse, this);
-                    if (!_nextSuccessNode) {
-                        if (_callback && !_done) {
-                            _callback();
-                        }
-                        _done = true;
-                    }
+                    SERVICE[serviceName][operation](request, response, this);
                 } catch (error) {
-                    this.LOG.error(error);
-                    this.error(pipelineRequest, pipelineResponse, error);
+                    this.error(request, response, error);
                 }
             } else {
                 try {
-                    SERVICE.DefaultPipelineService.startPipeline(_currentNode.getHandler(), pipelineRequest, pipelineResponse, () => {
-                        if (_hardStop && !UTILS.isBlank(pipelineResponse.errors)) {
-                            _self.nextFailure(pipelineRequest, pipelineResponse);
+                    SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(success => {
+                        if (success && UTILS.isArray(success)) {
+                            success.forEach(element => {
+                                response.success.push(element);
+                            });
                         } else {
-                            _self.nextSuccess(pipelineRequest, pipelineResponse, this);
+                            response.success.push(success);
+                        }
+                        _self.nextSuccess(request, response, this);
+                    }).catch(errors => {
+                        if (errors && UTILS.isArray(errors)) {
+                            errors.forEach(element => {
+                                response.errors.push(element);
+                            });
+                        } else {
+                            response.errors.push(errors);
+                        }
+                        if (_hardStop) {
+                            _self.error(request, response);
+                        } else {
+                            _self.nextSuccess(request, response, this);
                         }
                     });
                 } catch (error) {
-                    this.LOG.error(error);
-                    if (_hardStop) {
-                        _self.error(pipelineRequest, pipelineResponse, error);
-                    } else {
-                        _self.nextSuccess(pipelineRequest, pipelineResponse, this);
-                    }
+                    _self.error(request, response, error);
                 }
             }
         }
     };
+
 };

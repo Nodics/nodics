@@ -16,7 +16,7 @@ module.exports = {
 
     loadInternalHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of header files from modules to be imported');
-        if (request.modules) {
+        if (request.modules && UTILS.isArray(request.modules) && request.modules.length > 0) {
             SERVICE.DefaultImportUtilityService.getInternalDataHeaders(request.modules, request.dataType).then(success => {
                 request.internal.headerFiles = success;
                 process.nextSuccess(request, response);
@@ -27,8 +27,8 @@ module.exports = {
     },
 
     loadInternalDataFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of data files from modules to be imported');
-        if (request.modules) {
+        this.LOG.debug('Loading list of data files from modules to be imported: ', request.modules);
+        if (request.modules && UTILS.isArray(request.modules) && request.modules.length > 0) {
             SERVICE.DefaultImportUtilityService.getInternalFiles(request.modules, request.dataType).then(success => {
                 request.internal.dataFiles = success;
                 process.nextSuccess(request, response);
@@ -39,8 +39,8 @@ module.exports = {
     },
 
     loadExternalHeaderFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of files from Path to be imported');
-        if (request.path) {
+        this.LOG.debug('Loading list of headers from Path to be imported: ', request.path);
+        if (request.path && request.path !== '') {
             SERVICE.DefaultImportUtilityService.getExternalDataHeaders(request.path).then(success => {
                 request.external.headerFiles = success;
                 process.nextSuccess(request, response);
@@ -54,7 +54,7 @@ module.exports = {
 
     loadExternalDataFileList: function (request, response, process) {
         this.LOG.debug('Loading list of files from Path to be imported');
-        if (request.path) {
+        if (request.path && request.path !== '') {
             SERVICE.DefaultImportUtilityService.getExternalFiles(request.path).then(success => {
                 request.external.dataFiles = success;
                 process.nextSuccess(request, response);
@@ -192,9 +192,7 @@ module.exports = {
                     pendingHeaders: Object.keys(request.internal.headers)
                 }).then(success => {
                     if (response.errors.length > 0) {
-                        this.LOG.error('Internal data inport failed, with following errors: ');
-                        this.LOG.error(response.errors);
-                        process.error(request, response, response.errors);
+                        process.error(request, response);
                     } else {
                         process.nextSuccess(request, response);
                     }
@@ -220,9 +218,7 @@ module.exports = {
                     pendingHeaders: Object.keys(request.external.headers)
                 }).then(success => {
                     if (response.errors.length > 0) {
-                        this.LOG.error('External data inport failed, with following errors: ');
-                        this.LOG.error(response.errors);
-                        process.error(request, response, response.errors);
+                        process.error(request, response);
                     } else {
                         process.nextSuccess(request, response);
                     }
@@ -259,9 +255,8 @@ module.exports = {
                         }).catch(error => {
                             if (options.phase >= phaseLimit - 1) {
                                 error.forEach(element => {
-                                    response.errors.push(element);
+                                    response.errors.push({ element });
                                 });
-                                response.errors.concat(error);
                             }
                             _self.processNextHeader(request, response, options, resolve, reject);
                         });
@@ -288,6 +283,7 @@ module.exports = {
                 options.phase = phaseLimit;
             }
         }
+
         this.processHeaders(request, response, options).then(success => {
             resolve(success);
         }).catch(error => {
@@ -301,13 +297,10 @@ module.exports = {
             request.phase = options.phase;
             request.importType = options.importType;
             request.headerName = options.headerName;
-            SERVICE.DefaultPipelineService.startPipeline('headerProcessPipeline', request, {
-                headerProcessPipeline: {
-                    promise: {
-                        resolve: resolve,
-                        reject: reject
-                    }
-                }
+            SERVICE.DefaultPipelineService.start('headerProcessPipeline', request, {}).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
             });
         });
     }

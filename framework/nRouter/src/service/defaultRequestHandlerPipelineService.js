@@ -13,23 +13,23 @@ const _ = require('lodash');
 module.exports = {
 
     startRequestHandlerPipeline: function (request, response, routerDef) {
-        try {
-            request.local = {
-                requestId: SYSTEM.generateUniqueCode(),
-                parentRequestId: request.get('requestId'),
-                router: routerDef,
-                httpResponse: response,
-                protocal: request.protocol,
-                host: request.hostname,
-                originalUrl: request.originalUrl,
-                secured: routerDef.secured,
-                moduleName: routerDef.moduleName,
-                special: (routerDef.controller) ? false : true
-            };
-            SERVICE.DefaultPipelineService.startPipeline('requestHandlerPipeline', request, {});
-        } catch (error) {
+        request.local = {
+            requestId: SYSTEM.generateUniqueCode(),
+            parentRequestId: request.get('requestId'),
+            router: routerDef,
+            httpResponse: response,
+            protocal: request.protocol,
+            host: request.hostname,
+            originalUrl: request.originalUrl,
+            secured: routerDef.secured,
+            moduleName: routerDef.moduleName,
+            special: (routerDef.controller) ? false : true
+        };
+        SERVICE.DefaultPipelineService.start('requestHandlerPipeline', request, {}).then(success => {
+            response.json(success);
+        }).catch(error => {
             response.json(error);
-        }
+        });
     },
 
     helpRequest: function (request, response, process) {
@@ -138,32 +138,17 @@ module.exports = {
         try {
             CONTROLLER[request.local.router.controller][request.local.router.operation](request, (error, result) => {
                 if (error) {
-                    _self.LOG.error('Got error while processing request : ', error);
-                    response.success = false;
-                    delete response.result;
-                    delete response.msg;
-                    delete response.code;
-                    response.errors.PROC_ERR_0003 = {
-                        code: 'ERR003',
-                        msg: error.toString()
-                    };
-                    process.nextFailure(request, response);
+                    process.error(request, response, error);
                 } else {
                     let cache = false;
                     if (result.cache) {
                         cache = true;
                         delete result.cache;
                     }
-                    response.success = true;
-                    response.code = 'SUC001';
-                    response.msg = 'Processed successfully';
                     response.result = result;
                     if (request.local.router.cache &&
                         request.local.router.cache.enabled &&
                         request.local.router.moduleObject.apiCache) {
-                        let options = {
-                            ttl: request.local.router.ttl
-                        };
                         SERVICE.DefaultCacheService.putApi(request.local.router.moduleObject.apiCache,
                             request,
                             response,
@@ -190,30 +175,28 @@ module.exports = {
             });
         } catch (error) {
             _self.LOG.error('Got error while service request : ', error);
-            response.success = false;
-            delete response.result;
-            delete response.msg;
-            delete response.code;
-            response.errors.PROC_ERR_0003 = {
-                code: 'ERR003',
-                msg: error.toString()
-            };
-            process.nextFailure(request, response);
+            process.error(request, response, error);
         }
     },
 
-    handleSucessEnd: function (request, response) {
+    handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully : ', request.local.originalUrl);
-        request.local.httpResponse.json(response);
+        process.resolve({
+            success: true,
+            code: 'SUC001',
+            msg: 'Processed successfully',
+            cache: response.cache,
+            result: response.result
+        });
     },
 
-    handleFailureEnd: function (request, response) {
-        this.LOG.error('Request has been processed with some failures : ', request.local.originalUrl);
-        request.local.httpResponse.json(response);
-    },
-
-    handleErrorEnd: function (request, response) {
-        this.LOG.error('Request has been processed and got errors : ', request.local.originalUrl);
-        request.local.httpResponse.json(response);
+    handleErrorEnd: function (request, response, process) {
+        this.LOG.error('Request has been processed and got errors : ', response.errors);
+        process.reject({
+            success: false,
+            code: response.errorCode || 'ERR001',
+            msg: 'Process failed with errors',
+            error: response.errors
+        });
     }
 };

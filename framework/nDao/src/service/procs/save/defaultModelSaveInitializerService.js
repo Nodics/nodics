@@ -28,8 +28,10 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preSave) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(request,
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(
+                request,
                 response,
+                request.success,
                 [].concat(interceptors.preSave)).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
@@ -96,7 +98,11 @@ module.exports = {
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model');
         request.collection.saveItem(request).then(success => {
-            response.result = success;
+            if (success && UTILS.isArray(success)) {
+                response.success.concat(success);
+            } else {
+                response.success.push(success);
+            }
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -109,8 +115,10 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.postSave) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(request,
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(
+                request,
                 response,
+                request.success,
                 [].concat(interceptors.postSave)).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
@@ -165,6 +173,10 @@ module.exports = {
                     params: [{
                         key: 'modelName',
                         value: collection.schemaName
+                    },
+                    {
+                        key: 'data',
+                        value: request.success
                     }]
                 };
                 this.LOG.debug('Pushing event for item created : ', collection.schemaName);
@@ -176,18 +188,11 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    handleSucessEnd: function (request, response) {
-        this.LOG.debug('Request has been processed successfully');
-        response.modelSaveInitializerPipeline.promise.resolve(response.result);
+    handleSucessEnd: function (request, response, process) {
+        process.resolve(response.success);
     },
 
-    handleFailureEnd: function (request, response) {
-        this.LOG.error('Request has been processed with some failures');
-        response.modelSaveInitializerPipeline.promise.reject(response.result);
-    },
-
-    handleErrorEnd: function (request, response) {
-        this.LOG.error('Request has been processed and got errors ');
-        response.modelSaveInitializerPipeline.promise.reject(response.result.error);
+    handleErrorEnd: function (request, response, process) {
+        process.reject(response.errors);
     }
 };

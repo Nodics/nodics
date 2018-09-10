@@ -54,7 +54,7 @@ module.exports = {
                                 }]
                             };
                             _self.LOG.debug('Pushing event for expired cache key : ', key);
-                            SERVICE.EventService.publish(event, (error, response) => {
+                            SERVICE.DefaultEventService.publish(event, (error, response) => {
                                 if (error) {
                                     _self.LOG.error('While posting cache invalidation event : ', error);
                                 } else {

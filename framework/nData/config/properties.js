@@ -11,6 +11,7 @@
 
 module.exports = {
 
+    dataImportPhasesLimit: 1,
     targetPipelineForFileType: {
         js: 'processJsFileImportPipeline',
         csv: 'processCsvFileImportPipeline'

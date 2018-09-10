@@ -56,7 +56,13 @@ module.exports = {
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    response.errors.push(error);
+                    if (error && UTILS.isArray(error)) {
+                        error.forEach(element => {
+                            response.errors.push(element);
+                        });
+                    } else {
+                        response.errors.push(error);
+                    }
                     process.nextSuccess(request, response);
                 });
             } else {
@@ -76,7 +82,9 @@ module.exports = {
                 let fileName = options.pendingFileList.shift(); //Actual Files group name
                 _self.LOG.debug('Processing file: ', fileName, ' from header: ', request.headerName);
                 request.fileName = fileName;
-                _self.processFile(request, response).then(success => {
+                let fileObj = header.dataFiles[request.fileName];
+                let fileTypePipeline = CONFIG.get('targetPipelineForFileType')[fileObj.type];
+                SERVICE.DefaultPipelineService.start(fileTypePipeline, request, {}).then(success => {
                     _self.processAllFiles(request, response, options).then(success => {
                         resolve(success);
                     }).catch(error => {
@@ -93,40 +101,18 @@ module.exports = {
         });
     },
 
-    processFile: function (request, response) {
-        let header = request[request.importType].headers[request.headerName];
-        return new Promise((resolve, reject) => {
-            let fileObj = header.dataFiles[request.fileName];
-            let fileTypePipeline = CONFIG.get('targetPipelineForFileType')[fileObj.type];
-            let output = {};
-
-            output[fileTypePipeline] = {
-                promise: {
-                    resolve: resolve,
-                    reject: reject
-                }
-            };
-            SERVICE.DefaultPipelineService.startPipeline(fileTypePipeline, request, output);
-        });
-    },
-
-    handleSucessEnd: function (request, response) {
+    handleSucessEnd: function (request, response, process) {
         if (response.errors.length > 0) {
             this.LOG.error('Header Process Request has been processed and got errors');
-            response.headerProcessPipeline.promise.reject(response.errors);
+            process.reject(response.errors);
         } else {
             this.LOG.debug('Header Process Request has been processed successfully');
-            response.headerProcessPipeline.promise.resolve(response);
+            process.resolve(response.success);
         }
     },
 
-    handleFailureEnd: function (request, response) {
-        this.LOG.error('Header Process Request has been processed with some failures');
-        response.headerProcessPipeline.promise.reject(response.errors);
-    },
-
-    handleErrorEnd: function (request, response) {
+    handleErrorEnd: function (request, response, process) {
         this.LOG.error('Header Process Request has been processed and got errors');
-        response.headerProcessPipeline.promise.reject(response.result);
+        process.reject(response.errors);
     }
 };

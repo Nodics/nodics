@@ -10,19 +10,19 @@
  */
 
 module.exports = {
-    executeInterceptors: function (request, response, preInterceptorList) {
+    executeInterceptors: function (request, response, models, preInterceptorList) {
         return new Promise((resolve, reject) => {
             try {
-                if (preInterceptorList.length > 0) {
+                if (preInterceptorList && preInterceptorList.length > 0) {
                     let interceptor = preInterceptorList.shift();
                     let input = {
                         collection: request.collection,
                         model: request.model,
                         interceptor: interceptor,
-                        result: response.result
+                        result: models
                     };
                     this.executeInterceptor(input).then(success => {
-                        this.executeInterceptors(request, response, preInterceptorList).then(success => {
+                        this.executeInterceptors(request, response, models, preInterceptorList).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);

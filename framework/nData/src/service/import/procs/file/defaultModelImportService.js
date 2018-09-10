@@ -117,7 +117,6 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (options.values && options.values.length > 0) {
-                console.log('--------------- Values : ', options.values);
                 let value = options.values.shift();
                 this.fetchModel(request, response, {
                     property: options.property,
@@ -189,34 +188,32 @@ module.exports = {
         } else {
             models.push(model);
         }
-        input = {
+        SERVICE['Default' + header.options.modelName.toUpperCaseFirstChar() + 'Service'][header.options.operation]({
             tenant: header.options.tenant,
             query: header.query,
             models: models
-        };
-        SERVICE['Default' + header.options.modelName.toUpperCaseFirstChar() + 'Service'][header.options.operation](input).then(result => {
-            response.success.concat(result);
+        }).then(result => {
+            if (result && UTILS.isArray(result)) {
+                result.forEach(element => {
+                    response.success.push(element);
+                });
+            } else {
+                response.success.push(result);
+            }
+            response.targetNode = 'insertSuccess';
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
 
-    handleSucessEnd: function (request, response) {
+    handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Import Model Process Request has been processed successfully');
-        response.modelImportPipeline.promise.resolve({
-            success: response.success,
-            errors: response.errors
-        });
+        process.resolve(response.success);
     },
 
-    handleFailureEnd: function (request, response) {
-        this.LOG.debug('Import Model Process Request has been processed with some failures');
-        response.modelImportPipeline.promise.reject(response.result);
-    },
-
-    handleErrorEnd: function (request, response) {
+    handleErrorEnd: function (request, response, process) {
         this.LOG.debug('Import Model Process Request has been processed and got errors');
-        response.modelImportPipeline.promise.reject(response.result.error);
+        process.reject(response.errors);
     }
 };

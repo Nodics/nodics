@@ -31,7 +31,6 @@ module.exports = {
 
     importFileData: function (request, response, process) {
         this.LOG.debug('Initiating import process for file: ', request.fileName);
-        let header = request[request.importType].headers[request.headerName];
         this.importModels(request, response, {
             pendingRecords: Object.keys(request.finalData)
         }).then(success => {
@@ -42,67 +41,55 @@ module.exports = {
     },
 
     importModels: function (request, response, options) {
-        let _self = this;
-        let header = request[request.importType].headers[request.headerName];
-        let fileObj = header.dataFiles[request.fileName];
         return new Promise((resolve, reject) => {
-            if (options.pendingRecords && options.pendingRecords.length > 0) {
-                let currentRecord = options.pendingRecords.shift();
-                let model = request.finalData[currentRecord];
-                let uniqueHash = SYSTEM.generateHash(JSON.stringify(model));
-                if (!fileObj.processedRecords.includes(uniqueHash)) {
-                    _self.importModel(request, response, {
-                        currentRecord: currentRecord
-                    }).then(success => {
-                        fileObj.processedRecords.push(uniqueHash);
-                        _self.importNextModel(request, response, options, resolve, reject);
-                    }).catch(error => {
-                        reject(error);
-                    });
+            let header = request[request.importType].headers[request.headerName];
+            let fileObj = header.dataFiles[request.fileName];
+            try {
+                if (options.pendingRecords && options.pendingRecords.length > 0) {
+                    request.currentRecord = options.pendingRecords.shift();
+                    request.currentModel = request.finalData[request.currentRecord];
+                    let uniqueHash = SYSTEM.generateHash(JSON.stringify(request.currentModel));
+                    if (!fileObj.processedRecords.includes(uniqueHash)) {
+                        SERVICE.DefaultPipelineService.start('modelImportPipeline', request, {}).then(success => {
+                            if (success && UTILS.isArray(success)) {
+                                success.forEach(element => {
+                                    response.success.push(element);
+                                });
+                            } else {
+                                response.success.push(success);
+                            }
+                            fileObj.processedRecords.push(uniqueHash);
+                            this.importModels(request, response, options).then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        this.importModels(request, response, options).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }
                 } else {
-                    _self.importNextModel(request, response, options, resolve, reject);
+                    resolve(true);
                 }
-            } else {
-                resolve(true);
+            } catch (error) {
+                reject(error);
             }
         });
     },
 
-    importNextModel: function (request, response, options, resolve, reject) {
-        this.importModels(request, response, options).then(result => {
-            resolve(result);
-        }).catch(error => {
-            reject(error);
-        });
-    },
-
-    importModel: function (request, response, options) {
-        return new Promise((resolve, reject) => {
-            request.currentRecord = options.currentRecord;
-            request.currentModel = request.finalData[request.currentRecord];
-            SERVICE.DefaultPipelineService.startPipeline('modelImportPipeline', request, {
-                modelImportPipeline: {
-                    promise: {
-                        resolve: resolve,
-                        reject: reject
-                    }
-                }
-            });
-        });
-    },
-
-    handleSucessEnd: function (request, response) {
+    handleSucessEnd: function (request, response, process) {
         this.LOG.debug('JS file import Process Request has been processed successfully');
-        response.processJsFileImportPipeline.promise.resolve(response);
+        process.resolve(response.success);
     },
 
-    handleFailureEnd: function (request, response) {
-        this.LOG.error('JS file import  Process Request has been processed with some failures');
-        response.processJsFileImportPipeline.promise.reject(response.errors);
-    },
-
-    handleErrorEnd: function (request, response) {
+    handleErrorEnd: function (request, response, process) {
         this.LOG.error('JS file import  Process Request has been processed and got errors');
-        response.processJsFileImportPipeline.promise.reject(response.result.error);
+        process.reject(response.errors);
     }
 };

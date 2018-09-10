@@ -17,14 +17,18 @@ module.exports = {
             importInit: {
                 secured: true,
                 key: '/import/init',
-                method: 'GET',
-                handler: 'DataImportController',
+                method: 'POST',
+                handler: 'DefaultImportController',
                 operation: 'importInitData',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/system/import/init',
+                    body: {
+                        modules: 'List of modules to pick initial data or',
+                        path: 'Path of external location to get list of files'
+                    }
                 }
             }
         },
@@ -33,13 +37,17 @@ module.exports = {
                 secured: true,
                 key: '/import/core',
                 method: 'POST',
-                controller: 'DataImportController',
+                controller: 'DefaultImportController',
                 operation: 'importCoreData',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
                     url: 'http://host:port/nodics/system/import/core',
+                    body: {
+                        modules: 'List of modules to pick initial data or',
+                        path: 'Path of external location to get list of files'
+                    }
                 }
             }
         },
@@ -48,13 +56,17 @@ module.exports = {
                 secured: true,
                 key: '/import/sample',
                 method: 'POST',
-                controller: 'DataImportController',
+                controller: 'DefaultImportController',
                 operation: 'importSampleData',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
                     url: 'http://host:port/nodics/system/import/sample',
+                    body: {
+                        modules: 'List of modules to pick initial data or',
+                        path: 'Path of external location to get list of files'
+                    }
                 }
             }
         },

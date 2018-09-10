@@ -89,9 +89,14 @@ module.exports = {
 
         defineDefaultSaveByQuery: function (collection, rawSchema) {
             collection.saveByQuery = function (query, model) {
+                let modelUpdateOptions = CONFIG.get('database').modelUpdateOptions;
                 return new Promise((resolve, reject) => {
-                    this.findOneAndUpdate(query, { $set: model }, { upsert: true }).then(result => {
-                        resolve(result);
+                    this.findOneAndUpdate(query, { $set: model }, modelUpdateOptions).then(result => {
+                        if (result && result.value) {
+                            resolve(result.value);
+                        } else {
+                            reject('Failed to update doc');
+                        }
                     }).catch(error => {
                         reject(error);
                     });
@@ -103,7 +108,11 @@ module.exports = {
             collection.createItem = function (model) {
                 return new Promise((resolve, reject) => {
                     this.insertOne(model, {}).then(result => {
-                        resolve(result);
+                        if (result.ops && result.ops.length > 0) {
+                            resolve(result.ops[0]);
+                        } else {
+                            reject('Failed to create doc');
+                        }
                     }).catch(error => {
                         reject(error);
                     });

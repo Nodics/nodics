@@ -83,6 +83,8 @@ Todos:
     ✔ Test events and other communicating properly for nodeId and abstract @done(18-04-27 13:11)
     - Remove App server configuration from all module config, so that it can start on default
     - Keep only default App server configuration, that can be redefined in respective servers
+    - Validate Enterprise change or Authorization change in terms of authToken storing for each module
+    - Check authToken invalidation logic for each module 
     
 Todos:
   - Test merge process for multi hiererchy function definitions within service

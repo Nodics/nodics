@@ -20,8 +20,7 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultDataImportInitializerService.validateRequest',
-                success: 'redirectToImportType',
-                failure: 'failureEnd'
+                success: 'redirectToImportType'
             },
             redirectToImportType: {
                 type: 'function',
@@ -29,29 +28,21 @@ module.exports = {
                 success: {
                     fileImport: 'importFromFile',
                     directImport: 'importFromDirect'
-                },
-                failure: 'failureEnd'
+                }
             },
             importFromFile: {
                 type: 'process',
                 handler: 'fileDataImportInitializerPipeline',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
             importFromDirect: {
                 type: 'process',
                 handler: 'directDataImportInitializerPipeline',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
                 handler: 'DefaultDataImportInitializerService.handleSucessEnd'
-            },
-
-            failureEnd: {
-                type: 'function',
-                handler: 'DefaultDataImportInitializerService.handleFailureEnd'
             },
 
             handleError: {
@@ -70,8 +61,7 @@ module.exports = {
             placeholder: {
                 type: 'function',
                 handler: 'DefaultDirectDataImportInitializerPipeline.placeholder',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
         }
     },
@@ -85,57 +75,48 @@ module.exports = {
             loadInternalHeaderFileList: {
                 type: 'function',
                 handler: 'DefaultFileDataImportInitializerService.loadInternalHeaderFileList',
-                success: 'loadInternalDataFileList',
-                failure: 'failureEnd'
+                success: 'loadInternalDataFileList'
             },
             loadInternalDataFileList: {
                 type: 'function',
                 handler: 'DefaultFileDataImportInitializerService.loadInternalDataFileList',
-                success: 'loadExternalHeaderFileList',
-                failure: 'failureEnd'
+                success: 'loadExternalHeaderFileList'
             },
             loadExternalHeaderFileList: {
                 type: 'function',
                 handler: 'DefaultFileDataImportInitializerService.loadExternalHeaderFileList',
-                success: 'loadExternalDataFileList',
-                failure: 'failureEnd'
+                success: 'loadExternalDataFileList'
             },
             loadExternalDataFileList: {
                 type: 'function',
                 handler: 'DefaultFileDataImportInitializerService.loadExternalDataFileList',
-                success: 'resolveFileType',
-                failure: 'failureEnd'
+                success: 'resolveFileType'
             },
 
             resolveFileType: {
                 type: 'function',
                 handler: 'DefaultFileDataImportInitializerService.resolveFileType',
-                success: 'buildHeaderInstances',
-                failure: 'failureEnd'
+                success: 'buildHeaderInstances'
             },
             buildHeaderInstances: {
                 type: 'function',
                 handler: 'DefaultFileDataImportInitializerService.buildHeaderInstances',
-                success: 'assignDataFilesToHeader',
-                failure: 'failureEnd'
+                success: 'assignDataFilesToHeader'
             },
             assignDataFilesToHeader: {
                 type: 'function',
                 handler: 'DefaultFileDataImportInitializerService.assignDataFilesToHeader',
-                success: 'processInternalDataHeaders',
-                failure: 'failureEnd'
+                success: 'processInternalDataHeaders'
             },
             processInternalDataHeaders: {// Loop through all headers available for internal data
                 type: 'function',       // Call headerProcessPipeline for each header
                 handler: 'DefaultFileDataImportInitializerService.processInternalDataHeaders',
-                success: 'processExternalDataHeaders',
-                failure: 'failureEnd'
+                success: 'processExternalDataHeaders'
             },
             processExternalDataHeaders: {// Loop through all headers available for external data
                 type: 'function',
                 handler: 'DefaultFileDataImportInitializerService.processExternalDataHeaders',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             }
         }
     },
@@ -149,53 +130,41 @@ module.exports = {
             validateHeader: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.validateHeader',
-                success: 'evaluateHeaderOptions',
-                failure: 'failureEnd'
+                success: 'evaluateHeaderOptions'
             },
             evaluateHeaderOptions: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.evaluateHeaderOptions',
-                success: 'evaluateHeaderQuery',
-                failure: 'failureEnd'
+                success: 'evaluateHeaderQuery'
             },
             evaluateHeaderQuery: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.evaluateHeaderQuery',
-                success: 'evaluateHeaderMacros',
-                failure: 'failureEnd'
+                success: 'evaluateHeaderMacros'
             },
             evaluateHeaderMacros: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.evaluateHeaderMacros',
-                success: 'loadRawSchema',
-                failure: 'failureEnd'
+                success: 'loadRawSchema'
             },
             loadRawSchema: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.loadRawSchema',
-                success: 'loadModels',
-                failure: 'failureEnd'
+                success: 'loadModels'
             },
             loadModels: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.loadModels',
-                success: 'processHeaderFiles',
-                failure: 'failureEnd'
+                success: 'processHeaderFiles'
             },
             processHeaderFiles: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.processHeaderFiles',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.handleSucessEnd'
-            },
-
-            failureEnd: {
-                type: 'function',
-                handler: 'DefaultHeaderProcessService.handleFailureEnd'
             },
 
             handleError: {
@@ -214,23 +183,18 @@ module.exports = {
             loadFileData: {
                 type: 'function',
                 handler: 'DefaultProcessJsFileImportService.loadFileData',
-                success: 'importFileData',
-                failure: 'failureEnd'
+                success: 'importFileData'
             },
             importFileData: {
                 type: 'function',
                 handler: 'DefaultProcessJsFileImportService.importFileData',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
                 handler: 'DefaultProcessJsFileImportService.handleSucessEnd'
             },
-            failureEnd: {
-                type: 'function',
-                handler: 'DefaultProcessJsFileImportService.handleFailureEnd'
-            },
+
             handleError: {
                 type: 'function',
                 handler: 'DefaultProcessJsFileImportService.handleErrorEnd'
@@ -247,23 +211,18 @@ module.exports = {
             loadFileData: {
                 type: 'function',
                 handler: 'DefaultProcessCsvFileImportService.loadFileData',
-                success: 'importFileData',
-                failure: 'failureEnd'
+                success: 'importFileData'
             },
             importFileData: {
                 type: 'function',
                 handler: 'DefaultProcessCsvFileImportService.importFileData',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
                 handler: 'DefaultProcessCsvFileImportService.handleSucessEnd'
             },
-            failureEnd: {
-                type: 'function',
-                handler: 'DefaultProcessCsvFileImportService.handleFailureEnd'
-            },
+
             handleError: {
                 type: 'function',
                 handler: 'DefaultProcessCsvFileImportService.handleErrorEnd'
@@ -280,46 +239,39 @@ module.exports = {
             validateModelData: {
                 type: 'function',
                 handler: 'DefaultModelImportService.validateModelData',
-                success: 'populateDependancies',
-                failure: 'failureEnd'
+                success: 'populateDependancies'
             },
             populateDependancies: {
                 type: 'function',
                 handler: 'DefaultModelImportService.populateDependancies',
-                success: 'customizeFinalModel',
-                failure: 'failureEnd'
+                success: 'customizeFinalModel'
             },
             customizeFinalModel: {
                 type: 'process',
                 handler: 'customizeFinalModelPipeline',
-                success: 'insertData',
-                failure: 'failureEnd'
+                success: 'insertData'
             },
             insertData: {
                 type: 'function',
                 handler: 'DefaultModelImportService.insertData',
-                success: 'handleInsertSuccess',
-                failure: 'handleInsertFailure'
+                success: {
+                    insertSuccess: 'handleInsertSuccess',
+                    insertFailure: 'handleInsertFailure'
+                }
             },
             handleInsertSuccess: {
                 type: 'process',
                 handler: 'modelImportSuccessPipeline',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
             handleInsertFailure: {
                 type: 'process',
                 handler: 'modelImportFailurePipeline',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
                 handler: 'DefaultModelImportService.handleSucessEnd'
-            },
-            failureEnd: {
-                type: 'function',
-                handler: 'DefaultModelImportService.handleFailureEnd'
             },
             handleError: {
                 type: 'function',
@@ -337,8 +289,7 @@ module.exports = {
             verifyFinalModel: {
                 type: 'function',
                 handler: 'DefaultCustomizeFinalModelService.verifyFinalModel',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             }
         }
     },
@@ -352,8 +303,7 @@ module.exports = {
             updateSuccessRow: {
                 type: 'function',
                 handler: 'DefaultModelImportSuccessService.updateSuccessRow',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             }
         }
     },
@@ -367,8 +317,7 @@ module.exports = {
             updateFailureRow: {
                 type: 'function',
                 handler: 'DefaultModelImportFailureService.updateFailureRow',
-                success: 'successEnd',
-                failure: 'failureEnd'
+                success: 'successEnd'
             }
         }
     },

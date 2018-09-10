@@ -12,78 +12,22 @@
 module.exports = {
     get: function (request) {
         let input = request.local || request;
-        try {
-            return new Promise((resolve, reject) => {
-                input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
-                let response = {
-                    modelsGetInitializerPipeline: {
-                        promise: {
-                            resolve: resolve,
-                            reject: reject
-                        }
-                    }
-                };
-                SERVICE.DefaultPipelineService.startPipeline('modelsGetInitializerPipeline', input, response);
-            });
-        } catch (error) {
-            return Promise.reject(error);
-        }
+        input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
+        return SERVICE.DefaultPipelineService.start('modelsGetInitializerPipeline', input, {});
     },
 
     save: function (request) {
         let input = request.local || request;
-        try {
-            return new Promise((resolve, reject) => {
-                input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
-                let response = {
-                    modelsSaveInitializerPipeline: {
-                        promise: {
-                            resolve: resolve,
-                            reject: reject
-                        }
-                    }
-                };
-                SERVICE.DefaultPipelineService.startPipeline('modelsSaveInitializerPipeline', input, response);
-            });
-        } catch (error) {
-            return Promise.reject(error);
-        }
+        input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
+        return SERVICE.DefaultPipelineService.start('modelsSaveInitializerPipeline', input, {});
     },
 
     remove: function (request) {
         let input = request.local || request;
-        try {
-            return new Promise((resolve, reject) => {
-                let response = {
-                    dataImportInitializerPipeline: {
-                        promise: {
-                            resolve: resolve,
-                            reject: reject
-                        }
-                    }
-                };
-                SERVICE.DefaultPipelineService.startPipeline('modelsRemoveInitializerPipeline', input, response);
-            });
-        } catch (error) {
-            return Promise.reject(error);
-        }
+        SERVICE.DefaultPipelineService.start('modelsRemoveInitializerPipeline', input, {});
     },
 
     update: function (input) {
-        try {
-            return new Promise((resolve, reject) => {
-                let response = {
-                    dataImportInitializerPipeline: {
-                        promise: {
-                            resolve: resolve,
-                            reject: reject
-                        }
-                    }
-                };
-                SERVICE.DefaultPipelineService.startPipeline('modelsUpdateInitializerPipeline', input, response);
-            });
-        } catch (error) {
-            return Promise.reject(error);
-        }
+        return SERVICE.DefaultPipelineService.start('modelsUpdateInitializerPipeline', input, {});
     }
 };

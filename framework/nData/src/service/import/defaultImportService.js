@@ -12,29 +12,14 @@
 module.exports = {
 
     importData: function (input) {
-        try {
-            return new Promise((resolve, reject) => {
-                let response = {
-                    dataImportInitializerPipeline: {
-                        promise: {
-                            resolve: resolve,
-                            reject: reject
-                        }
-                    }
-                };
-                SERVICE.DefaultPipelineService.startPipeline('dataImportInitializerPipeline', input, response);
-            });
-        } catch (error) {
-            return Promise.reject(error);
-        }
+        return SERVICE.DefaultPipelineService.start('dataImportInitializerPipeline', input, {});
     },
 
     importInitData: function (request, callback) {
         let input = request.local || request;
         input.dataType = 'init';
-
         if (callback) {
-            his.importData(input).then(success => {
+            this.importData(input).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
@@ -48,7 +33,7 @@ module.exports = {
         let input = request.local || request;
         input.dataType = 'core';
         if (callback) {
-            his.importData(input).then(success => {
+            this.importData(input).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
@@ -62,7 +47,7 @@ module.exports = {
         let input = request.local || request;
         input.dataType = 'sample';
         if (callback) {
-            his.importData(input).then(success => {
+            this.importData(input).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);

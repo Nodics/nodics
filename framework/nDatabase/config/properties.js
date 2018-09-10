@@ -12,6 +12,10 @@
 module.exports = {
     database: {
         processInitialData: false,
+        modelUpdateOptions: {
+            upsert: true,
+            returnOriginal: false
+        },
         default: {
             databaseType: 'mongodb', //for Cassandra use 'cassandra'
             mongodb: {

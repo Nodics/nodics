@@ -97,7 +97,21 @@ module.exports = {
             model: false,
             service: false,
             event: false,
-            router: false
+            router: false,
+            definition: {
+                loginId: {
+                    type: 'string',
+                    required: true
+                }
+            },
+            indexes: {
+                indexLoginId: {
+                    name: 'loginId',
+                    options: {
+                        unique: true
+                    }
+                }
+            }
         },
 
         employee: {

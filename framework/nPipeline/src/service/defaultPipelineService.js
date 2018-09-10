@@ -13,18 +13,36 @@ const _ = require('lodash');
 
 module.exports = {
     pipelineLOG: SYSTEM.createLogger('PipelineHead'),
-    handleSucessEnd: function (request, response) {
+
+    handleSucessEnd: function (request, response, process) {
         this.LOG.warn('This is default success handler, will not perform anything ');
+        process.resolve(response.success);
     },
 
-    handleFailureEnd: function (request, response) {
-        this.LOG.warn('This is default failure handler, will not perform anything ');
-    },
-
-    handleErrorEnd: function (request, response) {
+    handleErrorEnd: function (request, response, process) {
         this.LOG.warn('This is default error handler, will not perform anything ');
+        process.reject(response.errors);
     },
-    startPipeline: function (pipelineName, request, response, callback) {
+
+    start: function (name, request, response) {
+        return new Promise((resolve, reject) => {
+            if (name !== 'defaultPipeline' && PIPELINE[name]) {
+                let id = name + '_' + SYSTEM.generateUniqueCode();
+                try {
+                    let defaultPipeline = _.merge({}, PIPELINE.defaultPipeline);
+                    let pipelineDef = _.merge(defaultPipeline, PIPELINE[name]);
+                    let pipeline = new CLASSES.PipelineHead(name, pipelineDef);
+                    pipeline.LOG = this.pipelineLOG;
+                    pipeline.buildPipeline();
+                    pipeline.start(id, request, response, resolve, reject);
+                } catch (err) {
+                    reject('Error while creating pipeline: ' + id + ' - ' + err.toString());
+                }
+            }
+        });
+    },
+
+    /*startPipeline: function (pipelineName, request, response, callback) {
         if (pipelineName !== 'defaultPipeline' && PIPELINE[pipelineName]) {
             let id = SYSTEM.generateUniqueCode();
             // TODO: Make this id unique to track nested pipeline management - will implement in Future
@@ -37,13 +55,15 @@ module.exports = {
                 pipeline.start(id, request, response);
             } catch (err) {
                 this.LOG.error('Error while creating pipeline : ', id, ' - ', err);
-                response.errors.push({
-                    code: 'PROC_ERR_0000',
-                    message: 'PROC_ERR_0000',
-                    error: err.toString()
-                });
+                if (UTILS.isArray(err)) {
+                    err.forEach(element => {
+                        response.errors.push(element);
+                    });
+                } else {
+                    response.errors.push(err);
+                }
                 throw new Error('Error while creating pipeline : ', id, ' - ', err);
             }
         }
-    }
+    }*/
 };

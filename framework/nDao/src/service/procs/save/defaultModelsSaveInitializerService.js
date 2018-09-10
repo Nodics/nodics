@@ -16,8 +16,98 @@ module.exports = {
         if (!request.models && !request.model) {
             process.error(request, response, 'Models to be saved can not be null in request');
         } else {
+            let models = [];
+            if (request.models) {
+                if (UTILS.isObject(request.models)) {
+                    models.push(request.models);
+                } else {
+                    models = [].concat(request.models);
+                }
+            } else {
+                models.push(request.model);
+            }
+            request.models = models;
             process.nextSuccess(request, response);
         }
+    },
+
+    handleNestedModelsSave: function (request, response, process) {
+        this.LOG.debug('Saving nexted models');
+        let rawSchema = request.collection.rawSchema;
+        if (rawSchema.refSchema) {
+            this.handleNestedProperties(request, response, Object.keys(rawSchema.refSchema)).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    handleNestedProperties: function (request, response, properties) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (properties && properties.length > 0) {
+                let property = properties.shift();
+                _self.handleNestedModels(request, response, {
+                    counter: 0,
+                    property: property
+                }).then(success => {
+                    _self.handleNestedProperties(request, response, properties).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    handleNestedModels: function (request, response, options) {
+        return new Promise((resolve, reject) => {
+            if (options.counter < request.models.length) {
+                let model = request.models[options.counter];
+                if (model[options.property]) {
+                    let rawSchema = request.collection.rawSchema;
+                    let propDef = rawSchema.refSchema[options.property];
+                    let models = [];
+                    if (propDef.type === 'one') {
+                        models.push(model[options.property]);
+                    } else {
+                        if (UTILS.isArray(model[options.property])) {
+                            models = model[options.property];
+                        } else {
+                            models.push(model[options.property]);
+                        }
+                    }
+                    SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].save({
+                        tenant: request.tenant,
+                        models: models
+                    }).then(success => {
+                        if (propDef.type === 'one') {
+                            model[options.property] = success[0]._id;
+                        } else {
+                            model[options.property] = [];
+                            success.forEach(element => {
+                                model[options.property].push(element._id);
+                            });
+                        }
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            } else {
+                resolve(true);
+            }
+        });
     },
 
     preProcessor: function (request, response, process) {
@@ -27,13 +117,7 @@ module.exports = {
 
     processModels: function (request, response, process) {
         this.LOG.debug('Processing models');
-        let models = [];
-        if (request.models) {
-            models = [].concat(request.models);
-        } else {
-            models.push(request.model);
-        }
-        this.handleModelsSave(request, response, models).then(success => {
+        this.handleModelsSave(request, response, request.models).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -42,46 +126,35 @@ module.exports = {
 
     handleModelsSave: function (request, response, models) {
         return new Promise((resolve, reject) => {
-            let model = models.shift();
-            try {
-                this.handleModelSave(request, response, model).then(success => {
-                    response.success.push(success);
-                    if (models.length > 0) {
-                        this.handleModelsSave(request, response, models).then(success => {
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        resolve(true);
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(error);
-            }
-
-        });
-    },
-
-    handleModelSave: function (request, response, model) {
-        return new Promise((resolve, reject) => {
-            try {
-                request.model = model;
-                response = {
-                    modelSaveInitializerPipeline: {
-                        promise: {
-                            resolve: resolve,
-                            reject: reject
+            if (models && models.length > 0) {
+                request.model = models.shift();
+                try {
+                    SERVICE.DefaultPipelineService.start('modelSaveInitializerPipeline', request, {}).then(success => {
+                        if (UTILS.isArray(success)) {
+                            success.forEach(element => {
+                                response.success.push(element);
+                            });
+                        } else {
+                            response.success.push(success);
                         }
-                    }
-                };
-                SERVICE.DefaultPipelineService.startPipeline('modelSaveInitializerPipeline', request, response);
-            } catch (error) {
-                reject(error);
+                        if (models.length > 0) {
+                            this.handleModelsSave(request, response, models).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
+                            resolve(true);
+                        }
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } catch (error) {
+                    reject(error);
+                }
+            } else {
+                resolve(true);
             }
-
         });
     },
 
@@ -90,18 +163,11 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    handleSucessEnd: function (request, response) {
-        this.LOG.debug('Request has been processed successfully');
-        response.modelsSaveInitializerPipeline.promise.resolve(response.success);
+    handleSucessEnd: function (request, response, process) {
+        process.resolve(response.success);
     },
 
-    handleFailureEnd: function (request, response) {
-        this.LOG.error('Request has been processed with some failures');
-        response.modelsSaveInitializerPipeline.promise.reject(response.success);
-    },
-
-    handleErrorEnd: function (request, response) {
-        this.LOG.error('Request has been processed and got errors');
-        response.modelsSaveInitializerPipeline.promise.reject(response.result.error);
+    handleErrorEnd: function (request, response, process) {
+        process.reject(response.errors);
     }
 };
