@@ -12,7 +12,8 @@
         "module:vue": "node -e 'require(\"./nodics\").genVueModule()'",
         "clean": "node -e 'require(\"./nodics\").cleanAll()'",
         "build": "node -e 'require(\"./nodics\").buildAll()'",
-        "start": "node -e 'require(\"./nodics\").start()'"
+        "start": "node -e 'require(\"./nodics\").start()'",
+        "debug": "node --inspect-brk=9229 -e 'require(\"./nodics\").start()'"
     },
     "repository": {
         "type": "git",

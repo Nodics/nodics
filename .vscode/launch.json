@@ -12,7 +12,7 @@
         },
         {
             "name": "Remote Debug",
-            "type":"node",
+            "type": "node",
             "request": "attach",
             "port": 9229,
             "address": "localhost",

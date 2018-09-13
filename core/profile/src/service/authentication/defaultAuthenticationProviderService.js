@@ -11,32 +11,6 @@
 
 module.exports = {
 
-    retrieveEnterprise: function (enterpriseCode) {
-        return new Promise((resolve, reject) => {
-            if (UTILS.isBlank(enterpriseCode)) {
-                reject('Enterprise Code is invalid or null');
-            } else {
-                SERVICE.DefaultEnterpriseService.get({
-                    tenant: 'default',
-                    options: {
-                        recursive: true,
-                        query: {
-                            enterpriseCode: enterpriseCode
-                        }
-                    }
-                }).then(enterprises => {
-                    if (enterprises.length <= 0) {
-                        reject('Invalid enterprise code');
-                    } else {
-                        resolve(enterprises[0]);
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-            }
-        });
-    },
-
     updateAuthData: function (active, enterprise) {
         let _self = this;
         active.lastAttempt = new Date();
@@ -61,68 +35,134 @@ module.exports = {
         this.updateAuthData(active, enterprise);
     },
 
-    authenticate: function (request, callback) {
+    authenticateEmployee: function (request, callback) {
         let input = request.local || request;
         let _self = this;
-        _self.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
-            SERVICE.DefaultPersonService.findByLoginId({
+        SERVICE.DefaultEnterpriseService.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
+            SERVICE.DefaultEmployeeService.findByLoginId({
                 tenant: enterprise.tenant.name,
                 loginId: input.loginId,
-                enterpriseCode: enterprise.enterpriseCode
-            }).then(person => {
-                SERVICE.DefaultPersonService.findActive({
-                    tenant: enterprise.tenant.name,
-                    loginId: input.loginId,
-                    _id: person._id
-                }).then(active => {
-                    if (active.locked || !active.active) {
-                        callback('Account is currently in locked state or has been disabled');
-                    } else {
-                        SERVICE.DefaultPersonService.findPassword({
-                            tenant: enterprise.tenant.name,
-                            enterpriseCode: enterprise.enterpriseCode,
-                            loginId: person.loginId,
-                            _id: person._id
-                        }).then(password => {
-                            SYSTEM.compareHash(input.password, password.password).then(match => {
-                                if (match) {
-                                    active.attempts = 1;
-                                    _self.updateAuthData(active, enterprise);
-                                    try {
-                                        let key = enterprise._id + person._id + (new Date()).getTime();
-                                        let hash = SYSTEM.generateHash(key);
-                                        _self.addToken(input.moduleName, input.source, hash, {
-                                            person: person,
-                                            enterprise: enterprise
-                                        }).then(success => {
-                                            callback(null, {
-                                                authToken: hash
-                                            });
-                                        }).catch(error => {
-                                            callback(error);
-                                        });
-                                    } catch (error) {
-                                        callback('Invalid authentication request : Internal error: ' + error);
-                                    }
-                                } else {
-                                    _self.updateFailedAuthData(active, enterprise);
-                                    callback('Invalid authentication request : Given password is not valid');
-                                }
-                            }).catch(error => {
-                                callback('Invalid authentication request : ' + error);
-                            });
-                        }).catch(error => {
-                            callback('Invalid authentication request : ' + error);
-                        });
-                    }
+                enterpriseCode: enterprise.enterpriseCode,
+                type: 'Employee'
+            }).then(employee => {
+                _self.authenticate({
+                    input: input,
+                    enterprise: enterprise,
+                    person: employee
+                }).then(success => {
+                    callback(null, success);
                 }).catch(error => {
-                    callback('Invalid authentication request : ' + error);
+                    callback(error);
                 });
             }).catch(error => {
-                callback('Invalid authentication request : ' + error);
+                callback(error);
             });
         }).catch(error => {
-            callback('Invalid authentication request : ' + error);
+            callback(error);
+        });
+    },
+
+    authenticateCustomer: function (request, callback) {
+        let input = request.local || request;
+        let _self = this;
+        SERVICE.DefaultEnterpriseService.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
+            SERVICE.DefaultCustomerService.findByLoginId({
+                tenant: enterprise.tenant.name,
+                loginId: input.loginId,
+                enterpriseCode: enterprise.enterpriseCode,
+                type: 'Customer'
+            }).then(customer => {
+                _self.authenticate({
+                    input: input,
+                    enterprise: enterprise,
+                    person: customer
+                }).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            }).catch(error => {
+                callback(error);
+            });
+        }).catch(error => {
+            callback(error);
+        });
+    },
+
+    authenticate: function (options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultActiveService.findActive({
+                tenant: options.enterprise.tenant.name,
+                loginId: options.person.loginId,
+                _id: options.person._id
+            }).then(active => {
+                if (active.locked || !active.active) {
+                    reject('Account is currently in locked state or has been disabled');
+                } else {
+                    options.active = active;
+                    _self.verifyPassword(options).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    verifyPassword: function (options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPasswordService.findPassword({
+                tenant: options.enterprise.tenant.name,
+                loginId: options.person.loginId,
+                enterpriseCode: options.enterprise.enterpriseCode
+            }).then(password => {
+                SYSTEM.compareHash(options.input.password, password.password).then(match => {
+                    if (match) {
+                        _self.createAuthToken(options).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        _self.updateFailedAuthData(active, enterprise);
+                        reject('Invalid authentication request : Given password is not valid');
+                    }
+                }).catch(error => {
+                    reject('Invalid authentication request : ' + error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    createAuthToken: function (options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            options.active.attempts = 1;
+            _self.updateAuthData(options.active, options.enterprise);
+            try {
+                let key = options.enterprise._id + options.person._id + (new Date()).getTime();
+                let hash = SYSTEM.generateHash(key);
+                _self.addToken(options.input.moduleName, options.input.source, hash, {
+                    person: options.person,
+                    enterprise: options.enterprise,
+                    type: options.type
+                }).then(success => {
+                    resolve({
+                        authToken: hash
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject('Invalid authentication request : Internal error: ' + error);
+            }
         });
     },
 

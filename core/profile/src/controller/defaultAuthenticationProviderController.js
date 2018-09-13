@@ -11,17 +11,25 @@
 
 module.exports = {
 
-    authenticate: function (request, callback) {
+    authenticateEmployee: function (request, callback) {
         request.local.loginId = request.get('loginId');
         request.local.password = request.get('password');
         request.local.enterpriseCode = request.get('enterpriseCode');
         request.local.source = request.get('source');
-        FACADE.DefaultAuthenticationProviderFacade.authenticate(request, callback);
+        FACADE.DefaultAuthenticationProviderFacade.authenticateEmployee(request, callback);
+
+    },
+
+    authenticateCustomer: function (request, callback) {
+        request.local.loginId = request.get('loginId');
+        request.local.password = request.get('password');
+        request.local.enterpriseCode = request.get('enterpriseCode');
+        request.local.source = request.get('source');
+        FACADE.DefaultAuthenticationProviderFacade.authenticateCustomer(request, callback);
 
     },
 
     authorize: function (request, callback) {
         FACADE.DefaultAuthenticationProviderFacade.authorize(request, callback);
-
     }
 };

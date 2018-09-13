@@ -85,6 +85,7 @@ Todos:
     - Keep only default App server configuration, that can be redefined in respective servers
     - Validate Enterprise change or Authorization change in terms of authToken storing for each module
     - Check authToken invalidation logic for each module 
+    - Check event publishing happening in interceptor on Enterprise or Person Update
     
 Todos:
   - Test merge process for multi hiererchy function definitions within service
@@ -109,6 +110,7 @@ Todos:
   - Provide default value initializer from both level
   - Create update service to update Schema related changes, like validators, indexes and all
   - Add Watcher configuration at schema level, and push notifications to EMS
+  - Create service to run indexes update
   Cassandra Support task:
     - Configure conection setting separate for mongodb and cassandra
     - Create schema file separate for both mongo and cassandra (mongodbSchema and cassandraSchema)

@@ -11,8 +11,12 @@
 
 module.exports = {
 
-    authenticate: function (request, callback) {
-        SERVICE.DefaultAuthenticationProviderService.authenticate(request, callback);
+    authenticateEmployee: function (request, callback) {
+        SERVICE.DefaultAuthenticationProviderService.authenticateEmployee(request, callback);
+    },
+
+    authenticateCustomer: function (request, callback) {
+        SERVICE.DefaultAuthenticationProviderService.authenticateCustomer(request, callback);
     },
 
     authorize: function (request, callback) {

@@ -279,6 +279,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (options.indexedFieldList.length > 0) {
                 options.indexField = options.indexedFieldList.shift();
+                console.log(options.modelName, ' -> ', options.indexField);
                 SYSTEM.createIndex(options).then(success => {
                     SYSTEM.createIndexes(options).then(success => {
                         resolve(success);

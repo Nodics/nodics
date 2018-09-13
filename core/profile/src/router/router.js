@@ -48,12 +48,25 @@ module.exports = {
         },
 
         authenticate: {
-            authorize: {
+            authenticateEmployee: {
                 secured: true,
-                key: '/authenticate',
+                key: '/employee/authenticate',
                 method: 'POST',
                 handler: 'DefaultAuthenticationProviderController',
-                operation: 'authenticate',
+                operation: 'authenticateEmployee',
+                help: {
+                    requestType: 'secured',
+                    message: 'loginId, password and enterpriseCode need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/authenticate',
+                }
+            },
+            authenticateCustomer: {
+                secured: true,
+                key: '/customer/authenticate',
+                method: 'POST',
+                handler: 'DefaultAuthenticationProviderController',
+                operation: 'authenticateCustomer',
                 help: {
                     requestType: 'secured',
                     message: 'loginId, password and enterpriseCode need to set within header',
@@ -66,7 +79,7 @@ module.exports = {
         authorize: {
             authorize: {
                 secured: true,
-                key: '/authorize',
+                key: '/employee/authorize',
                 method: 'POST',
                 handler: 'DefaultAuthenticationProviderController',
                 operation: 'authorize',

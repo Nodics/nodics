@@ -271,7 +271,6 @@ module.exports = {
             }
         });
     },
-
     processNextHeader: function (request, response, options, resolve, reject) {
         let headers = request[options.importType].headers;
         let phaseLimit = CONFIG.get('dataImportPhasesLimit') || 5;

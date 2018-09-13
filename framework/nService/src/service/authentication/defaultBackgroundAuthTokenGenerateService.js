@@ -17,7 +17,7 @@ module.exports = {
         return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'profile',
             methodName: 'POST',
-            apiName: 'authenticate',
+            apiName: 'employee/authenticate',
             header: config
         });
     },
@@ -64,7 +64,7 @@ module.exports = {
                     }
                 }).catch(error => {
                     this.LOG.error('While hitting url: ', JSON.stringify(requestUrl));
-                    this.LOG.error(error);
+                    console.log(error);
                     reject(error);
                 });
             } else {

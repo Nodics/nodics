@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     loadFileData: function (request, response, process) {
         this.LOG.debug('Loading data from JS file: ', request.fileName);
@@ -21,7 +23,7 @@ module.exports = {
                     finalData = _.merge(finalData, require(fileObj.list[counter]));
                 }
             }
-            request.finalData = finalData;
+            request.finalData = _.merge({}, finalData);
             process.nextSuccess(request, response);
         } else {
             this.LOG.warn('Could not found any data to import for: ', request.fileName);

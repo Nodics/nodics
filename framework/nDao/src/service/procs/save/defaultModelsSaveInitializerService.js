@@ -72,18 +72,16 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (options.counter < request.models.length) {
                 let model = request.models[options.counter];
-                if (model[options.property]) {
+                if (model[options.property] &&
+                    (!UTILS.isObjectId(model[options.property]) ||
+                        UTILS.isArrayOfObject(model[options.property]))) {
                     let rawSchema = request.collection.rawSchema;
                     let propDef = rawSchema.refSchema[options.property];
                     let models = [];
                     if (propDef.type === 'one') {
                         models.push(model[options.property]);
                     } else {
-                        if (UTILS.isArray(model[options.property])) {
-                            models = model[options.property];
-                        } else {
-                            models.push(model[options.property]);
-                        }
+                        models = model[options.property];
                     }
                     SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].save({
                         tenant: request.tenant,

@@ -20,7 +20,7 @@ module.exports = {
             databaseType: 'mongodb', //for Cassandra use 'cassandra'
             mongodb: {
                 master: {
-                    URI: 'mongodb://localhost:27017',
+                    URI: 'mongodb://127.0.0.1:27017',
                     databaseName: 'nodicsMaster',
                     options: {
                         useNewUrlParser: true,
@@ -29,7 +29,7 @@ module.exports = {
                     }
                 },
                 test: {
-                    URI: 'mongodb://localhost:27017/nodicsTest',
+                    URI: 'mongodb://127.0.0.1:27017',
                     databaseName: 'nodicsTest',
                     options: {
                         useNewUrlParser: true,

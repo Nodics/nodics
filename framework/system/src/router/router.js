@@ -18,7 +18,7 @@ module.exports = {
                 secured: true,
                 key: '/import/init',
                 method: 'POST',
-                handler: 'DefaultImportController',
+                controller: 'DefaultImportController',
                 operation: 'importInitData',
                 help: {
                     requestType: 'secured',

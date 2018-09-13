@@ -8,7 +8,6 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-const ObjectId = require('mongodb').ObjectId;
 
 const _ = require('lodash');
 

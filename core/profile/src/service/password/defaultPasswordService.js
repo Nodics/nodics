@@ -10,9 +10,12 @@
  */
 
 module.exports = {
-    findByLoginId: function (input) {
+
+    findPassword: function (input) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultCustomerService.get({
+            console.log('  11');
+            _self.get({
                 tenant: input.tenant,
                 options: {
                     query: {
@@ -20,15 +23,20 @@ module.exports = {
                         enterpriseCode: input.enterpriseCode
                     }
                 }
-            }).then(customers => {
-                if (customers.length <= 0) {
-                    reject('Invalid login id');
+            }).then(passwords => {
+                console.log('  12');
+                if (passwords.length <= 0) {
+                    console.log('  13');
+                    reject('Invalid password detail');
                 } else {
-                    resolve(customers[0]);
+                    console.log('  15');
+                    resolve(passwords[0]);
                 }
             }).catch(error => {
+                console.log('  16');
                 reject(error);
             });
         });
-    },
+    }
+
 };
