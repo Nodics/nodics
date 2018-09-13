@@ -11,7 +11,7 @@
 
 module.exports = {
     record0: {
-        _id: '5a9e7dd88ac6ed3d73a76713',
+        code: 'publishEvents',
         enterpriseCode: 'default',
         tenant: 'default',
         name: 'publishEvents',
@@ -19,7 +19,7 @@ module.exports = {
         targetNodeId: 0,
         runOnInit: false,
         jobDetail: {
-            startNode: 'SERVICE.EventHandlerJobService.runJob'
+            startNode: 'SERVICE.DefaultEventHandlerJobService.runJob'
         },
         triggers: [{
             isActive: true,
@@ -36,4 +36,4 @@ module.exports = {
         lastResult: 'NEW',
         state: 'NEW'
     }
-}
+};

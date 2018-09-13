@@ -14,7 +14,7 @@ module.exports = {
     runJob: function (definition, cronJob) {
         let _self = this;
         this.triggerEventHandlerJob(definition, cronJob, () => {
-            DAO.CronJobDao.update({
+            SERVICE.DefaultCronJobService.save({
                 tenant: definition.tenant,
                 models: [definition]
             }).then(response => {
@@ -25,7 +25,7 @@ module.exports = {
         });
     },
 
-    prepareURL: function (definition, cronJob) {
+    prepareURL: function (definition) {
         let connectionType = 'abstract';
         let nodeId = '0';
         if (definition.targetNodeId) {
@@ -37,7 +37,7 @@ module.exports = {
             nodeId: nodeId,
             moduleName: 'nems',
             methodName: 'GET',
-            apiName: 'event/process',
+            apiName: '/event/process',
             requestBody: {},
             isJsonResponse: true,
             header: {
@@ -48,9 +48,9 @@ module.exports = {
 
     triggerEventHandlerJob: function (definition, cronJob, callback) {
         let _self = this;
-        try {
-            SERVICE.DefaultModuleService.fetch(this.prepareURL(definition, cronJob),
-                (error, response) => {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultModuleService.fetch(this.prepareURL(definition, cronJob), (error, response) => {
                     _self.LOG.debug('Events processed with response');
                     let logMessage = '';
                     if (error) {
@@ -58,7 +58,7 @@ module.exports = {
                     } else {
                         logMessage = JSON.stringify(response);
                     }
-                    DAO.CronJobLogDao.save({
+                    SERVICE.DefaultCronJobLogService.save({
                         tenant: definition.tenant,
                         models: [{
                             log: logMessage
@@ -67,18 +67,21 @@ module.exports = {
                         if (!definition.logs) {
                             definition.logs = [];
                         }
-                        if (models.length > 0) definition.logs.push(models[0]._id);
+                        if (models.length > 0) {
+                            definition.logs.push(models[0]._id);
+                        }
                         definition.lastResult = ENUMS.CronJobStatus.SUCCESS;
                         definition.state = ENUMS.CronJobState.FINISHED;
-                        callback();
+                        resolve();
                     }).catch(error => {
                         definition.lastResult = ENUMS.CronJobStatus.ERROR;
                         definition.state = ENUMS.CronJobState.FINISHED;
-                        callback();
+                        resolve();
                     });
                 });
-        } catch (error) {
-            _self.LOG.error(error);
-        }
+            } catch (error) {
+                _reject(error);
+            }
+        });
     }
 };

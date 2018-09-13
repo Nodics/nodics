@@ -17,7 +17,7 @@ module.exports = {
         return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'profile',
             methodName: 'POST',
-            apiName: 'employee/authenticate',
+            apiName: '/employee/authenticate',
             header: config
         });
     },

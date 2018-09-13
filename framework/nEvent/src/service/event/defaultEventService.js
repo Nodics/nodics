@@ -26,7 +26,7 @@ module.exports = {
         return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'nems',
             methodName: 'put',
-            apiName: 'event/push',
+            apiName: '/event/push',
             requestBody: eventDef,
             isJsonResponse: true,
             header: {

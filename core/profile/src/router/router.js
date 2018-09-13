@@ -79,7 +79,7 @@ module.exports = {
         authorize: {
             authorize: {
                 secured: true,
-                key: '/employee/authorize',
+                key: '/authorize',
                 method: 'POST',
                 handler: 'DefaultAuthenticationProviderController',
                 operation: 'authorize',

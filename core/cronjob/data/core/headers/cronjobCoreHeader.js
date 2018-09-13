@@ -14,11 +14,11 @@ module.exports = {
         eventPublishJob: {
             options: {
                 modelName: 'cronJob',
-                operation: 'saveOrUpdate', //save, update and saveOrUpdate
+                operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'eventPublishJob'
             },
-            rule: {
+            query: {
                 name: 'name'
             }
         }

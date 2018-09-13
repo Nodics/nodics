@@ -23,9 +23,12 @@ module.exports = {
             _.merge(header, options.header);
         }
         let url = SYSTEM.prepareUrl(options);
+        if (!options.apiName.startsWith('/')) {
+            url += '/';
+        }
         return {
             method: options.methodName || 'GET',
-            uri: url + '/' + options.apiName,
+            uri: url + options.apiName,
             headers: header,
             body: options.requestBody || {},
             json: options.isJsonResponse || true

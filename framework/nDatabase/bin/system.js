@@ -587,7 +587,7 @@ module.exports = {
             let requestUrl = SERVICE.DefaultModuleService.buildRequest({
                 moduleName: 'profile',
                 methodName: 'GET',
-                apiName: 'tenant/get',
+                apiName: '/tenant/get',
                 requestBody: {},
                 isJsonResponse: true,
             });

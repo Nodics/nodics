@@ -170,7 +170,7 @@ module.exports = {
             nodeId: event.nodeId || '-1',
             moduleName: event.target,
             methodName: 'POST',
-            apiName: 'event/handle',
+            apiName: '/event/handle',
             requestBody: event,
             isJsonResponse: true,
             header: {

@@ -118,7 +118,6 @@ module.exports = function (name, pipelineDefinition) {
     this.error = function (request, response, err) {
         _preNode = _currentNode;
         _currentNode = _handleError;
-        cosole.log(_currentNode.getName(), ' : ', err);
         if (err) {
             if (UTILS.isArray(err)) {
                 err.forEach(element => {

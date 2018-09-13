@@ -15,7 +15,7 @@ module.exports = {
         return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'profile',
             methodName: 'POST',
-            apiName: 'enterprise/get',
+            apiName: '/enterprise/get',
             requestBody: {
                 recursive: true
             },
