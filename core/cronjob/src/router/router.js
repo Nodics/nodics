@@ -16,7 +16,7 @@ module.exports = {
                 secured: true,
                 key: '/job/create',
                 method: 'GET',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'createJob',
                 help: {
                     requestType: 'secured',
@@ -30,7 +30,7 @@ module.exports = {
                 secured: true,
                 key: '/job/create',
                 method: 'POST',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'createJob',
                 help: {
                     requestType: 'secured',
@@ -49,15 +49,15 @@ module.exports = {
             },
             createGetJobByCode: {
                 secured: true,
-                key: '/job/create/:jobName',
+                key: '/job/create/:jobCode',
                 method: 'GET',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'createJob',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/cronjob/job/create/:jobName',
+                    url: 'http://host:port/nodics/cronjob/job/create/:jobCode',
                     body: 'Specific job will be created'
                 }
             },
@@ -68,7 +68,7 @@ module.exports = {
                 secured: true,
                 key: '/job/update',
                 method: 'GET',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'updateJob',
                 help: {
                     requestType: 'secured',
@@ -82,7 +82,7 @@ module.exports = {
                 secured: true,
                 key: '/job/update',
                 method: 'POST',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'updateJob',
                 help: {
                     requestType: 'secured',
@@ -101,15 +101,15 @@ module.exports = {
             },
             updateGetJobByCode: {
                 secured: true,
-                key: '/job/update/:jobName',
+                key: '/job/update/:jobCode',
                 method: 'GET',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'updateJob',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/cronjob/job/update/:jobName',
+                    url: 'http://host:port/nodics/cronjob/job/update/:jobCode',
                     body: 'Specific job will be updated'
                 }
             },
@@ -118,15 +118,15 @@ module.exports = {
         runJob: {
             runGetJobByCode: {
                 secured: true,
-                key: '/job/run/:jobName',
+                key: '/job/run/:jobCode',
                 method: 'GET',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'runJob',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/cronjob/job/run/:jobName',
+                    url: 'http://host:port/nodics/cronjob/job/run/:jobCode',
                     body: 'Specific job will be executed'
                 }
             },
@@ -135,15 +135,15 @@ module.exports = {
         startJob: {
             startGetJobByCode: {
                 secured: true,
-                key: '/job/start/:jobName',
+                key: '/job/start/:jobCode',
                 method: 'GET',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'startJob',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/cronjob/job/start/:jobName',
+                    url: 'http://host:port/nodics/cronjob/job/start/:jobCode',
                     body: 'Specific job will be started'
                 }
             },
@@ -151,7 +151,7 @@ module.exports = {
                 secured: true,
                 key: '/job/start',
                 method: 'POST',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'startJob',
                 help: {
                     requestType: 'secured',
@@ -166,15 +166,15 @@ module.exports = {
         stopJob: {
             stopGetJobByCode: {
                 secured: true,
-                key: '/job/stop/:jobName',
+                key: '/job/stop/:jobCode',
                 method: 'GET',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'stopJob',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/cronjob/job/stop/:jobName',
+                    url: 'http://host:port/nodics/cronjob/job/stop/:jobCode',
                     body: 'Specific job will be stoped'
                 }
             },
@@ -182,7 +182,7 @@ module.exports = {
                 secured: true,
                 key: '/job/stop',
                 method: 'POST',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'stopJob',
                 help: {
                     requestType: 'secured',
@@ -197,15 +197,15 @@ module.exports = {
         removeJob: {
             removeGetJobByCode: {
                 secured: true,
-                key: '/job/remove/:jobName',
+                key: '/job/remove/:jobCode',
                 method: 'GET',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'removeJob',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/cronjob/job/remove/:jobName',
+                    url: 'http://host:port/nodics/cronjob/job/remove/:jobCode',
                     body: 'Specific job will be removed'
                 }
             },
@@ -213,7 +213,7 @@ module.exports = {
                 secured: true,
                 key: '/job/remove',
                 method: 'POST',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'removeJob',
                 help: {
                     requestType: 'secured',
@@ -228,15 +228,15 @@ module.exports = {
         pauseJob: {
             pauseGetJobByCode: {
                 secured: true,
-                key: '/job/pause/:jobName',
+                key: '/job/pause/:jobCode',
                 method: 'GET',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'pauseJob',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/cronjob/job/pause/:jobName',
+                    url: 'http://host:port/nodics/cronjob/job/pause/:jobCode',
                     body: 'Specific job will be paused'
                 }
             },
@@ -244,7 +244,7 @@ module.exports = {
                 secured: true,
                 key: '/job/pause',
                 method: 'POST',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'pauseJob',
                 help: {
                     requestType: 'secured',
@@ -259,15 +259,15 @@ module.exports = {
         resumeJob: {
             resumeGetJobByCode: {
                 secured: true,
-                key: '/job/resume/:jobName',
+                key: '/job/resume/:jobCode',
                 method: 'GET',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'resumeJob',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/cronjob/job/resume/:jobName',
+                    url: 'http://host:port/nodics/cronjob/job/resume/:jobCode',
                     body: 'Specific job will be resumed'
                 }
             },
@@ -275,7 +275,7 @@ module.exports = {
                 secured: true,
                 key: '/job/resume',
                 method: 'POST',
-                controller: 'CronJobController',
+                controller: 'DefaultCronJobController',
                 operation: 'resumeJob',
                 help: {
                     requestType: 'secured',

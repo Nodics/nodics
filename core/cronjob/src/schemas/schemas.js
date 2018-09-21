@@ -11,12 +11,26 @@
 
 module.exports = {
     cronjob: {
-        trigger: {
+        /*trigger: {
             super: 'init',
             model: true,
             service: false,
-            router: false
-        },
+            router: false,
+            definition: {
+                isActive: {
+                    type: 'bool',
+                    required: true
+                }
+            },
+            indexes: {
+                indexCode: {
+                    name: 'code',
+                    options: {
+                        unique: false
+                    }
+                }
+            }
+        },*/
 
         cronJobLog: {
             super: 'base',
@@ -34,14 +48,56 @@ module.exports = {
             router: true,
             refSchema: {
                 logs: {
-                    modelName: 'CronJobLogModel',
+                    schemaName: 'cronJobLog',
                     type: 'many'
                 }
             },
             virtualProperties: {
-                fullname: 'CronJobVirtualService.getFullName',
+                fullname: 'DefaultCronJobVirtualService.getFullName',
                 jobDetail: {
-                    fullname: 'CronJobVirtualService.getFullName'
+                    fullname: 'DefaultCronJobVirtualService.getFullName'
+                }
+            },
+            definition: {
+                nodeId: {
+                    type: 'number',
+                    required: false
+                },
+                targetNodeId: {
+                    type: 'number',
+                    required: false
+                },
+                runOnInit: {
+                    type: 'bool',
+                    required: true,
+                    default: false
+                },
+                jobDetail: {
+                    type: 'object',
+                    required: true
+                },
+                triggers: {
+                    type: 'array',
+                    required: true
+                },
+                active: {
+                    type: 'object',
+                    required: true
+                },
+                priority: {
+                    type: 'number',
+                    required: true,
+                    default: 0
+                },
+                lastResult: {
+                    type: 'string',
+                    required: true,
+                    default: 'NEW'
+                },
+                state: {
+                    type: 'string',
+                    required: true,
+                    default: 'NEW'
                 }
             }
         },

@@ -229,14 +229,15 @@ module.exports = {
 
         });
 
-        Object.keys(schema.indexes).forEach(propertyName => {
-            let indexConfig = schema.indexes[propertyName];
-            indexedFields[indexConfig.name] = {};
-            indexedFields[indexConfig.name].field = {};
-            indexedFields[indexConfig.name].field[indexConfig.name] = 1;
-            indexedFields[indexConfig.name].options = indexConfig.options;
-        });
-
+        if (schema.indexes) {
+            Object.keys(schema.indexes).forEach(propertyName => {
+                let indexConfig = schema.indexes[propertyName];
+                indexedFields[indexConfig.name] = {};
+                indexedFields[indexConfig.name].field = {};
+                indexedFields[indexConfig.name].field[indexConfig.name] = 1;
+                indexedFields[indexConfig.name].options = indexConfig.options;
+            });
+        }
         if (!schema.schemaOptions) {
             schema.schemaOptions = {};
         }
@@ -279,7 +280,6 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (options.indexedFieldList.length > 0) {
                 options.indexField = options.indexedFieldList.shift();
-                console.log(options.modelName, ' -> ', options.indexField);
                 SYSTEM.createIndex(options).then(success => {
                     SYSTEM.createIndexes(options).then(success => {
                         resolve(success);

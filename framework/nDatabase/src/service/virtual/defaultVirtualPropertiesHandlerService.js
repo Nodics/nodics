@@ -14,6 +14,7 @@ const _ = require('lodash');
 module.exports = {
 
     populateVirtualProperties: function (rawSchema, documents) {
+        console.log('========: ', documents);
         if (!UTILS.isBlank(rawSchema.virtualProperties)) {
             if (documents instanceof Array) {
                 documents.forEach(document => {

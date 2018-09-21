@@ -23,7 +23,7 @@ module.exports = {
         },
         triggers: [{
             isActive: true,
-            triggerId: 'eventPublishTrigger',
+            code: 'eventPublishTrigger',
             expression: '*/2 * * * * *'
         }],
         emails: [{

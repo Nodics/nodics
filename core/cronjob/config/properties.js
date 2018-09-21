@@ -41,10 +41,8 @@ module.exports = {
                     "active.end": {
                         $exists: false
                     }
-                }
-                ]
-            }
-            ]
+                }]
+            }]
         }
     },
     server: {

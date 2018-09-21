@@ -70,40 +70,47 @@ module.exports = {
 
     handleNestedModels: function (request, response, options) {
         return new Promise((resolve, reject) => {
-            if (options.counter < request.models.length) {
-                let model = request.models[options.counter];
-                if (model[options.property] &&
-                    (!UTILS.isObjectId(model[options.property]) ||
-                        UTILS.isArrayOfObject(model[options.property]))) {
-                    let rawSchema = request.collection.rawSchema;
-                    let propDef = rawSchema.refSchema[options.property];
-                    let models = [];
-                    if (propDef.type === 'one') {
-                        models.push(model[options.property]);
-                    } else {
-                        models = model[options.property];
-                    }
-                    SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].save({
-                        tenant: request.tenant,
-                        models: models
-                    }).then(success => {
+            try {
+                if (options.counter < request.models.length) {
+                    let model = request.models[options.counter];
+                    if (model[options.property] &&
+                        (!UTILS.isObjectId(model[options.property]) ||
+                            UTILS.isArrayOfObject(model[options.property]))) {
+                        let rawSchema = request.collection.rawSchema;
+                        let propDef = rawSchema.refSchema[options.property];
+                        let models = [];
                         if (propDef.type === 'one') {
-                            model[options.property] = success[0]._id;
+                            models.push(model[options.property]);
                         } else {
-                            model[options.property] = [];
-                            success.forEach(element => {
-                                model[options.property].push(element._id);
-                            });
+                            models = model[options.property];
                         }
+                        SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].save({
+                            tenant: request.tenant,
+                            models: models
+                        }).then(success => {
+                            console.log('Got success');
+                            if (propDef.type === 'one') {
+                                model[options.property] = success[0]._id;
+                            } else {
+                                model[options.property] = [];
+                                success.forEach(element => {
+                                    model[options.property].push(element._id);
+                                });
+                            }
+                            resolve(true);
+                        }).catch(error => {
+                            console.log('Got error: ', error);
+                            reject(error);
+                        });
+                    } else {
                         resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    }
                 } else {
                     resolve(true);
                 }
-            } else {
-                resolve(true);
+            } catch (error) {
+                console.log(error);
+                reject(error);
             }
         });
     },

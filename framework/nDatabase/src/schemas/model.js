@@ -98,6 +98,7 @@ module.exports = {
                             reject('Failed to update doc');
                         }
                     }).catch(error => {
+                        console.log(error);
                         reject(error);
                     });
                 });
@@ -114,6 +115,7 @@ module.exports = {
                             reject('Failed to create doc');
                         }
                     }).catch(error => {
+                        console.log(error);
                         reject(error);
                     });
                 });

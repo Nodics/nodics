@@ -86,6 +86,12 @@ Todos:
     - Validate Enterprise change or Authorization change in terms of authToken storing for each module
     - Check authToken invalidation logic for each module 
     - Check event publishing happening in interceptor on Enterprise or Person Update
+
+
+Todos:
+  User management process:
+    - Create some default user groups for Employee and Customer
+    - Each user needs to per part of at least one group
     
 Todos:
   - Test merge process for multi hiererchy function definitions within service

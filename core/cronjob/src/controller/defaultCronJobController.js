@@ -18,14 +18,14 @@ module.exports = {
         if (!UTILS.isBlank(request.body)) {
             request.local = _.merge(request.local || {}, request.body);
             FACADE.DefaultCronJobFacade.createJob(request, callback);
-        } else if (request.params.jobName) {
+        } else if (request.params.jobCode) {
             request.local.query = {
-                name: request.params.jobName
+                code: request.params.jobCode
             };
             FACADE.DefaultCronJobFacade.createJob(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
-            callback('Please validate your request, it is not a valid one', null, request);
+            callback('Please validate your request, it is not a valid one', null);
         }
     },
 
@@ -36,9 +36,9 @@ module.exports = {
         if (!UTILS.isBlank(request.body)) {
             request.local = _.merge(request.local || {}, request.body);
             FACADE.DefaultCronJobFacade.updateJob(request, callback);
-        } else if (request.params.jobName) {
+        } else if (request.params.jobCode) {
             request.local.query = {
-                name: request.params.jobName
+                name: request.params.jobCode
             };
             FACADE.DefaultCronJobFacade.updateJob(request, callback);
         } else {
@@ -48,9 +48,9 @@ module.exports = {
     },
 
     runJob: function (request, callback) {
-        if (request.params.jobName) {
+        if (request.params.jobCode) {
             request.local.query = {
-                name: request.params.jobName
+                name: request.params.jobCode
             };
             FACADE.DefaultCronJobFacade.runJob(request, callback);
         } else {
@@ -60,12 +60,13 @@ module.exports = {
     },
 
     startJob: function (request, callback) {
-        request.local.jobNames = [];
-        if (request.params.jobName) {
-            request.local.jobNames.push(request.params.jobName);
+        request.local.jobCodes = [];
+        console.log('request.params.jobCode: ', request.params.jobCode);
+        if (request.params.jobCode) {
+            request.local.jobCodes.push(request.params.jobCode);
             FACADE.DefaultCronJobFacade.startJob(request, callback);
         } else if (request.body instanceof Array) {
-            request.local.jobNames = request.body;
+            request.local.jobCodes = request.body;
             FACADE.DefaultCronJobFacade.startJob(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
@@ -74,12 +75,12 @@ module.exports = {
     },
 
     stopJob: function (request, callback) {
-        request.local.jobNames = [];
-        if (request.params.jobName) {
-            request.local.jobNames.push(request.params.jobName);
+        request.local.jobCodes = [];
+        if (request.params.jobCode) {
+            request.local.jobCodes.push(request.params.jobCode);
             FACADE.DefaultCronJobFacade.stopJob(request, callback);
         } else if (request.body instanceof Array) {
-            request.local.jobNames = request.body;
+            request.local.jobCodes = request.body;
             FACADE.DefaultCronJobFacade.stopJob(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
@@ -88,12 +89,12 @@ module.exports = {
     },
 
     removeJob: function (request, callback) {
-        request.local.jobNames = [];
-        if (request.params.jobName) {
-            request.local.jobNames.push(request.params.jobName);
+        request.local.jobCodes = [];
+        if (request.params.jobCode) {
+            request.local.jobCodes.push(request.params.jobCode);
             FACADE.DefaultCronJobFacade.removeJob(request, callback);
         } else if (request.body instanceof Array) {
-            request.local.jobNames = request.body;
+            request.local.jobCodes = request.body;
             FACADE.DefaultCronJobFacade.removeJob(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
@@ -102,12 +103,12 @@ module.exports = {
     },
 
     pauseJob: function (request, callback) {
-        request.local.jobNames = [];
-        if (request.params.jobName) {
-            request.local.jobNames.push(request.params.jobName);
+        request.local.jobCodes = [];
+        if (request.params.jobCode) {
+            request.local.jobCodes.push(request.params.jobCode);
             FACADE.DefaultCronJobFacade.pauseJob(request, callback);
         } else if (request.body instanceof Array) {
-            request.local.jobNames = request.body;
+            request.local.jobCodes = request.body;
             FACADE.DefaultCronJobFacade.pauseJob(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
@@ -116,12 +117,12 @@ module.exports = {
     },
 
     resumeJob: function (request, callback) {
-        request.local.jobNames = [];
-        if (request.params.jobName) {
-            request.local.jobNames.push(request.params.jobName);
+        request.local.jobCodes = [];
+        if (request.params.jobCode) {
+            request.local.jobCodes.push(request.params.jobCode);
             FACADE.DefaultCronJobFacade.resumeJob(request, callback);
         } else if (request.body instanceof Array) {
-            request.local.jobNames = request.body;
+            request.local.jobCodes = request.body;
             FACADE.DefaultCronJobFacade.resumeJob(request, callback);
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');

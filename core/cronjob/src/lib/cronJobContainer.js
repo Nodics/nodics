@@ -12,15 +12,13 @@
 const _ = require('lodash');
 module.exports = function () {
     let _jobPool = {};
-    let _jobLOG = SYSTEM.createLogger('PipelineHead');
+    let _jobLOG = SYSTEM.createLogger('CronJob');
 
     this.LOG = SYSTEM.createLogger('CronJobContainer');
 
     this.createCronJobs = function (definitions) {
         return new Promise((resolve, reject) => {
             let _self = this;
-            let _success = {};
-            let _failed = {};
             let moduleObject = NODICS.getModule('cronjob');
             if (!UTILS.isBlank(definitions)) {
                 let allJob = [];
@@ -55,8 +53,11 @@ module.exports = function () {
             } else if (definition.active.end && definition.active.end < currentDate) {
                 reject('Job already expired');
             } else {
-                if (!_jobPool[definition.name]) {
+                if (!_jobPool[definition.code]) {
                     let cronJobs = [];
+                    if (!definition.nodeId) {
+                        definition.nodeId = CONFIG.get('nodeId');
+                    }
                     definition.triggers.forEach(function (value) {
                         if (value.isActive && CONFIG.get('nodeId') === definition.nodeId) {
                             let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
@@ -69,11 +70,11 @@ module.exports = function () {
 
                         }
                     });
-                    _jobPool[definition.name] = cronJobs;
-                    resolve(definition.name);
+                    _jobPool[definition.code] = cronJobs;
+                    resolve(definition.code);
                 } else {
-                    _self.LOG.warn('Definition ', definition.name, ' is already available.');
-                    resolve(definition.name);
+                    _self.LOG.warn('Definition ', definition.code, ' is already available.');
+                    resolve(definition.code);
                 }
             }
         });
@@ -82,8 +83,6 @@ module.exports = function () {
     this.updateCronJobs = function (definitions) {
         return new Promise((resolve, reject) => {
             let _self = this;
-            let _success = {};
-            let _failed = {};
             let moduleObject = NODICS.getModule('cronjob');
             if (!UTILS.isBlank(definitions)) {
                 let allJob = [];
@@ -113,23 +112,23 @@ module.exports = function () {
                 reject('Invalid cron job definition');
             } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
                 reject('Invalid cron job definition triggers');
-            } else if (!_jobPool[definition.name]) {
-                _self.LOG.debug('Could not found job, so creating new : ', definition.name);
+            } else if (!_jobPool[definition.code]) {
+                _self.LOG.debug('Could not found job, so creating new : ', definition.code);
                 this.createCronJob(authToken, definition).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
                 });
             } else {
-                let tmpCronJob = _jobPool[definition.name];
+                let tmpCronJob = _jobPool[definition.code];
                 let _running = tmpCronJob[0].isRunning();
                 tmpCronJob.forEach((job) => {
                     job.stopCronJob();
                 });
-                delete _jobPool[definition.name];
+                delete _jobPool[definition.code];
                 this.createCronJob(authToken, definition).then(success => {
                     if (_running) {
-                        _jobPool[definition.name].forEach((job) => {
+                        _jobPool[definition.code].forEach((job) => {
                             job.startCronJob();
                         });
                     }
@@ -180,9 +179,9 @@ module.exports = function () {
                 reject('Job already expired');
             } else {
                 let _running = false;
-                if (_jobPool[definition.name] && _jobPool[definition.name][0].isRunning()) {
-                    _running = _jobPool[definition.name][0].isRunning();
-                    _jobPool[definition.name].forEach(function (job) {
+                if (_jobPool[definition.code] && _jobPool[definition.code][0].isRunning()) {
+                    _running = _jobPool[definition.code][0].isRunning();
+                    _jobPool[definition.code].forEach(function (job) {
                         job.pauseCronJob();
                     });
                 }
@@ -192,22 +191,22 @@ module.exports = function () {
                 tmpCronJob.setAuthToken(authToken);
                 tmpCronJob.init(true);
                 tmpCronJob.setJobPool(_jobPool);
-                if (_jobPool[definition.name] && _running) {
-                    _jobPool[definition.name].forEach(function (job) {
+                if (_jobPool[definition.code] && _running) {
+                    _jobPool[definition.code].forEach(function (job) {
                         job.resumeCronJob();
                     });
                 }
-                resolve(definition.name);
+                resolve(definition.code);
             }
         });
     };
 
-    this.startCronJobs = function (jobNames) {
+    this.startCronJobs = function (jobCodes) {
         let _self = this;
         let _success = {};
         let _failed = {};
         let response = {};
-        jobNames.forEach((value) => {
+        jobCodes.forEach((value) => {
             try {
                 _self.startCronJob(value);
                 _success[value] = {
@@ -223,9 +222,9 @@ module.exports = function () {
         };
     };
 
-    this.startCronJob = function (jobName) {
-        if (jobName && _jobPool[jobName]) {
-            _jobPool[jobName].forEach(function (cronJob) {
+    this.startCronJob = function (jobCode) {
+        if (jobCode && _jobPool[jobCode]) {
+            _jobPool[jobCode].forEach(function (cronJob) {
                 cronJob.startCronJob();
             });
         } else {
@@ -233,12 +232,12 @@ module.exports = function () {
         }
     };
 
-    this.stopCronJobs = function (jobNames) {
+    this.stopCronJobs = function (jobCodes) {
         let _self = this;
         let _success = {};
         let _failed = {};
         let response = {};
-        jobNames.forEach((value) => {
+        jobCodes.forEach((value) => {
             try {
                 _self.stopCronJob(value);
                 _success[value] = {
@@ -254,9 +253,9 @@ module.exports = function () {
         };
     };
 
-    this.stopCronJob = function (jobName) {
-        if (jobName && _jobPool[jobName]) {
-            _jobPool[jobName].forEach(function (cronJob) {
+    this.stopCronJob = function (jobCode) {
+        if (jobCode && _jobPool[jobCode]) {
+            _jobPool[jobCode].forEach(function (cronJob) {
                 cronJob.stopCronJob();
             });
         } else {
@@ -264,12 +263,12 @@ module.exports = function () {
         }
     };
 
-    this.removeCronJobs = function (jobNames) {
+    this.removeCronJobs = function (jobCodes) {
         let _self = this;
         let _success = {};
         let _failed = {};
         let response = {};
-        jobNames.forEach((value) => {
+        jobCodes.forEach((value) => {
             try {
                 _self.removeCronJob(value);
                 _success[value] = {
@@ -285,23 +284,23 @@ module.exports = function () {
         };
     };
 
-    this.removeCronJob = function (jobName) {
-        if (jobName && _jobPool[jobName]) {
-            _jobPool[jobName].forEach(function (cronJob) {
+    this.removeCronJob = function (jobCode) {
+        if (jobCode && _jobPool[jobCode]) {
+            _jobPool[jobCode].forEach(function (cronJob) {
                 cronJob.stopCronJob();
             });
-            delete _jobPool[jobName];
+            delete _jobPool[jobCode];
         } else {
             throw new Error('Either name is not valid or job already removed.');
         }
     };
 
-    this.pauseCronJobs = function (jobNames) {
+    this.pauseCronJobs = function (jobCodes) {
         let _self = this;
         let _success = {};
         let _failed = {};
         let response = {};
-        jobNames.forEach((value) => {
+        jobCodes.forEach((value) => {
             try {
                 _self.pauseCronJob(value);
                 _success[value] = {
@@ -317,9 +316,9 @@ module.exports = function () {
         };
     };
 
-    this.pauseCronJob = function (jobName) {
-        if (jobName && _jobPool[jobName]) {
-            _jobPool[jobName].forEach(function (cronJob) {
+    this.pauseCronJob = function (jobCode) {
+        if (jobCode && _jobPool[jobCode]) {
+            _jobPool[jobCode].forEach(function (cronJob) {
                 cronJob.pauseCronJob();
             });
         } else {
@@ -327,12 +326,12 @@ module.exports = function () {
         }
     };
 
-    this.resumeCronJobs = function (jobNames) {
+    this.resumeCronJobs = function (jobCodes) {
         let _self = this;
         let _success = {};
         let _failed = {};
         let response = {};
-        jobNames.forEach((value) => {
+        jobCodes.forEach((value) => {
             try {
                 _self.resumeCronJob(value);
                 _success[value] = {
@@ -348,9 +347,9 @@ module.exports = function () {
         };
     };
 
-    this.resumeCronJob = function (jobName) {
-        if (jobName && _jobPool[jobName]) {
-            _jobPool[jobName].forEach(function (cronJob) {
+    this.resumeCronJob = function (jobCode) {
+        if (jobCode && _jobPool[jobCode]) {
+            _jobPool[jobCode].forEach(function (cronJob) {
                 cronJob.resumeCronJob();
             });
         } else {
