@@ -11,6 +11,18 @@
 
 module.exports = {
     default: {
+        updateModifiedTimeOnSave: {
+            type: 'preSave',
+            active: 'true',
+            index: 0,
+            handler: 'DefaultSaveInterceptorService.setUpdatedTimestamp'
+        },
+        updateModifiedTimeOnUpdate: {
+            type: 'preUpdate',
+            active: 'true',
+            index: 0,
+            handler: 'DefaultSaveInterceptorService.setUpdatedTimestamp'
+        },
         blockNTestSave: {
             type: 'preSave',
             active: 'true',
@@ -30,7 +42,6 @@ module.exports = {
             index: 0,
             handler: 'DefaultSaveInterceptorService.publishModifiedEvent'
         },
-
         publishModifiedByUpdateEvent: {
             type: 'postUpdate',
             active: 'true',

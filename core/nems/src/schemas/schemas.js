@@ -8,7 +8,6 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-let mongoose = require('mongoose');
 
 module.exports = {
     nems: {

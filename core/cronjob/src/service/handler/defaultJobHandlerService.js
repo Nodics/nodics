@@ -11,36 +11,35 @@
 
 module.exports = {
 
-    handleCronJobStart: function(definition, cronJob) {
+    handleCronJobStart: function (definition, cronJob) {
         this.LOG.info('Job Started........ : ', definition.name);
     },
 
-    handleCronJobEnd: function(definition, cronJob) {
+    handleCronJobEnd: function (definition, cronJob) {
         this.LOG.info('Job End........ : ', definition.name);
     },
 
-    handleCronJobPaused: function(definition, cronJob) {
+    handleCronJobPaused: function (definition, cronJob) {
         this.LOG.info('Job End........ : ', definition.name);
     },
 
-    handleCronJobResumed: function(definition, cronJob) {
+    handleCronJobResumed: function (definition, cronJob) {
         this.LOG.info('Job End........ : ', definition.name);
     },
 
-    handleJobTriggered: function(definition, cronJob) {
+    handleJobTriggered: function (definition, cronJob) {
         this.LOG.info('Job Triggered........ : ', definition.name);
     },
 
-    handleJobCompleted: function(definition, cronJob) {
+    handleJobCompleted: function (definition, cronJob) {
         this.LOG.info('Job Completed........ : ', definition.name);
     },
 
-    handleSuccess: function(definition, job) {
-        //this.LOG.info('=============== handleSuccess');
-        //throw new Error("Cron Job Error");
+    handleSuccess: function (definition, job) {
+        this.LOG.info('Job: ' + definition.code + ' finished successfully');
     },
 
-    handleError: function(definition, job, error) {
-        //this.LOG.info('=============== handleError : ', error);
+    handleError: function (definition, job, error) {
+        this.LOG.error('Please validate job definition for: ' + definition.code + ' Error: ' + error);
     }
 };

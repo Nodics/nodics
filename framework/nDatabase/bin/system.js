@@ -200,35 +200,36 @@ module.exports = {
             required: [],
             properties: {}
         };
-        Object.keys(schema.definition).forEach(propertyName => {
-            let property = _.merge({}, schema.definition[propertyName]);
-            jsonSchema.properties[propertyName] = {};
-            if (property.type) {
-                jsonSchema.properties[propertyName].bsonType = property.type;
-                delete property.type;
-            }
-            if (property.required && property.required === true) {
-                jsonSchema.required.push(propertyName);
-                delete property.required;
-            }
-            if (property.default) {
-                defaultValues[propertyName] = property.default;
-                delete property.default;
-            }
-            if (UTILS.isBlank(property)) {
-                _.merge(jsonSchema.properties[propertyName], property);
-            }
-            if (!property.description) {
-                jsonSchema.properties[propertyName].description = 'must be a ' + jsonSchema.properties[propertyName].bsonType;
-                if (jsonSchema.required.includes(propertyName)) {
-                    jsonSchema.properties[propertyName].description += ' and is required';
-                } else {
-                    jsonSchema.properties[propertyName].description += ' and is not required';
+        if (schema.definition) {
+            Object.keys(schema.definition).forEach(propertyName => {
+                let property = _.merge({}, schema.definition[propertyName]);
+                jsonSchema.properties[propertyName] = {};
+                if (property.type) {
+                    jsonSchema.properties[propertyName].bsonType = property.type;
+                    delete property.type;
                 }
-            }
+                if (property.required && property.required === true) {
+                    jsonSchema.required.push(propertyName);
+                    delete property.required;
+                }
+                if (property.default) {
+                    defaultValues[propertyName] = property.default;
+                    delete property.default;
+                }
+                if (UTILS.isBlank(property)) {
+                    _.merge(jsonSchema.properties[propertyName], property);
+                }
+                if (!property.description) {
+                    jsonSchema.properties[propertyName].description = 'must be a ' + jsonSchema.properties[propertyName].bsonType;
+                    if (jsonSchema.required.includes(propertyName)) {
+                        jsonSchema.properties[propertyName].description += ' and is required';
+                    } else {
+                        jsonSchema.properties[propertyName].description += ' and is not required';
+                    }
+                }
 
-        });
-
+            });
+        }
         if (schema.indexes) {
             Object.keys(schema.indexes).forEach(propertyName => {
                 let indexConfig = schema.indexes[propertyName];

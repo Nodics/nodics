@@ -41,7 +41,7 @@ module.exports = {
         };
         _self.LOG.debug('Starting process to handle events : ');
         input = _.merge(input, this.buildQuery());
-        DAO.EventDao.get(input).then(events => {
+        SERVICE.DefaultEventService.get(input).then(events => {
             _self.LOG.debug('Total events to be processed : ', (events instanceof Array) ? events.length : 1);
             if ((events instanceof Array) && (events.length <= 0)) {
                 callback('None of the events available');

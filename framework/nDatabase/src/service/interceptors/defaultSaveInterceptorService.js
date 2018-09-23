@@ -10,6 +10,17 @@
  */
 
 module.exports = {
+
+    setUpdatedTimestamp: function (model, options) {
+        return new Promise((resolve, reject) => {
+            if (model) {
+                model.updated = new Date();
+            }
+            resolve(true);
+        });
+    },
+
+
     blockNTestSave: function (model, options) {
         return new Promise((resolve, reject) => {
             if (NODICS.isNTestRunning()) {

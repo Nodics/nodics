@@ -205,7 +205,6 @@ module.exports = function () {
         let _self = this;
         let _success = {};
         let _failed = {};
-        let response = {};
         jobCodes.forEach((value) => {
             try {
                 _self.startCronJob(value);

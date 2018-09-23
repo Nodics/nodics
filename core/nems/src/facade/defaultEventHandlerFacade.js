@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    processEvents: function(request, callback) {
-        SERVICE.EventHandlerService.processEvents(request, callback);
+    processEvents: function (request, callback) {
+        SERVICE.DefaultEventHandlerService.processEvents(request, callback);
     }
 };

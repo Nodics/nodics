@@ -46,10 +46,10 @@ module.exports = function (definition, trigger, context, timeZone) {
             throw new Error('Invalid service job node to start');
         }
         if (!_definition.jobDetail.endNode) {
-            _definition.jobDetail.endNode = 'SERVICE.DefaultJobHandlerService.handleSuccess';
+            _definition.jobDetail.endNode = 'DefaultJobHandlerService.handleSuccess';
         }
         if (!_definition.jobDetail.errorNode) {
-            _definition.jobDetail.errorNode = 'SERVICE.DefaultJobHandlerService.handleError';
+            _definition.jobDetail.errorNode = 'DefaultJobHandlerService.handleError';
         }
     };
 
@@ -70,11 +70,20 @@ module.exports = function (definition, trigger, context, timeZone) {
                         }
                         SERVICE.DefaultJobHandlerService.handleJobTriggered(_definition, _self);
                         try {
-                            if (NODICS.getServerState() === 'started' && CONFIG.get('nodeId') === _definition.nodeId) {
-                                eval(_definition.jobDetail.startNode + '(_definition, _self)');
+                            if (NODICS.getServerState() === 'started' &&
+                                (!_definition.nodeId || CONFIG.get('nodeId') === _definition.nodeId)) {
+                                let startNode = _definition.jobDetail.startNode;
+                                let serviceName = startNode.substring(0, startNode.indexOf('.'));
+                                let functionName = startNode.substring(startNode.indexOf('.') + 1, startNode.length);
+                                SERVICE[serviceName][functionName](_definition, _self);
+                                //eval(_definition.jobDetail.startNode + '(_definition, _self)');
                             }
                         } catch (error) {
-                            eval(_definition.jobDetail.errorNode + '(_definition, _self, error)');
+                            let errorNode = _definition.jobDetail.errorNode;
+                            let serviceName = errorNode.substring(0, errorNode.indexOf('.'));
+                            let functionName = errorNode.substring(errorNode.indexOf('.') + 1, errorNode.length);
+                            SERVICE[serviceName][functionName](_definition, _self, error);
+                            //eval(_definition.jobDetail.errorNode + '(_definition, _self, error)');
                         }
                         SERVICE.DefaultJobHandlerService.handleJobCompleted(_definition, _self);
                         if (oneTime) {
@@ -90,10 +99,18 @@ module.exports = function (definition, trigger, context, timeZone) {
                 if (!_paused) {
                     try {
                         if (_running && NODICS.getServerState() === 'started' && CONFIG.get('nodeId') === _definition.nodeId) {
-                            eval(_definition.jobDetail.endNode + '(_definition, _self)');
+                            let endNode = _definition.jobDetail.endNode;
+                            let serviceName = endNode.substring(0, endNode.indexOf('.'));
+                            let functionName = endNode.substring(endNode.indexOf('.') + 1, endNode.length);
+                            SERVICE[serviceName][functionName](_definition, _self);
+                            //eval(_definition.jobDetail.endNode + '(_definition, _self)');
                         }
                     } catch (error) {
-                        eval(_definition.jobDetail.errorNode + '(_definition, _self, error)');
+                        let errorNode = _definition.jobDetail.errorNode;
+                        let serviceName = errorNode.substring(0, errorNode.indexOf('.'));
+                        let functionName = errorNode.substring(errorNode.indexOf('.') + 1, errorNode.length);
+                        SERVICE[serviceName][functionName](_definition, _self, error);
+                        //eval(_definition.jobDetail.errorNode + '(_definition, _self, error)');
                     }
                     SERVICE.DefaultJobHandlerService.handleCronJobEnd(_definition, _self);
                     _running = false;

@@ -11,16 +11,12 @@
 
 module.exports = {
     default: {
-        init: {
+        default: {
             model: false,
             service: false,
             event: false,
             router: false,
             definition: {
-                code: {
-                    type: 'string',
-                    required: true
-                },
                 created: {
                     type: 'date',
                     required: true,
@@ -30,6 +26,19 @@ module.exports = {
                     type: 'date',
                     required: true,
                     default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp'
+                }
+            }
+        },
+        super: {
+            super: 'default',
+            model: false,
+            service: false,
+            event: false,
+            router: false,
+            definition: {
+                code: {
+                    type: 'string',
+                    required: true
                 }
             },
             indexes: {
@@ -42,7 +51,7 @@ module.exports = {
             }
         },
         base: {
-            super: 'init',
+            super: 'super',
             model: false,
             service: false,
             event: false,

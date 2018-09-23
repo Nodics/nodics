@@ -30,7 +30,7 @@ module.exports = {
         },
 
         tenant: {
-            super: 'init',
+            super: 'super',
             model: true,
             service: true,
             event: false,
@@ -85,7 +85,7 @@ module.exports = {
         },
 
         active: {
-            super: 'init',
+            super: 'super',
             model: true,
             service: false,
             event: false,

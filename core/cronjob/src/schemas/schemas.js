@@ -11,31 +11,10 @@
 
 module.exports = {
     cronjob: {
-        /*trigger: {
-            super: 'init',
-            model: true,
-            service: false,
-            router: false,
-            definition: {
-                isActive: {
-                    type: 'bool',
-                    required: true
-                }
-            },
-            indexes: {
-                indexCode: {
-                    name: 'code',
-                    options: {
-                        unique: false
-                    }
-                }
-            }
-        },*/
-
         cronJobLog: {
-            super: 'base',
+            super: 'default',
             model: true,
-            service: false,
+            service: true,
             event: false,
             router: false
         },
@@ -54,9 +33,6 @@ module.exports = {
             },
             virtualProperties: {
                 fullname: 'DefaultCronJobVirtualService.getFullName',
-                jobDetail: {
-                    fullname: 'DefaultCronJobVirtualService.getFullName'
-                }
             },
             definition: {
                 nodeId: {
@@ -76,13 +52,21 @@ module.exports = {
                     type: 'object',
                     required: true
                 },
+                'jobDetail.startNode': {
+                    type: 'string',
+                    required: true,
+                },
                 triggers: {
                     type: 'array',
                     required: true
                 },
                 active: {
                     type: 'object',
-                    required: true
+                    required: true,
+                },
+                'active.start': {
+                    type: 'date',
+                    required: true,
                 },
                 priority: {
                     type: 'number',

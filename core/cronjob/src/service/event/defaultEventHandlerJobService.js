@@ -13,15 +13,10 @@ module.exports = {
 
     runJob: function (definition, cronJob) {
         let _self = this;
-        this.triggerEventHandlerJob(definition, cronJob, () => {
-            SERVICE.DefaultCronJobService.save({
-                tenant: definition.tenant,
-                models: [definition]
-            }).then(response => {
-                _self.LOG.debug('Job : executed successfuly');
-            }).catch(error => {
-                _self.LOG.error('Job : executed with error : ', error);
-            });
+        this.triggerEventHandlerJob(definition, cronJob).then(response => {
+            _self.LOG.debug('Job : executed successfuly');
+        }).catch(error => {
+            _self.LOG.error('Job : executed with error : ', error);
         });
     },
 
@@ -46,42 +41,65 @@ module.exports = {
         });
     },
 
-    triggerEventHandlerJob: function (definition, cronJob, callback) {
+    triggerEventHandlerJob: function (definition, cronJob) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 SERVICE.DefaultModuleService.fetch(this.prepareURL(definition, cronJob), (error, response) => {
-                    _self.LOG.debug('Events processed with response');
                     let logMessage = '';
-                    if (error) {
-                        logMessage = error.toString();
+                    if (error || !response.SUCCESS) {
+                        if (error) {
+                            logMessage = error.toString();
+                            _self.LOG.debug('Event process trigger failed : ' + error);
+                        } else {
+                            logMessage = JSON.stringify(response);
+                            _self.LOG.debug('Event process trigger failed : ' + response.msg);
+                        }
+                        definition.lastResult = ENUMS.CronJobStatus.ERROR.key;
+                        definition.state = ENUMS.CronJobState.FINISHED.key;
                     } else {
                         logMessage = JSON.stringify(response);
+                        definition.lastResult = ENUMS.CronJobStatus.SUCCESS.key;
+                        definition.state = ENUMS.CronJobState.FINISHED.key;
+                        _self.LOG.debug('Event process triggered successfully');
                     }
-                    SERVICE.DefaultCronJobLogService.save({
-                        tenant: definition.tenant,
-                        models: [{
-                            log: logMessage
-                        }]
-                    }).then(models => {
-                        if (!definition.logs) {
-                            definition.logs = [];
-                        }
-                        if (models.length > 0) {
-                            definition.logs.push(models[0]._id);
-                        }
-                        definition.lastResult = ENUMS.CronJobStatus.SUCCESS;
-                        definition.state = ENUMS.CronJobState.FINISHED;
-                        resolve();
-                    }).catch(error => {
-                        definition.lastResult = ENUMS.CronJobStatus.ERROR;
-                        definition.state = ENUMS.CronJobState.FINISHED;
-                        resolve();
-                    });
+                    _self.updateJobLog(definition, logMessage);
+                    _self.updateJob(definition);
+                    resolve();
                 });
             } catch (error) {
-                _reject(error);
+                definition.lastResult = ENUMS.CronJobStatus.ERROR.key;
+                definition.state = ENUMS.CronJobState.FINISHED.key;
+                _self.updateJob(definition);
+                resolve();
             }
+        });
+    },
+
+    updateJobLog: function (definition, log) {
+        let _self = this;
+        SERVICE.DefaultCronJobLogService.save({
+            tenant: definition.tenant,
+            models: [{
+                jobCode: definition.code,
+                log: log
+            }]
+        }).then(models => {
+            _self.LOG.debug('Log for job: ' + definition.code + ' saved');
+        }).catch(error => {
+            _self.LOG.error('While saving log for job: ' + definition.code + ' error: ' + error.toString());
+        });
+    },
+
+    updateJob: function (definition) {
+        let _self = this;
+        SERVICE.DefaultCronJobService.save({
+            tenant: definition.tenant,
+            models: [definition]
+        }).then(response => {
+            _self.LOG.debug('Job : executed successfuly');
+        }).catch(error => {
+            _self.LOG.error('Job : executed with error : ', error);
         });
     }
 };
