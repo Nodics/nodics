@@ -10,13 +10,21 @@
  */
 
 const _ = require('lodash');
+const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
     get: function (request, callback) {
+        request.local.options = request.local.options || {};
         if (request.params.id) {
-            request.local.id = request.params.id;
             request.local.recursive = request.get('recursive') || false;
-            FACADE.FacadeName.getById(request, callback);
+            request.local.options.query = {
+                _id: UTILS.isObjectId(request.params.id) ? request.params.id : ObjectId(request.params.id)
+            };
+        } else if (request.params.code) {
+            request.local.recursive = request.get('recursive') || false;
+            request.local.options.query = {
+                code: request.params.code
+            };
         } else if (!UTILS.isBlank(request.body)) {
             request.local = _.merge(request.local || {}, request.body);
             if (!request.local.recursive) {
@@ -32,12 +40,28 @@ module.exports = {
     },
 
     remove: function (request, callback) {
+        request.local = _.merge(request.local || {}, request.body);
+        FACADE.FacadeName.remove(request, callback);
+    },
+
+    removeById: function (request, callback) {
         request.local.ids = [];
         if (request.params.id) {
-            request.local.ids.push(request.params.id);
-        } else {
-            request.local.ids = request.body;
+            request.local.ids.push(UTILS.isObjectId(request.params.id) ? request.params.id : ObjectId(request.params.id));
+        } else if (UTILS.isArray(request.body) && request.body.length > 0) {
+            request.body.forEach(element => {
+                request.local.ids.push(UTILS.isObjectId(element) ? element : ObjectId(element));
+            });
         }
         FACADE.FacadeName.removeById(request, callback);
+    },
+    removeByCode: function (request, callback) {
+        request.local.codes = [];
+        if (request.params.id) {
+            request.local.codes.push(request.params.code);
+        } else {
+            request.local.codes = request.body;
+        }
+        FACADE.FacadeName.removeByCode(request, callback);
     }
 };

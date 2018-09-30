@@ -151,6 +151,7 @@ module.exports = {
     },
 
     flush: function (cache, prefix, moduleName) {
+        console.log('-- Flushing Item cache: ', prefix);
         return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix);
     },
 

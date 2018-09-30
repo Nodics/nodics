@@ -8,12 +8,36 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
+
     get: function (request) {
         let input = request.local || request;
         input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
         return SERVICE.DefaultPipelineService.start('modelsGetInitializerPipeline', input, {});
+    },
+
+    getById: function (request) {
+        return this.get({
+            tenant: request.tenant,
+            options: {
+                query: {
+                    _id: ObjectId(request.id)
+                }
+            }
+        });
+    },
+
+    getByCode: function (request) {
+        return this.get({
+            tenant: request.tenant,
+            options: {
+                query: {
+                    code: request.code
+                }
+            }
+        });
     },
 
     save: function (request) {
@@ -24,7 +48,38 @@ module.exports = {
 
     remove: function (request) {
         let input = request.local || request;
-        SERVICE.DefaultPipelineService.start('modelsRemoveInitializerPipeline', input, {});
+        input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
+        console.log('Calling pipeline');
+        return SERVICE.DefaultPipelineService.start('modelsRemoveInitializerPipeline', input, {});
+    },
+
+    removeById: function (request) {
+        let input = request.local || request;
+        console.log('under remove by id');
+        return this.remove({
+            tenant: input.tenant,
+            options: {
+                query: {
+                    _id: {
+                        $in: input.ids
+                    }
+                }
+            }
+        });
+    },
+
+    removeByCode: function (request) {
+        let input = request.local || request;
+        return this.remove({
+            tenant: input.tenant,
+            options: {
+                query: {
+                    code: {
+                        $in: input.codes
+                    }
+                }
+            }
+        });
     },
 
     update: function (input) {

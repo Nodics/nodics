@@ -17,6 +17,7 @@ module.exports = {
             collection.getItems = function (input) {
                 return new Promise((resolve, reject) => {
                     try {
+                        console.log(input.query);
                         this.find(input.query, input.queryOptions).toArray((error, result) => {
                             if (error) {
                                 reject(error);
@@ -39,6 +40,7 @@ module.exports = {
                     } else {
                         try {
                             let model = input.model;
+                            console.log('------->> ', input.model);
                             if (input.query && !UTILS.isBlank(input.query)) {
                                 let query = _.merge({}, input.query);
                                 _.each(query, (propertyName, property) => {
@@ -58,7 +60,7 @@ module.exports = {
                                     }
                                     query[property] = value;
                                 });
-                                this.saveByQuery(query, model).then(result => {
+                                this.updateItem(query, model).then(result => {
                                     resolve(result);
                                 }).catch(error => {
                                     reject(error);
@@ -67,7 +69,7 @@ module.exports = {
                                 let query = {
                                     _id: model._id
                                 };
-                                this.saveByQuery(query, model).then(result => {
+                                this.updateItem(query, model).then(result => {
                                     resolve(result);
                                 }).catch(error => {
                                     reject(error);
@@ -76,7 +78,7 @@ module.exports = {
                                 let query = {
                                     code: model.code
                                 };
-                                this.saveByQuery(query, model).then(result => {
+                                this.updateItem(query, model).then(result => {
                                     resolve(result);
                                 }).catch(error => {
                                     reject(error);
@@ -97,7 +99,7 @@ module.exports = {
         },
 
         defineDefaultSaveByQuery: function (collection, rawSchema) {
-            collection.saveByQuery = function (query, model) {
+            collection.updateItem = function (query, model) {
                 let modelUpdateOptions = CONFIG.get('database').modelUpdateOptions;
                 return new Promise((resolve, reject) => {
                     this.findOneAndUpdate(query, { $set: model }, modelUpdateOptions).then(result => {
@@ -131,55 +133,13 @@ module.exports = {
             };
         },
 
-        defineDefaultRemoveById: function (collection, rawSchema) {
+        defineDefaultRemove: function (collection, rawSchema) {
             collection.removeItems = function (input) {
                 return new Promise((resolve, reject) => {
-                    let query = '';
-                    if (input.query) {
-                        query = input.query;
-                    } else {
-                        query = {
-                            _id: {
-                                $in: input.ids
-                            }
-                        };
-                    }
-                    this.deleteMany(query, {}).then(response => {
+                    console.log('===============>>>> ', input.query);
+                    this.deleteMany(input.query, input.queryOptions).then(response => {
+                        console.log('1===============>>>> ', response);
                         resolve(response);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                });
-            };
-        },
-
-        defineDefaultRemoveByCode: function (collection, rawSchema) {
-            collection.removeItems = function (input) {
-                return new Promise((resolve, reject) => {
-                    let query = '';
-                    if (input.query) {
-                        query = input.query;
-                    } else {
-                        query = {
-                            _id: {
-                                $in: input.ids
-                            }
-                        };
-                    }
-                    this.deleteMany(query, {}).then(response => {
-                        resolve(response);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                });
-            };
-        },
-
-        defineDefaultUpdate: function (collection, rawSchema) {
-            collection.updateItems = function (query, model) {
-                return new Promise((resolve, reject) => {
-                    this.updateMany(query, { $set: model }, { upsert: false }).then(result => {
-                        resolve(result);
                     }).catch(error => {
                         reject(error);
                     });

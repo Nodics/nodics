@@ -46,30 +46,33 @@ module.exports = function (name, pipelineDefinition) {
     };
 
     this.buildPipeline = function () {
-        _.each(_pipelineDefinition.nodes, function (value, key) {
-            _nodeList[key] = new CLASSES.PipelineNode(key, value);
-            _nodeList[key].LOG = _nodeLog;
-        });
+        try {
+            _.each(_pipelineDefinition.nodes, function (value, key) {
+                _nodeList[key] = new CLASSES.PipelineNode(key, value);
+                _nodeList[key].LOG = _nodeLog;
+            });
 
-        if (_pipelineDefinition.handleError) {
-            if (_nodeList[_pipelineDefinition.handleError]) {
-                _handleError = _nodeList[_pipelineDefinition.handleError];
+            if (_pipelineDefinition.handleError) {
+                if (_nodeList[_pipelineDefinition.handleError]) {
+                    _handleError = _nodeList[_pipelineDefinition.handleError];
+                } else {
+                    _handleError = new CLASSES.PipelineNode('handleError', {
+                        type: 'function',
+                        pipeline: _pipelineDefinition.handleError
+                    });
+                    _handleError.LOG = _nodeLog;
+                }
             } else {
-                _handleError = new CLASSES.PipelineNode('handleError', {
-                    type: 'function',
-                    pipeline: _pipelineDefinition.handleError
-                });
-                _handleError.LOG = _nodeLog;
+                _handleError = _nodeList.handleError;
             }
-        } else {
-            _handleError = _nodeList.handleError;
-        }
-        _successEndNode = _nodeList.successEnd;
+            _successEndNode = _nodeList.successEnd;
 
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     this.start = function (id, request, response, resolve, reject) {
-        this.LOG.debug('Starting pipeline with pipeline id : ', _pipelineName);
         _resolve = resolve;
         _reject = reject;
         _pipelineId = id;
@@ -156,13 +159,9 @@ module.exports = function (name, pipelineDefinition) {
         if (_currentNode) {
             this.prepareNextNode(request, response);
             if (_currentNode.getType() === 'function') {
-                try {
-                    let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
-                    let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
-                    SERVICE[serviceName][operation](request, response, this);
-                } catch (error) {
-                    this.error(request, response, error);
-                }
+                let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
+                let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
+                SERVICE[serviceName][operation](request, response, this);
             } else {
                 try {
                     SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(success => {

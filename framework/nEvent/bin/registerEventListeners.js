@@ -12,7 +12,7 @@
 const _ = require('lodash');
 
 module.exports = {
-    init: function() {
+    init: function () {
         SYSTEM.LOG.info('Registering events');
         let listeners = SYSTEM.loadFiles('/src/event/listeners.js');
         let commonListeners = listeners.common;

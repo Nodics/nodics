@@ -12,7 +12,7 @@
 module.exports = {
     get: function (request, callback) {
         if (callback) {
-            DAO.DaoName.get(request, callback).then(success => {
+            DAO.DaoName.get(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
@@ -22,9 +22,33 @@ module.exports = {
         }
     },
 
+    getById: function (id, tenant, callback) {
+        if (callback) {
+            DAO.DaoName.getById(id, tenant).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return DAO.DaoName.getById(id, tenant);
+        }
+    },
+
+    getByCode: function (code, tenant, callback) {
+        if (callback) {
+            DAO.DaoName.getByCode(code, tenant).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return DAO.DaoName.getByCode(code, tenant);
+        }
+    },
+
     save: function (request, callback) {
         if (callback) {
-            DAO.DaoName.save(request, callback).then(success => {
+            DAO.DaoName.save(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
@@ -36,13 +60,36 @@ module.exports = {
 
     remove: function (request, callback) {
         if (callback) {
-            DAO.DaoName.remove(request, callback).then(success => {
+            DAO.DaoName.remove(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
             return DAO.DaoName.remove(request);
+        }
+    },
+
+    removeById: function (request, callback) {
+        if (callback) {
+            DAO.DaoName.removeById(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return DAO.DaoName.removeById(request);
+        }
+    },
+    removeByCode: function (request, callback) {
+        if (callback) {
+            DAO.DaoName.removeByCode(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return DAO.DaoName.removeByCode(request);
         }
     }
 };

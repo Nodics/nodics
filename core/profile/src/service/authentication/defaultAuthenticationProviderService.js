@@ -15,7 +15,7 @@ module.exports = {
         let _self = this;
         options.person.lastAttempt = new Date();
         options.person.updated = new Date();
-        if (options.type === 'employee') {
+        if (options.type === 'employee' || options.type === 'Employee') {
             SERVICE.DefaultEmployeeService.save({
                 tenant: options.enterprise.tenant.code,
                 models: [options.person]
@@ -29,7 +29,7 @@ module.exports = {
                 tenant: options.enterprise.tenant.code,
                 models: [options.person]
             }).then(success => {
-                _self.LOG.debug('Employee data has been updated with current time');
+                _self.LOG.debug('Customer data has been updated with current time');
             }).catch(error => {
                 _self.LOG.debug('While updating Active data with current time : ', error);
             });
@@ -37,7 +37,7 @@ module.exports = {
     },
 
     updateFailedAuthData: function (options) {
-        if (options.person.attempts <= CONFIG.get('attemptsToLockAccount')) {
+        if (options.person.attempts < CONFIG.get('attemptsToLockAccount')) {
             options.person.attempts = options.person.attempts + 1;
         } else {
             options.person.locked = true;
@@ -53,13 +53,13 @@ module.exports = {
             SERVICE.DefaultEmployeeService.findByLoginId({
                 tenant: enterprise.tenant.code,
                 loginId: input.loginId,
-                enterpriseCode: enterprise.enterpriseCode,
-                type: 'Employee'
+                enterpriseCode: enterprise.enterpriseCode
             }).then(employee => {
                 _self.authenticate({
                     input: input,
                     enterprise: enterprise,
-                    person: employee
+                    person: employee,
+                    type: 'Employee'
                 }).then(success => {
                     callback(null, success);
                 }).catch(error => {
@@ -80,13 +80,13 @@ module.exports = {
             SERVICE.DefaultCustomerService.findByLoginId({
                 tenant: enterprise.tenant.code,
                 loginId: input.loginId,
-                enterpriseCode: enterprise.enterpriseCode,
-                type: 'Customer'
+                enterpriseCode: enterprise.enterpriseCode
             }).then(customer => {
                 _self.authenticate({
                     input: input,
                     enterprise: enterprise,
-                    person: customer
+                    person: customer,
+                    type: 'Customer'
                 }).then(success => {
                     callback(null, success);
                 }).catch(error => {

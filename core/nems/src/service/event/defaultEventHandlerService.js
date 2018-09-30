@@ -74,6 +74,7 @@ module.exports = {
             if (event.state === ENUMS.EventState.FINISHED.key) {
                 request.response.success.push(event._id);
                 event.type = 'ASYNC';
+                delete event._id;
                 success.push(event);
             } else {
                 event.type = 'ASYNC';
@@ -118,6 +119,9 @@ module.exports = {
                 new Promise((resolve, reject) => {
                     _self.broadcastEvent(event, (err, response) => {
                         try {
+                            if (!event.log) {
+                                event.log = [];
+                            }
                             if (err) {
                                 event.state = ENUMS.EventState.ERROR.key;
                                 event.log.push(err.toString());
@@ -162,10 +166,10 @@ module.exports = {
 
     prepareURL: function (event) {
         let connectionType = 'abstract';
-        let nodeId = '0';
+        let nodeId = 0;
         if (event.targetNodeId) {
             connectionType = 'node';
-            nodeId = definition.targetNodeId;
+            nodeId = event.targetNodeId;
         }
         return SERVICE.DefaultModuleService.buildRequest({
             connectionType: connectionType,
@@ -233,7 +237,7 @@ module.exports = {
                     event.target = moduleName;
                     let nodes = SYSTEM.getModulesPool().getModule(moduleName).getNodes();
                     _.each(nodes, (node, nodeId) => {
-                        event.targetNodeId = nodeId;
+                        event.targetNodeId = parseInt(nodeId, 10);
                         allPromise.push(
                             SERVICE.DefaultModuleService.fetch(_self.prepareURL(event))
                         );

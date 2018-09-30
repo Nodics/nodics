@@ -13,7 +13,7 @@ module.exports = {
     cronjob: {
         testListener: {
             event: 'testMe',
-            listener: 'EventTestService.handleTestEvent'
+            listener: 'DefaultEventTestService.handleTestEvent'
         }
     }
 };

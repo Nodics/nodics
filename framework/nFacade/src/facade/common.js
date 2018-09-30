@@ -19,6 +19,14 @@ module.exports = {
     },
 
     remove: function (request, callback) {
+        return SERVICE.ServiceName.remove(request, callback);
+    },
+
+    removeById: function (request, callback) {
         return SERVICE.ServiceName.removeById(request, callback);
+    },
+
+    removeByCode: function (request, callback) {
+        return SERVICE.ServiceName.removeByCode(request, callback);
     }
 };

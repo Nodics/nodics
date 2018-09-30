@@ -145,12 +145,29 @@ module.exports = {
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
                 }
+            },
+            getByCode: {
+                secured: true,
+                cache: {
+                    enabled: false,
+                    ttl: 20
+                },
+                key: '/schemaName/code/:code',
+                method: 'GET',
+                controller: 'DefaultcontrollerName',
+                operation: 'get',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/code/:code',
+                }
             }
         },
         commonRemoveOperations: {
-            removeById: {
+            remove: {
                 secured: true,
-                key: '/schemaName/id/:id',
+                key: '/schemaName',
                 method: 'DELETE',
                 controller: 'DefaultcontrollerName',
                 operation: 'remove',
@@ -161,12 +178,52 @@ module.exports = {
                     url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
                 }
             },
-            removeByIds: {
+            removeById: {
                 secured: true,
-                key: '/schemaName',
+                key: '/schemaName/id/:id',
                 method: 'DELETE',
                 controller: 'DefaultcontrollerName',
-                operation: 'remove',
+                operation: 'removeById',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
+                }
+            },
+            removeByIds: {
+                secured: true,
+                key: '/schemaName/id',
+                method: 'DELETE',
+                controller: 'DefaultcontrollerName',
+                operation: 'removeById',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName',
+                    body: ['id1', 'id2', 'id3', '...id n']
+                }
+            },
+            removeByCode: {
+                secured: true,
+                key: '/schemaName/code/:code',
+                method: 'DELETE',
+                controller: 'DefaultcontrollerName',
+                operation: 'removeByCode',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
+                }
+            },
+            removeByCodes: {
+                secured: true,
+                key: '/schemaName/code',
+                method: 'DELETE',
+                controller: 'DefaultcontrollerName',
+                operation: 'removeByCode',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',

@@ -111,7 +111,7 @@ module.exports = {
     },
 
     executeQuery: function (request, response, process) {
-        this.LOG.debug('Executing query');
+        this.LOG.debug('Executing get query');
         request.collection.getItems(request).then(result => {
             if (result && UTILS.isArray(result)) {
                 result.forEach(element => {

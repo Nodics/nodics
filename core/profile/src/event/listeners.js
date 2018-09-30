@@ -13,7 +13,7 @@ module.exports = {
     profile: {
         testListener: {
             event: 'testMe',
-            listener: 'EventTestService.handleTestEvent'
+            listener: 'DefaultEventTestService.handleTestEvent'
         }
     }
 };

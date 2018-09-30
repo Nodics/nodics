@@ -196,7 +196,49 @@ module.exports = {
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
 
         nodes: {
-
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.validateRequest',
+                success: 'applyPreInterceptors'
+            },
+            applyPreInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.applyPreInterceptors',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.buildQuery',
+                success: 'executeQuery'
+            },
+            executeQuery: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.executeQuery',
+                success: 'applyPostInterceptors'
+            },
+            applyPostInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.applyPostInterceptors',
+                success: 'invalidateCache'
+            },
+            invalidateCache: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.invalidateCache',
+                success: 'triggerModelChangeEvent'
+            },
+            triggerModelChangeEvent: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.triggerModelChangeEvent',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.handleErrorEnd'
+            }
         }
     },
 
