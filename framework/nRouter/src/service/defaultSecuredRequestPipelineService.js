@@ -19,7 +19,7 @@ module.exports = {
                 request.local.enterprise = result.enterprise;
                 request.local.enterpriseCode = result.enterprise.enterpriseCode;
                 request.local.person = result.person;
-                request.local.tenant = result.enterprise.tenant.name;
+                request.local.tenant = result.enterprise.tenant.code;
                 process.nextSuccess(request, response);
             }
         });

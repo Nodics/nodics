@@ -10,18 +10,19 @@
  */
 
 module.exports = {
-    record0: {
-        code: 'guest',
-        enterpriseCode: 'default',
-        name: {
-            title: 'Mr.',
-            firstName: 'Nodics',
-            lastName: 'Customer',
+    ContactType: {
+        _options: {
+            name: 'ContactType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
         },
-        loginId: 'guest',
-        password: 'nodics',
-        userGroups: ['guestUserGroup'],
-        addresses: ['defaultCustomerAddress'],
-        contacts: ['defaultCustomerContact']
+        definition: [
+            'EMAIL',
+            'PHONE',
+            'FAX',
+            'PAGER'
+        ]
     }
 };

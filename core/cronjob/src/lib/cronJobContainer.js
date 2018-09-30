@@ -48,9 +48,9 @@ module.exports = function () {
                 reject('Invalid cron job definition');
             } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
                 reject('Invalid cron job definition triggers');
-            } else if (definition.active.start > currentDate) {
+            } else if (definition.start > currentDate) {
                 reject('Job can not be started before its start date');
-            } else if (definition.active.end && definition.active.end < currentDate) {
+            } else if (definition.end && definition.end < currentDate) {
                 reject('Job already expired');
             } else {
                 if (!_jobPool[definition.code]) {
@@ -107,7 +107,6 @@ module.exports = function () {
     this.updateCronJob = function (authToken, definition) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            let currentDate = new Date();
             if (UTILS.isBlank(definition)) {
                 reject('Invalid cron job definition');
             } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
@@ -143,8 +142,6 @@ module.exports = function () {
     this.runCronJobs = function (definitions) {
         return new Promise((resolve, reject) => {
             let _self = this;
-            let success = {};
-            let failed = {};
             if (!UTILS.isBlank(definitions)) {
                 let allJob = [];
                 let moduleObject = NODICS.getModule('cronjob');
@@ -173,9 +170,9 @@ module.exports = function () {
                 reject('Invalid cron job definition');
             } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
                 reject('Invalid cron job definition triggers');
-            } else if (definition.active.start > currentDate) {
+            } else if (definition.start > currentDate) {
                 reject('Job can not be started before its start date');
-            } else if (definition.active.end && definition.active.end < currentDate) {
+            } else if (definition.end && definition.end < currentDate) {
                 reject('Job already expired');
             } else {
                 let _running = false;
@@ -185,17 +182,20 @@ module.exports = function () {
                         job.pauseCronJob();
                     });
                 }
-                let tmpCronJob = new CLASSES.CronJob(definition, definition.triggers[0]); //TODO: need to add context and timeZone
-                tmpCronJob.LOG = _jobLOG;
-                tmpCronJob.validate();
-                tmpCronJob.setAuthToken(authToken);
-                tmpCronJob.init(true);
-                tmpCronJob.setJobPool(_jobPool);
-                if (_jobPool[definition.code] && _running) {
-                    _jobPool[definition.code].forEach(function (job) {
-                        job.resumeCronJob();
-                    });
+                if (!definition.nodeId || CONFIG.get('nodeId') === definition.nodeId) {
+                    let tmpCronJob = new CLASSES.CronJob(definition, definition.triggers[0]); //TODO: need to add context and timeZone
+                    tmpCronJob.LOG = _jobLOG;
+                    tmpCronJob.validate();
+                    tmpCronJob.setAuthToken(authToken);
+                    tmpCronJob.init(true);
+                    tmpCronJob.setJobPool(_jobPool);
+                    if (_jobPool[definition.code] && _running) {
+                        _jobPool[definition.code].forEach(function (job) {
+                            job.resumeCronJob();
+                        });
+                    }
                 }
+
                 resolve(definition.code);
             }
         });
@@ -235,7 +235,6 @@ module.exports = function () {
         let _self = this;
         let _success = {};
         let _failed = {};
-        let response = {};
         jobCodes.forEach((value) => {
             try {
                 _self.stopCronJob(value);
@@ -266,7 +265,6 @@ module.exports = function () {
         let _self = this;
         let _success = {};
         let _failed = {};
-        let response = {};
         jobCodes.forEach((value) => {
             try {
                 _self.removeCronJob(value);
@@ -298,7 +296,6 @@ module.exports = function () {
         let _self = this;
         let _success = {};
         let _failed = {};
-        let response = {};
         jobCodes.forEach((value) => {
             try {
                 _self.pauseCronJob(value);
@@ -329,7 +326,6 @@ module.exports = function () {
         let _self = this;
         let _success = {};
         let _failed = {};
-        let response = {};
         jobCodes.forEach((value) => {
             try {
                 _self.resumeCronJob(value);

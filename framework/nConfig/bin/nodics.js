@@ -60,11 +60,11 @@ module.exports = function () {
         _appName = this.getRawModule(_envName).parent;
         _appPath = this.getRawModule(_appName).path;
 
-    }
+    };
 
     this.getNodicsHome = function () {
         return _nodicsHome;
-    }
+    };
 
     this.addRawModule = function (metaData, path, parent) {
         if (!metaData || !path) {
@@ -81,8 +81,8 @@ module.exports = function () {
             index: metaData.index,
             parent: parent,
             metaData: metaData
-        }
-    }
+        };
+    };
 
     this.setRawModels = function (rawModels) {
         _rawModels = rawModels;
@@ -148,8 +148,8 @@ module.exports = function () {
         return _appPath;
     };
 
-    this.addTenant = function (tntName) {
-        _tenants.push(tntName);
+    this.addTenant = function (tntCode) {
+        _tenants.push(tntCode);
     };
     this.getTenants = function () {
         return _tenants;
@@ -374,7 +374,7 @@ module.exports = function () {
             }
             return database[tenant];
         } else {
-            throw new Error('Invalid tenant id...');
+            throw new Error('Invalid tenant id...' + tenant);
         }
     };
 

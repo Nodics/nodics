@@ -12,32 +12,22 @@
 module.exports = {
     profile: {
         default: {
-            /*handleProfileDefaultPreSaveOne: {
-                type: 'preSave',
-                active: 'true',
-                index: 10,
-                handler: 'DefaultProfileSaveInterceptorService.handleProfilePreSave'
-            },
-            handleProfileDefaultPostSaveOne: {
-                type: 'postSave',
-                active: 'true',
-                index: 10,
-                handler: 'DefaultProfileSaveInterceptorService.handleProfilePostSave'
-            }*/
         },
-        password: {
+        employee: {
             encryptPassword: {
                 type: 'preSave',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
             },
-            /*handlePostSavePassword: {
-                type: 'postSave',
+        },
+        customer: {
+            encryptPassword: {
+                type: 'preSave',
                 active: 'true',
                 index: 0,
-                handler: 'DefaultPasswordSaveInterceptorService.handlePostSavePassword'
-            },*/
+                handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
+            },
         }
     }
 };

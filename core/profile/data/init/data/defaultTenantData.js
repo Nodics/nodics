@@ -11,9 +11,15 @@
 
 module.exports = {
     record0: {
-        code: 'testOne',
-        name: 'testOne',
+        code: 'default',
         active: true,
+        description: 'Default tenant, which take configuration from properties configuration'
+    },
+
+    record1: {
+        code: 'testOne',
+        active: true,
+        description: 'This tenant is just for testing purose',
         properties: {
             database: {
                 default: {
@@ -40,12 +46,34 @@ module.exports = {
             }
         }
     },
-    record1: {
-        code: 'default',
-        name: 'default',
-        active: true,
+    record2: {
+        code: 'disabledTenant',
+        active: false,
+        description: 'This tenant is just for testing purose if disabled is getting loaded',
         properties: {
-            tmpData: 'for default tenant data will be picked from property configuration'
+            database: {
+                default: {
+                    databaseType: 'mongodb', //for Cassandra use 'cassandra'
+                    mongodb: {
+                        master: {
+                            URI: 'mongodb://localhost:27017',
+                            databaseName: 'disabledTenantMaster',
+                            options: {
+                                native_parser: true,
+                                poolSize: 5
+                            }
+                        },
+                        test: {
+                            URI: 'mongodb://localhost:27017',
+                            databaseName: 'disabledTenantTest',
+                            options: {
+                                native_parser: true,
+                                poolSize: 5
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 };

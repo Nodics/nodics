@@ -222,7 +222,7 @@ module.exports = {
      * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
      * will load properties from $APP_MODULE/config/env-{NODICS_ENV}/properties.js
      */
-    loadExternalProperties: function (externalFiles, tntName) {
+    loadExternalProperties: function (externalFiles, tntCode) {
         let _self = this;
         let files = externalFiles || CONFIG.get('externalPropertyFile');
         if (externalFiles && externalFiles.length > 0) {
@@ -230,8 +230,8 @@ module.exports = {
                 if (fs.existsSync(filePath)) {
                     _self.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
                     let props = CONFIG.getProperties();
-                    if (tntName) {
-                        props = CONFIG.getProperties(tntName);
+                    if (tntCode) {
+                        props = CONFIG.getProperties(tntCode);
                     }
                     _.merge(props, require(filePath));
                 } else {

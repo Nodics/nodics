@@ -42,9 +42,9 @@ module.exports = {
 
         getHtmlWebpackPlugin: function (moduleObject) {
             htmlPlugins = [];
-            let defaultHbs = moduleObject.modulePath + '/' + moduleObject.webRootDirName + '/hbs/default.hbs'
+            let defaultHbs = moduleObject.modulePath + '/' + moduleObject.webRootDirName + '/hbs/default.hbs';
             Object.keys(moduleObject.pages).map(key => {
-                let template = moduleObject.modulePath + '/' + moduleObject.webRootDirName + '/hbs/' + key + '.hbs'
+                let template = moduleObject.modulePath + '/' + moduleObject.webRootDirName + '/hbs/' + key + '.hbs';
                 if (!fs.existsSync(template)) {
                     template = defaultHbs;
                 }

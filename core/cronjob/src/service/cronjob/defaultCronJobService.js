@@ -26,9 +26,7 @@ module.exports = {
         if (!input.modelName) {
             input.modelName = 'cronJob';
         }
-        console.log(input);
         SERVICE['Default' + input.modelName.toUpperCaseFirstChar() + 'Service'].get(input).then((models) => {
-            console.log(' ---------: ', models);
             if (callback) {
                 this.cronJobContainer.createCronJobs(models).then(success => {
                     callback(null, success);
@@ -39,7 +37,6 @@ module.exports = {
                 return this.cronJobContainer.createCronJobs(models);
             }
         }).catch(error => {
-            console.log('1---------: ', error);
             if (callback) {
                 callback(error);
             } else {
@@ -106,7 +103,6 @@ module.exports = {
             let result = this.cronJobContainer.startCronJobs(input.jobCodes);
             callback(null, result);
         } catch (error) {
-            console.log('-------Error: ', error);
             callback(error);
         }
     },
@@ -151,10 +147,10 @@ module.exports = {
         }
     },
 
-    startOnStartup: function () {
-        let _self = this;
+    startOnStartup: function (_self) {
+        _self = _self || this;
         if (CONFIG.get('cronjob').runOnStartup) {
-            _self.LOG.debug('Starting all active jobs on server start-up');
+            _self.LOG.debug('Starting all active jobs on server start-up: ' + NODICS.getServerState());
             if (NODICS.getServerState() === 'started') {
                 SERVICE.DefaultCronJobService.createJob({ tenant: 'default' }, (error, response) => {
                     if (error) {
@@ -167,7 +163,9 @@ module.exports = {
                 });
             } else {
                 _self.LOG.info('Server is not started yet, hence waiting');
-                setTimeout(SERVICE.DefaultCronJobService.startOnStartup, CONFIG.get('cronjob').waitTime || 100);
+                setTimeout(() => {
+                    SERVICE.DefaultCronJobService.startOnStartup(_self);
+                }, 2000);
             }
         }
     },

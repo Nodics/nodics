@@ -21,7 +21,7 @@ module.exports = {
 
     cronjob: {
         runOnStartup: false,
-        waitTime: 100,
+        waitTime: 1000,
         activeJobsQuery: {
             $and: [{
                 "triggers.isActive": true

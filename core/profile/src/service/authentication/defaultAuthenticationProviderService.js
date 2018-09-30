@@ -11,28 +11,39 @@
 
 module.exports = {
 
-    updateAuthData: function (active, enterprise) {
+    updateAuthData: function (options) {
         let _self = this;
-        active.lastAttempt = new Date();
-        active.updated = new Date();
-        SERVICE.DefaultActiveService.save({
-            tenant: enterprise.tenant.name,
-            models: [active]
-        }).then(success => {
-            _self.LOG.debug('Active data has been updated with current time');
-        }).catch(error => {
-            _self.LOG.debug('While updating Active data with current time : ', error);
-        });
+        options.person.lastAttempt = new Date();
+        options.person.updated = new Date();
+        if (options.type === 'employee') {
+            SERVICE.DefaultEmployeeService.save({
+                tenant: options.enterprise.tenant.code,
+                models: [options.person]
+            }).then(success => {
+                _self.LOG.debug('Employee data has been updated with current time');
+            }).catch(error => {
+                _self.LOG.debug('While updating Active data with current time : ', error);
+            });
+        } else {
+            SERVICE.DefaultCustomerService.save({
+                tenant: options.enterprise.tenant.code,
+                models: [options.person]
+            }).then(success => {
+                _self.LOG.debug('Employee data has been updated with current time');
+            }).catch(error => {
+                _self.LOG.debug('While updating Active data with current time : ', error);
+            });
+        }
     },
 
-    updateFailedAuthData: function (active, enterprise) {
-        if (active.attempts <= CONFIG.get('attemptsToLockAccount')) {
-            active.attempts = active.attempts + 1;
+    updateFailedAuthData: function (options) {
+        if (options.person.attempts <= CONFIG.get('attemptsToLockAccount')) {
+            options.person.attempts = options.person.attempts + 1;
         } else {
-            active.locked = true;
-            active.lockedTime = new Date();
+            options.person.locked = true;
+            options.person.lockedTime = new Date();
         }
-        this.updateAuthData(active, enterprise);
+        this.updateAuthData(options);
     },
 
     authenticateEmployee: function (request, callback) {
@@ -40,7 +51,7 @@ module.exports = {
         let _self = this;
         SERVICE.DefaultEnterpriseService.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
             SERVICE.DefaultEmployeeService.findByLoginId({
-                tenant: enterprise.tenant.name,
+                tenant: enterprise.tenant.code,
                 loginId: input.loginId,
                 enterpriseCode: enterprise.enterpriseCode,
                 type: 'Employee'
@@ -67,7 +78,7 @@ module.exports = {
         let _self = this;
         SERVICE.DefaultEnterpriseService.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
             SERVICE.DefaultCustomerService.findByLoginId({
-                tenant: enterprise.tenant.name,
+                tenant: enterprise.tenant.code,
                 loginId: input.loginId,
                 enterpriseCode: enterprise.enterpriseCode,
                 type: 'Customer'
@@ -92,60 +103,37 @@ module.exports = {
     authenticate: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultActiveService.findActive({
-                tenant: options.enterprise.tenant.name,
-                loginId: options.person.loginId,
-                _id: options.person._id
-            }).then(active => {
-                if (active.locked || !active.active) {
+            try {
+                if (options.person.locked || !options.person.active) {
                     reject('Account is currently in locked state or has been disabled');
                 } else {
-                    options.active = active;
-                    _self.verifyPassword(options).then(success => {
-                        resolve(success);
+                    SYSTEM.compareHash(options.input.password, options.person.password).then(match => {
+                        if (match) {
+                            _self.createAuthToken(options).then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
+                            _self.updateFailedAuthData(options);
+                            reject('Invalid authentication request : Given password is not valid');
+                        }
                     }).catch(error => {
-                        reject(error);
+                        reject('Invalid authentication request : ' + error);
                     });
                 }
-            }).catch(error => {
+            } catch (error) {
                 reject(error);
-            });
-        });
-    },
+            }
 
-    verifyPassword: function (options) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultPasswordService.findPassword({
-                tenant: options.enterprise.tenant.name,
-                loginId: options.person.loginId,
-                enterpriseCode: options.enterprise.enterpriseCode
-            }).then(password => {
-                SYSTEM.compareHash(options.input.password, password.password).then(match => {
-                    if (match) {
-                        _self.createAuthToken(options).then(success => {
-                            resolve(success);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        _self.updateFailedAuthData(active, enterprise);
-                        reject('Invalid authentication request : Given password is not valid');
-                    }
-                }).catch(error => {
-                    reject('Invalid authentication request : ' + error);
-                });
-            }).catch(error => {
-                reject(error);
-            });
         });
     },
 
     createAuthToken: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            options.active.attempts = 1;
-            _self.updateAuthData(options.active, options.enterprise);
+            options.person.attempts = 0;
+            _self.updateAuthData(options);
             try {
                 let key = options.enterprise._id + options.person._id + (new Date()).getTime();
                 let hash = SYSTEM.generateHash(key);

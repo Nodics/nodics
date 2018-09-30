@@ -70,7 +70,7 @@ module.exports = {
                             refObject: refObject,
                             model: model,
                             property: property,
-                            values: model[property].split(','),
+                            values: model[property],
                             macro: options.macros[property],
                             result: []
                         };
@@ -148,7 +148,10 @@ module.exports = {
                 let propertyObject = options.macro.rule[propertyName];
                 if (propertyObject.type === 'Number' || propertyObject.type === 'number') {
                     query[propertyName] = parseInt(values[propertyObject.index]);
-                } else if (propertyObject.type === 'Boolean' || propertyObject.type === 'boolean') {
+                } else if (propertyObject.type === 'Boolean' ||
+                    propertyObject.type === 'boolean' ||
+                    propertyObject.type === 'bool' ||
+                    propertyObject.type === 'Bool') {
                     query[propertyName] = (values[propertyObject.index] === 'true');
                 } else {
                     query[propertyName] = values[propertyObject.index];

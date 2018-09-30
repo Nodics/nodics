@@ -22,6 +22,43 @@ module.exports = {
                 code: 'code'
             }
         },
+
+        defaultAddress: {
+            options: {
+                modelName: 'address',
+                operation: 'save', //save, update and saveOrUpdate
+                tenant: 'default',
+                dataFilePrefix: 'defaultAddressData'
+            },
+            query: {
+                code: 'code'
+            }
+        },
+
+        defaultContact: {
+            options: {
+                modelName: 'contact',
+                operation: 'save', //save, update and saveOrUpdate
+                tenant: 'default',
+                dataFilePrefix: 'defaultContactData'
+            },
+            query: {
+                code: 'code'
+            }
+        },
+
+        defaultUserGroup: {
+            options: {
+                modelName: 'userGroup',
+                operation: 'save', //save, update and saveOrUpdate
+                tenant: 'default',
+                dataFilePrefix: 'defaultUserGroupData'
+            },
+            query: {
+                code: 'code'
+            }
+        },
+
         defaultEnterprise: {
             options: {
                 modelName: 'enterprise',
@@ -36,21 +73,46 @@ module.exports = {
                 tenant: {
                     options: {
                         model: 'tenant',
-                        returnProperty: '_id'
+                        returnProperty: 'code'
                     },
                     rule: {
-                        name: {
-                            type: 'String',
+                        code: {
+                            type: 'string',
                             index: 0,
                         },
                         active: {
-                            type: 'boolean',
+                            type: 'bool',
                             index: 1
+                        }
+                    }
+                },
+                addresses: {
+                    options: {
+                        model: 'address',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                },
+                contacts: {
+                    options: {
+                        model: 'contact',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
                         }
                     }
                 }
             }
         },
+
         defaultEmployee: {
             options: {
                 modelName: 'employee',
@@ -59,10 +121,38 @@ module.exports = {
                 dataFilePrefix: 'defaultEmployeeData'
             },
             query: {
+                code: 'code',
                 loginId: 'loginId',
                 enterpriseCode: 'enterpriseCode'
+            },
+            macros: {
+                addresses: {
+                    options: {
+                        model: 'address',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                },
+                contacts: {
+                    options: {
+                        model: 'contact',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                }
             }
         },
+
         defaultCustomer: {
             options: {
                 modelName: 'customer',
@@ -71,20 +161,35 @@ module.exports = {
                 dataFilePrefix: 'defaultCutomerData'
             },
             query: {
+                code: 'code',
                 loginId: 'loginId',
                 enterpriseCode: 'enterpriseCode'
-            }
-        },
-        defaultPassword: {
-            options: {
-                modelName: 'password',
-                operation: 'save', //save, update and saveOrUpdate
-                tenant: 'default',
-                dataFilePrefix: 'defaultPasswordData'
             },
-            query: {
-                loginId: 'loginId',
-                enterpriseCode: 'enterpriseCode'
+            macros: {
+                addresses: {
+                    options: {
+                        model: 'address',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                },
+                contacts: {
+                    options: {
+                        model: 'contact',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                }
             }
         }
     }

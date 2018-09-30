@@ -12,11 +12,20 @@
 module.exports = {
     cronjob: {
         cronJobLog: {
-            super: 'default',
+            super: 'super',
             model: true,
             service: true,
             event: false,
-            router: false
+            router: true,
+            definition: {
+                enterpriseCode: {
+                    required: false
+                },
+                jobCode: {
+                    type: 'string',
+                    required: true
+                }
+            }
         },
 
         cronJob: {
@@ -25,32 +34,30 @@ module.exports = {
             service: true,
             event: false,
             router: true,
-            refSchema: {
-                logs: {
-                    schemaName: 'cronJobLog',
-                    type: 'many'
-                }
-            },
             virtualProperties: {
                 fullname: 'DefaultCronJobVirtualService.getFullName',
             },
             definition: {
                 nodeId: {
-                    type: 'number',
-                    required: false
+                    type: 'int',
+                    required: false,
+                    description: 'Execution node or cluster id, where job will run. this to avoid running job in multiple nodes'
                 },
                 targetNodeId: {
-                    type: 'number',
-                    required: false
+                    type: 'int',
+                    required: false,
+                    description: 'Required if this job is going to hit external module, if not job will hit to load balancer if any'
                 },
                 runOnInit: {
                     type: 'bool',
                     required: true,
-                    default: false
+                    default: false,
+                    description: 'Required to flag if need to run imitiately job created'
                 },
                 jobDetail: {
                     type: 'object',
-                    required: true
+                    required: true,
+                    description: 'Required to give job handler startNode, endNode and errorNode service funtions'
                 },
                 'jobDetail.startNode': {
                     type: 'string',
@@ -58,40 +65,54 @@ module.exports = {
                 },
                 triggers: {
                     type: 'array',
-                    required: true
+                    required: true,
+                    description: 'Number of trigger expression'
                 },
                 active: {
-                    type: 'object',
+                    type: 'bool',
                     required: true,
+                    default: true,
+                    description: 'Required to define if job is active'
                 },
-                'active.start': {
+                start: {
                     type: 'date',
                     required: true,
+                    description: 'Job start timestamp'
+                },
+                end: {
+                    type: 'date',
+                    required: false,
+                    description: 'Job end timestamp'
                 },
                 priority: {
                     type: 'number',
                     required: true,
-                    default: 0
+                    default: 0,
+                    description: 'define priority to get preference when there are multiple job'
                 },
                 lastResult: {
                     type: 'string',
                     required: true,
-                    default: 'NEW'
+                    default: 'NEW',
+                    description: 'Last execution result [NEW, SUCCESS ERROR]'
                 },
                 state: {
                     type: 'string',
                     required: true,
-                    default: 'NEW'
+                    default: 'NEW',
+                    description: 'Current state of JOB'
+                },
+                log: {
+                    type: 'object',
+                    required: false,
+                    description: 'Last result of job execution'
+                },
+                emails: {
+                    type: 'array',
+                    required: false,
+                    description: 'List of email ids to send execution report'
                 }
             }
-        },
-
-        importCronJob: {
-            super: 'cronJob',
-            model: true,
-            service: true,
-            event: false,
-            router: true
         }
     }
 };

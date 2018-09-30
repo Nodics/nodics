@@ -63,7 +63,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                 try {
                     if (!_paused) {
                         _running = true;
-                        if (_definition.active.end && _definition.active.end < new Date()) {
+                        if (_definition.end && _definition.end < new Date()) {
                             _self.LOG.warn('   WARN: Job : ', _definition.code, ' got expired. hence has been stopped');
                             _self.stopCronJob();
                             delete _jobPool[_definition.code];
@@ -76,14 +76,12 @@ module.exports = function (definition, trigger, context, timeZone) {
                                 let serviceName = startNode.substring(0, startNode.indexOf('.'));
                                 let functionName = startNode.substring(startNode.indexOf('.') + 1, startNode.length);
                                 SERVICE[serviceName][functionName](_definition, _self);
-                                //eval(_definition.jobDetail.startNode + '(_definition, _self)');
                             }
                         } catch (error) {
                             let errorNode = _definition.jobDetail.errorNode;
                             let serviceName = errorNode.substring(0, errorNode.indexOf('.'));
                             let functionName = errorNode.substring(errorNode.indexOf('.') + 1, errorNode.length);
                             SERVICE[serviceName][functionName](_definition, _self, error);
-                            //eval(_definition.jobDetail.errorNode + '(_definition, _self, error)');
                         }
                         SERVICE.DefaultJobHandlerService.handleJobCompleted(_definition, _self);
                         if (oneTime) {
@@ -91,7 +89,6 @@ module.exports = function (definition, trigger, context, timeZone) {
                         }
                     }
                 } catch (error) {
-
                     _self.LOG.error('Job: ' + _definition.code + ' has issue while running: ' + error.toString());
                 }
             },
@@ -103,14 +100,12 @@ module.exports = function (definition, trigger, context, timeZone) {
                             let serviceName = endNode.substring(0, endNode.indexOf('.'));
                             let functionName = endNode.substring(endNode.indexOf('.') + 1, endNode.length);
                             SERVICE[serviceName][functionName](_definition, _self);
-                            //eval(_definition.jobDetail.endNode + '(_definition, _self)');
                         }
                     } catch (error) {
                         let errorNode = _definition.jobDetail.errorNode;
                         let serviceName = errorNode.substring(0, errorNode.indexOf('.'));
                         let functionName = errorNode.substring(errorNode.indexOf('.') + 1, errorNode.length);
                         SERVICE[serviceName][functionName](_definition, _self, error);
-                        //eval(_definition.jobDetail.errorNode + '(_definition, _self, error)');
                     }
                     SERVICE.DefaultJobHandlerService.handleCronJobEnd(_definition, _self);
                     _running = false;

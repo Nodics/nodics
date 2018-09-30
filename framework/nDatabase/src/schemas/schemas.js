@@ -11,43 +11,38 @@
 
 module.exports = {
     default: {
-        default: {
+        super: {
             model: false,
             service: false,
             event: false,
             router: false,
             definition: {
+                enterpriseCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Define enterprise code'
+                },
+                description: {
+                    type: 'string',
+                    required: false,
+                    description: 'Description of the property'
+                },
                 created: {
                     type: 'date',
                     required: true,
-                    default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp'
+                    default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp',
+                    description: 'Timestamp when this item got created in database'
                 },
                 updated: {
                     type: 'date',
                     required: true,
-                    default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp'
-                }
-            }
-        },
-        super: {
-            super: 'default',
-            model: false,
-            service: false,
-            event: false,
-            router: false,
-            definition: {
-                code: {
-                    type: 'string',
-                    required: true
+                    default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp',
+                    description: 'Timestamp when this item got updated in database'
                 }
             },
-            indexes: {
-                indexCode: {
-                    name: 'code',
-                    options: {
-                        unique: true
-                    }
-                }
+            options: {
+                validationLevel: 'moderate',
+                validationAction: 'error'
             }
         },
         base: {
@@ -57,14 +52,19 @@ module.exports = {
             event: false,
             router: false,
             definition: {
-                enterpriseCode: {
+                code: {
                     type: 'string',
-                    required: true
+                    required: true,
+                    description: 'To uniquely identify a perticuller item'
                 }
             },
-            options: {
-                validationLevel: 'moderate',
-                validationAction: 'error'
+            indexes: {
+                indexCode: {
+                    name: 'code',
+                    options: {
+                        unique: true
+                    }
+                }
             }
         },
 

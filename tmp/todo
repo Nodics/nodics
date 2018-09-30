@@ -86,6 +86,8 @@ Todos:
     - Validate Enterprise change or Authorization change in terms of authToken storing for each module
     - Check authToken invalidation logic for each module 
     - Check event publishing happening in interceptor on Enterprise or Person Update
+    - Check if running job stops if end time happens
+    - Job handlers are not in Sync currently, it should trigger after first completed
 
 
 Todos:
@@ -200,6 +202,9 @@ Todos:
 
 
     https://medium.com/styled-components/the-simple-guide-to-server-side-rendering-react-with-styled-components-d31c6b2b8fbf
+    https://www.templatemonster.com/demo/52949.html
+
+    Kf6hV0rwty;v
 
 Issues:
   - listCollections return whole collection object with 

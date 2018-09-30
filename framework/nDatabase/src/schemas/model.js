@@ -72,6 +72,15 @@ module.exports = {
                                 }).catch(error => {
                                     reject(error);
                                 });
+                            } else if (model.code) {
+                                let query = {
+                                    code: model.code
+                                };
+                                this.saveByQuery(query, model).then(result => {
+                                    resolve(result);
+                                }).catch(error => {
+                                    reject(error);
+                                });
                             } else {
                                 this.createItem(model).then(result => {
                                     resolve(result);
@@ -122,7 +131,29 @@ module.exports = {
             };
         },
 
-        defineDefaultRemove: function (collection, rawSchema) {
+        defineDefaultRemoveById: function (collection, rawSchema) {
+            collection.removeItems = function (input) {
+                return new Promise((resolve, reject) => {
+                    let query = '';
+                    if (input.query) {
+                        query = input.query;
+                    } else {
+                        query = {
+                            _id: {
+                                $in: input.ids
+                            }
+                        };
+                    }
+                    this.deleteMany(query, {}).then(response => {
+                        resolve(response);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
+            };
+        },
+
+        defineDefaultRemoveByCode: function (collection, rawSchema) {
             collection.removeItems = function (input) {
                 return new Promise((resolve, reject) => {
                     let query = '';

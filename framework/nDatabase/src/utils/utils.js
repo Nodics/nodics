@@ -24,7 +24,7 @@ module.exports = {
     },
 
     isArrayOfObject: function (value) {
-        return this.isArray(value) && this.isObject(value[0]);
+        return this.isArray(value) && this.isObject(value[0]) && !this.isObjectId(value[0]);
     },
 
     isObjectId: function (value) {

@@ -12,17 +12,21 @@
 module.exports = {
     encryptPassword: function (model, options) {
         return new Promise((resolve, reject) => {
-            SYSTEM.encryptPassword(model).then(model => {
+            if (model.password && model.password.length < 25) {
+                SYSTEM.encryptPassword(model).then(model => {
+                    resolve(model);
+                }).catch(error => {
+                    next(error);
+                });
+            } else {
                 resolve(model);
-            }).catch(error => {
-                next(error);
-            });
+            }
         });
     },
 
     handlePostSavePassword: function (model, options) {
         return new Promise((resolve, reject) => {
-            resolve(true);
+            resolve(model);
         });
     },
 };

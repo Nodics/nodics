@@ -11,17 +11,24 @@
 
 module.exports = {
     record0: {
-        code: 'admin',
-        personId: '121e7dd88ac6ed3d73a76712',
-        enterpriseCode: 'default',
-        loginId: 'admin',
-        password: 'nodics'
+        code: 'defaultEntContact',
+        active: true,
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
     },
     record1: {
-        code: 'guest',
-        personId: '121e7dd88ac6ed3d73a76713',
-        enterpriseCode: 'default',
-        loginId: 'guest',
-        password: 'nodics'
-    }
+        code: 'defaultEmployeeContact',
+        active: true,
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
+    },
+    record2: {
+        code: 'defaultCustomerContact',
+        active: true,
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
+    },
 };

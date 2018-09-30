@@ -13,11 +13,15 @@ module.exports = {
     record0: {
         code: 'admin',
         enterpriseCode: 'default',
-        firstName: 'Nodics',
-        lastName: 'Employeeupdated',
+        name: {
+            title: 'Mr.',
+            firstName: 'Nodics',
+            lastName: 'Employee',
+        },
         loginId: 'admin',
-        locked: false,
-        active: true,
-        attempts: 1
+        password: 'nodics',
+        userGroups: ['adminUserGroup'],
+        addresses: ['defaultEmployeeAddress'],
+        contacts: ['defaultEmployeeContact']
     }
 };

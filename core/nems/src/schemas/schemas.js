@@ -16,7 +16,47 @@ module.exports = {
             model: true,
             service: true,
             event: false,
-            router: true
+            router: true,
+            definition: {
+                source: {
+                    type: 'string',
+                    required: true,
+                    description: 'Source module from where this event is triggered'
+                },
+                target: {
+                    type: 'string',
+                    required: true,
+                    description: 'Target module where this event needs to be send'
+                },
+                targetType: {
+                    type: 'string',
+                    required: true,
+                    default: ENUMS.TargetType.MODULE.key,
+                    description: 'Where this event needs to be pushed [EACH_NODE, EACH_MODULE, MODULE]'
+                },
+                targetNodeId: {
+                    type: 'int',
+                    required: false,
+                    description: 'To target direct node or cluster for this event'
+                },
+                hits: {
+                    type: 'int',
+                    required: true,
+                    default: 0,
+                    description: 'Number of tries to push this event while getting error'
+                },
+                state: {
+                    type: 'string',
+                    required: true,
+                    default: ENUMS.EventState.NEW.key,
+                    description: 'Current state of job, [NEW, PROCESSING, FINISHED, ERROR]'
+                },
+                params: {
+                    type: 'array',
+                    required: false,
+                    description: 'Values which needs to be send with event to target system'
+                },
+            }
         },
 
         eventLog: {

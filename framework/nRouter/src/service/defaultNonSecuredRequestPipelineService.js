@@ -19,14 +19,14 @@ module.exports = {
                 query: {
                     enterpriseCode: request.local.enterpriseCode
                 }
-            }
+            };
             SERVICE.DefaultEnterpriseProviderService.loadEnterprise(request, (error, response) => {
                 if (error) {
                     this.LOG.error('Enterprise code is not valid');
                     process.error(request, response, error || 'Enterprise code is not valid');
                 } else {
                     request.local.enterprise = response;
-                    request.local.tenant = response.tenant.name;
+                    request.local.tenant = response.tenant.code;
                     process.nextSuccess(request, response);
                 }
             });

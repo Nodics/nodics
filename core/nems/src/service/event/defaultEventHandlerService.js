@@ -21,9 +21,9 @@ module.exports = {
             query: {
                 $and: [{
                     $or: [{
-                        state: ENUMS.EventState.NEW
+                        state: ENUMS.EventState.NEW.key
                     }, {
-                        state: ENUMS.EventState.ERROR
+                        state: ENUMS.EventState.ERROR.key
                     }]
                 }, {
                     hits: { $lt: 5 }
@@ -67,17 +67,12 @@ module.exports = {
     handleProcessedEvents: function (request, processedEvents, callback) {
         let _self = this;
         let success = [];
-        let successIds = [];
         let failed = [];
         let promisses = [];
         processedEvents.forEach(processedEvent => {
             let event = JSON.parse(JSON.stringify(processedEvent));
             if (event.state === ENUMS.EventState.FINISHED.key) {
-                successIds.push(event._id);
                 request.response.success.push(event._id);
-                delete event._id;
-                delete event.__v;
-                delete event.__t;
                 event.type = 'ASYNC';
                 success.push(event);
             } else {
@@ -91,21 +86,21 @@ module.exports = {
                 tenant: request.tenant,
                 models: success
             };
-            promisses.push(DAO.EventLogDao.save(input));
+            promisses.push(SERVICE.DefaultEventLogService.save(input));
         }
         if (success.length > 0) {
             let input = {
                 tenant: request.tenant,
-                ids: successIds
+                ids: request.response.success
             };
-            promisses.push(DAO.EventDao.removeById(input));
+            promisses.push(SERVICE.DefaultEventService.removeById(input));
         }
         if (failed.length > 0) {
             let input = {
                 tenant: request.tenant,
                 models: failed
             };
-            promisses.push(DAO.EventDao.update(input));
+            promisses.push(SERVICE.DefaultEventService.update(input));
         }
         Promise.all(promisses).then(result => {
             callback(request.response);
@@ -124,10 +119,10 @@ module.exports = {
                     _self.broadcastEvent(event, (err, response) => {
                         try {
                             if (err) {
-                                event.state = ENUMS.EventState.ERROR;
+                                event.state = ENUMS.EventState.ERROR.key;
                                 event.log.push(err.toString());
                             } else {
-                                event.state = ENUMS.EventState.FINISHED;
+                                event.state = ENUMS.EventState.FINISHED.key;
                                 if (response instanceof Array) {
                                     response.forEach(element => {
                                         event.log.push(element.result);
@@ -166,8 +161,15 @@ module.exports = {
     },
 
     prepareURL: function (event) {
+        let connectionType = 'abstract';
+        let nodeId = '0';
+        if (event.targetNodeId) {
+            connectionType = 'node';
+            nodeId = definition.targetNodeId;
+        }
         return SERVICE.DefaultModuleService.buildRequest({
-            nodeId: event.nodeId || '-1',
+            connectionType: connectionType,
+            nodeId: nodeId,
             moduleName: event.target,
             methodName: 'POST',
             apiName: '/event/handle',
@@ -204,7 +206,6 @@ module.exports = {
             _.each(SYSTEM.getModulesPool().getModules(), (moduleObj, moduleName) => {
                 if (moduleName != 'default') {
                     event.target = moduleName;
-                    event.nodeId = event.nodeId || '-1';
                     allPromise.push(
                         SERVICE.DefaultModuleService.fetch(_self.prepareURL(event))
                     );
@@ -232,7 +233,7 @@ module.exports = {
                     event.target = moduleName;
                     let nodes = SYSTEM.getModulesPool().getModule(moduleName).getNodes();
                     _.each(nodes, (node, nodeId) => {
-                        event.nodeId = nodeId;
+                        event.targetNodeId = nodeId;
                         allPromise.push(
                             SERVICE.DefaultModuleService.fetch(_self.prepareURL(event))
                         );

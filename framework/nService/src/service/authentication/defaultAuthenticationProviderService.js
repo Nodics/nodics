@@ -52,6 +52,7 @@ module.exports = {
     },
 
     publishTokenExpiredEvent: function (options) {
+        let _self = this;
         if (options.moduleName === CONFIG.get('profileModuleName')) {
             options.moduleObject.authCache.on("expired", function (key, value) {
                 value = JSON.parse(value);
@@ -59,7 +60,7 @@ module.exports = {
                     enterpriseCode: value.enterprise.enterpriseCode,
                     event: 'invalidateAuthToken',
                     source: options.moduleName,
-                    target: optionsmoduleName,
+                    target: options.moduleName,
                     state: 'NEW',
                     type: 'SYNC',
                     targetType: 'EACH_NODE',
@@ -67,7 +68,7 @@ module.exports = {
                         key: key
                     }]
                 };
-                this.LOG.debug('Pushing event for expired cache key : ', key);
+                _self.LOG.debug('Pushing event for expired cache key : ', key);
                 SERVICE.DefaultEventService.publish(event, (error, response) => {
                     if (error) {
                         _self.LOG.error('While posting cache invalidation event : ', error);

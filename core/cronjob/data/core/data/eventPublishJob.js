@@ -14,24 +14,18 @@ module.exports = {
         code: 'publishEvents',
         enterpriseCode: 'default',
         tenant: 'default',
-        name: 'publishEvents',
-        nodeId: 0,
         targetNodeId: 0,
-        runOnInit: false,
         jobDetail: {
-            startNode: 'SERVICE.DefaultEventHandlerJobService.runJob'
+            startNode: 'DefaultEventHandlerJobService.runJob'
         },
         triggers: [{
             isActive: true,
-            code: 'eventPublishTrigger',
             expression: '*/2 * * * * *'
         }],
         emails: [{
             email: 'nodics.framework@nodics.com'
         }],
-        active: {
-            start: new Date()
-        },
+        start: new Date(),
         priority: 1000,
         lastResult: 'NEW',
         state: 'NEW'

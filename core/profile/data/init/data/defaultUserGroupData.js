@@ -11,17 +11,13 @@
 
 module.exports = {
     record0: {
-        code: 'guest',
-        enterpriseCode: 'default',
-        name: {
-            title: 'Mr.',
-            firstName: 'Nodics',
-            lastName: 'Customer',
-        },
-        loginId: 'guest',
-        password: 'nodics',
-        userGroups: ['guestUserGroup'],
-        addresses: ['defaultCustomerAddress'],
-        contacts: ['defaultCustomerContact']
+        code: 'adminUserGroup',
+        name: 'adminUserGroup',
+        enterpriseCode: 'default'
+    },
+    record1: {
+        code: 'guestUserGroup',
+        name: 'guestUserGroup',
+        enterpriseCode: 'default'
     }
 };

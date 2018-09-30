@@ -19,7 +19,7 @@ module.exports = {
                 dataFilePrefix: 'eventPublishJob'
             },
             query: {
-                name: 'name'
+                code: 'code'
             }
         }
     }

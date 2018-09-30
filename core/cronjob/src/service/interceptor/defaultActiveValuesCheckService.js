@@ -12,20 +12,16 @@
 module.exports = {
     convertToDate: function (model, options) {
         return new Promise((resolve, reject) => {
-            if (model.active && UTILS.isObject(model.active)) {
-                let start = model.active.start;
-                let end = model.active.end;
-                if (start && !(start instanceof Date)) {
-                    console.log('converting start date');
-                    model.active.start = new Date(start);
+            try {
+                if (model.start && !(model.start instanceof Date)) {
+                    model.start = new Date(model.start);
                 }
-                if (end && !(end instanceof Date)) {
-                    console.log('converting end date');
-                    model.active.end = new Date(end);
+                if (model.end && !(model.end instanceof Date)) {
+                    model.end = new Date(model.end);
                 }
                 resolve(model);
-            } else {
-                resolve(model);
+            } catch (error) {
+                reject(error);
             }
         });
     },
