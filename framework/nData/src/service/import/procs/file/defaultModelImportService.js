@@ -159,9 +159,7 @@ module.exports = {
             }
             let input = {
                 tenant: request.tenant || 'default',
-                options: {
-                    query: query
-                }
+                query: query
             };
             SERVICE['Default' + options.macro.options.model.toUpperCaseFirstChar() + 'Service'].get(input).then(result => {
                 if (result.length <= 0) {
@@ -217,6 +215,7 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.debug('Import Model Process Request has been processed and got errors');
+        console.log(response.errors);
         process.reject(response.errors);
     }
 };

@@ -10,24 +10,21 @@
  */
 
 module.exports = {
-    findActive: function (input) {
+    findUserState: function (input) {
         let _self = this;
         return new Promise((resolve, reject) => {
             _self.get({
                 tenant: input.tenant,
-                options: {
-                    query: {
-                        $and: [{
-                            loginId: input.loginId,
-                        }, {
-                            personId: input._id
-                        }]
-                    }
+                query: {
+                    $and: [{
+                        loginId: input.loginId,
+                    }, {
+                        personId: input._id
+                    }]
                 }
             }).then(actives => {
                 if (actives.length <= 0) {
                     resolve({
-                        code: input.loginId,
                         loginId: input.loginId,
                         personId: input._id,
                         attempts: 0,

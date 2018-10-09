@@ -10,19 +10,17 @@
  */
 
 module.exports = {
-    executeInterceptors: function (request, response, models, preInterceptorList) {
+    executeGetInterceptors: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                if (preInterceptorList && preInterceptorList.length > 0) {
-                    let interceptor = preInterceptorList.shift();
-                    let input = {
-                        collection: request.collection,
-                        model: request.model,
-                        interceptor: interceptor,
-                        result: models
-                    };
-                    this.executeInterceptor(input).then(success => {
-                        this.executeInterceptors(request, response, models, preInterceptorList).then(success => {
+                if (options.interceptorList && options.interceptorList.length > 0) {
+                    this.executeInterceptor(options.interceptorList.shift(), {
+                        collection: options.collection,
+                        query: options.query,
+                        options: options.options,
+                        result: options.result || {}
+                    }).then(success => {
+                        this.executeGetInterceptors(options).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);
@@ -39,9 +37,115 @@ module.exports = {
         });
     },
 
-    executeInterceptor: function (input) {
-        let serviceName = input.interceptor.handler.substring(0, input.interceptor.handler.indexOf('.'));
-        let functionName = input.interceptor.handler.substring(input.interceptor.handler.indexOf('.') + 1, input.interceptor.handler.length);
-        return SERVICE[serviceName][functionName](input.model, input.result);
+    executeSaveInterceptors: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (options.interceptorList && options.interceptorList.length > 0) {
+                    this.executeInterceptor(options.interceptorList.shift(), {
+                        collection: options.collection,
+                        query: options.query,
+                        originalModel: options.originalModel,
+                        model: options.model
+                    }).then(success => {
+                        this.executeSaveInterceptors(options).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    executeRemoveInterceptors: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (options.interceptorList && options.interceptorList.length > 0) {
+                    this.executeInterceptor(options.interceptorList.shift(), {
+                        collection: options.collection,
+                        query: options.query,
+                        result: options.result
+                    }).then(success => {
+                        this.executeRemoveInterceptors(options).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    executeUpdateInterceptors: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (options.interceptorList && options.interceptorList.length > 0) {
+                    this.executeInterceptor(options.interceptorList.shift(), {
+                        collection: options.collection,
+                        query: options.query,
+                        model: options.model,
+                        result: options.result
+                    }).then(success => {
+                        this.executeUpdateInterceptors(options).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    executeProcessorInterceptors: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (options.interceptorList && options.interceptorList.length > 0) {
+                    this.executeInterceptor(options.interceptorList.shift(), {
+                        request: options.request,
+                        response: options.response,
+                    }).then(success => {
+                        this.executeUpdateInterceptors(options).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+
+    executeInterceptor: function (interceptor, options) {
+        let serviceName = interceptor.handler.substring(0, interceptor.handler.indexOf('.'));
+        let functionName = interceptor.handler.substring(interceptor.handler.indexOf('.') + 1, interceptor.handler.length);
+        return SERVICE[serviceName][functionName](options);
     }
 };

@@ -15,11 +15,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultEmployeeService.get({
                 tenant: input.tenant,
-                options: {
-                    query: {
-                        loginId: input.loginId,
-                        enterpriseCode: input.enterpriseCode
-                    }
+                query: {
+                    loginId: input.loginId,
+                    enterpriseCode: input.enterpriseCode
                 }
             }).then(employees => {
                 if (employees.length <= 0) {

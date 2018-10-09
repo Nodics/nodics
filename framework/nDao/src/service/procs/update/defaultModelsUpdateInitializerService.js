@@ -13,7 +13,13 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating remove request: ');
-        process.nextSuccess(request, response);
+        if (!request.query || UTILS.isBlank(request.query)) {
+            process.error(request, response, 'Update criteria can not be null or blank');
+        } else if (!request.model || UTILS.isBlank(request.model)) {
+            process.error(request, response, 'Update value can not be null or blank');
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     buildQuery: function (request, response, process) {
@@ -36,11 +42,12 @@ module.exports = {
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
-        if (interceptors && interceptors.preRemove) {
-            SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors({
+        if (interceptors && interceptors.preUpdate) {
+            SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors({
                 collection: request.collection,
                 query: request.query,
-                interceptorList: [].concat(interceptors.preRemove)
+                model: request.model,
+                interceptorList: [].concat(interceptors.preUpdate)
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -54,7 +61,7 @@ module.exports = {
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing remove query');
         try {
-            request.collection.removeItems(request).then(result => {
+            request.collection.updateItems(request).then(result => {
                 if (result && UTILS.isArray(result)) {
                     result.forEach(element => {
                         response.success.push(element);
@@ -64,27 +71,26 @@ module.exports = {
                 }
                 process.nextSuccess(request, response);
             }).catch(error => {
-                console.log(error);
                 process.error(request, response, error);
             });
         } catch (error) {
-            console.log(error);
             process.error(request, response, error);
         }
     },
 
     applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post remove model interceptors');
+        this.LOG.debug('Applying post update model interceptors');
         if (response.success && response.success.length > 0) {
             let moduleName = request.moduleName || request.collection.moduleName;
             let modelName = request.collection.modelName;
             let interceptors = NODICS.getInterceptors(moduleName, modelName);
-            if (interceptors && interceptors.postRemove) {
-                SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors({
+            if (interceptors && interceptors.postUpdate) {
+                SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors({
                     collection: request.collection,
                     query: request.query,
+                    model: request.model,
                     result: response.success,
-                    interceptorList: [].concat(interceptors.postRemove)
+                    interceptorList: [].concat(interceptors.postUpdate)
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {

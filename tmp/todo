@@ -88,6 +88,7 @@ Todos:
     - Check event publishing happening in interceptor on Enterprise or Person Update
     - Check if running job stops if end time happens
     - Job handlers are not in Sync currently, it should trigger after first completed
+    - Remove already registered interceptor
 
 
 Todos:

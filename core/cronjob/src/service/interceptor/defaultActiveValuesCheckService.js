@@ -10,16 +10,16 @@
  */
 
 module.exports = {
-    convertToDate: function (model, options) {
+    convertToDate: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                if (model.start && !(model.start instanceof Date)) {
-                    model.start = new Date(model.start);
+                if (options.model.start && !(options.model.start instanceof Date)) {
+                    options.model.start = new Date(options.model.start);
                 }
-                if (model.end && !(model.end instanceof Date)) {
-                    model.end = new Date(model.end);
+                if (options.model.end && !(options.model.end instanceof Date)) {
+                    options.model.end = new Date(options.model.end);
                 }
-                resolve(model);
+                resolve(true);
             } catch (error) {
                 reject(error);
             }

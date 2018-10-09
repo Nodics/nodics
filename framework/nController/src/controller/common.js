@@ -16,27 +16,22 @@ module.exports = {
     get: function (request, callback) {
         request.local.options = request.local.options || {};
         if (request.params.id) {
-            request.local.recursive = request.get('recursive') || false;
-            request.local.options.query = {
+            request.local.options.recursive = request.get('recursive') || false;
+            request.local.query = {
                 _id: UTILS.isObjectId(request.params.id) ? request.params.id : ObjectId(request.params.id)
             };
         } else if (request.params.code) {
-            request.local.recursive = request.get('recursive') || false;
-            request.local.options.query = {
+            request.local.options.recursive = request.get('recursive') || false;
+            request.local.query = {
                 code: request.params.code
             };
         } else if (!UTILS.isBlank(request.body)) {
             request.local = _.merge(request.local || {}, request.body);
-            if (!request.local.recursive) {
-                request.local.recursive = request.get('recursive') || false;
+            if (!request.local.options.recursive) {
+                request.local.options.recursive = request.get('recursive') || false;
             }
         }
         FACADE.FacadeName.get(request, callback);
-    },
-
-    save: function (request, callback) {
-        request.local.models = request.body;
-        FACADE.FacadeName.save(request, callback);
     },
 
     remove: function (request, callback) {
@@ -57,11 +52,20 @@ module.exports = {
     },
     removeByCode: function (request, callback) {
         request.local.codes = [];
-        if (request.params.id) {
+        if (request.params.code) {
             request.local.codes.push(request.params.code);
         } else {
             request.local.codes = request.body;
         }
         FACADE.FacadeName.removeByCode(request, callback);
+    },
+
+    save: function (request, callback) {
+        request.local.models = request.body;
+        FACADE.FacadeName.save(request, callback);
+    },
+
+    update: function (request, callback) {
+        FACADE.FacadeName.update(request, callback);
     }
 };

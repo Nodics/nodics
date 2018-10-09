@@ -19,10 +19,10 @@ module.exports = {
                 _self.get({
                     tenant: 'default',
                     options: {
-                        recursive: true,
-                        query: {
-                            enterpriseCode: enterpriseCode
-                        }
+                        recursive: true
+                    },
+                    query: {
+                        enterpriseCode: enterpriseCode
                     }
                 }).then(enterprises => {
                     if (enterprises.length <= 0) {

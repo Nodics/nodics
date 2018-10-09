@@ -28,5 +28,9 @@ module.exports = {
 
     removeByCode: function (request, callback) {
         return SERVICE.ServiceName.removeByCode(request, callback);
+    },
+
+    update: function (request, callback) {
+        return SERVICE.ServiceName.update(request, callback);
     }
 };

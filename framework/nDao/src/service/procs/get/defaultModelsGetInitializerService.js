@@ -30,29 +30,19 @@ module.exports = {
     buildOptions: function (request, response, process) {
         this.LOG.debug('Building query options');
         let inputOptions = request.options || {};
-        let queryOptions = {};
+        request.query = request.query || {};
         let pageSize = inputOptions.pageSize || CONFIG.get('defaultPageSize');
         let pageNumber = inputOptions.pageNumber || CONFIG.get('defaultPageNumber');
-        queryOptions.limit = pageSize;
-        queryOptions.skip = pageSize * pageNumber;
-        queryOptions.explain = inputOptions.explain || false;
-        queryOptions.snapshot = inputOptions.snapshot || false;
+        inputOptions.limit = pageSize;
+        inputOptions.skip = pageSize * pageNumber;
+        inputOptions.explain = inputOptions.explain || false;
+        inputOptions.snapshot = inputOptions.snapshot || false;
 
-        if (inputOptions.sort) {
-            queryOptions.sort = inputOptions.sort;
-        }
-        if (inputOptions.projection) {
-            queryOptions.projection = inputOptions.projection;
-        }
-        if (inputOptions.hint) {
-            queryOptions.hint = inputOptions.hint;
-        }
         if (inputOptions.timeout === true) {
-            queryOptions.timeout = true;
-            queryOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS');
+            inputOptions.timeout = true;
+            inputOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS');
         }
-        request.queryOptions = queryOptions;
-        request.query = inputOptions.query || {};
+        request.options = inputOptions;
         process.nextSuccess(request, response);
     },
 
@@ -91,20 +81,21 @@ module.exports = {
     },
 
     applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying pre model interceptors');
+        this.LOG.debug('Applying post get model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(
-                request,
-                response,
-                request.success,
-                [].concat(interceptors.preGet)).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
+            SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors({
+                collection: request.collection,
+                query: request.query,
+                options: request.options,
+                interceptorList: [].concat(interceptors.preGet)
+            }).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
         } else {
             process.nextSuccess(request, response);
         }
@@ -156,15 +147,17 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.postGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(
-                request,
-                response,
-                request.success,
-                [].concat(interceptors.postGet)).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
+            SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors({
+                collection: request.collection,
+                query: request.query,
+                options: request.options,
+                result: response.success,
+                interceptorList: [].concat(interceptors.postGet)
+            }).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
         } else {
             process.nextSuccess(request, response);
         }
@@ -203,19 +196,15 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let model = models[index];
             if (model) {
-                _self.populateProperties(
-                    request,
-                    response,
-                    model,
-                    Object.keys(request.collection.rawSchema.refSchema)).then(success => {
-                        _self.populateModels(request, response, models, index + 1).then(success => {
-                            resolve(success);
-                        }).catch(error => {
-                            reject(error);
-                        });
+                _self.populateProperties(request, response, model, Object.keys(request.collection.rawSchema.refSchema)).then(success => {
+                    _self.populateModels(request, response, models, index + 1).then(success => {
+                        resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
+                }).catch(error => {
+                    reject(error);
+                });
             } else {
                 resolve(true);
             }
@@ -239,9 +228,7 @@ module.exports = {
                 }
                 let input = {
                     tenant: request.tenant,
-                    options: {
-                        query: query
-                    }
+                    query: query
                 };
                 SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(result => {
                     if (result.length > 0) {

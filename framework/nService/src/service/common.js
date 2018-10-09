@@ -91,5 +91,17 @@ module.exports = {
         } else {
             return DAO.DaoName.removeByCode(request);
         }
+    },
+
+    update: function (request, callback) {
+        if (callback) {
+            DAO.DaoName.update(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return DAO.DaoName.update(request);
+        }
     }
 };

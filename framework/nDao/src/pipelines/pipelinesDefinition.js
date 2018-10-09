@@ -82,18 +82,19 @@ module.exports = {
             validateInput: {
                 type: 'function',
                 handler: 'DefaultModelsSaveInitializerService.validateInput',
-                success: 'handleNestedModelsSave'
-            },
-            handleNestedModelsSave: {
-                type: 'function',
-                handler: 'DefaultModelsSaveInitializerService.handleNestedModelsSave',
                 success: 'preProcessor'
             },
             preProcessor: {
                 type: 'function',
                 handler: 'DefaultModelsSaveInitializerService.preProcessor',
+                success: 'handleNestedModelsSave'
+            },
+            handleNestedModelsSave: {
+                type: 'function',
+                handler: 'DefaultModelsSaveInitializerService.handleNestedModelsSave',
                 success: 'processModels'
             },
+
             processModels: {
                 type: 'function',
                 handler: 'DefaultModelsSaveInitializerService.processModels',
@@ -127,12 +128,6 @@ module.exports = {
             validateModel: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.validateModel',
-                success: 'applyPreInterceptors'
-            },
-
-            applyPreInterceptors: {
-                type: 'function',
-                handler: 'DefaultModelSaveInitializerService.applyPreInterceptors',
                 success: 'buildQuery'
             },
 
@@ -151,6 +146,12 @@ module.exports = {
             removeVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.removeVirtualProperties',
+                success: 'applyPreInterceptors'
+            },
+
+            applyPreInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.applyPreInterceptors',
                 success: 'saveModel'
             },
 
@@ -199,16 +200,16 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultModelsRemoveInitializerService.validateRequest',
-                success: 'applyPreInterceptors'
-            },
-            applyPreInterceptors: {
-                type: 'function',
-                handler: 'DefaultModelsRemoveInitializerService.applyPreInterceptors',
                 success: 'buildQuery'
             },
             buildQuery: {
                 type: 'function',
                 handler: 'DefaultModelsRemoveInitializerService.buildQuery',
+                success: 'applyPreInterceptors'
+            },
+            applyPreInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.applyPreInterceptors',
                 success: 'executeQuery'
             },
             executeQuery: {
@@ -248,7 +249,49 @@ module.exports = {
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
 
         nodes: {
-
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.validateRequest',
+                success: 'applyPreInterceptors'
+            },
+            applyPreInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.applyPreInterceptors',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.buildQuery',
+                success: 'executeQuery'
+            },
+            executeQuery: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.executeQuery',
+                success: 'applyPostInterceptors'
+            },
+            applyPostInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.applyPostInterceptors',
+                success: 'invalidateCache'
+            },
+            invalidateCache: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.invalidateCache',
+                success: 'triggerModelChangeEvent'
+            },
+            triggerModelChangeEvent: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.triggerModelChangeEvent',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.handleErrorEnd'
+            }
         }
     },
 };

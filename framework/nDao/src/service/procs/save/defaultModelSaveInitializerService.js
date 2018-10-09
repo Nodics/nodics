@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
 
@@ -22,29 +23,53 @@ module.exports = {
         }
     },
 
-    applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying pre model interceptors');
-        let moduleName = request.moduleName || request.collection.moduleName;
-        let modelName = request.collection.modelName;
-        let interceptors = NODICS.getInterceptors(moduleName, modelName);
-        if (interceptors && interceptors.preSave) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(
-                request,
-                response,
-                request.success,
-                [].concat(interceptors.preSave)).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query to save model');
+        request.query = {};
+        if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {
+            request.query = this.resolveQuery(_.merge({}, request.originalQuery || {}), request.model);
+        } else if (request.model._id) {
+            request.query = {
+                _id: request.model._id
+            };
+        } else if (request.model.code) {
+            request.query = {
+                code: request.model.code
+            };
+        }
         process.nextSuccess(request, response);
+    },
+
+    resolveQuery: function (query, model) {
+        let _self = this;
+        let queryStr = {};
+        _.each(query, (propertyValue, propertyName) => {
+            if (propertyName.indexOf(".") && propertyValue.startsWith('$')) {
+                let properties = propertyName.split('.');
+                let value = model;
+                for (let element of properties) {
+                    if (value[element]) {
+                        value = value[element];
+                    } else {
+                        value = null;
+                        break;
+                    }
+                }
+                if (value) {
+                    queryStr[propertyName] = value;
+                }
+            } else if (propertyValue.startsWith('$')) {
+                propertyValue = propertyValue.substring(1, propertyValue.length);
+                if (model[propertyValue]) {
+                    queryStr[propertyName] = model[propertyValue];
+                } else {
+                    throw new Error('could not find a valid property ' + propertyName);
+                }
+            } else {
+                queryStr[propertyName] = propertyValue;
+            }
+        });
+        return queryStr;
     },
 
     applyDefaultValues: function (request, response, process) {
@@ -95,13 +120,35 @@ module.exports = {
         });
     },
 
+    applyPreInterceptors: function (request, response, process) {
+        this.LOG.debug('Applying pre save model interceptors');
+        let moduleName = request.moduleName || request.collection.moduleName;
+        let modelName = request.collection.modelName;
+        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        if (interceptors && interceptors.preSave) {
+            SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors({
+                collection: request.collection,
+                query: request.query,
+                originalModel: request.model,
+                model: request.model,
+                interceptorList: [].concat(interceptors.preSave)
+            }).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model');
-        request.collection.saveItem(request).then(success => {
-            if (success && UTILS.isArray(success)) {
-                response.success.concat(success);
+        request.collection.saveItems(request).then(success => {
+            if (success && UTILS.isArray(success) && success.length > 0) {
+                response.model = success[0];
             } else {
-                response.success.push(success);
+                response.model = success;
             }
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -110,20 +157,22 @@ module.exports = {
     },
 
     applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post model interceptors');
+        this.LOG.debug('Applying post save model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.postSave) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors(
-                request,
-                response,
-                request.success,
-                [].concat(interceptors.postSave)).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
+            SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors({
+                collection: request.collection,
+                query: request.query,
+                originalModel: request.model,
+                model: response.model,
+                interceptorList: [].concat(interceptors.postSave)
+            }).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
         } else {
             process.nextSuccess(request, response);
         }
@@ -134,10 +183,10 @@ module.exports = {
         try {
             let moduleObject = NODICS.getModules()[request.collection.moduleName];
             let collection = request.collection;
-            if (moduleObject.itemCache &&
+            if (response.model &&
+                moduleObject.itemCache &&
                 collection.rawSchema.cache &&
                 collection.rawSchema.cache.enabled) {
-
                 SERVICE.DefaultCacheService.flushItemCache({
                     moduleName: collection.moduleName,
                     prefix: collection.modelName
@@ -158,7 +207,8 @@ module.exports = {
         this.LOG.debug('Triggering event for modified model');
         try {
             let collection = request.collection;
-            if (NODICS.getActiveChannel() !== 'test' &&
+            if (response.model &&
+                NODICS.getActiveChannel() !== 'test' &&
                 NODICS.isNTestRunning() &&
                 CONFIG.get('event').publishAllActive &&
                 collection.rawSchema.event) {
@@ -176,7 +226,7 @@ module.exports = {
                     },
                     {
                         key: 'data',
-                        value: request.success
+                        value: response.model
                     }]
                 };
                 this.LOG.debug('Pushing event for item created : ', collection.schemaName);
@@ -189,7 +239,7 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response, process) {
-        process.resolve(response.success);
+        process.resolve(response.model);
     },
 
     handleErrorEnd: function (request, response, process) {

@@ -21,10 +21,8 @@ module.exports = {
     getById: function (request) {
         return this.get({
             tenant: request.tenant,
-            options: {
-                query: {
-                    _id: ObjectId(request.id)
-                }
+            query: {
+                _id: ObjectId(request.id)
             }
         });
     },
@@ -32,10 +30,8 @@ module.exports = {
     getByCode: function (request) {
         return this.get({
             tenant: request.tenant,
-            options: {
-                query: {
-                    code: request.code
-                }
+            query: {
+                code: request.code
             }
         });
     },
@@ -49,20 +45,16 @@ module.exports = {
     remove: function (request) {
         let input = request.local || request;
         input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
-        console.log('Calling pipeline');
         return SERVICE.DefaultPipelineService.start('modelsRemoveInitializerPipeline', input, {});
     },
 
     removeById: function (request) {
         let input = request.local || request;
-        console.log('under remove by id');
         return this.remove({
             tenant: input.tenant,
-            options: {
-                query: {
-                    _id: {
-                        $in: input.ids
-                    }
+            query: {
+                _id: {
+                    $in: input.ids
                 }
             }
         });
@@ -72,17 +64,17 @@ module.exports = {
         let input = request.local || request;
         return this.remove({
             tenant: input.tenant,
-            options: {
-                query: {
-                    code: {
-                        $in: input.codes
-                    }
+            query: {
+                code: {
+                    $in: input.codes
                 }
             }
         });
     },
 
-    update: function (input) {
+    update: function (request) {
+        let input = request.local || request;
+        input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
         return SERVICE.DefaultPipelineService.start('modelsUpdateInitializerPipeline', input, {});
     }
 };

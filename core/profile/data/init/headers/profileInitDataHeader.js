@@ -19,7 +19,10 @@ module.exports = {
                 dataFilePrefix: 'defaultTenantData'
             },
             query: {
-                code: 'code'
+                //addresses.code: '$code'
+                code: '$code',
+                /*jobDetail.name: '$name'
+                name: 'Himkar Dwivedi'*/
             }
         },
 
@@ -31,7 +34,7 @@ module.exports = {
                 dataFilePrefix: 'defaultAddressData'
             },
             query: {
-                code: 'code'
+                code: '$code'
             }
         },
 
@@ -43,7 +46,7 @@ module.exports = {
                 dataFilePrefix: 'defaultContactData'
             },
             query: {
-                code: 'code'
+                code: '$code'
             }
         },
 
@@ -55,7 +58,7 @@ module.exports = {
                 dataFilePrefix: 'defaultUserGroupData'
             },
             query: {
-                code: 'code'
+                code: '$code'
             }
         },
 
@@ -67,7 +70,7 @@ module.exports = {
                 dataFilePrefix: 'defaultEnterpriseData'
             },
             query: {
-                code: 'code'
+                code: '$code'
             },
             macros: {
                 tenant: {
@@ -121,9 +124,9 @@ module.exports = {
                 dataFilePrefix: 'defaultEmployeeData'
             },
             query: {
-                code: 'code',
-                loginId: 'loginId',
-                enterpriseCode: 'enterpriseCode'
+                code: '$code',
+                loginId: '$loginId',
+                enterpriseCode: '$enterpriseCode'
             },
             macros: {
                 addresses: {
@@ -161,9 +164,9 @@ module.exports = {
                 dataFilePrefix: 'defaultCutomerData'
             },
             query: {
-                code: 'code',
-                loginId: 'loginId',
-                enterpriseCode: 'enterpriseCode'
+                code: '$code',
+                loginId: '$loginId',
+                enterpriseCode: '$enterpriseCode'
             },
             macros: {
                 addresses: {

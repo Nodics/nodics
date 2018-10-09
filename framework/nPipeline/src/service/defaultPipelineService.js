@@ -36,34 +36,10 @@ module.exports = {
                     pipeline.buildPipeline();
                     pipeline.start(id, request, response, resolve, reject);
                 } catch (err) {
+                    this.LOG.error(err);
                     reject('Error while creating pipeline: ' + id + ' - ' + err.toString());
                 }
             }
         });
-    },
-
-    /*startPipeline: function (pipelineName, request, response, callback) {
-        if (pipelineName !== 'defaultPipeline' && PIPELINE[pipelineName]) {
-            let id = SYSTEM.generateUniqueCode();
-            // TODO: Make this id unique to track nested pipeline management - will implement in Future
-            try {
-                let defaultPipeline = _.merge({}, PIPELINE.defaultPipeline);
-                let pipelineDef = _.merge(defaultPipeline, PIPELINE[pipelineName]);
-                let pipeline = new CLASSES.PipelineHead(pipelineName, pipelineDef, callback);
-                pipeline.LOG = this.pipelineLOG;
-                pipeline.buildPipeline();
-                pipeline.start(id, request, response);
-            } catch (err) {
-                this.LOG.error('Error while creating pipeline : ', id, ' - ', err);
-                if (UTILS.isArray(err)) {
-                    err.forEach(element => {
-                        response.errors.push(element);
-                    });
-                } else {
-                    response.errors.push(err);
-                }
-                throw new Error('Error while creating pipeline : ', id, ' - ', err);
-            }
-        }
-    }*/
+    }
 };

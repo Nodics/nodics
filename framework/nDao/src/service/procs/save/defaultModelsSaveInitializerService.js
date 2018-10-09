@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     validateInput: function (request, response, process) {
@@ -31,8 +33,29 @@ module.exports = {
         }
     },
 
+    preProcessor: function (request, response, process) {
+        this.LOG.debug('Applying pre processors in models');
+        let moduleName = request.moduleName || request.collection.moduleName;
+        let modelName = request.collection.modelName;
+        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        if (interceptors && interceptors.preProcessor) {
+            SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors({
+                request: request,
+                response: response,
+                interceptorList: [].concat(interceptors.preProcessor)
+            }).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     handleNestedModelsSave: function (request, response, process) {
         this.LOG.debug('Saving nexted models');
+        console.log(request.models);
         let rawSchema = request.collection.rawSchema;
         if (rawSchema.refSchema) {
             this.handleNestedProperties(request, response, Object.keys(rawSchema.refSchema)).then(success => {
@@ -112,13 +135,11 @@ module.exports = {
         });
     },
 
-    preProcessor: function (request, response, process) {
-        this.LOG.debug('Applying pre processors in models');
-        process.nextSuccess(request, response);
-    },
-
     processModels: function (request, response, process) {
         this.LOG.debug('Processing models');
+        if (request.query && !UTILS.isBlank(request.query)) {
+            request.originalQuery = _.merge({}, request.query || {});
+        }
         this.handleModelsSave(request, response, request.models).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -162,7 +183,22 @@ module.exports = {
 
     postProcessor: function (request, response, process) {
         this.LOG.debug('Applying post processors in models');
-        process.nextSuccess(request, response);
+        let moduleName = request.moduleName || request.collection.moduleName;
+        let modelName = request.collection.modelName;
+        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        if (interceptors && interceptors.postProcessor) {
+            SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors({
+                request: request,
+                response: response,
+                interceptorList: [].concat(interceptors.postProcessor)
+            }).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     handleSucessEnd: function (request, response, process) {

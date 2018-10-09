@@ -119,6 +119,7 @@ module.exports = function (name, pipelineDefinition) {
     };
 
     this.error = function (request, response, err) {
+        this.LOG.error(err);
         _preNode = _currentNode;
         _currentNode = _handleError;
         if (err) {
@@ -127,7 +128,7 @@ module.exports = function (name, pipelineDefinition) {
                     response.errors.push(element);
                 });
             } else {
-                response.errors.push(err);
+                response.errors.push(err.toString());
             }
         }
         this.next(request, response);

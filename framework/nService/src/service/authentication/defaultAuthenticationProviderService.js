@@ -23,7 +23,7 @@ module.exports = {
                 }
             });
         } else {
-            callback(null, 'Key is not there : ' + event.target);
+            callback('Key is not there : ' + event.target);
         }
     },
 

@@ -11,19 +11,29 @@
 
 module.exports = {
     profile: {
-        default: {
-        },
         employee: {
-            encryptPassword: {
+            encryptSavePassword: {
                 type: 'preSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
+            },
+            encryptUpdatePassword: {
+                type: 'preUpdate',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
             },
         },
         customer: {
-            encryptPassword: {
+            encryptSavePassword: {
                 type: 'preSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
+            },
+            encryptUpdatePassword: {
+                type: 'preUpdate',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'

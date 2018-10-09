@@ -218,7 +218,7 @@ module.exports = {
             }
         },
 
-        personState: {
+        userState: {
             super: 'super',
             model: true,
             service: true,

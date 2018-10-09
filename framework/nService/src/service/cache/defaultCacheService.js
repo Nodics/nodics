@@ -151,8 +151,7 @@ module.exports = {
     },
 
     flush: function (cache, prefix, moduleName) {
-        console.log('-- Flushing Item cache: ', prefix);
-        return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix);
+        return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix, moduleName);
     },
 
     flushApiCacheKeys: function (request, callback) {
@@ -224,7 +223,7 @@ module.exports = {
     },
 
     createItemKey: function (input) {
-        let options = _.merge({}, input.queryOptions);
+        let options = _.merge({}, input.options);
         if (input.options) {
             options.recursive = input.options.recursive || false;
         }

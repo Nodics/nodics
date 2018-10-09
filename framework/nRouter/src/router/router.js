@@ -82,6 +82,11 @@ module.exports = {
             app.route(routerDef.url).put((req, res) => {
                 SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
             });
+        },
+        patch: function (app, routerDef) {
+            app.route(routerDef.url).patch((req, res) => {
+                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+            });
         }
     },
 
@@ -244,6 +249,22 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'PUT',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName',
+                    body: '{ complete model object } or [{}, {}] array of models'
+                }
+            }
+        },
+        commonUpdateOperations: {
+            updateModels: {
+                secured: true,
+                key: '/schemaName',
+                method: 'PATCH',
+                controller: 'DefaultcontrollerName',
+                operation: 'update',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PATCH',
                     url: 'http://host:port/nodics/{moduleName}/schemaName',
                     body: '{ complete model object } or [{}, {}] array of models'
                 }

@@ -17,8 +17,7 @@ module.exports = {
             collection.getItems = function (input) {
                 return new Promise((resolve, reject) => {
                     try {
-                        console.log(input.query);
-                        this.find(input.query, input.queryOptions).toArray((error, result) => {
+                        this.find(input.query, input.options).toArray((error, result) => {
                             if (error) {
                                 reject(error);
                             } else {
@@ -33,63 +32,36 @@ module.exports = {
         },
 
         defineDefaultSave: function (collection, rawSchema) {
-            collection.saveItem = function (input) {
+            collection.saveItems = function (input) {
                 return new Promise((resolve, reject) => {
                     if (!input.model) {
                         reject('Invalid model value to save');
+                    } else if (input.query && !UTILS.isBlank(input.query)) {
+                        try {
+                            this.findOneAndUpdate(input.query, { $set: input.model }, CONFIG.get('database').modelSaveOptions || {}).then(result => {
+                                if (result && result.value) {
+                                    resolve(result.value);
+                                } else {
+                                    reject('Failed to update doc');
+                                }
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
                     } else {
                         try {
-                            let model = input.model;
-                            console.log('------->> ', input.model);
-                            if (input.query && !UTILS.isBlank(input.query)) {
-                                let query = _.merge({}, input.query);
-                                _.each(query, (propertyName, property) => {
-                                    let value = '';
-                                    if (propertyName.indexOf('.') > 0) {
-                                        let propertyNames = propertyName.split('.');
-                                        value = model;
-                                        propertyNames.forEach(element => {
-                                            if (value[element]) {
-                                                value = value[element];
-                                            } else {
-                                                throw new Error('Invalid property value for: ' + property + ' in ' + JSON.stringify(model));
-                                            }
-                                        });
-                                    } else {
-                                        value = model[propertyName];
-                                    }
-                                    query[property] = value;
-                                });
-                                this.updateItem(query, model).then(result => {
-                                    resolve(result);
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            } else if (model._id) {
-                                let query = {
-                                    _id: model._id
-                                };
-                                this.updateItem(query, model).then(result => {
-                                    resolve(result);
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            } else if (model.code) {
-                                let query = {
-                                    code: model.code
-                                };
-                                this.updateItem(query, model).then(result => {
-                                    resolve(result);
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            } else {
-                                this.createItem(model).then(result => {
-                                    resolve(result);
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            }
+                            this.insertOne(input.model, {}).then(result => {
+                                if (result.ops && result.ops.length > 0) {
+                                    resolve(result.ops[0]);
+                                } else {
+                                    reject('Failed to create doc');
+                                }
+                            }).catch(error => {
+                                console.log(error);
+                                reject(error);
+                            });
                         } catch (error) {
                             reject(error);
                         }
@@ -99,36 +71,35 @@ module.exports = {
         },
 
         defineDefaultSaveByQuery: function (collection, rawSchema) {
-            collection.updateItem = function (query, model) {
-                let modelUpdateOptions = CONFIG.get('database').modelUpdateOptions;
+            collection.updateItems = function (input) {
                 return new Promise((resolve, reject) => {
-                    this.findOneAndUpdate(query, { $set: model }, modelUpdateOptions).then(result => {
-                        if (result && result.value) {
-                            resolve(result.value);
+                    if (!input.model) {
+                        reject('Invalid model value to save');
+                    } else if (!input.query || UTILS.isBlank(input.query)) {
+                        reject('Blank query is not supported');
+                    } else {
+                        if (input.options && input.options.returnModified) {
+                            this.updateMany(input.query, { $set: input.model }, CONFIG.get('database').modelUpdateOptions || {}).then(success => {
+                                let result = success.result;
+                                this.find(input.query, input.options).toArray((error, response) => {
+                                    if (error) {
+                                        reject(error);
+                                    } else {
+                                        result.models = response;
+                                        resolve(result);
+                                    }
+                                });
+                            }).catch(error => {
+                                reject(error);
+                            });
                         } else {
-                            reject('Failed to update doc');
+                            this.updateMany(input.query, { $set: input.model }, CONFIG.get('database').modelUpdateOptions || {}).then(success => {
+                                resolve(success.result);
+                            }).catch(error => {
+                                reject(error);
+                            });
                         }
-                    }).catch(error => {
-                        console.log(error);
-                        reject(error);
-                    });
-                });
-            };
-        },
-
-        defineDefaultCreate: function (collection, rawSchema) {
-            collection.createItem = function (model) {
-                return new Promise((resolve, reject) => {
-                    this.insertOne(model, {}).then(result => {
-                        if (result.ops && result.ops.length > 0) {
-                            resolve(result.ops[0]);
-                        } else {
-                            reject('Failed to create doc');
-                        }
-                    }).catch(error => {
-                        console.log(error);
-                        reject(error);
-                    });
+                    }
                 });
             };
         },
@@ -136,13 +107,31 @@ module.exports = {
         defineDefaultRemove: function (collection, rawSchema) {
             collection.removeItems = function (input) {
                 return new Promise((resolve, reject) => {
-                    console.log('===============>>>> ', input.query);
-                    this.deleteMany(input.query, input.queryOptions).then(response => {
-                        console.log('1===============>>>> ', response);
-                        resolve(response);
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    if (input.query && !UTILS.isBlank(input.query)) {
+                        if (input.options && input.options.returnModified) {
+                            this.find(input.query, input.options).toArray((error, response) => {
+                                if (error) {
+                                    reject(error);
+                                } else {
+                                    this.deleteMany(input.query, CONFIG.get('database').modelRemoveOptions || {}).then(success => {
+                                        let result = success.result;
+                                        result.models = response;
+                                        resolve(result);
+                                    }).catch(error => {
+                                        reject(error);
+                                    });
+                                }
+                            });
+                        } else {
+                            this.deleteMany(input.query, CONFIG.get('database').modelRemoveOptions || {}).then(success => {
+                                resolve(success.result);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }
+                    } else {
+                        reject('Blank query is not supported');
+                    }
                 });
             };
         }
