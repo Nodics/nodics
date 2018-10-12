@@ -12,17 +12,23 @@
 module.exports = {
     nems: {
         event: {
-            eventSplitPreProcessor: {
+            eventSplitPreSave: {
                 type: 'preSave',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEventsplitInterceptorService.eventSplitPreSave'
             },
-            eventSplitPostProcessor: {
+            eventSplitPostSave: {
                 type: 'postSave',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEventsplitInterceptorService.eventSplitPostSave'
+            },
+            eventSplitPostProcessor: {
+                type: 'postProcessor',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEventsplitInterceptorService.processSyncEvents'
             }
         }
     }

@@ -10,7 +10,6 @@
  */
 
 const _ = require('lodash');
-const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
 
@@ -189,7 +188,7 @@ module.exports = {
                 collection.rawSchema.cache.enabled) {
                 SERVICE.DefaultCacheService.flushItemCache({
                     moduleName: collection.moduleName,
-                    prefix: collection.modelName
+                    prefix: collection.schemaName
                 }).then(success => {
                     this.LOG.debug('Cache for model:' + collection.modelName + ' has been flushed cuccessfully');
                 }).catch(error => {
@@ -207,30 +206,35 @@ module.exports = {
         this.LOG.debug('Triggering event for modified model');
         try {
             let collection = request.collection;
-            if (response.model &&
-                NODICS.getActiveChannel() !== 'test' &&
-                NODICS.isNTestRunning() &&
-                CONFIG.get('event').publishAllActive &&
-                collection.rawSchema.event) {
-                let document = request.model;
+            if (response.model && collection.rawSchema.event) {
                 let event = {
-                    enterpriseCode: document.enterpriseCode,
+                    enterpriseCode: response.model.enterpriseCode || request.enterpriseCode,
+                    tenant: request.tenant,
                     event: 'save',
                     source: collection.moduleName,
                     target: collection.moduleName,
                     state: "NEW",
                     type: "ASYNC",
+                    targetType: ENUMS.TargetType.EACH_NODE.key,
                     params: [{
-                        key: 'modelName',
+                        key: 'schemaName',
                         value: collection.schemaName
-                    },
-                    {
+                    }, {
+                        key: 'modelName',
+                        value: collection.modelName
+                    }, {
                         key: 'data',
                         value: response.model
                     }]
                 };
                 this.LOG.debug('Pushing event for item created : ', collection.schemaName);
-                SERVICE.DefaultEventService.publish(event);
+                SERVICE.DefaultEventService.publish(event, (error, response) => {
+                    if (error) {
+                        this.LOG.error('While posting model change event : ', error);
+                    } else {
+                        this.LOG.debug('Event successfully posted');
+                    }
+                });
             }
         } catch (error) {
             this.LOG.error('Facing issue while pushing save event : ', error);

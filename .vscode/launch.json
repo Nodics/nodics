@@ -16,10 +16,11 @@
             "request": "attach",
             "port": 9229,
             "address": "localhost",
+            "trace": true,
             "restart": false,
             "sourceMaps": false,
             "localRoot": "${workspaceFolder}",
-            "remoteRoot": null
+            "remoteRoot": "${workspaceFolder}"
         }
     ]
 }

@@ -44,6 +44,10 @@ module.exports = {
             service: true,
             event: true,
             router: true,
+            cache: {
+                enabled: true,
+                ttl: 1000
+            },
             definition: {
                 enterpriseCode: {
                     required: false

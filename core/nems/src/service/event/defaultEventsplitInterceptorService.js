@@ -17,7 +17,10 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let model = options.model;
-                if (!UTILS.isBlank(model)) {
+                if (!UTILS.isBlank(model) && !model.targets) {
+                    if (model.type == ENUMS.EventType.SYNC.key) {
+                        model.state = ENUMS.EventState.PROCESSING.key;
+                    }
                     model.targets = [];
                     if (!model.targetType || model.targetType === ENUMS.TargetType.MODULE.key) {
                         model.targets.push({
@@ -61,6 +64,27 @@ module.exports = {
     eventSplitPostSave: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
+        });
+    },
+
+    processSyncEvents: function (options) {
+        return new Promise((resolve, reject) => {
+            let events = options.response.success;
+            let syncEvents = [];
+            events.forEach(element => {
+                if (element.type === ENUMS.EventType.SYNC.key) {
+                    syncEvents.push(element);
+                }
+            });
+            if (syncEvents.length > 0) {
+                SERVICE.DefaultEventHandlerService.processSyncEvents(syncEvents).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
         });
     }
 };

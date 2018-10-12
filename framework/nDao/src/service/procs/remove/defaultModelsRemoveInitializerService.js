@@ -55,13 +55,7 @@ module.exports = {
         this.LOG.debug('Executing remove query');
         try {
             request.collection.removeItems(request).then(result => {
-                if (result && UTILS.isArray(result)) {
-                    result.forEach(element => {
-                        response.success.push(element);
-                    });
-                } else {
-                    response.success.push(result);
-                }
+                response.success = result;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 console.log(error);
@@ -104,7 +98,43 @@ module.exports = {
     },
 
     triggerModelChangeEvent: function (request, response, process) {
-        this.LOG.debug('Triggering event for modified model');
+        this.LOG.debug('Triggering event for removed models');
+        try {
+            let collection = request.collection;
+            if (response.success && response.success.models &&
+                collection.rawSchema.event) {
+                let event = {
+                    enterpriseCode: request.enterpriseCode,
+                    tenant: request.tenant,
+                    event: 'save',
+                    source: collection.moduleName,
+                    target: collection.moduleName,
+                    state: "NEW",
+                    type: "ASYNC",
+                    targetType: ENUMS.TargetType.EACH_NODE.key,
+                    params: [{
+                        key: 'schemaName',
+                        value: collection.schemaName
+                    }, {
+                        key: 'modelName',
+                        value: collection.modelName
+                    }, {
+                        key: 'data',
+                        value: response.success.models
+                    }]
+                };
+                this.LOG.debug('Pushing event for item created : ', collection.schemaName);
+                SERVICE.DefaultEventService.publish(event, (error, response) => {
+                    if (error) {
+                        _self.LOG.error('While posting model change event : ', error);
+                    } else {
+                        _self.LOG.debug('Event successfully posted');
+                    }
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while pushing save event : ', error);
+        }
         process.nextSuccess(request, response);
     },
 

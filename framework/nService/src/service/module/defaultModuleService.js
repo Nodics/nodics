@@ -39,15 +39,13 @@ module.exports = {
         this.LOG.debug('Hitting module communication URL : ', JSON.stringify(requestUrl));
         if (callback) {
             try {
-                requestPromise(requestUrl)
-                    .then(response => {
-                        callback(null, response, requestUrl);
-                    })
-                    .catch(error => {
-                        callback(error, null, requestUrl);
-                    });
+                requestPromise(requestUrl).then(response => {
+                    callback(null, response);
+                }).catch(error => {
+                    callback(error);
+                });
             } catch (error) {
-                callback(error, null, requestUrl);
+                callback(error);
             }
         } else {
             return requestPromise(requestUrl);

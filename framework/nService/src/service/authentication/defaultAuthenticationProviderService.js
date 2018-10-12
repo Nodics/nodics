@@ -13,17 +13,21 @@ const NodeCache = require("node-cache");
 module.exports = {
     invalidateAuthToken: function (event, callback) {
         let moduleObject = NODICS.getModule(event.target);
-        if (moduleObject.authCache && moduleObject.authCache.get(event.params[0].key)) {
-            moduleObject.authCache.del(event.params[0].key, function (err, count) {
-                if (err) {
-                    this.LOG.error('While invalidating cache key : ', err);
-                    callback(err);
-                } else {
-                    callback(null, 'Successfully deleted key from module : ' + event.target);
-                }
-            });
+        if (event.params && event.params.length > 0) {
+            if (moduleObject.authCache && moduleObject.authCache.get(event.params[0].key)) {
+                moduleObject.authCache.del(event.params[0].key, function (err, count) {
+                    if (err) {
+                        this.LOG.error('While invalidating cache key : ', err);
+                        callback(err);
+                    } else {
+                        callback(null, 'Successfully deleted key from module : ' + event.target);
+                    }
+                });
+            } else {
+                callback(null, 'Key is not there : ' + event.target);
+            }
         } else {
-            callback('Key is not there : ' + event.target);
+            callback('Please provide authToken to invalidate');
         }
     },
 
@@ -40,7 +44,8 @@ module.exports = {
                     moduleObject.authCache = new NodeCache(CONFIG.get('cache').authToken);
                     _self.publishTokenExpiredEvent({
                         moduleName: moduleName,
-                        moduleObject: moduleObject
+                        moduleObject: moduleObject,
+                        tenant: value.enterprise.tenant.code
                     });
                 }
                 moduleObject.authCache.set(hash, JSON.stringify(value), ttl);
@@ -58,12 +63,13 @@ module.exports = {
                 value = JSON.parse(value);
                 let event = {
                     enterpriseCode: value.enterprise.enterpriseCode,
+                    tenant: options.tenant,
                     event: 'invalidateAuthToken',
                     source: options.moduleName,
                     target: options.moduleName,
                     state: 'NEW',
                     type: 'SYNC',
-                    targetType: 'EACH_NODE',
+                    targetType: ENUMS.TargetType.EACH_NODE.key,
                     params: [{
                         key: key
                     }]

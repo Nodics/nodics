@@ -79,18 +79,21 @@ module.exports = {
                         reject('Blank query is not supported');
                     } else {
                         if (input.options && input.options.returnModified) {
-                            this.updateMany(input.query, { $set: input.model }, CONFIG.get('database').modelUpdateOptions || {}).then(success => {
-                                let result = success.result;
-                                this.find(input.query, input.options).toArray((error, response) => {
-                                    if (error) {
-                                        reject(error);
-                                    } else {
+                            this.find(input.query, input.options).toArray((error, response) => {
+                                if (error) {
+                                    reject(error);
+                                } else {
+                                    this.updateMany(input.query, { $set: input.model }, CONFIG.get('database').modelUpdateOptions || {}).then(success => {
+                                        let result = success.result;
+                                        response.forEach(element => {
+                                            _.merge(element, input.model);
+                                        });
                                         result.models = response;
                                         resolve(result);
-                                    }
-                                });
-                            }).catch(error => {
-                                reject(error);
+                                    }).catch(error => {
+                                        reject(error);
+                                    });
+                                }
                             });
                         } else {
                             this.updateMany(input.query, { $set: input.model }, CONFIG.get('database').modelUpdateOptions || {}).then(success => {

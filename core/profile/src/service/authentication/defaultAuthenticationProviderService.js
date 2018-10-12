@@ -18,7 +18,7 @@ module.exports = {
             tenant: options.tenant,
             models: [options.state]
         }).then(success => {
-            _self.LOG.debug('Employee data has been updated with current time');
+            _self.LOG.debug('State data has been updated with current time');
         }).catch(error => {
             _self.LOG.debug('While updating Active data with current time : ', error);
         });

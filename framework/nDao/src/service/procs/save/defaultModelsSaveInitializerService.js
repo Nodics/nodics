@@ -55,7 +55,6 @@ module.exports = {
 
     handleNestedModelsSave: function (request, response, process) {
         this.LOG.debug('Saving nexted models');
-        console.log(request.models);
         let rawSchema = request.collection.rawSchema;
         if (rawSchema.refSchema) {
             this.handleNestedProperties(request, response, Object.keys(rawSchema.refSchema)).then(success => {

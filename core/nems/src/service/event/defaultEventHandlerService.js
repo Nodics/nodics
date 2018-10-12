@@ -13,7 +13,267 @@ const _ = require('lodash');
 
 module.exports = {
 
+    processEvents: function (request, callback) {
+        let input = request.local || request;
+        if (callback) {
+            this.processAsyncEvents(input).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return this.processAsyncEvents(input);
+        }
+    },
 
+    buildQuery: function () {
+        return {
+            options: {
+                returnModified: true
+            },
+            query: {
+                $and: [{
+                    $or: [{
+                        state: ENUMS.EventState.NEW.key
+                    }, {
+                        state: ENUMS.EventState.ERROR.key
+                    }]
+                }, {
+                    hits: { $lt: 5 }
+                }]
+            },
+            model: {
+                state: ENUMS.EventState.PROCESSING.key
+            }
+        };
+        /*return {
+            options: {
+                recursive: false,
+                pageSize: CONFIG.get('eventFetchSize'),
+                pageNumber: 0,
+            },
+            query: {
+                $and: [{
+                    $or: [{
+                        state: ENUMS.EventState.NEW.key
+                    }, {
+                        state: ENUMS.EventState.ERROR.key
+                    }]
+                }, {
+                    hits: { $lt: 5 }
+                }]
+            }
+        };*/
+    },
+
+    fetchEvents: function (input) {
+        return new Promise((resolve, reject) => {
+            this.LOG.debug('Retrieving events to broadcast');
+            input = _.merge(input, this.buildQuery());
+            SERVICE.DefaultEventService.update(input).then(events => {
+                resolve(events);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    processAsyncEvents: function (input) {
+        let _self = this;
+        this.LOG.debug('Broadcasting async events');
+        return new Promise((resolve, reject) => {
+            this.fetchEvents(input).then(events => {
+                let models = events.models;
+                if (!models || models.length <= 0) {
+                    resolve('None of the events available');
+                } else {
+                    _self.LOG.debug('Total events to be processed : ', events.models.length);
+                    _self.broadcastEvents(events.models).then(success => {
+                        resolve(events.models);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    processSyncEvents: function (events) {
+        let _self = this;
+        this.LOG.debug('Broadcasting Sync events');
+        return new Promise((resolve, reject) => {
+            _self.broadcastEvents(events).then(success => {
+                resolve(events);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    broadcastEvents: function (events, counter) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                counter = counter || 0;
+                if (events && events[counter]) {
+                    let event = events[counter];
+                    _self.broadcastEvent(event).then(success => {
+                        _self.handleProcessedEvent(event);
+                        _self.broadcastEvents(events, ++counter).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        _self.broadcastEvents(events, ++counter).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    });
+                } else {
+                    resolve(true);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    handleProcessedEvent: function (event) {
+        let _self = this;
+        try {
+            if (event.state === ENUMS.EventState.FINISHED.key) {
+                SERVICE.DefaultEventService.removeById({
+                    tenant: event.tenant,
+                    ids: [event._id]
+                }).then(success => {
+                    _self.LOG.debug('Event has been processed successfully');
+                }).catch(error => {
+                    _self.LOG.debug('Facing issue while updating event success log');
+                });
+
+                SERVICE.DefaultEventLogService.save({
+                    tenant: event.tenant,
+                    models: [event]
+                }).then(success => {
+                    _self.LOG.debug('Event has been moved to success log');
+                }).catch(error => {
+                    _self.LOG.debug('Facing issue while moved to success log');
+                });
+            } else {
+                SERVICE.DefaultEventService.save({
+                    tenant: event.tenant,
+                    models: [event]
+                }).then(success => {
+                    _self.LOG.debug('Event has been updated for error');
+                }).catch(error => {
+                    _self.LOG.debug('Facing issue while updating event error log');
+                });
+            }
+        } catch (error) {
+            _self.LOG.error('While updating logs for processed event: ' + event._id, error);
+        }
+    },
+    broadcastEvent: function (event) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                if (event.targets && event.targets.length > 0) {
+                    event.state = ENUMS.EventState.FINISHED.key;
+                    _self.broadcastEventToTarget(event, event.targets).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            } catch (error) {
+                _self.LOG.error('While broadcasting event to module : ', error);
+                reject(error);
+            }
+        });
+    },
+
+    broadcastEventToTarget: function (event, targets, counter) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                counter = counter || 0;
+                if (targets && targets[counter]) {
+                    let target = targets[counter];
+                    target.logs = target.logs || [];
+                    if (!target.state || target.state === ENUMS.EventState.ERROR.key) {
+                        SERVICE.DefaultModuleService.fetch(_self.prepareURL({
+                            enterpriseCode: event.enterpriseCode,
+                            tenant: event.tenant,
+                            event: event.event,
+                            source: event.source,
+                            target: target.target,
+                            type: event.type,
+                            params: event.params
+                        }, target)).then(success => {
+                            if (success.success) {
+                                target.state = ENUMS.EventState.FINISHED.key;
+                                target.logs.push(success.result.toString());
+                            } else {
+                                event.state = ENUMS.EventState.ERROR.key;
+                                target.state = ENUMS.EventState.ERROR.key;
+                                target.logs.push(success.error.toString());
+                            }
+                            _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            target.state = ENUMS.EventState.ERROR.key;
+                            target.logs.push(error.toString());
+                            _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        });
+                    } else {
+                        _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }
+                } else {
+                    resolve(true);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    prepareURL: function (event, target) {
+        let connectionType = 'abstract';
+        let nodeId = 0;
+        if (target.targetNodeId) {
+            connectionType = 'node';
+            nodeId = target.targetNodeId;
+        }
+        return SERVICE.DefaultModuleService.buildRequest({
+            connectionType: connectionType,
+            nodeId: nodeId,
+            moduleName: target.target,
+            methodName: 'POST',
+            apiName: '/event/handle',
+            requestBody: event,
+            isJsonResponse: true,
+            header: {
+                authToken: NODICS.getModule('nems').metaData.authToken
+            }
+        });
+    },
 
     /*
     
@@ -106,27 +366,7 @@ module.exports = {
                 callback(error);
             });
         },
-    */
-    // **************************************************************************************************
-
-    buildQuery: function () {
-        return {
-            recursive: false,
-            pageSize: CONFIG.get('eventFetchSize'),
-            pageNumber: 0,
-            query: {
-                $and: [{
-                    $or: [{
-                        state: ENUMS.EventState.NEW.key
-                    }, {
-                        state: ENUMS.EventState.ERROR.key
-                    }]
-                }, {
-                    hits: { $lt: 5 }
-                }]
-            }
-        };
-    },
+    
 
     processEvents: function (request, callback) {
         let _self = this;
@@ -210,26 +450,7 @@ module.exports = {
         });
     },
 
-    prepareURL: function (event) {
-        let connectionType = 'abstract';
-        let nodeId = 0;
-        if (event.targetNodeId) {
-            connectionType = 'node';
-            nodeId = event.targetNodeId;
-        }
-        return SERVICE.DefaultModuleService.buildRequest({
-            connectionType: connectionType,
-            nodeId: nodeId,
-            moduleName: event.target,
-            methodName: 'POST',
-            apiName: '/event/handle',
-            requestBody: event,
-            isJsonResponse: true,
-            header: {
-                authToken: NODICS.getModule('nems').metaData.authToken
-            }
-        });
-    },
+
 
     broadcastEventToModule: function (event) {
         let _self = this;
@@ -304,4 +525,8 @@ module.exports = {
             }
         });
     }
+    */
+    // **************************************************************************************************
+
+
 };

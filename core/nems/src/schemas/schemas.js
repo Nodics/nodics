@@ -23,6 +23,11 @@ module.exports = {
                     required: true,
                     description: 'Source module from where this event is triggered'
                 },
+                tenant: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required to identify database connection for operations'
+                },
                 target: {
                     type: 'string',
                     required: true,

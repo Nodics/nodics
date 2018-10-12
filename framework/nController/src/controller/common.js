@@ -54,7 +54,7 @@ module.exports = {
         request.local.codes = [];
         if (request.params.code) {
             request.local.codes.push(request.params.code);
-        } else {
+        } else if (UTILS.isArray(request.body) && request.body.length > 0) {
             request.local.codes = request.body;
         }
         FACADE.FacadeName.removeByCode(request, callback);

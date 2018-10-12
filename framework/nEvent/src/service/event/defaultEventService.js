@@ -30,14 +30,18 @@ module.exports = {
             requestBody: eventDef,
             isJsonResponse: true,
             header: {
-                enterpriseCode: eventDef.enterpriseCode
+                enterpriseCode: eventDef.enterpriseCode || 'default'
             }
         });
     },
 
     publish: function (request, callback) {
-        let eventDef = request.body || request;
-        this.LOG.debug('Publishing event to event server');
-        SERVICE.DefaultModuleService.fetch(this.prepareURL(eventDef), callback);
+        if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
+            !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
+            let eventDef = request.body || request;
+            this.LOG.debug('Publishing event to event server');
+            SERVICE.DefaultModuleService.fetch(this.prepareURL(eventDef), callback);
+        }
+
     }
 };

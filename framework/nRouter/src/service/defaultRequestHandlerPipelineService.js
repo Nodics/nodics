@@ -141,7 +141,7 @@ module.exports = {
                     process.error(request, response, error);
                 } else {
                     let cache = false;
-                    if (result.cache) {
+                    if (result && result.cache) {
                         cache = true;
                         delete result.cache;
                     }
