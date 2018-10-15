@@ -50,6 +50,7 @@ module.exports = {
 
     parseHeader: function (request, response, process) {
         this.LOG.debug('Parsing request header for : ', request.local.originalUrl);
+        request.local.cache = null;
         if (request.get('authToken')) {
             request.local.authToken = request.get('authToken');
         }
@@ -82,32 +83,18 @@ module.exports = {
                     if (error) {
                         process.error(request, response, error);
                     } else {
-                        let cache = false;
-                        if (result.cache) {
-                            cache = true;
-                            delete result.cache;
-                        }
-                        response.success = true;
-                        response.code = 'SUC001';
-                        response.msg = 'Processed successfully';
                         response.result = result;
                         if (request.local.router.cache && request.local.router.cache.enabled && request.local.router.moduleObject.apiCache) {
                             SERVICE.DefaultCacheService.putApi(request.local.router.moduleObject.apiCache,
                                 request,
-                                response,
+                                response.result,
                                 request.local.router.cache).then(cuccess => {
-                                    if (cache) {
-                                        response.cache = 'item hit';
-                                    }
                                     process.stop(request, response);
                                 }).catch(error => {
                                     _self.LOG.error('While pushing data into Item cache : ', error);
                                     process.stop(request, response);
                                 });
                         } else {
-                            if (cache) {
-                                response.cache = 'item hit';
-                            }
                             process.stop(request, response);
                         }
                     }
@@ -140,35 +127,20 @@ module.exports = {
                 if (error) {
                     process.error(request, response, error);
                 } else {
-                    let cache = false;
-                    if (result && result.cache) {
-                        cache = true;
-                        delete result.cache;
-                    }
                     response.result = result;
                     if (request.local.router.cache &&
                         request.local.router.cache.enabled &&
                         request.local.router.moduleObject.apiCache) {
                         SERVICE.DefaultCacheService.putApi(request.local.router.moduleObject.apiCache,
                             request,
-                            response,
+                            response.result,
                             request.local.router.cache).then(cuccess => {
-                                if (cache) {
-                                    request.local.cache = 'item hit';
-                                } else {
-                                    request.local.cache = 'mis';
-                                }
                                 process.nextSuccess(request, response);
                             }).catch(error => {
                                 _self.LOG.error('While pushing data into Item cache : ', error);
                                 process.nextSuccess(request, response);
                             });
                     } else {
-                        if (cache) {
-                            response.cache = 'item hit';
-                        } else {
-                            response.cache = 'mis';
-                        }
                         process.nextSuccess(request, response);
                     }
                 }
@@ -181,13 +153,17 @@ module.exports = {
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully : ', request.local.originalUrl);
-        process.resolve({
+        let output = {
             success: true,
             code: 'SUC001',
             msg: 'Processed successfully',
-            cache: response.cache,
+
             result: response.result
-        });
+        };
+        if (request.local.cache) {
+            output.cache = request.local.cache;
+        }
+        process.resolve(output);
     },
 
     handleErrorEnd: function (request, response, process) {

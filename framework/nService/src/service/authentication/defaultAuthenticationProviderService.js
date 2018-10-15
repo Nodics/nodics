@@ -123,9 +123,11 @@ module.exports = {
         let _self = this;
         let input = request.local || request;
         this.findToken(input).then(success => {
+            console.log('Auth Token found locally................');
             callback(null, success);
         }).catch(error => {
             if (input.moduleName !== CONFIG.get('profileModuleName')) {
+                console.log('---------->> Requesting remote authorization');
                 this.LOG.debug('Authorizing request for token :', input.authToken);
                 SERVICE.DefaultModuleService.fetch(this.prepareURL(input), (error, response) => {
                     if (error) {
@@ -135,6 +137,7 @@ module.exports = {
                     } else {
                         callback(null, response.result);
                         if (CONFIG.get('cache').makeAuthTokenLocal) {
+                            console.log('------------->>> Storing auth token locally');
                             _self.addToken(input.moduleName, null, input.authToken, response.result).then(success => {
                                 _self.LOG.debug('Token stored locally for module : ' + input.moduleName);
                             }).catch(error => {

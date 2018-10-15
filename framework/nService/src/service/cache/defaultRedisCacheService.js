@@ -56,7 +56,7 @@ module.exports = {
                     } else if (value) {
                         resolve(JSON.parse(value));
                     } else {
-                        reject();
+                        reject(false);
                     }
                 });
             } catch (error) {
@@ -88,17 +88,19 @@ module.exports = {
                 if (!prefix.endsWith('*')) {
                     prefix += '*';
                 }
-                client.keys(function (err, cacheKeys) {
+                client.keys(prefix, function (err, cacheKeys) {
                     if (cacheKeys) {
                         cacheKeys.forEach(key => {
                             client.del(key);
                         });
                     }
-                    resolve(true);
+                    resolve(cacheKeys);
                 });
             } else {
-                client.flushAll();
-                resolve(true);
+                client.keys(function (err, cacheKeys) {
+                    client.flushAll();
+                    resolve(cacheKeys);
+                });
             }
         });
     },
@@ -106,7 +108,7 @@ module.exports = {
     flushKeys: function (client, keys) {
         return new Promise((resolve, reject) => {
             client.del(keys);
-            resolve(true);
+            resolve(keys);
         });
     },
 };

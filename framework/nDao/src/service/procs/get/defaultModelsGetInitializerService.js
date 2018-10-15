@@ -62,14 +62,9 @@ module.exports = {
                 hashKey: request.cacheKeyHash,
             };
             SERVICE.DefaultCacheService.get(input).then(value => {
-                this.LOG.info('Fulfilled from Item cache : ');
-                if (value && UTILS.isArray(value)) {
-                    value.forEach(element => {
-                        response.success.push(element);
-                    });
-                } else {
-                    response.success.push(value);
-                }
+                this.LOG.info('Fulfilled from Item cache');
+                response.success = value;
+                request.cache = 'item hit';
                 process.stop(request, response);
             }).catch(error => {
                 response.errors.push(error);
@@ -104,13 +99,15 @@ module.exports = {
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
         request.collection.getItems(request).then(result => {
-            if (result && UTILS.isArray(result)) {
+            /*if (result && UTILS.isArray(result)) {
                 result.forEach(element => {
                     response.success.push(element);
                 });
             } else {
                 response.success.push(result);
-            }
+            }*/
+            response.success = result;
+            request.cache = 'item mis';
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);

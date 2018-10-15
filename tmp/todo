@@ -14,8 +14,8 @@ Todos:
     ✔ Make all framework load Prmoisify (Loading all modules in sequence) @done(18-03-05 22:50)
     ✔ Make item and API TTL at configuration level @done(18-03-04 22:39)
     
-    - Build common event Listener for all module (May be for cache invalidation)
-    - Clustered Event execution process
+    ✔ Build common event Listener for all module (May be for cache invalidation) @done(18-10-15 15:38)
+    ✔ Clustered Event execution process @done(18-10-15 15:38)
     ✔ Authentication and Authorization for background processes like CronJob Execution @done(18-03-09 22:24)
     ✔ Create default data import process @done(18-03-09 22:24)
 
@@ -56,7 +56,7 @@ Todos:
     ✔ Start cronJob with given optional Item model @done(18-03-26 14:59)
     - Pass import data via Process to customize it further
     - Plug Hot folder process
-    - Try to make process synchronous 
+    - Try to make process Asynchronous 
     ✔ Application debug --inspect @done(18-03-31 15:14)
     ✔ I am live functionality (Server ping machanizm) @done(18-03-31 14:43)
     ✔ Add EMS connectivity in Nodics Architecture diagrame @done(18-03-31 14:26)
@@ -67,14 +67,14 @@ Todos:
     ✔ Store auth token in each module @done(18-04-27 13:10)
     ✔ Invalidate auth token from each module @done(18-04-27 13:10)
 
-    - Pipeline error handling
-    - Verify Save and Get pipeline and sub pipelines
-    - Save sub models and update references
-    - Default Value validators
-    - Create primery keys
-    - Create Indexes
-    - Schema Validators
-    - Implement update pipeline
+    ✔ Pipeline error handling @done(18-10-15 15:38)
+    ✔ Verify Save and Get pipeline and sub pipelines @done(18-10-15 15:39)
+    ✔ Save sub models and update references @done(18-10-15 15:39)
+    ✔ Default Value validators @done(18-10-15 15:39)
+    ✔ Create primery keys @done(18-10-15 15:39)
+    ✔ Create Indexes @done(18-10-15 15:39)
+    ✔ Schema Validators @done(18-10-15 15:39)
+    ✔ Implement update pipeline @done(18-10-15 15:39)
     
     - Don't load test cases while server start-up instead while executing
     - Run individual test case from API for both type
@@ -83,8 +83,8 @@ Todos:
     ✔ Test events and other communicating properly for nodeId and abstract @done(18-04-27 13:11)
     - Remove App server configuration from all module config, so that it can start on default
     - Keep only default App server configuration, that can be redefined in respective servers
-    - Validate Enterprise change or Authorization change in terms of authToken storing for each module
-    - Check authToken invalidation logic for each module 
+    ✔ Validate Enterprise change or Authorization change in terms of authToken storing for each module @done(18-10-15 15:40)
+    ✔ Check authToken invalidation logic for each module @done(18-10-15 15:40)
     - Check event publishing happening in interceptor on Enterprise or Person Update
     - Check if running job stops if end time happens
     - Job handlers are not in Sync currently, it should trigger after first completed
@@ -93,8 +93,8 @@ Todos:
 
 Todos:
   User management process:
-    - Create some default user groups for Employee and Customer
-    - Each user needs to per part of at least one group
+    ✔ Create some default user groups for Employee and Customer @done(18-10-15 15:48)
+    ✔ Each user needs to per part of at least one group @done(18-10-15 15:49)
     
 Todos:
   - Test merge process for multi hiererchy function definitions within service
@@ -103,8 +103,8 @@ Todos:
     - Support Nodics to fetch langauge specific data on each query
 
   Event Processing System:
-    - Test Asynchronous events
-    - Build Sync events process
+    ✔ Test Asynchronous events @done(18-10-15 15:49)
+    ✔ Build Sync events process @done(18-10-15 15:49)
 
   Tenant Management:
     - As soon as new tenant got register, make it live within system
@@ -115,29 +115,29 @@ Todos:
     ✔ Support multiple failure node redirect @done(18-07-08 14:23)
     
 Todos:
-  - Provide validators from both Nodics and Schema level
-  - Provide default value initializer from both level
+  ✔ Provide validators from both Nodics and Schema level @done(18-10-15 15:53)
+  ✔ Provide default value initializer from both level @done(18-10-15 15:53)
   - Create update service to update Schema related changes, like validators, indexes and all
   - Add Watcher configuration at schema level, and push notifications to EMS
   - Create service to run indexes update
   Cassandra Support task:
-    - Configure conection setting separate for mongodb and cassandra
-    - Create schema file separate for both mongo and cassandra (mongodbSchema and cassandraSchema)
+    ✔ Configure conection setting separate for mongodb and cassandra @done(18-10-15 15:56)
+    ✔ Create schema file separate for both mongo and cassandra (mongodbSchema and cassandraSchema) @done(18-10-15 15:56)
 
 Todos:
-  - Trigger import process from API or internal service call
-  - Configuration hold an array of Paths from where data needs to be read and data type like: init, core or sample
-  - Load Module specific data from file
-  - Load data sequentially
-  - Need manage data internal dependancy
+  ✔ Trigger import process from API or internal service call @done(18-10-15 15:56)
+  ✔ Configuration hold an array of Paths from where data needs to be read and data type like: init, core or sample @done(18-10-15 15:56)
+  ✔ Load Module specific data from file @done(18-10-15 15:56)
+  ✔ Load data sequentially @done(18-10-15 15:56)
+  ✔ Need manage data internal dependancy @done(18-10-15 15:57)
   - Need to manage Multi file upload
   - Need to manage Big file upload
-  - Define data definition in seperate files
+  ✔ Define data definition in seperate files @done(18-10-15 15:57)
   
   Data Import Process:
-    - If model has macro defined, got to model define in rawSchema and fine relation type, and relation model name.
+    ✔ If model has macro defined, got to model define in rawSchema and fine relation type, and relation model name. @done(18-10-15 15:57)
     - Load all active data, while calling import service, not while server startup
-    - Load data only for modules are active for that instance
+    ✔ Load data only for modules are active for that instance @done(18-10-15 15:57)
     - https://stackoverflow.com/questions/42896447/parse-large-json-file-in-nodejs-and-handle-each-object-independently
     - Split into files, if file size is greater than specific size
     
@@ -149,7 +149,7 @@ Todos:
   Data Export Process:
 
   Cache:
-    - Check process to update cache configuration via API
+    ✔ Check process to update cache configuration via API @done(18-10-15 15:59)
 
   Authorization Process:
     - Keep authentication credantials mapped with authToken
@@ -159,8 +159,8 @@ Todos:
     - Authentication from external source (Feasibility and Implementation)
     
   Cache Configuration:
-    - Change cache configuration at module level
-    - Invalidate API and Item cache at module level
+    ✔ Change cache configuration at module level @done(18-10-15 15:58)
+    ✔ Invalidate API and Item cache at module level @done(18-10-15 15:58)
 
   Change Log configuration:
     - Change log configuration at module level

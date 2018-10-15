@@ -19,19 +19,21 @@ module.exports = {
         callback('not implemented yet, comming soon');
     },
 
+    /**
+     * Facade layer function to flush API level cache
+     * @param {*} request 
+     * @param {*} callback 
+     */
     flushApiCache: function (request, callback) {
-        SERVICE.DefaultCacheService.flushApiCache(request, callback);
+        return SERVICE.DefaultCacheService.flushApiCache(request, callback);
     },
 
+    /**
+     * Facade layer function to flush Item level cache
+     * @param {*} request 
+     * @param {*} callback 
+     */
     flushItemCache: function (request, callback) {
-        SERVICE.DefaultCacheService.flushItemCache(request, callback);
-    },
-
-    flushApiCacheKeys: function (request, callback) {
-        SERVICE.DefaultCacheService.flushApiCacheKeys(request, callback);
-    },
-
-    flushItemCacheKeys: function (request, callback) {
-        SERVICE.DefaultCacheService.flushItemCache(request, callback);
+        return SERVICE.DefaultCacheService.flushItemCache(request, callback);
     }
 };

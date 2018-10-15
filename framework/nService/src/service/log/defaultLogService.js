@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    changeLogLevel: function(request, callback) {
+    changeLogLevel: function (request, callback) {
         let input = request.local || request;
         if (callback) {
             if (SYSTEM.changeLogLevel(input)) {

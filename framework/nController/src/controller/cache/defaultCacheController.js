@@ -29,35 +29,39 @@ module.exports = {
         }
     },
 
+    /**
+     * This function is used to flush API cache for all keys
+     * If Get request, will flush specific key or all start with frefix
+     * If POST request has list of keys in request body, will flush cache for only those keys
+     * @param {*} request 
+     * @param {*} callback 
+     */
     flushApiCache: function (request, callback) {
-        if (request.params.prefix) {
+        if (request.params.key) {
+            request.local.keys = [request.params.key];
+        } else if (request.params.prefix) {
             request.local.prefix = request.params.prefix;
-        } else if (request.body) {
+        } else if (!UTILS.isBlank(request.body) && UTILS.isArray(request.body)) {
             request.local.keys = request.body;
         }
         FACADE.DefaultCacheFacade.flushApiCache(request, callback);
     },
 
+    /**
+     * This function is used to flush Item cache for all keys
+     * If Get request, will flush specific key or all start with frefix
+     * If POST request has list of keys in request body, will flush cache for only those keys
+     * @param {*} request 
+     * @param {*} callback 
+     */
     flushItemCache: function (request, callback) {
-        if (request.params.prefix) {
-            request.local.prefix = request.params.prefix;
-        } else if (request.body) {
+        if (request.params.key) {
+            request.local.keys = [request.params.key];
+        } else if (request.params.prefix) {
+            request.local.prefix = [request.params.prefix];
+        } else if (!UTILS.isBlank(request.body) && UTILS.isArray(request.body)) {
             request.local.keys = request.body;
         }
         FACADE.DefaultCacheFacade.flushItemCache(request, callback);
-    },
-
-    flushApiCacheKeys: function (request, callback) {
-        if (request.body) {
-            request.local.keys = request.body;
-        }
-        FACADE.DefaultCacheFacade.flushApiCacheKeys(request, callback);
-    },
-
-    flushItemCacheKeys: function (request, callback) {
-        if (request.body) {
-            request.local.keys = request.body;
-        }
-        FACADE.DefaultCacheFacade.flushItemCacheKeys(request, callback);
     }
 };

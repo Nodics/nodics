@@ -67,6 +67,9 @@ module.exports = {
                                 tmpRouterDef.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + tmpRouterDef.key;
                                 tmpRouterDef.moduleName = moduleName;
                                 tmpRouterDef.moduleObject = moduleObject;
+                                if (tmpRouterDef.cache) {
+                                    tmpRouterDef.cache.prefix = schemaName.toLowerCase();
+                                }
                                 routers.operations[functionName](app, tmpRouterDef);
                             }
                         });

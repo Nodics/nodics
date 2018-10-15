@@ -64,26 +64,28 @@ module.exports = {
 
     flush: function (client, prefix) {
         return new Promise((resolve, reject) => {
-            if (prefix) {
-                client.keys(function (err, cacheKeys) {
+            client.keys(function (err, cacheKeys) {
+                if (prefix) {
+                    let delKeys = [];
                     cacheKeys.forEach(key => {
                         if (key.startsWith(prefix)) {
                             client.del(key);
+                            delKeys.push(key);
                         }
                     });
-                    resolve(true);
-                });
-            } else {
-                client.flushAll();
-                resolve(true);
-            }
+                    resolve(delKeys);
+                } else {
+                    client.flushAll();
+                    resolve(cacheKeys);
+                }
+            });
         });
     },
 
     flushKeys: function (client, keys) {
         return new Promise((resolve, reject) => {
             client.del(keys);
-            resolve(true);
+            resolve(keys);
         });
     },
 };

@@ -136,49 +136,204 @@ module.exports = {
         });
     },
 
-    flushApiCache(request) {
-        let moduleObject = NODICS.getModules()[request.moduleName];
-        if (moduleObject.apiCache) {
-            return this.flush(moduleObject.apiCache, request.prefix, request.moduleName);
-        }
-    },
-
-    flushItemCache(request) {
-        let moduleObject = NODICS.getModules()[request.moduleName];
-        if (moduleObject.itemCache) {
-            return this.flush(moduleObject.itemCache, request.prefix, request.moduleName);
-        }
-    },
-
-    flush: function (cache, prefix, moduleName) {
-        return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix, moduleName);
-    },
-
-    flushApiCacheKeys: function (request, callback) {
-        callback('Not supported for API cache');
-    },
-
-    flushItemCacheKeys: function (request, callback) {
-        let moduleObject = NODICS.getModules()[request.moduleName];
-        if (moduleObject.itemCache) {
-            return this.flushKeys(moduleObject.itemCache, request.keys, request.moduleName, callback);
-        }
-    },
-
-    flushKeys: function (cache, keys, moduleName, callback) {
-        let _self = this;
-        SERVICE[cache.type.toUpperCaseFirstChar() + 'CacheService'].flushKeys(cache.client, keys).then(success => {
-            _self.LOG.debug('Cache for module : ' + moduleName + ', flushed successfully');
+    /**
+     * This function is used to flush all stored cache for specific keys or prefix
+     * @param {*} input 
+     * @param {*} callback 
+     */
+    flushApiCache: function (request, callback) {
+        let input = request.local || request;
+        if (input.keys && input.keys.length > 0) {
             if (callback) {
-                callback(null, 'Cache for module : ' + moduleName + ', flushed successfully');
+                this.flushApiCacheByKeys(input, callback);
+            } else {
+                return this.flushApiCacheByKeys(input);
             }
-        }).catch(error => {
-            _self.LOG.error('1While flushing cache for module : ', moduleName);
-            this.LOG.error(error);
+        } else if (input.prefix) {
             if (callback) {
-                callback(error);
+                this.flushApiCacheByPrefix(input, callback);
+            } else {
+                return this.flushApiCacheByPrefix(input);
             }
-        });
+        } else {
+            let moduleObject = NODICS.getModules()[input.moduleName];
+            if (moduleObject.apiCache) {
+                if (callback) {
+                    this.flush(moduleObject.apiCache).then(success => {
+                        callback(null, success);
+                    }).catch(error => {
+                        callback(error);
+                    });
+                } else {
+                    return this.flush(moduleObject.apiCache);
+                }
+            } else {
+                if (callback) {
+                    callback('Invalid module or cache configuration');
+                } else {
+                    Promise.reject('Invalid module or cache configuration');
+                }
+            }
+        }
+    },
+
+    /**
+     * This function is used to flush all caches for given keys
+     * @param {*} request 
+     * @param {*} callback 
+     */
+    flushApiCacheByKeys: function (request, callback) {
+        let input = request.local || request;
+        let moduleObject = NODICS.getModules()[input.moduleName];
+        if (moduleObject.apiCache && input.keys && input.keys.length > 0) {
+            if (callback) {
+                this.flushKeys(moduleObject.apiCache, input.keys).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                return this.flushKeys(moduleObject.apiCache, input.keys);
+            }
+
+        } else {
+            if (callback) {
+                callback('Invalid module or cache configuration');
+            } else {
+                Promise.reject('Invalid module or cache configuration');
+            }
+        }
+    },
+
+    /**
+     * This function is used to flush cache for keys started by given prefix
+     * @param {*} request 
+     * @param {*} callback 
+     */
+    flushApiCacheByPrefix: function (request, callback) {
+        let input = request.local || request;
+        let moduleObject = NODICS.getModules()[input.moduleName];
+        if (moduleObject.apiCache && input.prefix) {
+            if (callback) {
+                this.flush(moduleObject.apiCache, input.prefix).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                return this.flush(moduleObject.apiCache, input.prefix);
+            }
+        } else {
+            if (callback) {
+                callback('Invalid module or cache configuration');
+            } else {
+                Promise.reject('Invalid module or cache configuration');
+            }
+        }
+    },
+
+    /**
+     * This function is used to flush all stored cache for specific keys or prefix
+     * @param {*} input 
+     * @param {*} callback 
+     */
+    flushItemCache: function (request, callback) {
+        let input = request.local || request;
+        if (input.keys && input.keys.length > 0) {
+            if (callback) {
+                this.flushItemCacheByKeys(input, callback);
+            } else {
+                return this.flushItemCacheByKeys(input);
+            }
+        } else if (input.prefix) {
+            if (callback) {
+                this.flushItemCacheByPrefix(input, callback);
+            } else {
+                return this.flushItemCacheByPrefix(input);
+            }
+        } else {
+            let moduleObject = NODICS.getModules()[input.moduleName];
+            if (moduleObject.itemCache) {
+                if (callback) {
+                    this.flush(moduleObject.itemCache).then(success => {
+                        callback(null, success);
+                    }).catch(error => {
+                        callback(error);
+                    });
+                } else {
+                    return this.flush(moduleObject.itemCache);
+                }
+            } else {
+                if (callback) {
+                    callback('Invalid module or cache configuration');
+                } else {
+                    Promise.reject('Invalid module or cache configuration');
+                }
+            }
+        }
+    },
+
+    /**
+     * This function is used to flush all caches for given keys
+     * @param {*} request 
+     * @param {*} callback 
+     */
+    flushItemCacheByKeys: function (request, callback) {
+        let input = request.local || request;
+        let moduleObject = NODICS.getModules()[input.moduleName];
+        if (moduleObject.itemCache && input.keys && input.keys.length > 0) {
+            if (callback) {
+                this.flushKeys(moduleObject.itemCache, input.keys).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                return this.flushKeys(moduleObject.itemCache, input.keys);
+            }
+
+        } else {
+            if (callback) {
+                callback('Invalid module or cache configuration');
+            } else {
+                Promise.reject('Invalid module or cache configuration');
+            }
+        }
+    },
+
+    /**
+     * This function is used to flush cache for keys started by given prefix
+     * @param {*} request 
+     * @param {*} callback 
+     */
+    flushItemCacheByPrefix: function (request, callback) {
+        let input = request.local || request;
+        let moduleObject = NODICS.getModules()[input.moduleName];
+        if (moduleObject.itemCache && input.prefix) {
+            if (callback) {
+                this.flush(moduleObject.itemCache, input.prefix).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                return this.flush(moduleObject.itemCache, input.prefix);
+            }
+        } else {
+            if (callback) {
+                callback('Invalid module or cache configuration');
+            } else {
+                Promise.reject('Invalid module or cache configuration');
+            }
+        }
+    },
+
+    flush: function (cache, prefix) {
+        return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix);
+    },
+
+    flushKeys: function (cache, keys) {
+        return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flushKeys(cache.client, keys);
     },
 
     get: function (input) {
@@ -233,15 +388,15 @@ module.exports = {
             SYSTEM.generateHash(JSON.stringify(options));
     },
 
-    getApi: function (cache, request, response) {
-        let hash = SYSTEM.generateHash(this.createApiKey(request));
+    getApi: function (cache, request, response, options) {
+        let hash = options.prefix ? options.prefix + '_' + SYSTEM.generateHash(this.createApiKey(request)) : SYSTEM.generateHash(this.createApiKey(request));
         return this.get({
             cacheClient: cache,
             hashKey: hash
         });
     },
     putApi: function (cache, request, response, options) {
-        let hash = SYSTEM.generateHash(this.createApiKey(request));
+        let hash = options.prefix ? options.prefix + '_' + SYSTEM.generateHash(this.createApiKey(request)) : SYSTEM.generateHash(this.createApiKey(request));
         return this.put({
             cacheClient: cache,
             hashKey: hash,
