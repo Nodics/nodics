@@ -89,6 +89,21 @@ module.exports = {
                 }
             }
         },
+        updateAllIndexes: {
+            updateAllModulesIndexes: {
+                secured: true,
+                key: '/schema/indexes/all',
+                method: 'GET',
+                controller: 'DefaultSchemaIndexController',
+                operation: 'updateModulesIndexes',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schema/indexes/all'
+                }
+            },
+        },
 
 
 

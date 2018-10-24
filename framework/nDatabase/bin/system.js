@@ -262,39 +262,81 @@ module.exports = {
         }
     },
 
-    createIndex: function (options) {
+    createIndex: function (model, indexConfig) {
         return new Promise((resolve, reject) => {
-            let indexConfig = options.indexedFields[options.indexField];
-            options.dataBase.getConnection().ensureIndex(
-                options.modelName,
-                indexConfig.field,
-                indexConfig.options
-            ).then(success => {
-                resolve(true);
+            model.dataBase.getConnection().ensureIndex(model.modelName, indexConfig.field, indexConfig.options).then(success => {
+                resolve('Index updated for ' + Object.keys(indexConfig.field)[0]);
             }).catch(error => {
-                reject(error);
+                reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());
             });
         });
     },
 
-    createIndexes: function (options) {
+    createIndexes: function (model) {
         return new Promise((resolve, reject) => {
-            if (options.indexedFieldList.length > 0) {
-                options.indexField = options.indexedFieldList.shift();
-                SYSTEM.createIndex(options).then(success => {
-                    SYSTEM.createIndexes(options).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
+            if (model) {
+                let schemaOptions = model.rawSchema.schemaOptions[model.tenant];
+                let allPromise = [];
+                if (!UTILS.isBlank(schemaOptions.indexedFields)) {
+                    _.each(schemaOptions.indexedFields, (config, field) => {
+                        allPromise.push(SYSTEM.createIndex(model, config));
                     });
-                }).catch(error => {
-                    reject(error);
-                });
+                    if (allPromise.length > 0) {
+                        Promise.all(allPromise).then(success => {
+                            let response = {};
+                            response[model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
+                            resolve(response);
+                        }).catch(error => {
+                            let response = {};
+                            response[model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
+                            reject(response);
+                        });
+                    } else {
+                        let response = {};
+                        response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
+                        resolve(response);
+                    }
+                } else {
+                    let response = {};
+                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
+                    resolve(response);
+                }
             } else {
-                resolve(true);
+                let response = {};
+                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Invalid schema value to update indexes';
+                reject(response);
             }
         });
     },
+
+    updateValidator: function (model) {
+        return new Promise((resolve, reject) => {
+            if (model) {
+                let schema = model.rawSchema;
+                let schemaOptions = model.rawSchema.schemaOptions[model.tenant];
+                let tmpOptions = { collMod: model.modelName };
+                tmpOptions = _.merge(tmpOptions, schema.options || {});
+                if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
+                    tmpOptions = _.merge(tmpOptions, schemaOptions.options);
+                }
+                model.dataBase.getConnection().command(tmpOptions).then(success => {
+                    let response = {};
+                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator updated';
+                    resolve(response);
+                }).catch(error => {
+                    console.log(error);
+                    let response = {};
+                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator update failed';
+                    reject(response);
+                });
+            } else {
+                let response = {};
+                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Invalid schema value to update validator';
+                reject(response);
+            }
+        });
+    },
+
     createModel: function (options, dataBase) {
         return new Promise((resolve, reject) => {
             let schema = options.moduleObject.rawSchema[options.schemaName];
@@ -304,15 +346,20 @@ module.exports = {
                 tmpOptions = _.merge(tmpOptions, schemaOptions.options);
             }
             dataBase.getConnection().createCollection(options.modelName, tmpOptions).then(collection => {
-                SYSTEM.createIndexes({
-                    indexedFields: schemaOptions.indexedFields,
-                    indexedFieldList: Object.keys(schemaOptions.indexedFields),
-                    modelName: options.modelName,
-                    dataBase: dataBase
-                }).then(success => {
+                collection.moduleName = options.moduleName;
+                collection.rawSchema = schema;
+                collection.modelName = options.modelName;
+                collection.schemaName = options.schemaName;
+                collection.cache = options.cache;
+                collection.dataBase = dataBase;
+                collection.tenant = options.tntCode;
+                collection.channel = options.channel;
+                SYSTEM.createIndexes(collection).then(success => {
+                    SYSTEM.LOG.debug('Indexes created for: ' + collection.schemaName + ' : ' + success);
                     SYSTEM.registerModelMiddleWare(options, collection, schema);
                     resolve(collection);
                 }).catch(error => {
+                    SYSTEM.LOG.error('Indexes failed for: ' + collection.schemaName + ' : ' + error);
                     reject(error);
                 });
             }).catch(error => {
@@ -326,6 +373,14 @@ module.exports = {
             let schema = options.moduleObject.rawSchema[options.schemaName];
             if (dataBase.getCollectionList().includes(options.modelName)) {
                 let collection = dataBase.getConnection().collection(options.modelName);
+                collection.moduleName = options.moduleName;
+                collection.rawSchema = schema;
+                collection.modelName = options.modelName;
+                collection.schemaName = options.schemaName;
+                collection.cache = options.cache;
+                collection.dataBase = dataBase;
+                collection.tenant = options.tntCode;
+                collection.channel = options.channel;
                 SYSTEM.registerModelMiddleWare(options, collection, schema);
                 resolve(collection);
             } else {
@@ -344,24 +399,21 @@ module.exports = {
             let schema = options.moduleObject.rawSchema[options.schemaName];
             if (options.dataBase.master && schema.model === true) {
                 SYSTEM.prepareDatabaseOptions(options);
+                let cache = _.merge({}, schema.cache || {});
+                let itemLevelCache = CONFIG.get('cache').itemLevelCache;
+                options.cache = _.merge(cache, itemLevelCache[options.schemaName] || {});
+                options.channel = 'master';
                 SYSTEM.retrieveModel(options, options.dataBase.master).then(success => {
                     if (!options.moduleObject.models[options.tntCode].master) {
                         options.moduleObject.models[options.tntCode].master = {};
                     }
-                    success.moduleName = options.moduleName;
-                    success.rawSchema = schema;
-                    success.modelName = options.modelName;
-                    success.schemaName = options.schemaName;
                     options.moduleObject.models[options.tntCode].master[options.modelName] = success;
                     if (options.dataBase.test) {
+                        options.channel = 'test';
                         SYSTEM.retrieveModel(options, options.dataBase.test).then(success => {
                             if (!options.moduleObject.models[options.tntCode].test) {
                                 options.moduleObject.models[options.tntCode].test = {};
                             }
-                            success.moduleName = options.moduleName;
-                            success.rawSchema = schema;
-                            success.modelName = options.modelName;
-                            success.schemaName = options.schemaName;
                             options.moduleObject.models[options.tntCode].test[options.modelName] = success;
                             resolve(true);
                         }).catch(error => {

@@ -50,6 +50,7 @@ module.exports = {
                 SERVICE.DefaultModuleService.fetch(requestUrl).then(success => {
                     if (success.success) {
                         moduleObject.metaData.authToken = success.result.authToken;
+                        console.log('======>>>>> Auth Token for module ', moduleName, '   ------  ', moduleObject.metaData.authToken);
                         if (!UTILS.isBlank(modules)) {
                             _self.generateAuthToken(modules).then(success => {
                                 resolve(true);

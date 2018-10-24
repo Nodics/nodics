@@ -127,6 +127,8 @@ module.exports = function (name, pipelineDefinition) {
                 err.forEach(element => {
                     response.errors.push(element);
                 });
+            } else if (UTILS.isObject(err)) {
+                response.errors.push(err);
             } else {
                 response.errors.push(err.toString());
             }

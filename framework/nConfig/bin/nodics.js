@@ -339,17 +339,18 @@ module.exports = function () {
         } else if (!_nodics.interceptors[moduleName][modelName]) {
             throw new Error('Invalid model name: ' + modelName);
         } else {
-            return _nodics.interceptors[moduleName][modelName]
+            return _nodics.interceptors[moduleName][modelName];
         }
     };
 
-    this.getModels = function (moduleName, tenant) {
+    this.getModels = function (moduleName, tenant, channel) {
         if (tenant && !UTILS.isBlank(tenant)) {
             let moduleObject = this.getModule(moduleName);
-            if (this.getActiveChannel() === 'master') {
-                return moduleObject.models[tenant].master;
+            if ((channel && channel === 'master') ||
+                (!channel && this.getActiveChannel() === 'master')) {
+                return (moduleObject.models) ? moduleObject.models[tenant].master : null;
             } else {
-                return moduleObject.models[tenant].test;
+                return (moduleObject.models) ? moduleObject.models[tenant].test : null;
             }
         } else {
             throw new Error('Invalid tenant id...');

@@ -108,6 +108,16 @@ module.exports = {
                                     tenant: options.enterprise.tenant.code
                                 });
                                 _self.createAuthToken(options).then(success => {
+                                    let moduleObject = NODICS.getModule(options.input.moduleName);
+                                    if (!moduleObject.authCache.tokens) {
+                                        moduleObject.authCache.tokens = {};
+                                    }
+                                    moduleObject.authCache.tokens[success.authToken] = {
+                                        enterpriseCode: options.enterprise.enterpriseCode,
+                                        loginId: options.person.loginId,
+                                        password: options.input.password,
+                                        type: options.type
+                                    };
                                     resolve(success);
                                 }).catch(error => {
                                     reject(error);
@@ -138,8 +148,13 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                let key = options.enterprise._id + options.person._id + (new Date()).getTime();
-                let hash = SYSTEM.generateHash(key);
+                let hash = null;
+                if (options.input.authToken !== undefined) {
+                    hash = options.input.authToken;
+                } else {
+                    let key = options.enterprise._id + options.person._id + (new Date()).getTime();
+                    hash = SYSTEM.generateHash(key);
+                }
                 _self.addToken(options.input.moduleName, options.input.source, hash, {
                     person: options.person,
                     enterprise: options.enterprise,
@@ -158,11 +173,60 @@ module.exports = {
     },
 
     authorize: function (request, callback) {
+        let _self = this;
         let input = request.local || request;
         this.findToken(input).then(success => {
             callback(null, success);
         }).catch(error => {
-            callback('Given token is not valid one');
+            this.reAuthenticate(input).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        });
+    },
+
+    reAuthenticate: function (input) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            let moduleObject = NODICS.getModule(input.moduleName);
+            if (moduleObject && moduleObject.authCache && moduleObject.authCache.tokens) {
+                let authValues = moduleObject.authCache.tokens[input.authToken];
+                if (authValues !== undefined) {
+                    input.enterpriseCode = authValues.enterpriseCode;
+                    input.loginId = authValues.loginId;
+                    input.password = authValues.password;
+                    if (authValues.type === 'Employee') {
+                        this.authenticateEmployee(input, (error, success) => {
+                            if (error) {
+                                reject('Given token is not valid one');
+                            } else {
+                                _self.findToken(input).then(success => {
+                                    resolve(success);
+                                }).catch(error => {
+                                    reject('Given token is not valid one');
+                                });
+                            }
+                        });
+                    } else {
+                        this.authenticateEmployee(input, (error, success) => {
+                            if (error) {
+                                reject('Given token is not valid one');
+                            } else {
+                                _self.findToken(input).then(success => {
+                                    resolve(null, success);
+                                }).catch(error => {
+                                    reject('Given token is not valid one');
+                                });
+                            }
+                        });
+                    }
+                } else {
+                    reject('Given token is not valid one');
+                }
+            } else {
+                reject('Given token is not valid one');
+            }
         });
     }
 };

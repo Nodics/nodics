@@ -84,19 +84,18 @@ module.exports = {
                         process.error(request, response, error);
                     } else {
                         response.result = result;
-                        if (request.local.router.cache && request.local.router.cache.enabled && request.local.router.moduleObject.apiCache) {
-                            SERVICE.DefaultCacheService.putApi(request.local.router.moduleObject.apiCache,
-                                request,
-                                response.result,
-                                request.local.router.cache).then(cuccess => {
-                                    process.stop(request, response);
-                                }).catch(error => {
-                                    _self.LOG.error('While pushing data into Item cache : ', error);
-                                    process.stop(request, response);
-                                });
-                        } else {
-                            process.stop(request, response);
+                        if (response.result &&
+                            request.local.router.cache &&
+                            request.local.router.cache.enabled &&
+                            request.local.router.moduleObject.apiCache) {
+                            let cacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(request));
+                            SERVICE.DefaultCacheService.putApi(request.local.router, cacheKeyHash, response.result).then(cuccess => {
+                                self.LOG.debug('Data pushed into cache successfully');
+                            }).catch(error => {
+                                _self.LOG.error('While pushing data into Item cache : ', error);
+                            });
                         }
+                        process.stop(request, response);
                     }
                 });
             } catch (error) {
@@ -128,18 +127,17 @@ module.exports = {
                     process.error(request, response, error);
                 } else {
                     response.result = result;
-                    if (request.local.router.cache &&
+                    if (response.result &&
+                        request.local.router.cache &&
                         request.local.router.cache.enabled &&
                         request.local.router.moduleObject.apiCache) {
-                        SERVICE.DefaultCacheService.putApi(request.local.router.moduleObject.apiCache,
-                            request,
-                            response.result,
-                            request.local.router.cache).then(cuccess => {
-                                process.nextSuccess(request, response);
-                            }).catch(error => {
-                                _self.LOG.error('While pushing data into Item cache : ', error);
-                                process.nextSuccess(request, response);
-                            });
+                        let cacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(request));
+                        SERVICE.DefaultCacheService.putApi(request.local.router, cacheKeyHash, response.result).then(cuccess => {
+                            self.LOG.debug('Data pushed into cache successfully');
+                        }).catch(error => {
+                            _self.LOG.error('While pushing data into Item cache : ', error);
+                        });
+                        process.nextSuccess(request, response);
                     } else {
                         process.nextSuccess(request, response);
                     }
@@ -157,7 +155,6 @@ module.exports = {
             success: true,
             code: 'SUC001',
             msg: 'Processed successfully',
-
             result: response.result
         };
         if (request.local.cache) {

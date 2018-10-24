@@ -31,14 +31,27 @@ module.exports = {
                         try {
                             routers.operations.registerWeb(app, moduleObject);
                             try {
-                                SERVICE.DefaultCacheService.initCache(moduleObject, moduleName).then(() => {
-                                    _self.registerRouters(app, moduleObject, moduleName, routers);
-                                    resolve(true);
-                                }).catch(error => {
-                                    SYSTEM.LOG.error('got error while initializing cache for module : ', moduleName);
+                                let cachePromises = [
+                                    SERVICE.DefaultCacheService.initApiCache(moduleObject, moduleName),
+                                    SERVICE.DefaultCacheService.initItemCache(moduleObject, moduleName)
+                                ];
+                                if (moduleName === CONFIG.get('profileModuleName')) {
+                                    cachePromises.push(SERVICE.DefaultCacheService.initAuthCache(moduleObject, moduleName));
+                                }
+                                if (cachePromises.length > 0) {
+                                    Promise.all(cachePromises).then(success => {
+                                        _self.registerRouters(app, moduleObject, moduleName, routers);
+                                        resolve(true);
+                                    }).catch(error => {
+                                        console.log(error);
+                                        SYSTEM.LOG.error('got error while initializing cache for module : ', moduleName);
+                                        self.registerRouters(app, moduleObject, moduleName, routers);
+                                        resolve(true);
+                                    });
+                                } else {
                                     self.registerRouters(app, moduleObject, moduleName, routers);
-                                    reject(error);
-                                });
+                                    resolve(true);
+                                }
                             } catch (error) {
                                 SYSTEM.LOG.error('While initializing cache or router registration process for module : ', moduleName);
                                 reject(error);

@@ -13,6 +13,7 @@ module.exports = {
 
     handleEvent: function (request, callback) {
         let event = request.body;
+        console.log('-------------------->>>>');
         if (!NODICS.getModule(event.target).eventService.emit(event.event, event, callback)) {
             if (CONFIG.get('event').ignoreIfNoLister) {
                 callback(null, 'There is no Listener register for event ' + event.event + ' in module ' + event.target);

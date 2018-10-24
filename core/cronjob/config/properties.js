@@ -90,8 +90,14 @@ module.exports = {
                 fallback: true,
                 engine: 'local'
             },
+            authCache: {
+                enabled: true,
+                fallback: true,
+                engine: 'local'
+            },
             local: {
                 handler: 'DefaultLocalCacheService',
+                ttl: 100,
                 options: {
                     stdTTL: 100,
                     checkperiod: 10,
@@ -101,6 +107,16 @@ module.exports = {
             },
             redis: {
                 handler: 'DefaultRedisCacheService',
+                ttl: 100,
+                options: {
+                    host: 'localhost',
+                    port: 6379
+                }
+            },
+            hazelcast: {
+                handler: 'DefaultRedisCacheService',
+                ttl: 100,
+                dbIndex: 0,
                 options: {
                     host: 'localhost',
                     port: 6379

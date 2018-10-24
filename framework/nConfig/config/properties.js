@@ -61,6 +61,7 @@ module.exports = {
     profileModuleName: 'profile',
 
     cache: {
+        authTokenTTL: 60 * 60,
         default: {
             apiCache: {
                 enabled: true,
@@ -72,22 +73,40 @@ module.exports = {
                 fallback: true,
                 engine: 'local'
             },
-            searchCache: {
+            //https://stackoverflow.com/questions/42027970/how-to-receive-redis-expire-events-with-node
+            authCache: {
                 enabled: true,
                 fallback: true,
-                engine: 'local'
+                engine: 'local',
+                events: {
+                    expired: 'DefaultAuthTokenInvalidationService.publishTokenExpiredEvent',
+                    del: 'DefaultAuthTokenInvalidationService.publishTokenDeletedEvent',
+                    flushed: 'DefaultAuthTokenInvalidationService.publishTokenFlushedEvent'
+                }
             },
             local: {
                 handler: 'DefaultLocalCacheService',
+                ttl: 100,
                 options: {
                     stdTTL: 100,
                     checkperiod: 10,
                     errorOnMissing: false,
-                    useClones: true
+                    useClones: true,
+                    deleteOnExpire: true
                 }
             },
             redis: {
                 handler: 'DefaultRedisCacheService',
+                ttl: 100,
+                options: {
+                    host: 'localhost',
+                    port: 6379,
+                    db: 0
+                }
+            },
+            hazelcast: {
+                handler: 'DefaultHazelcastCacheService',
+                ttl: 100,
                 options: {
                     host: 'localhost',
                     port: 6379

@@ -36,52 +36,42 @@ module.exports = {
             }
         },
         get: function (app, routerDef) {
-            if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {
-                app.route(routerDef.url).get((req, res, next) => {
-                    SERVICE.DefaultCacheService.getApi(routerDef.moduleObject.apiCache, req, res, routerDef.cache).then(value => {
-                        SYSTEM.LOG.info('Fulfilled from API cache');
-                        res.json({
-                            success: true,
-                            code: 'SUC001',
-                            msg: 'Processed successfully',
-                            cache: 'api hit',
-                            result: value
-                        });
-                    }).catch(error => {
-                        next();
+            app.route(routerDef.url).get((req, res, next) => {
+                let cacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(req));
+                SERVICE.DefaultCacheService.getApi(routerDef, cacheKeyHash, routerDef.cache).then(value => {
+                    SYSTEM.LOG.info('Fulfilled from API cache');
+                    res.json({
+                        success: true,
+                        code: 'SUC001',
+                        msg: 'Processed successfully',
+                        cache: 'api hit',
+                        result: value
                     });
-                }, (req, res) => {
-                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                }).catch(error => {
+                    next();
                 });
-            } else {
-                app.route(routerDef.url).get((req, res) => {
-                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
-                });
-            }
+            }, (req, res) => {
+                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+            });
         },
         post: function (app, routerDef) {
-            if (routerDef.cache && routerDef.cache.enabled && routerDef.moduleObject.apiCache) {
-                app.route(routerDef.url).post((req, res, next) => {
-                    SERVICE.DefaultCacheService.getApi(routerDef.moduleObject.apiCache, req, res, routerDef.cache).then(value => {
-                        SYSTEM.LOG.info('Fulfilled from API cache');
-                        res.json({
-                            success: true,
-                            code: 'SUC001',
-                            msg: 'Processed successfully',
-                            cache: 'api hit',
-                            result: value
-                        });
-                    }).catch(error => {
-                        next();
+            app.route(routerDef.url).post((req, res, next) => {
+                let cacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(req));
+                SERVICE.DefaultCacheService.getApi(routerDef, cacheKeyHash, routerDef.cache).then(value => {
+                    SYSTEM.LOG.info('Fulfilled from API cache');
+                    res.json({
+                        success: true,
+                        code: 'SUC001',
+                        msg: 'Processed successfully',
+                        cache: 'api hit',
+                        result: value
                     });
-                }, (req, res) => {
-                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                }).catch(error => {
+                    next();
                 });
-            } else {
-                app.route(routerDef.url).post((req, res) => {
-                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
-                });
-            }
+            }, (req, res) => {
+                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+            });
         },
         delete: function (app, routerDef) {
             app.route(routerDef.url).delete((req, res) => {
@@ -106,7 +96,7 @@ module.exports = {
                 secured: true,
                 cache: {
                     enabled: false,
-                    ttl: 40,
+                    ttl: 100,
                 },
                 key: '/schemaName',
                 method: 'GET',
@@ -430,7 +420,7 @@ module.exports = {
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/cache/item',
                     body: {
                         schemaName: 'like enterprise',

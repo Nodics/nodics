@@ -50,18 +50,14 @@ module.exports = {
         this.LOG.debug('Item lookup into cache system : ', request.collection.moduleName);
         let moduleObject = NODICS.getModules()[request.collection.moduleName];
         if (moduleObject.itemCache &&
-            request.collection.rawSchema.cache &&
-            request.collection.rawSchema.cache.enabled) {
+            request.collection.cache &&
+            request.collection.cache.enabled) {
             request.cacheKeyHash = SERVICE.DefaultCacheService.createItemKey(request);
-            let input = {
-                tenant: request.tenant,
-                schemaName: request.collection.schemaName,
-                moduleName: request.collection.moduleName,
-                moduleObject: moduleObject,
-                cacheClient: moduleObject.itemCache,
+            SERVICE.DefaultCacheService.get({
+                cache: moduleObject.itemCache,
                 hashKey: request.cacheKeyHash,
-            };
-            SERVICE.DefaultCacheService.get(input).then(value => {
+                options: request.collection.cache
+            }).then(value => {
                 this.LOG.info('Fulfilled from Item cache');
                 response.success = value;
                 request.cache = 'item hit';
@@ -99,13 +95,6 @@ module.exports = {
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
         request.collection.getItems(request).then(result => {
-            /*if (result && UTILS.isArray(result)) {
-                result.forEach(element => {
-                    response.success.push(element);
-                });
-            } else {
-                response.success.push(result);
-            }*/
             response.success = result;
             request.cache = 'item mis';
             process.nextSuccess(request, response);
@@ -163,23 +152,17 @@ module.exports = {
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
         let moduleObject = NODICS.getModules()[request.collection.moduleName];
-        if (response.success &&
-            response.success.length > 0 &&
-            request.cacheKeyHash &&
-            moduleObject.itemCache &&
-            request.collection.rawSchema.cache &&
-            request.collection.rawSchema.cache.enabled) {
-            let input = {
-                tenant: request.tenant,
-                schemaName: request.collection.schemaName,
-                moduleName: request.collection.moduleName,
-                moduleObject: moduleObject,
-                cacheClient: moduleObject.itemCache,
+        if (response.success && response.success.length &&
+            moduleObject.itemCache && request.collection.cache && request.collection.cache.enabled) {
+            if (request.collection.cache.ttl === undefined) {
+                request.collection.cache.ttl = moduleObject.itemCache.config.ttl || 0;
+            }
+            SERVICE.DefaultCacheService.put({
+                cache: moduleObject.itemCache,
                 hashKey: request.cacheKeyHash,
-                docs: response.success,
-                itemCacheOptions: request.collection.rawSchema.cache
-            };
-            SERVICE.DefaultCacheService.put(input).then(success => {
+                value: response.success,
+                options: request.collection.cache
+            }).then(success => {
                 this.LOG.info('Item saved in item cache');
             }).catch(error => {
                 this.LOG.error('While saving item in item cache : ', error);

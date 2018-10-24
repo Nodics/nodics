@@ -21,119 +21,134 @@ module.exports = {
     changeItemCacheConfiguration: function (request, callback) {
         try {
             let input = request.local || request;
-            let cacheConfig = CONFIG.get('cache').itemLevelCache;
-            cacheConfig[input.config.schemaName] = _.merge(cacheConfig[input.config.schemaName], input.config.cache || {});
-            callback(null, 'Cache has been updated successfully');
+            NODICS.getTenants().forEach(tntName => {
+                let model = NODICS.getModels(input.moduleName, tntName)[input.config.modelName];
+                if (model) {
+                    model.cache = _.merge(model.cache, input.config.cache || {});
+                }
+            });
+            if (callback) {
+                callback(null, 'Cache has been updated successfully');
+            } else {
+                Promise.resolve('Cache has been updated successfully');
+            }
         } catch (error) {
-            callback('Facing issue while updating item cache : ' + error.toString());
+            if (callback) {
+                callback('Facing issue while updating item cache : ' + error.toString());
+            } else {
+                Promise.reject('Facing issue while updating item cache : ' + error.toString());
+            }
         }
     },
 
-
-    initCache: function (moduleObject, moduleName) {
+    initApiCache: function (moduleObject, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            let cache = CONFIG.get('cache');
-            let cacheConfig = _.merge(_.merge({}, cache.default || {}), cache[moduleName] || {});
             try {
-                Promise.all([
-                    _self.initApiCache(moduleObject, moduleName, cacheConfig),
-                    _self.initItemCache(moduleObject, moduleName, cacheConfig)
-                ]).then(success => {
-                    resolve();
-                }).catch(error => {
-                    resolve();
-                });
+                let cache = CONFIG.get('cache');
+                let cacheConfig = _.merge(_.merge({}, cache.default || {}), cache[moduleName] || {});
+                if (moduleObject.metaData && moduleObject.metaData.publish &&
+                    !moduleObject.apiCache && cacheConfig.apiCache.enabled) {
+                    SERVICE.DefaultCacheService.initCache(moduleName, cacheConfig, cacheConfig.apiCache).then(success => {
+                        moduleObject.apiCache = success;
+                        moduleObject.apiCache.cacheMap = 'api';
+                        resolve(true);
+                    }).catch(error => {
+                        reject('Fsiled Init cache for: ' + moduleName + ' : ' + error);
+                    });
+                }
             } catch (error) {
-                reject(error);
+                reject('Fsiled Init cache for: ' + moduleName + ' : ' + error);
             }
         });
     },
 
-    initApiCache: function (moduleObject, moduleName, cacheConfig) {
+    initItemCache: function (moduleObject, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (moduleObject.metaData && moduleObject.metaData.publish) {
-                if (!moduleObject.apiCache || cacheConfig.apiCache.enabled) {
-                    let apiCacheConfig = cacheConfig[cacheConfig.apiCache.engine];
-                    SERVICE[apiCacheConfig.handler].initApiCache(apiCacheConfig, moduleName).then(value => {
-                        moduleObject.apiCache = {
-                            type: cacheConfig.apiCache.engine,
-                            client: value,
-                            config: apiCacheConfig
-                        };
-                        resolve();
-                    }).catch(error => {
-                        _self.LOG.debug('Not able to initialize API cache for :', moduleName, '  :  ', error);
-                        if (cacheConfig.apiCache.engine !== 'local' && cacheConfig.apiCache.fallback) {
-                            _self.LOG.debug('Initializing local API cache');
-                            cacheConfig.apiCache.engine = 'local';
-                            let apiCacheConfig = cacheConfig[cacheConfig.apiCache.engine];
-                            SERVICE[apiCacheConfig.handler].initApiCache(apiCacheConfig, moduleName).then(value => {
-                                moduleObject.apiCache = {
-                                    type: cacheConfig.apiCache.engine,
-                                    client: value,
-                                    config: apiCacheConfig
-                                };
-                                resolve();
-                            }).catch(error => {
-                                resolve();
-                            });
-                        } else {
-                            resolve();
-                        }
-                    });
-                } else {
-                    _self.LOG.warn('API Cache is not enabled for : ', moduleName);
-                    resolve('API Cache is not enabled for : ' + moduleName);
-                }
-            } else {
-                resolve();
-            }
-        });
-    },
-
-    initItemCache: function (moduleObject, moduleName, cacheConfig) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            if (moduleObject.rawSchema) {
+            try {
+                let cache = CONFIG.get('cache');
+                let cacheConfig = _.merge(_.merge({}, cache.default || {}), cache[moduleName] || {});
                 if (!moduleObject.itemCache || cacheConfig.itemCache.enabled) {
-                    let itemCacheConfig = cacheConfig[cacheConfig.itemCache.engine];
-                    SERVICE[itemCacheConfig.handler].initItemCache(itemCacheConfig, moduleName).then(value => {
-                        moduleObject.itemCache = {
-                            type: cacheConfig.itemCache.engine,
-                            client: value,
-                            config: itemCacheConfig
-                        };
-                        resolve();
+                    SERVICE.DefaultCacheService.initCache(moduleName, cacheConfig, cacheConfig.itemCache).then(success => {
+                        moduleObject.itemCache = success;
+                        moduleObject.itemCache.cacheMap = 'model';
+                        resolve(true);
                     }).catch(error => {
-                        _self.LOG.error('Not able to initialize Item cache for :', moduleName, '  :  ', error);
-                        if (cacheConfig.itemCache.engine !== 'local' && cacheConfig.itemCache.fallback) {
-                            _self.LOG.debug('Initializing local Item cache');
-                            cacheConfig.itemCache.engine = 'local';
-                            let itemCacheConfig = cacheConfig[cacheConfig.itemCache.engine];
-                            SERVICE[itemCacheConfig.handler].initApiCache(itemCacheConfig, moduleName).then(value => {
-                                moduleObject.itemCache = {
-                                    type: cacheConfig.itemCache.engine,
-                                    client: value,
-                                    config: itemCacheConfig
-                                };
-                                resolve();
-                            }).catch(error => {
-                                resolve();
-                            });
-                        } else {
-                            resolve();
-                        }
+                        reject('Fsiled Init cache for: ' + moduleName + ' : ' + error);
                     });
-                } else {
-                    _self.LOG.warn('Item Cache is not enabled for : ', moduleName);
-                    resolve('Item Cache is not enabled for : ' + moduleName);
                 }
-            } else {
-                resolve();
+            } catch (error) {
+                reject('Fsiled Init cache for: ' + moduleName + ' : ' + error);
             }
         });
+    },
+
+    initAuthCache: function (moduleObject, moduleName) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                let cache = CONFIG.get('cache');
+                let cacheConfig = _.merge(_.merge({}, cache.default || {}), cache[moduleName] || {});
+                if (!moduleObject.authCache || cacheConfig.authCache.enabled) {
+                    SERVICE.DefaultCacheService.initCache(moduleName, cacheConfig, cacheConfig.authCache).then(success => {
+                        moduleObject.authCache = success;
+                        moduleObject.authCache.cacheMap = 'authToken';
+                        resolve(true);
+                    }).catch(error => {
+                        reject('Fsiled Init cache for: ' + moduleName + ' : ' + error);
+                    });
+                }
+            } catch (error) {
+                reject('Fsiled Init cache for: ' + moduleName + ' : ' + error);
+            }
+        });
+    },
+
+    initCache: function (moduleName, cacheConfig, options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            let cacheOptions = cacheConfig[options.engine];
+            cacheOptions.options.prefix = moduleName + '_';
+            SERVICE[cacheOptions.handler].initCache(cacheOptions, moduleName).then(value => {
+                resolve({
+                    type: options.engine,
+                    client: value,
+                    config: cacheOptions
+                });
+                _self.registerEvents(cacheOptions, moduleName, value, options);
+            }).catch(error => {
+                _self.LOG.debug('Not able to initialize API cache for :', moduleName, '  :  ', error);
+                if (options.engine !== 'local' && options.fallback) {
+                    _self.LOG.debug('Initializing local API cache');
+                    options.engine = 'local';
+                    let cacheOptions = cacheConfig[options.engine];
+                    SERVICE[cacheOptions.handler].initCache(cacheOptions, moduleName).then(value => {
+                        resolve({
+                            type: options.engine,
+                            client: value,
+                            config: cacheOptions
+                        });
+                        _self.registerEvents(cacheOptions, moduleName, value, options);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    reject('Cache fallback is not allowed for module: ' + moduleName);
+                }
+            });
+        });
+    },
+
+    registerEvents: function (cacheOptions, moduleName, client, options) {
+        if (!UTILS.isBlank(options.events)) {
+            SERVICE[cacheOptions.handler].registerEvents({
+                moduleName: moduleName,
+                cacheOptions: cacheOptions.options,
+                options: options,
+                publishClient: client,
+            });
+        }
     },
 
     /**
@@ -329,34 +344,30 @@ module.exports = {
     },
 
     flush: function (cache, prefix) {
-        return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache.client, prefix);
+        return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flush(cache, prefix);
     },
 
     flushKeys: function (cache, keys) {
-        return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flushKeys(cache.client, keys);
+        return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flushKeys(cache, keys);
     },
 
     get: function (input) {
         this.LOG.debug('Getting value for key : ', input.hashKey);
         try {
-            return SERVICE[input.cacheClient.config.handler].get(input.cacheClient.client, input.hashKey);
+            return SERVICE[input.cache.config.handler].get(input.cache, input.hashKey, input.options);
         } catch (error) {
-            return new Promise((resolve, reject) => {
-                reject(error);
-            });
+            Promise.reject(error);
         }
     },
 
     put: function (input) {
         this.LOG.debug('Putting value for key : ', input.hashKey);
         try {
-            return SERVICE[input.cacheClient.config.handler].put(input.cacheClient.client,
-                input.hashKey, input.docs,
-                input.itemCacheOptions);
+            return SERVICE[input.cache.config.handler].put(input.cache,
+                input.hashKey, input.value,
+                input.options);
         } catch (error) {
-            return new Promise((resolve, reject) => {
-                reject(error);
-            });
+            Promise.reject(error);
         }
     },
 
@@ -388,20 +399,34 @@ module.exports = {
             SYSTEM.generateHash(JSON.stringify(options));
     },
 
-    getApi: function (cache, request, response, options) {
-        let hash = options.prefix ? options.prefix + '_' + SYSTEM.generateHash(this.createApiKey(request)) : SYSTEM.generateHash(this.createApiKey(request));
-        return this.get({
-            cacheClient: cache,
-            hashKey: hash
-        });
+    getApi: function (routerDefinition, cacheKeyHash) {
+        if (routerDefinition.cache &&
+            routerDefinition.cache.enabled &&
+            routerDefinition.moduleObject.apiCache) {
+            cacheKeyHash = routerDefinition.cache.prefix ? routerDefinition.cache.prefix + '_' + cacheKeyHash : cacheKeyHash;
+            return this.get({
+                cache: routerDefinition.moduleObject.apiCache,
+                hashKey: cacheKeyHash,
+                options: options
+            });
+        } else {
+            return Promise.reject(true);
+        }
     },
-    putApi: function (cache, request, response, options) {
-        let hash = options.prefix ? options.prefix + '_' + SYSTEM.generateHash(this.createApiKey(request)) : SYSTEM.generateHash(this.createApiKey(request));
-        return this.put({
-            cacheClient: cache,
-            hashKey: hash,
-            docs: response,
-            itemCacheOptions: options
-        });
+
+    putApi: function (routerDefinition, cacheKeyHash, value) {
+        if (value && routerDefinition.cache &&
+            routerDefinition.cache.enabled &&
+            routerDefinition.moduleObject.apiCache) {
+            cacheKeyHash = routerDefinition.cache.prefix ? routerDefinition.cache.prefix + '_' + cacheKeyHash : cacheKeyHash;
+            return this.put({
+                cache: routerDefinition.moduleObject.apiCache,
+                hashKey: cacheKeyHash,
+                value: value,
+                options: routerDefinition.cache
+            });
+        } else {
+            return Promise.reject(true);
+        }
     }
 };

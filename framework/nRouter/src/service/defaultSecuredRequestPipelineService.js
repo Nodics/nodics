@@ -13,14 +13,18 @@ module.exports = {
     authorizeAuthToken: function (request, response, process) {
         this.LOG.debug('Authorizing auth token : ', request.local.authToken);
         SERVICE.DefaultAuthenticationProviderService.authorizeToken(request, (error, result) => {
-            if (error) {
-                process.error(request, response, error);
-            } else {
-                request.local.enterprise = result.enterprise;
-                request.local.enterpriseCode = result.enterprise.enterpriseCode;
-                request.local.person = result.person;
-                request.local.tenant = result.enterprise.tenant.code;
-                process.nextSuccess(request, response);
+            try {
+                if (error) {
+                    process.error(request, response, error);
+                } else {
+                    request.local.enterprise = result.enterprise;
+                    request.local.enterpriseCode = result.enterprise.enterpriseCode;
+                    request.local.person = result.person;
+                    request.local.tenant = result.enterprise.tenant.code;
+                    process.nextSuccess(request, response);
+                }
+            } catch (err) {
+                process.error(request, response, err);
             }
         });
     }

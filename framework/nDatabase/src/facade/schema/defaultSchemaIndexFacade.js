@@ -10,15 +10,15 @@
  */
 
 module.exports = {
-    test: {
-        enabled: true,
-        uTest: {
-            enabled: true,
-            runOnStartup: true
-        },
-        nTest: {
-            enabled: true,
-            runOnStartup: true
-        }
+    updateSchemaIndexes: function (moduleName, schemaName) {
+        return SERVICE.DefaultSchemaIndexService.updateSchemaIndexes(moduleName, schemaName);
+    },
+
+    updateModuleIndexes: function (moduleName) {
+        return SERVICE.DefaultSchemaIndexService.updateModuleIndexes(moduleName);
+    },
+
+    updateModulesIndexes: function () {
+        return SERVICE.DefaultSchemaIndexService.updateModulesIndexes();
     }
 };

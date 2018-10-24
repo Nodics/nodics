@@ -16,7 +16,7 @@ module.exports = {
     },
 
     changeItemCacheConfiguration: function (request, callback) {
-        callback('not implemented yet, comming soon');
+        return SERVICE.DefaultCacheService.changeItemCacheConfiguration(request, callback)
     },
 
     /**

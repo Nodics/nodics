@@ -46,7 +46,7 @@ module.exports = {
             router: true,
             cache: {
                 enabled: true,
-                ttl: 1000
+                ttl: 100
             },
             definition: {
                 enterpriseCode: {
@@ -218,6 +218,14 @@ module.exports = {
                     type: 'array',
                     required: false,
                     description: 'All associated contacts with this enterprise'
+                }
+            },
+            indexes: {
+                indexEnterpriseCode: {
+                    name: 'enterpriseCode',
+                    options: {
+                        unique: true
+                    }
                 }
             }
         },

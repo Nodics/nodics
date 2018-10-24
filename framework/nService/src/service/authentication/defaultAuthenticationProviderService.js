@@ -11,79 +11,32 @@
 const NodeCache = require("node-cache");
 
 module.exports = {
-    invalidateAuthToken: function (event, callback) {
-        let moduleObject = NODICS.getModule(event.target);
-        if (event.params && event.params.length > 0) {
-            if (moduleObject.authCache && moduleObject.authCache.get(event.params[0].key)) {
-                moduleObject.authCache.del(event.params[0].key, function (err, count) {
-                    if (err) {
-                        this.LOG.error('While invalidating cache key : ', err);
-                        callback(err);
-                    } else {
-                        callback(null, 'Successfully deleted key from module : ' + event.target);
-                    }
-                });
-            } else {
-                callback(null, 'Key is not there : ' + event.target);
-            }
-        } else {
-            callback('Please provide authToken to invalidate');
-        }
-    },
-
     addToken: function (moduleName, source, hash, value) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 let moduleObject = NODICS.getModule(moduleName);
-                let ttl = CONFIG.get('cache').authTokenTTL;
-                if (source) {
-                    ttl = 0;
+                if (moduleObject.authCache) {
+                    let input = {
+                        cache: moduleObject.authCache,
+                        hashKey: hash,
+                        value: value,
+                        options: {
+                            ttl: CONFIG.get('cache').authTokenTTL
+                        }
+                    };
+                    if (source) {
+                        input.options.ttl = 0;
+                    }
+                    SERVICE.DefaultCacheService.put(input);
+                    resolve(true);
+                } else {
+                    reject('Auth cache client has not been initialized properly: ' + moduleName);
                 }
-                if (!moduleObject.authCache) {
-                    moduleObject.authCache = new NodeCache(CONFIG.get('cache').authToken);
-                    _self.publishTokenExpiredEvent({
-                        moduleName: moduleName,
-                        moduleObject: moduleObject,
-                        tenant: value.enterprise.tenant.code
-                    });
-                }
-                moduleObject.authCache.set(hash, JSON.stringify(value), ttl);
-                resolve(true);
             } catch (error) {
                 reject(error);
             }
         });
-    },
-
-    publishTokenExpiredEvent: function (options) {
-        let _self = this;
-        if (options.moduleName === CONFIG.get('profileModuleName')) {
-            options.moduleObject.authCache.on("expired", function (key, value) {
-                value = JSON.parse(value);
-                let event = {
-                    enterpriseCode: value.enterprise.enterpriseCode,
-                    tenant: options.tenant,
-                    event: 'invalidateAuthToken',
-                    source: options.moduleName,
-                    target: options.moduleName,
-                    state: 'NEW',
-                    type: 'SYNC',
-                    targetType: ENUMS.TargetType.EACH_NODE.key,
-                    params: [{
-                        key: key
-                    }]
-                };
-                _self.LOG.debug('Pushing event for expired cache key : ', key);
-                SERVICE.DefaultEventService.publish(event, (error, response) => {
-                    if (error) {
-                        _self.LOG.error('While posting cache invalidation event : ', error);
-                    } else {
-                        _self.LOG.debug('Event successfully posted : ');
-                    }
-                });
-            });
-        }
     },
 
     findToken: function (request) {
@@ -91,12 +44,18 @@ module.exports = {
             try {
                 let moduleObject = NODICS.getModule(request.moduleName);
                 if (moduleObject.authCache) {
-                    let value = moduleObject.authCache.get(request.authToken);
-                    if (value) {
-                        resolve(JSON.parse(value));
-                    } else {
+                    SERVICE.DefaultCacheService.get({
+                        cache: moduleObject.authCache,
+                        hashKey: request.authToken
+                    }).then(value => {
+                        if (value) {
+                            resolve(value);
+                        } else {
+                            reject('Invalid token');
+                        }
+                    }).catch(error => {
                         reject('Invalid token');
-                    }
+                    });
                 } else {
                     reject('Invalid token');
                 }
@@ -123,11 +82,9 @@ module.exports = {
         let _self = this;
         let input = request.local || request;
         this.findToken(input).then(success => {
-            console.log('Auth Token found locally................');
             callback(null, success);
         }).catch(error => {
             if (input.moduleName !== CONFIG.get('profileModuleName')) {
-                console.log('---------->> Requesting remote authorization');
                 this.LOG.debug('Authorizing request for token :', input.authToken);
                 SERVICE.DefaultModuleService.fetch(this.prepareURL(input), (error, response) => {
                     if (error) {
@@ -136,19 +93,14 @@ module.exports = {
                         callback('Given token is not valid one');
                     } else {
                         callback(null, response.result);
-                        if (CONFIG.get('cache').makeAuthTokenLocal) {
-                            console.log('------------->>> Storing auth token locally');
-                            _self.addToken(input.moduleName, null, input.authToken, response.result).then(success => {
-                                _self.LOG.debug('Token stored locally for module : ' + input.moduleName);
-                            }).catch(error => {
-                                _self.LOG.error('While storing token locally for module : ' + input.moduleName);
-                                _self.LOG.error(error);
-                            });
-                        }
                     }
                 });
             } else {
-                callback('Given token is not valid one');
+                this.reAuthenticate(input).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
             }
         });
     }
