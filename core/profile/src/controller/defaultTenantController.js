@@ -12,6 +12,14 @@
 module.exports = {
 
     getTenants: function (request, callback) {
-        FACADE.DefaultTenantFacade.get(request, callback);
+        if (callback) {
+            FACADE.DefaultTenantFacade.get(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultTenantFacade.get(request);
+        }
     }
 };

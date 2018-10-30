@@ -34,57 +34,59 @@ module.exports = {
         this.updateAuthData(options);
     },
 
-    authenticateEmployee: function (request, callback) {
-        let input = request.local || request;
-        let _self = this;
-        SERVICE.DefaultEnterpriseService.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
-            SERVICE.DefaultEmployeeService.findByLoginId({
-                tenant: enterprise.tenant.code,
-                loginId: input.loginId,
-                enterpriseCode: enterprise.enterpriseCode
-            }).then(employee => {
-                _self.authenticate({
-                    input: input,
-                    enterprise: enterprise,
-                    person: employee,
-                    type: 'Employee'
-                }).then(success => {
-                    callback(null, success);
+    authenticateEmployee: function (request) {
+        return new Promise((resolve, reject) => {
+            let _self = this;
+            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.enterpriseCode).then(enterprise => {
+                SERVICE.DefaultEmployeeService.findByLoginId({
+                    tenant: enterprise.tenant.code,
+                    loginId: request.loginId,
+                    enterpriseCode: enterprise.enterpriseCode
+                }).then(employee => {
+                    _self.authenticate({
+                        request: request,
+                        enterprise: enterprise,
+                        person: employee,
+                        type: 'Employee'
+                    }).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
                 }).catch(error => {
-                    callback(error);
+                    reject(error);
                 });
             }).catch(error => {
-                callback(error);
+                reject(error);
             });
-        }).catch(error => {
-            callback(error);
         });
     },
 
-    authenticateCustomer: function (request, callback) {
-        let input = request.local || request;
-        let _self = this;
-        SERVICE.DefaultEnterpriseService.retrieveEnterprise(input.enterpriseCode).then(enterprise => {
-            SERVICE.DefaultCustomerService.findByLoginId({
-                tenant: enterprise.tenant.code,
-                loginId: input.loginId,
-                enterpriseCode: enterprise.enterpriseCode
-            }).then(customer => {
-                _self.authenticate({
-                    input: input,
-                    enterprise: enterprise,
-                    person: customer,
-                    type: 'Customer'
-                }).then(success => {
-                    callback(null, success);
+    authenticateCustomer: function (request) {
+        return new Promise((resolve, reject) => {
+            let _self = this;
+            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.enterpriseCode).then(enterprise => {
+                SERVICE.DefaultCustomerService.findByLoginId({
+                    tenant: enterprise.tenant.code,
+                    loginId: request.loginId,
+                    enterpriseCode: enterprise.enterpriseCode
+                }).then(customer => {
+                    _self.authenticate({
+                        request: request,
+                        enterprise: enterprise,
+                        person: customer,
+                        type: 'Customer'
+                    }).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
                 }).catch(error => {
-                    callback(error);
+                    reject(error);
                 });
             }).catch(error => {
-                callback(error);
+                reject(error);
             });
-        }).catch(error => {
-            callback(error);
         });
     },
 
@@ -100,7 +102,7 @@ module.exports = {
                     if (state.locked || !options.person.active) {
                         reject('Account is currently in locked state or has been disabled');
                     } else {
-                        SYSTEM.compareHash(options.input.password, options.person.password).then(match => {
+                        SYSTEM.compareHash(options.request.password, options.person.password).then(match => {
                             if (match) {
                                 state.attempts = 0;
                                 _self.updateAuthData({
@@ -108,14 +110,14 @@ module.exports = {
                                     tenant: options.enterprise.tenant.code
                                 });
                                 _self.createAuthToken(options).then(success => {
-                                    let moduleObject = NODICS.getModule(options.input.moduleName);
+                                    let moduleObject = NODICS.getModule(options.request.moduleName);
                                     if (!moduleObject.authCache.tokens) {
                                         moduleObject.authCache.tokens = {};
                                     }
                                     moduleObject.authCache.tokens[success.authToken] = {
                                         enterpriseCode: options.enterprise.enterpriseCode,
                                         loginId: options.person.loginId,
-                                        password: options.input.password,
+                                        password: options.request.password,
                                         type: options.type
                                     };
                                     resolve(success);
@@ -149,13 +151,13 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let hash = null;
-                if (options.input.authToken !== undefined) {
-                    hash = options.input.authToken;
+                if (options.request.authToken !== undefined) {
+                    hash = options.request.authToken;
                 } else {
                     let key = options.enterprise._id + options.person._id + (new Date()).getTime();
                     hash = SYSTEM.generateHash(key);
                 }
-                _self.addToken(options.input.moduleName, options.input.source, hash, {
+                _self.addToken(options.request.moduleName, options.request.source, hash, {
                     person: options.person,
                     enterprise: options.enterprise,
                     type: options.type
@@ -173,35 +175,35 @@ module.exports = {
     },
 
     authorize: function (request, callback) {
-        let _self = this;
-        let input = request.local || request;
-        this.findToken(input).then(success => {
-            callback(null, success);
-        }).catch(error => {
-            this.reAuthenticate(input).then(success => {
-                callback(null, success);
+        return new Promise((resolve, reject) => {
+            this.findToken(request).then(success => {
+                resolve(success);
             }).catch(error => {
-                callback(error);
+                this.reAuthenticate(request).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
             });
         });
     },
 
-    reAuthenticate: function (input) {
+    reAuthenticate: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            let moduleObject = NODICS.getModule(input.moduleName);
+            let moduleObject = NODICS.getModule(request.moduleName);
             if (moduleObject && moduleObject.authCache && moduleObject.authCache.tokens) {
-                let authValues = moduleObject.authCache.tokens[input.authToken];
+                let authValues = moduleObject.authCache.tokens[request.authToken];
                 if (authValues !== undefined) {
-                    input.enterpriseCode = authValues.enterpriseCode;
-                    input.loginId = authValues.loginId;
-                    input.password = authValues.password;
+                    request.enterpriseCode = authValues.enterpriseCode;
+                    request.loginId = authValues.loginId;
+                    request.password = authValues.password;
                     if (authValues.type === 'Employee') {
-                        this.authenticateEmployee(input, (error, success) => {
+                        this.authenticateEmployee(request, (error, success) => {
                             if (error) {
                                 reject('Given token is not valid one');
                             } else {
-                                _self.findToken(input).then(success => {
+                                _self.findToken(request).then(success => {
                                     resolve(success);
                                 }).catch(error => {
                                     reject('Given token is not valid one');
@@ -209,11 +211,11 @@ module.exports = {
                             }
                         });
                     } else {
-                        this.authenticateEmployee(input, (error, success) => {
+                        this.authenticateEmployee(request, (error, success) => {
                             if (error) {
                                 reject('Given token is not valid one');
                             } else {
-                                _self.findToken(input).then(success => {
+                                _self.findToken(request).then(success => {
                                     resolve(null, success);
                                 }).catch(error => {
                                     reject('Given token is not valid one');

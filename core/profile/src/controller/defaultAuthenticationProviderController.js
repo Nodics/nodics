@@ -12,24 +12,46 @@
 module.exports = {
 
     authenticateEmployee: function (request, callback) {
-        request.local.loginId = request.get('loginId');
-        request.local.password = request.get('password');
-        request.local.enterpriseCode = request.get('enterpriseCode');
-        request.local.source = request.get('source');
-        FACADE.DefaultAuthenticationProviderFacade.authenticateEmployee(request, callback);
-
+        request.loginId = request.httpRequest.get('loginId');
+        request.password = request.httpRequest.get('password');
+        //request.enterpriseCode = request.get('enterpriseCode');
+        request.source = request.httpRequest.get('source');
+        if (callback) {
+            FACADE.DefaultAuthenticationProviderFacade.authenticateEmployee(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultAuthenticationProviderFacade.authenticateEmployee(request);
+        }
     },
 
     authenticateCustomer: function (request, callback) {
-        request.local.loginId = request.get('loginId');
-        request.local.password = request.get('password');
-        request.local.enterpriseCode = request.get('enterpriseCode');
-        request.local.source = request.get('source');
-        FACADE.DefaultAuthenticationProviderFacade.authenticateCustomer(request, callback);
-
+        request.loginId = request.httpRequest.get('loginId');
+        request.password = request.httpRequest.get('password');
+        //request.enterpriseCode = request.get('enterpriseCode');
+        request.source = request.httpRequest.get('source');
+        if (callback) {
+            FACADE.DefaultAuthenticationProviderFacade.authenticateCustomer(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultAuthenticationProviderFacade.authenticateCustomer(request);
+        }
     },
 
     authorize: function (request, callback) {
-        FACADE.DefaultAuthenticationProviderFacade.authorize(request, callback);
+        if (callback) {
+            FACADE.DefaultAuthenticationProviderFacade.authorize(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultAuthenticationProviderFacade.authorize(request);
+        }
     }
 };

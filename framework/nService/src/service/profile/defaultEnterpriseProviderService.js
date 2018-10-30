@@ -26,16 +26,18 @@ module.exports = {
         });
     },
 
-    loadEnterprise: function (request, callback) {
-        let input = request.local || request;
-        SERVICE.DefaultModuleService.fetch(this.prepareURL(input), (error, response) => {
-            if (error) {
-                callback(error, null);
-            } else if (!response.success) {
-                callback(error, null);
-            } else {
-                callback(null, response.result[0]);
-            }
+    loadEnterprise: function (request) {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultModuleService.fetch(this.prepareURL(request), (error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (!response.success) {
+                    reject(response.msg);
+                } else {
+                    resolve(response.result[0]);
+                }
+            });
         });
+
     }
 };

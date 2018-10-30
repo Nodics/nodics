@@ -10,27 +10,35 @@
  */
 
 module.exports = {
-    get: function (request, callback) {
-        return SERVICE.ServiceName.get(request, callback);
+    get: function (request) {
+        return SERVICE.ServiceName.get(request);
     },
 
-    save: function (request, callback) {
-        return SERVICE.ServiceName.save(request, callback);
+    getById: function (id, tenant) {
+        return SERVICE.ServiceName.getById(id, tenant);
     },
 
-    remove: function (request, callback) {
-        return SERVICE.ServiceName.remove(request, callback);
+    getByCode: function (code, tenant) {
+        return SERVICE.ServiceName.getByCode(code, tenant);
     },
 
-    removeById: function (request, callback) {
-        return SERVICE.ServiceName.removeById(request, callback);
+    save: function (request) {
+        return SERVICE.ServiceName.save(request);
     },
 
-    removeByCode: function (request, callback) {
-        return SERVICE.ServiceName.removeByCode(request, callback);
+    remove: function (request) {
+        return SERVICE.ServiceName.remove(request);
     },
 
-    update: function (request, callback) {
-        return SERVICE.ServiceName.update(request, callback);
+    removeById: function (ids, tenant) {
+        return SERVICE.ServiceName.removeById(ids, tenant);
+    },
+
+    removeByCode: function (codes, tenant) {
+        return SERVICE.ServiceName.removeByCode(codes, tenant);
+    },
+
+    update: function (request) {
+        return SERVICE.ServiceName.update(request);
     }
 };

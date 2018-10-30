@@ -10,23 +10,23 @@
  */
 
 module.exports = {
-    findUserState: function (input) {
+    findUserState: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
             _self.get({
-                tenant: input.tenant,
+                tenant: request.tenant,
                 query: {
                     $and: [{
-                        loginId: input.loginId,
+                        loginId: request.loginId,
                     }, {
-                        personId: input._id
+                        personId: request._id
                     }]
                 }
             }).then(actives => {
                 if (actives.length <= 0) {
                     resolve({
-                        loginId: input.loginId,
-                        personId: input._id,
+                        loginId: request.loginId,
+                        personId: request._id,
                         attempts: 0,
                         active: true
                     });
@@ -35,8 +35,8 @@ module.exports = {
                 }
             }).catch(error => {
                 resolve({
-                    loginId: input.loginId,
-                    personId: input._id,
+                    loginId: request.loginId,
+                    personId: request._id,
                     attempts: 0,
                     active: true
                 });

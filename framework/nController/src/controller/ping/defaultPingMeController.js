@@ -11,6 +11,6 @@
 
 module.exports = {
     ping: function (request, callback) {
-        callback(null, request.local.moduleName + ' is live buddy');
+        callback(null, request.moduleName + ' is live buddy');
     }
 };

@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    publish: function (input, callback) {
-        return SERVICE.DefaultEmsClientService.publish(input, callback);
+    publish: function (request) {
+        return SERVICE.DefaultEmsClientService.publish(request);
     }
 };

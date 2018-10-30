@@ -10,7 +10,6 @@
  */
 
 const _ = require('lodash');
-const util = require('util');
 const MongoClient = require('mongodb').MongoClient;
 
 
@@ -264,7 +263,7 @@ module.exports = {
 
     createIndex: function (model, indexConfig) {
         return new Promise((resolve, reject) => {
-            model.dataBase.getConnection().ensureIndex(model.modelName, indexConfig.field, indexConfig.options).then(success => {
+            model.dataBase.getConnection().createIndex(model.modelName, indexConfig.field, indexConfig.options).then(success => {
                 resolve('Index updated for ' + Object.keys(indexConfig.field)[0]);
             }).catch(error => {
                 reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());

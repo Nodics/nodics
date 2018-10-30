@@ -11,13 +11,13 @@
 
 module.exports = {
 
-    findByLoginId: function (input) {
+    findByLoginId: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultEmployeeService.get({
-                tenant: input.tenant,
+            this.get({
+                tenant: request.tenant,
                 query: {
-                    loginId: input.loginId,
-                    enterpriseCode: input.enterpriseCode
+                    loginId: request.loginId,
+                    enterpriseCode: request.enterpriseCode
                 }
             }).then(employees => {
                 if (employees.length <= 0) {

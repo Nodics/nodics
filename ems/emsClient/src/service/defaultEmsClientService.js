@@ -31,41 +31,29 @@ module.exports = {
             partition: payload.partition || 0
         };
     */
-    publish: function (request, callback) {
-        let input = request.local || request;
-        let emsConfig = CONFIG.get('emsClient');
-        let conf = emsConfig[emsConfig.type];
-        if (input.payloads instanceof Array) {
-            let allPayloads = [];
-            input.payloads.forEach(element => {
-                allPayloads.push(SERVICE[conf.handler].publish(element));
-            });
-            if (allPayloads.length > 0) {
-                Promise.all(allPayloads).then(success => {
-                    if (callback) {
-                        callback(null, 'Message published Successfully');
-                    } else {
-                        return Promise.resolve('Message published Successfully');
-                    }
-                }).catch(error => {
-                    if (callback) {
-                        callback(error);
-                    } else {
-                        return Promise.reject(error);
-                    }
+    publish: function (request) {
+        return new Promise((resolve, reject) => {
+            let emsConfig = CONFIG.get('emsClient');
+            let conf = emsConfig[emsConfig.type];
+            if (request.payloads instanceof Array && request.payloads.length > 0) {
+                let allPayloads = [];
+                request.payloads.forEach(element => {
+                    allPayloads.push(SERVICE[conf.handler].publish(element));
                 });
-            }
-        } else {
-            if (callback) {
-                SERVICE[conf.handler].publish(input.payloads).then(success => {
-                    callback(null, 'Message published Successfully');
-                }).catch(error => {
-                    callback(error);
-                });
+                if (allPayloads.length > 0) {
+                    Promise.all(allPayloads).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
             } else {
-                return SERVICE[conf.handler].publish(input.payloads);
+                SERVICE[conf.handler].publish(request.payloads).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
             }
-        }
-
+        });
     }
 };

@@ -13,12 +13,16 @@ const _ = require('lodash');
 
 module.exports = {
     publish: function (request, callback) {
-        if (!UTILS.isBlank(request.body)) {
-            request.local.payloads = request.body;
-            return FACADE.DefaultEmsClientFacade.publish(request, callback);
+        request.payloads = request.httpRequest.body || {};
+        if (callback) {
+            return FACADE.DefaultEmsClientFacade.publish(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                this.LOG.error('While publishing and event: ', error);
+                callback('While publishing and event: ' + error.toString());
+            });
         } else {
-            this.LOG.error('Please validate your request, it is not a valid one');
-            callback('Please validate your request, it is not a valid one. Request should contain body: {queue:queueName, message:message}');
+            return FACADE.DefaultEmsClientFacade.publish(request);
         }
     }
 };

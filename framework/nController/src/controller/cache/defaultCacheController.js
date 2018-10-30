@@ -12,20 +12,28 @@
 module.exports = {
 
     changeApiCacheConfiguration: function (request, callback) {
-        if (!UTILS.isBlank(request.body)) {
-            request.local.config = request.body;
-            FACADE.DefaultCacheFacade.changeApiCacheConfiguration(request, callback);
+        request.config = request.httpRequest.body || {};
+        if (callback) {
+            FACADE.DefaultCacheFacade.changeApiCacheConfiguration(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
         } else {
-            callback('Please verify your request, this not a valid one');
+            return FACADE.DefaultCacheFacade.changeApiCacheConfiguration(request);
         }
     },
 
     changeItemCacheConfiguration: function (request, callback) {
-        if (!UTILS.isBlank(request.body)) {
-            request.local.config = request.body;
-            FACADE.DefaultCacheFacade.changeItemCacheConfiguration(request, callback);
+        request.config = request.httpRequest.body || {};
+        if (callback) {
+            FACADE.DefaultCacheFacade.changeItemCacheConfiguration(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
         } else {
-            callback('Please verify your request, this not a valid one');
+            return FACADE.DefaultCacheFacade.changeItemCacheConfiguration(request);
         }
     },
 
@@ -37,14 +45,22 @@ module.exports = {
      * @param {*} callback 
      */
     flushApiCache: function (request, callback) {
-        if (request.params.key) {
-            request.local.keys = [request.params.key];
-        } else if (request.params.prefix) {
-            request.local.prefix = request.params.prefix;
-        } else if (!UTILS.isBlank(request.body) && UTILS.isArray(request.body)) {
-            request.local.keys = request.body;
+        if (request.httpRequest.params.key) {
+            request.keys = [request.httpRequest.params.key];
+        } else if (request.httpRequest.params.prefix) {
+            request.prefix = request.httpRequest.params.prefix;
+        } else if (!UTILS.isBlank(request.httpRequest.body) && UTILS.isArray(request.httpRequest.body)) {
+            request.keys = request.httpRequest.body;
         }
-        FACADE.DefaultCacheFacade.flushApiCache(request, callback);
+        if (callback) {
+            FACADE.DefaultCacheFacade.flushApiCache(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultCacheFacade.flushApiCache(request);
+        }
     },
 
     /**
@@ -55,13 +71,21 @@ module.exports = {
      * @param {*} callback 
      */
     flushItemCache: function (request, callback) {
-        if (request.params.key) {
-            request.local.keys = [request.params.key];
-        } else if (request.params.prefix) {
-            request.local.prefix = [request.params.prefix];
-        } else if (!UTILS.isBlank(request.body) && UTILS.isArray(request.body)) {
-            request.local.keys = request.body;
+        if (request.httpRequest.params.key) {
+            request.keys = [request.httpRequest.params.key];
+        } else if (request.httpRequest.params.prefix) {
+            request.prefix = [request.httpRequest.params.prefix];
+        } else if (!UTILS.isBlank(request.httpRequest.body) && UTILS.isArray(request.httpRequest.body)) {
+            request.keys = request.body;
         }
-        FACADE.DefaultCacheFacade.flushItemCache(request, callback);
+        if (callback) {
+            FACADE.DefaultCacheFacade.flushItemCache(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultCacheFacade.flushItemCache(request);
+        }
     }
 };

@@ -13,14 +13,14 @@ const stompit = require('stompit');
 
 module.exports = {
     client: {},
-    init: function(config) {
+    init: function (config) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.options) {
                 reject('Kafka configuration is not valid');
             }
             try {
-                stompit.connect(config.options, function(error, client) {
+                stompit.connect(config.options, function (error, client) {
                     _self.client = client;
                     if (client) {
                         config.queues.forEach(queue => {
@@ -45,7 +45,7 @@ module.exports = {
         });
     },
 
-    onConsume: function(queue, body) {
+    onConsume: function (queue, body) {
         try {
             let message = JSON.parse(body);
             let event = {
@@ -62,13 +62,17 @@ module.exports = {
                 }]
             };
             this.LOG.debug('Pushing event for recieved message from  : ', queue.inputQueue);
-            SERVICE.EventService.publish(event);
+            SERVICE.DefaultEventService.publish(event).then(success => {
+                this.LOG.debug('Message published successfully');
+            }).catch(error => {
+                this.LOG.error('Message publishing failed: ', error);
+            });
         } catch (error) {
             this.LOG.error('Could not parse message recieved from queue : ', queue.inputQueue, ' : ERROR is ', error);
         }
     },
 
-    publish: function(payload) {
+    publish: function (payload) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(_self.client)) {
@@ -81,7 +85,7 @@ module.exports = {
                     });
                     frame.write(payload.message);
                     frame.end();
-                    resolve(true);
+                    resolve('Message published to queue: ' + payload.queue);
                 } catch (error) {
                     this.LOG.error(error);
                     reject('Either queue name : ' + payload.queue + ' is not valid or could not created publisher');

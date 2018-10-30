@@ -11,12 +11,11 @@
 
 module.exports = {
     retrieveEnterprise: function (enterpriseCode) {
-        let _self = this;
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(enterpriseCode)) {
                 reject('Enterprise Code is invalid or null');
             } else {
-                _self.get({
+                this.get({
                     tenant: 'default',
                     options: {
                         recursive: true

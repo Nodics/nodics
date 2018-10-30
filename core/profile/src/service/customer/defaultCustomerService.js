@@ -10,13 +10,13 @@
  */
 
 module.exports = {
-    findByLoginId: function (input) {
+    findByLoginId: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultCustomerService.get({
-                tenant: input.tenant,
+            this.get({
+                tenant: request.tenant,
                 query: {
-                    loginId: input.loginId,
-                    enterpriseCode: input.enterpriseCode
+                    loginId: request.loginId,
+                    enterpriseCode: request.enterpriseCode
                 }
             }).then(customers => {
                 if (customers.length <= 0) {

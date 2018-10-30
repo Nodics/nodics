@@ -12,121 +12,233 @@
 module.exports = {
 
     createJob: function (request, callback) {
-        if (!request.local.recursive) {
-            request.local.recursive = request.get('recursive') || false;
+        request = _.merge(request || {}, request.httpRequest.body);
+        request.options = request.options || {};
+        if (!request.options.recursive) {
+            request.options.recursive = request.httpRequest.get('recursive') || false;
         }
-        if (!UTILS.isBlank(request.body)) {
-            request.local = _.merge(request.local || {}, request.body);
-            FACADE.DefaultCronJobFacade.createJob(request, callback);
-        } else if (request.params.jobCode) {
-            request.local.query = {
-                code: request.params.jobCode
+        if (request.httpRequest.params.jobCode) {
+            request.query = {
+                code: request.httpRequest.params.jobCode
             };
-            FACADE.DefaultCronJobFacade.createJob(request, callback);
+        }
+        if (callback) {
+            if (!UTILS.isBlank(request.query)) {
+                FACADE.DefaultCronJobFacade.createJob(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                callback('Please validate your request, it is not a valid one', null);
+            }
         } else {
-            this.LOG.error('Please validate your request, it is not a valid one');
-            callback('Please validate your request, it is not a valid one', null);
+            if (!UTILS.isBlank(request.query)) {
+                return FACADE.DefaultCronJobFacade.createJob(request);
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                return Promise.reject('Please validate your request, it is not a valid one');
+            }
         }
     },
 
     updateJob: function (request, callback) {
-        if (!request.local.recursive) {
-            request.local.recursive = request.get('recursive') || false;
+        request = _.merge(request || {}, request.httpRequest.body);
+        request.options = request.options || {};
+        if (!request.options.recursive) {
+            request.options.recursive = request.httpRequest.get('recursive') || false;
         }
-        if (!UTILS.isBlank(request.body)) {
-            request.local = _.merge(request.local || {}, request.body);
-            FACADE.DefaultCronJobFacade.updateJob(request, callback);
-        } else if (request.params.jobCode) {
-            request.local.query = {
-                name: request.params.jobCode
+        if (request.httpRequest.params.jobCode) {
+            request.query = {
+                code: request.httpRequest.params.jobCode
             };
-            FACADE.DefaultCronJobFacade.updateJob(request, callback);
+        }
+        if (callback) {
+            if (!UTILS.isBlank(request.query)) {
+                FACADE.DefaultCronJobFacade.updateJob(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                callback('Please validate your request, it is not a valid one', null);
+            }
         } else {
-            this.LOG.error('Please validate your request, it is not a valid one');
-            callback('Please validate your request, it is not a valid one', null, request);
+            if (!UTILS.isBlank(request.query)) {
+                return FACADE.DefaultCronJobFacade.updateJob(request);
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                return Promise.reject('Please validate your request, it is not a valid one');
+            }
         }
     },
 
     runJob: function (request, callback) {
-        if (request.params.jobCode) {
-            request.local.query = {
-                name: request.params.jobCode
+        if (request.httpRequest.params.jobCode) {
+            request.query = {
+                code: request.httpRequest.params.jobCode
             };
-            FACADE.DefaultCronJobFacade.runJob(request, callback);
+        }
+        if (callback) {
+            if (!UTILS.isBlank(request.query)) {
+                FACADE.DefaultCronJobFacade.runJob(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                callback('Please validate your request, it is not a valid one');
+            }
         } else {
-            this.LOG.error('Please validate your request, it is not a valid one');
-            callback('Please validate your request, it is not a valid one', null, request);
+            if (!UTILS.isBlank(request.query)) {
+                return FACADE.DefaultCronJobFacade.runJob(request);
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                return Promise.reject('Please validate your request, it is not a valid one');
+            }
         }
     },
 
     startJob: function (request, callback) {
-        request.local.jobCodes = [];
-        console.log('request.params.jobCode: ', request.params.jobCode);
-        if (request.params.jobCode) {
-            request.local.jobCodes.push(request.params.jobCode);
-            FACADE.DefaultCronJobFacade.startJob(request, callback);
-        } else if (request.body instanceof Array) {
-            request.local.jobCodes = request.body;
-            FACADE.DefaultCronJobFacade.startJob(request, callback);
+        request.jobCodes = [];
+        if (request.httpRequest.params.jobCode) {
+            request.jobCodes.push(request.httpRequest.params.jobCode);
+        } else if (request.httpRequest.body instanceof Array) {
+            request.jobCodes = request.httpRequest.body;
+        }
+        if (callback) {
+            if (request.jobCodes.length > 0) {
+                FACADE.DefaultCronJobFacade.startJob(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                callback('Please validate your request, it is not a valid one', null, request);
+            }
         } else {
-            this.LOG.error('Please validate your request, it is not a valid one');
-            callback('Please validate your request, it is not a valid one', null, request);
+            if (request.jobCodes.length > 0) {
+                return FACADE.DefaultCronJobFacade.startJob(request);
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                return Promise.reject('Please validate your request, it is not a valid one');
+            }
         }
     },
 
     stopJob: function (request, callback) {
-        request.local.jobCodes = [];
-        if (request.params.jobCode) {
-            request.local.jobCodes.push(request.params.jobCode);
-            FACADE.DefaultCronJobFacade.stopJob(request, callback);
-        } else if (request.body instanceof Array) {
-            request.local.jobCodes = request.body;
-            FACADE.DefaultCronJobFacade.stopJob(request, callback);
+        request.jobCodes = [];
+        if (request.httpRequest.params.jobCode) {
+            request.jobCodes.push(request.httpRequest.params.jobCode);
+        } else if (request.httpRequest.body instanceof Array) {
+            request.jobCodes = request.httpRequest.body;
+        }
+        if (callback) {
+            if (request.jobCodes.length > 0) {
+                FACADE.DefaultCronJobFacade.stopJob(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                callback('Please validate your request, it is not a valid one', null, request);
+            }
         } else {
-            this.LOG.error('Please validate your request, it is not a valid one');
-            callback('Please validate your request, it is not a valid one', null, request);
+            if (request.jobCodes.length > 0) {
+                return FACADE.DefaultCronJobFacade.stopJob(request);
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                return Promise.reject('Please validate your request, it is not a valid one');
+            }
         }
     },
 
     removeJob: function (request, callback) {
-        request.local.jobCodes = [];
-        if (request.params.jobCode) {
-            request.local.jobCodes.push(request.params.jobCode);
-            FACADE.DefaultCronJobFacade.removeJob(request, callback);
-        } else if (request.body instanceof Array) {
-            request.local.jobCodes = request.body;
-            FACADE.DefaultCronJobFacade.removeJob(request, callback);
+        request.jobCodes = [];
+        if (request.httpRequest.params.jobCode) {
+            request.jobCodes.push(request.httpRequest.params.jobCode);
+        } else if (request.httpRequest.body instanceof Array) {
+            request.jobCodes = request.httpRequest.body;
+        }
+        if (callback) {
+            if (request.jobCodes.length > 0) {
+                FACADE.DefaultCronJobFacade.removeJob(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                callback('Please validate your request, it is not a valid one', null, request);
+            }
         } else {
-            this.LOG.error('Please validate your request, it is not a valid one');
-            callback('Please validate your request, it is not a valid one', null, request);
+            if (request.jobCodes.length > 0) {
+                return FACADE.DefaultCronJobFacade.removeJob(request);
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                return Promise.reject('Please validate your request, it is not a valid one');
+            }
         }
     },
 
     pauseJob: function (request, callback) {
-        request.local.jobCodes = [];
-        if (request.params.jobCode) {
-            request.local.jobCodes.push(request.params.jobCode);
-            FACADE.DefaultCronJobFacade.pauseJob(request, callback);
-        } else if (request.body instanceof Array) {
-            request.local.jobCodes = request.body;
-            FACADE.DefaultCronJobFacade.pauseJob(request, callback);
+        request.jobCodes = [];
+        if (request.httpRequest.params.jobCode) {
+            request.jobCodes.push(request.httpRequest.params.jobCode);
+        } else if (request.httpRequest.body instanceof Array) {
+            request.jobCodes = request.httpRequest.body;
+        }
+        if (callback) {
+            if (request.jobCodes.length > 0) {
+                FACADE.DefaultCronJobFacade.pauseJob(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                callback('Please validate your request, it is not a valid one', null, request);
+            }
         } else {
-            this.LOG.error('Please validate your request, it is not a valid one');
-            callback('Please validate your request, it is not a valid one', null, request);
+            if (request.jobCodes.length > 0) {
+                return FACADE.DefaultCronJobFacade.pauseJob(request);
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                return Promise.reject('Please validate your request, it is not a valid one');
+            }
         }
     },
 
     resumeJob: function (request, callback) {
-        request.local.jobCodes = [];
-        if (request.params.jobCode) {
-            request.local.jobCodes.push(request.params.jobCode);
-            FACADE.DefaultCronJobFacade.resumeJob(request, callback);
+        request.jobCodes = [];
+        if (request.httpRequest.params.jobCode) {
+            request.jobCodes.push(request.httpRequest.params.jobCode);
         } else if (request.body instanceof Array) {
-            request.local.jobCodes = request.body;
-            FACADE.DefaultCronJobFacade.resumeJob(request, callback);
+            request.jobCodes = request.httpRequest.body;
+        }
+        if (callback) {
+            if (request.jobCodes.length > 0) {
+                FACADE.DefaultCronJobFacade.resumeJob(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                callback('Please validate your request, it is not a valid one', null, request);
+            }
         } else {
-            this.LOG.error('Please validate your request, it is not a valid one');
-            callback('Please validate your request, it is not a valid one', null, request);
+            if (request.jobCodes.length > 0) {
+                return FACADE.DefaultCronJobFacade.resumeJob(request);
+            } else {
+                this.LOG.error('Please validate your request, it is not a valid one');
+                return Promise.reject('Please validate your request, it is not a valid one');
+            }
         }
     }
 };

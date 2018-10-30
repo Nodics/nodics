@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    changeLogLevel: function (request, callback) {
-        SERVICE.DefaultLogService.changeLogLevel(request, callback);
+    changeLogLevel: function (request) {
+        return SERVICE.DefaultLogService.changeLogLevel(request);
     }
 };

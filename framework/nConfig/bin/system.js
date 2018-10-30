@@ -147,9 +147,12 @@ module.exports = {
 
     printModuleSequence: function () {
         let modulesStr = '';
+        let activeModules = [];
         _.each(NODICS.getIndexedModules(), (obj, key) => {
             modulesStr = modulesStr + obj[0].name + ',';
+            activeModules.push(obj[0].name);
         });
+        NODICS.setActiveModules(activeModules);
         console.log('Modules: ', modulesStr);
     },
 

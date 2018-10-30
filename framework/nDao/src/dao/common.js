@@ -13,68 +13,62 @@ const ObjectId = require('mongodb').ObjectId;
 module.exports = {
 
     get: function (request) {
-        let input = request.local || request;
-        input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
-        return SERVICE.DefaultPipelineService.start('modelsGetInitializerPipeline', input, {});
+        request.collection = NODICS.getModels('moduleName', request.tenant).modelName;
+        return SERVICE.DefaultPipelineService.start('modelsGetInitializerPipeline', request, {});
     },
 
-    getById: function (request) {
+    getById: function (id, tenant) {
         return this.get({
-            tenant: request.tenant,
+            tenant: tenant,
             query: {
-                _id: ObjectId(request.id)
+                _id: ObjectId(id)
             }
         });
     },
 
-    getByCode: function (request) {
+    getByCode: function (code, tenant) {
         return this.get({
-            tenant: request.tenant,
+            tenant: tenant,
             query: {
-                code: request.code
+                code: code
             }
         });
     },
 
     save: function (request) {
-        let input = request.local || request;
-        input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
-        return SERVICE.DefaultPipelineService.start('modelsSaveInitializerPipeline', input, {});
+        request.collection = NODICS.getModels('moduleName', request.tenant).modelName;
+        return SERVICE.DefaultPipelineService.start('modelsSaveInitializerPipeline', request, {});
     },
 
     remove: function (request) {
-        let input = request.local || request;
-        input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
-        return SERVICE.DefaultPipelineService.start('modelsRemoveInitializerPipeline', input, {});
+        request.collection = NODICS.getModels('moduleName', request.tenant).modelName;
+        return SERVICE.DefaultPipelineService.start('modelsRemoveInitializerPipeline', request, {});
     },
 
-    removeById: function (request) {
-        let input = request.local || request;
+    removeById: function (ids, tenant) {
         return this.remove({
-            tenant: input.tenant,
+            tenant: tenant,
             query: {
                 _id: {
-                    $in: input.ids
+                    $in: ids
                 }
             }
         });
     },
 
-    removeByCode: function (request) {
-        let input = request.local || request;
+    removeByCode: function (codes, tenant) {
         return this.remove({
-            tenant: input.tenant,
+            tenant: tenant,
             query: {
                 code: {
-                    $in: input.codes
+                    $in: codes
                 }
             }
         });
     },
 
     update: function (request) {
-        let input = request.local || request;
-        input.collection = NODICS.getModels('moduleName', input.tenant).modelName;
-        return SERVICE.DefaultPipelineService.start('modelsUpdateInitializerPipeline', input, {});
+        request.collection = NODICS.getModels('moduleName', request.tenant).modelName;
+        return SERVICE.DefaultPipelineService.start('modelsUpdateInitializerPipeline', request, {});
     }
 };

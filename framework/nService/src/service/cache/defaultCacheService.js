@@ -13,36 +13,30 @@ const _ = require('lodash');
 
 module.exports = {
 
-    changeApiCacheConfiguration: function (request, callback) {
-        let input = request.local || request;
-        callback('not implemented yet, comming soon');
+    changeApiCacheConfiguration: function (request) {
+        return Promise.reject('not implemented yet, comming soon');
     },
 
-    changeItemCacheConfiguration: function (request, callback) {
-        try {
-            let input = request.local || request;
-            NODICS.getTenants().forEach(tntName => {
-                let model = NODICS.getModels(input.moduleName, tntName)[input.config.modelName];
-                if (model) {
-                    model.cache = _.merge(model.cache, input.config.cache || {});
+    changeItemCacheConfiguration: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (UTILS.isBlank(request.config)) {
+                    reject('Please validate your request, looks no configuration contain');
                 }
-            });
-            if (callback) {
-                callback(null, 'Cache has been updated successfully');
-            } else {
-                Promise.resolve('Cache has been updated successfully');
+                NODICS.getTenants().forEach(tntName => {
+                    let model = NODICS.getModels(input.moduleName, tntName)[input.config.modelName];
+                    if (model) {
+                        model.cache = _.merge(model.cache, input.config.cache || {});
+                    }
+                });
+                resolve('Cache has been updated successfully');
+            } catch (error) {
+                reject('Facing issue while updating item cache : ' + error.toString());
             }
-        } catch (error) {
-            if (callback) {
-                callback('Facing issue while updating item cache : ' + error.toString());
-            } else {
-                Promise.reject('Facing issue while updating item cache : ' + error.toString());
-            }
-        }
+        });
     },
 
     initApiCache: function (moduleObject, moduleName) {
-        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 let cache = CONFIG.get('cache');
@@ -64,7 +58,6 @@ module.exports = {
     },
 
     initItemCache: function (moduleObject, moduleName) {
-        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 let cache = CONFIG.get('cache');
@@ -153,41 +146,19 @@ module.exports = {
 
     /**
      * This function is used to flush all stored cache for specific keys or prefix
-     * @param {*} input 
-     * @param {*} callback 
+     * @param {*} request 
      */
-    flushApiCache: function (request, callback) {
-        let input = request.local || request;
-        if (input.keys && input.keys.length > 0) {
-            if (callback) {
-                this.flushApiCacheByKeys(input, callback);
-            } else {
-                return this.flushApiCacheByKeys(input);
-            }
-        } else if (input.prefix) {
-            if (callback) {
-                this.flushApiCacheByPrefix(input, callback);
-            } else {
-                return this.flushApiCacheByPrefix(input);
-            }
+    flushApiCache: function (request) {
+        if (request.keys && request.keys.length > 0) {
+            return this.flushApiCacheByKeys(request);
+        } else if (request.prefix) {
+            return this.flushApiCacheByPrefix(request);
         } else {
-            let moduleObject = NODICS.getModules()[input.moduleName];
+            let moduleObject = NODICS.getModules()[request.moduleName];
             if (moduleObject.apiCache) {
-                if (callback) {
-                    this.flush(moduleObject.apiCache).then(success => {
-                        callback(null, success);
-                    }).catch(error => {
-                        callback(error);
-                    });
-                } else {
-                    return this.flush(moduleObject.apiCache);
-                }
+                return this.flush(moduleObject.apiCache);
             } else {
-                if (callback) {
-                    callback('Invalid module or cache configuration');
-                } else {
-                    Promise.reject('Invalid module or cache configuration');
-                }
+                return Promise.reject('Invalid module or cache configuration');
             }
         }
     },
@@ -195,95 +166,44 @@ module.exports = {
     /**
      * This function is used to flush all caches for given keys
      * @param {*} request 
-     * @param {*} callback 
      */
-    flushApiCacheByKeys: function (request, callback) {
-        let input = request.local || request;
-        let moduleObject = NODICS.getModules()[input.moduleName];
-        if (moduleObject.apiCache && input.keys && input.keys.length > 0) {
-            if (callback) {
-                this.flushKeys(moduleObject.apiCache, input.keys).then(success => {
-                    callback(null, success);
-                }).catch(error => {
-                    callback(error);
-                });
-            } else {
-                return this.flushKeys(moduleObject.apiCache, input.keys);
-            }
-
+    flushApiCacheByKeys: function (request) {
+        let moduleObject = NODICS.getModules(request.moduleName);
+        if (moduleObject.apiCache && request.keys && request.keys.length > 0) {
+            return this.flushKeys(moduleObject.apiCache, request.keys);
         } else {
-            if (callback) {
-                callback('Invalid module or cache configuration');
-            } else {
-                Promise.reject('Invalid module or cache configuration');
-            }
+            Promise.reject('Invalid module or cache configuration');
         }
     },
 
     /**
      * This function is used to flush cache for keys started by given prefix
-     * @param {*} request 
-     * @param {*} callback 
+     * @param {*} request
      */
-    flushApiCacheByPrefix: function (request, callback) {
-        let input = request.local || request;
-        let moduleObject = NODICS.getModules()[input.moduleName];
-        if (moduleObject.apiCache && input.prefix) {
-            if (callback) {
-                this.flush(moduleObject.apiCache, input.prefix).then(success => {
-                    callback(null, success);
-                }).catch(error => {
-                    callback(error);
-                });
-            } else {
-                return this.flush(moduleObject.apiCache, input.prefix);
-            }
+    flushApiCacheByPrefix: function (request) {
+        let moduleObject = NODICS.getModules()[request.moduleName];
+        if (moduleObject.apiCache && request.prefix) {
+            return this.flush(moduleObject.apiCache, request.prefix);
         } else {
-            if (callback) {
-                callback('Invalid module or cache configuration');
-            } else {
-                Promise.reject('Invalid module or cache configuration');
-            }
+            return Promise.reject('Invalid module or cache configuration');
         }
     },
 
     /**
      * This function is used to flush all stored cache for specific keys or prefix
-     * @param {*} input 
-     * @param {*} callback 
+     * @param {*} request
      */
-    flushItemCache: function (request, callback) {
-        let input = request.local || request;
-        if (input.keys && input.keys.length > 0) {
-            if (callback) {
-                this.flushItemCacheByKeys(input, callback);
-            } else {
-                return this.flushItemCacheByKeys(input);
-            }
-        } else if (input.prefix) {
-            if (callback) {
-                this.flushItemCacheByPrefix(input, callback);
-            } else {
-                return this.flushItemCacheByPrefix(input);
-            }
+    flushItemCache: function (request) {
+        if (request.keys && request.keys.length > 0) {
+            return this.flushItemCacheByKeys(request);
+        } else if (request.prefix) {
+            return this.flushItemCacheByPrefix(request);
         } else {
-            let moduleObject = NODICS.getModules()[input.moduleName];
+            let moduleObject = NODICS.getModule(request.moduleName);
             if (moduleObject.itemCache) {
-                if (callback) {
-                    this.flush(moduleObject.itemCache).then(success => {
-                        callback(null, success);
-                    }).catch(error => {
-                        callback(error);
-                    });
-                } else {
-                    return this.flush(moduleObject.itemCache);
-                }
+                return this.flush(moduleObject.itemCache);
             } else {
-                if (callback) {
-                    callback('Invalid module or cache configuration');
-                } else {
-                    Promise.reject('Invalid module or cache configuration');
-                }
+                return Promise.reject('Invalid module or cache configuration');
             }
         }
     },
@@ -291,55 +211,26 @@ module.exports = {
     /**
      * This function is used to flush all caches for given keys
      * @param {*} request 
-     * @param {*} callback 
      */
-    flushItemCacheByKeys: function (request, callback) {
-        let input = request.local || request;
-        let moduleObject = NODICS.getModules()[input.moduleName];
-        if (moduleObject.itemCache && input.keys && input.keys.length > 0) {
-            if (callback) {
-                this.flushKeys(moduleObject.itemCache, input.keys).then(success => {
-                    callback(null, success);
-                }).catch(error => {
-                    callback(error);
-                });
-            } else {
-                return this.flushKeys(moduleObject.itemCache, input.keys);
-            }
-
+    flushItemCacheByKeys: function (request) {
+        let moduleObject = NODICS.getModules()[request.moduleName];
+        if (moduleObject.itemCache && request.keys && request.keys.length > 0) {
+            return this.flushKeys(moduleObject.itemCache, request.keys);
         } else {
-            if (callback) {
-                callback('Invalid module or cache configuration');
-            } else {
-                Promise.reject('Invalid module or cache configuration');
-            }
+            return Promise.reject('Invalid module or cache configuration');
         }
     },
 
     /**
      * This function is used to flush cache for keys started by given prefix
      * @param {*} request 
-     * @param {*} callback 
      */
-    flushItemCacheByPrefix: function (request, callback) {
-        let input = request.local || request;
-        let moduleObject = NODICS.getModules()[input.moduleName];
-        if (moduleObject.itemCache && input.prefix) {
-            if (callback) {
-                this.flush(moduleObject.itemCache, input.prefix).then(success => {
-                    callback(null, success);
-                }).catch(error => {
-                    callback(error);
-                });
-            } else {
-                return this.flush(moduleObject.itemCache, input.prefix);
-            }
+    flushItemCacheByPrefix: function (request) {
+        let moduleObject = NODICS.getModules()[request.moduleName];
+        if (moduleObject.itemCache && request.prefix) {
+            return this.flush(moduleObject.itemCache, request.prefix);
         } else {
-            if (callback) {
-                callback('Invalid module or cache configuration');
-            } else {
-                Promise.reject('Invalid module or cache configuration');
-            }
+            return Promise.reject('Invalid module or cache configuration');
         }
     },
 
@@ -351,21 +242,21 @@ module.exports = {
         return SERVICE['Default' + cache.type.toUpperCaseFirstChar() + 'CacheService'].flushKeys(cache, keys);
     },
 
-    get: function (input) {
-        this.LOG.debug('Getting value for key : ', input.hashKey);
+    get: function (request) {
+        this.LOG.debug('Getting value for key : ', request.hashKey);
         try {
-            return SERVICE[input.cache.config.handler].get(input.cache, input.hashKey, input.options);
+            return SERVICE[request.cache.config.handler].get(request.cache, request.hashKey, request.options);
         } catch (error) {
-            Promise.reject(error);
+            return Promise.reject(error);
         }
     },
 
-    put: function (input) {
-        this.LOG.debug('Putting value for key : ', input.hashKey);
+    put: function (request) {
+        this.LOG.debug('Putting value for key : ', request.hashKey);
         try {
-            return SERVICE[input.cache.config.handler].put(input.cache,
-                input.hashKey, input.value,
-                input.options);
+            return SERVICE[request.cache.config.handler].put(request.cache,
+                request.hashKey, request.value,
+                request.options);
         } catch (error) {
             Promise.reject(error);
         }
@@ -388,14 +279,14 @@ module.exports = {
         return method + '-' + key;
     },
 
-    createItemKey: function (input) {
-        let options = _.merge({}, input.options);
-        if (input.options) {
-            options.recursive = input.options.recursive || false;
+    createItemKey: function (request) {
+        let options = _.merge({}, request.options);
+        if (request.options) {
+            options.recursive = request.options.recursive || false;
         }
-        options.query = input.query;
-        return input.collection.schemaName + '_' +
-            input.tenant + '_' +
+        options.query = request.query;
+        return request.collection.schemaName + '_' +
+            request.tenant + '_' +
             SYSTEM.generateHash(JSON.stringify(options));
     },
 
@@ -407,7 +298,7 @@ module.exports = {
             return this.get({
                 cache: routerDefinition.moduleObject.apiCache,
                 hashKey: cacheKeyHash,
-                options: options
+                options: routerDefinition.cache
             });
         } else {
             return Promise.reject(true);

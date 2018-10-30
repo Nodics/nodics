@@ -16,7 +16,7 @@ module.exports = {
     publisher: {},
     consumerPool: {},
 
-    init: function(config) {
+    init: function (config) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.options) {
@@ -55,7 +55,7 @@ module.exports = {
         });
     },
 
-    createPublisher: function(client, config) {
+    createPublisher: function (client, config) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -69,11 +69,11 @@ module.exports = {
                     reject('Invalid publisher type : ' + config.publisherType);
                 }
                 if (producer) {
-                    producer.on("ready", function() {
+                    producer.on("ready", function () {
                         _self.LOG.debug("Kafka Producer is connected and ready.");
                         resolve(producer);
                     });
-                    producer.on("error", function(error) {
+                    producer.on("error", function (error) {
                         _self.LOG.error('While creating kafka publisher : ' + error);
                         reject('While creating kafka publisher : ' + error);
                     });
@@ -86,7 +86,7 @@ module.exports = {
         });
     },
 
-    createConsumer: function(client, config, queue) {
+    createConsumer: function (client, config, queue) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -103,10 +103,10 @@ module.exports = {
                     reject('Invalid publisher type : ' + config.publisherType);
                 }
                 if (consumer) {
-                    consumer.on("message", function(response) {
+                    consumer.on("message", function (response) {
                         _self.onConsume(response, queue);
                     });
-                    consumer.on("error", function(message) {
+                    consumer.on("error", function (message) {
                         _self.LOG.error('Kafka Consumer got discunnected...');
                     });
                     _self.LOG.debug('Registered consumer for queue : ', queue.inputQueue);
@@ -121,7 +121,7 @@ module.exports = {
         });
     },
 
-    onConsume: function(response, queue) {
+    onConsume: function (response, queue) {
         try {
             var buf = new Buffer(response.value, "binary");
             let message = JSON.parse(buf.toString());
@@ -139,13 +139,17 @@ module.exports = {
                 }]
             };
             this.LOG.debug('Pushing event for recieved message from  : ', queue.inputQueue);
-            SERVICE.EventService.publish(event);
+            SERVICE.DefaultEventService.publish(event).then(success => {
+                this.LOG.debug('Message published successfully');
+            }).catch(error => {
+                this.LOG.error('Message publishing failed: ', error);
+            });
         } catch (error) {
             this.LOG.error('Could not parse message recieved from queue : ', queue.inputQueue, ' : ERROR is ', error);
         }
     },
 
-    publish: function(payload) {
+    publish: function (payload) {
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(this.publisher)) {
                 reject('Could not found a valid publisher instance');
@@ -156,8 +160,12 @@ module.exports = {
                         messages: payload.messages,
                         partition: payload.partition || 0
                     };
-                    this.publisher.send(payloads, function(err, data) {
-                        resolve(true);
+                    this.publisher.send(payloads, function (err, data) {
+                        if (err) {
+                            reject('While publishing message: ' + err.toString());
+                        } else {
+                            resolve('Message published to queue: ' + payload.queue);
+                        }
                     });
                 } catch (error) {
                     reject('Either queue name : ' + queueName + ' is not valid or could not created publisher');

@@ -12,9 +12,12 @@
 module.exports = {
 
     getEnterprise: function (request, callback) {
-        let enterpriseCode = request.local.enterpriseCode;
-        if (UTILS.isBlank(enterpriseCode)) {
-            callback('Invalid enterprise code');
+        if (UTILS.isBlank(request.enterpriseCode)) {
+            if (callback) {
+                callback('Invalid enterprise code');
+            } else {
+                return Promise.reject('Invalid enterprise code');
+            }
         } else {
             if (!request.local.tenant) {
                 request.local.tenant = 'default';
@@ -23,11 +26,19 @@ module.exports = {
                 request.local.options = {
                     recursive: true,
                     query: {
-                        enterpriseCode: enterpriseCode
+                        enterpriseCode: request.enterpriseCode
                     }
                 };
             }
-            FACADE.DefaultEnterpriseFacade.get(request, callback);
+            if (callback) {
+                FACADE.DefaultEnterpriseFacade.get(request, callback).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                return FACADE.DefaultEnterpriseFacade.get(request);
+            }
         }
     }
 };

@@ -1,8 +1,8 @@
 module.exports = {
 
     validateEnterpriseCode: function (request, response, process) {
-        this.LOG.debug('Validating Enterprise code : ', request.local.enterpriseCode);
-        if (UTILS.isBlank(request.local.enterpriseCode)) {
+        this.LOG.debug('Validating Enterprise code : ', request.enterpriseCode);
+        if (UTILS.isBlank(request.enterpriseCode)) {
             this.LOG.error('Enterprise code can not be null');
             process.error(request, response, 'Enterprise code can not be null');
         } else {
@@ -11,24 +11,22 @@ module.exports = {
     },
 
     loadEnterpriseCode: function (request, response, process) {
-        this.LOG.debug('Loading Enterprise code : ', request.local.enterpriseCode);
+        this.LOG.debug('Loading Enterprise code : ', request.enterpriseCode);
         try {
-            request.local.tenant = 'default';
-            request.local.options = {
+            request.tenant = 'default';
+            request.options = {
                 recursive: true,
                 query: {
-                    enterpriseCode: request.local.enterpriseCode
+                    enterpriseCode: request.enterpriseCode
                 }
             };
-            SERVICE.DefaultEnterpriseProviderService.loadEnterprise(request, (error, response) => {
-                if (error) {
-                    this.LOG.error('Enterprise code is not valid');
-                    process.error(request, response, error || 'Enterprise code is not valid');
-                } else {
-                    request.local.enterprise = response;
-                    request.local.tenant = response.tenant.code;
-                    process.nextSuccess(request, response);
-                }
+            SERVICE.DefaultEnterpriseProviderService.loadEnterprise(request).then(response => {
+                request.enterprise = response;
+                request.tenant = response.tenant.code;
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                this.LOG.error('Enterprise code is not valid');
+                process.error(request, response, error || 'Enterprise code is not valid');
             });
         } catch (error) {
             this.LOG.error('Enterprise code is not valid: ', error);
@@ -37,9 +35,9 @@ module.exports = {
     },
 
     validateTenantId: function (request, response, process) {
-        this.LOG.debug('Validating Tenant Id : ', request.local.tenant);
+        this.LOG.debug('Validating Tenant Id : ', request.tenant);
         try {
-            if (UTILS.isBlank(request.local.tenant)) {
+            if (UTILS.isBlank(request.tenant)) {
                 this.LOG.error('Tenant is null or invalid');
                 process.error(request, response, 'Tenant is null or invalid');
             } else {

@@ -11,29 +11,27 @@
 
 module.exports = {
 
-    changeApiCacheConfiguration: function (request, callback) {
-        callback('not implemented yet, comming soon');
+    changeApiCacheConfiguration: function (request) {
+        return SERVICE.DefaultCacheService.changeApiCacheConfiguration(request);
     },
 
-    changeItemCacheConfiguration: function (request, callback) {
-        return SERVICE.DefaultCacheService.changeItemCacheConfiguration(request, callback)
+    changeItemCacheConfiguration: function (request) {
+        return SERVICE.DefaultCacheService.changeItemCacheConfiguration(request);
     },
 
     /**
      * Facade layer function to flush API level cache
      * @param {*} request 
-     * @param {*} callback 
      */
-    flushApiCache: function (request, callback) {
-        return SERVICE.DefaultCacheService.flushApiCache(request, callback);
+    flushApiCache: function (request) {
+        return SERVICE.DefaultCacheService.flushApiCache(request);
     },
 
     /**
      * Facade layer function to flush Item level cache
      * @param {*} request 
-     * @param {*} callback 
      */
-    flushItemCache: function (request, callback) {
-        return SERVICE.DefaultCacheService.flushItemCache(request, callback);
+    flushItemCache: function (request) {
+        return SERVICE.DefaultCacheService.flushItemCache(request);
     }
 };

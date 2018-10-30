@@ -17,134 +17,122 @@ module.exports = {
         return this.cronJobContainer;
     },
 
-    createJob: function (request, callback) {
-        let input = request.local || request;
-        input = _.merge({
-            noLimit: true,
-            query: CONFIG.get('cronjob').activeJobsQuery
-        }, input);
-        if (!input.modelName) {
-            input.modelName = 'cronJob';
-        }
-        SERVICE['Default' + input.modelName.toUpperCaseFirstChar() + 'Service'].get(input).then((models) => {
-            if (callback) {
+    createJob: function (request) {
+        return new Promise((resolve, reject) => {
+            request = _.merge({
+                options: {
+                    noLimit: true
+                },
+                query: CONFIG.get('cronjob').activeJobsQuery
+            }, request);
+            request.modelName = request.modelName || 'cronJob';
+            SERVICE['Default' + request.modelName.toUpperCaseFirstChar() + 'Service'].get(request).then((models) => {
                 this.cronJobContainer.createCronJobs(models).then(success => {
-                    callback(null, success);
+                    resolve(success);
                 }).catch(error => {
-                    callback(error);
+                    reject(error);
                 });
-            } else {
-                return this.cronJobContainer.createCronJobs(models);
-            }
-        }).catch(error => {
-            if (callback) {
-                callback(error);
-            } else {
-                return Promise.reject(error);
-            }
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 
-    updateJob: function (request, callback) {
-        let input = request.local || request;
-        input = _.merge({
-            noLimit: true,
-            query: CONFIG.get('cronjob').activeJobsQuery
-        }, input);
-        input = _.merge(input, request);
-        SERVICE.DefaultCronJobService.get(input).then((models) => {
-            if (callback) {
+    updateJob: function (request) {
+        return new Promise((resolve, reject) => {
+            request = _.merge({
+                options: {
+                    noLimit: true
+                },
+                query: CONFIG.get('cronjob').activeJobsQuery
+            }, request);
+            request.modelName = request.modelName || 'cronJob';
+            SERVICE.DefaultCronJobService.get(request).then((models) => {
                 this.cronJobContainer.updateCronJobs(models).then(success => {
-                    callback(null, success);
+                    resolve(success);
                 }).catch(error => {
-                    callback(error);
+                    reject(error);
                 });
-            } else {
-                return this.cronJobContainer.updateCronJobs(models);
-            }
-        }).catch(error => {
-            if (callback) {
-                callback(error);
-            } else {
-                return Promise.reject(error);
-            }
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 
-    runJob: function (request, callback) {
-        let input = request.local || request;
-        input = _.merge({
-            noLimit: true,
-            query: CONFIG.get('cronjob').activeJobsQuery
-        }, input);
-        input = _.merge(input, request);
-        SERVICE.DefaultCronJobService.get(input).then((models) => {
-            if (callback) {
+    runJob: function (request) {
+        return new Promise((resolve, reject) => {
+            request = _.merge({
+                options: {
+                    noLimit: true
+                },
+                query: CONFIG.get('cronjob').activeJobsQuery
+            }, request);
+            request.modelName = request.modelName || 'cronJob';
+            SERVICE.DefaultCronJobService.get(request).then((models) => {
                 this.cronJobContainer.runCronJobs(models).then(success => {
-                    callback(null, success);
+                    resolve(success);
                 }).catch(error => {
-                    callback(error);
+                    reject(error);
                 });
-            } else {
-                return this.cronJobContainer.runCronJobs(models);
-            }
-        }).catch(error => {
-            if (callback) {
-                callback(error);
-            } else {
-                return Promise.reject(error);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    startJob: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                let result = this.cronJobContainer.startCronJobs(request.jobCodes);
+                resolve(result);
+            } catch (error) {
+                reject(error);
             }
         });
     },
 
-    startJob: function (request, callback) {
-        let input = request.local || request;
-        try {
-            let result = this.cronJobContainer.startCronJobs(input.jobCodes);
-            callback(null, result);
-        } catch (error) {
-            callback(error);
-        }
-    },
-
-    stopJob: function (request, callback) {
-        let input = request.local || request;
-        try {
-            let result = this.cronJobContainer.stopCronJobs(input.jobCodes);
-            callback(null, result);
-        } catch (error) {
-            callback(error);
-        }
+    stopJob: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                let result = this.cronJobContainer.stopCronJobs(request.jobCodes);
+                resolve(result);
+            } catch (error) {
+                reject(error);
+            }
+        });
     },
 
     removeJob: function (request, callback) {
-        let input = request.local || request;
-        try {
-            let result = this.cronJobContainer.removeCronJobs(input.jobCodes);
-            callback(null, result);
-        } catch (error) {
-            callback(error);
-        }
+        return new Promise((resolve, reject) => {
+            try {
+                let result = this.cronJobContainer.removeCronJobs(request.jobCodes);
+                resolve(result);
+            } catch (error) {
+                reject(error);
+            }
+        });
     },
 
-    pauseJob: function (request, callback) {
-        let input = request.local || request;
-        try {
-            let result = this.cronJobContainer.pauseCronJobs(input.jobCodes);
-            callback(null, result);
-        } catch (error) {
-            callback(error);
-        }
+    pauseJob: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                let result = this.cronJobContainer.pauseCronJobs(request.jobCodes);
+                resolve(result);
+            } catch (error) {
+                reject(error);
+            }
+        });
     },
 
     resumeJob: function (request, callback) {
-        let input = request.local || request;
-        try {
-            let result = this.cronJobContainer.resumeCronJobs(input.jobCodes);
-            callback(null, result);
-        } catch (error) {
-            callback(error);
-        }
+        return new Promise((resolve, reject) => {
+            try {
+                let result = this.cronJobContainer.resumeCronJobs(request.jobCodes);
+                resolve(result);
+            } catch (error) {
+                reject(error);
+            }
+        });
     },
 
     startOnStartup: function (_self) {
@@ -152,14 +140,14 @@ module.exports = {
         if (CONFIG.get('cronjob').runOnStartup) {
             _self.LOG.debug('Starting all active jobs on server start-up: ' + NODICS.getServerState());
             if (NODICS.getServerState() === 'started') {
-                SERVICE.DefaultCronJobService.createJob({ tenant: 'default' }, (error, response) => {
-                    if (error) {
-                        _self.LOG.error('Something went wrong while creating CronJobs : ', error);
-                    } else {
-                        SERVICE.DefaultCronJobService.startJob({ jobCodes: response }, (error, response) => {
-                            _self.LOG.debug('triggered cronjob start process : ', response);
-                        });
-                    }
+                SERVICE.DefaultCronJobService.createJob({ tenant: 'default' }).then(response => {
+                    SERVICE.DefaultCronJobService.startJob({ jobCodes: response }).then(success => {
+                        _self.LOG.debug('triggered cronjob start process : ', response);
+                    }).catch(error => {
+                        _self.LOG.error('Something went wrong while starting CronJobs : ', error);
+                    });
+                }).catch(error => {
+                    _self.LOG.error('Something went wrong while creating CronJobs : ', error);
                 });
             } else {
                 _self.LOG.info('Server is not started yet, hence waiting');

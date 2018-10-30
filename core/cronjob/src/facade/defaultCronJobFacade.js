@@ -11,35 +11,35 @@
 
 module.exports = {
 
-    createJob: function (request, callback) {
-        return SERVICE.DefaultCronJobService.createJob(request, callback);
+    createJob: function (request) {
+        return SERVICE.DefaultCronJobService.createJob(request);
     },
 
-    updateJob: function (request, callback) {
-        return SERVICE.DefaultCronJobService.updateJob(request, callback);
+    updateJob: function (request) {
+        return SERVICE.DefaultCronJobService.updateJob(request);
     },
 
-    runJob: function (request, callback) {
-        return SERVICE.DefaultCronJobService.runJob(request, callback);
+    runJob: function (request) {
+        return SERVICE.DefaultCronJobService.runJob(request);
     },
 
-    startJob: function (request, callback) {
-        return SERVICE.DefaultCronJobService.startJob(request, callback);
+    startJob: function (request) {
+        return SERVICE.DefaultCronJobService.startJob(request);
     },
 
-    stopJob: function (request, callback) {
-        return SERVICE.DefaultCronJobService.stopJob(request, callback);
+    stopJob: function (request) {
+        return SERVICE.DefaultCronJobService.stopJob(request);
     },
 
-    removeJob: function (request, callback) {
-        return SERVICE.DefaultCronJobService.removeJob(request, callback);
+    removeJob: function (request) {
+        return SERVICE.DefaultCronJobService.removeJob(request);
     },
 
-    pauseJob: function (request, callback) {
-        return SERVICE.DefaultCronJobService.pauseJob(request, callback);
+    pauseJob: function (request) {
+        return SERVICE.DefaultCronJobService.pauseJob(request);
     },
 
-    resumeJob: function (request, callback) {
-        return SERVICE.DefaultCronJobService.resumeJob(request, callback);
+    resumeJob: function (request) {
+        return SERVICE.DefaultCronJobService.resumeJob(request);
     }
 };

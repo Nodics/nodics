@@ -37,55 +37,118 @@ module.exports = {
         },
         get: function (app, routerDef) {
             app.route(routerDef.url).get((req, res, next) => {
-                let cacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(req));
-                SERVICE.DefaultCacheService.getApi(routerDef, cacheKeyHash, routerDef.cache).then(value => {
-                    SYSTEM.LOG.info('Fulfilled from API cache');
-                    res.json({
-                        success: true,
-                        code: 'SUC001',
-                        msg: 'Processed successfully',
-                        cache: 'api hit',
-                        result: value
+                try {
+                    req.apiCacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(req));
+                    SERVICE.DefaultCacheService.getApi(routerDef, req.apiCacheKeyHash).then(value => {
+                        SYSTEM.LOG.info('Fulfilled from API cache');
+                        res.json({
+                            success: true,
+                            code: 'SUC001',
+                            msg: 'Processed successfully',
+                            cache: 'api hit',
+                            result: value
+                        });
+                    }).catch(error => {
+                        next();
                     });
-                }).catch(error => {
-                    next();
-                });
+                } catch (error) {
+                    res.json({
+                        success: false,
+                        code: 'ERR001',
+                        msg: 'Process failed with errors',
+                        error: error
+                    });
+                }
             }, (req, res) => {
-                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                try {
+                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                } catch (error) {
+                    res.json({
+                        success: false,
+                        code: 'ERR001',
+                        msg: 'Process failed with errors',
+                        error: error
+                    });
+                }
             });
         },
         post: function (app, routerDef) {
             app.route(routerDef.url).post((req, res, next) => {
-                let cacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(req));
-                SERVICE.DefaultCacheService.getApi(routerDef, cacheKeyHash, routerDef.cache).then(value => {
-                    SYSTEM.LOG.info('Fulfilled from API cache');
-                    res.json({
-                        success: true,
-                        code: 'SUC001',
-                        msg: 'Processed successfully',
-                        cache: 'api hit',
-                        result: value
+                try {
+                    req.apiCacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(req));
+                    SERVICE.DefaultCacheService.getApi(routerDef, req.apiCacheKeyHash).then(value => {
+                        SYSTEM.LOG.info('Fulfilled from API cache');
+                        res.json({
+                            success: true,
+                            code: 'SUC001',
+                            msg: 'Processed successfully',
+                            cache: 'api hit',
+                            result: value
+                        });
+                    }).catch(error => {
+                        next();
                     });
-                }).catch(error => {
-                    next();
-                });
+                } catch (error) {
+                    res.json({
+                        success: false,
+                        code: 'ERR001',
+                        msg: 'Process failed with errors',
+                        error: error.toString()
+                    });
+                }
             }, (req, res) => {
-                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                try {
+                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                } catch (error) {
+                    res.json({
+                        success: false,
+                        code: 'ERR001',
+                        msg: 'Process failed with errors',
+                        error: error
+                    });
+                }
             });
         },
         delete: function (app, routerDef) {
             app.route(routerDef.url).delete((req, res) => {
-                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                try {
+                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                } catch (error) {
+                    res.json({
+                        success: false,
+                        code: 'ERR001',
+                        msg: 'Process failed with errors',
+                        error: error
+                    });
+                }
             });
         },
         put: function (app, routerDef) {
             app.route(routerDef.url).put((req, res) => {
-                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                try {
+                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                } catch (error) {
+                    res.json({
+                        success: false,
+                        code: 'ERR001',
+                        msg: 'Process failed with errors',
+                        error: error
+                    });
+                }
             });
         },
         patch: function (app, routerDef) {
             app.route(routerDef.url).patch((req, res) => {
-                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                try {
+                    SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                } catch (error) {
+                    res.json({
+                        success: false,
+                        code: 'ERR001',
+                        msg: 'Process failed with errors',
+                        error: error
+                    });
+                }
             });
         }
     },
@@ -95,7 +158,7 @@ module.exports = {
             getModel: {
                 secured: true,
                 cache: {
-                    enabled: false,
+                    enabled: true,
                     ttl: 100,
                 },
                 key: '/schemaName',

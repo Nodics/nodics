@@ -10,18 +10,13 @@
  */
 
 module.exports = {
-    changeLogLevel: function (request, callback) {
-        let input = request.local || request;
-        if (callback) {
-            if (SYSTEM.changeLogLevel(input)) {
-                this.LOG.debug('Log level have been set successfully');
-                callback(null, 'Log level have been set successfully');
-            } else {
-                this.LOG.error('Log level have been set successfully');
-                callback('Facing issue while setting log level');
-            }
+    changeLogLevel: function (request) {
+        if (SYSTEM.changeLogLevel(request)) {
+            this.LOG.debug('Log level have been set successfully');
+            return Promise.resolve(true);
         } else {
-            return SYSTEM.changeLogLevel(input);
+            this.LOG.error('Log level have been set successfully');
+            return Promise.reject(true);
         }
     }
 };

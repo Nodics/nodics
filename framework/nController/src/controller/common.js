@@ -14,58 +14,112 @@ const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
     get: function (request, callback) {
-        request.local.options = request.local.options || {};
-        if (request.params.id) {
-            request.local.options.recursive = request.get('recursive') || false;
-            request.local.query = {
-                _id: UTILS.isObjectId(request.params.id) ? request.params.id : ObjectId(request.params.id)
-            };
-        } else if (request.params.code) {
-            request.local.options.recursive = request.get('recursive') || false;
-            request.local.query = {
-                code: request.params.code
-            };
-        } else if (!UTILS.isBlank(request.body)) {
-            request.local = _.merge(request.local || {}, request.body);
-            if (!request.local.options.recursive) {
-                request.local.options.recursive = request.get('recursive') || false;
-            }
+        request.options = request.options || {};
+        if (!request.options.recursive) {
+            request.options.recursive = request.httpRequest.get('recursive') || false;
         }
-        FACADE.FacadeName.get(request, callback);
+        if (request.httpRequest.params.id) {
+            request.options.recursive = request.httpRequest.get('recursive') || false;
+            request.query = {
+                _id: UTILS.isObjectId(request.httpRequest.params.id) ?
+                    request.httpRequest.params.id :
+                    ObjectId(request.httpRequest.params.id)
+            };
+        } else if (request.httpRequest.params.code) {
+            request.options.recursive = request.httpRequest.get('recursive') || false;
+            request.query = {
+                code: request.httpRequest.params.code
+            };
+        } else if (!UTILS.isBlank(request.httpRequest.body)) {
+            request = _.merge(request, request.httpRequest.body || {});
+        }
+        if (callback) {
+            FACADE.FacadeName.get(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.FacadeName.get(request);
+        }
     },
 
     remove: function (request, callback) {
-        request.local = _.merge(request.local || {}, request.body);
-        FACADE.FacadeName.remove(request, callback);
+        request = _.merge(request, request.httpRequest.body || {});
+        if (callback) {
+            FACADE.FacadeName.remove(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.FacadeName.remove(request);
+        }
     },
 
     removeById: function (request, callback) {
-        request.local.ids = [];
-        if (request.params.id) {
-            request.local.ids.push(UTILS.isObjectId(request.params.id) ? request.params.id : ObjectId(request.params.id));
-        } else if (UTILS.isArray(request.body) && request.body.length > 0) {
-            request.body.forEach(element => {
-                request.local.ids.push(UTILS.isObjectId(element) ? element : ObjectId(element));
+        request.ids = [];
+        if (request.httpRequest.params.id) {
+            request.ids.push(UTILS.isObjectId(request.httpRequest.params.id) ?
+                request.httpRequest.params.id :
+                ObjectId(request.httpRequest.params.id));
+        } else if (UTILS.isArray(request.httpRequest.body) && request.httpRequest.body.length > 0) {
+            request.httpRequest.body.forEach(element => {
+                request.ids.push(UTILS.isObjectId(element) ? element : ObjectId(element));
             });
         }
-        FACADE.FacadeName.removeById(request, callback);
-    },
-    removeByCode: function (request, callback) {
-        request.local.codes = [];
-        if (request.params.code) {
-            request.local.codes.push(request.params.code);
-        } else if (UTILS.isArray(request.body) && request.body.length > 0) {
-            request.local.codes = request.body;
+        if (callback) {
+            FACADE.FacadeName.removeById(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.FacadeName.removeById(request);
         }
-        FACADE.FacadeName.removeByCode(request, callback);
+    },
+
+    removeByCode: function (request, callback) {
+        request.codes = [];
+        if (request.httpRequest.params.code) {
+            request.codes.push(request.httpRequest.params.code);
+        } else if (UTILS.isArray(request.httpRequest.body) && request.httpRequest.body.length > 0) {
+            request.codes = request.httpRequest.body;
+        }
+        if (callback) {
+            FACADE.FacadeName.removeByCode(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.FacadeName.removeByCode(request);
+        }
     },
 
     save: function (request, callback) {
-        request.local.models = request.body;
-        FACADE.FacadeName.save(request, callback);
+        request.models = request.httpRequest.body;
+        if (callback) {
+            FACADE.FacadeName.save(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.FacadeName.save(request);
+        }
     },
 
     update: function (request, callback) {
-        FACADE.FacadeName.update(request, callback);
+        request = _.merge(request, request.httpRequest.body || {});
+        if (callback) {
+            FACADE.FacadeName.update(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.FacadeName.update(request);
+        }
     }
 };
