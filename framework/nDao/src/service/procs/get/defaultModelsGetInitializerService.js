@@ -47,18 +47,18 @@ module.exports = {
     },
 
     lookupCache: function (request, response, process) {
-        this.LOG.debug('Item lookup into cache system : ', request.collection.moduleName);
         let moduleObject = NODICS.getModules()[request.collection.moduleName];
         if (moduleObject.itemCache &&
             request.collection.cache &&
             request.collection.cache.enabled) {
             request.cacheKeyHash = SERVICE.DefaultCacheService.createItemKey(request);
+            this.LOG.debug('Model cache lookup for key: ', request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
                 cache: moduleObject.itemCache,
                 hashKey: request.cacheKeyHash,
                 options: request.collection.cache
             }).then(value => {
-                this.LOG.info('Fulfilled from Item cache');
+                this.LOG.debug('Fulfilled from model cache');
                 response.success = value;
                 request.cache = 'item hit';
                 process.stop(request, response);
@@ -156,6 +156,7 @@ module.exports = {
             if (request.collection.cache.ttl === undefined) {
                 request.collection.cache.ttl = moduleObject.itemCache.config.ttl || 0;
             }
+            this.LOG.debug('Model cache store for key: ', request.cacheKeyHash);
             SERVICE.DefaultCacheService.put({
                 cache: moduleObject.itemCache,
                 hashKey: request.cacheKeyHash,

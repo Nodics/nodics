@@ -55,9 +55,11 @@ module.exports = {
     },
 
     get: function (cache, hashKey, options) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 hashKey = (cache.cacheMap) ? cache.cacheMap + '_' + hashKey : hashKey;
+                _self.LOG.debug('Getting value from Redis cache storage with key: ' + hashKey);
                 cache.client.get(hashKey, (error, value) => {
                     if (error) {
                         reject(error);
@@ -75,6 +77,7 @@ module.exports = {
     },
 
     put: function (cache, hashKey, value, options) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 hashKey = (cache.cacheMap) ? cache.cacheMap + '_' + hashKey : hashKey;
@@ -82,6 +85,7 @@ module.exports = {
                 if (ttl === undefined && cache.config && cache.config.ttl) {
                     ttl = cache.config.ttl;
                 }
+                _self.LOG.debug('Putting value is local cache storage with key: ' + hashKey + ' TTL: ' + ttl);
                 if (ttl) {
                     cache.client.set(hashKey, JSON.stringify(value), 'EX', ttl);
                 } else {

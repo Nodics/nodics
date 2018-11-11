@@ -49,7 +49,7 @@ module.exports = {
                 if (UTILS.isBlank(request.config)) {
                     reject('Please validate your request, looks no configuration contain');
                 } else if (!request.config.schemaName) {
-                    reject('Invalid schemaName property to update item cache');
+                    reject('Invalid schemaName to update item cache');
                 } else {
                     let modelName = UTILS.createModelName(request.config.schemaName);
                     NODICS.getTenants().forEach(tntName => {
@@ -58,7 +58,7 @@ module.exports = {
                             model.cache = _.merge(model.cache, request.config.cache || {});
                             resolve('Cache has been updated successfully');
                         } else {
-                            reject('Invalid schemaName: ' + request.config.schemaName + ' property to update item cache');
+                            reject('Invalid schemaName: ' + request.config.schemaName + ' to update item cache');
                         }
                     });
                 }
@@ -328,6 +328,7 @@ module.exports = {
             routerDefinition.cache.enabled &&
             moduleObject.apiCache) {
             cacheKeyHash = routerDefinition.prefix ? routerDefinition.prefix + '_' + cacheKeyHash : cacheKeyHash;
+            this.LOG.debug('Router cache lookup for key: ', cacheKeyHash);
             return this.get({
                 cache: moduleObject.apiCache,
                 hashKey: cacheKeyHash,
@@ -344,6 +345,7 @@ module.exports = {
             routerDefinition.cache.enabled &&
             moduleObject.apiCache) {
             cacheKeyHash = routerDefinition.prefix ? routerDefinition.prefix + '_' + cacheKeyHash : cacheKeyHash;
+            this.LOG.debug('Router cache store for key: ', cacheKeyHash);
             return this.put({
                 cache: moduleObject.apiCache,
                 hashKey: cacheKeyHash,

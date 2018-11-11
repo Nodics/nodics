@@ -32,6 +32,10 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
+            cache: {
+                enabled: false,
+                ttl: 100
+            },
             event: false,
             router: true,
             virtualProperties: {
