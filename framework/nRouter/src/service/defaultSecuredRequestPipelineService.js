@@ -18,7 +18,7 @@ module.exports = {
                     process.error(request, response, error);
                 } else {
                     request.enterprise = result.enterprise;
-                    request.enterpriseCode = result.enterprise.enterpriseCode;
+                    request.enterpriseCode = result.enterprise.code;
                     request.person = result.person;
                     request.tenant = result.enterprise.tenant.code;
                     process.nextSuccess(request, response);

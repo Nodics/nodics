@@ -11,12 +11,12 @@
 
 module.exports = {
 
-    changeApiCacheConfiguration: function (request) {
-        return SERVICE.DefaultCacheService.changeApiCacheConfiguration(request);
+    updateApiCacheConfiguration: function (request) {
+        return SERVICE.DefaultCacheService.updateApiCacheConfiguration(request);
     },
 
-    changeItemCacheConfiguration: function (request) {
-        return SERVICE.DefaultCacheService.changeItemCacheConfiguration(request);
+    updateItemCacheConfiguration: function (request) {
+        return SERVICE.DefaultCacheService.updateItemCacheConfiguration(request);
     },
 
     /**

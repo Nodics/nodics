@@ -189,6 +189,9 @@ module.exports = {
                 }
             },
             definition: {
+                enterpriseCode: {
+                    required: false
+                },
                 name: {
                     type: 'string',
                     required: true,
@@ -218,14 +221,6 @@ module.exports = {
                     type: 'array',
                     required: false,
                     description: 'All associated contacts with this enterprise'
-                }
-            },
-            indexes: {
-                indexEnterpriseCode: {
-                    name: 'enterpriseCode',
-                    options: {
-                        unique: true
-                    }
                 }
             }
         },

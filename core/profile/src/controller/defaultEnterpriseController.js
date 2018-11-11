@@ -19,19 +19,19 @@ module.exports = {
                 return Promise.reject('Invalid enterprise code');
             }
         } else {
-            if (!request.local.tenant) {
-                request.local.tenant = 'default';
+            if (!request.tenant) {
+                request.tenant = 'default';
             }
-            if (!request.local.options) {
-                request.local.options = {
+            if (!request.options) {
+                request.options = {
                     recursive: true,
                     query: {
-                        enterpriseCode: request.enterpriseCode
+                        code: request.enterpriseCode
                     }
                 };
             }
             if (callback) {
-                FACADE.DefaultEnterpriseFacade.get(request, callback).then(success => {
+                FACADE.DefaultEnterpriseFacade.get(request).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);

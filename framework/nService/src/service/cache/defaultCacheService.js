@@ -13,23 +13,55 @@ const _ = require('lodash');
 
 module.exports = {
 
-    changeApiCacheConfiguration: function (request) {
-        return Promise.reject('not implemented yet, comming soon');
-    },
-
-    changeItemCacheConfiguration: function (request) {
+    updateApiCacheConfiguration: function (request) {
         return new Promise((resolve, reject) => {
             try {
                 if (UTILS.isBlank(request.config)) {
                     reject('Please validate your request, looks no configuration contain');
-                }
-                NODICS.getTenants().forEach(tntName => {
-                    let model = NODICS.getModels(input.moduleName, tntName)[input.config.modelName];
-                    if (model) {
-                        model.cache = _.merge(model.cache, input.config.cache || {});
+                } else if (!request.config.routerName) {
+                    reject('Invalid routerName property to update router cache');
+                } else {
+                    let key = request.moduleName + '_' + request.config.routerName;
+                    if (request.config.schemaName) {
+                        key = key + '_' + request.config.schemaName;
                     }
-                });
-                resolve('Cache has been updated successfully');
+                    let routerDefinition = NODICS.getRouter(key.toLowerCase(), request.moduleName);
+                    if (routerDefinition) {
+                        routerDefinition.cache = _.merge(routerDefinition.cache || {}, request.config.cache);
+                        resolve('Cache has been updated successfully');
+                    } else {
+                        let msg = 'Could not found router definition for router name: ' + request.config.routerName;
+                        if (request.config.schemaName) {
+                            msg = msg + ' and schemaName: ' + request.config.schemaName;
+                        }
+                        reject(msg);
+                    }
+                }
+            } catch (error) {
+                reject('Facing issue while updating item cache : ' + error.toString());
+            }
+        });
+    },
+
+    updateItemCacheConfiguration: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (UTILS.isBlank(request.config)) {
+                    reject('Please validate your request, looks no configuration contain');
+                } else if (!request.config.schemaName) {
+                    reject('Invalid schemaName property to update item cache');
+                } else {
+                    let modelName = UTILS.createModelName(request.config.schemaName);
+                    NODICS.getTenants().forEach(tntName => {
+                        let model = NODICS.getModels(request.moduleName, tntName)[modelName];
+                        if (model) {
+                            model.cache = _.merge(model.cache, request.config.cache || {});
+                            resolve('Cache has been updated successfully');
+                        } else {
+                            reject('Invalid schemaName: ' + request.config.schemaName + ' property to update item cache');
+                        }
+                    });
+                }
             } catch (error) {
                 reject('Facing issue while updating item cache : ' + error.toString());
             }
@@ -291,12 +323,13 @@ module.exports = {
     },
 
     getApi: function (routerDefinition, cacheKeyHash) {
+        let moduleObject = NODICS.getModule(routerDefinition.moduleName);
         if (routerDefinition.cache &&
             routerDefinition.cache.enabled &&
-            routerDefinition.moduleObject.apiCache) {
-            cacheKeyHash = routerDefinition.cache.prefix ? routerDefinition.cache.prefix + '_' + cacheKeyHash : cacheKeyHash;
+            moduleObject.apiCache) {
+            cacheKeyHash = routerDefinition.prefix ? routerDefinition.prefix + '_' + cacheKeyHash : cacheKeyHash;
             return this.get({
-                cache: routerDefinition.moduleObject.apiCache,
+                cache: moduleObject.apiCache,
                 hashKey: cacheKeyHash,
                 options: routerDefinition.cache
             });
@@ -306,12 +339,13 @@ module.exports = {
     },
 
     putApi: function (routerDefinition, cacheKeyHash, value) {
+        let moduleObject = NODICS.getModule(routerDefinition.moduleName);
         if (value && routerDefinition.cache &&
             routerDefinition.cache.enabled &&
-            routerDefinition.moduleObject.apiCache) {
-            cacheKeyHash = routerDefinition.cache.prefix ? routerDefinition.cache.prefix + '_' + cacheKeyHash : cacheKeyHash;
+            moduleObject.apiCache) {
+            cacheKeyHash = routerDefinition.prefix ? routerDefinition.prefix + '_' + cacheKeyHash : cacheKeyHash;
             return this.put({
-                cache: routerDefinition.moduleObject.apiCache,
+                cache: moduleObject.apiCache,
                 hashKey: cacheKeyHash,
                 value: value,
                 options: routerDefinition.cache

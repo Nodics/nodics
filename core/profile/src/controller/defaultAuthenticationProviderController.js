@@ -14,7 +14,6 @@ module.exports = {
     authenticateEmployee: function (request, callback) {
         request.loginId = request.httpRequest.get('loginId');
         request.password = request.httpRequest.get('password');
-        //request.enterpriseCode = request.get('enterpriseCode');
         request.source = request.httpRequest.get('source');
         if (callback) {
             FACADE.DefaultAuthenticationProviderFacade.authenticateEmployee(request).then(success => {
@@ -30,7 +29,6 @@ module.exports = {
     authenticateCustomer: function (request, callback) {
         request.loginId = request.httpRequest.get('loginId');
         request.password = request.httpRequest.get('password');
-        //request.enterpriseCode = request.get('enterpriseCode');
         request.source = request.httpRequest.get('source');
         if (callback) {
             FACADE.DefaultAuthenticationProviderFacade.authenticateCustomer(request).then(success => {

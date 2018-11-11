@@ -323,7 +323,6 @@ module.exports = {
                     response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator updated';
                     resolve(response);
                 }).catch(error => {
-                    console.log(error);
                     let response = {};
                     response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator update failed';
                     reject(response);
@@ -394,7 +393,7 @@ module.exports = {
 
     buildModel: function (options) {
         return new Promise((resolve, reject) => {
-            options.modelName = SYSTEM.createModelName(options.schemaName);
+            options.modelName = UTILS.createModelName(options.schemaName);
             let schema = options.moduleObject.rawSchema[options.schemaName];
             if (options.dataBase.master && schema.model === true) {
                 SYSTEM.prepareDatabaseOptions(options);
@@ -600,18 +599,6 @@ module.exports = {
             }
         });
         NODICS.setRawModels(SYSTEM.loadFiles('/src/schemas/model.js'));
-    },
-
-
-
-    createModelName: function (modelName) {
-        var name = modelName.toUpperCaseFirstChar() + 'Model';
-        return name;
-    },
-
-    getModelName: function (modelName) {
-        var name = modelName.toUpperCaseFirstChar().replace("Model", "");
-        return name;
     },
 
     addTenants: function () {

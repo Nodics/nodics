@@ -15,45 +15,18 @@ module.exports = {
         return SERVICE.DefaultPipelineService.start('dataImportInitializerPipeline', input, {});
     },
 
-    importInitData: function (request, callback) {
-        let input = request.local || request;
-        input.dataType = 'init';
-        if (callback) {
-            this.importData(input).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return this.importData(input);
-        }
+    importInitData: function (request) {
+        request.dataType = 'init';
+        return this.importData(request);
     },
 
-    importCoreData: function (request, callback) {
-        let input = request.local || request;
-        input.dataType = 'core';
-        if (callback) {
-            this.importData(input).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return this.importData(input);
-        }
+    importCoreData: function (request) {
+        request.dataType = 'core';
+        return this.importData(request);
     },
 
-    importSampleData: function (request, callback) {
-        let input = request.local || request;
-        input.dataType = 'sample';
-        if (callback) {
-            this.importData(input).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return this.importData(input);
-        }
+    importSampleData: function (request) {
+        request.dataType = 'sample';
+        return this.importData(request);
     }
 };

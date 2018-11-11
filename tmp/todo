@@ -151,6 +151,7 @@ Todos:
 
   Cache:
     ✔ Check process to update cache configuration via API @done(18-10-15 15:59)
+    - Add general cache instance with each module
 
   Authorization Process:
     - Keep authentication credantials mapped with authToken

@@ -41,7 +41,7 @@ module.exports = {
                 SERVICE.DefaultEmployeeService.findByLoginId({
                     tenant: enterprise.tenant.code,
                     loginId: request.loginId,
-                    enterpriseCode: enterprise.enterpriseCode
+                    enterpriseCode: enterprise.code
                 }).then(employee => {
                     _self.authenticate({
                         request: request,
@@ -69,7 +69,7 @@ module.exports = {
                 SERVICE.DefaultCustomerService.findByLoginId({
                     tenant: enterprise.tenant.code,
                     loginId: request.loginId,
-                    enterpriseCode: enterprise.enterpriseCode
+                    enterpriseCode: enterprise.code
                 }).then(customer => {
                     _self.authenticate({
                         request: request,
@@ -115,7 +115,7 @@ module.exports = {
                                         moduleObject.authCache.tokens = {};
                                     }
                                     moduleObject.authCache.tokens[success.authToken] = {
-                                        enterpriseCode: options.enterprise.enterpriseCode,
+                                        enterpriseCode: options.enterprise.code,
                                         loginId: options.person.loginId,
                                         password: options.request.password,
                                         type: options.type
@@ -139,7 +139,6 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                console.log(error);
                 reject(error);
             }
 

@@ -128,7 +128,6 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                console.log(error);
                 reject(error);
             }
         });

@@ -215,7 +215,6 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.debug('Import Model Process Request has been processed and got errors');
-        console.log(response.errors);
         process.reject(response.errors);
     }
 };

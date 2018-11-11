@@ -94,6 +94,18 @@ module.exports = {
                 enabled: true,
                 ttl: 100
             }
+        },
+        routerLevelCache: {
+            address: {
+                get: {
+                    enabled: true,
+                    ttl: 50
+                },
+                post: {
+                    enabled: true,
+                    ttl: 70
+                }
+            }
         }
     }
 };

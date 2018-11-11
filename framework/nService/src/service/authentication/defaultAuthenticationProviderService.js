@@ -8,7 +8,6 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-const NodeCache = require("node-cache");
 
 module.exports = {
     addToken: function (moduleName, source, hash, value) {

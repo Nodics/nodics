@@ -14,12 +14,6 @@ module.exports = {
         this.LOG.debug('Loading Enterprise code : ', request.enterpriseCode);
         try {
             request.tenant = 'default';
-            request.options = {
-                recursive: true,
-                query: {
-                    enterpriseCode: request.enterpriseCode
-                }
-            };
             SERVICE.DefaultEnterpriseProviderService.loadEnterprise(request).then(response => {
                 request.enterprise = response;
                 request.tenant = response.tenant.code;

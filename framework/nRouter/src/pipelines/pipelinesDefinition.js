@@ -52,14 +52,21 @@ module.exports = {
             handleSecuredRequest: {
                 type: 'process',
                 handler: 'handleSecuredRequestPipeline',
-                success: 'handleRequest'
+                success: 'lookupCache'
             },
 
             handleNonSecuredRequest: {
                 type: 'process',
                 handler: 'handleNonSecuredRequestPipeline',
+                success: 'lookupCache'
+            },
+
+            lookupCache: {
+                type: 'function',
+                handler: 'DefaultRequestHandlerPipelineService.lookupCache',
                 success: 'handleRequest'
             },
+
             handleRequest: {
                 type: 'function',
                 handler: 'DefaultRequestHandlerPipelineService.handleRequest',

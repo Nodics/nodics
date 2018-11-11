@@ -21,7 +21,7 @@ module.exports = {
                         recursive: true
                     },
                     query: {
-                        enterpriseCode: enterpriseCode
+                        code: enterpriseCode
                     }
                 }).then(enterprises => {
                     if (enterprises.length <= 0) {

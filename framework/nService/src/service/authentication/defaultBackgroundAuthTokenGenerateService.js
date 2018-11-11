@@ -64,7 +64,6 @@ module.exports = {
                     }
                 }).catch(error => {
                     this.LOG.error('While hitting url: ', JSON.stringify(requestUrl));
-                    console.log(error);
                     reject(error);
                 });
             } else {

@@ -82,7 +82,6 @@ module.exports = {
                 if (ttl === undefined && cache.config && cache.config.ttl) {
                     ttl = cache.config.ttl;
                 }
-                console.log('   ', ttl);
                 if (ttl) {
                     cache.client.set(hashKey, JSON.stringify(value), 'EX', ttl);
                 } else {

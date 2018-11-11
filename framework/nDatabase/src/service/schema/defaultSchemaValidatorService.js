@@ -24,7 +24,7 @@ module.exports = {
                     ['master', 'test'].forEach(channel => {
                         let models = NODICS.getModels(moduleName, tntName, channel);
                         if (models) {
-                            let model = models[SYSTEM.createModelName(schemaName)];
+                            let model = models[UTILS.createModelName(schemaName)];
                             if (model) {
                                 allPromise.push(SYSTEM.updateValidator(model));
                             }

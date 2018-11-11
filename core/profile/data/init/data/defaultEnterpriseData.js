@@ -12,7 +12,6 @@
 module.exports = {
     record0: {
         code: 'default',
-        enterpriseCode: 'default',
         name: 'Default',
         description: 'Default Enterprise',
         tenant: 'default:true',

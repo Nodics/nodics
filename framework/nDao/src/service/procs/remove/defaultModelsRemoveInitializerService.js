@@ -58,11 +58,9 @@ module.exports = {
                 response.success = result;
                 process.nextSuccess(request, response);
             }).catch(error => {
-                console.log(error);
                 process.error(request, response, error);
             });
         } catch (error) {
-            console.log(error);
             process.error(request, response, error);
         }
     },

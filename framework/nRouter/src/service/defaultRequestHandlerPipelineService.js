@@ -26,8 +26,7 @@ module.exports = {
             moduleName: routerDef.moduleName,
             special: (routerDef.controller) ? false : true,
             method: request.method,
-            body: request.body || {},
-            apiCacheKeyHash: request.apiCacheKeyHash
+            body: request.body || {}
         };
         SERVICE.DefaultPipelineService.start('requestHandlerPipeline', input, {}).then(success => {
             response.json(success);
@@ -82,12 +81,8 @@ module.exports = {
                         process.error(request, response, error);
                     } else {
                         response.result = result;
-                        if (response.result &&
-                            request.router.cache &&
-                            request.router.cache.enabled &&
-                            request.router.moduleObject.apiCache) {
-                            //let cacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(request));
-                            console.log('2=============: ', request.apiCacheKeyHash);
+                        let moduleObject = NODICS.getModule(request.moduleName);
+                        if (UTILS.isApiCashable(response.result, request.router) && moduleObject.apiCache) {
                             SERVICE.DefaultCacheService.putApi(request.router, request.apiCacheKeyHash, response.result).then(cuccess => {
                                 _self.LOG.debug('Data pushed into cache successfully');
                             }).catch(error => {
@@ -117,6 +112,23 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    lookupCache: function (request, response, process) {
+        this.LOG.debug('Looking up result in cache system  : ', request.originalUrl);
+        try {
+            request.apiCacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(request.httpRequest));
+            SERVICE.DefaultCacheService.getApi(request.router, request.apiCacheKeyHash).then(value => {
+                response.result = value;
+                request.cache = 'api hit';
+                process.stop(request, response);
+            }).catch(error => {
+                process.nextSuccess(request, response);
+            });
+        } catch (error) {
+            process.error(request, response, error);
+        }
+
+    },
+
     handleRequest: function (request, response, process) {
         let _self = this;
         _self.LOG.debug('processing your request : ', request.originalUrl);
@@ -126,12 +138,8 @@ module.exports = {
                     process.error(request, response, error);
                 } else {
                     response.result = result;
-                    if (response.result &&
-                        request.router.cache &&
-                        request.router.cache.enabled &&
-                        request.router.moduleObject.apiCache) {
-                        //let cacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(request));
-                        console.log('3=============: ', request.apiCacheKeyHash);
+                    let moduleObject = NODICS.getModule(request.moduleName);
+                    if (UTILS.isApiCashable(response.result, request.router) && moduleObject.apiCache) {
                         SERVICE.DefaultCacheService.putApi(request.router, request.apiCacheKeyHash, response.result).then(cuccess => {
                             _self.LOG.debug('Data pushed into cache successfully');
                         }).catch(error => {
@@ -155,10 +163,12 @@ module.exports = {
             success: true,
             code: 'SUC001',
             msg: 'Processed successfully',
-            result: response.result
         };
         if (request.cache) {
             output.cache = request.cache;
+        }
+        if (!UTILS.isBlank(response.result) || !UTILS.isBlankArray(response.result)) {
+            output.result = response.result;
         }
         process.resolve(output);
     },

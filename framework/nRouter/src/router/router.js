@@ -36,33 +36,11 @@ module.exports = {
             }
         },
         get: function (app, routerDef) {
-            app.route(routerDef.url).get((req, res, next) => {
-                try {
-                    req.apiCacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(req));
-                    SERVICE.DefaultCacheService.getApi(routerDef, req.apiCacheKeyHash).then(value => {
-                        SYSTEM.LOG.info('Fulfilled from API cache');
-                        res.json({
-                            success: true,
-                            code: 'SUC001',
-                            msg: 'Processed successfully',
-                            cache: 'api hit',
-                            result: value
-                        });
-                    }).catch(error => {
-                        next();
-                    });
-                } catch (error) {
-                    res.json({
-                        success: false,
-                        code: 'ERR001',
-                        msg: 'Process failed with errors',
-                        error: error
-                    });
-                }
-            }, (req, res) => {
+            app.route(routerDef.url).get((req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
+                    SYSTEM.LOG.error(error);
                     res.json({
                         success: false,
                         code: 'ERR001',
@@ -73,33 +51,11 @@ module.exports = {
             });
         },
         post: function (app, routerDef) {
-            app.route(routerDef.url).post((req, res, next) => {
-                try {
-                    req.apiCacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(req));
-                    SERVICE.DefaultCacheService.getApi(routerDef, req.apiCacheKeyHash).then(value => {
-                        SYSTEM.LOG.info('Fulfilled from API cache');
-                        res.json({
-                            success: true,
-                            code: 'SUC001',
-                            msg: 'Processed successfully',
-                            cache: 'api hit',
-                            result: value
-                        });
-                    }).catch(error => {
-                        next();
-                    });
-                } catch (error) {
-                    res.json({
-                        success: false,
-                        code: 'ERR001',
-                        msg: 'Process failed with errors',
-                        error: error.toString()
-                    });
-                }
-            }, (req, res) => {
+            app.route(routerDef.url).post((req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
+                    SYSTEM.LOG.error(error);
                     res.json({
                         success: false,
                         code: 'ERR001',
@@ -114,6 +70,7 @@ module.exports = {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
+                    SYSTEM.LOG.error(error);
                     res.json({
                         success: false,
                         code: 'ERR001',
@@ -128,6 +85,7 @@ module.exports = {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
+                    SYSTEM.LOG.error(error);
                     res.json({
                         success: false,
                         code: 'ERR001',
@@ -142,6 +100,7 @@ module.exports = {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
+                    SYSTEM.LOG.error(error);
                     res.json({
                         success: false,
                         code: 'ERR001',
@@ -155,11 +114,11 @@ module.exports = {
 
     default: {
         commonGetterOperation: {
-            getModel: {
+            get: {
                 secured: true,
                 cache: {
                     enabled: true,
-                    ttl: 100,
+                    ttl: 20,
                 },
                 key: '/schemaName',
                 method: 'GET',
@@ -172,7 +131,7 @@ module.exports = {
                     url: 'http://host:port/nodics/{moduleName}/schemaName/',
                 }
             },
-            postModel: {
+            post: {
                 secured: true,
                 cache: {
                     enabled: false,
@@ -302,7 +261,7 @@ module.exports = {
             }
         },
         commonSaveOperations: {
-            saveModels: {
+            save: {
                 secured: true,
                 key: '/schemaName',
                 method: 'PUT',
@@ -318,7 +277,7 @@ module.exports = {
             }
         },
         commonUpdateOperations: {
-            updateModels: {
+            update: {
                 secured: true,
                 key: '/schemaName',
                 method: 'PATCH',
@@ -463,23 +422,37 @@ module.exports = {
             }
         },
 
-        changeCacheConfig: {
+        updateAPICacheConfig: {
             apiConfig: {
                 secured: true,
                 key: '/cache/api',
                 method: 'POST',
                 controller: 'DefaultCacheController',
-                operation: 'changeApiCacheConfiguration',
+                operation: 'updateApiCacheConfiguration',
                 help: {
-                    message: 'not supported currently',
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/{moduleName}/cache/api',
+                    body: {
+                        routerName: 'like get, getById or getByCode',
+                        schemaName: 'like enterprise',
+                        config: {
+                            enabled: 'true/false',
+                            ttl: 100
+                        }
+                    }
                 }
             },
+        },
+
+        updateItemCacheConfig: {
             itemConfig: {
                 secured: true,
                 key: '/cache/item',
                 method: 'POST',
                 controller: 'DefaultCacheController',
-                operation: 'changeItemCacheConfiguration',
+                operation: 'updateItemCacheConfiguration',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',

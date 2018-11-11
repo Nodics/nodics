@@ -152,8 +152,7 @@ module.exports = {
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
         let moduleObject = NODICS.getModules()[request.collection.moduleName];
-        if (response.success && response.success.length &&
-            moduleObject.itemCache && request.collection.cache && request.collection.cache.enabled) {
+        if (UTILS.isItemCashable(response.success, request.collection) && moduleObject.itemCache) {
             if (request.collection.cache.ttl === undefined) {
                 request.collection.cache.ttl = moduleObject.itemCache.config.ttl || 0;
             }

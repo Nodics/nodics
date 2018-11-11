@@ -24,5 +24,41 @@ module.exports = {
             });
             fs.rmdirSync(path);
         }
+    },
+
+    isApiCashable: function (result, router) {
+        if (result &&
+            result instanceof Array &&
+            result.length > 0 &&
+            router.cache &&
+            router.cache.enabled) {
+            return true;
+        } else if (result &&
+            result instanceof Object &&
+            !UTILS.isBlank(result) &&
+            router.cache &&
+            router.cache.enabled) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+
+    isItemCashable: function (result, model) {
+        if (result &&
+            result instanceof Array &&
+            result.length > 0 &&
+            model.cache &&
+            model.cache.enabled) {
+            return true;
+        } else if (result &&
+            result instanceof Object &&
+            !UTILS.isBlank(result) &&
+            model.cache &&
+            model.cache.enabled) {
+            return true;
+        } else {
+            return false;
+        }
     }
 };

@@ -14,7 +14,7 @@ module.exports = {
     system: {
         //Need to remove this service, for init data, only system will take care
         importInitData: {
-            importInit: {
+            importInitPost: {
                 secured: true,
                 key: '/import/init',
                 method: 'POST',
@@ -33,7 +33,7 @@ module.exports = {
             }
         },
         importCoreData: {
-            importPost: {
+            importCorePost: {
                 secured: true,
                 key: '/import/core',
                 method: 'POST',
@@ -52,7 +52,7 @@ module.exports = {
             }
         },
         importSampleData: {
-            importPost: {
+            importSamplePost: {
                 secured: true,
                 key: '/import/sample',
                 method: 'POST',

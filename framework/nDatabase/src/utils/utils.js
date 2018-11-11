@@ -29,5 +29,15 @@ module.exports = {
 
     isObjectId: function (value) {
         return (this.isObject(value) && value._bsontype && value._bsontype === 'ObjectID');
-    }
+    },
+
+    createModelName: function (modelName) {
+        var name = modelName.toUpperCaseFirstChar() + 'Model';
+        return name;
+    },
+
+    getModelName: function (modelName) {
+        var name = modelName.toUpperCaseFirstChar().replace("Model", "");
+        return name;
+    },
 };

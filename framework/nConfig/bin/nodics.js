@@ -364,7 +364,7 @@ module.exports = function () {
         } else {
             throw new Error('Invalid tenant id...');
         }
-    }
+    };
     this.getDatabase = function (moduleName, tenant) {
         if (tenant && !UTILS.isBlank(tenant)) {
             let database = {};
@@ -403,6 +403,47 @@ module.exports = function () {
             }
         } else {
             Promise.reject('Invalid module name : ' + moduleName);
+        }
+    };
+
+    this.addRouters = function (routers, moduleName) {
+        let moduleObject = this.getModule(moduleName);
+        if (UTILS.isBlank(moduleObject)) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else {
+            moduleObject.routers = routers;
+        }
+    };
+
+    this.addRouter = function (prefix, router, moduleName) {
+        let moduleObject = this.getModule(moduleName);
+        if (UTILS.isBlank(moduleObject)) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else if (moduleObject.routers && moduleObject.routers[prefix]) {
+            throw new Error('Definition ' + prefix + ' is already available for module: ' + moduleName);
+        } else {
+            if (!moduleObject.routers) {
+                moduleObject.routers = {};
+            }
+            moduleObject.routers[prefix] = router;
+        }
+    };
+
+    this.getRouters = function (moduleName) {
+        let moduleObject = this.getModule(moduleName);
+        if (UTILS.isBlank(moduleObject)) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else {
+            return moduleObject.routers;
+        }
+    };
+
+    this.getRouter = function (prefix, moduleName) {
+        let moduleObject = this.getModule(moduleName);
+        if (UTILS.isBlank(moduleObject)) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else {
+            return moduleObject.routers ? moduleObject.routers[prefix] : undefined;
         }
     };
 };

@@ -11,29 +11,29 @@
 
 module.exports = {
 
-    changeApiCacheConfiguration: function (request, callback) {
+    updateApiCacheConfiguration: function (request, callback) {
         request.config = request.httpRequest.body || {};
         if (callback) {
-            FACADE.DefaultCacheFacade.changeApiCacheConfiguration(request).then(success => {
+            FACADE.DefaultCacheFacade.updateApiCacheConfiguration(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultCacheFacade.changeApiCacheConfiguration(request);
+            return FACADE.DefaultCacheFacade.updateApiCacheConfiguration(request);
         }
     },
 
-    changeItemCacheConfiguration: function (request, callback) {
+    updateItemCacheConfiguration: function (request, callback) {
         request.config = request.httpRequest.body || {};
         if (callback) {
-            FACADE.DefaultCacheFacade.changeItemCacheConfiguration(request).then(success => {
+            FACADE.DefaultCacheFacade.updateItemCacheConfiguration(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultCacheFacade.changeItemCacheConfiguration(request);
+            return FACADE.DefaultCacheFacade.updateItemCacheConfiguration(request);
         }
     },
 

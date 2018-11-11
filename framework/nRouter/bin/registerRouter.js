@@ -43,13 +43,12 @@ module.exports = {
                                         _self.registerRouters(app, moduleObject, moduleName, routers);
                                         resolve(true);
                                     }).catch(error => {
-                                        console.log(error);
                                         SYSTEM.LOG.error('got error while initializing cache for module : ', moduleName);
-                                        self.registerRouters(app, moduleObject, moduleName, routers);
+                                        _self.registerRouters(app, moduleObject, moduleName, routers);
                                         resolve(true);
                                     });
                                 } else {
-                                    self.registerRouters(app, moduleObject, moduleName, routers);
+                                    _self.registerRouters(app, moduleObject, moduleName, routers);
                                     resolve(true);
                                 }
                             } catch (error) {
@@ -73,52 +72,67 @@ module.exports = {
                     if (groupName !== 'options') {
                         _.each(group, function (routerDef, routerName) {
                             if (routerName !== 'options') {
-                                let functionName = routerDef.method.toLowerCase();
-                                let tmpRouterDef = _.merge({}, routerDef);
-                                tmpRouterDef.key = tmpRouterDef.key.replaceAll('schemaName', schemaName.toLowerCase());
-                                tmpRouterDef.controller = tmpRouterDef.controller.replaceAll('controllerName', schemaName.toUpperCaseEachWord() + 'Controller');
-                                tmpRouterDef.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + tmpRouterDef.key;
-                                tmpRouterDef.moduleName = moduleName;
-                                tmpRouterDef.moduleObject = moduleObject;
-                                if (tmpRouterDef.cache) {
-                                    tmpRouterDef.cache.prefix = schemaName.toLowerCase();
+                                let definition = _.merge({}, routerDef);
+                                definition.method = definition.method.toLowerCase();
+                                definition.key = definition.key.replaceAll('schemaName', schemaName.toLowerCase());
+                                definition.controller = definition.controller.replaceAll('controllerName', schemaName.toUpperCaseEachWord() + 'Controller');
+                                definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + definition.key;
+                                definition.moduleName = moduleName;
+                                definition.prefix = routerName + '_' + schemaName;
+                                definition.routerName = moduleName + '_' + routerName + '_' + schemaName;
+                                definition.routerName = definition.routerName.toLowerCase();
+                                definition.cache = definition.cache || {};
+                                let routerLevelCache = CONFIG.get('cache').routerLevelCache;
+                                if (routerLevelCache &&
+                                    routerLevelCache[schemaName] &&
+                                    routerLevelCache[schemaName][definition.method]) {
+                                    definition.cache = _.merge(definition.cache, routerLevelCache[schemaName][definition.method]);
                                 }
-                                routers.operations[functionName](app, tmpRouterDef);
+                                NODICS.addRouter(definition.routerName, definition, moduleName);
+                                routers.operations[definition.method](app, definition);
                             }
                         });
                     }
                 });
             }
         });
+
         // Register module common routers, means routers needs to be available in all modules
         if (!UTILS.isBlank(routers.common)) {
             _.each(routers.common, function (group, groupName) {
                 if (groupName !== 'options') {
                     _.each(group, function (routerDef, routerName) {
                         if (routerName !== 'options') {
-                            let functionName = routerDef.method.toLowerCase();
-                            let tmpRouterDef = _.merge({}, routerDef);
-                            tmpRouterDef.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + tmpRouterDef.key;
-                            tmpRouterDef.moduleName = moduleName;
-                            tmpRouterDef.moduleObject = moduleObject;
-                            routers.operations[functionName](app, tmpRouterDef);
+                            let definition = _.merge({}, routerDef);
+                            definition.method = definition.method.toLowerCase();
+                            definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + definition.key;
+                            definition.moduleName = moduleName;
+                            definition.prefix = routerName;
+                            definition.routerName = moduleName + '_' + routerName;
+                            definition.routerName = definition.routerName.toLowerCase();
+                            NODICS.addRouter(definition.routerName, definition, moduleName);
+                            routers.operations[definition.method](app, definition);
                         }
                     });
                 }
             });
         }
+
         // Register all module specific routers here
         if (!UTILS.isBlank(routers[moduleName])) {
             _.each(routers[moduleName], function (group, groupName) {
                 if (groupName !== 'options') {
                     _.each(group, function (routerDef, routerName) {
                         if (routerName !== 'options') {
-                            let functionName = routerDef.method.toLowerCase();
-                            let tmpRouterDef = _.merge({}, routerDef);
-                            tmpRouterDef.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + tmpRouterDef.key;
-                            tmpRouterDef.moduleName = moduleName;
-                            tmpRouterDef.moduleObject = moduleObject;
-                            routers.operations[functionName](app, tmpRouterDef);
+                            let definition = _.merge({}, routerDef);
+                            definition.method = definition.method.toLowerCase();
+                            definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + definition.key;
+                            definition.moduleName = moduleName;
+                            definition.prefix = routerName;
+                            definition.routerName = moduleName + '_' + routerName;
+                            definition.routerName = definition.routerName.toLowerCase();
+                            NODICS.addRouter(definition.routerName, definition, moduleName);
+                            routers.operations[definition.method](app, definition);
                         }
                     });
                 }

@@ -13,40 +13,34 @@ module.exports = {
 
     handlePreGet: function (options) {
         return new Promise((resolve, reject) => {
-            //console.log('Inside handlePreGet ---------------');
             resolve(true);
         });
     },
     handlePostGet: function (options) {
         return new Promise((resolve, reject) => {
-            //console.log('Inside handlePostGet ---------------: ', options.result);
             resolve(true);
         });
     },
 
     handlePostSave: function (options) {
         return new Promise((resolve, reject) => {
-            //console.log('Inside handlePostSave ---------------');
             resolve(true);
         });
     },
 
     handlePreRemove: function (options) {
         return new Promise((resolve, reject) => {
-            //console.log('Inside handlePreRemove ---------------');
             resolve(true);
         });
     },
     handlePostRemove: function (options) {
         return new Promise((resolve, reject) => {
-            //console.log('Inside handlePostRemove ---------------: ', options.result);
             resolve(true);
         });
     },
 
     handlePostUpdate: function (options) {
         return new Promise((resolve, reject) => {
-            //console.log('Inside handlePostUpdate ---------------: ', options.result);
             resolve(true);
         });
     },
