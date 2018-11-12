@@ -46,91 +46,15 @@ module.exports = {
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-
-    handleNestedModelsSave: function (request, response, process) {
-        this.LOG.debug('Saving nexted models');
-        let rawSchema = request.collection.rawSchema;
-        if (rawSchema.refSchema) {
-            this.handleNestedProperties(request, response, Object.keys(rawSchema.refSchema)).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-
-    handleNestedProperties: function (request, response, properties) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            if (properties && properties.length > 0) {
-                let property = properties.shift();
-                _self.handleNestedModels(request, response, {
-                    counter: 0,
-                    property: property
-                }).then(success => {
-                    _self.handleNestedProperties(request, response, properties).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SAVE_00005',
+                    error: error
                 });
-            } else {
-                resolve(true);
-            }
-        });
-    },
-
-    handleNestedModels: function (request, response, options) {
-        return new Promise((resolve, reject) => {
-            try {
-                if (options.counter < request.models.length) {
-                    let model = request.models[options.counter];
-                    if ((UTILS.isObject(model[options.property]) && !UTILS.isObjectId(model[options.property])) ||
-                        UTILS.isArrayOfObject(model[options.property])) {
-                        let rawSchema = request.collection.rawSchema;
-                        let propDef = rawSchema.refSchema[options.property];
-                        let models = [];
-                        if (propDef.type === 'one') {
-                            models.push(model[options.property]);
-                        } else {
-                            models = model[options.property];
-                        }
-                        SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].save({
-                            tenant: request.tenant,
-                            models: models
-                        }).then(success => {
-                            if (propDef.type === 'one') {
-                                model[options.property] = success[0]._id;
-                            } else {
-                                model[options.property] = [];
-                                success.forEach(element => {
-                                    model[options.property].push(element._id);
-                                });
-                            }
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        resolve(true);
-                    }
-                } else {
-                    resolve(true);
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     processModels: function (request, response, process) {
@@ -150,13 +74,25 @@ module.exports = {
             if (models && models.length > 0) {
                 request.model = models.shift();
                 try {
-                    SERVICE.DefaultPipelineService.start('modelSaveInitializerPipeline', request, {}).then(success => {
-                        if (UTILS.isArray(success)) {
-                            success.forEach(element => {
-                                response.success.push(element);
-                            });
+                    SERVICE.DefaultPipelineService.start('modelSaveInitializerPipeline', request, {}).then(result => {
+                        if (result.success) {
+                            response.success.push(result.result);
                         } else {
-                            response.success.push(success);
+                            let output = {
+                                code: result.code || 'ERR_SAVE_00000',
+                                model: request.model,
+                                error: result.error || SERVICE.DefaultStatusService.get('ERR_SAVE_00000').message
+                            };
+                            if (result.result) {
+                                if (result.result instanceof Array && result.result.length > 0) {
+                                    result.result.forEach(element => {
+                                        response.success.push(element);
+                                    });
+                                } else {
+                                    response.success.push(result.result);
+                                }
+                            }
+                            response.errors.push(output);
                         }
                         if (models.length > 0) {
                             this.handleModelsSave(request, response, models).then(success => {
@@ -192,7 +128,11 @@ module.exports = {
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SAVE_00005',
+                    error: error
+                });
             });
         } else {
             process.nextSuccess(request, response);
@@ -200,10 +140,33 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response, process) {
-        process.resolve(response.success);
+        if (response.success.length > 0 && response.errors.length <= 0) {
+            process.resolve({
+                success: true,
+                code: 'SUC_SAVE_00000',
+                result: response.success
+            });
+        } else if (response.success.length <= 0 && response.errors.length > 0) {
+            process.reject({
+                success: false,
+                code: 'ERR_SAVE_00000',
+                error: response.errors
+            });
+        } else {
+            process.resolve({
+                success: false,
+                code: 'ERR_SAVE_00003',
+                result: response.success,
+                error: response.errors
+            });
+        }
     },
 
     handleErrorEnd: function (request, response, process) {
-        process.reject(response.errors);
+        process.reject({
+            success: false,
+            code: 'ERR_SAVE_00000',
+            error: response.error
+        });
     }
 };

@@ -1,5 +1,5 @@
 module.exports = {
-    getFullName: function(doc) {
-        return doc.name + ' Nodics Framework';
+    getFullName: function (doc) {
+        return doc.code + ' Nodics Framework';
     }
 };
