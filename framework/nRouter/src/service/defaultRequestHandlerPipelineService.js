@@ -76,14 +76,14 @@ module.exports = {
                 request.tenant = 'default';
             }
             try {
-                CONTROLLER[request.router.handler][request.router.operation](request, (error, result) => {
+                CONTROLLER[request.router.handler][request.router.operation](request, (error, success) => {
                     if (error) {
                         process.error(request, response, error);
                     } else {
-                        response.result = result;
+                        response.success = success;
                         let moduleObject = NODICS.getModule(request.moduleName);
-                        if (UTILS.isApiCashable(response.result, request.router) && moduleObject.apiCache) {
-                            SERVICE.DefaultCacheService.putApi(request.router, request.apiCacheKeyHash, response.result).then(cuccess => {
+                        if (UTILS.isApiCashable(response.success.result, request.router) && moduleObject.apiCache) {
+                            SERVICE.DefaultCacheService.putApi(request.router, request.apiCacheKeyHash, response.success.result).then(cuccess => {
                                 _self.LOG.debug('Data pushed into cache successfully');
                             }).catch(error => {
                                 _self.LOG.error('While pushing data into Item cache : ', error);
@@ -117,9 +117,13 @@ module.exports = {
         try {
             request.apiCacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(request.httpRequest));
             SERVICE.DefaultCacheService.getApi(request.router, request.apiCacheKeyHash).then(value => {
-                response.result = value;
-                request.cache = 'api hit';
-                process.stop(request, response);
+                process.stop(request, response, {
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+                    cache: 'api hit',
+                    result: value.result
+                });
             }).catch(error => {
                 process.nextSuccess(request, response);
             });
@@ -133,14 +137,14 @@ module.exports = {
         let _self = this;
         _self.LOG.debug('processing your request : ', request.originalUrl);
         try {
-            CONTROLLER[request.router.controller][request.router.operation](request, (error, result) => {
+            CONTROLLER[request.router.controller][request.router.operation](request, (error, success) => {
                 if (error) {
                     process.error(request, response, error);
                 } else {
-                    response.result = result;
+                    response.success = success;
                     let moduleObject = NODICS.getModule(request.moduleName);
-                    if (UTILS.isApiCashable(response.result, request.router) && moduleObject.apiCache) {
-                        SERVICE.DefaultCacheService.putApi(request.router, request.apiCacheKeyHash, response.result).then(cuccess => {
+                    if (UTILS.isApiCashable(response.success.result, request.router) && moduleObject.apiCache) {
+                        SERVICE.DefaultCacheService.putApi(request.router, request.apiCacheKeyHash, response.success.result).then(cuccess => {
                             _self.LOG.debug('Data pushed into cache successfully');
                         }).catch(error => {
                             _self.LOG.error('While pushing data into Item cache : ', error);
@@ -159,27 +163,17 @@ module.exports = {
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully : ', request.originalUrl);
-        let output = {
-            success: true,
-            code: 'SUC001',
-            msg: 'Processed successfully',
-        };
-        if (request.cache) {
-            output.cache = request.cache;
-        }
-        if (!UTILS.isBlank(response.result) || !UTILS.isBlankArray(response.result)) {
-            output.result = response.result;
-        }
-        process.resolve(output);
+        response.success.success = response.success.success || true;
+        response.success.code = response.success.code || 'SUC_SYS_00000';
+        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code) ? SERVICE.DefaultStatusService.get(response.success.code).message : 'Successfully processed';
+        process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors : ', response.errors);
-        process.reject({
-            success: false,
-            code: response.errorCode || 'ERR001',
-            msg: 'Process failed with errors',
-            error: response.errors
-        });
+        this.LOG.error('Request has been processed and got errors : ', response.error);
+        response.error.success = response.error.success || false;
+        response.error.code = response.error.code || 'ERR_SYS_00000';
+        response.error.msg = SERVICE.DefaultStatusService.get(response.error.code) ? SERVICE.DefaultStatusService.get(response.error.code).message : 'Process failed with errors';
+        process.reject(response.error);
     }
 };

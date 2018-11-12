@@ -49,7 +49,12 @@ module.exports = {
                         person: employee,
                         type: 'Employee'
                     }).then(success => {
-                        resolve(success);
+                        resolve({
+                            success: true,
+                            code: 'SUC_AUTH_00000',
+                            msg: SERVICE.DefaultStatusService.get('SUC_AUTH_00000').message,
+                            result: success
+                        });
                     }).catch(error => {
                         reject(error);
                     });
@@ -77,7 +82,12 @@ module.exports = {
                         person: customer,
                         type: 'Customer'
                     }).then(success => {
-                        resolve(success);
+                        resolve({
+                            success: true,
+                            code: 'SUC_AUTH_00000',
+                            msg: SERVICE.DefaultStatusService.get('SUC_AUTH_00000').message,
+                            result: success
+                        });
                     }).catch(error => {
                         reject(error);
                     });
@@ -100,7 +110,10 @@ module.exports = {
                     _id: options.person._id
                 }).then(state => {
                     if (state.locked || !options.person.active) {
-                        reject('Account is currently in locked state or has been disabled');
+                        reject({
+                            success: false,
+                            code: 'ERR_LIN_00002'
+                        });
                     } else {
                         SYSTEM.compareHash(options.request.password, options.person.password).then(match => {
                             if (match) {
@@ -129,17 +142,32 @@ module.exports = {
                                     state: state,
                                     tenant: options.enterprise.tenant.code
                                 });
-                                reject('Invalid authentication request : Given password is not valid');
+                                reject({
+                                    success: false,
+                                    code: 'ERR_LIN_00003'
+                                });
                             }
                         }).catch(error => {
-                            reject('Invalid authentication request : ' + error);
+                            reject({
+                                success: false,
+                                code: 'ERR_AUTH_00000',
+                                error: error
+                            });
                         });
                     }
                 }).catch(error => {
-                    reject(error);
+                    reject({
+                        success: false,
+                        code: 'ERR_AUTH_00000',
+                        error: error
+                    });
                 });
             } catch (error) {
-                reject(error);
+                reject({
+                    success: false,
+                    code: 'ERR_AUTH_00000',
+                    error: error
+                });
             }
 
         });
@@ -168,7 +196,11 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject('Invalid authentication request : Internal error: ' + error);
+                reject({
+                    success: false,
+                    code: 'ERR_AUTH_00000',
+                    error: error
+                });
             }
         });
     },

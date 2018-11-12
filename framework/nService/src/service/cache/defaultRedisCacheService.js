@@ -62,15 +62,30 @@ module.exports = {
                 _self.LOG.debug('Getting value from Redis cache storage with key: ' + hashKey);
                 cache.client.get(hashKey, (error, value) => {
                     if (error) {
-                        reject(error);
+                        reject({
+                            success: false,
+                            code: 'ERR_CACHE_00000',
+                            error: error
+                        });
                     } else if (value) {
-                        resolve(JSON.parse(value));
+                        resolve({
+                            success: true,
+                            code: 'SUC_CACHE_00000',
+                            result: JSON.parse(value)
+                        });
                     } else {
-                        reject(false);
+                        reject({
+                            success: false,
+                            code: 'ERR_CACHE_00001'
+                        });
                     }
                 });
             } catch (error) {
-                reject(error);
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    error: error
+                });
             }
 
         });

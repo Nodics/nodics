@@ -26,7 +26,12 @@ module.exports = {
     loadService: function () {
         let _self = this;
         SYSTEM.LOG.info('Starting Service Generation process');
-        return service.init().then(success => { }).catch(error => {
+        return service.init().then(success => {
+            let statusScript = {};
+            SYSTEM.loadFiles('/src/utils/statusDefinitions.js', statusScript);
+            SERVICE.DefaultStatusService.loadStatus(statusScript);
+            console.log('===================>> ', SERVICE.DefaultStatusService.get('SUC_SYS_00000'));
+        }).catch(error => {
             _self.LOG.error(error);
         });
     }

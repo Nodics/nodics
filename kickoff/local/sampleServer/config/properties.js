@@ -22,7 +22,7 @@ module.exports = {
         ]
     },
     log: {
-        level: 'info'
+        level: 'debug'
     },
     database: {
         /* nems: {

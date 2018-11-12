@@ -13,7 +13,10 @@ module.exports = {
     retrieveEnterprise: function (enterpriseCode) {
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(enterpriseCode)) {
-                reject('Enterprise Code is invalid or null');
+                reject({
+                    success: false,
+                    code: 'ERR_ENT_00000'
+                });
             } else {
                 this.get({
                     tenant: 'default',
@@ -24,10 +27,14 @@ module.exports = {
                         code: enterpriseCode
                     }
                 }).then(enterprises => {
-                    if (enterprises.length <= 0) {
-                        reject('Invalid enterprise code');
+                    if (enterprises.result.length !== 1) {
+                        reject({
+                            success: false,
+                            code: 'ERR_ENT_00000'
+
+                        });
                     } else {
-                        resolve(enterprises[0]);
+                        resolve(enterprises.result[0]);
                     }
                 }).catch(error => {
                     reject(error);

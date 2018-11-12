@@ -112,16 +112,18 @@ module.exports = function (name, pipelineDefinition) {
         }
     };
 
-    this.stop = function (request, response) {
+    this.stop = function (request, response, success) {
+        if (success) {
+            response.success = success;
+        }
         _preNode = _currentNode;
         _currentNode = _successEndNode;
         this.next(request, response);
     };
 
-    this.error = function (request, response, err) {
-        this.LOG.error(err);
-        _preNode = _currentNode;
-        _currentNode = _handleError;
+    this.error = function (request, response, error) {
+        /*this.LOG.error(err);
+       
         if (err) {
             if (UTILS.isArray(err)) {
                 err.forEach(element => {
@@ -132,7 +134,12 @@ module.exports = function (name, pipelineDefinition) {
             } else {
                 response.errors.push(err.toString());
             }
+        }*/
+        if (error) {
+            response.error = error;
         }
+        _preNode = _currentNode;
+        _currentNode = _handleError;
         this.next(request, response);
     };
 
