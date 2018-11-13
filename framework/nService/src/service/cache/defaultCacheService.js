@@ -237,11 +237,11 @@ module.exports = {
      * @param {*} request 
      */
     flushApiCacheByKeys: function (request) {
-        let moduleObject = NODICS.getModules(request.moduleName);
+        let moduleObject = NODICS.getModule(request.moduleName);
         if (moduleObject.apiCache && request.keys && request.keys.length > 0) {
             return this.flushKeys(moduleObject.apiCache, request.keys);
         } else {
-            Promise.reject({
+            return Promise.reject({
                 success: false,
                 code: 'ERR_CACHE_00009'
             });
@@ -253,7 +253,7 @@ module.exports = {
      * @param {*} request
      */
     flushApiCacheByPrefix: function (request) {
-        let moduleObject = NODICS.getModules()[request.moduleName];
+        let moduleObject = NODICS.getModules(request.moduleName);
         if (moduleObject.apiCache && request.prefix) {
             return this.flush(moduleObject.apiCache, request.prefix);
         } else {
@@ -342,7 +342,7 @@ module.exports = {
                 request.hashKey, request.value,
                 request.options);
         } catch (error) {
-            Promise.reject(error);
+            return Promise.reject(error);
         }
     },
 

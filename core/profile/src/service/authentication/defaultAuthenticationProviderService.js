@@ -232,33 +232,39 @@ module.exports = {
                     if (authValues.type === 'Employee') {
                         this.authenticateEmployee(request, (error, success) => {
                             if (error) {
-                                reject('Given token is not valid one');
+                                reject(error);
                             } else {
                                 _self.findToken(request).then(success => {
                                     resolve(success);
                                 }).catch(error => {
-                                    reject('Given token is not valid one');
+                                    reject(error);
                                 });
                             }
                         });
                     } else {
                         this.authenticateEmployee(request, (error, success) => {
                             if (error) {
-                                reject('Given token is not valid one');
+                                reject(error);
                             } else {
                                 _self.findToken(request).then(success => {
                                     resolve(null, success);
                                 }).catch(error => {
-                                    reject('Given token is not valid one');
+                                    reject(error);
                                 });
                             }
                         });
                     }
                 } else {
-                    reject('Given token is not valid one');
+                    reject({
+                        success: false,
+                        code: 'ERR_AUTH_00001'
+                    });
                 }
             } else {
-                reject('Given token is not valid one');
+                reject({
+                    success: false,
+                    code: 'ERR_AUTH_00001',
+                });
             }
         });
     }

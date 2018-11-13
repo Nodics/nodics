@@ -147,6 +147,12 @@ module.exports = {
         message: 'Failed authentication',
     },
 
+    ERR_AUTH_00001: {
+        code: '300001',
+        description: 'Authentication failed: Invalid auth token',
+        message: 'Authentication failed: Invalid auth token',
+    },
+
     ERR_ENT_00000: {
         code: '400000',
         description: 'Invalid enterprise code',

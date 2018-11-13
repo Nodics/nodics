@@ -123,7 +123,13 @@ module.exports = function (name, pipelineDefinition) {
 
     this.error = function (request, response, error) {
         if (error) {
-            response.error = error;
+            if (UTILS.isArray(error)) {
+                error.forEach(element => {
+                    response.errors.push(element);
+                });
+            } else {
+                response.errors.push(error);
+            }
         }
         _preNode = _currentNode;
         _currentNode = _handleError;
@@ -162,13 +168,7 @@ module.exports = function (name, pipelineDefinition) {
             } else {
                 try {
                     SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(success => {
-                        if (success && UTILS.isArray(success)) {
-                            success.forEach(element => {
-                                response.success.push(element);
-                            });
-                        } else {
-                            response.success.push(success);
-                        }
+                        response.success = success;
                         _self.nextSuccess(request, response, this);
                     }).catch(errors => {
                         if (errors && UTILS.isArray(errors)) {

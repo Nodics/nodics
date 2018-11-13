@@ -80,8 +80,7 @@ module.exports = {
                     if (error) {
                         process.error(request, response, error);
                     } else {
-                        response.success = success;
-                        process.stop(request, response);
+                        process.stop(request, response, success);
                     }
                 });
             } catch (error) {
@@ -157,17 +156,45 @@ module.exports = {
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully : ', request.originalUrl);
-        response.success.success = response.success.success || true;
-        response.success.code = response.success.code || 'SUC_SYS_00000';
-        response.success.msg = response.success.msg || SERVICE.DefaultStatusService.get(response.success.code) ? SERVICE.DefaultStatusService.get(response.success.code).message : 'Successfully processed';
-        process.resolve(response.success);
+        let success = response.success;
+        if (!UTILS.isObject(success)) {
+            success = {
+                success: true,
+                code: 'SUC_SYS_00000',
+                result: success
+            };
+        }
+        success.success = success.success || true;
+        success.code = success.code || 'SUC_SYS_00000';
+        success.msg = success.msg || SERVICE.DefaultStatusService.get(success.code) ? SERVICE.DefaultStatusService.get(success.code).message : 'Successfully processed';
+        process.resolve(success);
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors : ', response.error);
-        response.error.success = response.error.success || false;
-        response.error.code = response.error.code || 'ERR_SYS_00000';
-        response.error.msg = response.error.msg || SERVICE.DefaultStatusService.get(response.error.code) ? SERVICE.DefaultStatusService.get(response.error.code).message : 'Process failed with errors';
-        process.reject(response.error);
+        this.LOG.error('Request has been processed and got errors');
+        if (response.errors && response.errors.length === 1) {
+            let error = response.errors[0];
+            if (!UTILS.isObject(error)) {
+                error = {
+                    success: false,
+                    code: 'ERR_SYS_00000',
+                    error: error
+                };
+            }
+            error.success = error.success || false;
+            error.code = error.code || 'ERR_SYS_00000';
+            error.msg = error.msg || SERVICE.DefaultStatusService.get(error.code) ? SERVICE.DefaultStatusService.get(error.code).message : 'Process failed with errors';
+            this.LOG.error(error);
+            process.reject(error);
+        } else {
+            let error = {
+                success: false,
+                code: 'ERR_SYS_00000',
+                msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000') ? SERVICE.DefaultStatusService.get('ERR_SYS_00000').message : 'Process failed with errors',
+                error: response.errors
+            };
+            this.LOG.error(error);
+            process.reject();
+        }
     }
 };

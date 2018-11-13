@@ -93,7 +93,10 @@ module.exports = {
                     if (error) {
                         callback(error);
                     } else if (!response.success) {
-                        callback('Given token is not valid one');
+                        callback({
+                            success: false,
+                            code: 'ERR_AUTH_00001'
+                        });
                     } else {
                         callback(null, response.result);
                     }

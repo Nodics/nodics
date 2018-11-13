@@ -31,7 +31,6 @@ module.exports = {
                         reject({
                             success: false,
                             code: 'ERR_ENT_00000'
-
                         });
                     } else {
                         resolve(enterprises.result[0]);

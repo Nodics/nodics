@@ -6,8 +6,7 @@ module.exports = {
             this.LOG.error('Auth Token is null or invalid');
             process.error(request, response, {
                 success: false,
-                code: 'ERR_AUTH_00000',
-                msg: 'Invalid auth token: Access denied'
+                code: 'ERR_AUTH_00001'
             });
         } else {
             process.nextSuccess(request, response);
