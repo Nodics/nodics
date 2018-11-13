@@ -81,14 +81,6 @@ module.exports = {
                         process.error(request, response, error);
                     } else {
                         response.success = success;
-                        let moduleObject = NODICS.getModule(request.moduleName);
-                        if (UTILS.isApiCashable(response.success.result, request.router) && moduleObject.apiCache) {
-                            SERVICE.DefaultCacheService.putApi(request.router, request.apiCacheKeyHash, response.success.result).then(cuccess => {
-                                _self.LOG.debug('Data pushed into cache successfully');
-                            }).catch(error => {
-                                _self.LOG.error('While pushing data into Item cache : ', error);
-                            });
-                        }
                         process.stop(request, response);
                     }
                 });
@@ -125,12 +117,15 @@ module.exports = {
                     result: value.result
                 });
             }).catch(error => {
-                process.nextSuccess(request, response);
+                if (error.code === 'ERR_CACHE_00001') {
+                    process.nextSuccess(request, response);
+                } else {
+                    process.error(request, response, error);
+                }
             });
         } catch (error) {
             process.error(request, response, error);
         }
-
     },
 
     handleRequest: function (request, response, process) {
@@ -149,10 +144,9 @@ module.exports = {
                         }).catch(error => {
                             _self.LOG.error('While pushing data into Item cache : ', error);
                         });
-                        process.nextSuccess(request, response);
-                    } else {
-                        process.nextSuccess(request, response);
+
                     }
+                    process.nextSuccess(request, response);
                 }
             });
         } catch (error) {
@@ -165,7 +159,7 @@ module.exports = {
         this.LOG.debug('Request has been processed successfully : ', request.originalUrl);
         response.success.success = response.success.success || true;
         response.success.code = response.success.code || 'SUC_SYS_00000';
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code) ? SERVICE.DefaultStatusService.get(response.success.code).message : 'Successfully processed';
+        response.success.msg = response.success.msg || SERVICE.DefaultStatusService.get(response.success.code) ? SERVICE.DefaultStatusService.get(response.success.code).message : 'Successfully processed';
         process.resolve(response.success);
     },
 
@@ -173,7 +167,7 @@ module.exports = {
         this.LOG.error('Request has been processed and got errors : ', response.error);
         response.error.success = response.error.success || false;
         response.error.code = response.error.code || 'ERR_SYS_00000';
-        response.error.msg = SERVICE.DefaultStatusService.get(response.error.code) ? SERVICE.DefaultStatusService.get(response.error.code).message : 'Process failed with errors';
+        response.error.msg = response.error.msg || SERVICE.DefaultStatusService.get(response.error.code) ? SERVICE.DefaultStatusService.get(response.error.code).message : 'Process failed with errors';
         process.reject(response.error);
     }
 };

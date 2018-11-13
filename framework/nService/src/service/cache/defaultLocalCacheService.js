@@ -86,9 +86,17 @@ module.exports = {
                 }
                 _self.LOG.debug('Putting value is local cache storage with key: ' + hashKey + ' TTL: ' + ttl);
                 cache.client.set(hashKey, value, ttl || 0);
-                resolve();
+                resolve({
+                    success: true,
+                    code: 'SUC_CACHE_00000',
+                    result: value
+                });
             } catch (error) {
-                reject(error);
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    error: error
+                });
             }
 
         });
@@ -106,10 +114,18 @@ module.exports = {
                             delKeys.push(key);
                         }
                     });
-                    resolve(delKeys);
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: delKeys
+                    });
                 } else {
                     client.flushAll();
-                    resolve(cacheKeys);
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: cacheKeys
+                    });
                 }
             });
         });
@@ -123,7 +139,11 @@ module.exports = {
         }
         return new Promise((resolve, reject) => {
             cache.client.del(keys);
-            resolve(keys);
+            resolve({
+                success: true,
+                code: 'SUC_CACHE_00000',
+                result: keys
+            });
         });
     },
 };

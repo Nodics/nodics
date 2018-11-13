@@ -13,61 +13,6 @@ const _ = require('lodash');
 
 module.exports = {
 
-    updateApiCacheConfiguration: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                if (UTILS.isBlank(request.config)) {
-                    reject('Please validate your request, looks no configuration contain');
-                } else if (!request.config.routerName) {
-                    reject('Invalid routerName property to update router cache');
-                } else {
-                    let key = request.moduleName + '_' + request.config.routerName;
-                    if (request.config.schemaName) {
-                        key = key + '_' + request.config.schemaName;
-                    }
-                    let routerDefinition = NODICS.getRouter(key.toLowerCase(), request.moduleName);
-                    if (routerDefinition) {
-                        routerDefinition.cache = _.merge(routerDefinition.cache || {}, request.config.cache);
-                        resolve('Cache has been updated successfully');
-                    } else {
-                        let msg = 'Could not found router definition for router name: ' + request.config.routerName;
-                        if (request.config.schemaName) {
-                            msg = msg + ' and schemaName: ' + request.config.schemaName;
-                        }
-                        reject(msg);
-                    }
-                }
-            } catch (error) {
-                reject('Facing issue while updating item cache : ' + error.toString());
-            }
-        });
-    },
-
-    updateItemCacheConfiguration: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                if (UTILS.isBlank(request.config)) {
-                    reject('Please validate your request, looks no configuration contain');
-                } else if (!request.config.schemaName) {
-                    reject('Invalid schemaName to update item cache');
-                } else {
-                    let modelName = UTILS.createModelName(request.config.schemaName);
-                    NODICS.getTenants().forEach(tntName => {
-                        let model = NODICS.getModels(request.moduleName, tntName)[modelName];
-                        if (model) {
-                            model.cache = _.merge(model.cache, request.config.cache || {});
-                            resolve('Cache has been updated successfully');
-                        } else {
-                            reject('Invalid schemaName: ' + request.config.schemaName + ' to update item cache');
-                        }
-                    });
-                }
-            } catch (error) {
-                reject('Facing issue while updating item cache : ' + error.toString());
-            }
-        });
-    },
-
     initApiCache: function (moduleObject, moduleName) {
         return new Promise((resolve, reject) => {
             try {
@@ -176,6 +121,95 @@ module.exports = {
         }
     },
 
+    updateApiCacheConfiguration: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (UTILS.isBlank(request.config)) {
+                    reject({
+                        success: false,
+                        code: 'ERR_CACHE_00005'
+                    });
+                } else if (!request.config.routerName) {
+                    reject({
+                        success: false,
+                        code: 'ERR_CACHE_00006'
+                    });
+                } else {
+                    let key = request.moduleName + '_' + request.config.routerName;
+                    if (request.config.schemaName) {
+                        key = key + '_' + request.config.schemaName;
+                    }
+                    let routerDefinition = NODICS.getRouter(key.toLowerCase(), request.moduleName);
+                    if (routerDefinition) {
+                        routerDefinition.cache = _.merge(routerDefinition.cache || {}, request.config.cache);
+                        resolve({
+                            success: true,
+                            code: 'SUC_CACHE_00000'
+                        });
+                    } else {
+                        let msg = 'Could not found router definition for router name: ' + request.config.routerName;
+                        if (request.config.schemaName) {
+                            msg = msg + ' and schemaName: ' + request.config.schemaName;
+                        }
+                        reject({
+                            success: false,
+                            code: 'ERR_CACHE_00007',
+                            msg: msg
+                        });
+                    }
+                }
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    msg: 'Facing issue while updating router cache : ' + error.toString()
+                });
+            }
+        });
+    },
+
+    updateItemCacheConfiguration: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (UTILS.isBlank(request.config)) {
+                    reject({
+                        success: false,
+                        code: 'ERR_CACHE_00005'
+                    });
+                } else if (!request.config.schemaName) {
+                    reject({
+                        success: false,
+                        code: 'ERR_CACHE_00008'
+                    });
+                } else {
+                    let modelName = UTILS.createModelName(request.config.schemaName);
+                    NODICS.getTenants().forEach(tntName => {
+                        let model = NODICS.getModels(request.moduleName, tntName)[modelName];
+                        if (model) {
+                            model.cache = _.merge(model.cache, request.config.cache || {});
+                            resolve({
+                                success: true,
+                                code: 'SUC_CACHE_00000'
+                            });
+                        } else {
+                            reject({
+                                success: false,
+                                code: 'ERR_CACHE_00007',
+                                msg: 'Invalid schemaName: ' + request.config.schemaName + ' to update item cache'
+                            });
+                        }
+                    });
+                }
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    msg: 'Facing issue while updating item cache : ' + error.toString()
+                });
+            }
+        });
+    },
+
     /**
      * This function is used to flush all stored cache for specific keys or prefix
      * @param {*} request 
@@ -190,7 +224,10 @@ module.exports = {
             if (moduleObject.apiCache) {
                 return this.flush(moduleObject.apiCache);
             } else {
-                return Promise.reject('Invalid module or cache configuration');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_CACHE_00009'
+                });
             }
         }
     },
@@ -204,7 +241,10 @@ module.exports = {
         if (moduleObject.apiCache && request.keys && request.keys.length > 0) {
             return this.flushKeys(moduleObject.apiCache, request.keys);
         } else {
-            Promise.reject('Invalid module or cache configuration');
+            Promise.reject({
+                success: false,
+                code: 'ERR_CACHE_00009'
+            });
         }
     },
 
@@ -217,7 +257,10 @@ module.exports = {
         if (moduleObject.apiCache && request.prefix) {
             return this.flush(moduleObject.apiCache, request.prefix);
         } else {
-            return Promise.reject('Invalid module or cache configuration');
+            return Promise.reject({
+                success: false,
+                code: 'ERR_CACHE_00009'
+            });
         }
     },
 
@@ -235,7 +278,10 @@ module.exports = {
             if (moduleObject.itemCache) {
                 return this.flush(moduleObject.itemCache);
             } else {
-                return Promise.reject('Invalid module or cache configuration');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_CACHE_00009'
+                });
             }
         }
     },
@@ -249,7 +295,10 @@ module.exports = {
         if (moduleObject.itemCache && request.keys && request.keys.length > 0) {
             return this.flushKeys(moduleObject.itemCache, request.keys);
         } else {
-            return Promise.reject('Invalid module or cache configuration');
+            return Promise.reject({
+                success: false,
+                code: 'ERR_CACHE_00009'
+            });
         }
     },
 
@@ -262,7 +311,10 @@ module.exports = {
         if (moduleObject.itemCache && request.prefix) {
             return this.flush(moduleObject.itemCache, request.prefix);
         } else {
-            return Promise.reject('Invalid module or cache configuration');
+            return Promise.reject({
+                success: false,
+                code: 'ERR_CACHE_00009'
+            });
         }
     },
 
@@ -335,7 +387,10 @@ module.exports = {
                 options: routerDefinition.cache
             });
         } else {
-            return Promise.reject(true);
+            return Promise.reject({
+                success: false,
+                code: 'ERR_CACHE_00001'
+            });
         }
     },
 
@@ -353,7 +408,10 @@ module.exports = {
                 options: routerDefinition.cache
             });
         } else {
-            return Promise.reject(true);
+            return Promise.reject({
+                success: false,
+                code: 'ERR_CACHE_00001'
+            });
         }
     }
 };

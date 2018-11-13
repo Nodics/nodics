@@ -315,7 +315,7 @@ module.exports = {
         flushAPICache: {
             flushAPIKey: {
                 secured: true,
-                key: '/cache/api/flush/:key',
+                key: '/cache/api/flush/key/:key',
                 method: 'GET',
                 controller: 'DefaultCacheController',
                 operation: 'flushApiCache',
@@ -328,7 +328,7 @@ module.exports = {
             },
             flushAPIPrefix: {
                 secured: true,
-                key: '/cache/api/flush/:prefix',
+                key: '/cache/api/flush/prefix/:prefix',
                 method: 'GET',
                 controller: 'DefaultCacheController',
                 operation: 'flushApiCache',

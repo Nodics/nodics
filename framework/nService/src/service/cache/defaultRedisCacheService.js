@@ -106,9 +106,17 @@ module.exports = {
                 } else {
                     cache.client.set(hashKey, JSON.stringify(value));
                 }
-                resolve();
+                resolve({
+                    success: true,
+                    code: 'SUC_CACHE_00000',
+                    result: value
+                });
             } catch (error) {
-                reject(error);
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    error: error
+                });
             }
 
         });
@@ -127,12 +135,20 @@ module.exports = {
                             client.del(key);
                         });
                     }
-                    resolve(cacheKeys);
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: cacheKeys
+                    });
                 });
             } else {
                 cache.client.keys(function (err, cacheKeys) {
                     cache.client.flushAll();
-                    resolve(cacheKeys);
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: cacheKeys
+                    });
                 });
             }
         });
@@ -146,7 +162,11 @@ module.exports = {
         }
         return new Promise((resolve, reject) => {
             cache.client.del(keys);
-            resolve(keys);
+            resolve({
+                success: true,
+                code: 'SUC_CACHE_00000',
+                result: keys
+            });
         });
     },
 };

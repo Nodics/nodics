@@ -122,19 +122,6 @@ module.exports = function (name, pipelineDefinition) {
     };
 
     this.error = function (request, response, error) {
-        /*this.LOG.error(err);
-       
-        if (err) {
-            if (UTILS.isArray(err)) {
-                err.forEach(element => {
-                    response.errors.push(element);
-                });
-            } else if (UTILS.isObject(err)) {
-                response.errors.push(err);
-            } else {
-                response.errors.push(err.toString());
-            }
-        }*/
         if (error) {
             response.error = error;
         }

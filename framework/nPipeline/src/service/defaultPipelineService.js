@@ -21,7 +21,11 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.warn('This is default error handler, will not perform anything ');
-        process.reject(response.errors);
+        if (response.errors && response.errors.length > 0) {
+            process.reject(response.errors);
+        } else {
+            process.reject(response.error);
+        }
     },
 
     start: function (name, request, response) {
