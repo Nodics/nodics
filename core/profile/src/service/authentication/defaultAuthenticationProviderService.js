@@ -34,6 +34,13 @@ module.exports = {
         this.updateAuthData(options);
     },
 
+    authenticateAPIKey: function (request) {
+        return new Promise((resolve, reject) => {
+            let _self = this;
+
+        });
+    },
+
     authenticateEmployee: function (request) {
         return new Promise((resolve, reject) => {
             let _self = this;

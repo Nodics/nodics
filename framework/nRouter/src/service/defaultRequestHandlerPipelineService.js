@@ -166,7 +166,9 @@ module.exports = {
         }
         success.success = success.success || true;
         success.code = success.code || 'SUC_SYS_00000';
-        success.msg = success.msg || SERVICE.DefaultStatusService.get(success.code) ? SERVICE.DefaultStatusService.get(success.code).message : 'Successfully processed';
+        if (!success.msg) {
+            success.msg = SERVICE.DefaultStatusService.get(success.code) ? SERVICE.DefaultStatusService.get(success.code).message : 'Successfully processed';
+        }
         process.resolve(success);
     },
 
@@ -183,7 +185,9 @@ module.exports = {
             }
             error.success = error.success || false;
             error.code = error.code || 'ERR_SYS_00000';
-            error.msg = error.msg || SERVICE.DefaultStatusService.get(error.code) ? SERVICE.DefaultStatusService.get(error.code).message : 'Process failed with errors';
+            if (!error.msg) {
+                error.msg = SERVICE.DefaultStatusService.get(error.code) ? SERVICE.DefaultStatusService.get(error.code).message : 'Process failed with errors';
+            }
             this.LOG.error(error);
             process.reject(error);
         } else {

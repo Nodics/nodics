@@ -16,19 +16,19 @@ module.exports = {
                 type: 'preSave',
                 active: 'true',
                 index: 0,
-                handler: 'DefaultEventsplitInterceptorService.eventSplitPreSave'
+                handler: 'DefaultEventSplitInterceptorService.eventSplitPreSave'
             },
             eventSplitPostSave: {
                 type: 'postSave',
                 active: 'true',
                 index: 0,
-                handler: 'DefaultEventsplitInterceptorService.eventSplitPostSave'
+                handler: 'DefaultEventSplitInterceptorService.eventSplitPostSave'
             },
             eventSplitPostProcessor: {
                 type: 'postProcessor',
                 active: 'true',
                 index: 0,
-                handler: 'DefaultEventsplitInterceptorService.processSyncEvents'
+                handler: 'DefaultEventSplitInterceptorService.processSyncEvents'
             }
         }
     }

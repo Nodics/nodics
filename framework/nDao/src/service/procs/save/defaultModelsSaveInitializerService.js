@@ -163,10 +163,16 @@ module.exports = {
     },
 
     handleErrorEnd: function (request, response, process) {
-        process.reject({
-            success: false,
-            code: 'ERR_SAVE_00000',
-            error: response.error
-        });
+        if (response.errors && response.errors.length === 1) {
+            process.reject(response.errors[0]);
+        } else if (response.errors && response.errors.length > 1) {
+            process.reject({
+                success: false,
+                code: 'ERR_SAVE_00000',
+                error: esponse.errors
+            });
+        } else {
+            process.reject(response.error);
+        }
     }
 };

@@ -24,6 +24,18 @@ module.exports = {
                 index: 0,
                 handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
             },
+            saveAPIKey: {
+                type: 'preSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
+            },
+            updateAPIKey: {
+                type: 'preUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
+            }
         },
         customer: {
             encryptSavePassword: {

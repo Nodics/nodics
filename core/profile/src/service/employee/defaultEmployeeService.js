@@ -34,5 +34,26 @@ module.exports = {
         });
     },
 
-
+    findByAPIKey: function (request) {
+        return new Promise((resolve, reject) => {
+            this.get({
+                tenant: request.tenant,
+                query: {
+                    apiKey: request.apiKey,
+                    enterpriseCode: request.enterpriseCode
+                }
+            }).then(employees => {
+                if (employees.result.length !== 1) {
+                    reject({
+                        success: false,
+                        code: 'ERR_LIN_00000'
+                    });
+                } else {
+                    resolve(employees.result[0]);
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
 };

@@ -14,7 +14,7 @@ module.exports = {
     prepareURL: function (input) {
         return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'profile',
-            methodName: 'POST',
+            methodName: 'GET',
             apiName: '/enterprise/get',
             requestBody: {
                 recursive: true

@@ -96,6 +96,10 @@ Todos:
   User management process:
     ✔ Create some default user groups for Employee and Customer @done(18-10-15 15:48)
     ✔ Each user needs to per part of at least one group @done(18-10-15 15:49)
+    Internal Authentication:
+      - Authenticate via apiKey - authenticate and hold for forever, will be managed locally for each module
+    External Authentication:
+      - Authentication via authToken
     
 Todos:
   - Test merge process for multi hiererchy function definitions within service

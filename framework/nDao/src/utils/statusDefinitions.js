@@ -65,6 +65,12 @@ module.exports = {
         message: 'Could not execute post interceptors'
     },
 
+    ERR_FIND_00006: {
+        code: '100006',
+        description: 'Please validate your request, looks not valid',
+        message: 'Please validate your request, looks not valid'
+    },
+
     // SUCCESS STATUS Cache
     SUC_CACHE_00000: {
         code: '200000',
@@ -285,6 +291,75 @@ module.exports = {
         code: '800002',
         description: 'Update value can not be null or blank',
         message: 'Update value can not be null or blank'
+    },
+
+    //Success CronJob 
+    SUC_JOB_00000: {
+        code: '900000',
+        description: 'Successfully processed',
+        message: 'Successfully processed'
+    },
+
+
+    //Error CronJob 
+    ERR_JOB_00000: {
+        code: '900000',
+        description: 'Failed to perform requested operation',
+        message: 'Failed to perform requested operation'
+    },
+
+    ERR_JOB_00001: {
+        code: '900001',
+        description: 'No jobs to perform requested operation',
+        message: 'No jobs to perform requested operation'
+    },
+
+    ERR_JOB_00002: {
+        code: '900002',
+        description: 'Invalid job definition',
+        message: 'Invalid job definition'
+    },
+
+    ERR_JOB_00003: {
+        code: '900003',
+        description: 'Invalid cron job definition triggers',
+        message: 'Invalid cron job definition triggers'
+    },
+    ERR_JOB_00004: {
+        code: '900004',
+        description: 'Job can not be started before its start date',
+        message: 'Job can not be started before its start date'
+    },
+    ERR_JOB_00005: {
+        code: '900005',
+        description: 'Job already expired',
+        message: 'Job already expired'
+    },
+
+    //Success CronJob 
+    SUC_EVNT_00000: {
+        code: '110000',
+        description: 'Successfully processed',
+        message: 'Successfully processed'
+    },
+
+    //Success CronJob 
+    ERR_EVNT_00000: {
+        code: '110000',
+        description: 'Failed to process event',
+        message: 'Failed to process event'
+    },
+
+    ERR_EVNT_00001: {
+        code: '110001',
+        description: 'Failed to process event',
+        message: 'Failed to process event'
+    },
+
+    ERR_EVNT_00002: {
+        code: '110002',
+        description: 'Please validate your configuration, looks publishing event is not active currently',
+        message: 'Please validate your configuration, looks publishing event is not active currently'
     },
 
 };

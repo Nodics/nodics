@@ -27,15 +27,29 @@ module.exports = function () {
                 });
                 if (allJob.length > 0) {
                     Promise.all(allJob).then(success => {
-                        resolve(success);
+                        resolve({
+                            success: true,
+                            code: 'SUC_JOB_00000',
+                            result: success
+                        });
                     }).catch(error => {
-                        reject(error);
+                        reject({
+                            success: false,
+                            code: 'ERR_JOB_00000',
+                            error: error
+                        });
                     });
                 } else {
-                    reject('Invalid cron job definition');
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00001'
+                    });
                 }
             } else {
-                reject('Invalid cron job definitions');
+                reject({
+                    success: false,
+                    code: 'ERR_JOB_00001'
+                });
             }
         });
     };
@@ -43,39 +57,60 @@ module.exports = function () {
     this.createCronJob = function (authToken, definition) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            let currentDate = new Date();
-            if (UTILS.isBlank(definition)) {
-                reject('Invalid cron job definition');
-            } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
-                reject('Invalid cron job definition triggers');
-            } else if (definition.start > currentDate) {
-                reject('Job can not be started before its start date');
-            } else if (definition.end && definition.end < currentDate) {
-                reject('Job already expired');
-            } else {
-                if (!_jobPool[definition.code]) {
-                    let cronJobs = [];
-                    if (!definition.nodeId) {
-                        definition.nodeId = CONFIG.get('nodeId');
-                    }
-                    definition.triggers.forEach(function (value) {
-                        if (value.isActive && CONFIG.get('nodeId') === definition.nodeId) {
-                            let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
-                            tmpCronJob.LOG = _jobLOG;
-                            tmpCronJob.validate();
-                            tmpCronJob.init();
-                            tmpCronJob.setAuthToken(authToken);
-                            tmpCronJob.setJobPool(_jobPool);
-                            cronJobs.push(tmpCronJob);
-
-                        }
+            try {
+                let currentDate = new Date();
+                if (UTILS.isBlank(definition)) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00002'
                     });
-                    _jobPool[definition.code] = cronJobs;
-                    resolve(definition.code);
+                } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00003'
+                    });
+                } else if (definition.start > currentDate) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00004'
+                    });
+                } else if (definition.end && definition.end < currentDate) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00005'
+                    });
                 } else {
-                    _self.LOG.warn('Definition ', definition.code, ' is already available.');
-                    resolve(definition.code);
+                    if (!_jobPool[definition.code]) {
+                        let cronJobs = [];
+                        if (!definition.nodeId) {
+                            definition.nodeId = CONFIG.get('nodeId');
+                        }
+                        definition.triggers.forEach(function (value) {
+                            if (value.isActive && CONFIG.get('nodeId') === definition.nodeId) {
+                                let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
+                                tmpCronJob.LOG = _jobLOG;
+                                tmpCronJob.validate();
+                                tmpCronJob.init();
+                                tmpCronJob.setAuthToken(authToken);
+                                tmpCronJob.setJobPool(_jobPool);
+                                cronJobs.push(tmpCronJob);
+
+                            }
+                        });
+                        _jobPool[definition.code] = cronJobs;
+                        _self.LOG.debug('Job: ' + definition.code + ' has been successfully added in ready to run pool');
+                        resolve('Job: ' + definition.code + ' has been successfully added in ready to run pool');
+                    } else {
+                        _self.LOG.warn('Job: ', definition.code, ' is already available.');
+                        resolve('Job: ' + definition.code + ' is already available in ready to run pool');
+                    }
                 }
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_JOB_00000',
+                    error: error
+                });
             }
         });
     };
@@ -91,15 +126,29 @@ module.exports = function () {
                 });
                 if (allJob.length > 0) {
                     Promise.all(allJob).then(success => {
-                        resolve(success);
+                        resolve({
+                            success: true,
+                            code: 'SUC_JOB_00000',
+                            result: success
+                        });
                     }).catch(error => {
-                        reject(error);
+                        reject({
+                            success: false,
+                            code: 'ERR_JOB_00000',
+                            error: error
+                        });
                     });
                 } else {
-                    reject('Invalid cron job definition');
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00001'
+                    });
                 }
             } else {
-                reject('Invalid cron job definitions');
+                reject({
+                    success: false,
+                    code: 'ERR_JOB_00001'
+                });
             }
         });
     };
@@ -108,9 +157,15 @@ module.exports = function () {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(definition)) {
-                reject('Invalid cron job definition');
+                reject({
+                    success: false,
+                    code: 'ERR_JOB_00002'
+                });
             } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
-                reject('Invalid cron job definition triggers');
+                reject({
+                    success: false,
+                    code: 'ERR_JOB_00003'
+                });
             } else if (!_jobPool[definition.code]) {
                 _self.LOG.debug('Could not found job, so creating new : ', definition.code);
                 this.createCronJob(authToken, definition).then(success => {
@@ -150,53 +205,86 @@ module.exports = function () {
                 });
                 if (allJob.length > 0) {
                     Promise.all(allJob).then(success => {
-                        resolve(success);
+                        resolve({
+                            success: true,
+                            code: 'SUC_JOB_00000',
+                            result: success
+                        });
                     }).catch(error => {
-                        reject(error);
+                        reject({
+                            success: false,
+                            code: 'ERR_JOB_00000',
+                            error: error
+                        });
                     });
                 } else {
-                    reject('Invalid cron job definition');
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00001'
+                    });
                 }
             } else {
-                reject('Invalid cron job definitions');
+                reject({
+                    success: false,
+                    code: 'ERR_JOB_00001'
+                });
             }
         });
     };
 
     this.runCronJob = function (authToken, definition) {
         return new Promise((resolve, reject) => {
-            let currentDate = new Date();
-            if (UTILS.isBlank(definition)) {
-                reject('Invalid cron job definition');
-            } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
-                reject('Invalid cron job definition triggers');
-            } else if (definition.start > currentDate) {
-                reject('Job can not be started before its start date');
-            } else if (definition.end && definition.end < currentDate) {
-                reject('Job already expired');
-            } else {
-                let _running = false;
-                if (_jobPool[definition.code] && _jobPool[definition.code][0].isRunning()) {
-                    _running = _jobPool[definition.code][0].isRunning();
-                    _jobPool[definition.code].forEach(function (job) {
-                        job.pauseCronJob();
+            try {
+                let currentDate = new Date();
+                if (UTILS.isBlank(definition)) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00002'
                     });
-                }
-                if (!definition.nodeId || CONFIG.get('nodeId') === definition.nodeId) {
-                    let tmpCronJob = new CLASSES.CronJob(definition, definition.triggers[0]); //TODO: need to add context and timeZone
-                    tmpCronJob.LOG = _jobLOG;
-                    tmpCronJob.validate();
-                    tmpCronJob.setAuthToken(authToken);
-                    tmpCronJob.init(true);
-                    tmpCronJob.setJobPool(_jobPool);
-                    if (_jobPool[definition.code] && _running) {
+                } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00003'
+                    });
+                } else if (definition.start > currentDate) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00004'
+                    });
+                } else if (definition.end && definition.end < currentDate) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00005'
+                    });
+                } else {
+                    let _running = false;
+                    if (_jobPool[definition.code] && _jobPool[definition.code][0].isRunning()) {
+                        _running = _jobPool[definition.code][0].isRunning();
                         _jobPool[definition.code].forEach(function (job) {
-                            job.resumeCronJob();
+                            job.pauseCronJob();
                         });
                     }
+                    if (!definition.nodeId || CONFIG.get('nodeId') === definition.nodeId) {
+                        let tmpCronJob = new CLASSES.CronJob(definition, definition.triggers[0]); //TODO: need to add context and timeZone
+                        tmpCronJob.LOG = _jobLOG;
+                        tmpCronJob.validate();
+                        tmpCronJob.setAuthToken(authToken);
+                        tmpCronJob.init(true);
+                        tmpCronJob.setJobPool(_jobPool);
+                        if (_jobPool[definition.code] && _running) {
+                            _jobPool[definition.code].forEach(function (job) {
+                                job.resumeCronJob();
+                            });
+                        }
+                    }
+                    resolve('Job: ' + definition.code + ' executed successfully');
                 }
-
-                resolve(definition.code);
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_JOB_00000',
+                    error: error
+                });
             }
         });
     };
@@ -209,15 +297,17 @@ module.exports = function () {
             try {
                 _self.startCronJob(value);
                 _success[value] = {
-                    message: 'Successfully started'
+                    message: 'Job: ' + value + ' started successfully'
                 };
             } catch (error) {
                 _failed[value] = error.toString();
             }
         });
         return {
-            success: _success,
-            failed: _failed
+            success: true,
+            code: '',
+            result: _success,
+            error: _failed
         };
     };
 
@@ -227,7 +317,7 @@ module.exports = function () {
                 cronJob.startCronJob();
             });
         } else {
-            throw new Error('Either name is not valid or job already removed.');
+            throw new Error('Either jobCode' + jobCode + ' is not valid or job already removed.');
         }
     };
 
@@ -239,15 +329,17 @@ module.exports = function () {
             try {
                 _self.stopCronJob(value);
                 _success[value] = {
-                    message: 'Successfully stoped'
+                    message: 'Job: ' + value + ' stoped successfully'
                 };
             } catch (error) {
                 _failed[value] = error.toString();
             }
         });
         return {
-            success: _success,
-            failed: _failed
+            success: true,
+            code: '',
+            result: _success,
+            error: _failed
         };
     };
 
@@ -257,7 +349,7 @@ module.exports = function () {
                 cronJob.stopCronJob();
             });
         } else {
-            throw new Error('Either name is not valid or job already removed.');
+            throw new Error('Either jobCode' + jobCode + ' is not valid or job already removed.');
         }
     };
 
@@ -269,15 +361,17 @@ module.exports = function () {
             try {
                 _self.removeCronJob(value);
                 _success[value] = {
-                    message: 'Successfully removed'
+                    message: 'Job: ' + value + ' removed successfully'
                 };
             } catch (error) {
                 _failed[value] = error.toString();
             }
         });
         return {
-            success: _success,
-            failed: _failed
+            success: true,
+            code: '',
+            result: _success,
+            error: _failed
         };
     };
 
@@ -288,7 +382,7 @@ module.exports = function () {
             });
             delete _jobPool[jobCode];
         } else {
-            throw new Error('Either name is not valid or job already removed.');
+            throw new Error('Either jobCode' + jobCode + ' is not valid or job already removed.');
         }
     };
 
@@ -300,15 +394,17 @@ module.exports = function () {
             try {
                 _self.pauseCronJob(value);
                 _success[value] = {
-                    message: 'Successfully paused'
+                    message: 'Job: ' + value + ' paused successfully'
                 };
             } catch (error) {
                 _failed[value] = error.toString();
             }
         });
         return {
-            success: _success,
-            failed: _failed
+            success: true,
+            code: '',
+            result: _success,
+            error: _failed
         };
     };
 
@@ -318,7 +414,7 @@ module.exports = function () {
                 cronJob.pauseCronJob();
             });
         } else {
-            throw new Error('Given cronJob name is not valid');
+            throw new Error('Either jobCode' + jobCode + ' is not valid or job already removed.');
         }
     };
 
@@ -330,15 +426,17 @@ module.exports = function () {
             try {
                 _self.resumeCronJob(value);
                 _success[value] = {
-                    message: 'Successfully resumed'
+                    message: 'Job: ' + value + ' resumed successfully'
                 };
             } catch (error) {
                 _failed[value] = error.toString();
             }
         });
         return {
-            success: _success,
-            failed: _failed
+            success: true,
+            code: '',
+            result: _success,
+            error: _failed
         };
     };
 
@@ -348,7 +446,7 @@ module.exports = function () {
                 cronJob.resumeCronJob();
             });
         } else {
-            throw new Error('Given cronJob name is not valid');
+            throw new Error('Either jobCode' + jobCode + ' is not valid or job already removed.');
         }
     };
 };

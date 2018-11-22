@@ -254,6 +254,7 @@ module.exports = {
 
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model ');
+        console.log(request.model);
         request.collection.saveItems(request).then(success => {
             let model = {
                 success: true,
@@ -377,6 +378,16 @@ module.exports = {
     },
 
     handleErrorEnd: function (request, response, process) {
-        process.resolve(response.error);
+        if (response.errors && response.errors.length === 1) {
+            process.reject(response.errors[0]);
+        } else if (response.errors && response.errors.length > 1) {
+            process.reject({
+                success: false,
+                code: 'ERR_FIND_00005',
+                error: esponse.errors
+            });
+        } else {
+            process.reject(response.error);
+        }
     }
 };
