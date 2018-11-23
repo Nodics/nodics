@@ -16,7 +16,10 @@ module.exports = {
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for saving model');
         if (!request.model) {
-            process.error(request, response, 'Model can not be null, to perform save operation');
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_SAVE_00001'
+            });
         } else {
             process.nextSuccess(request, response);
         }
@@ -25,22 +28,29 @@ module.exports = {
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query to save model');
         request.query = {};
-        if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {
-            request.query = this.resolveQuery(_.merge({}, request.originalQuery || {}), request.model);
-        } else if (request.model._id) {
-            request.query = {
-                _id: request.model._id
-            };
-        } else if (request.model.code) {
-            request.query = {
-                code: request.model.code
-            };
+        try {
+            if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {
+                request.query = this.resolveQuery(_.merge({}, request.originalQuery || {}), request.model);
+            } else if (request.model._id) {
+                request.query = {
+                    _id: request.model._id
+                };
+            } else if (request.model.code) {
+                request.query = {
+                    code: request.model.code
+                };
+            }
+            process.nextSuccess(request, response);
+        } catch (error) {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_SAVE_00002',
+                error: error
+            });
         }
-        process.nextSuccess(request, response);
     },
 
     resolveQuery: function (query, model) {
-        let _self = this;
         let queryStr = {};
         _.each(query, (propertyValue, propertyName) => {
             if (propertyName.indexOf(".") && propertyValue.startsWith('$')) {
@@ -119,6 +129,103 @@ module.exports = {
         });
     },
 
+    handleNestedModelsSave: function (request, response, process) {
+        this.LOG.debug('Saving nexted models');
+        let rawSchema = request.collection.rawSchema;
+        if (!UTILS.isBlank(rawSchema.refSchema)) {
+            this.handleNestedProperties(request, response, Object.keys(rawSchema.refSchema)).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    handleNestedProperties: function (request, response, properties) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (properties && properties.length > 0) {
+                let property = properties.shift();
+                let models = request.model[property];
+                if (models && ((UTILS.isObject(models) && !UTILS.isObjectId(models)) || UTILS.isArrayOfObject(models))) {
+                    _self.handleNestedModel(request, response, property).then(success => {
+                        _self.handleNestedProperties(request, response, properties).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    _self.handleNestedProperties(request, response, properties).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    handleNestedModel: function (request, response, property) {
+        return new Promise((resolve, reject) => {
+            try {
+                let model = request.model;
+                let models = model[property];
+                let rawSchema = request.collection.rawSchema;
+                let propDef = rawSchema.refSchema[property];
+                if (propDef.type === 'one') {
+                    models = [models];
+                }
+                SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].save({
+                    tenant: request.tenant,
+                    models: models
+                }).then(success => {
+                    if (success.success) {
+                        if (propDef.type === 'one') {
+                            let key = (propDef.propertyName) ? success.result[0][propDef.propertyName] : success.result[0]._id;
+                            if (UTILS.isObjectId(key)) {
+                                key = key.toString();
+                            }
+                            model[property] = key;
+                        } else {
+                            model[property] = [];
+                            success.result.forEach(element => {
+                                let key = (propDef.propertyName) ? element[propDef.propertyName] : element._id;
+                                if (UTILS.isObjectId(key)) {
+                                    key = key.toString();
+                                }
+                                model[property].push(key);
+                            });
+                        }
+                        resolve(true);
+                    } else {
+                        let response = {
+                            success: false,
+                            code: 'ERR_SAVE_00006'
+                        };
+                        if (success.result) {
+                            response.result = success.result;
+                        }
+                        if (success.error) {
+                            response.error = success.error;
+                        }
+                        reject(response);
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre save model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
@@ -134,7 +241,11 @@ module.exports = {
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00004',
+                    error: error
+                });
             });
         } else {
             process.nextSuccess(request, response);
@@ -142,17 +253,32 @@ module.exports = {
     },
 
     saveModel: function (request, response, process) {
-        this.LOG.debug('Saving model');
+        this.LOG.debug('Saving model ');
         request.collection.saveItems(request).then(success => {
+            let model = {
+                success: true,
+                code: 'SUC_SAVE_00000'
+            };
             if (success && UTILS.isArray(success) && success.length > 0) {
-                response.model = success[0];
+                model.result = success[0];
             } else {
-                response.model = success;
+                model.result = success;
             }
+            response.model = model;
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, error);
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_SAVE_00000',
+                error: error
+            });
         });
+    },
+
+    populateVirtualProperties: function (request, response, process) {
+        this.LOG.debug('Populating virtual properties');
+        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.collection.rawSchema, response.model.result);
+        process.nextSuccess(request, response);
     },
 
     applyPostInterceptors: function (request, response, process) {
@@ -165,12 +291,16 @@ module.exports = {
                 collection: request.collection,
                 query: request.query,
                 originalModel: request.model,
-                model: response.model,
+                model: response.model.result,
                 interceptorList: [].concat(interceptors.postSave)
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00005',
+                    error: error
+                });
             });
         } else {
             process.nextSuccess(request, response);
@@ -206,9 +336,9 @@ module.exports = {
         this.LOG.debug('Triggering event for modified model');
         try {
             let collection = request.collection;
-            if (response.model && collection.rawSchema.event) {
+            if (response.model.result && collection.rawSchema.event) {
                 let event = {
-                    enterpriseCode: response.model.enterpriseCode || request.enterpriseCode,
+                    enterpriseCode: response.model.result.enterpriseCode || request.enterpriseCode,
                     tenant: request.tenant,
                     event: 'save',
                     source: collection.moduleName,
@@ -224,7 +354,7 @@ module.exports = {
                         value: collection.modelName
                     }, {
                         key: 'data',
-                        value: response.model
+                        value: response.model.result
                     }]
                 };
                 this.LOG.debug('Pushing event for item created : ', collection.schemaName);
@@ -247,6 +377,16 @@ module.exports = {
     },
 
     handleErrorEnd: function (request, response, process) {
-        process.reject(response.errors);
+        if (response.errors && response.errors.length === 1) {
+            process.reject(response.errors[0]);
+        } else if (response.errors && response.errors.length > 1) {
+            process.reject({
+                success: false,
+                code: 'ERR_FIND_00005',
+                error: esponse.errors
+            });
+        } else {
+            process.reject(response.error);
+        }
     }
 };

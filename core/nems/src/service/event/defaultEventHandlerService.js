@@ -39,8 +39,12 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Retrieving events to broadcast');
             input = _.merge(input, this.buildQuery());
-            SERVICE.DefaultEventService.update(input).then(events => {
-                resolve(events);
+            SERVICE.DefaultEventService.update(input).then(response => {
+                if (response.success && response.result && response.result.models) {
+                    resolve(response.result.models);
+                } else {
+                    resolve([]);
+                }
             }).catch(error => {
                 reject(error);
             });
@@ -52,13 +56,15 @@ module.exports = {
         this.LOG.debug('Broadcasting async events');
         return new Promise((resolve, reject) => {
             this.fetchEvents(request).then(events => {
-                let models = events.models;
-                if (!models || models.length <= 0) {
-                    resolve('None of the events available');
+                if (!events || events.length <= 0) {
+                    resolve({
+                        success: true,
+                        code: 'SUC_EVNT_00001'
+                    });
                 } else {
-                    _self.LOG.debug('Total events to be processed : ', events.models.length);
-                    _self.broadcastEvents(events.models).then(success => {
-                        resolve(events.models);
+                    _self.LOG.debug('Total events to be processed : ', events.length);
+                    _self.broadcastEvents(events).then(success => {
+                        resolve(events);
                     }).catch(error => {
                         reject(error);
                     });
@@ -68,29 +74,29 @@ module.exports = {
             });
         });
     },
-
-    processAsyncEvents: function (input) {
-        let _self = this;
-        this.LOG.debug('Broadcasting async events');
-        return new Promise((resolve, reject) => {
-            this.fetchEvents(input).then(events => {
-                let models = events.models;
-                if (!models || models.length <= 0) {
-                    resolve('None of the events available');
-                } else {
-                    _self.LOG.debug('Total events to be processed : ', events.models.length);
-                    _self.broadcastEvents(events.models).then(success => {
-                        resolve(events.models);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }
-            }).catch(error => {
-                reject(error);
+    /*
+        processAsyncEvents: function (input) {
+            let _self = this;
+            this.LOG.debug('Broadcasting async events');
+            return new Promise((resolve, reject) => {
+                this.fetchEvents(input).then(events => {
+                    let models = events.models;
+                    if (!models || models.length <= 0) {
+                        resolve('None of the events available');
+                    } else {
+                        _self.LOG.debug('Total events to be processed : ', events.models.length);
+                        _self.broadcastEvents(events.models).then(success => {
+                            resolve(events.models);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
             });
-        });
-    },
-
+        },
+    */
     processSyncEvents: function (events) {
         let _self = this;
         this.LOG.debug('Broadcasting Sync events');
@@ -137,10 +143,7 @@ module.exports = {
         let _self = this;
         try {
             if (event.state === ENUMS.EventState.FINISHED.key) {
-                SERVICE.DefaultEventService.removeById({
-                    tenant: event.tenant,
-                    ids: [event._id]
-                }).then(success => {
+                SERVICE.DefaultEventService.removeById([event._id], event.tenant).then(success => {
                     _self.LOG.debug('Event has been processed successfully');
                 }).catch(error => {
                     _self.LOG.debug('Facing issue while updating event success log');
@@ -211,11 +214,11 @@ module.exports = {
                             }, target)).then(success => {
                                 if (success.success) {
                                     target.state = ENUMS.EventState.FINISHED.key;
-                                    target.logs.push(success.result.toString());
+                                    target.logs.push(success.msg);
                                 } else {
                                     event.state = ENUMS.EventState.ERROR.key;
                                     target.state = ENUMS.EventState.ERROR.key;
-                                    target.logs.push(success.error.toString());
+                                    target.logs.push(success.msg);
                                 }
                                 _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
                                     resolve(success);

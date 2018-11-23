@@ -11,6 +11,7 @@
 
 module.exports = {
     event: {
+        processAsSyncHandler: false,
         publishAllActive: true,
         ignoreIfNoLister: true
     }

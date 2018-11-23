@@ -11,7 +11,6 @@
 
 module.exports = {
     addToken: function (moduleName, source, hash, value) {
-        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 let moduleObject = NODICS.getModule(moduleName);
@@ -30,10 +29,17 @@ module.exports = {
                     SERVICE.DefaultCacheService.put(input);
                     resolve(true);
                 } else {
-                    reject('Auth cache client has not been initialized properly: ' + moduleName);
+                    reject({
+                        success: false,
+                        code: 'ERR_CACHE_00002'
+                    });
                 }
             } catch (error) {
-                reject(error);
+                reject({
+                    success: false,
+                    code: 'ERR_AUTH_00000',
+                    error: error
+                });
             }
         });
     },
@@ -47,16 +53,15 @@ module.exports = {
                         cache: moduleObject.authCache,
                         hashKey: request.authToken
                     }).then(value => {
-                        if (value) {
-                            resolve(value);
-                        } else {
-                            reject('Invalid token');
-                        }
+                        resolve(value);
                     }).catch(error => {
-                        reject('Invalid token');
+                        reject(error);
                     });
                 } else {
-                    reject('Invalid token');
+                    reject({
+                        success: false,
+                        code: 'ERR_CACHE_00001'
+                    });
                 }
             } catch (error) {
                 reject(error);
@@ -78,10 +83,9 @@ module.exports = {
     },
 
     authorizeToken: function (request, callback) {
-        let _self = this;
         let input = request.local || request;
         this.findToken(input).then(success => {
-            callback(null, success);
+            callback(null, success.result);
         }).catch(error => {
             if (input.moduleName !== CONFIG.get('profileModuleName')) {
                 this.LOG.debug('Authorizing request for token :', input.authToken);
@@ -89,7 +93,10 @@ module.exports = {
                     if (error) {
                         callback(error);
                     } else if (!response.success) {
-                        callback('Given token is not valid one');
+                        callback({
+                            success: false,
+                            code: 'ERR_AUTH_00001'
+                        });
                     } else {
                         callback(null, response.result);
                     }

@@ -10,11 +10,6 @@
  */
 
 module.exports = {
-    ping: function (request, callback) {
-        callback(null, {
-            success: true,
-            code: 'SUC_SYS_00000',
-            msg: request.moduleName + ' is live buddy'
-        });
-    }
+
+
 };

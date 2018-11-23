@@ -11,6 +11,11 @@
 
 module.exports = {
 
+    /**
+     * This function is used to change router level cache configuration
+     * @param {*} request 
+     * @param {*} callback 
+     */
     updateApiCacheConfiguration: function (request, callback) {
         request.config = request.httpRequest.body || {};
         if (callback) {
@@ -24,6 +29,11 @@ module.exports = {
         }
     },
 
+    /**
+     * This function is used to change model level cache configuration
+     * @param {*} request 
+     * @param {*} callback 
+     */
     updateItemCacheConfiguration: function (request, callback) {
         request.config = request.httpRequest.body || {};
         if (callback) {

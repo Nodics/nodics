@@ -388,24 +388,6 @@ module.exports = function () {
         }
     };
 
-    this.getDefaultAuthToken = function (moduleName) {
-        let moduleObject = this.getModule(moduleName);
-        if (moduleObject) {
-            if (moduleObject.metaData.authToken) {
-                Promise.resolve(moduleObject.metaData.authToken);
-            } else {
-                let config = CONFIG.get('backgroundAuthModules')[moduleName];
-                SERVICE.BackgroundAuthTokenGenerateService.authTokenForModule(moduleName, config, {}).then(success => {
-                    resolve(moduleObject.metaData.authToken);
-                }).catch(error => {
-                    reject(error);
-                });
-            }
-        } else {
-            Promise.reject('Invalid module name : ' + moduleName);
-        }
-    };
-
     this.addRouters = function (routers, moduleName) {
         let moduleObject = this.getModule(moduleName);
         if (UTILS.isBlank(moduleObject)) {

@@ -62,15 +62,30 @@ module.exports = {
                 _self.LOG.debug('Getting value from Redis cache storage with key: ' + hashKey);
                 cache.client.get(hashKey, (error, value) => {
                     if (error) {
-                        reject(error);
+                        reject({
+                            success: false,
+                            code: 'ERR_CACHE_00000',
+                            error: error
+                        });
                     } else if (value) {
-                        resolve(JSON.parse(value));
+                        resolve({
+                            success: true,
+                            code: 'SUC_CACHE_00000',
+                            result: JSON.parse(value)
+                        });
                     } else {
-                        reject(false);
+                        reject({
+                            success: false,
+                            code: 'ERR_CACHE_00001'
+                        });
                     }
                 });
             } catch (error) {
-                reject(error);
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    error: error
+                });
             }
 
         });
@@ -91,47 +106,71 @@ module.exports = {
                 } else {
                     cache.client.set(hashKey, JSON.stringify(value));
                 }
-                resolve();
+                resolve({
+                    success: true,
+                    code: 'SUC_CACHE_00000',
+                    result: value
+                });
             } catch (error) {
-                reject(error);
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    error: error
+                });
             }
 
         });
     },
 
     flush: function (cache, prefix) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             if (prefix) {
                 prefix = (cache.cacheMap) ? cache.cacheMap + '_' + prefix : prefix;
                 if (!prefix.endsWith('*')) {
                     prefix += '*';
                 }
+                _self.LOG.debug('Flushing value in Redis cache stored with prefix: ' + prefix);
                 cache.client.keys(prefix, function (err, cacheKeys) {
                     if (cacheKeys) {
                         cacheKeys.forEach(key => {
                             client.del(key);
                         });
                     }
-                    resolve(cacheKeys);
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: cacheKeys
+                    });
                 });
             } else {
                 cache.client.keys(function (err, cacheKeys) {
                     cache.client.flushAll();
-                    resolve(cacheKeys);
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: cacheKeys
+                    });
                 });
             }
         });
     },
 
     flushKeys: function (cache, keys) {
+        let _self = this;
         if (keys && keys.length > 0) {
             for (var i = 0; i < keys.length; i++) {
                 keys[i] = (cache.cacheMap) ? cache.cacheMap + '_' + keys[i] : keys[i];
             }
         }
         return new Promise((resolve, reject) => {
+            _self.LOG.debug('Flushing value in Redis cache stored with keys: ' + keys);
             cache.client.del(keys);
-            resolve(keys);
+            resolve({
+                success: true,
+                code: 'SUC_CACHE_00000',
+                result: keys
+            });
         });
     },
 };

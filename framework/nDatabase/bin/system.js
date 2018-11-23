@@ -607,12 +607,16 @@ module.exports = {
                 SERVICE.DefaultTenantService.get({
                     tenant: 'default'
                 }).then(tenantData => {
-                    SYSTEM.handleTenants(tenantData).then(success => {
-                        resolve(success);
-                    }).catch((error) => {
-                        SYSTEM.LOG.error(error);
+                    if (tenantData && tenantData.result && tenantData.result.length > 0) {
+                        SYSTEM.handleTenants(tenantData.result).then(success => {
+                            resolve(success);
+                        }).catch((error) => {
+                            SYSTEM.LOG.error(error);
+                            reject('Configure at least default tenant');
+                        });
+                    } else {
                         reject('Configure at least default tenant');
-                    });
+                    }
                 }).catch(error => {
                     SYSTEM.LOG.error(error);
                     reject('Configure at least default tenant');
@@ -646,7 +650,7 @@ module.exports = {
                         SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
                         resolve([]);
                     } else {
-                        resolve(response.result);
+                        resolve(response.result || []);
                     }
                 });
             } catch (error) {

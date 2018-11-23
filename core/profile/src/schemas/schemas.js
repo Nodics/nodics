@@ -380,7 +380,14 @@ module.exports = {
             model: true,
             service: true,
             event: true,
-            router: true
+            router: true,
+            definition: {
+                apiKey: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required to authenticate all internal requests'
+                }
+            }
         },
 
         customer: {

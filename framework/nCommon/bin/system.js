@@ -92,6 +92,7 @@ module.exports = {
             var value = moduleIndex[key][0];
             SYSTEM.loadModule(value.name);
         });
+        SYSTEM.initModule();
     },
 
     loadModule: function (moduleName) {
@@ -108,6 +109,13 @@ module.exports = {
         if (moduleFile.init) {
             moduleFile.init();
         }
+    },
+
+    initModule: function () {
+        SYSTEM.initDaos();
+        SYSTEM.initServices();
+        SYSTEM.initFacades();
+        SYSTEM.initControllers();
     },
 
     cleanModules: function () {
@@ -182,6 +190,46 @@ module.exports = {
             } else {
                 SERVICE[serviceName] = require(file);
                 SERVICE[serviceName].LOG = SYSTEM.createLogger(serviceName);
+            }
+        });
+    },
+
+    initDaos: function () {
+        SYSTEM.LOG.debug('Initializing DAOs');
+        _.each(DAO, (daoClass, daoName) => {
+            if (daoClass.afterInitialize &&
+                typeof daoClass.afterInitialize === 'function') {
+                daoClass.afterInitialize();
+            }
+        });
+    },
+
+    initServices: function () {
+        SYSTEM.LOG.debug('Initializing services');
+        _.each(SERVICE, (serviceClass, serviceName) => {
+            if (serviceClass.afterInitialize &&
+                typeof serviceClass.afterInitialize === 'function') {
+                serviceClass.afterInitialize();
+            }
+        });
+    },
+
+    initFacades: function () {
+        SYSTEM.LOG.debug('Initializing facades');
+        _.each(FACADE, (facadeClass, facadeName) => {
+            if (facadeClass.afterInitialize &&
+                typeof facadeClass.afterInitialize === 'function') {
+                facadeClass.afterInitialize();
+            }
+        });
+    },
+
+    initControllers: function () {
+        SYSTEM.LOG.debug('Initializing controllers');
+        _.each(CONTROLLER, (controllerClass, controllerName) => {
+            if (controllerClass.afterInitialize &&
+                typeof controllerClass.afterInitialize === 'function') {
+                controllerClass.afterInitialize();
             }
         });
     },

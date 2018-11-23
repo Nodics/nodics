@@ -13,20 +13,63 @@ module.exports = {
 
     validateEvent: function (event) {
         if (UTILS.isBlank(event)) {
-            throw Error('Event can not be empty');
+            return false;
         }
         return true;
     },
 
     handleEvent: function (request, callback) {
-        if (CONTROLLER.DefaultEventController.validateEvent(request.body)) {
-            FACADE.DefaultEventFacade.handleEvent(request, callback);
+        if (CONTROLLER.DefaultEventController.validateEvent(request.httpRequest.body)) {
+            request.event = request.httpRequest.body;
+            if (callback) {
+                FACADE.DefaultEventFacade.handleEvent(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                return FACADE.DefaultEventFacade.handleEvent(request);
+            }
+        } else {
+            if (callback) {
+                callback({
+                    success: false,
+                    code: 'ERR_EVNT_00001'
+                });
+            } else {
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_EVNT_00001'
+                });
+            }
         }
     },
-
-    publish: function (request, callback) {
-        if (CONTROLLER.DefaultEventController.validateEvent(request.body)) {
-            FACADE.DefaultEventFacade.publish(request, callback);
+    /*
+        publish: function (request, callback) {
+            if (CONTROLLER.DefaultEventController.validateEvent(request.httpRequest.body)) {
+                if (callback) {
+                    request.event = request.httpRequest.body;
+                    FACADE.DefaultEventFacade.publish(request).then(success => {
+                        callback(null, success);
+                    }).catch(error => {
+                        callback(error);
+                    });
+                } else {
+                    return FACADE.DefaultEventFacade.publish(request);
+                }
+            } else {
+                if (callback) {
+                    callback({
+                        success: false,
+                        code: 'ERR_EVNT_00001'
+                    });
+                } else {
+                    return Promise.reject({
+                        success: false,
+                        code: 'ERR_EVNT_00001'
+                    });
+                }
+            }
         }
-    }
+    */
 };

@@ -23,7 +23,7 @@ module.exports = {
                     }]
                 }
             }).then(actives => {
-                if (actives.length <= 0) {
+                if (actives.result.length <= 0) {
                     resolve({
                         loginId: request.loginId,
                         personId: request._id,
@@ -31,7 +31,7 @@ module.exports = {
                         active: true
                     });
                 } else {
-                    resolve(actives[0]);
+                    resolve(actives.result[0]);
                 }
             }).catch(error => {
                 resolve({

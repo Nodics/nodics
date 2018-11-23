@@ -34,6 +34,13 @@ module.exports = {
         this.updateAuthData(options);
     },
 
+    authenticateAPIKey: function (request) {
+        return new Promise((resolve, reject) => {
+            let _self = this;
+
+        });
+    },
+
     authenticateEmployee: function (request) {
         return new Promise((resolve, reject) => {
             let _self = this;
@@ -49,7 +56,12 @@ module.exports = {
                         person: employee,
                         type: 'Employee'
                     }).then(success => {
-                        resolve(success);
+                        resolve({
+                            success: true,
+                            code: 'SUC_AUTH_00000',
+                            msg: SERVICE.DefaultStatusService.get('SUC_AUTH_00000').message,
+                            result: success
+                        });
                     }).catch(error => {
                         reject(error);
                     });
@@ -77,7 +89,12 @@ module.exports = {
                         person: customer,
                         type: 'Customer'
                     }).then(success => {
-                        resolve(success);
+                        resolve({
+                            success: true,
+                            code: 'SUC_AUTH_00000',
+                            msg: SERVICE.DefaultStatusService.get('SUC_AUTH_00000').message,
+                            result: success
+                        });
                     }).catch(error => {
                         reject(error);
                     });
@@ -100,7 +117,10 @@ module.exports = {
                     _id: options.person._id
                 }).then(state => {
                     if (state.locked || !options.person.active) {
-                        reject('Account is currently in locked state or has been disabled');
+                        reject({
+                            success: false,
+                            code: 'ERR_LIN_00002'
+                        });
                     } else {
                         SYSTEM.compareHash(options.request.password, options.person.password).then(match => {
                             if (match) {
@@ -129,17 +149,32 @@ module.exports = {
                                     state: state,
                                     tenant: options.enterprise.tenant.code
                                 });
-                                reject('Invalid authentication request : Given password is not valid');
+                                reject({
+                                    success: false,
+                                    code: 'ERR_LIN_00003'
+                                });
                             }
                         }).catch(error => {
-                            reject('Invalid authentication request : ' + error);
+                            reject({
+                                success: false,
+                                code: 'ERR_AUTH_00000',
+                                error: error
+                            });
                         });
                     }
                 }).catch(error => {
-                    reject(error);
+                    reject({
+                        success: false,
+                        code: 'ERR_AUTH_00000',
+                        error: error
+                    });
                 });
             } catch (error) {
-                reject(error);
+                reject({
+                    success: false,
+                    code: 'ERR_AUTH_00000',
+                    error: error
+                });
             }
 
         });
@@ -168,7 +203,11 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject('Invalid authentication request : Internal error: ' + error);
+                reject({
+                    success: false,
+                    code: 'ERR_AUTH_00000',
+                    error: error
+                });
             }
         });
     },
@@ -200,33 +239,39 @@ module.exports = {
                     if (authValues.type === 'Employee') {
                         this.authenticateEmployee(request, (error, success) => {
                             if (error) {
-                                reject('Given token is not valid one');
+                                reject(error);
                             } else {
                                 _self.findToken(request).then(success => {
                                     resolve(success);
                                 }).catch(error => {
-                                    reject('Given token is not valid one');
+                                    reject(error);
                                 });
                             }
                         });
                     } else {
                         this.authenticateEmployee(request, (error, success) => {
                             if (error) {
-                                reject('Given token is not valid one');
+                                reject(error);
                             } else {
                                 _self.findToken(request).then(success => {
                                     resolve(null, success);
                                 }).catch(error => {
-                                    reject('Given token is not valid one');
+                                    reject(error);
                                 });
                             }
                         });
                     }
                 } else {
-                    reject('Given token is not valid one');
+                    reject({
+                        success: false,
+                        code: 'ERR_AUTH_00001'
+                    });
                 }
             } else {
-                reject('Given token is not valid one');
+                reject({
+                    success: false,
+                    code: 'ERR_AUTH_00001',
+                });
             }
         });
     }

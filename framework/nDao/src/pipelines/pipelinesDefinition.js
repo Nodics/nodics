@@ -87,11 +87,6 @@ module.exports = {
             preProcessor: {
                 type: 'function',
                 handler: 'DefaultModelsSaveInitializerService.preProcessor',
-                success: 'handleNestedModelsSave'
-            },
-            handleNestedModelsSave: {
-                type: 'function',
-                handler: 'DefaultModelsSaveInitializerService.handleNestedModelsSave',
                 success: 'processModels'
             },
 
@@ -146,6 +141,12 @@ module.exports = {
             removeVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.removeVirtualProperties',
+                success: 'handleNestedModelsSave'
+            },
+
+            handleNestedModelsSave: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.handleNestedModelsSave',
                 success: 'applyPreInterceptors'
             },
 
@@ -158,6 +159,12 @@ module.exports = {
             saveModel: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.saveModel',
+                success: 'populateVirtualProperties'
+            },
+
+            populateVirtualProperties: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.populateVirtualProperties',
                 success: 'applyPostInterceptors'
             },
 
@@ -230,6 +237,11 @@ module.exports = {
             triggerModelChangeEvent: {
                 type: 'function',
                 handler: 'DefaultModelsRemoveInitializerService.triggerModelChangeEvent',
+                success: 'handleDeepRemove'
+            },
+            handleDeepRemove: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.handleDeepRemove',
                 success: 'successEnd'
             },
             successEnd: {

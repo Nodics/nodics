@@ -16,11 +16,17 @@ module.exports = {
         let options = request.options;
         if (options && options.projection) {
             if (!UTILS.isObject(options.projection)) {
-                process.error(request, response, 'Invalid select value');
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00001'
+                });
             }
         } else if (options && options.sort) {
             if (!UTILS.isObject(options.sort)) {
-                process.error(request, response, 'Invalid sort value');
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00002'
+                });
             }
         } else {
             process.nextSuccess(request, response);
@@ -59,12 +65,18 @@ module.exports = {
                 options: request.collection.cache
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
-                response.success = value;
-                request.cache = 'item hit';
-                process.stop(request, response);
+                process.stop(request, response, {
+                    success: true,
+                    code: 'SUC_FIND_00000',
+                    cache: 'item hit',
+                    result: value.result
+                });
             }).catch(error => {
-                response.errors.push(error);
-                process.nextSuccess(request, response);
+                if (error.code === 'ERR_CACHE_00001') {
+                    process.nextSuccess(request, response);
+                } else {
+                    process.error(request, response, error);
+                }
             });
         } else {
             process.nextSuccess(request, response);
@@ -85,7 +97,11 @@ module.exports = {
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00004',
+                    error: error
+                });
             });
         } else {
             process.nextSuccess(request, response);
@@ -95,11 +111,19 @@ module.exports = {
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
         request.collection.getItems(request).then(result => {
-            response.success = result;
-            request.cache = 'item mis';
+            response.success = {
+                success: true,
+                code: 'SUC_FIND_00000',
+                cache: 'item mis',
+                result: result
+            };
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, error);
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_FIND_00000',
+                error: error
+            });
         });
     },
 
@@ -107,14 +131,18 @@ module.exports = {
         this.LOG.debug('Populating sub models');
         let rawSchema = request.collection.rawSchema;
         let inputOptions = request.options || {};
-        if (response.success &&
-            response.success.length > 0 &&
+
+        if (response.success.result.length > 0 &&
             inputOptions.recursive === true &&
             !UTILS.isBlank(rawSchema.refSchema)) {
-            this.populateModels(request, response, response.success, 0).then(success => {
+            this.populateModels(request, response, response.success.result, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00003',
+                    error: error
+                });
             });
         } else {
             process.nextSuccess(request, response);
@@ -123,7 +151,7 @@ module.exports = {
 
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
-        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.collection.rawSchema, response.success);
+        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.collection.rawSchema, response.success.result);
         process.nextSuccess(request, response);
     },
 
@@ -142,7 +170,12 @@ module.exports = {
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                response.error = {
+                    success: false,
+                    code: 'ERR_FIND_00005',
+                    error: error
+                };
+                process.error(request, response);
             });
         } else {
             process.nextSuccess(request, response);
@@ -152,7 +185,7 @@ module.exports = {
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
         let moduleObject = NODICS.getModules()[request.collection.moduleName];
-        if (UTILS.isItemCashable(response.success, request.collection) && moduleObject.itemCache) {
+        if (UTILS.isItemCashable(response.success.result, request.collection) && moduleObject.itemCache) {
             if (request.collection.cache.ttl === undefined) {
                 request.collection.cache.ttl = moduleObject.itemCache.config.ttl || 0;
             }
@@ -160,7 +193,7 @@ module.exports = {
             SERVICE.DefaultCacheService.put({
                 cache: moduleObject.itemCache,
                 hashKey: request.cacheKeyHash,
-                value: response.success,
+                value: response.success.result,
                 options: request.collection.cache
             }).then(success => {
                 this.LOG.info('Item saved in item cache');
@@ -210,12 +243,12 @@ module.exports = {
                     tenant: request.tenant,
                     query: query
                 };
-                SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(result => {
-                    if (result.length > 0) {
+                SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {
+                    if (success.result.length > 0) {
                         if (propertyObject.type === 'one') {
-                            model[property] = result[0];
+                            model[property] = success.result[0];
                         } else {
-                            model[property] = result;
+                            model[property] = success.result;
                         }
                     } else {
                         model[property] = null;
@@ -249,11 +282,13 @@ module.exports = {
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
+        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
         process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed and got errors');
-        process.reject(response.errors);
+        response.error.msg = SERVICE.DefaultStatusService.get(response.error.code || 'ERR_SYS_00000').message;
+        process.reject(response.error);
     }
 };

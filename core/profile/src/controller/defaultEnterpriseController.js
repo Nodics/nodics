@@ -14,9 +14,15 @@ module.exports = {
     getEnterprise: function (request, callback) {
         if (UTILS.isBlank(request.enterpriseCode)) {
             if (callback) {
-                callback('Invalid enterprise code');
+                callback({
+                    success: false,
+                    code: 'ERR_ENT_00000'
+                });
             } else {
-                return Promise.reject('Invalid enterprise code');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_ENT_00000'
+                });
             }
         } else {
             if (!request.tenant) {

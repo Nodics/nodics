@@ -26,12 +26,19 @@ module.exports = {
                 query: CONFIG.get('cronjob').activeJobsQuery
             }, request);
             request.modelName = request.modelName || 'cronJob';
-            SERVICE['Default' + request.modelName.toUpperCaseFirstChar() + 'Service'].get(request).then((models) => {
-                this.cronJobContainer.createCronJobs(models).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
+            SERVICE['Default' + request.modelName.toUpperCaseFirstChar() + 'Service'].get(request).then(result => {
+                if (result.success && result.result && result.result.length > 0) {
+                    this.cronJobContainer.createCronJobs(result.result).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00001'
+                    });
+                }
             }).catch(error => {
                 reject(error);
             });
@@ -47,12 +54,19 @@ module.exports = {
                 query: CONFIG.get('cronjob').activeJobsQuery
             }, request);
             request.modelName = request.modelName || 'cronJob';
-            SERVICE.DefaultCronJobService.get(request).then((models) => {
-                this.cronJobContainer.updateCronJobs(models).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
+            SERVICE.DefaultCronJobService.get(request).then((result) => {
+                if (result.success && result.result && result.result.length > 0) {
+                    this.cronJobContainer.updateCronJobs(result.result).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00001'
+                    });
+                }
             }).catch(error => {
                 reject(error);
             });
@@ -68,12 +82,19 @@ module.exports = {
                 query: CONFIG.get('cronjob').activeJobsQuery
             }, request);
             request.modelName = request.modelName || 'cronJob';
-            SERVICE.DefaultCronJobService.get(request).then((models) => {
-                this.cronJobContainer.runCronJobs(models).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
+            SERVICE.DefaultCronJobService.get(request).then((result) => {
+                if (result.success && result.result && result.result.length > 0) {
+                    this.cronJobContainer.runCronJobs(result.result).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00001'
+                    });
+                }
             }).catch(error => {
                 reject(error);
             });

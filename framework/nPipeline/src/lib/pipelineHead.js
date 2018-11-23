@@ -112,27 +112,27 @@ module.exports = function (name, pipelineDefinition) {
         }
     };
 
-    this.stop = function (request, response) {
+    this.stop = function (request, response, success) {
+        if (success) {
+            response.success = success;
+        }
         _preNode = _currentNode;
         _currentNode = _successEndNode;
         this.next(request, response);
     };
 
-    this.error = function (request, response, err) {
-        this.LOG.error(err);
-        _preNode = _currentNode;
-        _currentNode = _handleError;
-        if (err) {
-            if (UTILS.isArray(err)) {
-                err.forEach(element => {
+    this.error = function (request, response, error) {
+        if (error) {
+            if (UTILS.isArray(error)) {
+                error.forEach(element => {
                     response.errors.push(element);
                 });
-            } else if (UTILS.isObject(err)) {
-                response.errors.push(err);
             } else {
-                response.errors.push(err.toString());
+                response.errors.push(error);
             }
         }
+        _preNode = _currentNode;
+        _currentNode = _handleError;
         this.next(request, response);
     };
 
@@ -168,13 +168,7 @@ module.exports = function (name, pipelineDefinition) {
             } else {
                 try {
                     SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(success => {
-                        if (success && UTILS.isArray(success)) {
-                            success.forEach(element => {
-                                response.success.push(element);
-                            });
-                        } else {
-                            response.success.push(success);
-                        }
+                        response.success = success;
                         _self.nextSuccess(request, response, this);
                     }).catch(errors => {
                         if (errors && UTILS.isArray(errors)) {

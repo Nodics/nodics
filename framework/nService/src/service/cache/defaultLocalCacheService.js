@@ -46,15 +46,30 @@ module.exports = {
                 _self.LOG.debug('Getting value from local cache storage with key: ' + hashKey);
                 cache.client.get(hashKey, (error, value) => {
                     if (error) {
-                        reject(error);
+                        reject({
+                            success: false,
+                            code: 'ERR_CACHE_00000',
+                            error: error
+                        });
                     } else if (value) {
-                        resolve(value);
+                        resolve({
+                            success: true,
+                            code: 'SUC_CACHE_00000',
+                            result: value
+                        });
                     } else {
-                        reject(false);
+                        reject({
+                            success: false,
+                            code: 'ERR_CACHE_00001'
+                        });
                     }
                 });
             } catch (error) {
-                reject(error);
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    error: error
+                });
             }
 
         });
@@ -71,17 +86,27 @@ module.exports = {
                 }
                 _self.LOG.debug('Putting value is local cache storage with key: ' + hashKey + ' TTL: ' + ttl);
                 cache.client.set(hashKey, value, ttl || 0);
-                resolve();
+                resolve({
+                    success: true,
+                    code: 'SUC_CACHE_00000',
+                    result: value
+                });
             } catch (error) {
-                reject(error);
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    error: error
+                });
             }
 
         });
     },
 
     flush: function (cache, prefix) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             prefix = (cache.cacheMap) ? cache.cacheMap + '_' + prefix : prefix;
+            _self.LOG.debug('Flushing value in local cache stored with prefix: ' + prefix);
             cache.client.keys(function (err, cacheKeys) {
                 if (prefix) {
                     let delKeys = [];
@@ -91,24 +116,38 @@ module.exports = {
                             delKeys.push(key);
                         }
                     });
-                    resolve(delKeys);
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: delKeys
+                    });
                 } else {
                     client.flushAll();
-                    resolve(cacheKeys);
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: cacheKeys
+                    });
                 }
             });
         });
     },
 
     flushKeys: function (cache, keys) {
+        let _self = this;
         if (keys && keys.length > 0) {
             for (var i = 0; i < keys.length; i++) {
                 keys[i] = (cache.cacheMap) ? cache.cacheMap + '_' + keys[i] : keys[i];
             }
         }
         return new Promise((resolve, reject) => {
+            _self.LOG.debug('Flushing value in local cache stored with keys: ' + keys);
             cache.client.del(keys);
-            resolve(keys);
+            resolve({
+                success: true,
+                code: 'SUC_CACHE_00000',
+                result: keys
+            });
         });
     },
 };

@@ -33,7 +33,7 @@ module.exports = {
             model: true,
             service: true,
             cache: {
-                enabled: false,
+                enabled: true,
                 ttl: 100
             },
             event: false,

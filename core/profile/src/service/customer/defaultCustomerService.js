@@ -19,10 +19,13 @@ module.exports = {
                     enterpriseCode: request.enterpriseCode
                 }
             }).then(customers => {
-                if (customers.length <= 0) {
-                    reject('Invalid login id');
+                if (customers.result.length !== 1) {
+                    reject({
+                        success: false,
+                        code: 'ERR_LIN_00000'
+                    });
                 } else {
-                    resolve(customers[0]);
+                    resolve(customers.result[0]);
                 }
             }).catch(error => {
                 reject(error);

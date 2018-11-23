@@ -27,18 +27,18 @@ module.exports = {
                 "triggers.isActive": true
             },
             {
-                "active.start": {
+                start: {
                     $lt: new Date()
                 }
             },
             {
                 $or: [{
-                    "active.end": {
+                    end: {
                         $gte: new Date()
                     }
                 },
                 {
-                    "active.end": {
+                    end: {
                         $exists: false
                     }
                 }]

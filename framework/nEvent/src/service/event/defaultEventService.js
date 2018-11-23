@@ -11,37 +11,115 @@
 
 module.exports = {
 
-    handleEvent: function (request, callback) {
-        let event = request.body;
-        if (!NODICS.getModule(event.target).eventService.emit(event.event, event, callback)) {
-            if (CONFIG.get('event').ignoreIfNoLister) {
-                callback(null, 'There is no Listener register for event ' + event.event + ' in module ' + event.target);
+    handleEvent: function (request) {
+        let _self = this;
+        let event = request.event;
+        return new Promise((resolve, reject) => {
+            if (!NODICS.getModule(event.target)) {
+                reject({
+                    success: false,
+                    code: 'SUC_EVNT_00000',
+                    msg: 'Could not find target module, whithin system: ' + event.target
+                });
+            } else if (!NODICS.getModule(event.target).eventService) {
+                reject({
+                    success: false,
+                    code: 'SUC_EVNT_00000',
+                    msg: 'Event service has not been initialized for module: ' + event.target
+                });
             } else {
-                callback('There is no Listener register for event ' + event.event + ' in module ' + event.target);
-            }
-        }
-    },
+                let eventService = NODICS.getModule(event.target).eventService;
+                if (eventService && eventService.eventNames() &&
+                    eventService.eventNames().length > 0 &&
+                    eventService.eventNames().includes(event.event)) {
+                    if (CONFIG.get('event').processAsSyncHandler || (event.processSync !== undefined && event.processSync === true)) {
+                        eventService.emit(event.event, event, (error, success) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(success);
+                            }
+                        });
+                    } else {
+                        eventService.emit(event.event, event, (error, success) => {
+                            if (error || !success.success) {
+                                _self.LOG.error('Facing issue while handling event');
+                                _self.LOG.error(error);
+                            } else {
+                                _self.LOG.debug('Event has been processed successfully');
+                            }
+                        });
+                        resolve({
+                            success: true,
+                            code: 'SUC_EVNT_00000'
+                        });
+                    }
 
-    prepareURL: function (eventDef) {
-        return SERVICE.DefaultModuleService.buildRequest({
-            moduleName: 'nems',
-            methodName: 'put',
-            apiName: '/event/push',
-            requestBody: eventDef,
-            isJsonResponse: true,
-            header: {
-                enterpriseCode: eventDef.enterpriseCode || 'default'
+                } else {
+                    if (CONFIG.get('event').ignoreIfNoLister) {
+                        resolve({
+                            success: true,
+                            code: 'SUC_EVNT_00000',
+                            msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
+                        });
+                    } else {
+                        reject({
+                            success: true,
+                            code: 'SUC_EVNT_00000',
+                            msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
+                        });
+                    }
+                }
             }
         });
     },
-
-    publish: function (request, callback) {
-        if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
-            !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
-            let eventDef = request.body || request;
-            this.LOG.debug('Publishing event to event server');
-            SERVICE.DefaultModuleService.fetch(this.prepareURL(eventDef), callback);
+    /*
+        prepareURL: function (eventDef) {
+            return SERVICE.DefaultModuleService.buildRequest({
+                moduleName: 'nems',
+                methodName: 'put',
+                apiName: '/event/push',
+                requestBody: eventDef,
+                isJsonResponse: true,
+                header: {
+                    enterpriseCode: eventDef.enterpriseCode || 'default'
+                }
+            });
+        },
+    
+        publish: function (request) {
+            return new Promise((resolve, reject) => {
+                if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
+                    !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
+                    this.LOG.debug('Publishing event to event server');
+                    SERVICE.DefaultModuleService.fetch(this.prepareURL(request.event)).then(response => {
+                        if (response.success) {
+                            resolve({
+                                success: true,
+                                code: 'SUC_EVNT_00000',
+                                result: response
+                            });
+                        } else {
+                            reject({
+                                success: false,
+                                code: 'ERR_EVNT_00000',
+                                error: response
+                            });
+                        }
+                    }).catch(error => {
+                        reject({
+                            success: false,
+                            code: 'ERR_EVNT_00000',
+                            error: error
+                        });
+                    });
+                } else {
+                    reject({
+                        success: false,
+                        code: 'ERR_EVNT_00002',
+                    });
+                }
+            });
         }
-
-    }
+    */
 };

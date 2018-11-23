@@ -44,7 +44,11 @@ module.exports = {
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00004',
+                    error: error
+                });
             });
         } else {
             process.nextSuccess(request, response);
@@ -55,19 +59,31 @@ module.exports = {
         this.LOG.debug('Executing remove query');
         try {
             request.collection.removeItems(request).then(result => {
-                response.success = result;
+                response.success = {
+                    success: true,
+                    code: 'SUC_DEL_00000',
+                    result: result
+                };
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_DEL_00000',
+                    error: error
+                });
             });
         } catch (error) {
-            process.error(request, response, error);
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_DEL_00000',
+                error: error
+            });
         }
     },
 
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post remove model interceptors');
-        if (response.success && response.success.length > 0) {
+        if (response.success && response.success.result && response.success.result.length > 0) {
             let moduleName = request.moduleName || request.collection.moduleName;
             let modelName = request.collection.modelName;
             let interceptors = NODICS.getInterceptors(moduleName, modelName);
@@ -75,12 +91,16 @@ module.exports = {
                 SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors({
                     collection: request.collection,
                     query: request.query,
-                    result: response.success,
+                    result: response.success.result,
                     interceptorList: [].concat(interceptors.postRemove)
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, error);
+                    process.error(request, response, {
+                        success: false,
+                        code: 'ERR_FIND_00005',
+                        error: error
+                    });
                 });
             } else {
                 process.nextSuccess(request, response);
@@ -92,6 +112,24 @@ module.exports = {
 
     invalidateCache: function (request, response, process) {
         this.LOG.debug('Invalidating cache for removed model');
+        try {
+            let moduleObject = NODICS.getModules()[request.collection.moduleName];
+            let collection = request.collection;
+            if (response.success && response.success.result && moduleObject.itemCache &&
+                collection.rawSchema.cache && collection.rawSchema.cache.enabled) {
+                SERVICE.DefaultCacheService.flushItemCache({
+                    moduleName: collection.moduleName,
+                    prefix: collection.schemaName
+                }).then(success => {
+                    this.LOG.debug('Cache for model:' + collection.modelName + ' has been flushed cuccessfully');
+                }).catch(error => {
+                    this.LOG.error('Cache for model:' + collection.modelName + ' has not been flushed cuccessfully');
+                    this.LOG.error(error);
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while pushing save event : ', error);
+        }
         process.nextSuccess(request, response);
     },
 
@@ -99,12 +137,11 @@ module.exports = {
         this.LOG.debug('Triggering event for removed models');
         try {
             let collection = request.collection;
-            if (response.success && response.success.models &&
-                collection.rawSchema.event) {
+            if (response.success && response.success.result && collection.rawSchema.event) {
                 let event = {
                     enterpriseCode: request.enterpriseCode,
                     tenant: request.tenant,
-                    event: 'save',
+                    event: 'removed',
                     source: collection.moduleName,
                     target: collection.moduleName,
                     state: "NEW",
@@ -118,7 +155,7 @@ module.exports = {
                         value: collection.modelName
                     }, {
                         key: 'data',
-                        value: response.success.models
+                        value: response.success.result
                     }]
                 };
                 this.LOG.debug('Pushing event for item created : ', collection.schemaName);
@@ -136,6 +173,21 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    handleDeepRemove: function (request, response, process) {
+        this.LOG.debug('Request has been processed successfully');
+        let rawSchema = request.collection.rawSchema;
+        if (request.options.returnModified &&
+            request.options.deepRemove &&
+            response.success.result &&
+            response.success.result.models &&
+            !UTILS.isBlank(rawSchema.refSchema)) {
+            let models = response.success.result.models;
+            process.nextSuccess(request, response);
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         process.resolve(response.success);
@@ -143,6 +195,6 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed and got errors');
-        process.reject(response.errors);
+        process.reject(response.error);
     }
 };

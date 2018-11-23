@@ -4,7 +4,10 @@ module.exports = {
         this.LOG.debug('Validating auth token : ', request.authToken);
         if (UTILS.isBlank(request.authToken)) {
             this.LOG.error('Auth Token is null or invalid');
-            process.error(request, response, 'Invalid auth token: Access denied');
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_AUTH_00001'
+            });
         } else {
             process.nextSuccess(request, response);
         }

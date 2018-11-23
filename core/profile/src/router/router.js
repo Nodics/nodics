@@ -19,13 +19,13 @@ module.exports = {
                     ttl: 20
                 },
                 key: '/enterprise/get',
-                method: 'POST',
+                method: 'GET',
                 handler: 'DefaultEnterpriseController',
                 operation: 'getEnterprise',
                 help: {
                     requestType: 'secured',
                     message: 'enterpriseCode need to set within header',
-                    method: 'POST',
+                    method: 'GET',
                     url: 'http://host:port/nodics/profile/enterprise/get',
                 }
             },

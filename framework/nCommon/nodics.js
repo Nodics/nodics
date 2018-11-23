@@ -22,10 +22,10 @@ module.exports = {
             process.exit(1);
         }
 
-        SYSTEM.LOG.info('Staring Utils loader process');
+        SYSTEM.LOG.info('Starting Utils loader process');
         SYSTEM.loadFiles('/src/utils/utils.js', global.UTILS);
 
-        SYSTEM.LOG.info('Staring Enums loader process');
+        SYSTEM.LOG.info('Starting Enums loader process');
         SYSTEM.loadEnums();
 
     },

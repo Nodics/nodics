@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     createJob: function (request, callback) {
@@ -22,23 +24,28 @@ module.exports = {
                 code: request.httpRequest.params.jobCode
             };
         }
-        if (callback) {
-            if (!UTILS.isBlank(request.query)) {
+        if (!UTILS.isBlank(request.query)) {
+            if (callback) {
                 FACADE.DefaultCronJobFacade.createJob(request).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                callback('Please validate your request, it is not a valid one', null);
+                return FACADE.DefaultCronJobFacade.createJob(request);
             }
         } else {
-            if (!UTILS.isBlank(request.query)) {
-                return FACADE.DefaultCronJobFacade.createJob(request);
+            this.LOG.error('Please validate your request, it is not a valid one');
+            if (callback) {
+                callback({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                return Promise.reject('Please validate your request, it is not a valid one');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             }
         }
     },
@@ -54,23 +61,29 @@ module.exports = {
                 code: request.httpRequest.params.jobCode
             };
         }
-        if (callback) {
-            if (!UTILS.isBlank(request.query)) {
+
+        if (!UTILS.isBlank(request.query)) {
+            if (callback) {
                 FACADE.DefaultCronJobFacade.updateJob(request).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                callback('Please validate your request, it is not a valid one', null);
+                return FACADE.DefaultCronJobFacade.updateJob(request);
             }
         } else {
-            if (!UTILS.isBlank(request.query)) {
-                return FACADE.DefaultCronJobFacade.updateJob(request);
+            this.LOG.error('Please validate your request, it is not a valid one');
+            if (callback) {
+                callback({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                return Promise.reject('Please validate your request, it is not a valid one');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             }
         }
     },
@@ -81,23 +94,28 @@ module.exports = {
                 code: request.httpRequest.params.jobCode
             };
         }
-        if (callback) {
-            if (!UTILS.isBlank(request.query)) {
+        if (!UTILS.isBlank(request.query)) {
+            if (callback) {
                 FACADE.DefaultCronJobFacade.runJob(request).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                callback('Please validate your request, it is not a valid one');
+                return FACADE.DefaultCronJobFacade.runJob(request);
             }
         } else {
-            if (!UTILS.isBlank(request.query)) {
-                return FACADE.DefaultCronJobFacade.runJob(request);
+            this.LOG.error('Please validate your request, it is not a valid one');
+            if (callback) {
+                callback({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                return Promise.reject('Please validate your request, it is not a valid one');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             }
         }
     },
@@ -109,23 +127,28 @@ module.exports = {
         } else if (request.httpRequest.body instanceof Array) {
             request.jobCodes = request.httpRequest.body;
         }
-        if (callback) {
-            if (request.jobCodes.length > 0) {
+        if (request.jobCodes.length > 0) {
+            if (callback) {
                 FACADE.DefaultCronJobFacade.startJob(request).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                callback('Please validate your request, it is not a valid one', null, request);
+                return FACADE.DefaultCronJobFacade.startJob(request);
             }
         } else {
-            if (request.jobCodes.length > 0) {
-                return FACADE.DefaultCronJobFacade.startJob(request);
+            this.LOG.error('Please validate your request, it is not a valid one');
+            if (callback) {
+                callback({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                return Promise.reject('Please validate your request, it is not a valid one');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             }
         }
     },
@@ -137,23 +160,28 @@ module.exports = {
         } else if (request.httpRequest.body instanceof Array) {
             request.jobCodes = request.httpRequest.body;
         }
-        if (callback) {
-            if (request.jobCodes.length > 0) {
+        if (request.jobCodes.length > 0) {
+            if (callback) {
                 FACADE.DefaultCronJobFacade.stopJob(request).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                callback('Please validate your request, it is not a valid one', null, request);
+                return FACADE.DefaultCronJobFacade.stopJob(request);
             }
         } else {
-            if (request.jobCodes.length > 0) {
-                return FACADE.DefaultCronJobFacade.stopJob(request);
+            this.LOG.error('Please validate your request, it is not a valid one');
+            if (callback) {
+                callback({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                return Promise.reject('Please validate your request, it is not a valid one');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             }
         }
     },
@@ -165,23 +193,28 @@ module.exports = {
         } else if (request.httpRequest.body instanceof Array) {
             request.jobCodes = request.httpRequest.body;
         }
-        if (callback) {
-            if (request.jobCodes.length > 0) {
+        if (request.jobCodes.length > 0) {
+            if (callback) {
                 FACADE.DefaultCronJobFacade.removeJob(request).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                callback('Please validate your request, it is not a valid one', null, request);
+                return FACADE.DefaultCronJobFacade.removeJob(request);
             }
         } else {
-            if (request.jobCodes.length > 0) {
-                return FACADE.DefaultCronJobFacade.removeJob(request);
+            this.LOG.error('Please validate your request, it is not a valid one');
+            if (callback) {
+                callback({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                return Promise.reject('Please validate your request, it is not a valid one');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             }
         }
     },
@@ -193,23 +226,28 @@ module.exports = {
         } else if (request.httpRequest.body instanceof Array) {
             request.jobCodes = request.httpRequest.body;
         }
-        if (callback) {
-            if (request.jobCodes.length > 0) {
+        if (request.jobCodes.length > 0) {
+            if (callback) {
                 FACADE.DefaultCronJobFacade.pauseJob(request).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                callback('Please validate your request, it is not a valid one', null, request);
+                return FACADE.DefaultCronJobFacade.pauseJob(request);
             }
         } else {
-            if (request.jobCodes.length > 0) {
-                return FACADE.DefaultCronJobFacade.pauseJob(request);
+            this.LOG.error('Please validate your request, it is not a valid one');
+            if (callback) {
+                callback({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                return Promise.reject('Please validate your request, it is not a valid one');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             }
         }
     },
@@ -221,23 +259,28 @@ module.exports = {
         } else if (request.body instanceof Array) {
             request.jobCodes = request.httpRequest.body;
         }
-        if (callback) {
-            if (request.jobCodes.length > 0) {
+        if (request.jobCodes.length > 0) {
+            if (callback) {
                 FACADE.DefaultCronJobFacade.resumeJob(request).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                callback('Please validate your request, it is not a valid one', null, request);
+                return FACADE.DefaultCronJobFacade.resumeJob(request);
             }
         } else {
-            if (request.jobCodes.length > 0) {
-                return FACADE.DefaultCronJobFacade.resumeJob(request);
+            this.LOG.error('Please validate your request, it is not a valid one');
+            if (callback) {
+                callback({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             } else {
-                this.LOG.error('Please validate your request, it is not a valid one');
-                return Promise.reject('Please validate your request, it is not a valid one');
+                return Promise.reject({
+                    success: false,
+                    code: 'ERR_FIND_00006'
+                });
             }
         }
     }

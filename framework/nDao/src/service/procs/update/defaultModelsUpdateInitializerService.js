@@ -14,9 +14,15 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating remove request: ');
         if (!request.query || UTILS.isBlank(request.query)) {
-            process.error(request, response, 'Update criteria can not be null or blank');
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_UPD_00001'
+            });
         } else if (!request.model || UTILS.isBlank(request.model)) {
-            process.error(request, response, 'Update value can not be null or blank');
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_UPD_00002'
+            });
         } else {
             process.nextSuccess(request, response);
         }
@@ -51,7 +57,11 @@ module.exports = {
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00004',
+                    error: error
+                });
             });
         } else {
             process.nextSuccess(request, response);
@@ -62,13 +72,25 @@ module.exports = {
         this.LOG.debug('Executing remove query');
         try {
             request.collection.updateItems(request).then(result => {
-                response.success = result;
+                response.success = {
+                    success: true,
+                    code: 'SUC_UPD_00000',
+                    result: result
+                };
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_UPD_00000',
+                    error: error
+                });
             });
         } catch (error) {
-            process.error(request, response, error);
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_UPD_00000',
+                error: error
+            });
         }
     },
 
@@ -88,7 +110,11 @@ module.exports = {
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, error);
+                    process.error(request, response, {
+                        success: false,
+                        code: 'ERR_FIND_00005',
+                        error: error
+                    });
                 });
             } else {
                 process.nextSuccess(request, response);
@@ -101,12 +127,35 @@ module.exports = {
     invalidateCache: function (request, response, process) {
         this.LOG.debug('Invalidating cache for removed model');
         try {
+            let moduleObject = NODICS.getModules()[request.collection.moduleName];
             let collection = request.collection;
-            if (response.success && response.success.models && collection.rawSchema.event) {
+            if (response.success && response.success.result && moduleObject.itemCache &&
+                collection.rawSchema.cache && collection.rawSchema.cache.enabled) {
+                SERVICE.DefaultCacheService.flushItemCache({
+                    moduleName: collection.moduleName,
+                    prefix: collection.schemaName
+                }).then(success => {
+                    this.LOG.debug('Cache for model:' + collection.modelName + ' has been flushed cuccessfully');
+                }).catch(error => {
+                    this.LOG.error('Cache for model:' + collection.modelName + ' has not been flushed cuccessfully');
+                    this.LOG.error(error);
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while pushing save event : ', error);
+        }
+        process.nextSuccess(request, response);
+    },
+
+    triggerModelChangeEvent: function (request, response, process) {
+        this.LOG.debug('Triggering event for modified model');
+        try {
+            let collection = request.collection;
+            if (response.success && response.success.result && collection.rawSchema.event) {
                 let event = {
                     enterpriseCode: request.enterpriseCode,
                     tenant: request.tenant,
-                    event: 'save',
+                    event: 'update',
                     source: collection.moduleName,
                     target: collection.moduleName,
                     state: "NEW",
@@ -120,7 +169,7 @@ module.exports = {
                         value: collection.modelName
                     }, {
                         key: 'data',
-                        value: response.success.models
+                        value: response.success.result
                     }]
                 };
                 this.LOG.debug('Pushing event for item created : ', collection.schemaName);
@@ -138,11 +187,6 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    triggerModelChangeEvent: function (request, response, process) {
-        this.LOG.debug('Triggering event for modified model');
-        process.nextSuccess(request, response);
-    },
-
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         process.resolve(response.success);
@@ -150,6 +194,6 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed and got errors');
-        process.reject(response.errors);
+        process.reject(response.error);
     }
 };
