@@ -103,8 +103,10 @@ module.exports = {
     },
 
     flush: function (cache, prefix) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             prefix = (cache.cacheMap) ? cache.cacheMap + '_' + prefix : prefix;
+            _self.LOG.debug('Flushing value in local cache stored with prefix: ' + prefix);
             cache.client.keys(function (err, cacheKeys) {
                 if (prefix) {
                     let delKeys = [];
@@ -132,12 +134,14 @@ module.exports = {
     },
 
     flushKeys: function (cache, keys) {
+        let _self = this;
         if (keys && keys.length > 0) {
             for (var i = 0; i < keys.length; i++) {
                 keys[i] = (cache.cacheMap) ? cache.cacheMap + '_' + keys[i] : keys[i];
             }
         }
         return new Promise((resolve, reject) => {
+            _self.LOG.debug('Flushing value in local cache stored with keys: ' + keys);
             cache.client.del(keys);
             resolve({
                 success: true,

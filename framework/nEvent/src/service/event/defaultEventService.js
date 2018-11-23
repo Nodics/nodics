@@ -12,28 +12,66 @@
 module.exports = {
 
     handleEvent: function (request) {
+        let _self = this;
         let event = request.event;
-        if (NODICS.getModule(event.target).eventService.emit(event.event, event)) {
-            return Promise.resolve({
-                success: true,
-                code: 'SUC_EVNT_00000',
-                msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
-            });
-        } else {
-            if (CONFIG.get('event').ignoreIfNoLister) {
-                return Promise.resolve({
-                    success: true,
+        return new Promise((resolve, reject) => {
+            if (!NODICS.getModule(event.target)) {
+                reject({
+                    success: false,
                     code: 'SUC_EVNT_00000',
-                    msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
+                    msg: 'Could not find target module, whithin system: ' + event.target
+                });
+            } else if (!NODICS.getModule(event.target).eventService) {
+                reject({
+                    success: false,
+                    code: 'SUC_EVNT_00000',
+                    msg: 'Event service has not been initialized for module: ' + event.target
                 });
             } else {
-                return Promise.resolve({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
-                });
+                let eventService = NODICS.getModule(event.target).eventService;
+                if (eventService && eventService.eventNames() &&
+                    eventService.eventNames().length > 0 &&
+                    eventService.eventNames().includes(event.event)) {
+                    if (CONFIG.get('event').processAsSyncHandler || (event.processSync !== undefined && event.processSync === true)) {
+                        eventService.emit(event.event, event, (error, success) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(success);
+                            }
+                        });
+                    } else {
+                        eventService.emit(event.event, event, (error, success) => {
+                            if (error || !success.success) {
+                                _self.LOG.error('Facing issue while handling event');
+                                _self.LOG.error(error);
+                            } else {
+                                _self.LOG.debug('Event has been processed successfully');
+                            }
+                        });
+                        resolve({
+                            success: true,
+                            code: 'SUC_EVNT_00000'
+                        });
+                    }
+
+                } else {
+                    if (CONFIG.get('event').ignoreIfNoLister) {
+                        resolve({
+                            success: true,
+                            code: 'SUC_EVNT_00000',
+                            msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
+                        });
+                    } else {
+                        reject({
+                            success: true,
+                            code: 'SUC_EVNT_00000',
+                            msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
+                        });
+                    }
+                }
             }
-        }
+        });
     },
     /*
         prepareURL: function (eventDef) {

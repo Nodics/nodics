@@ -11,9 +11,11 @@
 
 module.exports = {
     common: {
-        testListener: {
-            event: 'invalidateAuthToken',
-            listener: 'DefaultAuthenticationProviderService.invalidateAuthToken'
-        }
+        /*
+            testListener: {
+                event: 'invalidateAuthToken',
+                listener: 'DefaultAuthenticationProviderService.invalidateAuthToken'
+            }
+        */
     }
 };

@@ -254,7 +254,6 @@ module.exports = {
 
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model ');
-        console.log(request.model);
         request.collection.saveItems(request).then(success => {
             let model = {
                 success: true,

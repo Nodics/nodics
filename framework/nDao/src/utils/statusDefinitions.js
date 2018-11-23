@@ -343,6 +343,12 @@ module.exports = {
         message: 'Successfully processed'
     },
 
+    SUC_EVNT_00001: {
+        code: '110001',
+        description: 'None of the events available',
+        message: 'None of the events available'
+    },
+
     //Success CronJob 
     ERR_EVNT_00000: {
         code: '110000',

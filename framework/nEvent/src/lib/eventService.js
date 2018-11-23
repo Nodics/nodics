@@ -21,7 +21,11 @@ module.exports = class EventService extends EventEmitter {
             try {
                 SERVICE[serviceName][operation](event, callback);
             } catch (error) {
-                callback(error);
+                callback({
+                    success: false,
+                    code: 'SUC_EVNT_00000',
+                    error: error
+                });
             }
 
         });

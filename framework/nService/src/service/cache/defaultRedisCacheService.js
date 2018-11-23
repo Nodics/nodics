@@ -123,12 +123,14 @@ module.exports = {
     },
 
     flush: function (cache, prefix) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             if (prefix) {
                 prefix = (cache.cacheMap) ? cache.cacheMap + '_' + prefix : prefix;
                 if (!prefix.endsWith('*')) {
                     prefix += '*';
                 }
+                _self.LOG.debug('Flushing value in Redis cache stored with prefix: ' + prefix);
                 cache.client.keys(prefix, function (err, cacheKeys) {
                     if (cacheKeys) {
                         cacheKeys.forEach(key => {
@@ -155,12 +157,14 @@ module.exports = {
     },
 
     flushKeys: function (cache, keys) {
+        let _self = this;
         if (keys && keys.length > 0) {
             for (var i = 0; i < keys.length; i++) {
                 keys[i] = (cache.cacheMap) ? cache.cacheMap + '_' + keys[i] : keys[i];
             }
         }
         return new Promise((resolve, reject) => {
+            _self.LOG.debug('Flushing value in Redis cache stored with keys: ' + keys);
             cache.client.del(keys);
             resolve({
                 success: true,
