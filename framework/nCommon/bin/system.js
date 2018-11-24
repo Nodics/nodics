@@ -443,16 +443,15 @@ module.exports = {
             }
         });
         let contextRoot = CONFIG.get('server').options.contextRoot;
-        commonDefinitionString = commonDefinitionString.replaceAll('moduleName', options.moduleName)
-            .replaceAll('modelName', options.modelName + 'Model')
-            .replaceAll('schemaName', options.schemaName)
-            .replaceAll('modelVar', options.modelName)
+        commonDefinitionString = commonDefinitionString.replaceAll('mdulnm', options.moduleName)
+            .replaceAll('mdlnm', options.modelName + 'Model')
+            .replaceAll('schmanm', options.schemaName)
+            .replaceAll('mdlVar', options.modelName)
             .replaceAll('DaoName', 'Default' + options.modelName + 'Dao')
-            .replaceAll('mdulName', options.moduleName)
-            .replaceAll('ServiceName', 'Default' + options.modelName + 'Service')
-            .replaceAll('FacadeName', 'Default' + options.modelName + 'Facade')
-            .replaceAll("contextRoot", contextRoot)
-            .replaceAll("controllerName", 'Default' + options.modelName + 'Controller');
+            .replaceAll('srvcName', 'Default' + options.modelName + 'Service')
+            .replaceAll('dsdName', 'Default' + options.modelName + 'Facade')
+            .replaceAll("ctxRoot", contextRoot)
+            .replaceAll("ctrlName", 'Default' + options.modelName + 'Controller');
         return commonDefinitionString;
     },
 

@@ -307,8 +307,32 @@ module.exports = {
         }
     },
 
-    invalidateCache: function (request, response, process) {
-        this.LOG.debug('Invalidating cache for modified model');
+    invalidateRouterCache: function (request, response, process) {
+        this.LOG.debug('Invalidating router cache for modified model');
+        try {
+            let moduleObject = NODICS.getModules()[request.collection.moduleName];
+            let collection = request.collection;
+            if (response.model &&
+                moduleObject.apiCache) {
+                SERVICE.DefaultCacheService.flushApiCache({
+                    moduleName: collection.moduleName,
+                    prefix: collection.schemaName
+                }).then(success => {
+                    this.LOG.debug('Cache for router: ' + collection.schemaName + ' has been flushed cuccessfully');
+                }).catch(error => {
+                    this.LOG.error('Cache for router: ' + collection.schemaName + ' has not been flushed cuccessfully');
+                    this.LOG.error(error);
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while invalidating router cache ');
+            this.LOG.error(error);
+        }
+        process.nextSuccess(request, response);
+    },
+
+    invalidateItemCache: function (request, response, process) {
+        this.LOG.debug('Invalidating item cache for modified model');
         try {
             let moduleObject = NODICS.getModules()[request.collection.moduleName];
             let collection = request.collection;
@@ -320,14 +344,15 @@ module.exports = {
                     moduleName: collection.moduleName,
                     prefix: collection.schemaName
                 }).then(success => {
-                    this.LOG.debug('Cache for model:' + collection.modelName + ' has been flushed cuccessfully');
+                    this.LOG.debug('Cache for model: ' + collection.modelName + ' has been flushed cuccessfully');
                 }).catch(error => {
-                    this.LOG.error('Cache for model:' + collection.modelName + ' has not been flushed cuccessfully');
+                    this.LOG.error('Cache for model: ' + collection.modelName + ' has not been flushed cuccessfully');
                     this.LOG.error(error);
                 });
             }
         } catch (error) {
-            this.LOG.error('Facing issue while pushing save event : ', error);
+            this.LOG.error('Facing issue while invalidating item cache ');
+            this.LOG.error(error);
         }
         process.nextSuccess(request, response);
     },

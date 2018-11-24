@@ -13,7 +13,8 @@ const ObjectId = require('mongodb').ObjectId;
 module.exports = {
 
     get: function (request) {
-        request.collection = NODICS.getModels('moduleName', request.tenant).modelName;
+        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.collection.moduleName;
         return SERVICE.DefaultPipelineService.start('modelsGetInitializerPipeline', request, {});
     },
 
@@ -36,12 +37,14 @@ module.exports = {
     },
 
     save: function (request) {
-        request.collection = NODICS.getModels('moduleName', request.tenant).modelName;
+        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.collection.moduleName;
         return SERVICE.DefaultPipelineService.start('modelsSaveInitializerPipeline', request, {});
     },
 
     remove: function (request) {
-        request.collection = NODICS.getModels('moduleName', request.tenant).modelName;
+        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.collection.moduleName;
         return SERVICE.DefaultPipelineService.start('modelsRemoveInitializerPipeline', request, {});
     },
 
@@ -68,7 +71,8 @@ module.exports = {
     },
 
     update: function (request) {
-        request.collection = NODICS.getModels('moduleName', request.tenant).modelName;
+        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.collection.moduleName;
         return SERVICE.DefaultPipelineService.start('modelsUpdateInitializerPipeline', request, {});
     }
 };

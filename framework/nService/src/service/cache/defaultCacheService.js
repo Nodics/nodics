@@ -135,10 +135,11 @@ module.exports = {
                         code: 'ERR_CACHE_00006'
                     });
                 } else {
-                    let key = request.moduleName + '_' + request.config.routerName;
+                    let key = request.moduleName;
                     if (request.config.schemaName) {
                         key = key + '_' + request.config.schemaName;
                     }
+                    key = key + '_' + request.config.routerName;
                     let routerDefinition = NODICS.getRouter(key.toLowerCase(), request.moduleName);
                     if (routerDefinition) {
                         routerDefinition.cache = _.merge(routerDefinition.cache || {}, request.config.cache);
@@ -220,7 +221,7 @@ module.exports = {
         } else if (request.prefix) {
             return this.flushApiCacheByPrefix(request);
         } else {
-            let moduleObject = NODICS.getModules()[request.moduleName];
+            let moduleObject = NODICS.getModule(request.moduleName);
             if (moduleObject.apiCache) {
                 return this.flush(moduleObject.apiCache);
             } else {
@@ -253,7 +254,7 @@ module.exports = {
      * @param {*} request
      */
     flushApiCacheByPrefix: function (request) {
-        let moduleObject = NODICS.getModules(request.moduleName);
+        let moduleObject = NODICS.getModule(request.moduleName);
         if (moduleObject.apiCache && request.prefix) {
             return this.flush(moduleObject.apiCache, request.prefix);
         } else {
@@ -291,7 +292,7 @@ module.exports = {
      * @param {*} request 
      */
     flushItemCacheByKeys: function (request) {
-        let moduleObject = NODICS.getModules()[request.moduleName];
+        let moduleObject = NODICS.getModule(request.moduleName);
         if (moduleObject.itemCache && request.keys && request.keys.length > 0) {
             return this.flushKeys(moduleObject.itemCache, request.keys);
         } else {
@@ -307,7 +308,7 @@ module.exports = {
      * @param {*} request 
      */
     flushItemCacheByPrefix: function (request) {
-        let moduleObject = NODICS.getModules()[request.moduleName];
+        let moduleObject = NODICS.getModule(request.moduleName);
         if (moduleObject.itemCache && request.prefix) {
             return this.flush(moduleObject.itemCache, request.prefix);
         } else {

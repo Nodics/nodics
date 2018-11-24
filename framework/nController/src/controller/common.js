@@ -34,26 +34,26 @@ module.exports = {
             request = _.merge(request, request.httpRequest.body || {});
         }
         if (callback) {
-            FACADE.FacadeName.get(request).then(success => {
+            FACADE.dsdName.get(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.FacadeName.get(request);
+            return FACADE.dsdName.get(request);
         }
     },
 
     remove: function (request, callback) {
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
-            FACADE.FacadeName.remove(request).then(success => {
+            FACADE.dsdName.remove(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.FacadeName.remove(request);
+            return FACADE.dsdName.remove(request);
         }
     },
 
@@ -69,13 +69,13 @@ module.exports = {
             });
         }
         if (callback) {
-            FACADE.FacadeName.removeById(request).then(success => {
+            FACADE.dsdName.removeById(request.ids, request.tenant).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.FacadeName.removeById(request);
+            return FACADE.dsdName.removeById(request.ids, request.tenant);
         }
     },
 
@@ -87,39 +87,39 @@ module.exports = {
             request.codes = request.httpRequest.body;
         }
         if (callback) {
-            FACADE.FacadeName.removeByCode(request).then(success => {
+            FACADE.dsdName.removeByCode(request.codes, request.tenant).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.FacadeName.removeByCode(request);
+            return FACADE.dsdName.removeByCode(request.codes, request.tenant);
         }
     },
 
     save: function (request, callback) {
         request.models = request.httpRequest.body;
         if (callback) {
-            FACADE.FacadeName.save(request).then(success => {
+            FACADE.dsdName.save(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.FacadeName.save(request);
+            return FACADE.dsdName.save(request);
         }
     },
 
     update: function (request, callback) {
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
-            FACADE.FacadeName.update(request).then(success => {
+            FACADE.dsdName.update(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.FacadeName.update(request);
+            return FACADE.dsdName.update(request);
         }
     }
 };

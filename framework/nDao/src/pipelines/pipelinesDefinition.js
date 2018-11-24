@@ -171,12 +171,18 @@ module.exports = {
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.applyPostInterceptors',
-                success: 'invalidateCache'
+                success: 'invalidateRouterCache'
             },
 
-            invalidateCache: {
+            invalidateRouterCache: {
                 type: 'function',
-                handler: 'DefaultModelSaveInitializerService.invalidateCache',
+                handler: 'DefaultModelSaveInitializerService.invalidateRouterCache',
+                success: 'invalidateItemCache'
+            },
+
+            invalidateItemCache: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.invalidateItemCache',
                 success: 'triggerModelChangeEvent'
             },
 
@@ -227,11 +233,16 @@ module.exports = {
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelsRemoveInitializerService.applyPostInterceptors',
-                success: 'invalidateCache'
+                success: 'invalidateRouterCache'
             },
-            invalidateCache: {
+            invalidateRouterCache: {
                 type: 'function',
-                handler: 'DefaultModelsRemoveInitializerService.invalidateCache',
+                handler: 'DefaultModelsRemoveInitializerService.invalidateRouterCache',
+                success: 'invalidateItemCache'
+            },
+            invalidateItemCache: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.invalidateItemCache',
                 success: 'triggerModelChangeEvent'
             },
             triggerModelChangeEvent: {
@@ -284,11 +295,16 @@ module.exports = {
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelsUpdateInitializerService.applyPostInterceptors',
-                success: 'invalidateCache'
+                success: 'invalidateRouterCache'
             },
-            invalidateCache: {
+            invalidateRouterCache: {
                 type: 'function',
-                handler: 'DefaultModelsUpdateInitializerService.invalidateCache',
+                handler: 'DefaultModelsUpdateInitializerService.invalidateRouterCache',
+                success: 'invalidateItemCache'
+            },
+            invalidateItemCache: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.invalidateItemCache',
                 success: 'triggerModelChangeEvent'
             },
             triggerModelChangeEvent: {

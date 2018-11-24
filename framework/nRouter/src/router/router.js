@@ -117,12 +117,12 @@ module.exports = {
             get: {
                 secured: true,
                 cache: {
-                    enabled: true,
+                    enabled: false,
                     ttl: 20,
                 },
                 key: '/schemaName',
                 method: 'GET',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'get',
                 help: {
                     requestType: 'secured',
@@ -139,7 +139,7 @@ module.exports = {
                 },
                 key: '/schemaName',
                 method: 'POST',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'get',
                 help: {
                     requestType: 'secured',
@@ -160,11 +160,11 @@ module.exports = {
                 secured: true,
                 cache: {
                     enabled: false,
-                    ttl: 20
+                    ttl: 50
                 },
                 key: '/schemaName/id/:id',
                 method: 'GET',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'get',
                 help: {
                     requestType: 'secured',
@@ -181,7 +181,7 @@ module.exports = {
                 },
                 key: '/schemaName/code/:code',
                 method: 'GET',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'get',
                 help: {
                     requestType: 'secured',
@@ -196,7 +196,7 @@ module.exports = {
                 secured: true,
                 key: '/schemaName',
                 method: 'DELETE',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'remove',
                 help: {
                     requestType: 'secured',
@@ -209,7 +209,7 @@ module.exports = {
                 secured: true,
                 key: '/schemaName/id/:id',
                 method: 'DELETE',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'removeById',
                 help: {
                     requestType: 'secured',
@@ -222,7 +222,7 @@ module.exports = {
                 secured: true,
                 key: '/schemaName/id',
                 method: 'DELETE',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'removeById',
                 help: {
                     requestType: 'secured',
@@ -236,7 +236,7 @@ module.exports = {
                 secured: true,
                 key: '/schemaName/code/:code',
                 method: 'DELETE',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'removeByCode',
                 help: {
                     requestType: 'secured',
@@ -249,7 +249,7 @@ module.exports = {
                 secured: true,
                 key: '/schemaName/code',
                 method: 'DELETE',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'removeByCode',
                 help: {
                     requestType: 'secured',
@@ -265,7 +265,7 @@ module.exports = {
                 secured: true,
                 key: '/schemaName',
                 method: 'PUT',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'save',
                 help: {
                     requestType: 'secured',
@@ -281,7 +281,7 @@ module.exports = {
                 secured: true,
                 key: '/schemaName',
                 method: 'PATCH',
-                controller: 'DefaultcontrollerName',
+                controller: 'DefaultctrlName',
                 operation: 'update',
                 help: {
                     requestType: 'secured',
