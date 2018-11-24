@@ -19,7 +19,27 @@ module.exports = {
             lastName: 'Employee',
         },
         loginId: 'admin',
-        password: 'nodics',
+        password: {
+            loginId: 'admin',
+            password: 'nodics'
+        },
+        userGroups: ['adminUserGroup'],
+        addresses: ['defaultEmployeeAddress'],
+        contacts: ['defaultEmployeeContact']
+    },
+    record1: {
+        code: 'apiAdmin',
+        enterpriseCode: 'default',
+        name: {
+            title: 'Mr.',
+            firstName: 'apiAdmin',
+            lastName: 'Employee',
+        },
+        loginId: 'apiAdmin',
+        password: {
+            loginId: 'apiAdmin',
+            password: 'apiAdminInternalEmployee'
+        },
         userGroups: ['adminUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']

@@ -16,17 +16,17 @@ module.exports = {
     get: function (request, callback) {
         request.options = request.options || {};
         if (!request.options.recursive) {
-            request.options.recursive = request.httpRequest.get('recursive') || false;
+            request.options.recursive = Boolean(request.httpRequest.get('recursive') ? request.httpRequest.get('recursive') : 'false');
         }
         if (request.httpRequest.params.id) {
-            request.options.recursive = request.httpRequest.get('recursive') || false;
+            request.options.recursive = Boolean(request.httpRequest.get('recursive') ? request.httpRequest.get('recursive') : 'false');
             request.query = {
                 _id: UTILS.isObjectId(request.httpRequest.params.id) ?
                     request.httpRequest.params.id :
                     ObjectId(request.httpRequest.params.id)
             };
         } else if (request.httpRequest.params.code) {
-            request.options.recursive = request.httpRequest.get('recursive') || false;
+            request.options.recursive = Boolean(request.httpRequest.get('recursive') ? request.httpRequest.get('recursive') : 'false');
             request.query = {
                 code: request.httpRequest.params.code
             };

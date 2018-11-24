@@ -285,6 +285,30 @@ module.exports = {
             }
         },
 
+        password: {
+            super: 'super',
+            model: true,
+            service: true,
+            event: false,
+            router: false,
+            definition: {
+                enterpriseCode: {
+                    required: false
+                },
+                loginId: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required unique login id'
+                },
+                password: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required password for the login'
+                }
+            }
+
+        },
+
         user: {
             super: 'base',
             model: false,
@@ -292,6 +316,11 @@ module.exports = {
             event: false,
             router: false,
             refSchema: {
+                password: {
+                    schemaName: "password",
+                    type: 'one',
+                    propertyName: '_id'
+                },
                 userGroups: {
                     schemaName: "userGroup",
                     type: 'many',

@@ -4,7 +4,7 @@ const uuidv4 = require('uuid/v4');
 
 module.exports = {
 
-    generateUniqueCode: function() {
+    generateUniqueCode: function () {
         return uuidv4();
     },
 
@@ -13,14 +13,14 @@ module.exports = {
      * @function
      * @param {number} length - Length of the random string.
      */
-    generateSalt: function(length) {
+    generateSalt: function (length) {
         return bcrypt.genSaltSync(length || CONFIG.get('encryptSaltLength') || 10);
     },
 
     /**
      * Generate Unique Hash
      */
-    generateHash: function(key) {
+    generateHash: function (key) {
         return uuidv5(key, uuidv5.URL);
     },
 
@@ -30,11 +30,11 @@ module.exports = {
      * @param {string} value - List of required fields.
      * @param {string} salt - Data to be validated.
      */
-    generatePasswordHash: function(value, salt) {
+    generatePasswordHash: function (value, salt) {
         return new Promise((resolve, reject) => {
             try {
                 salt = salt || SYSTEM.generateSalt();
-                bcrypt.hash(value, salt).then(function(hash) {
+                bcrypt.hash(value, salt).then(function (hash) {
                     resolve(hash);
                 });
             } catch (err) {
@@ -43,21 +43,20 @@ module.exports = {
         });
     },
 
-    encryptPassword: function(document) {
+    encryptPassword: function (password) {
         return new Promise((resolve, reject) => {
-            SYSTEM.generatePasswordHash(document.password).then(hash => {
-                document.password = hash;
-                resolve(document);
+            SYSTEM.generatePasswordHash(password).then(hash => {
+                resolve(hash);
             }).catch(error => {
                 reject(err);
             });
         });
     },
 
-    compareHash: function(value, hash) {
+    compareHash: function (value, hash) {
         return new Promise((resolve, reject) => {
             try {
-                bcrypt.compare(value, hash).then(function(match) {
+                bcrypt.compare(value, hash).then(function (match) {
                     resolve(match);
                 });
             } catch (err) {

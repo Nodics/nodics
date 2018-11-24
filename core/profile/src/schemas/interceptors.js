@@ -11,7 +11,7 @@
 
 module.exports = {
     profile: {
-        employee: {
+        password: {
             encryptSavePassword: {
                 type: 'preSave',
                 active: 'true',
@@ -23,7 +23,9 @@ module.exports = {
                 active: 'true',
                 index: 0,
                 handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
-            },
+            }
+        },
+        employee: {
             saveAPIKey: {
                 type: 'preSave',
                 active: 'true',
@@ -37,7 +39,7 @@ module.exports = {
                 handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
             }
         },
-        customer: {
+        /*customer: {
             encryptSavePassword: {
                 type: 'preSave',
                 active: 'true',
@@ -50,6 +52,6 @@ module.exports = {
                 index: 0,
                 handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
             },
-        }
+        }*/
     }
 };
