@@ -235,11 +235,21 @@ module.exports = {
                 let propertyObject = refSchema[property];
                 let query = {};
                 if (propertyObject.type === 'one') {
-                    query[propertyObject.propertyName] = propertyObject.propertyName === '_id' ? ObjectId(model[property]) : model[property];
+                    if (propertyObject.propertyName === '_id') {
+                        query[propertyObject.propertyName] = UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property]);
+                    } else {
+                        query[propertyObject.propertyName] = model[property];
+                    }
                 } else {
-                    query[propertyObject.propertyName] = {
-                        '$in': propertyObject.propertyName === '_id' ? ObjectId(model[property]) : model[property]
-                    };
+                    if (propertyObject.propertyName === '_id') {
+                        query[propertyObject.propertyName] = {
+                            '$in': UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property])
+                        };
+                    } else {
+                        query[propertyObject.propertyName] = {
+                            '$in': model[property]
+                        };
+                    }
                 }
                 let input = {
                     tenant: request.tenant,

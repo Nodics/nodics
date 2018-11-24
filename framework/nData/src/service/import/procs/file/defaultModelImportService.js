@@ -162,14 +162,18 @@ module.exports = {
                 query: query
             };
             SERVICE['Default' + options.macro.options.model.toUpperCaseFirstChar() + 'Service'].get(input).then(result => {
-                if (result.length <= 0) {
-                    reject('None ' + options.macro.options.model.toUpperCaseFirstChar() + 's found');
-                } else {
+                if (result && result.success && result.result && result.result.length > 0) {
                     let data = [];
                     result.forEach(element => {
                         data.push(element[options.macro.options.returnProperty || '_id']);
                     });
                     resolve(data);
+                } else {
+                    reject({
+                        success: false,
+                        code: 'ERR_IMP_00000',
+                        msg: 'None ' + options.macro.options.model.toUpperCaseFirstChar() + 's found'
+                    });
                 }
             }).catch(error => {
                 reject(error);
@@ -194,15 +198,25 @@ module.exports = {
             query: header.query,
             models: models
         }).then(result => {
-            if (result && UTILS.isArray(result)) {
-                result.forEach(element => {
-                    response.success.push(element);
+            if (!result) {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_IMP_00001',
+                    msg: 'Could not found any response from data access layer'
                 });
+            } else if (result.success) {
+                if (UTILS.isArray(result.result)) {
+                    result.result.forEach(element => {
+                        response.success.push(element);
+                    });
+                } else {
+                    response.success.push(result.result);
+                }
+                response.targetNode = 'insertSuccess';
+                process.nextSuccess(request, response);
             } else {
-                response.success.push(result);
+                process.error(request, response, result);
             }
-            response.targetNode = 'insertSuccess';
-            process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
