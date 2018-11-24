@@ -11,34 +11,34 @@
 
 module.exports = {
     get: function (request) {
-        return SERVICE.ServiceName.get(request);
+        return SERVICE.srvcName.get(request);
     },
 
     getById: function (id, tenant) {
-        return SERVICE.ServiceName.getById(id, tenant);
+        return SERVICE.srvcName.getById(id, tenant);
     },
 
     getByCode: function (code, tenant) {
-        return SERVICE.ServiceName.getByCode(code, tenant);
+        return SERVICE.srvcName.getByCode(code, tenant);
     },
 
     save: function (request) {
-        return SERVICE.ServiceName.save(request);
+        return SERVICE.srvcName.save(request);
     },
 
     remove: function (request) {
-        return SERVICE.ServiceName.remove(request);
+        return SERVICE.srvcName.remove(request);
     },
 
     removeById: function (ids, tenant) {
-        return SERVICE.ServiceName.removeById(ids, tenant);
+        return SERVICE.srvcName.removeById(ids, tenant);
     },
 
     removeByCode: function (codes, tenant) {
-        return SERVICE.ServiceName.removeByCode(codes, tenant);
+        return SERVICE.srvcName.removeByCode(codes, tenant);
     },
 
     update: function (request) {
-        return SERVICE.ServiceName.update(request);
+        return SERVICE.srvcName.update(request);
     }
 };
