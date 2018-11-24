@@ -164,7 +164,7 @@ module.exports = {
             SERVICE['Default' + options.macro.options.model.toUpperCaseFirstChar() + 'Service'].get(input).then(result => {
                 if (result && result.success && result.result && result.result.length > 0) {
                     let data = [];
-                    result.forEach(element => {
+                    result.result.forEach(element => {
                         data.push(element[options.macro.options.returnProperty || '_id']);
                     });
                     resolve(data);

@@ -73,53 +73,51 @@ module.exports = {
             }
         });
     },
-    /*
-        prepareURL: function (eventDef) {
-            return SERVICE.DefaultModuleService.buildRequest({
-                moduleName: 'nems',
-                methodName: 'put',
-                apiName: '/event/push',
-                requestBody: eventDef,
-                isJsonResponse: true,
-                header: {
-                    enterpriseCode: eventDef.enterpriseCode || 'default'
-                }
-            });
-        },
-    
-        publish: function (request) {
-            return new Promise((resolve, reject) => {
-                if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
-                    !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
-                    this.LOG.debug('Publishing event to event server');
-                    SERVICE.DefaultModuleService.fetch(this.prepareURL(request.event)).then(response => {
-                        if (response.success) {
-                            resolve({
-                                success: true,
-                                code: 'SUC_EVNT_00000',
-                                result: response
-                            });
-                        } else {
-                            reject({
-                                success: false,
-                                code: 'ERR_EVNT_00000',
-                                error: response
-                            });
-                        }
-                    }).catch(error => {
+    prepareURL: function (eventDef) {
+        return SERVICE.DefaultModuleService.buildRequest({
+            moduleName: 'nems',
+            methodName: 'put',
+            apiName: '/event/push',
+            requestBody: eventDef,
+            isJsonResponse: true,
+            header: {
+                enterpriseCode: eventDef.enterpriseCode || 'default'
+            }
+        });
+    },
+
+    publish: function (request) {
+        return new Promise((resolve, reject) => {
+            if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
+                !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
+                this.LOG.debug('Publishing event to event server');
+                SERVICE.DefaultModuleService.fetch(this.prepareURL(request.event)).then(response => {
+                    if (response.success) {
+                        resolve({
+                            success: true,
+                            code: 'SUC_EVNT_00000',
+                            result: response
+                        });
+                    } else {
                         reject({
                             success: false,
                             code: 'ERR_EVNT_00000',
-                            error: error
+                            error: response
                         });
-                    });
-                } else {
+                    }
+                }).catch(error => {
                     reject({
                         success: false,
-                        code: 'ERR_EVNT_00002',
+                        code: 'ERR_EVNT_00000',
+                        error: error
                     });
-                }
-            });
-        }
-    */
+                });
+            } else {
+                reject({
+                    success: false,
+                    code: 'ERR_EVNT_00002',
+                });
+            }
+        });
+    }
 };

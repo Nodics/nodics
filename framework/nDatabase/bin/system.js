@@ -470,7 +470,7 @@ module.exports = {
                     dataBase: NODICS.getDatabase(moduleName, tntCode),
                     schemas: Object.keys(moduleObject.rawSchema),
 
-                }
+                };
                 SYSTEM.buildModels(options).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -514,19 +514,23 @@ module.exports = {
     buildModelsForTenants: function (tenants = ['default']) {
         return new Promise((resolve, reject) => {
             let tntCode = tenants.shift();
-            SYSTEM.buildModelsForTenant(tntCode).then(success => {
-                if (tenants.length > 0) {
-                    SYSTEM.buildModelsForTenants(tenants).then(success => {
+            if (tntCode) {
+                SYSTEM.buildModelsForTenant(tntCode).then(success => {
+                    if (tenants.length > 0) {
+                        SYSTEM.buildModelsForTenants(tenants).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
                         resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    resolve(success);
-                }
-            }).catch(error => {
-                reject(error);
-            });
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
         });
     },
 

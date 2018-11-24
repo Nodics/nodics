@@ -122,7 +122,7 @@ module.exports = {
                             code: 'ERR_LIN_00002'
                         });
                     } else {
-                        SYSTEM.compareHash(options.request.password, options.person.password).then(match => {
+                        SYSTEM.compareHash(options.request.password, options.person.password.password).then(match => {
                             if (match) {
                                 state.attempts = 0;
                                 _self.updateAuthData({
