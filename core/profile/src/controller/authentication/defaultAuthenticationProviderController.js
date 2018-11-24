@@ -39,17 +39,5 @@ module.exports = {
         } else {
             return FACADE.DefaultAuthenticationProviderFacade.authenticateCustomer(request);
         }
-    },
-
-    authorize: function (request, callback) {
-        if (callback) {
-            FACADE.DefaultAuthenticationProviderFacade.authorize(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultAuthenticationProviderFacade.authorize(request);
-        }
     }
 };

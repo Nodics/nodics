@@ -643,10 +643,13 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let requestUrl = SERVICE.DefaultModuleService.buildRequest({
                 moduleName: 'profile',
-                methodName: 'GET',
-                apiName: '/tenant/get',
+                methodName: 'POST',
+                apiName: '/tenant',
                 requestBody: {},
                 isJsonResponse: true,
+                header: {
+                    apiKey: CONFIG.get('apiKey')
+                }
             });
             try {
                 SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {

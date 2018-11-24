@@ -30,7 +30,7 @@ module.exports = {
                 }
             },
             getTenants: {
-                secured: false,
+                secured: true,
                 cache: {
                     enabled: true,
                     ttl: 200
@@ -77,12 +77,25 @@ module.exports = {
         },
 
         authorize: {
-            authorize: {
+            authorizeToken: {
                 secured: true,
-                key: '/authorize',
+                key: '/token/authorize',
                 method: 'POST',
-                handler: 'DefaultAuthenticationProviderController',
-                operation: 'authorize',
+                handler: 'DefaultAuthorizationProviderController',
+                operation: 'authorizeToken',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/authorize',
+                }
+            },
+            authorizeAPIKey: {
+                secured: true,
+                key: '/apikey/authorize',
+                method: 'POST',
+                handler: 'DefaultAuthorizationProviderController',
+                operation: 'authorizeAPIKey',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',

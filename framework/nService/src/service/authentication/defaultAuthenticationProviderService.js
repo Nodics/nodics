@@ -44,14 +44,14 @@ module.exports = {
         });
     },
 
-    findToken: function (request) {
+    findToken: function (moduleName, token) {
         return new Promise((resolve, reject) => {
             try {
-                let moduleObject = NODICS.getModule(request.moduleName);
+                let moduleObject = NODICS.getModule(moduleName);
                 if (moduleObject.authCache) {
                     SERVICE.DefaultCacheService.get({
                         cache: moduleObject.authCache,
-                        hashKey: request.authToken
+                        hashKey: token
                     }).then(value => {
                         resolve(value);
                     }).catch(error => {
@@ -65,48 +65,6 @@ module.exports = {
                 }
             } catch (error) {
                 reject(error);
-            }
-        });
-    },
-
-    prepareURL: function (input) {
-        return SERVICE.DefaultModuleService.buildRequest({
-            moduleName: 'profile',
-            methodName: 'POST',
-            apiName: '/authorize',
-            requestBody: {},
-            isJsonResponse: true,
-            header: {
-                authToken: input.authToken
-            }
-        });
-    },
-
-    authorizeToken: function (request, callback) {
-        let input = request.local || request;
-        this.findToken(input).then(success => {
-            callback(null, success.result);
-        }).catch(error => {
-            if (input.moduleName !== CONFIG.get('profileModuleName')) {
-                this.LOG.debug('Authorizing request for token :', input.authToken);
-                SERVICE.DefaultModuleService.fetch(this.prepareURL(input), (error, response) => {
-                    if (error) {
-                        callback(error);
-                    } else if (!response.success) {
-                        callback({
-                            success: false,
-                            code: 'ERR_AUTH_00001'
-                        });
-                    } else {
-                        callback(null, response.result);
-                    }
-                });
-            } else {
-                this.reAuthenticate(input).then(success => {
-                    callback(null, success);
-                }).catch(error => {
-                    callback(error);
-                });
             }
         });
     }

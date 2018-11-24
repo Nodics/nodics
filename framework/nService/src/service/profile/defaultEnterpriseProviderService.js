@@ -14,14 +14,19 @@ module.exports = {
     prepareURL: function (input) {
         return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'profile',
-            methodName: 'GET',
-            apiName: '/enterprise/get',
+            methodName: 'POST',
+            apiName: '/enterprise',
             requestBody: {
-                recursive: true
+                options: {
+                    recursive: true
+                },
+                query: {
+                    code: input.enterpriseCode
+                }
             },
             isJsonResponse: true,
             header: {
-                enterpriseCode: input.enterpriseCode
+                apiKey: CONFIG.get('apiKey')
             }
         });
     },
@@ -37,11 +42,14 @@ module.exports = {
                     query: {
                         code: request.enterpriseCode
                     }
-                }).then(enterprise => {
-                    if (enterprise && enterprise.length > 0) {
-                        resolve(enterprise[0]);
+                }).then(result => {
+                    if (result && result.success && result.result.length > 0) {
+                        resolve(result.result[0]);
                     } else {
-                        reject('Invalid enterprise code');
+                        reject({
+                            success: false,
+                            code: 'ERR_ENT_00000'
+                        });
                     }
                 }).catch(error => {
                     reject(error);
@@ -50,7 +58,7 @@ module.exports = {
                 SERVICE.DefaultModuleService.fetch(this.prepareURL(request), (error, response) => {
                     if (error) {
                         reject(error);
-                    } else if (!response.success) {
+                    } else if (!response.success || !response.result || response.result.length < 1) {
                         reject(response.msg);
                     } else {
                         resolve(response.result[0]);

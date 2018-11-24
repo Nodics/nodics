@@ -297,7 +297,7 @@ module.exports = {
     common: {
         pingMe: {
             iAmLive: {
-                secured: false,
+                secured: true,
                 key: '/ping',
                 method: 'GET',
                 handler: 'DefaultPingMeController',

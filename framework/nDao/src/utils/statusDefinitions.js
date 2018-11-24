@@ -159,10 +159,28 @@ module.exports = {
         message: 'Authentication failed: Invalid auth token',
     },
 
+    ERR_AUTH_00002: {
+        code: '300002',
+        description: 'Invalid request',
+        message: 'Invalid request'
+    },
+
+    ERR_AUTH_00003: {
+        code: '300003',
+        description: 'Authentication failed: Invalid api key',
+        message: 'Authentication failed: Invalid api key',
+    },
+
     ERR_ENT_00000: {
         code: '400000',
         description: 'Invalid enterprise code',
         message: 'Invalid enterprise code'
+    },
+
+    RR_TNT_00000: {
+        code: '400001',
+        description: 'Invalid tenant id',
+        message: 'Invalid tenant id'
     },
 
     ERR_EMP_00000: {
