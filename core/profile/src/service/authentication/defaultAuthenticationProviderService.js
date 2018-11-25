@@ -43,14 +43,18 @@ module.exports = {
                     apiKey: request.apiKey,
                     enterpriseCode: enterprise.code
                 }).then(employee => {
-                    _self.addToken(request.moduleName, null, request.apiKey, {
+                    _self.addToken(request.moduleName, 'profile', request.apiKey, {
                         person: employee,
                         enterprise: enterprise,
                         type: 'apiKey'
                     }).then(success => {
                         resolve({
-                            person: employee,
-                            enterprise: enterprise
+                            success: true,
+                            code: 'SUC_AUTH_00000',
+                            result: {
+                                person: employee,
+                                enterprise: enterprise
+                            }
                         });
                     }).catch(error => {
                         reject(error);
@@ -59,7 +63,7 @@ module.exports = {
                     reject(error);
                 });
             }).catch(error => {
-
+                reject(error);
             });
         });
     },

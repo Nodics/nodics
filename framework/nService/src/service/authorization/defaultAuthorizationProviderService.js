@@ -27,7 +27,7 @@ module.exports = {
     authorizeToken: function (request) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultAuthenticationProviderService.findToken(request.moduleName, request.authToken).then(success => {
-                resolve(success.result);
+                resolve(success);
             }).catch(error => {
                 if (request.moduleName === CONFIG.get('profileModuleName')) {
                     SERVICE.DefaultAuthenticationProviderService.reAuthenticate(request).then(success => {
@@ -46,7 +46,7 @@ module.exports = {
                                 code: 'ERR_AUTH_00001'
                             });
                         } else {
-                            resolve(response.result);
+                            resolve(response);
                         }
                     });
                 }
@@ -62,7 +62,7 @@ module.exports = {
             requestBody: {},
             isJsonResponse: true,
             header: {
-                authToken: input.apiKey
+                apiKey: input.apiKey
             }
         });
     },
@@ -70,7 +70,7 @@ module.exports = {
     authorizeAPIKey: function (request) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultAuthenticationProviderService.findToken(request.moduleName, request.apiKey).then(success => {
-                resolve(success.result);
+                resolve(success);
             }).catch(error => {
                 if (request.moduleName === CONFIG.get('profileModuleName')) {
                     SERVICE.DefaultAuthenticationProviderService.authenticateAPIKey(request).then(success => {
@@ -89,7 +89,7 @@ module.exports = {
                                 code: 'ERR_AUTH_00001'
                             });
                         } else {
-                            resolve(response.result);
+                            resolve(response);
                         }
                     });
                 }

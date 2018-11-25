@@ -24,11 +24,19 @@ module.exports = {
             request.enterpriseCode = 'default';
             SERVICE.DefaultAuthorizationProviderService.authorizeAPIKey(request).then(success => {
                 try {
-                    request.enterprise = success.enterprise;
-                    request.enterpriseCode = success.enterprise.code;
-                    request.person = success.person;
-                    request.tenant = success.enterprise.tenant.code;
-                    process.nextSuccess(request, response);
+                    if (success.success && success.result) {
+                        request.enterprise = success.result.enterprise;
+                        request.enterpriseCode = success.result.enterprise.code;
+                        request.person = success.result.person;
+                        request.tenant = success.result.enterprise.tenant.code;
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, {
+                            success: false,
+                            code: 'ERR_AUTH_00001',
+                            error: err
+                        });
+                    }
                 } catch (err) {
                     process.error(request, response, {
                         success: false,
@@ -49,11 +57,19 @@ module.exports = {
             this.LOG.debug('Authorizing auth token : ', request.authToken);
             SERVICE.DefaultAuthorizationProviderService.authorizeToken(request).then(success => {
                 try {
-                    request.enterprise = success.enterprise;
-                    request.enterpriseCode = success.enterprise.code;
-                    request.person = success.person;
-                    request.tenant = success.enterprise.tenant.code;
-                    process.nextSuccess(request, response);
+                    if (success.success && success.result) {
+                        request.enterprise = success.result.enterprise;
+                        request.enterpriseCode = success.result.enterprise.code;
+                        request.person = success.result.person;
+                        request.tenant = success.result.enterprise.tenant.code;
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, {
+                            success: false,
+                            code: 'ERR_AUTH_00001',
+                            error: err
+                        });
+                    }
                 } catch (err) {
                     process.error(request, response, {
                         success: false,

@@ -102,12 +102,12 @@ module.exports = {
             },
             authorizeAuthToken: {
                 type: 'function',
-                handler: 'DefaultNonSecuredRequestPipelineService.authorizeAuthToken',
+                handler: 'DefaultSecuredRequestPipelineService.authorizeAuthToken',
                 success: 'validateRequestData'
             },
             validateRequestData: {
                 type: 'function',
-                handler: 'DefaultNonSecuredRequestPipelineService.validateRequestData',
+                handler: 'DefaultSecuredRequestPipelineService.validateRequestData',
                 success: 'successEnd'
             }
         }
