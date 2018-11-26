@@ -15,6 +15,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.get({
                 tenant: request.tenant,
+                options: {
+                    recursive: true
+                },
                 query: {
                     loginId: request.loginId,
                     enterpriseCode: request.enterpriseCode
@@ -39,8 +42,7 @@ module.exports = {
             this.get({
                 tenant: request.tenant,
                 query: {
-                    apiKey: request.apiKey,
-                    enterpriseCode: request.enterpriseCode
+                    apiKey: request.apiKey
                 }
             }).then(employees => {
                 if (employees.result.length !== 1) {

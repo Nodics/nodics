@@ -9,6 +9,8 @@
 
  */
 
+const ObjectId = require('mongodb').ObjectId;
+
 module.exports = {
 
     validateRequest: function (request, response, process) {
@@ -233,11 +235,21 @@ module.exports = {
                 let propertyObject = refSchema[property];
                 let query = {};
                 if (propertyObject.type === 'one') {
-                    query[propertyObject.propertyName] = model[property];
+                    if (propertyObject.propertyName === '_id') {
+                        query[propertyObject.propertyName] = UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property]);
+                    } else {
+                        query[propertyObject.propertyName] = model[property];
+                    }
                 } else {
-                    query[propertyObject.propertyName] = {
-                        '$in': model[property]
-                    };
+                    if (propertyObject.propertyName === '_id') {
+                        query[propertyObject.propertyName] = {
+                            '$in': UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property])
+                        };
+                    } else {
+                        query[propertyObject.propertyName] = {
+                            '$in': model[property]
+                        };
+                    }
                 }
                 let input = {
                     tenant: request.tenant,

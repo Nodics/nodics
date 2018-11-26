@@ -1,12 +1,51 @@
 module.exports = {
 
-    validateAuthToken: function (request, response, process) {
-        this.LOG.debug('Validating auth token : ', request.authToken);
-        if (UTILS.isBlank(request.authToken)) {
-            this.LOG.error('Auth Token is null or invalid');
+    validateSecuredRequest: function (request, response, process) {
+        if (!request.apiKey && !request.authToken) {
             process.error(request, response, {
                 success: false,
-                code: 'ERR_AUTH_00001'
+                code: 'ERR_AUTH_00002',
+                msg: 'Invalid secured request'
+            });
+        } else if (request.apiKey && request.authToken) {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_AUTH_00002',
+                msg: 'Request can not hold authToken and apiKey both at sametime'
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    authorizeAPIKey: function (request, response, process) {
+        if (request.apiKey) {
+            this.LOG.debug('Authorizing api key : ', request.apiKey);
+            request.enterpriseCode = 'default';
+            SERVICE.DefaultAuthorizationProviderService.authorizeAPIKey(request).then(success => {
+                try {
+                    if (success.success && success.result) {
+                        request.enterprise = success.result.enterprise;
+                        request.enterpriseCode = success.result.enterprise.code;
+                        request.person = success.result.person;
+                        request.tenant = success.result.enterprise.tenant.code;
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, {
+                            success: false,
+                            code: 'ERR_AUTH_00001',
+                            error: err
+                        });
+                    }
+                } catch (err) {
+                    process.error(request, response, {
+                        success: false,
+                        code: 'ERR_AUTH_00001',
+                        error: err
+                    });
+                }
+            }).catch(error => {
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -14,21 +53,59 @@ module.exports = {
     },
 
     authorizeAuthToken: function (request, response, process) {
-        this.LOG.debug('Authorizing auth token : ', request.authToken);
-        SERVICE.DefaultAuthenticationProviderService.authorizeToken(request, (error, result) => {
-            try {
-                if (error) {
-                    process.error(request, response, error);
-                } else {
-                    request.enterprise = result.enterprise;
-                    request.enterpriseCode = result.enterprise.code;
-                    request.person = result.person;
-                    request.tenant = result.enterprise.tenant.code;
-                    process.nextSuccess(request, response);
+        if (request.authToken) {
+            this.LOG.debug('Authorizing auth token : ', request.authToken);
+            SERVICE.DefaultAuthorizationProviderService.authorizeToken(request).then(success => {
+                try {
+                    if (success.success && success.result) {
+                        request.enterprise = success.result.enterprise;
+                        request.enterpriseCode = success.result.enterprise.code;
+                        request.person = success.result.person;
+                        request.tenant = success.result.enterprise.tenant.code;
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, {
+                            success: false,
+                            code: 'ERR_AUTH_00001',
+                            error: err
+                        });
+                    }
+                } catch (err) {
+                    process.error(request, response, {
+                        success: false,
+                        code: 'ERR_AUTH_00001',
+                        error: err
+                    });
                 }
-            } catch (err) {
-                process.error(request, response, err);
-            }
-        });
-    }
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    validateRequestData: function (request, response, process) {
+        if (!request.enterprise) {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_AUTH_00002',
+                msg: 'Invalid secured request'
+            });
+        } else if (!request.person) {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_AUTH_00002',
+                msg: 'Invalid secured request'
+            });
+        } else if (!request.tenant) {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_AUTH_00002',
+                msg: 'Invalid secured request'
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
 };

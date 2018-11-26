@@ -162,9 +162,18 @@ module.exports = function (name, pipelineDefinition) {
         if (_currentNode) {
             this.prepareNextNode(request, response);
             if (_currentNode.getType() === 'function') {
-                let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
-                let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
-                SERVICE[serviceName][operation](request, response, this);
+                try {
+                    let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
+                    let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
+                    SERVICE[serviceName][operation](request, response, this);
+                } catch (error) {
+                    _self.LOG.error(error);
+                    _self.error(request, response, {
+                        success: false,
+                        code: 'ERR_PIPE_00000',
+                        error: error.toString()
+                    });
+                }
             } else {
                 try {
                     SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(success => {
@@ -185,7 +194,12 @@ module.exports = function (name, pipelineDefinition) {
                         }
                     });
                 } catch (error) {
-                    _self.error(request, response, error);
+                    _self.LOG.error(error);
+                    _self.error(request, response, {
+                        success: false,
+                        code: 'ERR_PIPE_00000',
+                        error: error.toString()
+                    });
                 }
             }
         }

@@ -54,13 +54,23 @@ module.exports = {
     parseHeader: function (request, response, process) {
         this.LOG.debug('Parsing request header for : ', request.originalUrl);
         request.cache = null;
+        if (request.httpRequest.get('apiKey')) {
+            request.apiKey = request.httpRequest.get('apiKey');
+        }
         if (request.httpRequest.get('authToken')) {
             request.authToken = request.httpRequest.get('authToken');
         }
         if (request.httpRequest.get('enterpriseCode')) {
             request.enterpriseCode = request.httpRequest.get('enterpriseCode');
         }
-        process.nextSuccess(request, response);
+        if (!request.apiKey && !request.authToken && !request.enterpriseCode) {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_AUTH_00002'
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     parseBody: function (request, response, process) {

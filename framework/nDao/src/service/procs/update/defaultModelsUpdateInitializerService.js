@@ -198,12 +198,10 @@ module.exports = {
                     }]
                 };
                 this.LOG.debug('Pushing event for item created : ', collection.schemaName);
-                SERVICE.DefaultEventService.publish(event, (error, response) => {
-                    if (error) {
-                        _self.LOG.error('While posting model change event : ', error);
-                    } else {
-                        _self.LOG.debug('Event successfully posted');
-                    }
+                SERVICE.DefaultEventService.publish(event).then(success => {
+                    this.LOG.debug('Event successfully posted');
+                }).catch(error => {
+                    this.LOG.error('While posting model change event : ', error);
                 });
             }
         } catch (error) {

@@ -10,19 +10,20 @@
  */
 
 module.exports = {
-    encryptPassword: function (options) {
+
+    /*
+    authorize: function (request) {
         return new Promise((resolve, reject) => {
-            let passwordLengthLimit = CONFIG.get('passwordLengthLimit') || 25;
-            if (options.model.password && options.model.password.length < passwordLengthLimit) {
-                SYSTEM.encryptPassword(options.model.password).then(hash => {
-                    options.model.password = hash;
-                    resolve(true);
+            SERVICE.DefaultAuthenticationProviderService.findToken(request).then(success => {
+                resolve(success);
+            }).catch(error => {
+                SERVICE.DefaultAuthenticationProviderService.reAuthenticate(request).then(success => {
+                    resolve(success);
                 }).catch(error => {
-                    next(error);
+                    reject(error);
                 });
-            } else {
-                resolve(true);
-            }
+            });
         });
     }
+    */
 };

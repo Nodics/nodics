@@ -74,29 +74,7 @@ module.exports = {
             });
         });
     },
-    /*
-        processAsyncEvents: function (input) {
-            let _self = this;
-            this.LOG.debug('Broadcasting async events');
-            return new Promise((resolve, reject) => {
-                this.fetchEvents(input).then(events => {
-                    let models = events.models;
-                    if (!models || models.length <= 0) {
-                        resolve('None of the events available');
-                    } else {
-                        _self.LOG.debug('Total events to be processed : ', events.models.length);
-                        _self.broadcastEvents(events.models).then(success => {
-                            resolve(events.models);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-            });
-        },
-    */
+
     processSyncEvents: function (events) {
         let _self = this;
         this.LOG.debug('Broadcasting Sync events');
@@ -267,7 +245,7 @@ module.exports = {
             requestBody: event,
             isJsonResponse: true,
             header: {
-                authToken: NODICS.getModule('nems').metaData.authToken
+                apiKey: CONFIG.get('apiKey')
             }
         });
     }

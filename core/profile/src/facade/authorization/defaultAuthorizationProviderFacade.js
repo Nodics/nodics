@@ -10,15 +10,12 @@
  */
 
 module.exports = {
-    generateAPIKey: function (options) {
-        return new Promise((resolve, reject) => {
-            try {
-                let key = options.model.loginId + options.model.password + (new Date()).getTime();
-                options.model.apiKey = SYSTEM.generateHash(key);
-                resolve(true);
-            } catch (error) {
-                reject(error);
-            }
-        });
+
+    authorizeToken: function (request) {
+        return SERVICE.DefaultAuthorizationProviderService.authorizeToken(request);
+    },
+
+    authorizeAPIKey: function (request) {
+        return SERVICE.DefaultAuthorizationProviderService.authorizeAPIKey(request);
     }
 };

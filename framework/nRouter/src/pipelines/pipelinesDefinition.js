@@ -86,23 +86,28 @@ module.exports = {
     },
 
     handleSecuredRequestPipeline: {
-        startNode: "validateAuthToken",
+        startNode: "validateSecuredRequest",
         hardStop: true,
         handleError: 'handleError',
         nodes: {
-            validateAuthToken: {
+            validateSecuredRequest: {
                 type: 'function',
-                handler: 'DefaultSecuredRequestPipelineService.validateAuthToken',
+                handler: 'DefaultSecuredRequestPipelineService.validateSecuredRequest',
+                success: 'authorizeAPIKey'
+            },
+            authorizeAPIKey: {
+                type: 'function',
+                handler: 'DefaultSecuredRequestPipelineService.authorizeAPIKey',
                 success: 'authorizeAuthToken'
             },
             authorizeAuthToken: {
                 type: 'function',
                 handler: 'DefaultSecuredRequestPipelineService.authorizeAuthToken',
-                success: 'validateTenantId'
+                success: 'validateRequestData'
             },
-            validateTenantId: {
+            validateRequestData: {
                 type: 'function',
-                handler: 'DefaultNonSecuredRequestPipelineService.validateTenantId',
+                handler: 'DefaultSecuredRequestPipelineService.validateRequestData',
                 success: 'successEnd'
             }
         }

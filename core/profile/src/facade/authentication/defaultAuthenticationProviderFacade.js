@@ -17,9 +17,5 @@ module.exports = {
 
     authenticateCustomer: function (request) {
         return SERVICE.DefaultAuthenticationProviderService.authenticateCustomer(request);
-    },
-
-    authorize: function (request) {
-        return SERVICE.DefaultAuthenticationProviderService.authorize(request);
     }
 };

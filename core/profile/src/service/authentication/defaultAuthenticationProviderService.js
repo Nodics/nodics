@@ -37,7 +37,34 @@ module.exports = {
     authenticateAPIKey: function (request) {
         return new Promise((resolve, reject) => {
             let _self = this;
-
+            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.enterpriseCode).then(enterprise => {
+                SERVICE.DefaultEmployeeService.findByAPIKey({
+                    tenant: enterprise.tenant.code,
+                    apiKey: request.apiKey,
+                    enterpriseCode: enterprise.code
+                }).then(employee => {
+                    _self.addToken(request.moduleName, 'profile', request.apiKey, {
+                        person: employee,
+                        enterprise: enterprise,
+                        type: 'apiKey'
+                    }).then(success => {
+                        resolve({
+                            success: true,
+                            code: 'SUC_AUTH_00000',
+                            result: {
+                                person: employee,
+                                enterprise: enterprise
+                            }
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 
@@ -122,7 +149,7 @@ module.exports = {
                             code: 'ERR_LIN_00002'
                         });
                     } else {
-                        SYSTEM.compareHash(options.request.password, options.person.password).then(match => {
+                        SYSTEM.compareHash(options.request.password, options.person.password.password).then(match => {
                             if (match) {
                                 state.attempts = 0;
                                 _self.updateAuthData({
@@ -176,7 +203,6 @@ module.exports = {
                     error: error
                 });
             }
-
         });
     },
 
@@ -212,20 +238,6 @@ module.exports = {
         });
     },
 
-    authorize: function (request, callback) {
-        return new Promise((resolve, reject) => {
-            this.findToken(request).then(success => {
-                resolve(success);
-            }).catch(error => {
-                this.reAuthenticate(request).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            });
-        });
-    },
-
     reAuthenticate: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -241,7 +253,7 @@ module.exports = {
                             if (error) {
                                 reject(error);
                             } else {
-                                _self.findToken(request).then(success => {
+                                _self.findToken(request.moduleName, request.authToken).then(success => {
                                     resolve(success);
                                 }).catch(error => {
                                     reject(error);
@@ -253,7 +265,7 @@ module.exports = {
                             if (error) {
                                 reject(error);
                             } else {
-                                _self.findToken(request).then(success => {
+                                _self.findToken(request.moduleName, request.authToken).then(success => {
                                     resolve(null, success);
                                 }).catch(error => {
                                     reject(error);
