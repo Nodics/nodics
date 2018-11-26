@@ -11,14 +11,6 @@
 
 module.exports = {
 
-    backgroundAuthModules: {
-        cronjob: {
-            enterpriseCode: 'default',
-            loginId: 'admin',
-            password: 'nodics'
-        }
-    },
-
     cronjob: {
         runOnStartup: false,
         waitTime: 1000,

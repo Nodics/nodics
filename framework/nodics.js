@@ -143,14 +143,10 @@ module.exports = {
     start: function (options) {
         this.initFrameworkExecute(options).then(success => {
             SYSTEM.startServers().then(success => {
-                SERVICE.DefaultBackgroundAuthTokenGenerateService.generateAuthToken(CONFIG.get('backgroundAuthModules')).then(success => {
-                    NODICS.setEndTime(new Date());
-                    NODICS.setServerState('started');
-                    SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
-                    this.initTestRuner();
-                }).catch(error => {
-                    SYSTEM.LOG.error('Failed to allocate default token with modules, check configuration : ', error);
-                });
+                NODICS.setEndTime(new Date());
+                NODICS.setServerState('started');
+                SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
+                this.initTestRuner();
             }).catch(error => {
                 SYSTEM.LOG.error('Nodics server error : ', error);
             });

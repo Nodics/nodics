@@ -11,33 +11,33 @@
 
 module.exports = {
     nems: {
-        pushNonSecuredEvent: {
-            saveEvent: {
-                secured: true,
-                key: '/event/push',
-                method: 'PUT',
-                controller: 'DefaultEventController',
-                operation: 'save',
-                help: {
-                    requestType: 'non-secured',
-                    message: 'enterpriseCode need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/nems/event/push',
-                    body: {
-                        enterpriseCode: 'default',
-                        event: 'testMe',
-                        source: 'cronjob',
-                        target: 'profile',
-                        nodeId: '0',
-                        state: 'NEW',
-                        type: 'ASYNC',
-                        params: {
-                            //any raw data, want to send to handler
-                        }
-                    }
-                }
-            },
-        },
+        /* pushNonSecuredEvent: {
+             saveEvent: {
+                 secured: true,
+                 key: '/event/push',
+                 method: 'PUT',
+                 controller: 'DefaultEventController',
+                 operation: 'save',
+                 help: {
+                     requestType: 'non-secured',
+                     message: 'enterpriseCode need to set within header',
+                     method: 'GET',
+                     url: 'http://host:port/nodics/nems/event/push',
+                     body: {
+                         enterpriseCode: 'default',
+                         event: 'testMe',
+                         source: 'cronjob',
+                         target: 'profile',
+                         nodeId: '0',
+                         state: 'NEW',
+                         type: 'ASYNC',
+                         params: {
+                             //any raw data, want to send to handler
+                         }
+                     }
+                 }
+             },
+         },*/
         processEvent: {
             process: {
                 secured: true,

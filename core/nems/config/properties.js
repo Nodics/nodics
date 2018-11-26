@@ -10,15 +10,6 @@
  */
 
 module.exports = {
-
-    backgroundAuthModules: {
-        nems: {
-            enterpriseCode: 'default',
-            loginId: 'admin',
-            password: 'nodics'
-        }
-    },
-
     eventFetchSize: 100,
     publishEventOnNode: '0',
     server: {

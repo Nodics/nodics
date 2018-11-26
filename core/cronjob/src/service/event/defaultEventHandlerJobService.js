@@ -36,7 +36,7 @@ module.exports = {
             requestBody: {},
             isJsonResponse: true,
             header: {
-                authToken: NODICS.getModule('cronjob').metaData.authToken
+                apiKey: CONFIG.get('apiKey')
             }
         });
     },
