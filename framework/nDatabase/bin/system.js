@@ -395,7 +395,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             options.modelName = UTILS.createModelName(options.schemaName);
             let schema = options.moduleObject.rawSchema[options.schemaName];
-            if (options.dataBase.master && schema.model === true) {
+            if (options.dataBase.master && schema.model === true && (!schema.tenants || schema.tenants.includes(options.tntCode))) {
                 SYSTEM.prepareDatabaseOptions(options);
                 let cache = _.merge({}, schema.cache || {});
                 let itemLevelCache = CONFIG.get('cache').itemLevelCache;
@@ -599,7 +599,7 @@ module.exports = {
                     SYSTEM.LOG.error('Module name : ', key, ' is not valid. Please define a valide module name in schema');
                     process.exit(CONFIG.get('errorExitCode'));
                 }
-                moduleObject.rawSchema = SYSTEM.resolveModuleSchemaDependancy(key, _.merge(_.merge({}, defaultSchema), mergedSchema[key]));
+                moduleObject.rawSchema = SYSTEM.resolveModuleSchemaDependancy(key, _.merge(_.merge({}, defaultSchema), mergedSchema[key]));;
             }
         });
         NODICS.setRawModels(SYSTEM.loadFiles('/src/schemas/model.js'));

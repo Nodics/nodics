@@ -17,5 +17,13 @@ module.exports = {
         tenant: 'default:true',
         addresses: ['defaultEntAddress'],
         contacts: ['defaultEntContact']
+    },
+    record1: {
+        code: 'testOneEnt',
+        name: 'testOneEnt',
+        description: 'Default Enterprise',
+        tenant: 'testOne:true',
+        addresses: ['defaultEntAddress'],
+        contacts: ['defaultEntContact']
     }
 };

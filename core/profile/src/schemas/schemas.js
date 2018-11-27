@@ -21,6 +21,7 @@ module.exports = {
                 ttl: 100
             },
             router: true,
+            tenants: ['default'],
             definition: {
                 enterpriseCode: {
                     required: false
@@ -155,6 +156,7 @@ module.exports = {
                 ttl: 100
             },
             router: true,
+            tenants: ['default'],
             refSchema: {
                 tenant: {
                     schemaName: "tenant",
