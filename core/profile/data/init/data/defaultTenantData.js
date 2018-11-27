@@ -15,66 +15,65 @@ module.exports = {
         active: true,
         description: 'Default tenant, which take configuration from properties configuration'
     },
-    /*
-        record1: {
-            code: 'testOne',
-            active: true,
-            description: 'This tenant is just for testing purose',
-            properties: {
-                database: {
-                    default: {
-                        databaseType: 'mongodb', //for Cassandra use 'cassandra'
-                        mongodb: {
-                            master: {
-                                URI: 'mongodb://localhost:27017',
-                                databaseName: 'testOneMaster',
-                                options: {
-                                    native_parser: true,
-                                    poolSize: 5
-                                }
-                            },
-                            test: {
-                                URI: 'mongodb://localhost:27017',
-                                databaseName: 'testOneTest',
-                                options: {
-                                    native_parser: true,
-                                    poolSize: 5
-                                }
+
+    record1: {
+        code: 'testOne',
+        active: true,
+        description: 'This tenant is just for testing purose',
+        properties: {
+            database: {
+                default: {
+                    databaseType: 'mongodb', //for Cassandra use 'cassandra'
+                    mongodb: {
+                        master: {
+                            URI: 'mongodb://localhost:27017',
+                            databaseName: 'testOneMaster',
+                            options: {
+                                native_parser: true,
+                                poolSize: 5
                             }
-                        }
-                    }
-                }
-            }
-        },
-        record2: {
-            code: 'disabledTenant',
-            active: false,
-            description: 'This tenant is just for testing purose if disabled is getting loaded',
-            properties: {
-                database: {
-                    default: {
-                        databaseType: 'mongodb', //for Cassandra use 'cassandra'
-                        mongodb: {
-                            master: {
-                                URI: 'mongodb://localhost:27017',
-                                databaseName: 'disabledTenantMaster',
-                                options: {
-                                    native_parser: true,
-                                    poolSize: 5
-                                }
-                            },
-                            test: {
-                                URI: 'mongodb://localhost:27017',
-                                databaseName: 'disabledTenantTest',
-                                options: {
-                                    native_parser: true,
-                                    poolSize: 5
-                                }
+                        },
+                        test: {
+                            URI: 'mongodb://localhost:27017',
+                            databaseName: 'testOneTest',
+                            options: {
+                                native_parser: true,
+                                poolSize: 5
                             }
                         }
                     }
                 }
             }
         }
-    */
+    },
+    record2: {
+        code: 'disabledTenant',
+        active: false,
+        description: 'This tenant is just for testing purose if disabled is getting loaded',
+        properties: {
+            database: {
+                default: {
+                    databaseType: 'mongodb', //for Cassandra use 'cassandra'
+                    mongodb: {
+                        master: {
+                            URI: 'mongodb://localhost:27017',
+                            databaseName: 'disabledTenantMaster',
+                            options: {
+                                native_parser: true,
+                                poolSize: 5
+                            }
+                        },
+                        test: {
+                            URI: 'mongodb://localhost:27017',
+                            databaseName: 'disabledTenantTest',
+                            options: {
+                                native_parser: true,
+                                poolSize: 5
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 };

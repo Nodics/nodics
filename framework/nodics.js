@@ -96,15 +96,10 @@ module.exports = {
                             SERVICE.DefaultImportService.importInitData({
                                 modules: NODICS.getActiveModules()
                             }).then(success => {
-                                SYSTEM.addTenants().then(success => {
-                                    SYSTEM.loadTenantDatabase().then(success => {
-                                        resolve(true);
-                                    }).catch(error => {
-                                        SYSTEM.LOG.error('Not able to load tenants : ', error);
-                                        reject(error);
-                                    });
+                                SYSTEM.buildEnterprises().then(success => {
+                                    resolve(true);
                                 }).catch(error => {
-                                    SYSTEM.LOG.error('Not able to add tenants : ', error);
+                                    SYSTEM.LOG.error('Not able to load tenants : ', error);
                                     reject(error);
                                 });
                             }).catch(error => {
@@ -112,15 +107,10 @@ module.exports = {
                                 reject(error);
                             });
                         } else {
-                            SYSTEM.addTenants().then(success => {
-                                SYSTEM.loadTenantDatabase().then(success => {
-                                    resolve(true);
-                                }).catch(error => {
-                                    SYSTEM.LOG.error('Not able to load tenants : ', error);
-                                    reject(error);
-                                });
+                            SYSTEM.buildEnterprises().then(success => {
+                                resolve(true);
                             }).catch(error => {
-                                SYSTEM.LOG.error('Not able to add tenants : ', error);
+                                SYSTEM.LOG.error('Not able to load tenants : ', error);
                                 reject(error);
                             });
                         }

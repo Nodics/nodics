@@ -353,7 +353,7 @@ module.exports = {
                 collection.tenant = options.tntCode;
                 collection.channel = options.channel;
                 SYSTEM.createIndexes(collection).then(success => {
-                    SYSTEM.LOG.debug('Indexes created for: ' + collection.schemaName + ' : ' + success);
+                    SYSTEM.LOG.debug('Indexes created for: ' + collection.schemaName);
                     SYSTEM.registerModelMiddleWare(options, collection, schema);
                     resolve(collection);
                 }).catch(error => {
@@ -424,7 +424,7 @@ module.exports = {
                     reject(error);
                 });
             } else {
-                SYSTEM.LOG.warn('Invalid database configuration for module: ', options.moduleName, ' and tenant: ', options.tntCode);
+                SYSTEM.LOG.warn('Invalid database configuration for module: ', options.moduleName, ' and tenant: ', options.tntCode + '. Hence defailt will be used');
                 resolve(true);
             }
         });
@@ -511,7 +511,7 @@ module.exports = {
         });
     },
 
-    buildModelsForTenants: function (tenants = ['default']) {
+    buildModelsForTenants: function (tenants) {
         return new Promise((resolve, reject) => {
             let tntCode = tenants.shift();
             if (tntCode) {
@@ -604,7 +604,129 @@ module.exports = {
         });
         NODICS.setRawModels(SYSTEM.loadFiles('/src/schemas/model.js'));
     },
+    /*
+        createTenantDatabaseConnection: function () {
+            return new Promise((resolve, reject) => {
+                let allTenant = [];
+                let tenants = NODICS.getTenants() || [];
+                tenants.forEach(function (tntCode) {
+                    if (tntCode !== 'default') {
+                        allTenant.push(SYSTEM.createTenantDatabase(tntCode));
+                    }
+                });
+                if (allTenant.length > 0) {
+                    Promise.all(allTenant).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            });
+        },*/
 
+    fetchEnterprise: function () {
+        return new Promise((resolve, reject) => {
+            if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+                SERVICE.DefaultEnterpriseService.get({
+                    tenant: 'default',
+                    options: {
+                        recursive: true
+                    }
+                }).then(success => {
+                    if (success.success || success.result.length > 0) {
+                        resolve(success.result);
+                    } else {
+                        SYSTEM.LOG.error('Could not found any active enterprises currently');
+                        resolve([]);
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                let requestUrl = SERVICE.DefaultModuleService.buildRequest({
+                    moduleName: 'profile',
+                    methodName: 'POST',
+                    apiName: '/enterprise',
+                    requestBody: {},
+                    isJsonResponse: true,
+                    header: {
+                        apiKey: CONFIG.get('apiKey'),
+                        recursive: true
+                    }
+                });
+                try {
+                    SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
+                        if (error) {
+                            SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
+                            resolve([]);
+                        } else {
+                            resolve(response.result || []);
+                        }
+                    });
+                } catch (error) {
+                    SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
+                    resolve([]);
+                }
+            }
+
+        });
+    },
+
+    buildEnterprises: function () {
+        return new Promise((resolve, reject) => {
+            SYSTEM.fetchEnterprise().then(success => {
+                SYSTEM.buildEnterprise(success).then(success => {
+                    resolve({
+                        success: true,
+                        code: ''
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildEnterprise: function (enterprises) {
+        return new Promise((resolve, reject) => {
+            if (enterprises && enterprises.length > 0) {
+                let enterprise = enterprises.shift();
+                if (enterprise.tenant && enterprise.tenant && !NODICS.getTenants().includes(enterprise.tenant.code)) {
+                    NODICS.addTenant(enterprise.tenant.code);
+                    let tntConfig = _.merge({}, CONFIG.getProperties());
+                    tntConfig = _.merge(tntConfig, enterprise.tenant.properties);
+                    CONFIG.setProperties(tntConfig, enterprise.tenant.code);
+                    SYSTEM.createTenantDatabase(enterprise.tenant.code).then(success => {
+                        SYSTEM.buildModelsForTenant(enterprise.tenant.code).then(success => {
+                            SYSTEM.buildEnterprise(enterprises).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    SYSTEM.buildEnterprise(enterprises).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    /*
     addTenants: function () {
         return new Promise((resolve, reject) => {
             if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
@@ -667,6 +789,8 @@ module.exports = {
         });
     },
 
+
+
     handleTenants: function (tenantData) {
         return new Promise((resolve, reject) => {
             if (!tenantData || tenantData.length <= 0) {
@@ -684,27 +808,6 @@ module.exports = {
                 } catch (error) {
                     SYSTEM.LOG.error(error);
                 }
-                resolve(true);
-            }
-        });
-    },
-
-    createTenantDatabaseConnection: function () {
-        return new Promise((resolve, reject) => {
-            let allTenant = [];
-            let tenants = NODICS.getTenants() || [];
-            tenants.forEach(function (tntCode) {
-                if (tntCode !== 'default') {
-                    allTenant.push(SYSTEM.createTenantDatabase(tntCode));
-                }
-            });
-            if (allTenant.length > 0) {
-                Promise.all(allTenant).then(success => {
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
                 resolve(true);
             }
         });
@@ -729,4 +832,5 @@ module.exports = {
             });
         });
     }
+    */
 };

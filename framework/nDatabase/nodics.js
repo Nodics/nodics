@@ -20,7 +20,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             conHandler.init().then(success => {
                 SYSTEM.buildSchemas();
-                SYSTEM.buildModelsForTenants().then(success => {
+                let tenants = ['default'];
+                NODICS.addTenant('default');
+                SYSTEM.buildModelsForTenants(tenants).then(success => {
                     SYSTEM.prepareInterceptors();
                     resolve(true);
                 }).catch(error => {
