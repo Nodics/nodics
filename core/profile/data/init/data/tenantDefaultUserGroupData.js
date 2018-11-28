@@ -11,13 +11,13 @@
 
 module.exports = {
     record0: {
-        code: 'defaultEntAddress',
-        active: true,
-        flatNo: '100',
-        building: 'Nodics Technology Park',
-        street: '100 lake side',
-        city: 'Bangalore',
-        state: 'Karnataka',
-        postalCode: '560001'
+        code: 'adminUserGroup',
+        name: 'adminUserGroup',
+        enterpriseCode: 'default'
+    },
+    record1: {
+        code: 'guestUserGroup',
+        name: 'guestUserGroup',
+        enterpriseCode: 'default'
     }
 };

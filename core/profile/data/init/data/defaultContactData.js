@@ -16,19 +16,5 @@ module.exports = {
         prefix: '+91',
         type: 'PHONE',
         value: '9108464882'
-    },
-    record1: {
-        code: 'defaultEmployeeContact',
-        active: true,
-        prefix: '+91',
-        type: 'PHONE',
-        value: '9108464882'
-    },
-    record2: {
-        code: 'defaultCustomerContact',
-        active: true,
-        prefix: '+91',
-        type: 'PHONE',
-        value: '9108464882'
-    },
+    }
 };

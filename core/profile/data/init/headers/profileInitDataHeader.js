@@ -38,6 +38,18 @@ module.exports = {
             }
         },
 
+        tenantDefaultAddresses: {
+            options: {
+                modelName: 'address',
+                operation: 'save', //save, update and saveOrUpdate
+                //tenant: 'default',
+                dataFilePrefix: 'tenantDefaultAddressesData'
+            },
+            query: {
+                code: '$code'
+            }
+        },
+
         defaultContact: {
             options: {
                 modelName: 'contact',
@@ -50,12 +62,36 @@ module.exports = {
             }
         },
 
+        tenantDefaultContact: {
+            options: {
+                modelName: 'contact',
+                operation: 'save', //save, update and saveOrUpdate
+                //tenant: 'default',
+                dataFilePrefix: 'tenantDefaultContactData'
+            },
+            query: {
+                code: '$code'
+            }
+        },
+
         defaultUserGroup: {
             options: {
                 modelName: 'userGroup',
                 operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultUserGroupData'
+            },
+            query: {
+                code: '$code'
+            }
+        },
+
+        tenantDefaultUserGroup: {
+            options: {
+                modelName: 'userGroup',
+                operation: 'save', //save, update and saveOrUpdate
+                //tenant: 'default',
+                dataFilePrefix: 'tenantDefaultUserGroupData'
             },
             query: {
                 code: '$code'
@@ -120,7 +156,7 @@ module.exports = {
             options: {
                 modelName: 'employee',
                 operation: 'save', //save, update and saveOrUpdate
-                tenant: 'default',
+                //tenant: 'default',
                 dataFilePrefix: 'defaultEmployeeData'
             },
             query: {
@@ -160,7 +196,7 @@ module.exports = {
             options: {
                 modelName: 'customer',
                 operation: 'save', //save, update and saveOrUpdate
-                tenant: 'default',
+                //tenant: 'default',
                 dataFilePrefix: 'defaultCutomerData'
             },
             query: {

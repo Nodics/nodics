@@ -11,13 +11,17 @@
 
 module.exports = {
     record0: {
-        code: 'defaultEntAddress',
+        code: 'defaultEmployeeContact',
         active: true,
-        flatNo: '100',
-        building: 'Nodics Technology Park',
-        street: '100 lake side',
-        city: 'Bangalore',
-        state: 'Karnataka',
-        postalCode: '560001'
-    }
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
+    },
+    record1: {
+        code: 'defaultCustomerContact',
+        active: true,
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
+    },
 };

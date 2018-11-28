@@ -92,8 +92,9 @@ module.exports = {
                     router.loadRouter().then(success => {
                         SYSTEM.executePostScripts();
                         //NODICS.isInitRequired()
-                        if (NODICS.isInitRequired()) {
+                        if (true) {
                             SERVICE.DefaultImportService.importInitData({
+                                tenant: 'default',
                                 modules: NODICS.getActiveModules()
                             }).then(success => {
                                 SYSTEM.buildEnterprises().then(success => {
