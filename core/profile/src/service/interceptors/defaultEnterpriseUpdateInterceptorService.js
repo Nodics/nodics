@@ -43,7 +43,7 @@ module.exports = {
                 target: options.collection.moduleName,
                 state: "NEW",
                 type: "SYNC",
-                targetType: ENUMS.TargetType.EACH_NODE.key,
+                targetType: ENUMS.TargetType.MODULE.key,
                 params: [{
                     key: 'schemaName',
                     value: 'enterprise'

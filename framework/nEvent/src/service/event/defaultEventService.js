@@ -74,7 +74,6 @@ module.exports = {
         });
     },
     prepareURL: function (eventDef) {
-        console.log(eventDef);
         return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'nems',
             methodName: 'put',

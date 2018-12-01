@@ -28,7 +28,7 @@ module.exports = {
                 type: 'postProcessor',
                 active: 'true',
                 index: 0,
-                handler: 'DefaultEventSplitInterceptorService.processSyncEvents'
+                handler: 'DefaultEventSplitInterceptorService.handleSyncEvents'
             }
         }
     }

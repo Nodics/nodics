@@ -323,6 +323,16 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed and got errors');
-        process.reject(response.error);
+        if (response.errors && response.errors.length === 1) {
+            process.reject(response.errors[0]);
+        } else if (response.errors && response.errors.length > 1) {
+            process.reject({
+                success: false,
+                code: 'ERR_UPD_00000',
+                error: esponse.errors
+            });
+        } else {
+            process.reject(response.error);
+        }
     }
 };

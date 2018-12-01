@@ -67,7 +67,7 @@ module.exports = {
         });
     },
 
-    processSyncEvents: function (options) {
+    handleSyncEvents: function (options) {
         return new Promise((resolve, reject) => {
             let events = options.response.success;
             let syncEvents = [];

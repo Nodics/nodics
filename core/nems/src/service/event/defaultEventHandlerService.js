@@ -136,9 +136,12 @@ module.exports = {
                     _self.LOG.debug('Facing issue while moved to success log');
                 });
             } else {
-                SERVICE.DefaultEventService.save({
+                SERVICE.DefaultEventService.update({
                     tenant: event.tenant,
-                    models: [event]
+                    query: {
+                        '_id': event._id
+                    },
+                    model: event
                 }).then(success => {
                     _self.LOG.debug('Event has been updated for error');
                 }).catch(error => {
