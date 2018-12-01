@@ -12,7 +12,7 @@
 module.exports = {
     common: {
         enterpriseSaveListener: {
-            event: 'enterpriseUpdate',
+            event: 'enterpriseSave',
             listener: 'DefaultEnterpriseUpdateListenerService.handleEnterpriseSave'
         },
         enterpriseUpdateListener: {
@@ -20,7 +20,7 @@ module.exports = {
             listener: 'DefaultEnterpriseUpdateListenerService.handleEnterpriseUpdate'
         },
         enterpriseRemoveListener: {
-            event: 'enterpriseUpdate',
+            event: 'enterpriseRemove',
             listener: 'DefaultEnterpriseUpdateListenerService.handleEnterpriseRemove'
         }
     }

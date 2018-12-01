@@ -19,7 +19,7 @@ module.exports = {
         addresses: ['defaultEntAddress'],
         contacts: ['defaultEntContact']
     },
-    record1: {
+    /*record1: {
         code: 'testOneEnt',
         name: 'testOneEnt',
         active: true,
@@ -27,5 +27,5 @@ module.exports = {
         tenant: 'testOne:true',
         addresses: ['defaultEntAddress'],
         contacts: ['defaultEntContact']
-    }
+    }*/
 };

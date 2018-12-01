@@ -37,11 +37,10 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preRemove) {
-            SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors({
+            SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors([].concat(interceptors.preRemove), {
                 collection: request.collection,
                 options: request.options || {},
-                query: request.query,
-                interceptorList: [].concat(interceptors.preRemove)
+                query: request.query
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -82,18 +81,124 @@ module.exports = {
         }
     },
 
+    populateSubModels: function (request, response, process) {
+        this.LOG.debug('Populating sub models');
+        let rawSchema = request.collection.rawSchema;
+        let inputOptions = request.options || {};
+        if (response.success && response.success.result && response.success.result.n &&
+            response.success.result.n > 0 && response.success.result.models &&
+            inputOptions.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
+            this.populateModels(request, response, response.success.result.models, 0).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00003',
+                    error: error
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    populateModels: function (request, response, models, index) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            let model = models[index];
+            if (model) {
+                _self.populateProperties(request, response, model, Object.keys(request.collection.rawSchema.refSchema)).then(success => {
+                    _self.populateModels(request, response, models, index + 1).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    populateProperties: function (request, response, model, propertiesList) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            let property = propertiesList.shift();
+            if (model[property]) {
+                let refSchema = request.collection.rawSchema.refSchema;
+                let propertyObject = refSchema[property];
+                let query = {};
+                if (propertyObject.type === 'one') {
+                    if (propertyObject.propertyName === '_id') {
+                        query[propertyObject.propertyName] = UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property]);
+                    } else {
+                        query[propertyObject.propertyName] = model[property];
+                    }
+                } else {
+                    if (propertyObject.propertyName === '_id') {
+                        query[propertyObject.propertyName] = {
+                            '$in': UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property])
+                        };
+                    } else {
+                        query[propertyObject.propertyName] = {
+                            '$in': model[property]
+                        };
+                    }
+                }
+                let input = {
+                    tenant: request.tenant,
+                    query: query
+                };
+                SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {
+                    if (success.result.length > 0) {
+                        if (propertyObject.type === 'one') {
+                            model[property] = success.result[0];
+                        } else {
+                            model[property] = success.result;
+                        }
+                    } else {
+                        model[property] = null;
+                    }
+                    if (propertiesList.length > 0) {
+                        _self.populateProperties(request, response, model, propertiesList).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        resolve(true);
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+
+            } else {
+                if (propertiesList.length > 0) {
+                    _self.populateProperties(request, response, model, propertiesList).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
+            }
+        });
+    },
+
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post remove model interceptors');
-        if (response.success && response.success.result && response.success.result.length > 0) {
+        if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0) {
             let moduleName = request.moduleName || request.collection.moduleName;
             let modelName = request.collection.modelName;
             let interceptors = NODICS.getInterceptors(moduleName, modelName);
             if (interceptors && interceptors.postRemove) {
-                SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors({
+                SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors([].concat(interceptors.postRemove), {
                     collection: request.collection,
                     query: request.query,
-                    result: response.success.result,
-                    interceptorList: [].concat(interceptors.postRemove)
+                    result: response.success.result
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {

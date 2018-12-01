@@ -31,13 +31,13 @@ module.exports = {
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseSaveEvent'
             },
             enterprisePreUpdate: {
-                type: 'preSave',
+                type: 'preUpdate',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreUpdate'
             },
             enterpriseUpdateEvent: {
-                type: 'postSave',
+                type: 'preUpdate',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateEvent'

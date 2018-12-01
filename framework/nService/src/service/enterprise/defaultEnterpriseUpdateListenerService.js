@@ -18,14 +18,15 @@ module.exports = {
             code: 'SUC_SYS_00000',
             msg: 'Successfully Saved enterprise'
         });
-        /*if (event.params && event.params.length >= 3) {
+        if (event.params && event.params.length >= 3) {
             let model = null;
             event.params.forEach(element => {
                 if (element.key === 'data') {
                     model = element.value;
                 }
             });
-            if (model && model.tenant) {
+            console.log(model);
+            /*if (model && model.tenant) {
                 if (model.active && model.tenant.active) {
                     SYSTEM.buildEnterprise([model]).then(success => {
                         callback(null, {
@@ -62,8 +63,8 @@ module.exports = {
                     code: 'ERR_EVNT_00000',
                     msg: 'Invalid enterprise model value'
                 });
-            }
-        }*/
+            }*/
+        }
     },
 
     handleEnterpriseUpdate: function (event, callback) {

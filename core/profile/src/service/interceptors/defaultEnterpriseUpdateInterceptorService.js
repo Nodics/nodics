@@ -13,18 +13,21 @@ module.exports = {
     enterprisePreSave: function (options) {
         return new Promise((resolve, reject) => {
             options.options.returnModified = options.options.returnModified || true;
+            options.options.recursive = options.options.recursive || true;
             resolve(true);
         });
     },
     enterprisePreUpdate: function (options) {
         return new Promise((resolve, reject) => {
             options.options.returnModified = options.options.returnModified || true;
+            options.options.recursive = options.options.recursive || true;
             resolve(true);
         });
     },
     enterprisePreRemove: function (options) {
         return new Promise((resolve, reject) => {
             options.options.returnModified = options.options.returnModified || true;
+            options.options.recursive = options.options.recursive || true;
             resolve(true);
         });
     },
@@ -34,7 +37,7 @@ module.exports = {
             resolve(true);
             let event = {
                 enterpriseCode: options.model.code,
-                tenant: options.model.tenant,
+                tenant: 'default',
                 event: 'enterpriseSave',
                 source: options.collection.moduleName,
                 target: options.collection.moduleName,
@@ -65,7 +68,7 @@ module.exports = {
             resolve(true);
             let event = {
                 enterpriseCode: options.model.code,
-                tenant: options.model.tenant,
+                tenant: 'default',
                 event: 'enterpriseUpdate',
                 source: options.collection.moduleName,
                 target: options.collection.moduleName,
@@ -96,7 +99,7 @@ module.exports = {
             resolve(true);
             let event = {
                 enterpriseCode: options.model.code,
-                tenant: options.model.tenant,
+                tenant: 'default',
                 event: 'enterpriseRemove',
                 source: options.collection.moduleName,
                 target: options.collection.moduleName,

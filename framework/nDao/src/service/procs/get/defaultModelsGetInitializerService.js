@@ -97,11 +97,10 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors({
+            SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors([].concat(interceptors.preGet), {
                 collection: request.collection,
                 query: request.query,
-                options: request.options,
-                interceptorList: [].concat(interceptors.preGet)
+                options: request.options
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -169,12 +168,11 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = NODICS.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.postGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors({
+            SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors([].concat(interceptors.postGet), {
                 collection: request.collection,
                 query: request.query,
                 options: request.options,
-                result: response.success,
-                interceptorList: [].concat(interceptors.postGet)
+                result: response.success
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {

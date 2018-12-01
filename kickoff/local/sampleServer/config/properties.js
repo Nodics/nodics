@@ -24,7 +24,7 @@ module.exports = {
     log: {
         level: 'debug'
     },
-    apiKey: 'f794e381-7ccd-5fd7-88e5-aaae163d9879',
+    apiKey: 'f70d4a28-52d3-5ace-a465-b94a0a22fa5d',
     database: {
         /* nems: {
              databaseType: 'mongodb', //for Cassandra use 'cassandra'

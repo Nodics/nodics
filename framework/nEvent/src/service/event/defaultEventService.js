@@ -74,24 +74,25 @@ module.exports = {
         });
     },
     prepareURL: function (eventDef) {
+        console.log(eventDef);
         return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'nems',
             methodName: 'put',
-            apiName: '/event/push',
+            apiName: '/event',
             requestBody: eventDef,
             isJsonResponse: true,
             header: {
-                enterpriseCode: eventDef.enterpriseCode || 'default'
+                apiKey: CONFIG.get('apiKey')
             }
         });
     },
 
-    publish: function (request) {
+    publish: function (event) {
         return new Promise((resolve, reject) => {
             if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
                 !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
                 this.LOG.debug('Publishing event to event server');
-                SERVICE.DefaultModuleService.fetch(this.prepareURL(request.event)).then(response => {
+                SERVICE.DefaultModuleService.fetch(this.prepareURL(event)).then(response => {
                     if (response.success) {
                         resolve({
                             success: true,

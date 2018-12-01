@@ -43,7 +43,7 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: true,
+            event: false,
             router: true,
             cache: {
                 enabled: true,
@@ -111,7 +111,7 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: true,
+            event: false,
             router: true,
             definition: {
                 enterpriseCode: {
@@ -150,7 +150,7 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: true,
+            event: false,
             cache: {
                 enabled: true,
                 ttl: 100
@@ -273,7 +273,7 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: true,
+            event: false,
             router: true,
             definition: {
                 name: {
@@ -415,7 +415,7 @@ module.exports = {
             super: 'user',
             model: true,
             service: true,
-            event: true,
+            event: false,
             router: true,
             definition: {
                 apiKey: {
@@ -430,7 +430,7 @@ module.exports = {
             super: 'user',
             model: true,
             service: true,
-            event: true,
+            event: false,
             router: true,
             cache: {
                 enabled: true,
