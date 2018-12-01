@@ -16,7 +16,13 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating get request: ');
         let options = request.options;
-        if (options && options.projection) {
+        if (!request.collection) {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_FIND_00001',
+                msg: 'Model not available within tenant: ' + request.tenant
+            });
+        } else if (options && options.projection) {
             if (!UTILS.isObject(options.projection)) {
                 process.error(request, response, {
                     success: false,
@@ -300,7 +306,16 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed and got errors');
-        response.error.msg = SERVICE.DefaultStatusService.get(response.error.code || 'ERR_SYS_00000').message;
-        process.reject(response.error);
+        if (response.errors && response.errors.length === 1) {
+            process.reject(response.errors[0]);
+        } else if (response.errors && response.errors.length > 1) {
+            process.reject({
+                success: false,
+                code: 'ERR_SYS_00000',
+                error: esponse.errors
+            });
+        } else {
+            process.reject(response.error);
+        }
     }
 };

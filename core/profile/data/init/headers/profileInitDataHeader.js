@@ -78,7 +78,7 @@ module.exports = {
             options: {
                 modelName: 'userGroup',
                 operation: 'save', //save, update and saveOrUpdate
-                tenant: 'default',
+                //tenant: 'default',
                 dataFilePrefix: 'defaultUserGroupData'
             },
             query: {
@@ -86,7 +86,7 @@ module.exports = {
             }
         },
 
-        tenantDefaultUserGroup: {
+        /*tenantDefaultUserGroup: {
             options: {
                 modelName: 'userGroup',
                 operation: 'save', //save, update and saveOrUpdate
@@ -96,7 +96,7 @@ module.exports = {
             query: {
                 code: '$code'
             }
-        },
+        },*/
 
         defaultEnterprise: {
             options: {
@@ -156,8 +156,48 @@ module.exports = {
             options: {
                 modelName: 'employee',
                 operation: 'save', //save, update and saveOrUpdate
-                //tenant: 'default',
+                tenant: 'default',
                 dataFilePrefix: 'defaultEmployeeData'
+            },
+            query: {
+                code: '$code',
+                loginId: '$loginId',
+                enterpriseCode: '$enterpriseCode'
+            },
+            macros: {
+                addresses: {
+                    options: {
+                        model: 'address',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                },
+                contacts: {
+                    options: {
+                        model: 'contact',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                }
+            }
+        },
+
+        tenantDefaultEmployee: {
+            options: {
+                modelName: 'employee',
+                operation: 'save', //save, update and saveOrUpdate
+                tenant: 'testOne',
+                dataFilePrefix: 'tenantDefaultEmployeeData'
             },
             query: {
                 code: '$code',
@@ -196,8 +236,48 @@ module.exports = {
             options: {
                 modelName: 'customer',
                 operation: 'save', //save, update and saveOrUpdate
-                //tenant: 'default',
+                tenant: 'default',
                 dataFilePrefix: 'defaultCutomerData'
+            },
+            query: {
+                code: '$code',
+                loginId: '$loginId',
+                enterpriseCode: '$enterpriseCode'
+            },
+            macros: {
+                addresses: {
+                    options: {
+                        model: 'address',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                },
+                contacts: {
+                    options: {
+                        model: 'contact',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                }
+            }
+        },
+
+        tenantDefaultCustomer: {
+            options: {
+                modelName: 'customer',
+                operation: 'save', //save, update and saveOrUpdate
+                tenant: 'testOne',
+                dataFilePrefix: 'tenantDefaultCustomerData'
             },
             query: {
                 code: '$code',

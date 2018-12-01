@@ -234,6 +234,7 @@ module.exports = {
         if (interceptors && interceptors.preSave) {
             SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors({
                 collection: request.collection,
+                options: request.options || {},
                 query: request.query,
                 originalModel: request.model,
                 model: request.model,

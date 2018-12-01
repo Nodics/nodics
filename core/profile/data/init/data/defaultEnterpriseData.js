@@ -13,6 +13,7 @@ module.exports = {
     record0: {
         code: 'default',
         name: 'Default',
+        active: true,
         description: 'Default Enterprise',
         tenant: 'default:true',
         addresses: ['defaultEntAddress'],
@@ -21,6 +22,7 @@ module.exports = {
     record1: {
         code: 'testOneEnt',
         name: 'testOneEnt',
+        active: true,
         description: 'Default Enterprise',
         tenant: 'testOne:true',
         addresses: ['defaultEntAddress'],

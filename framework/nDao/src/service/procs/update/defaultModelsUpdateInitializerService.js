@@ -51,6 +51,7 @@ module.exports = {
         if (interceptors && interceptors.preUpdate) {
             SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors({
                 collection: request.collection,
+                options: request.options || {},
                 query: request.query,
                 model: request.model,
                 interceptorList: [].concat(interceptors.preUpdate)

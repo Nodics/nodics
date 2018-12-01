@@ -204,6 +204,11 @@ module.exports = {
                     required: true,
                     description: 'Required Code of associated tenant'
                 },
+                active: {
+                    type: 'bool',
+                    required: true,
+                    description: 'Flag to check if tenant is still active'
+                },
                 superEnterprise: {
                     type: 'objectId',
                     required: false,

@@ -34,8 +34,6 @@ module.exports = {
     importFileData: function (request, response, process) {
         this.LOG.debug('Initiating import process for file: ', request.fileName);
         let header = request[request.importType].headers[request.headerName];
-        console.log('--------->> ', request.tenant, ' : ', header.header.options.tenant);
-        console.log('=========>> ', header.header.options.modelName);
         if (request.tenant) {
             if (!header.header.options.tenant || (header.header.options.tenant && header.header.options.tenant === request.tenant)) {
                 this.importModels(request, response, {

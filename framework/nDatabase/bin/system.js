@@ -155,6 +155,7 @@ module.exports = {
                 });
                 if (allModules.length > 0) {
                     Promise.all(allModules).then(success => {
+
                         resolve(true);
                     }).catch(error => {
                         reject(error);
@@ -604,27 +605,6 @@ module.exports = {
         });
         NODICS.setRawModels(SYSTEM.loadFiles('/src/schemas/model.js'));
     },
-    /*
-        createTenantDatabaseConnection: function () {
-            return new Promise((resolve, reject) => {
-                let allTenant = [];
-                let tenants = NODICS.getTenants() || [];
-                tenants.forEach(function (tntCode) {
-                    if (tntCode !== 'default') {
-                        allTenant.push(SYSTEM.createTenantDatabase(tntCode));
-                    }
-                });
-                if (allTenant.length > 0) {
-                    Promise.all(allTenant).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    resolve(true);
-                }
-            });
-        },*/
 
     fetchEnterprise: function () {
         return new Promise((resolve, reject) => {
@@ -695,18 +675,52 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (enterprises && enterprises.length > 0) {
                 let enterprise = enterprises.shift();
-                if (enterprise.tenant && enterprise.tenant && !NODICS.getTenants().includes(enterprise.tenant.code)) {
+                if (enterprise.active && enterprise.tenant && enterprise.tenant.active && !NODICS.getTenants().includes(enterprise.tenant.code)) {
                     NODICS.addTenant(enterprise.tenant.code);
                     let tntConfig = _.merge({}, CONFIG.getProperties());
                     tntConfig = _.merge(tntConfig, enterprise.tenant.properties);
                     CONFIG.setProperties(tntConfig, enterprise.tenant.code);
                     SYSTEM.createTenantDatabase(enterprise.tenant.code).then(success => {
                         SYSTEM.buildModelsForTenant(enterprise.tenant.code).then(success => {
-                            SYSTEM.buildEnterprise(enterprises).then(success => {
-                                resolve(true);
-                            }).catch(error => {
-                                reject(error);
-                            });
+                            if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+                                SERVICE.DefaultEmployeeService.get({
+                                    tenant: enterprise.tenant.code,
+                                    query: {
+                                        code: 'admin'
+                                    }
+                                }).then(success => {
+                                    if (success.success && success.result.length <= 0) {
+                                        SERVICE.DefaultImportService.importInitData({
+                                            tenant: enterprise.tenant.code,
+                                            modules: NODICS.getActiveModules()
+                                        }).then(success => {
+                                            SYSTEM.buildEnterprise(enterprises).then(success => {
+                                                resolve(true);
+                                            }).catch(error => {
+                                                reject(error);
+                                            });
+                                        }).catch(error => {
+                                            reject(error);
+                                        });
+                                    } else {
+                                        SYSTEM.buildEnterprise(enterprises).then(success => {
+                                            resolve(true);
+                                        }).catch(error => {
+                                            reject(error);
+                                        });
+                                    }
+                                }).catch(error => {
+                                    SYSTEM.LOG.error('Failed loading tenant: ' + enterprise.tenant.code);
+                                    SYSTEM.LOG.error(error);
+                                    reject(error);
+                                });
+                            } else {
+                                SYSTEM.buildEnterprise(enterprises).then(success => {
+                                    resolve(true);
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            }
                         }).catch(error => {
                             reject(error);
                         });
@@ -726,111 +740,9 @@ module.exports = {
         });
     },
 
-    /*
-    addTenants: function () {
+    removeEnterprise: function (enterprises) {
         return new Promise((resolve, reject) => {
-            if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                SERVICE.DefaultTenantService.get({
-                    tenant: 'default'
-                }).then(tenantData => {
-                    if (tenantData && tenantData.result && tenantData.result.length > 0) {
-                        SYSTEM.handleTenants(tenantData.result).then(success => {
-                            resolve(success);
-                        }).catch((error) => {
-                            SYSTEM.LOG.error(error);
-                            reject('Configure at least default tenant');
-                        });
-                    } else {
-                        reject('Configure at least default tenant');
-                    }
-                }).catch(error => {
-                    SYSTEM.LOG.error(error);
-                    reject('Configure at least default tenant');
-                });
-            } else {
-                SYSTEM.fetchTenants().then(tenantData => {
-                    SYSTEM.handleTenants(tenantData).then(success => {
-                        resolve(success);
-                    }).catch((error) => {
-                        resolve(true);
-                    });
-                }).catch(error => {
-                    resolve(true);
-                });
-            }
-        });
-    },
-
-    fetchTenants: function () {
-        return new Promise((resolve, reject) => {
-            let requestUrl = SERVICE.DefaultModuleService.buildRequest({
-                moduleName: 'profile',
-                methodName: 'POST',
-                apiName: '/tenant',
-                requestBody: {},
-                isJsonResponse: true,
-                header: {
-                    apiKey: CONFIG.get('apiKey')
-                }
-            });
-            try {
-                SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
-                    if (error) {
-                        SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
-                        resolve([]);
-                    } else {
-                        resolve(response.result || []);
-                    }
-                });
-            } catch (error) {
-                SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
-                resolve([]);
-            }
-        });
-    },
-
-
-
-    handleTenants: function (tenantData) {
-        return new Promise((resolve, reject) => {
-            if (!tenantData || tenantData.length <= 0) {
-                reject('Configure at least default tenant');
-            } else {
-                try {
-                    tenantData.forEach(element => {
-                        if (element.active) {
-                            NODICS.addTenant(element.code);
-                            let tntConfig = _.merge({}, CONFIG.getProperties());
-                            tntConfig = _.merge(tntConfig, element.properties);
-                            CONFIG.setProperties(tntConfig, element.code);
-                        }
-                    });
-                } catch (error) {
-                    SYSTEM.LOG.error(error);
-                }
-                resolve(true);
-            }
-        });
-    },
-
-    loadTenantDatabase: function () {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            SYSTEM.createTenantDatabaseConnection().then(success => {
-                let tenants = NODICS.getTenants().slice(0);
-                var index = tenants.indexOf('default');
-                if (index > -1) {
-                    tenants.splice(index, 1);
-                }
-                _self.buildModelsForTenants(tenants).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            }).catch(error => {
-                reject(error);
-            });
+            resolve(true);
         });
     }
-    */
 };

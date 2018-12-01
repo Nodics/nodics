@@ -43,6 +43,7 @@ module.exports = {
                 if (options.interceptorList && options.interceptorList.length > 0) {
                     this.executeInterceptor(options.interceptorList.shift(), {
                         collection: options.collection,
+                        options: options.options,
                         query: options.query,
                         originalModel: options.originalModel,
                         model: options.model
@@ -70,6 +71,7 @@ module.exports = {
                 if (options.interceptorList && options.interceptorList.length > 0) {
                     this.executeInterceptor(options.interceptorList.shift(), {
                         collection: options.collection,
+                        options: options.options,
                         query: options.query,
                         result: options.result
                     }).then(success => {
@@ -96,6 +98,7 @@ module.exports = {
                 if (options.interceptorList && options.interceptorList.length > 0) {
                     this.executeInterceptor(options.interceptorList.shift(), {
                         collection: options.collection,
+                        options: options.options,
                         query: options.query,
                         model: options.model,
                         result: options.result
