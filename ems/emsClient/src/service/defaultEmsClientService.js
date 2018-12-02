@@ -35,16 +35,29 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let emsConfig = CONFIG.get('emsClient');
             let conf = emsConfig[emsConfig.type];
-            if (request.payloads instanceof Array && request.payloads.length > 0) {
+            if (!request.payloads) {
+                reject({
+                    success: false,
+                    code: 'ERR_EMS_00001'
+                });
+            } else if (request.payloads instanceof Array && request.payloads.length > 0) {
                 let allPayloads = [];
                 request.payloads.forEach(element => {
                     allPayloads.push(SERVICE[conf.handler].publish(element));
                 });
                 if (allPayloads.length > 0) {
                     Promise.all(allPayloads).then(success => {
-                        resolve(success);
+                        resolve({
+                            success: true,
+                            code: 'SUC_EMS_00000',
+                            result: success
+                        });
                     }).catch(error => {
-                        reject(error);
+                        reject({
+                            success: false,
+                            code: 'ERR_EMS_00000',
+                            error: error
+                        });
                     });
                 }
             } else {

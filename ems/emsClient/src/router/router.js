@@ -16,7 +16,7 @@ module.exports = {
                 secured: true,
                 key: '/publish',
                 method: 'POST',
-                controller: 'EmsClientController',
+                controller: 'DefaultEmsClientController',
                 operation: 'publish',
                 help: {
                     requestType: 'secured',

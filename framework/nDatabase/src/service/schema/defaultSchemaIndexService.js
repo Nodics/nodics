@@ -14,6 +14,7 @@ const _ = require('lodash');
 module.exports = {
     /**
      * This function is used to update indexes for given Schema name. I will update for all active tenants schema
+     * @param {*} modelName
      * @param {*} schemaName 
      */
     updateSchemaIndexes: function (moduleName, schemaName) {
@@ -56,7 +57,7 @@ module.exports = {
 
     /**
      * This functions is used to update schema indexes for given module
-     * @param {*} schemaName 
+     * @param {*} moduleName 
      */
     updateModuleIndexes: function (moduleName) {
         return new Promise((resolve, reject) => {
@@ -99,7 +100,6 @@ module.exports = {
 
     /**
      * This functions is used to update schema indexes for all module
-     * @param {*} schemaName 
      */
     updateModulesIndexes: function () {
         return new Promise((resolve, reject) => {
