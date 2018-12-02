@@ -28,21 +28,7 @@ module.exports = {
                     _self.LOG.info('Kafka client is connected : ');
                     this.createPublisher(client, config).then(producer => {
                         _self.publisher = producer;
-                        let consumers = [];
-                        config.queues.forEach(queue => {
-                            if (queue.type && queue.type === 'consumer') {
-                                consumers.push(_self.createConsumer(client, config, queue));
-                            }
-                        });
-                        if (consumers.length > 0) {
-                            Promise.all(consumers).then(success => {
-                                resolve(true);
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        } else {
-                            resolve(true);
-                        }
+                        _self.registerConsumers(client, config);
                     }).catch(error => {
                         reject(error);
                     });
@@ -84,6 +70,33 @@ module.exports = {
                 reject('while creating consumer for queue : ' + queue.inputQueue);
             }
         });
+    },
+
+    registerConsumers: function (client, config, _self) {
+        _self = _self || this;
+        if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
+            !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
+            let consumers = [];
+            config.queues.forEach(queue => {
+                if (queue.type && queue.type === 'consumer') {
+                    consumers.push(_self.createConsumer(client, config, queue));
+                }
+            });
+            if (consumers.length > 0) {
+                Promise.all(consumers).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        } else {
+            _self.LOG.info('Server is not started yet, hence waiting to register Kafka consumers');
+            setTimeout(() => {
+                _self.registerConsumers(client, config, _self);
+            }, CONFIG.get('processRetrySleepTime') || 2000);
+        }
     },
 
     createConsumer: function (client, config, queue) {
@@ -174,7 +187,6 @@ module.exports = {
      * @param {*} payload   
      * {
      *      "queue": "testPublisherQueue",
-     *       "type": "json",
      *       "message": {
      *           "enterpriseCode": "default",
      *           "tenant":"default",

@@ -11,7 +11,7 @@
 
 module.exports = {
     test: {
-        enabled: false,
+        enabled: true,
         uTest: {
             enabled: true,
             runOnStartup: true

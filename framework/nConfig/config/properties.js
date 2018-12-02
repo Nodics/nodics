@@ -53,6 +53,8 @@ module.exports = {
 
     profileModuleName: 'profile',
 
+    processRetrySleepTime: 2000,
+
     cache: {
         authTokenTTL: 60 * 60,
         default: {

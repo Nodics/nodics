@@ -42,39 +42,7 @@ module.exports = {
                             _self.LOG.error(error);
                             reconnect();
                         });
-                        config.queues.forEach(queue => {
-                            if (queue.type && queue.type === 'consumer') {
-                                queue.options = _.merge(queue.options || {}, config.options);
-                                client.subscribe({
-                                    destination: queue.name,
-                                    ack: queue.options.acknowledgeType
-                                }, (err, msg) => {
-                                    if (err) {
-                                        _self.LOG.error('While subscribing to queue : ' + queue.name);
-                                        _self.LOG.error(err);
-                                    } else {
-                                        msg.readString(queue.options.encodingType, (err, body) => {
-                                            if (!queue.options.ackRequired) {
-                                                client.ack(msg);
-                                            }
-                                            if (err) {
-                                                _self.LOG.error('While consuming message from queue : ' + queue.name);
-                                                _self.LOG.error(err);
-                                            } else {
-                                                _self.onConsume(queue, body).then(success => {
-                                                    if (queue.options.ackRequired) {
-                                                        client.ack(msg);
-                                                    }
-                                                }).catch(error => {
-                                                    _self.LOG.error('While processing comsumed message: ', body);
-                                                    _self.LOG.error(error);
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
+                        _self.registerConsumers(client, config);
                         resolve({
                             success: true,
                             code: 'SUC_EMS_00000',
@@ -90,6 +58,51 @@ module.exports = {
                 });
             }
         });
+    },
+
+    registerConsumers: function (client, config, _self) {
+        _self = _self || this;
+        if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
+            !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
+            config.queues.forEach(queue => {
+                if (queue.type && queue.type === 'consumer') {
+                    queue.options = _.merge(queue.options || {}, config.options);
+                    client.subscribe({
+                        destination: queue.name,
+                        ack: queue.options.acknowledgeType
+                    }, (err, msg) => {
+                        if (err) {
+                            _self.LOG.error('While subscribing to queue : ' + queue.name);
+                            _self.LOG.error(err);
+                        } else {
+                            msg.readString(queue.options.encodingType, (err, body) => {
+                                if (!queue.options.ackRequired) {
+                                    client.ack(msg);
+                                }
+                                if (err) {
+                                    _self.LOG.error('While consuming message from queue : ' + queue.name);
+                                    _self.LOG.error(err);
+                                } else {
+                                    _self.onConsume(queue, body).then(success => {
+                                        if (queue.options.ackRequired) {
+                                            client.ack(msg);
+                                        }
+                                    }).catch(error => {
+                                        _self.LOG.error('While processing comsumed message: ', body);
+                                        _self.LOG.error(error);
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        } else {
+            _self.LOG.info('Server is not started yet, hence waiting to register ActiveMQ consumers');
+            setTimeout(() => {
+                _self.registerConsumers(client, config, _self);
+            }, CONFIG.get('processRetrySleepTime') || 2000);
+        }
     },
 
     onConsume: function (queue, body) {
