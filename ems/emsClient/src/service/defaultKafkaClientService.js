@@ -12,7 +12,7 @@ const _ = require('lodash');
 const kafka = require('kafka-node');
 
 module.exports = {
-
+    admin: {},
     publisher: {},
     consumerPool: {},
 
@@ -25,10 +25,22 @@ module.exports = {
             try {
                 const client = new kafka.KafkaClient(config.connectionOptions);
                 if (client) {
-                    _self.LOG.info('Kafka client is connected : ');
-                    this.createPublisher(client, config).then(producer => {
+                    _self.createPublisher(client, config).then(producer => {
                         _self.publisher = producer;
-                        _self.registerConsumers(client, config);
+                        client.loadMetadataForTopics([], function (error, results) {
+                            if (error) {
+                                return error;
+                            } else {
+                                let topics = _.get(results, '1.metadata');
+                                _self.verifyAllTopics(client, config, topics).then(success => {
+                                    _self.registerConsumers(client, config);
+                                    resolve(true);
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            }
+                        });
+                        resolve(true);
                     }).catch(error => {
                         reject(error);
                     });
@@ -37,6 +49,35 @@ module.exports = {
                 }
             } catch (error) {
                 reject(error);
+            }
+        });
+    },
+
+    verifyAllTopics: function (client, config, topics) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                let allTopics = [];
+                config.queues.forEach(queue => {
+                    queue.options = _.merge(queue.options || {}, config.options);
+                    if (queue.type && queue.type === 'consumer' && !topics[queue.name]) {
+                        allTopics.push(queue.name);
+                    }
+                });
+                if (allTopics.length > 0) {
+                    client.createTopics(allTopics, (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(true);
+                        }
+                    });
+                } else {
+                    resolve(true);
+                }
+            } catch (error) {
+                _self.LOG.error(error);
+                reject('while creating topics');
             }
         });
     },
@@ -63,11 +104,13 @@ module.exports = {
                         _self.LOG.error('While creating kafka publisher : ' + error);
                         reject('While creating kafka publisher : ' + error);
                     });
+                } else {
+                    _self.LOG.error('Not able to create kafka publisher');
+                    reject('Not able to create kafka publisher');
                 }
-
             } catch (error) {
                 _self.LOG.error(error);
-                reject('while creating consumer for queue : ' + queue.inputQueue);
+                reject('while creating consumer for queue : ' + queue.name);
             }
         });
     },
@@ -84,12 +127,13 @@ module.exports = {
             });
             if (consumers.length > 0) {
                 Promise.all(consumers).then(success => {
-                    resolve(true);
+                    _self.LOG.debug('Kafka consumers have been registered successfully');
                 }).catch(error => {
-                    reject(error);
+                    _self.LOG.error('Failed to register all consumers');
+                    _self.LOG.error(error);
                 });
             } else {
-                resolve(true);
+                _self.LOG.debug('Could not found consumers to register');
             }
         } else {
             _self.LOG.info('Server is not started yet, hence waiting to register Kafka consumers');
@@ -107,7 +151,6 @@ module.exports = {
                     topic: queue.name
                 }];
                 queue.consumerOptions = _.merge(queue.consumerOptions || {}, config.consumerOptions);
-                queue.options = _.merge(queue.options || {}, config.options);
                 let consumer;
                 if (config.consumerType === 0) {
                     consumer = new kafka.Consumer(client, topics, queue.consumerOptions);
@@ -122,10 +165,13 @@ module.exports = {
                         _self.onConsume(queue, response);
                     });
                     consumer.on("error", function (message) {
-                        _self.LOG.error('Kafka Consumer got discunnected...');
-                        console.log(message);
+                        _self.LOG.error(message);
                     });
                     _self.LOG.debug('Registered consumer for queue : ', queue.name);
+                    _self.consumerPool[queue.name] = {
+                        topic: queue.name,
+                        consumer: consumer
+                    };
                     resolve(true);
                 } else {
                     reject('While creating consumer for queue : ' + queue.name);
