@@ -69,7 +69,7 @@ module.exports = {
 
     emsClient: {
         enabled: true,
-        type: 'activemq', //tibco, activemq, rebbitmq, Kafka
+        type: 'kafka', //tibco, activemq, rebbitmq, kafka
 
         tibco: {
             handler: 'DefaultTibcoClientService',
@@ -134,6 +134,23 @@ module.exports = {
             publisherType: 1, // 0 for normal, 1 for HighLevel Producer
             consumerType: 0, // 0 for normal, 1 for HighLevel Producer
             options: {
+                source: 'emsClient',
+                target: 'emsClient',
+                nodeId: '0'
+            },
+            publisherOptions: {
+                requireAcks: 1,
+                ackTimeoutMs: 100,
+                partitionerType: 0
+            },
+            consumerOptions: {
+                autoCommit: true,
+                fetchMaxWaitMs: 1000,
+                fetchMaxBytes: 1024 * 1024,
+                encoding: 'buffer',
+                keyEncoding: 'utf8'
+            },
+            connectionOptions: {
                 kafkaHost: 'localhost:9092',
                 connectTimeout: 10,
                 requestTimeout: 30000,
@@ -149,17 +166,11 @@ module.exports = {
                 }
             },
             queues: [{
-                messageType: 'stockData',
-                inputQueue: 'nodicsApplicationInput',
-                outputQueue: 'nodicsApplicationOutputNew',
-                consumerOptions: {
-                    autoCommit: true,
-                    fetchMaxWaitMs: 1000,
-                    fetchMaxBytes: 1024 * 1024,
-                    encoding: 'buffer'
-                },
-                targetModule: 'emsClient',
-                nodeId: '0'
+                type: 'publisher',
+                name: 'testPublisherQueue'
+            }, {
+                type: 'consumer',
+                name: 'testConsumerQueue'
             }]
         }
     }

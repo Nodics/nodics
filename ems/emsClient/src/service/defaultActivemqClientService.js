@@ -110,7 +110,7 @@ module.exports = {
                         value: message
                     }]
                 };
-                this.LOG.debug('Pushing event for recieved message from  : ', queue.name);
+                this.LOG.debug('Pushing event recieved message from  : ', queue.name);
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Message published successfully');
                     resolve(true);
@@ -125,6 +125,19 @@ module.exports = {
         });
     },
 
+    /**
+     * This function is used to publish a message to target ActiveMQ queue. 
+     * @param {*} payload   
+     * {
+     *      "queue": "testPublisherQueue",
+     *       "type": "json",
+     *       "message": {
+     *           "enterpriseCode": "default",
+     *           "tenant":"default",
+     *           "message":"First API Message by Himkar"
+     *       }
+     * }
+     */
     publish: function (payload) {
         let _self = this;
         return new Promise((resolve, reject) => {
