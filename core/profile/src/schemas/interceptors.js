@@ -11,6 +11,50 @@
 
 module.exports = {
     profile: {
+        enterprise: {
+            /*enterprisePreGet: {
+                type: 'preSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreGet'
+            },*/
+            enterprisePreSave: {
+                type: 'preSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreSave'
+            },
+            enterpriseSaveEvent: {
+                type: 'postSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseSaveEvent'
+            },
+            enterprisePreUpdate: {
+                type: 'preUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreUpdate'
+            },
+            enterpriseUpdateEvent: {
+                type: 'preUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateEvent'
+            },
+            enterprisePreRemove: {
+                type: 'preRemove',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreRemove'
+            },
+            enterpriseRemoveEvent: {
+                type: 'postRemove',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseRemoveEvent'
+            }
+        },
         password: {
             encryptSavePassword: {
                 type: 'preSave',

@@ -139,6 +139,7 @@ module.exports = {
     },
 
     fetchModel: function (request, response, options) {
+        let header = request[request.importType].headers[request.headerName].header;
         return new Promise((resolve, reject) => {
             let values = options.value.split(':');
             let query = {};
@@ -158,7 +159,7 @@ module.exports = {
                 }
             }
             let input = {
-                tenant: request.tenant || 'default',
+                tenant: header.options.tenant || request.tenant,
                 query: query
             };
             SERVICE['Default' + options.macro.options.model.toUpperCaseFirstChar() + 'Service'].get(input).then(result => {
@@ -194,7 +195,7 @@ module.exports = {
             models.push(model);
         }
         SERVICE['Default' + header.options.modelName.toUpperCaseFirstChar() + 'Service'][header.options.operation]({
-            tenant: header.options.tenant,
+            tenant: header.options.tenant || request.tenant,
             query: header.query,
             models: models
         }).then(result => {

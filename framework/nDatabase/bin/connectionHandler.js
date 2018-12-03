@@ -38,7 +38,6 @@ module.exports = {
                 } catch (error) {
                     reject(error);
                 }
-
             }).catch(error => {
                 reject('Something went wrong while creating database');
             });

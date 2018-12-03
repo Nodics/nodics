@@ -10,8 +10,14 @@
  */
 
 module.exports = {
-
-    installedTanents: [
-        'default'
-    ],
+    record0: {
+        code: 'adminUserGroup',
+        name: 'adminUserGroup',
+        enterpriseCode: 'default'
+    },
+    record1: {
+        code: 'guestUserGroup',
+        name: 'guestUserGroup',
+        enterpriseCode: 'default'
+    }
 };

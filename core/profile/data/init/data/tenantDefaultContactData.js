@@ -10,8 +10,18 @@
  */
 
 module.exports = {
-
-    installedTanents: [
-        'default', 'test'
-    ],
+    record0: {
+        code: 'defaultEmployeeContact',
+        active: true,
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
+    },
+    record1: {
+        code: 'defaultCustomerContact',
+        active: true,
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
+    },
 };

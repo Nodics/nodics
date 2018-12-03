@@ -159,9 +159,14 @@ module.exports = {
             saveModel: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.saveModel',
-                success: 'populateVirtualProperties'
+                success: 'populateSubModels'
             },
 
+            populateSubModels: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.populateSubModels',
+                success: 'populateVirtualProperties'
+            },
             populateVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.populateVirtualProperties',
@@ -228,6 +233,11 @@ module.exports = {
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultModelsRemoveInitializerService.executeQuery',
+                success: 'populateSubModels'
+            },
+            populateSubModels: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.populateSubModels',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -290,6 +300,11 @@ module.exports = {
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultModelsUpdateInitializerService.executeQuery',
+                success: 'populateSubModels'
+            },
+            populateSubModels: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.populateSubModels',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {

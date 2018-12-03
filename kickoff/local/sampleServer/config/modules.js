@@ -14,4 +14,12 @@ module.exports = { core: [ 'core', 'cronjob', 'nems', 'profile' ],
      'nrouter',
      'ndata',
      'ntest',
-     'system' ] };
+     'system' ],
+  environments: [],
+  local: [],
+  extdatarecords: [],
+  dev: [],
+  prod: [],
+  sit: [],
+  uat: [],
+  interfacemessages: [ 'interfacemessages', 'orderdata' ] };

@@ -38,6 +38,18 @@ module.exports = {
             }
         },
 
+        tenantDefaultAddresses: {
+            options: {
+                modelName: 'address',
+                operation: 'save', //save, update and saveOrUpdate
+                //tenant: 'default',
+                dataFilePrefix: 'tenantDefaultAddressesData'
+            },
+            query: {
+                code: '$code'
+            }
+        },
+
         defaultContact: {
             options: {
                 modelName: 'contact',
@@ -50,17 +62,41 @@ module.exports = {
             }
         },
 
+        tenantDefaultContact: {
+            options: {
+                modelName: 'contact',
+                operation: 'save', //save, update and saveOrUpdate
+                //tenant: 'default',
+                dataFilePrefix: 'tenantDefaultContactData'
+            },
+            query: {
+                code: '$code'
+            }
+        },
+
         defaultUserGroup: {
             options: {
                 modelName: 'userGroup',
                 operation: 'save', //save, update and saveOrUpdate
-                tenant: 'default',
+                //tenant: 'default',
                 dataFilePrefix: 'defaultUserGroupData'
             },
             query: {
                 code: '$code'
             }
         },
+
+        /*tenantDefaultUserGroup: {
+            options: {
+                modelName: 'userGroup',
+                operation: 'save', //save, update and saveOrUpdate
+                //tenant: 'default',
+                dataFilePrefix: 'tenantDefaultUserGroupData'
+            },
+            query: {
+                code: '$code'
+            }
+        },*/
 
         defaultEnterprise: {
             options: {
@@ -156,12 +192,92 @@ module.exports = {
             }
         },
 
+        tenantDefaultEmployee: {
+            options: {
+                modelName: 'employee',
+                operation: 'save', //save, update and saveOrUpdate
+                tenant: 'testOne',
+                dataFilePrefix: 'tenantDefaultEmployeeData'
+            },
+            query: {
+                code: '$code',
+                loginId: '$loginId',
+                enterpriseCode: '$enterpriseCode'
+            },
+            macros: {
+                addresses: {
+                    options: {
+                        model: 'address',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                },
+                contacts: {
+                    options: {
+                        model: 'contact',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                }
+            }
+        },
+
         defaultCustomer: {
             options: {
                 modelName: 'customer',
                 operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultCutomerData'
+            },
+            query: {
+                code: '$code',
+                loginId: '$loginId',
+                enterpriseCode: '$enterpriseCode'
+            },
+            macros: {
+                addresses: {
+                    options: {
+                        model: 'address',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                },
+                contacts: {
+                    options: {
+                        model: 'contact',
+                        returnProperty: 'code'
+                    },
+                    rule: {
+                        code: {
+                            type: 'string',
+                            index: 0
+                        }
+                    }
+                }
+            }
+        },
+
+        tenantDefaultCustomer: {
+            options: {
+                modelName: 'customer',
+                operation: 'save', //save, update and saveOrUpdate
+                tenant: 'testOne',
+                dataFilePrefix: 'tenantDefaultCustomerData'
             },
             query: {
                 code: '$code',

@@ -49,16 +49,11 @@ module.exports = {
     // databaseUserURI = mongodb://hostA:27501,hostB:27501
     // databaseUserURI = mongodb://nonexistent.domain:27000
 
-    // Tanent configuration tell system to group properties based on active tenants
-    installedTanents: [
-        'default'
-    ],
-
-    activeTanent: 'default',
-
     defaultContentType: 'application/json',
 
     profileModuleName: 'profile',
+
+    processRetrySleepTime: 2000,
 
     cache: {
         authTokenTTL: 60 * 60,

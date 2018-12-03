@@ -136,9 +136,12 @@ module.exports = {
                     _self.LOG.debug('Facing issue while moved to success log');
                 });
             } else {
-                SERVICE.DefaultEventService.save({
+                SERVICE.DefaultEventService.update({
                     tenant: event.tenant,
-                    models: [event]
+                    query: {
+                        '_id': event._id
+                    },
+                    model: event
                 }).then(success => {
                     _self.LOG.debug('Event has been updated for error');
                 }).catch(error => {
@@ -179,40 +182,38 @@ module.exports = {
                 if (targets && targets[counter]) {
                     let target = targets[counter];
                     target.logs = target.logs || [];
-                    if ((event.source !== target.target) && (!target.state || target.state === ENUMS.EventState.ERROR.key)) {
-                        if (event.source !== target.target) {
-                            SERVICE.DefaultModuleService.fetch(_self.prepareURL({
-                                enterpriseCode: event.enterpriseCode,
-                                tenant: event.tenant,
-                                event: event.event,
-                                source: event.source,
-                                target: target.target,
-                                type: event.type,
-                                params: event.params
-                            }, target)).then(success => {
-                                if (success.success) {
-                                    target.state = ENUMS.EventState.FINISHED.key;
-                                    target.logs.push(success.msg);
-                                } else {
-                                    event.state = ENUMS.EventState.ERROR.key;
-                                    target.state = ENUMS.EventState.ERROR.key;
-                                    target.logs.push(success.msg);
-                                }
-                                _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
-                                    resolve(success);
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            }).catch(error => {
+                    if (!target.state || target.state === ENUMS.EventState.ERROR.key) {
+                        SERVICE.DefaultModuleService.fetch(_self.prepareURL({
+                            enterpriseCode: event.enterpriseCode,
+                            tenant: event.tenant,
+                            event: event.event,
+                            source: event.source,
+                            target: target.target,
+                            type: event.type,
+                            params: event.params
+                        }, target)).then(success => {
+                            if (success.success) {
+                                target.state = ENUMS.EventState.FINISHED.key;
+                                target.logs.push(success.msg);
+                            } else {
+                                event.state = ENUMS.EventState.ERROR.key;
                                 target.state = ENUMS.EventState.ERROR.key;
-                                target.logs.push(error.toString());
-                                _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
-                                    resolve(success);
-                                }).catch(error => {
-                                    reject(error);
-                                });
+                                target.logs.push(success.msg);
+                            }
+                            _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
                             });
-                        }
+                        }).catch(error => {
+                            target.state = ENUMS.EventState.ERROR.key;
+                            target.logs.push(error.toString());
+                            _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        });
                     } else {
                         _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
                             resolve(success);

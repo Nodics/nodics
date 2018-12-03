@@ -11,11 +11,17 @@
 
 module.exports = {
     common: {
-        /*
-            testListener: {
-                event: 'invalidateAuthToken',
-                listener: 'DefaultAuthenticationProviderService.invalidateAuthToken'
-            }
-        */
+        enterpriseSaveListener: {
+            event: 'enterpriseSave',
+            listener: 'DefaultEnterpriseUpdateListenerService.handleEnterpriseSave'
+        },
+        enterpriseUpdateListener: {
+            event: 'enterpriseUpdate',
+            listener: 'DefaultEnterpriseUpdateListenerService.handleEnterpriseUpdate'
+        },
+        enterpriseRemoveListener: {
+            event: 'enterpriseRemove',
+            listener: 'DefaultEnterpriseUpdateListenerService.handleEnterpriseRemove'
+        }
     }
 };

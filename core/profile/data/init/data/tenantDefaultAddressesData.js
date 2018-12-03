@@ -11,7 +11,7 @@
 
 module.exports = {
     record0: {
-        code: 'defaultEntAddress',
+        code: 'defaultEmployeeAddress',
         active: true,
         flatNo: '100',
         building: 'Nodics Technology Park',
@@ -19,5 +19,15 @@ module.exports = {
         city: 'Bangalore',
         state: 'Karnataka',
         postalCode: '560001'
-    }
+    },
+    record1: {
+        code: 'defaultCustomerAddress',
+        active: true,
+        flatNo: '100',
+        building: 'Nodics Technology Park',
+        street: '100 lake side',
+        city: 'Bangalore',
+        state: 'Karnataka',
+        postalCode: '560001'
+    },
 };

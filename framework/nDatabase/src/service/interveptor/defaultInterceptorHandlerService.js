@@ -10,17 +10,12 @@
  */
 
 module.exports = {
-    executeGetInterceptors: function (options) {
+    executeGetInterceptors: function (interceptorList, options) {
         return new Promise((resolve, reject) => {
             try {
-                if (options.interceptorList && options.interceptorList.length > 0) {
-                    this.executeInterceptor(options.interceptorList.shift(), {
-                        collection: options.collection,
-                        query: options.query,
-                        options: options.options,
-                        result: options.result || {}
-                    }).then(success => {
-                        this.executeGetInterceptors(options).then(success => {
+                if (interceptorList && interceptorList.length > 0) {
+                    this.executeInterceptor(interceptorList.shift(), options).then(success => {
+                        this.executeGetInterceptors(interceptorList, options).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);
@@ -37,17 +32,12 @@ module.exports = {
         });
     },
 
-    executeSaveInterceptors: function (options) {
+    executeSaveInterceptors: function (interceptorList, options) {
         return new Promise((resolve, reject) => {
             try {
-                if (options.interceptorList && options.interceptorList.length > 0) {
-                    this.executeInterceptor(options.interceptorList.shift(), {
-                        collection: options.collection,
-                        query: options.query,
-                        originalModel: options.originalModel,
-                        model: options.model
-                    }).then(success => {
-                        this.executeSaveInterceptors(options).then(success => {
+                if (interceptorList && interceptorList.length > 0) {
+                    this.executeInterceptor(interceptorList.shift(), options).then(success => {
+                        this.executeSaveInterceptors(interceptorList, options).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);
@@ -64,16 +54,12 @@ module.exports = {
         });
     },
 
-    executeRemoveInterceptors: function (options) {
+    executeRemoveInterceptors: function (interceptorList, options) {
         return new Promise((resolve, reject) => {
             try {
-                if (options.interceptorList && options.interceptorList.length > 0) {
-                    this.executeInterceptor(options.interceptorList.shift(), {
-                        collection: options.collection,
-                        query: options.query,
-                        result: options.result
-                    }).then(success => {
-                        this.executeRemoveInterceptors(options).then(success => {
+                if (interceptorList && interceptorList.length > 0) {
+                    this.executeInterceptor(interceptorList.shift(), options).then(success => {
+                        this.executeRemoveInterceptors(interceptorList, options).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);
@@ -90,17 +76,12 @@ module.exports = {
         });
     },
 
-    executeUpdateInterceptors: function (options) {
+    executeUpdateInterceptors: function (interceptorList, options) {
         return new Promise((resolve, reject) => {
             try {
-                if (options.interceptorList && options.interceptorList.length > 0) {
-                    this.executeInterceptor(options.interceptorList.shift(), {
-                        collection: options.collection,
-                        query: options.query,
-                        model: options.model,
-                        result: options.result
-                    }).then(success => {
-                        this.executeUpdateInterceptors(options).then(success => {
+                if (interceptorList && interceptorList.length > 0) {
+                    this.executeInterceptor(interceptorList.shift(), options).then(success => {
+                        this.executeUpdateInterceptors(interceptorList, options).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);
@@ -117,15 +98,12 @@ module.exports = {
         });
     },
 
-    executeProcessorInterceptors: function (options) {
+    executeProcessorInterceptors: function (interceptorList, options) {
         return new Promise((resolve, reject) => {
             try {
-                if (options.interceptorList && options.interceptorList.length > 0) {
-                    this.executeInterceptor(options.interceptorList.shift(), {
-                        request: options.request,
-                        response: options.response,
-                    }).then(success => {
-                        this.executeUpdateInterceptors(options).then(success => {
+                if (interceptorList && interceptorList.length > 0) {
+                    this.executeInterceptor(interceptorList.shift(), options).then(success => {
+                        this.executeProcessorInterceptors(interceptorList, options).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);

@@ -42,11 +42,11 @@ module.exports = {
                             if (moduleList.includes(element.name)) {
                                 let dataFilesRoot = element.path;
                                 if (dataType === 'core') {
-                                    dataFilesRoot = dataFilesRoot + '/data/core'
+                                    dataFilesRoot = dataFilesRoot + '/data/core';
                                 } else if (dataType === 'sample') {
-                                    dataFilesRoot = dataFilesRoot + '/data/sample'
+                                    dataFilesRoot = dataFilesRoot + '/data/sample';
                                 } else {
-                                    dataFilesRoot = dataFilesRoot + '/data/init'
+                                    dataFilesRoot = dataFilesRoot + '/data/init';
                                 }
                                 _self.getDataHeaders(dataFilesRoot, fileList);
                             }
@@ -116,11 +116,11 @@ module.exports = {
                             if (moduleList.includes(element.name)) {
                                 let dataFilesRoot = element.path;
                                 if (dataType === 'core') {
-                                    dataFilesRoot = dataFilesRoot + '/data/core'
+                                    dataFilesRoot = dataFilesRoot + '/data/core';
                                 } else if (dataType === 'sample') {
-                                    dataFilesRoot = dataFilesRoot + '/data/sample'
+                                    dataFilesRoot = dataFilesRoot + '/data/sample';
                                 } else {
-                                    dataFilesRoot = dataFilesRoot + '/data/init'
+                                    dataFilesRoot = dataFilesRoot + '/data/init';
                                 }
                                 _self.getDataFiles(dataFilesRoot, fileList);
                             }

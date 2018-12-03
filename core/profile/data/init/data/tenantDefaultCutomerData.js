@@ -12,7 +12,7 @@
 module.exports = {
     record0: {
         code: 'guest',
-        enterpriseCode: 'default',
+        enterpriseCode: 'testOneEnt',
         name: {
             title: 'Mr.',
             firstName: 'Nodics',

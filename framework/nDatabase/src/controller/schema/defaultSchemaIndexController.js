@@ -12,16 +12,16 @@
 module.exports = {
 
     updateSchemaIndexes: function (request, callback) {
-        let moduleName = request.moduleName || request.local.moduleName;
-        if (request.params.schema) {
+        let moduleName = request.moduleName;
+        if (request.httpRequest.params.schema) {
             if (callback) {
-                FACADE.DefaultSchemaIndexFacade.updateSchemaIndexes(moduleName, request.params.schema).then(success => {
+                FACADE.DefaultSchemaIndexFacade.updateSchemaIndexes(moduleName, request.httpRequest.params.schema).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                return FACADE.DefaultSchemaIndexFacade.updateSchemaIndexes(moduleName, request.params.schema);
+                return FACADE.DefaultSchemaIndexFacade.updateSchemaIndexes(moduleName, request.httpRequest.params.schema);
             }
         } else {
             if (callback) {

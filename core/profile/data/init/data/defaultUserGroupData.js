@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    record0: {
+    /*record0: {
         code: 'adminUserGroup',
         name: 'adminUserGroup',
         enterpriseCode: 'default'
@@ -19,5 +19,5 @@ module.exports = {
         code: 'guestUserGroup',
         name: 'guestUserGroup',
         enterpriseCode: 'default'
-    }
+    }*/
 };

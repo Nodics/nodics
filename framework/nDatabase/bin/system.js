@@ -155,6 +155,7 @@ module.exports = {
                 });
                 if (allModules.length > 0) {
                     Promise.all(allModules).then(success => {
+
                         resolve(true);
                     }).catch(error => {
                         reject(error);
@@ -263,38 +264,88 @@ module.exports = {
 
     createIndex: function (model, indexConfig) {
         return new Promise((resolve, reject) => {
-            model.dataBase.getConnection().createIndex(model.modelName, indexConfig.field, indexConfig.options).then(success => {
-                resolve('Index updated for ' + Object.keys(indexConfig.field)[0]);
-            }).catch(error => {
+            try {
+                model.dataBase.getConnection().createIndex(model.modelName, indexConfig.field, indexConfig.options).then(success => {
+                    resolve('Index updated for ' + Object.keys(indexConfig.field)[0]);
+                }).catch(error => {
+                    reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());
+                });
+            } catch (error) {
                 reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());
-            });
+            }
         });
     },
 
-    createIndexes: function (model) {
+    dropIndex: function (model, indexName) {
+        return new Promise((resolve, reject) => {
+            try {
+                model.dropIndex(indexName).then(success => {
+                    resolve('Index deleted for ' + indexName);
+                }).catch(error => {
+                    reject('Index deleting failed for ' + indexName + ' : ' + error.toString());
+                });
+            } catch (error) {
+                reject('Index deleting failed for ' + indexName + ' : ' + error.toString());
+            }
+        });
+    },
+
+    createIndexes: function (model, cleanOrphan) {
         return new Promise((resolve, reject) => {
             if (model) {
                 let schemaOptions = model.rawSchema.schemaOptions[model.tenant];
                 let allPromise = [];
+                let liveIndexes = {};
                 if (!UTILS.isBlank(schemaOptions.indexedFields)) {
-                    _.each(schemaOptions.indexedFields, (config, field) => {
-                        allPromise.push(SYSTEM.createIndex(model, config));
-                    });
-                    if (allPromise.length > 0) {
-                        Promise.all(allPromise).then(success => {
-                            let response = {};
-                            response[model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
-                            resolve(response);
-                        }).catch(error => {
-                            let response = {};
-                            response[model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
-                            reject(response);
+                    model.indexes(function (err, indexes) {
+                        if (indexes && indexes.length > 0) {
+                            let idKeyHash = SYSTEM.generateHash(JSON.stringify({
+                                _id: 1
+                            }));
+                            indexes.forEach(element => {
+                                let key = SYSTEM.generateHash(JSON.stringify(element.key));
+                                if (key != idKeyHash) {
+                                    liveIndexes[key] = {
+                                        hash: key,
+                                        key: element.key,
+                                        name: element.name,
+                                        unique: element.unique || false
+                                    };
+                                }
+                            });
+                        }
+                        _.each(schemaOptions.indexedFields, (config, field) => {
+                            let key = SYSTEM.generateHash(JSON.stringify(config.field));
+                            let tmpIndex = liveIndexes[key];
+                            if (!tmpIndex || tmpIndex.unique !== config.options.unique) {
+                                allPromise.push(SYSTEM.createIndex(model, config));
+                            } else {
+                                delete liveIndexes[key];
+                            }
                         });
-                    } else {
-                        let response = {};
-                        response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
-                        resolve(response);
-                    }
+                        if (cleanOrphan && !UTILS.isBlank(liveIndexes)) {
+                            _.each(liveIndexes, (indexConfig, key) => {
+                                allPromise.push(SYSTEM.dropIndex(model, indexConfig.name));
+                            });
+                        }
+                        if (allPromise.length > 0) {
+                            Promise.all(allPromise).then(success => {
+                                let response = {};
+                                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
+                                resolve(response);
+                            }).catch(error => {
+                                let response = {};
+                                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
+                                reject(response);
+                            });
+                        } else {
+                            let response = {};
+                            response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
+                            resolve(response);
+                        }
+                    });
+
+
                 } else {
                     let response = {};
                     response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
@@ -353,7 +404,7 @@ module.exports = {
                 collection.tenant = options.tntCode;
                 collection.channel = options.channel;
                 SYSTEM.createIndexes(collection).then(success => {
-                    SYSTEM.LOG.debug('Indexes created for: ' + collection.schemaName + ' : ' + success);
+                    SYSTEM.LOG.debug('Indexes created for: ' + collection.schemaName);
                     SYSTEM.registerModelMiddleWare(options, collection, schema);
                     resolve(collection);
                 }).catch(error => {
@@ -395,7 +446,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             options.modelName = UTILS.createModelName(options.schemaName);
             let schema = options.moduleObject.rawSchema[options.schemaName];
-            if (options.dataBase.master && schema.model === true) {
+            if (options.dataBase.master && schema.model === true && (!schema.tenants || schema.tenants.includes(options.tntCode))) {
                 SYSTEM.prepareDatabaseOptions(options);
                 let cache = _.merge({}, schema.cache || {});
                 let itemLevelCache = CONFIG.get('cache').itemLevelCache;
@@ -424,7 +475,7 @@ module.exports = {
                     reject(error);
                 });
             } else {
-                SYSTEM.LOG.warn('Invalid database configuration for module: ', options.moduleName, ' and tenant: ', options.tntCode);
+                SYSTEM.LOG.warn('Invalid database configuration for module: ', options.moduleName, ' and tenant: ', options.tntCode + '. Hence defailt will be used');
                 resolve(true);
             }
         });
@@ -511,7 +562,7 @@ module.exports = {
         });
     },
 
-    buildModelsForTenants: function (tenants = ['default']) {
+    buildModelsForTenants: function (tenants) {
         return new Promise((resolve, reject) => {
             let tntCode = tenants.shift();
             if (tntCode) {
@@ -599,134 +650,149 @@ module.exports = {
                     SYSTEM.LOG.error('Module name : ', key, ' is not valid. Please define a valide module name in schema');
                     process.exit(CONFIG.get('errorExitCode'));
                 }
-                moduleObject.rawSchema = SYSTEM.resolveModuleSchemaDependancy(key, _.merge(_.merge({}, defaultSchema), mergedSchema[key]));
+                moduleObject.rawSchema = SYSTEM.resolveModuleSchemaDependancy(key, _.merge(_.merge({}, defaultSchema), mergedSchema[key]));;
             }
         });
         NODICS.setRawModels(SYSTEM.loadFiles('/src/schemas/model.js'));
     },
 
-    addTenants: function () {
+    fetchEnterprise: function () {
         return new Promise((resolve, reject) => {
             if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                SERVICE.DefaultTenantService.get({
-                    tenant: 'default'
-                }).then(tenantData => {
-                    if (tenantData && tenantData.result && tenantData.result.length > 0) {
-                        SYSTEM.handleTenants(tenantData.result).then(success => {
-                            resolve(success);
-                        }).catch((error) => {
-                            SYSTEM.LOG.error(error);
-                            reject('Configure at least default tenant');
-                        });
-                    } else {
-                        reject('Configure at least default tenant');
+                SERVICE.DefaultEnterpriseService.get({
+                    tenant: 'default',
+                    options: {
+                        recursive: true
                     }
-                }).catch(error => {
-                    SYSTEM.LOG.error(error);
-                    reject('Configure at least default tenant');
-                });
-            } else {
-                SYSTEM.fetchTenants().then(tenantData => {
-                    SYSTEM.handleTenants(tenantData).then(success => {
-                        resolve(success);
-                    }).catch((error) => {
-                        resolve(true);
-                    });
-                }).catch(error => {
-                    resolve(true);
-                });
-            }
-        });
-    },
-
-    fetchTenants: function () {
-        return new Promise((resolve, reject) => {
-            let requestUrl = SERVICE.DefaultModuleService.buildRequest({
-                moduleName: 'profile',
-                methodName: 'POST',
-                apiName: '/tenant',
-                requestBody: {},
-                isJsonResponse: true,
-                header: {
-                    apiKey: CONFIG.get('apiKey')
-                }
-            });
-            try {
-                SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
-                    if (error) {
-                        SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
+                }).then(success => {
+                    if (success.success || success.result.length > 0) {
+                        resolve(success.result);
+                    } else {
+                        SYSTEM.LOG.error('Could not found any active enterprises currently');
                         resolve([]);
-                    } else {
-                        resolve(response.result || []);
                     }
-                });
-            } catch (error) {
-                SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
-                resolve([]);
-            }
-        });
-    },
-
-    handleTenants: function (tenantData) {
-        return new Promise((resolve, reject) => {
-            if (!tenantData || tenantData.length <= 0) {
-                reject('Configure at least default tenant');
-            } else {
-                try {
-                    tenantData.forEach(element => {
-                        if (element.active) {
-                            NODICS.addTenant(element.code);
-                            let tntConfig = _.merge({}, CONFIG.getProperties());
-                            tntConfig = _.merge(tntConfig, element.properties);
-                            CONFIG.setProperties(tntConfig, element.code);
-                        }
-                    });
-                } catch (error) {
-                    SYSTEM.LOG.error(error);
-                }
-                resolve(true);
-            }
-        });
-    },
-
-    createTenantDatabaseConnection: function () {
-        return new Promise((resolve, reject) => {
-            let allTenant = [];
-            let tenants = NODICS.getTenants() || [];
-            tenants.forEach(function (tntCode) {
-                if (tntCode !== 'default') {
-                    allTenant.push(SYSTEM.createTenantDatabase(tntCode));
-                }
-            });
-            if (allTenant.length > 0) {
-                Promise.all(allTenant).then(success => {
-                    resolve(true);
                 }).catch(error => {
                     reject(error);
                 });
             } else {
-                resolve(true);
+                let requestUrl = SERVICE.DefaultModuleService.buildRequest({
+                    moduleName: 'profile',
+                    methodName: 'POST',
+                    apiName: '/enterprise',
+                    requestBody: {},
+                    isJsonResponse: true,
+                    header: {
+                        apiKey: CONFIG.get('apiKey'),
+                        recursive: true
+                    }
+                });
+                try {
+                    SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
+                        if (error) {
+                            SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
+                            resolve([]);
+                        } else {
+                            resolve(response.result || []);
+                        }
+                    });
+                } catch (error) {
+                    SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
+                    resolve([]);
+                }
             }
+
         });
     },
 
-    loadTenantDatabase: function () {
-        let _self = this;
+    buildEnterprises: function () {
         return new Promise((resolve, reject) => {
-            SYSTEM.createTenantDatabaseConnection().then(success => {
-                let tenants = NODICS.getTenants().slice(0);
-                var index = tenants.indexOf('default');
-                if (index > -1) {
-                    tenants.splice(index, 1);
-                }
-                _self.buildModelsForTenants(tenants).then(success => {
-                    resolve(success);
+            SYSTEM.fetchEnterprise().then(success => {
+                SYSTEM.buildEnterprise(success).then(success => {
+                    resolve({
+                        success: true,
+                        code: ''
+                    });
                 }).catch(error => {
                     reject(error);
                 });
             }).catch(error => {
                 reject(error);
             });
+        });
+    },
+
+    buildEnterprise: function (enterprises) {
+        return new Promise((resolve, reject) => {
+            if (enterprises && enterprises.length > 0) {
+                let enterprise = enterprises.shift();
+                if (enterprise.active && enterprise.tenant && enterprise.tenant.active && !NODICS.getTenants().includes(enterprise.tenant.code)) {
+                    NODICS.addTenant(enterprise.tenant.code);
+                    let tntConfig = _.merge({}, CONFIG.getProperties());
+                    tntConfig = _.merge(tntConfig, enterprise.tenant.properties);
+                    CONFIG.setProperties(tntConfig, enterprise.tenant.code);
+                    SYSTEM.createTenantDatabase(enterprise.tenant.code).then(success => {
+                        SYSTEM.buildModelsForTenant(enterprise.tenant.code).then(success => {
+                            if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+                                SERVICE.DefaultEmployeeService.get({
+                                    tenant: enterprise.tenant.code,
+                                    query: {
+                                        code: 'admin'
+                                    }
+                                }).then(success => {
+                                    if (success.success && success.result.length <= 0) {
+                                        SERVICE.DefaultImportService.importInitData({
+                                            tenant: enterprise.tenant.code,
+                                            modules: NODICS.getActiveModules()
+                                        }).then(success => {
+                                            SYSTEM.buildEnterprise(enterprises).then(success => {
+                                                resolve(true);
+                                            }).catch(error => {
+                                                reject(error);
+                                            });
+                                        }).catch(error => {
+                                            reject(error);
+                                        });
+                                    } else {
+                                        SYSTEM.buildEnterprise(enterprises).then(success => {
+                                            resolve(true);
+                                        }).catch(error => {
+                                            reject(error);
+                                        });
+                                    }
+                                }).catch(error => {
+                                    SYSTEM.LOG.error('Failed loading tenant: ' + enterprise.tenant.code);
+                                    SYSTEM.LOG.error(error);
+                                    reject(error);
+                                });
+                            } else {
+                                SYSTEM.buildEnterprise(enterprises).then(success => {
+                                    resolve(true);
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            }
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    SYSTEM.buildEnterprise(enterprises).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    removeEnterprise: function (enterprises) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
         });
     }
 };

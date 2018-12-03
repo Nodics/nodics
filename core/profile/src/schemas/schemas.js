@@ -21,6 +21,7 @@ module.exports = {
                 ttl: 100
             },
             router: true,
+            tenants: ['default'],
             definition: {
                 enterpriseCode: {
                     required: false
@@ -42,7 +43,7 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: true,
+            event: false,
             router: true,
             cache: {
                 enabled: true,
@@ -110,7 +111,7 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: true,
+            event: false,
             router: true,
             definition: {
                 enterpriseCode: {
@@ -149,12 +150,13 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: true,
+            event: false,
             cache: {
                 enabled: true,
                 ttl: 100
             },
             router: true,
+            tenants: ['default'],
             refSchema: {
                 tenant: {
                     schemaName: "tenant",
@@ -201,6 +203,11 @@ module.exports = {
                     type: 'string',
                     required: true,
                     description: 'Required Code of associated tenant'
+                },
+                active: {
+                    type: 'bool',
+                    required: true,
+                    description: 'Flag to check if tenant is still active'
                 },
                 superEnterprise: {
                     type: 'objectId',
@@ -266,7 +273,7 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: true,
+            event: false,
             router: true,
             definition: {
                 name: {
@@ -408,7 +415,7 @@ module.exports = {
             super: 'user',
             model: true,
             service: true,
-            event: true,
+            event: false,
             router: true,
             definition: {
                 apiKey: {
@@ -423,7 +430,7 @@ module.exports = {
             super: 'user',
             model: true,
             service: true,
-            event: true,
+            event: false,
             router: true,
             cache: {
                 enabled: true,
