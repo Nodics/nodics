@@ -264,38 +264,88 @@ module.exports = {
 
     createIndex: function (model, indexConfig) {
         return new Promise((resolve, reject) => {
-            model.dataBase.getConnection().createIndex(model.modelName, indexConfig.field, indexConfig.options).then(success => {
-                resolve('Index updated for ' + Object.keys(indexConfig.field)[0]);
-            }).catch(error => {
+            try {
+                model.dataBase.getConnection().createIndex(model.modelName, indexConfig.field, indexConfig.options).then(success => {
+                    resolve('Index updated for ' + Object.keys(indexConfig.field)[0]);
+                }).catch(error => {
+                    reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());
+                });
+            } catch (error) {
                 reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());
-            });
+            }
         });
     },
 
-    createIndexes: function (model) {
+    dropIndex: function (model, indexName) {
+        return new Promise((resolve, reject) => {
+            try {
+                model.dropIndex(indexName).then(success => {
+                    resolve('Index deleted for ' + indexName);
+                }).catch(error => {
+                    reject('Index deleting failed for ' + indexName + ' : ' + error.toString());
+                });
+            } catch (error) {
+                reject('Index deleting failed for ' + indexName + ' : ' + error.toString());
+            }
+        });
+    },
+
+    createIndexes: function (model, cleanOrphan) {
         return new Promise((resolve, reject) => {
             if (model) {
                 let schemaOptions = model.rawSchema.schemaOptions[model.tenant];
                 let allPromise = [];
+                let liveIndexes = {};
                 if (!UTILS.isBlank(schemaOptions.indexedFields)) {
-                    _.each(schemaOptions.indexedFields, (config, field) => {
-                        allPromise.push(SYSTEM.createIndex(model, config));
-                    });
-                    if (allPromise.length > 0) {
-                        Promise.all(allPromise).then(success => {
-                            let response = {};
-                            response[model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
-                            resolve(response);
-                        }).catch(error => {
-                            let response = {};
-                            response[model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
-                            reject(response);
+                    model.indexes(function (err, indexes) {
+                        if (indexes && indexes.length > 0) {
+                            let idKeyHash = SYSTEM.generateHash(JSON.stringify({
+                                _id: 1
+                            }));
+                            indexes.forEach(element => {
+                                let key = SYSTEM.generateHash(JSON.stringify(element.key));
+                                if (key != idKeyHash) {
+                                    liveIndexes[key] = {
+                                        hash: key,
+                                        key: element.key,
+                                        name: element.name,
+                                        unique: element.unique || false
+                                    };
+                                }
+                            });
+                        }
+                        _.each(schemaOptions.indexedFields, (config, field) => {
+                            let key = SYSTEM.generateHash(JSON.stringify(config.field));
+                            let tmpIndex = liveIndexes[key];
+                            if (!tmpIndex || tmpIndex.unique !== config.options.unique) {
+                                allPromise.push(SYSTEM.createIndex(model, config));
+                            } else {
+                                delete liveIndexes[key];
+                            }
                         });
-                    } else {
-                        let response = {};
-                        response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
-                        resolve(response);
-                    }
+                        if (cleanOrphan && !UTILS.isBlank(liveIndexes)) {
+                            _.each(liveIndexes, (indexConfig, key) => {
+                                allPromise.push(SYSTEM.dropIndex(model, indexConfig.name));
+                            });
+                        }
+                        if (allPromise.length > 0) {
+                            Promise.all(allPromise).then(success => {
+                                let response = {};
+                                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
+                                resolve(response);
+                            }).catch(error => {
+                                let response = {};
+                                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
+                                reject(response);
+                            });
+                        } else {
+                            let response = {};
+                            response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
+                            resolve(response);
+                        }
+                    });
+
+
                 } else {
                     let response = {};
                     response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';

@@ -41,9 +41,13 @@ module.exports = {
                         resolve(response);
                     }).catch(error => {
                         let response = [];
-                        error.forEach(element => {
-                            response.push(element);
-                        });
+                        if (error instanceof Array && error.length > 0) {
+                            error.forEach(element => {
+                                response.push(element);
+                            });
+                        } else {
+                            response.push(error);
+                        }
                         reject(response);
                     });
                 } else {
