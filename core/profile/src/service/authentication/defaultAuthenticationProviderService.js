@@ -56,6 +56,14 @@ module.exports = {
                                 enterprise: enterprise
                             }
                         });
+                        let moduleObject = NODICS.getModule(request.moduleName);
+                        if (moduleObject && moduleObject.authCache) {
+                            moduleObject.authCache.tokens[success.authToken] = {
+                                enterpriseCode: enterprise.code,
+                                loginId: employee.loginId
+                            };
+                        }
+
                     }).catch(error => {
                         reject(error);
                     });

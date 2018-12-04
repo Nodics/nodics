@@ -245,7 +245,7 @@ module.exports = {
                 process.error(request, response, {
                     success: false,
                     code: 'ERR_FIND_00004',
-                    error: error
+                    error: error.toString()
                 });
             });
         } else {
@@ -271,7 +271,7 @@ module.exports = {
             process.error(request, response, {
                 success: false,
                 code: 'ERR_SAVE_00000',
-                error: error
+                error: error.toString()
             });
         });
     },
@@ -287,7 +287,7 @@ module.exports = {
                 process.error(request, response, {
                     success: false,
                     code: 'ERR_FIND_00003',
-                    error: error
+                    error: error.toString()
                 });
             });
         } else {
@@ -404,7 +404,7 @@ module.exports = {
                 process.error(request, response, {
                     success: false,
                     code: 'ERR_FIND_00005',
-                    error: error
+                    error: error.toString()
                 });
             });
         } else {

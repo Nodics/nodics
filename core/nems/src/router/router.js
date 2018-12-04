@@ -51,6 +51,33 @@ module.exports = {
                     method: 'GET',
                     url: 'http://host:port/nodics/nems/event/process',
                 }
+            },
+            resetAll: {
+                secured: true,
+                key: '/event/reset',
+                method: 'GET',
+                controller: 'DefaultEventHandlerController',
+                operation: 'resetEvents',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/nems/event/reset',
+                }
+            },
+
+            resetQuery: {
+                secured: true,
+                key: '/event/reset',
+                method: 'POST',
+                controller: 'DefaultEventHandlerController',
+                operation: 'resetEvents',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/nems/event/reset',
+                }
             }
         }
     }

@@ -13,6 +13,33 @@ const _ = require('lodash');
 
 module.exports = {
 
+    resetEvents: function (input) {
+        return new Promise((resolve, reject) => {
+            let currentDate = new Date();
+            currentDate.setTime(currentDate.getTime() - parseInt(CONFIG.get('eventResetTimeInMinutes'), 10) * 60000);
+            console.log('=============> : ', currentDate);
+            if (!input.query) {
+                input.query = {
+                    $and: [{
+                        "state": "PROCESSING",
+                    }, {
+                        "updated": {
+                            "$lt": currentDate
+                        }
+                    }]
+                };
+            }
+            input.body.model = {
+                state: ENUMS.EventState.NEW.key
+            };
+            SERVICE.DefaultEventService.update(input).then(response => {
+                resolve(response);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
     buildQuery: function () {
         return {
             options: {

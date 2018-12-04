@@ -13,5 +13,9 @@ module.exports = {
 
     processEvents: function (request) {
         return SERVICE.DefaultEventHandlerService.processEvents(request);
+    },
+
+    resetEvents: function (request) {
+        return SERVICE.DefaultEventHandlerService.resetEvents(request);
     }
 };

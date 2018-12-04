@@ -33,7 +33,7 @@ module.exports = {
 
     loadEnterprise: function (request) {
         return new Promise((resolve, reject) => {
-            if (request.moduleName === 'profile') {
+            if (request.moduleName === CONFIG.get('profileModuleName')) {
                 SERVICE.DefaultEnterpriseService.get({
                     tenant: request.tenant || 'default',
                     options: {
