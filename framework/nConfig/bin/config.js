@@ -9,17 +9,17 @@
 
  */
 
-module.exports = function() {
+module.exports = function () {
     let _tntProperties = {};
 
-    this.setProperties = function(properties, tenant) {
+    this.setProperties = function (properties, tenant) {
         if (tenant) {
             _tntProperties[tenant] = properties;
         } else {
             _tntProperties['default'] = properties;
         }
     };
-    this.getProperties = function(tenant) {
+    this.getProperties = function (tenant) {
         if (tenant) {
             return _tntProperties[tenant];
         } else {
@@ -27,7 +27,7 @@ module.exports = function() {
         }
     };
 
-    this.get = function(key, tenant) {
+    this.get = function (key, tenant) {
         let tntProperties = this.getProperties(tenant);
         if (!tntProperties) {
             SYSTEM.LOG.error("System could't find any properties for current Tanent : ", tenant ? tenant : NODICS.getActiveTanent());
