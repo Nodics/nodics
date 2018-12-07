@@ -53,4 +53,20 @@ module.exports = {
         });
     },
 
+    employeeRemoveInvalidateAuthToken: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+            if (options.result && options.result.models && options.result.models.length > 0) {
+                options.result.models.forEach(model => {
+                    SERVICE.DefaultAuthenticationService.invalidateEmployeeAuthToken(model, true).then(success => {
+                        this.LOG.debug('Authentication token has been invalidated successfully for Employee: ', model.loginId);
+                    }).catch(error => {
+                        this.LOG.error('Failed invalidating authToken for Employee: ', model.loginId);
+                        this.LOG.error(error);
+                    });
+                });
+            }
+        });
+    },
+
 };

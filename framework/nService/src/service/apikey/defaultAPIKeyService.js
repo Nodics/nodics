@@ -11,10 +11,35 @@
 const _ = require('lodash');
 
 module.exports = {
-    handleApiKeyUpdate: function (event, callback) {
+    handleApiKeyUpdate: function (event, callback, request) {
         try {
             if (event.data && event.data.apiKey && event.data.tenant) {
                 NODICS.addAPIKey(event.data.tenant, event.data.apiKey, {});
+                callback(null, {
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    msg: 'Successfully updated API Key for all running tenants'
+                });
+            } else {
+                callback({
+                    success: false,
+                    code: 'ERR_SYS_00000',
+                    msg: 'Invalid event, apiKey can not be null or empty'
+                });
+            }
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_SYS_00000',
+                error: error.toString()
+            });
+        }
+    },
+
+    handleApiKeyRemove: function (event, callback, request) {
+        try {
+            if (event.data && event.data.tenant) {
+                NODICS.removeAPIKey(event.data.tenant);
                 callback(null, {
                     success: true,
                     code: 'SUC_SYS_00000',

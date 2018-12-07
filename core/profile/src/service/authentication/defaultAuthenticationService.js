@@ -11,9 +11,36 @@
 
 module.exports = {
 
-    invalidateEnterpriseAuthToken: function (enterpriseCode) {
+    invalidateEnterpriseAuthToken: function (enterprise, isRemoved) {
         return new Promise((resolve, reject) => {
-            this.invalidateAuthToken('enterpriseCode', enterpriseCode).then(success => {
+            this.invalidateAuthToken({
+                isEnterprise: true,
+                enterpriseCode: enterprise.code
+            }).then(success => {
+                if (success.length > 0) {
+                    let eventsData = [];
+                    success.forEach(element => {
+                        let value = NODICS.findAPIKey(element);
+                        if (value) {
+                            if (isRemoved) {
+                                NODICS.removeAPIKey(enterprise.tenant.code);
+                                eventsData.push(value);
+                            } else {
+                                value.enterpriseCode = enterprise.code;
+                                value.tenant = enterprise.tenant.code;
+                                NODICS.addAPIKey(enterprise.tenant.code, element, value);
+                            }
+                        }
+                    });
+                    if (isRemoved) {
+                        _self.publishAPIKeyRemoveEvent(eventsData).then(success => {
+                            _self.LOG.debug('Successfully updated API keys to all servers');
+                        }).catch(error => {
+                            _self.LOG.error('Failed updating API keys to all servers');
+                            _self.LOG.error(error);
+                        });
+                    }
+                }
                 resolve(success);
             }).catch(error => {
                 reject(error);
@@ -21,7 +48,7 @@ module.exports = {
         });
     },
 
-    invalidateEmployeeAuthToken: function (person) {
+    invalidateEmployeeAuthToken: function (person, isRemoved) {
         let _self = this;
         this.invalidateAuthToken({
             enterpriseCode: person.enterpriseCode,
@@ -40,16 +67,29 @@ module.exports = {
                             loginId: person.loginId
                         };
                         newValue.key = person.apiKey;
-                        NODICS.addAPIKey(person.tenant, person.apiKey, newValue);
+                        if (isRemoved) {
+                            NODICS.removeAPIKey(person.tenant);
+                        } else {
+                            NODICS.addAPIKey(person.tenant, person.apiKey, newValue);
+                        }
                         eventsData.push(newValue);
                     }
                 });
-                _self.publishAPIKeyChangeEvent(eventsData).then(success => {
-                    _self.LOG.debug('Successfully updated API keys to all servers');
-                }).catch(error => {
-                    _self.LOG.error('Failed updating API keys to all servers');
-                    _self.LOG.error(error);
-                });
+                if (isRemoved) {
+                    _self.publishAPIKeyRemoveEvent(eventsData).then(success => {
+                        _self.LOG.debug('Successfully updated API keys to all servers');
+                    }).catch(error => {
+                        _self.LOG.error('Failed updating API keys to all servers');
+                        _self.LOG.error(error);
+                    });
+                } else {
+                    _self.publishAPIKeyChangeEvent(eventsData).then(success => {
+                        _self.LOG.debug('Successfully updated API keys to all servers');
+                    }).catch(error => {
+                        _self.LOG.error('Failed updating API keys to all servers');
+                        _self.LOG.error(error);
+                    });
+                }
             }
             resolve(success);
         }).catch(error => {
@@ -76,11 +116,17 @@ module.exports = {
             if (moduleObject && moduleObject.authCache && moduleObject.authCache && moduleObject.authCache.tokens) {
                 let authTokens = [];
                 _.each(moduleObject.authCache.tokens, (authObj, authToken) => {
-                    if (authObj.enterpriseCode === options.enterpriseCode &&
-                        authObj.tenant === options.tenant &&
-                        authObj.loginId === options.loginId &&
-                        authObj.type === options.type) {
-                        authTokens.push(authToken);
+                    if (options.isEnterprise) {
+                        if (authObj.enterpriseCode === options.enterpriseCode) {
+                            authTokens.push(authToken);
+                        }
+                    } else {
+                        if (authObj.enterpriseCode === options.enterpriseCode &&
+                            authObj.tenant === options.tenant &&
+                            authObj.loginId === options.loginId &&
+                            authObj.type === options.type) {
+                            authTokens.push(authToken);
+                        }
                     }
                 });
                 if (authTokens.length > 0) {
@@ -124,6 +170,39 @@ module.exports = {
                         data: {
                             tenantName: data.tenant,
                             apiKey: data.apiKey
+                        }
+                    });
+                });
+                if (events.length > 0) {
+                    this.LOG.debug('Pushing event for enterprise updated');
+                    SERVICE.DefaultEventService.publish(event).then(success => {
+                        this.LOG.debug('Event successfully posted');
+                    }).catch(error => {
+                        this.LOG.error('While posting model change event : ', error);
+                    });
+                }
+            }
+            resolve(true);
+        });
+    },
+
+    publishAPIKeyRemoveEvent: function (eventsData) {
+        return new Promise((resolve, reject) => {
+            if (eventsData && eventsData.length > 0) {
+                let events = [];
+                eventsData.forEach(data => {
+                    events.push({
+                        enterpriseCode: data.enterpriseCode,
+                        tenant: 'default',
+                        event: 'apiKeyRemove',
+                        source: 'profile',
+                        target: 'profile',
+                        excludeModules: ['profile'],
+                        state: "NEW",
+                        type: "SYNC",
+                        targetType: ENUMS.TargetType.EACH_NODE.key,
+                        data: {
+                            tenantName: data.tenant
                         }
                     });
                 });

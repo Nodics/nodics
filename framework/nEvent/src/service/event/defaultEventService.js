@@ -39,7 +39,7 @@ module.exports = {
                             } else {
                                 resolve(success);
                             }
-                        });
+                        }, request);
                     } else {
                         eventService.emit(event.event, event, (error, success) => {
                             if (error || !success.success) {
@@ -48,7 +48,7 @@ module.exports = {
                             } else {
                                 _self.LOG.debug('Event has been processed successfully');
                             }
-                        });
+                        }, request);
                         resolve({
                             success: true,
                             code: 'SUC_EVNT_00000'

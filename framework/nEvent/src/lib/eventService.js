@@ -17,9 +17,9 @@ module.exports = class EventService extends EventEmitter {
         let method = listenerDefinition.listener;
         let serviceName = method.substring(0, method.lastIndexOf('.'));
         let operation = method.substring(method.lastIndexOf('.') + 1, method.length);
-        this.on(listenerDefinition.event, (event, callback) => {
+        this.on(listenerDefinition.event, (event, callback, request) => {
             try {
-                SERVICE[serviceName][operation](event, callback);
+                SERVICE[serviceName][operation](event, callback, request);
             } catch (error) {
                 callback({
                     success: false,

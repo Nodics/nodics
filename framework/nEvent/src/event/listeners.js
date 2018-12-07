@@ -15,6 +15,10 @@ module.exports = {
             event: 'apiKeyUpdate',
             listener: 'DefaultAPIKeyService.handleApiKeyUpdate'
         },
+        apiKeyRemoveListener: {
+            event: 'apiKeyRemove',
+            listener: 'DefaultAPIKeyService.handleApiKeyRemove'
+        },
         enterpriseSaveListener: {
             event: 'enterpriseSave',
             listener: 'DefaultEnterpriseUpdateListenerService.handleEnterpriseSave'
