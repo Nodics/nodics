@@ -17,6 +17,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let model = options.model;
+                model.excludeModules = model.excludeModules || [];
                 if (!UTILS.isBlank(model) && !model.targets) {
                     if (model.type == ENUMS.EventType.SYNC.key) {
                         model.state = ENUMS.EventState.PROCESSING.key;
@@ -30,7 +31,7 @@ module.exports = {
                     } else if (model.targetType === ENUMS.TargetType.EACH_MODULE.key) {
                         model.targetType = ENUMS.TargetType.MODULE.key;
                         _.each(SYSTEM.getModulesPool().getModules(), (moduleObj, moduleName) => {
-                            if (moduleName !== 'default') {
+                            if (moduleName !== 'default' && !model.excludeModules.includes(moduleName)) {
                                 model.targets.push({
                                     targetNodeId: model.targetNodeId,
                                     target: moduleName
@@ -40,7 +41,7 @@ module.exports = {
                     } else if (model.targetType === ENUMS.TargetType.EACH_NODE.key) {
                         model.targetType = ENUMS.TargetType.MODULE.key;
                         _.each(SYSTEM.getModulesPool().getModules(), (moduleObj, moduleName) => {
-                            if (moduleName !== 'default') {
+                            if (moduleName !== 'default' && !model.excludeModules.includes(moduleName)) {
                                 let nodes = SYSTEM.getModulesPool().getModule(moduleName).getNodes();
                                 _.each(nodes, (node, nodeId) => {
                                     model.targets.push({

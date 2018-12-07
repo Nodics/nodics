@@ -11,13 +11,113 @@
 
 module.exports = {
     profile: {
+        password: {
+            encryptSavePassword: {
+                type: 'preSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
+            },
+            encryptUpdatePassword: {
+                type: 'preUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
+            }
+        },
+
+        customer: {
+            customerPreUpdate: {
+                type: 'preUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultCustomerUpdateInterceptorService.customerPreUpdate'
+            },
+            customerPreRemove: {
+                type: 'preRemove',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultCustomerUpdateInterceptorService.customerPreRemove'
+            },
+
+            customerInvalidateAuthToken: {
+                type: 'postSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultCustomerUpdateInterceptorService.customerInvalidateAuthToken'
+            },
+
+            customerUpdateInvalidateAuthToken: {
+                type: 'postUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultCustomerUpdateInterceptorService.customerUpdateInvalidateAuthToken'
+            },
+
+            customerRemoveInvalidateAuthToken: {
+                type: 'postRemove',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultCustomerUpdateInterceptorService.customerUpdateInvalidateAuthToken'
+            }
+        },
+
+        employee: {
+            employeePreUpdate: {
+                type: 'preUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEmployeeUpdateInterceptorService.employeePreUpdate'
+            },
+            enterprisePreRemove: {
+                type: 'preRemove',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEmployeeUpdateInterceptorService.employeePreRemove'
+            },
+            employeeSaveInvalidateAuthToken: {
+                type: 'postSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEmployeeUpdateInterceptorService.employeeInvalidateAuthToken'
+            },
+            /*saveAPIKey: {
+                type: 'preSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
+            },
+            
+            updateAPIKey: {
+                type: 'preUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
+            },
+            
+            employeeUpdateInvalidateAuthToken: {
+                type: 'postUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEmployeeUpdateInterceptorService.employeeUpdateInvalidateAuthToken'
+            },
+            
+            employeeRemoveInvalidateAuthToken: {
+                type: 'postRemove',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEmployeeUpdateInterceptorService.employeeUpdateInvalidateAuthToken'
+            },*/
+
+        },
+
         enterprise: {
             /*enterprisePreGet: {
                 type: 'preSave',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreGet'
-            },*/
+            },
             enterprisePreSave: {
                 type: 'preSave',
                 active: 'true',
@@ -36,7 +136,7 @@ module.exports = {
                 index: 0,
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseSaveEvent'
             },
-            //**************** */
+            
 
 
             enterprisePreUpdate: {
@@ -74,98 +174,7 @@ module.exports = {
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateInvalidateAuthToken'
-            },
-        },
-        password: {
-            encryptSavePassword: {
-                type: 'preSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
-            },
-            encryptUpdatePassword: {
-                type: 'preUpdate',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultPasswordSaveInterceptorService.encryptPassword'
-            }
-        },
-        employee: {
-            saveAPIKey: {
-                type: 'preSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
-            },
-            employeeSaveInvalidateAuthToken: {
-                type: 'postSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEmployeeUpdateInterceptorService.employeeInvalidateAuthToken'
-            },
-            updateAPIKey: {
-                type: 'preUpdate',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
-            },
-            employeePreUpdate: {
-                type: 'preUpdate',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEmployeeUpdateInterceptorService.employeePreUpdate'
-            },
-            employeeUpdateInvalidateAuthToken: {
-                type: 'postUpdate',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEmployeeUpdateInterceptorService.employeeUpdateInvalidateAuthToken'
-            },
-            enterprisePreRemove: {
-                type: 'preRemove',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEmployeeUpdateInterceptorService.employeePreRemove'
-            },
-            employeeRemoveInvalidateAuthToken: {
-                type: 'postRemove',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEmployeeUpdateInterceptorService.employeeUpdateInvalidateAuthToken'
-            },
-
-        },
-        customer: {
-            customerSaveInvalidateAuthToken: {
-                type: 'postSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultCustomerUpdateInterceptorService.customerInvalidateAuthToken'
-            },
-            customerPreUpdate: {
-                type: 'preUpdate',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultCustomerUpdateInterceptorService.customerPreUpdate'
-            },
-            customerUpdateInvalidateAuthToken: {
-                type: 'postUpdate',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultCustomerUpdateInterceptorService.customer?UpdateInvalidateAuthToken'
-            },
-            customerPreRemove: {
-                type: 'preRemove',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultCustomerUpdateInterceptorService.customerPreRemove'
-            },
-            customerRemoveInvalidateAuthToken: {
-                type: 'postRemove',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultCustomerUpdateInterceptorService.customer?UpdateInvalidateAuthToken'
-            },
+            },*/
         }
     }
 };

@@ -17,7 +17,6 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let currentDate = new Date();
             currentDate.setTime(currentDate.getTime() - parseInt(CONFIG.get('eventResetTimeInMinutes'), 10) * 60000);
-            console.log('=============> : ', currentDate);
             if (!input.query) {
                 input.query = {
                     $and: [{

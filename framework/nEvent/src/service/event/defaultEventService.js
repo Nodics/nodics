@@ -81,7 +81,7 @@ module.exports = {
             requestBody: eventDef,
             isJsonResponse: true,
             header: {
-                apiKey: CONFIG.get('apiKey')
+                apiKey: NODICS.getAPIKey('default').key
             }
         });
     },

@@ -27,7 +27,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
             if (options.model && options.model.loginId) {
-                SERVICE.DefaultAuthenticationService.invalidateCustomerAuthToken(options.model.loginId).then(success => {
+                SERVICE.DefaultAuthenticationService.invalidateCustomerAuthToken(options.model).then(success => {
                     this.LOG.debug('Authentication token has been invalidated successfully for Customer: ', options.model.loginId);
                 }).catch(error => {
                     this.LOG.error('Failed invalidating authToken for Customer: ', options.model.loginId);
@@ -41,7 +41,7 @@ module.exports = {
             resolve(true);
             if (options.result && options.result.models && options.result.models.length > 0) {
                 options.result.models.forEach(model => {
-                    SERVICE.DefaultAuthenticationService.invalidateCustomerAuthToken(model.loginId).then(success => {
+                    SERVICE.DefaultAuthenticationService.invalidateCustomerAuthToken(model).then(success => {
                         this.LOG.debug('Authentication token has been invalidated successfully for Customer: ', model.loginId);
                     }).catch(error => {
                         this.LOG.error('Failed invalidating authToken for Customer: ', model.loginId);

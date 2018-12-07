@@ -68,7 +68,9 @@ module.exports = {
                             if (moduleObject && moduleObject.authCache) {
                                 moduleObject.authCache.tokens[success.authToken] = {
                                     enterpriseCode: enterprise.code,
-                                    loginId: employee.loginId
+                                    loginId: employee.loginId,
+                                    tenant: enterprise.tenant.code,
+                                    type: 'Employee'
                                 };
                             }
                         }).catch(error => {
@@ -179,6 +181,7 @@ module.exports = {
                                     }
                                     moduleObject.authCache.tokens[success.authToken] = {
                                         enterpriseCode: options.enterprise.code,
+                                        tenant: options.enterprise.tenant.code,
                                         loginId: options.person.loginId,
                                         password: options.request.password,
                                         type: options.type

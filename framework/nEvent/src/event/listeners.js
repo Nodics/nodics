@@ -11,6 +11,10 @@
 
 module.exports = {
     common: {
+        apiKeyUpdateListener: {
+            event: 'apiKeyUpdate',
+            listener: 'DefaultAPIKeyService.handleApiKeyUpdate'
+        },
         enterpriseSaveListener: {
             event: 'enterpriseSave',
             listener: 'DefaultEnterpriseUpdateListenerService.handleEnterpriseSave'
@@ -23,9 +27,6 @@ module.exports = {
             event: 'enterpriseRemove',
             listener: 'DefaultEnterpriseUpdateListenerService.handleEnterpriseRemove'
         },
-        apiKeyUpdateListener: {
-            event: 'updateAPIKey',
-            listener: 'DefaultAPIKeyService.handleAPIKeyUpdate'
-        }
+
     }
 };
