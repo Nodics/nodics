@@ -108,5 +108,12 @@ module.exports = {
                 }
             }
         }
+    },
+    profile: {
+        defaultAuthDetail: {
+            enterpriseCode: 'default',
+            tenant: 'default',
+            loginId: 'apiAdmin'
+        }
     }
 };

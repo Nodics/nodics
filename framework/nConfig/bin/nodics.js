@@ -23,6 +23,7 @@ module.exports = function () {
     let _loggers = {};
     let _preScripts = {};
     let _tenants = [];
+    let _apiKeys = {};
 
     let _nodics = {
         modules: {},
@@ -98,6 +99,32 @@ module.exports = function () {
         return _rawModules;
     };
 
+    this.addAPIKey = function (tenant, apiKey, value) {
+        value.key = apiKey;
+        _apiKeys[tenant] = value;
+    };
+
+    this.getAPIKey = function (tenant = 'default') {
+        return _apiKeys[tenant];
+    };
+
+    this.findAPIKey = function (apiKey) {
+        _.each(_apiKeys, (value, tntCode) => {
+            if (value.key === apiKey) {
+                return value;
+            }
+        });
+        return null;
+    };
+
+    this.removeAPIKey = function (tenant) {
+        if (!tenant) {
+            throw new Error('Invalid tenant id');
+        }
+        if (_apiKeys[tenant] && _apiKeys[tenant]) {
+            delete _apiKeys[tenant];
+        }
+    };
 
     this.setStartTime = function (time) {
         _startTime = time;
@@ -151,8 +178,18 @@ module.exports = function () {
     this.addTenant = function (tntCode) {
         _tenants.push(tntCode);
     };
+
     this.getTenants = function () {
         return _tenants;
+    };
+
+    this.removeTenant = function (tntCode) {
+        let index = _tenants.indexOf(tntCode);
+        if (index > -1) {
+            _tenants.splice(index, 1);
+            return true;
+        }
+        return false;
     };
 
     this.setPreScripts = function (preScripts) {
@@ -277,6 +314,17 @@ module.exports = function () {
             _nodics.dbs[moduleName] = {};
         }
         _nodics.dbs[moduleName][tenant] = database;
+    };
+
+    this.removeTenantDatabase = function (moduleName, tenant) {
+        if (!_nodics.dbs[moduleName]) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else if (!_nodics.dbs[moduleName][tenant]) {
+            throw new Error('Invalid tenant name: ' + tenant);
+        } else {
+            delete _nodics.dbs[moduleName][tenant];
+        }
+        return true;
     };
 
     this.setValidators = function (validators) {

@@ -21,7 +21,6 @@ module.exports = {
     authorizeAPIKey: function (request, response, process) {
         if (request.apiKey) {
             this.LOG.debug('Authorizing api key : ', request.apiKey);
-            request.enterpriseCode = 'default';
             SERVICE.DefaultAuthorizationProviderService.authorizeAPIKey(request).then(success => {
                 try {
                     if (success.success && success.result) {

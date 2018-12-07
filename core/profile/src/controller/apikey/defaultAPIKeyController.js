@@ -8,22 +8,19 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-
 module.exports = {
-
-    updateAPIKey: function (request, callback) {
-        if (request.httpRequest.body && request.httpRequest.body) {
-            request.param = request.httpRequest.body;
+    getAPIKey: function (request, callback) {
+        if (request.httpRequest.params.tntCode) {
+            request.tenant = request.httpRequest.params.tntCode;
         }
         if (callback) {
-            FACADE.DefaultAPIKeyFacade.updateAPIKey(request).then(success => {
+            FACADE.DefaultAPIKeyFacade.getAPIKey(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultAPIKeyFacade.updateAPIKey(request);
+            return FACADE.DefaultAPIKeyFacade.getAPIKey(request);
         }
     }
-
 };

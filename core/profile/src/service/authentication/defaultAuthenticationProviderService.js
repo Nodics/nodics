@@ -37,42 +37,50 @@ module.exports = {
     authenticateAPIKey: function (request) {
         return new Promise((resolve, reject) => {
             let _self = this;
-            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.enterpriseCode).then(enterprise => {
-                SERVICE.DefaultEmployeeService.findByAPIKey({
-                    tenant: enterprise.tenant.code,
-                    apiKey: request.apiKey,
-                    enterpriseCode: enterprise.code
-                }).then(employee => {
-                    _self.addToken(request.moduleName, 'profile', request.apiKey, {
-                        person: employee,
-                        enterprise: enterprise,
-                        type: 'apiKey'
-                    }).then(success => {
-                        resolve({
-                            success: true,
-                            code: 'SUC_AUTH_00000',
-                            result: {
-                                person: employee,
-                                enterprise: enterprise
+            let apiKeyValue = NODICS.findAPIKey(request.apiKey);
+            if (!apiKeyValue) {
+                reject({
+                    success: false,
+                    code: 'ERR_SYS_00000',
+                    msg: 'Invalid API Key'
+                });
+            } else {
+                SERVICE.DefaultEnterpriseService.retrieveEnterprise(apiKeyValue.enterpriseCode).then(enterprise => {
+                    SERVICE.DefaultEmployeeService.findByAPIKey({
+                        tenant: enterprise.tenant.code,
+                        apiKey: request.apiKey,
+                        enterpriseCode: enterprise.code
+                    }).then(employee => {
+                        _self.addToken(request.moduleName, 'profile', request.apiKey, {
+                            person: employee,
+                            enterprise: enterprise,
+                            type: 'apiKey'
+                        }).then(success => {
+                            resolve({
+                                success: true,
+                                code: 'SUC_AUTH_00000',
+                                result: {
+                                    person: employee,
+                                    enterprise: enterprise
+                                }
+                            });
+                            let moduleObject = NODICS.getModule(request.moduleName);
+                            if (moduleObject && moduleObject.authCache) {
+                                moduleObject.authCache.tokens[success.authToken] = {
+                                    enterpriseCode: enterprise.code,
+                                    loginId: employee.loginId
+                                };
                             }
+                        }).catch(error => {
+                            reject(error);
                         });
-                        let moduleObject = NODICS.getModule(request.moduleName);
-                        if (moduleObject && moduleObject.authCache) {
-                            moduleObject.authCache.tokens[success.authToken] = {
-                                enterpriseCode: enterprise.code,
-                                loginId: employee.loginId
-                            };
-                        }
-
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
                     reject(error);
                 });
-            }).catch(error => {
-                reject(error);
-            });
+            }
         });
     },
 

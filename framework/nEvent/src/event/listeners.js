@@ -22,6 +22,10 @@ module.exports = {
         enterpriseRemoveListener: {
             event: 'enterpriseRemove',
             listener: 'DefaultEnterpriseUpdateListenerService.handleEnterpriseRemove'
+        },
+        apiKeyUpdateListener: {
+            event: 'updateAPIKey',
+            listener: 'DefaultAPIKeyService.handleAPIKeyUpdate'
         }
     }
 };

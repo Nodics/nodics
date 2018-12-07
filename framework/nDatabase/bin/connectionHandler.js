@@ -19,7 +19,8 @@ module.exports = {
         }
         return new Promise((resolve, reject) => {
             SYSTEM.createTenantDatabase('default').then(success => {
-                try {
+                resolve(true);
+                /*try {
                     if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                         let db = NODICS.getDatabase(CONFIG.get('profileModuleName'), 'default');
                         if (db && db.master) {
@@ -37,7 +38,7 @@ module.exports = {
                     }
                 } catch (error) {
                     reject(error);
-                }
+                }*/
             }).catch(error => {
                 reject('Something went wrong while creating database');
             });

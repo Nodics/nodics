@@ -66,8 +66,7 @@ module.exports = {
             requestBody: {},
             isJsonResponse: true,
             header: {
-                apiKey: input.apiKey,
-                enterpriseCode: input.enterpriseCode
+                apiKey: input.apiKey
             }
         });
     },

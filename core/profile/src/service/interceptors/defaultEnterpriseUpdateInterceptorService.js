@@ -10,21 +10,9 @@
  */
 
 module.exports = {
+
+    // Enterprise Save Events
     enterprisePreSave: function (options) {
-        return new Promise((resolve, reject) => {
-            options.options.returnModified = options.options.returnModified || true;
-            options.options.recursive = options.options.recursive || true;
-            resolve(true);
-        });
-    },
-    enterprisePreUpdate: function (options) {
-        return new Promise((resolve, reject) => {
-            options.options.returnModified = options.options.returnModified || true;
-            options.options.recursive = options.options.recursive || true;
-            resolve(true);
-        });
-    },
-    enterprisePreRemove: function (options) {
         return new Promise((resolve, reject) => {
             options.options.returnModified = options.options.returnModified || true;
             options.options.recursive = options.options.recursive || true;
@@ -38,24 +26,10 @@ module.exports = {
             if (options.model.code) {
                 SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(options.model.code).then(success => {
                     this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', options.model.code);
+
                 }).catch(error => {
                     this.LOG.error('Failed invalidating authToken for enterprise: ', options.model.code);
                     this.LOG.error(error);
-                });
-            }
-        });
-    },
-    enterpriseUpdateInvalidateAuthToken: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-            if (options.result && options.result.models && options.result.models.length > 0) {
-                options.result.models.forEach(model => {
-                    SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model.code).then(success => {
-                        this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', model.code);
-                    }).catch(error => {
-                        this.LOG.error('Failed invalidating authToken for enterprise: ', model.code);
-                        this.LOG.error(error);
-                    });
                 });
             }
         });
@@ -64,6 +38,7 @@ module.exports = {
     enterpriseSaveEvent: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
+
             let event = {
                 enterpriseCode: options.model.code,
                 tenant: 'default',
@@ -92,6 +67,41 @@ module.exports = {
             });
         });
     },
+
+
+    enterprisePreUpdate: function (options) {
+        return new Promise((resolve, reject) => {
+            options.options.returnModified = options.options.returnModified || true;
+            options.options.recursive = options.options.recursive || true;
+            resolve(true);
+        });
+    },
+    enterprisePreRemove: function (options) {
+        return new Promise((resolve, reject) => {
+            options.options.returnModified = options.options.returnModified || true;
+            options.options.recursive = options.options.recursive || true;
+            resolve(true);
+        });
+    },
+
+
+    enterpriseUpdateInvalidateAuthToken: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+            if (options.result && options.result.models && options.result.models.length > 0) {
+                options.result.models.forEach(model => {
+                    SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model.code).then(success => {
+                        this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', model.code);
+                    }).catch(error => {
+                        this.LOG.error('Failed invalidating authToken for enterprise: ', model.code);
+                        this.LOG.error(error);
+                    });
+                });
+            }
+        });
+    },
+
+
     enterpriseUpdateEvent: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);

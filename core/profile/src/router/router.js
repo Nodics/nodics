@@ -12,6 +12,22 @@
 module.exports = {
     profile: {
         loadDefaults: {
+            getAPIKey: {
+                secured: true,
+                key: '/apikey/:tntCode',
+                method: 'GET',
+                controller: 'DefaultAPIKeyController',
+                operation: 'getAPIKey',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/profileapikey/:tntCode',
+                    body: {
+                        apiKey: 'xxxxxx--xxxx---xxxx---xxxxx'
+                    }
+                }
+            },
             getEnterprise: {
                 secured: true,
                 cache: {

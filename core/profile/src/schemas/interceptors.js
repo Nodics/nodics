@@ -24,18 +24,21 @@ module.exports = {
                 index: 0,
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreSave'
             },
-            enterpriseSaveEvent: {
-                type: 'postSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseSaveEvent'
-            },
             enterpriseSaveInvalidateAuthToken: {
                 type: 'postSave',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseInvalidateAuthToken'
             },
+            enterpriseSaveEvent: {
+                type: 'postSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseSaveEvent'
+            },
+            //**************** */
+
+
             enterprisePreUpdate: {
                 type: 'preUpdate',
                 active: 'true',

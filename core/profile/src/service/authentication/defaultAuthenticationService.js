@@ -47,10 +47,41 @@ module.exports = {
                         authTokens.push(authToken);
                     }
                 });
-                console.log('------------------>>> ', authTokens);
                 if (authTokens.length > 0) {
-                    let token = cachePool[value];
                     SERVICE.DefaultCacheService.flushKeys(moduleObject.authCache, authTokens).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve({
+                        success: true,
+                        code: '',
+                        msg: 'None already invalidated invalidated'
+                    });
+                }
+            } else {
+                resolve({
+                    success: true,
+                    code: '',
+                    msg: 'None already invalidated invalidated'
+                });
+            }
+        });
+    },
+
+    invalidateAPIkey: function (propertyName, value) {
+        return new Promise((resolve, reject) => {
+            let moduleObject = NODICS.getModule(CONFIG.get('profileModuleName'));
+            if (moduleObject && moduleObject.authCache && moduleObject.authCache && moduleObject.authCache.apiKeys) {
+                let apiKeys = [];
+                _.each(moduleObject.authCache.apiKeys, (authObj, authToken) => {
+                    if (authObj && authObj[propertyName] && authObj[propertyName] === value) {
+                        apiKeys.push(authToken);
+                    }
+                });
+                if (apiKeys.length > 0) {
+                    SERVICE.DefaultCacheService.flushKeys(moduleObject.authCache, apiKeys).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);

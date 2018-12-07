@@ -155,7 +155,6 @@ module.exports = {
                 });
                 if (allModules.length > 0) {
                     Promise.all(allModules).then(success => {
-
                         resolve(true);
                     }).catch(error => {
                         reject(error);
@@ -166,6 +165,15 @@ module.exports = {
             }).catch(error => {
                 reject('Could not found any database configuration, Please configure at least default one');
             });
+        });
+    },
+
+    removeTenantDatabase: function (tntCode) {
+        return new Promise((resolve, reject) => {
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                NODICS.addTenantDatabase(moduleName, tntCode);
+            });
+            resolve(true);
         });
     },
 
@@ -562,6 +570,20 @@ module.exports = {
         });
     },
 
+    removeModelsForTenant: function (tntCode) {
+        return new Promise((resolve, reject) => {
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                if (!moduleObject.models[tntCode]) {
+                    SYSTEM.LOG.warn('Invalid tenant: ' + tenant + ' or do not have any schema');
+                } else {
+                    SYSTEM.LOG.debug('Deleting all models for tenant: ' + tenant + ' from module: ' + moduleName);
+                    delete moduleObject.models[tntCode];
+                }
+                resolve(true);
+            });
+        });
+    },
+
     buildModelsForTenants: function (tenants) {
         return new Promise((resolve, reject) => {
             let tntCode = tenants.shift();
@@ -682,7 +704,7 @@ module.exports = {
                     requestBody: {},
                     isJsonResponse: true,
                     header: {
-                        apiKey: CONFIG.get('apiKey'),
+                        apiKey: NODICS.getAPIKey('default').key,
                         recursive: true
                     }
                 });
@@ -701,6 +723,35 @@ module.exports = {
                 }
             }
 
+        });
+    },
+
+    fetchAPIKey: function (tntCode) {
+        return new Promise((resolve, reject) => {
+            let requestUrl = SERVICE.DefaultModuleService.buildRequest({
+                moduleName: 'profile',
+                methodName: 'GET',
+                apiName: '/apikey/' + tntCode,
+                requestBody: {},
+                isJsonResponse: true,
+                header: {
+                    apiKey: NODICS.getAPIKey('default').key
+                }
+            });
+
+            try {
+                SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
+                    if (error) {
+                        SYSTEM.LOG.error('While connecting profile server to fetch API Key', error);
+                        resolve([]);
+                    } else {
+                        resolve(response.result || []);
+                    }
+                });
+            } catch (error) {
+                SYSTEM.LOG.error('While connecting profile server to fetch API Key', error);
+                resolve([]);
+            }
         });
     },
 
@@ -736,7 +787,7 @@ module.exports = {
                                 SERVICE.DefaultEmployeeService.get({
                                     tenant: enterprise.tenant.code,
                                     query: {
-                                        code: 'admin'
+                                        code: 'apiAdmin'
                                     }
                                 }).then(success => {
                                     if (success.success && success.result.length <= 0) {
@@ -744,8 +795,26 @@ module.exports = {
                                             tenant: enterprise.tenant.code,
                                             modules: NODICS.getActiveModules()
                                         }).then(success => {
-                                            SYSTEM.buildEnterprise(enterprises).then(success => {
-                                                resolve(true);
+                                            SERVICE.DefaultEmployeeService.get({
+                                                tenant: enterprise.tenant.code,
+                                                query: {
+                                                    code: 'apiAdmin'
+                                                }
+                                            }).then(success => {
+                                                if (success.success && success.result.length > 0) {
+                                                    NODICS.addAPIKey(enterprise.tenant.code, success.result[0].apiKey, {
+                                                        enterpriseCode: enterprise.code,
+                                                        tenant: enterprise.tenant.code,
+                                                        loginId: success.result[0].loginId
+                                                    });
+                                                    SYSTEM.buildEnterprise(enterprises).then(success => {
+                                                        resolve(true);
+                                                    }).catch(error => {
+                                                        reject(error);
+                                                    });
+                                                } else {
+                                                    reject('Could not load default API key for tenant: ' + enterprise.tenant.code);
+                                                }
                                             }).catch(error => {
                                                 reject(error);
                                             });
@@ -753,6 +822,7 @@ module.exports = {
                                             reject(error);
                                         });
                                     } else {
+                                        NODICS.addAPIKey(enterprise.tenant.code, success.result[0].apiKey);
                                         SYSTEM.buildEnterprise(enterprises).then(success => {
                                             resolve(true);
                                         }).catch(error => {
@@ -765,8 +835,13 @@ module.exports = {
                                     reject(error);
                                 });
                             } else {
-                                SYSTEM.buildEnterprise(enterprises).then(success => {
-                                    resolve(true);
+                                SYSTEM.fetchAPIKey(enterprise.tenant.code).then(success => {
+                                    NODICS.addAPIKey(enterprise.tenant.code, success.result, {});
+                                    SYSTEM.buildEnterprise(enterprises).then(success => {
+                                        resolve(true);
+                                    }).catch(error => {
+                                        reject(error);
+                                    });
                                 }).catch(error => {
                                     reject(error);
                                 });
@@ -790,9 +865,28 @@ module.exports = {
         });
     },
 
-    removeEnterprise: function (enterprises) {
+    removeEnterprise: function (tenants) {
         return new Promise((resolve, reject) => {
-            resolve(true);
+            if (tenants && tenants.length > 0) {
+                tenants.forEach(tenant => {
+                    NODICS.removeTenant(tenant);
+                    SYSTEM.removeTenantDatabase(tenant).then(success => {
+                        SYSTEM.LOG.debug('Successfully removed database connections for tenant: ' + tenant);
+                        SYSTEM.removeModelsForTenant(tenant).then(success => {
+                            SYSTEM.LOG.debug('Successfully removed models for tenant: ' + tenant);
+                            resolve({
+                                success: true,
+                                code: 'SUC_SYS_00000',
+                                msg: 'Tenant successfully deactivated'
+                            });
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
+            }
         });
     }
 };
