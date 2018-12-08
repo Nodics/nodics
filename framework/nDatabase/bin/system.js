@@ -865,7 +865,7 @@ module.exports = {
         });
     },
 
-    removeEnterprise: function (tenants) {
+    removeTenants: function (tenants) {
         return new Promise((resolve, reject) => {
             if (tenants && tenants.length > 0) {
                 tenants.forEach(tenant => {

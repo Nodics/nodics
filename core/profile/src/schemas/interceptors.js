@@ -109,50 +109,17 @@ module.exports = {
         },
 
         enterprise: {
-            /*enterprisePreGet: {
-                type: 'preSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreGet'
-            },
             enterprisePreSave: {
                 type: 'preSave',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreSave'
             },
-            enterpriseSaveInvalidateAuthToken: {
-                type: 'postSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseInvalidateAuthToken'
-            },
-            enterpriseSaveEvent: {
-                type: 'postSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseSaveEvent'
-            },
-            
-
-
             enterprisePreUpdate: {
                 type: 'preUpdate',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreUpdate'
-            },
-            enterpriseUpdateEvent: {
-                type: 'postUpdate',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateEvent'
-            },
-            enterpriseUpdateInvalidateAuthToken: {
-                type: 'postUpdate',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateInvalidateAuthToken'
             },
             enterprisePreRemove: {
                 type: 'preRemove',
@@ -160,18 +127,42 @@ module.exports = {
                 index: 0,
                 handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreRemove'
             },
-            enterpriseRemoveEvent: {
-                type: 'postRemove',
+            enterpriseSaveInvalidateAuthToken: {
+                type: 'postSave',
                 active: 'true',
                 index: 0,
-                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseRemoveEvent'
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseInvalidateAuthToken'
+            },
+            enterpriseUpdateInvalidateAuthToken: {
+                type: 'postUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateInvalidateAuthToken'
             },
             enterpriseRemoveInvalidateAuthToken: {
                 type: 'postRemove',
                 active: 'true',
                 index: 0,
-                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateInvalidateAuthToken'
-            },*/
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseRemoveInvalidateAuthToken'
+            },
+            enterpriseSaveEvent: {
+                type: 'postSave',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseSaveEvent'
+            },
+            enterpriseUpdateEvent: {
+                type: 'postUpdate',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateEvent'
+            },
+            enterpriseRemoveEvent: {
+                type: 'postRemove',
+                active: 'true',
+                index: 0,
+                handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseRemoveEvent'
+            }
         }
     }
 };

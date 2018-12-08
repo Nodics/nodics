@@ -11,46 +11,29 @@
 
 module.exports = {
 
-    handleEnterpriseSave: function (event, callback) {
-        if (event.params && event.params.length >= 3) {
-            let model = null;
-            event.params.forEach(element => {
-                if (element.key === 'data') {
-                    model = element.value;
-                }
-            });
-            if (model && model.tenant) {
-                if (!NODICS.getTenants().includes(model.tenant.code)) {
-                    if (model.active && model.tenant.active) {
-                        SYSTEM.buildEnterprise([model]).then(success => {
-                            callback(null, {
-                                success: true,
-                                code: 'SUC_SYS_00000',
-                                msg: 'Successfully updated enterprise'
-                            });
-                        }).catch(error => {
-                            callback({
-                                success: false,
-                                code: 'ERR_EVNT_00000',
-                                error: error
-                            });
+    handleAddEnterprise: function (event, callback, request) {
+        if (event.data.enterprise) {
+            let enterprise = event.data.enterprise;
+            if (enterprise.tenant & enterprise.tenant.code) {
+                if (!NODICS.getTenants().includes(enterprise.tenant.code)) {
+                    SYSTEM.buildEnterprise([enterprise]).then(success => {
+                        this.LOG.debug('Enterprise: ' + enterprise.code + ' has been successfully activated');
+                        callback(null, {
+                            success: true,
+                            code: 'SUC_SYS_00000',
+                            msg: 'Successfully updated enterprise'
                         });
-                    } else {
-                        SYSTEM.removeEnterprise([model]).then(success => {
-                            callback(null, {
-                                success: true,
-                                code: 'SUC_SYS_00000',
-                                msg: 'Successfully updated enterprise'
-                            });
-                        }).catch(error => {
-                            callback({
-                                success: false,
-                                code: 'ERR_EVNT_00000',
-                                error: error
-                            });
+                    }).catch(error => {
+                        this.LOG.error('Enterprise: ' + enterprise.code + ' can not be activated');
+                        this.LOG.error(error);
+                        callback({
+                            success: false,
+                            code: 'ERR_EVNT_00000',
+                            error: error.toString()
                         });
-                    }
+                    });
                 } else {
+                    this.LOG.debug('Enterprise: ' + enterprise.code + ' is already activated');
                     callback(null, {
                         success: true,
                         code: 'SUC_SYS_00000',
@@ -58,29 +41,67 @@ module.exports = {
                     });
                 }
             } else {
-                this.LOG.error('Invalid enterprise model value');
+                this.LOG.error('Enterprise model dont have tenant associated or wrong tenant object');
                 callback({
                     success: false,
                     code: 'ERR_EVNT_00000',
-                    msg: 'Invalid enterprise model value'
+                    msg: 'Enterprise model dont have tenant associated or wrong tenant object'
                 });
             }
+        } else {
+            this.LOG.error('Invalid enterprise model value');
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: 'Invalid enterprise model value'
+            });
         }
     },
 
-    handleEnterpriseUpdate: function (event, callback) {
-        callback(null, {
-            success: true,
-            code: 'SUC_SYS_00000',
-            msg: 'Successfully updated enterprise'
-        });
+    handleRemoveEnterprise: function (event, callback, request) {
+        if (event.data.enterprise) {
+            let enterprise = event.data.enterprise;
+            if (enterprise.tenant & enterprise.tenant.code) {
+                if (NODICS.getTenants().includes(enterprise.tenant.code)) {
+                    SYSTEM.removeTenants([enterprise.tenant.code]).then(success => {
+                        this.LOG.debug('Tenant: ' + enterprise.tenant.code + ' has been successfully deactivated');
+                        callback(null, {
+                            success: true,
+                            code: 'SUC_SYS_00000',
+                            msg: 'Successfully updated enterprise'
+                        });
+                    }).catch(error => {
+                        this.LOG.error('Tenant: ' + enterprise.tenant.code + ' can not be deactivated');
+                        this.LOG.error(error);
+                        callback({
+                            success: false,
+                            code: 'ERR_EVNT_00000',
+                            error: error.toString()
+                        });
+                    });
+                } else {
+                    this.LOG.debug('Enterprise: ' + enterprise.code + ' is already deactivated');
+                    callback(null, {
+                        success: true,
+                        code: 'SUC_SYS_00000',
+                        msg: 'Successfully updated enterprise'
+                    });
+                }
+            } else {
+                this.LOG.error('Enterprise model dont have tenant associated or wrong tenant object');
+                callback({
+                    success: false,
+                    code: 'ERR_EVNT_00000',
+                    msg: 'Enterprise model dont have tenant associated or wrong tenant object'
+                });
+            }
+        } else {
+            this.LOG.error('Invalid enterprise model value');
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: 'Invalid enterprise model value'
+            });
+        }
     },
-
-    handleEnterpriseRemove: function (event, callback) {
-        callback(null, {
-            success: true,
-            code: 'SUC_SYS_00000',
-            msg: 'Successfully removed enterprise'
-        });
-    }
 };
