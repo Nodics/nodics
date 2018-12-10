@@ -70,36 +70,41 @@ module.exports = {
                 handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
             },
 
-            updateAPIKey: {
+            /*updateAPIKey: {
                 type: 'preUpdate',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
-            },
+            },*/
+
             employeePreUpdate: {
                 type: 'preUpdate',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEmployeeUpdateInterceptorService.employeePreUpdate'
             },
+
             enterprisePreRemove: {
                 type: 'preRemove',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEmployeeUpdateInterceptorService.employeePreRemove'
             },
+
             employeeSaveInvalidateAuthToken: {
                 type: 'postSave',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEmployeeUpdateInterceptorService.employeeInvalidateAuthToken'
             },
+
             employeeUpdateInvalidateAuthToken: {
                 type: 'postUpdate',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEmployeeUpdateInterceptorService.employeeUpdateInvalidateAuthToken'
             },
+
             employeeRemoveInvalidateAuthToken: {
                 type: 'postRemove',
                 active: 'true',

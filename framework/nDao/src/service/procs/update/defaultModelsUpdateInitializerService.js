@@ -51,6 +51,7 @@ module.exports = {
         if (interceptors && interceptors.preUpdate) {
             SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors([].concat(interceptors.preUpdate), {
                 collection: request.collection,
+                tenant: request.tenant,
                 options: request.options || {},
                 query: request.query,
                 model: request.model
@@ -210,6 +211,7 @@ module.exports = {
             if (interceptors && interceptors.postUpdate) {
                 SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors([].concat(interceptors.postUpdate), {
                     collection: request.collection,
+                    tenant: request.tenant,
                     query: request.query,
                     model: request.model,
                     result: response.success.result

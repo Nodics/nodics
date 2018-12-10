@@ -40,6 +40,7 @@ module.exports = {
             loginId: 'apiAdmin',
             password: 'apiAdminInternalEmployee'
         },
+        apiKey: '8171c4c4-1c97-5c76-8207-210039effc22',
         userGroups: ['adminUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']

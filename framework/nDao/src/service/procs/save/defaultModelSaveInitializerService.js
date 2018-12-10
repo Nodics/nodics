@@ -235,6 +235,7 @@ module.exports = {
         if (interceptors && interceptors.preSave) {
             SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors([].concat(interceptors.preSave), {
                 collection: request.collection,
+                tenant: request.tenant,
                 options: request.options,
                 query: request.query,
                 originalModel: request.model,
@@ -395,6 +396,7 @@ module.exports = {
         if (interceptors && interceptors.postSave) {
             SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors([].concat(interceptors.postSave), {
                 collection: request.collection,
+                tenant: request.tenant,
                 query: request.query,
                 originalModel: request.model,
                 model: response.model.result

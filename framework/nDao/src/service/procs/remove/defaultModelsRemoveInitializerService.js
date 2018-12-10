@@ -39,6 +39,7 @@ module.exports = {
         if (interceptors && interceptors.preRemove) {
             SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors([].concat(interceptors.preRemove), {
                 collection: request.collection,
+                tenant: request.tenant,
                 options: request.options || {},
                 query: request.query
             }).then(success => {
@@ -197,6 +198,7 @@ module.exports = {
             if (interceptors && interceptors.postRemove) {
                 SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors([].concat(interceptors.postRemove), {
                     collection: request.collection,
+                    tenant: request.tenant,
                     query: request.query,
                     result: response.success.result
                 }).then(success => {

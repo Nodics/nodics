@@ -99,6 +99,7 @@ module.exports = {
         if (interceptors && interceptors.preGet) {
             SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors([].concat(interceptors.preGet), {
                 collection: request.collection,
+                tenant: request.tenant,
                 query: request.query,
                 options: request.options
             }).then(success => {
@@ -170,6 +171,7 @@ module.exports = {
         if (interceptors && interceptors.postGet) {
             SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors([].concat(interceptors.postGet), {
                 collection: request.collection,
+                tenant: request.tenant,
                 query: request.query,
                 options: request.options,
                 result: response.success

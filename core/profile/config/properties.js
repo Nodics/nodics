@@ -13,6 +13,7 @@ module.exports = {
     attemptsToLockAccount: 5,
     encryptSaltLength: 10,
     passwordLengthLimit: 25,
+    forceAPIKeyGenerate: false,
     server: {
         profile: {
             options: {

@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     invalidateEnterpriseAuthToken: function (enterprise, isRemoved) {

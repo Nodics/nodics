@@ -27,6 +27,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
             if (options.model && options.model.loginId) {
+                options.model.tenant = options.model.tenant || options.tenant;
                 SERVICE.DefaultAuthenticationService.invalidateCustomerAuthToken(options.model).then(success => {
                     this.LOG.debug('Authentication token has been invalidated successfully for Customer: ', options.model.loginId);
                 }).catch(error => {
@@ -41,6 +42,7 @@ module.exports = {
             resolve(true);
             if (options.result && options.result.models && options.result.models.length > 0) {
                 options.result.models.forEach(model => {
+                    model.tenant = model.tenant || options.tenant;
                     SERVICE.DefaultAuthenticationService.invalidateCustomerAuthToken(model).then(success => {
                         this.LOG.debug('Authentication token has been invalidated successfully for Customer: ', model.loginId);
                     }).catch(error => {

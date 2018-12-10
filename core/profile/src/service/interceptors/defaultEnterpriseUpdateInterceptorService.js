@@ -39,6 +39,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
             if (options.model.code) {
+                options.model.tenant = options.model.tenant || options.tenant;
                 SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(options.model).then(success => {
                     this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', options.model.code);
                 }).catch(error => {
@@ -54,6 +55,7 @@ module.exports = {
             resolve(true);
             if (options.result && options.result.models && options.result.models.length > 0) {
                 options.result.models.forEach(model => {
+                    options.model.tenant = options.model.tenant || options.tenant;
                     SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model.code).then(success => {
                         this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', model.code);
                     }).catch(error => {
