@@ -36,7 +36,7 @@ module.exports = {
             requestBody: {},
             isJsonResponse: true,
             header: {
-                apiKey: CONFIG.get('apiKey')
+                apiKey: NODICS.getAPIKey(definition.tenant || 'default').key
             }
         });
     },

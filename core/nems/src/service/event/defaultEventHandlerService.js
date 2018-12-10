@@ -272,7 +272,7 @@ module.exports = {
             requestBody: event,
             isJsonResponse: true,
             header: {
-                apiKey: CONFIG.get('apiKey')
+                apiKey: NODICS.getAPIKey(event.tenant).key
             }
         });
     }

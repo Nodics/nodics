@@ -19,8 +19,7 @@ module.exports = {
         }
         return new Promise((resolve, reject) => {
             SYSTEM.createTenantDatabase('default').then(success => {
-                resolve(true);
-                /*try {
+                try {
                     if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                         let db = NODICS.getDatabase(CONFIG.get('profileModuleName'), 'default');
                         if (db && db.master) {
@@ -28,8 +27,18 @@ module.exports = {
                             if (!db.master.getCollectionList() || db.master.getCollectionList().length <= 0) {
                                 SYSTEM.LOG.info('System requires initial data to be imported');
                                 NODICS.setInitRequired(true);
+                                resolve(true);
+                            } else {
+                                db.master.getConnection().collection('EnterpriseModel').findOne({}, function (err, result) {
+                                    if (err) {
+                                        SYSTEM.LOG.error('Not able to fetch if initial data required or not');
+                                        SYSTEM.LOG.error(err);
+                                    } else if (!result) {
+                                        NODICS.setInitRequired(true);
+                                    }
+                                    resolve(true);
+                                });
                             }
-                            resolve(true);
                         } else {
                             resolve(true);
                         }
@@ -38,8 +47,9 @@ module.exports = {
                     }
                 } catch (error) {
                     reject(error);
-                }*/
+                }
             }).catch(error => {
+                this.LOG.error(error);
                 reject('Something went wrong while creating database');
             });
         });

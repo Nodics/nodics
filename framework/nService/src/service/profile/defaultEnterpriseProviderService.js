@@ -26,7 +26,7 @@ module.exports = {
             },
             isJsonResponse: true,
             header: {
-                apiKey: CONFIG.get('apiKey')
+                apiKey: NODICS.getAPIKey('default').key
             }
         });
     },
@@ -35,7 +35,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (request.moduleName === CONFIG.get('profileModuleName')) {
                 SERVICE.DefaultEnterpriseService.get({
-                    tenant: request.tenant || 'default',
+                    tenant: 'default',
                     options: {
                         recursive: true
                     },

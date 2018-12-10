@@ -25,24 +25,7 @@ module.exports = {
                 SYSTEM.buildModelsForTenants(tenants).then(success => {
                     SYSTEM.prepareInterceptors();
                     NODICS.addAPIKey('default', CONFIG.get('defaultAPIKey'), CONFIG.get('profile').defaultAuthDetail);
-                    if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                        SERVICE.DefaultEmployeeService.get({
-                            tenant: 'default',
-                            query: {
-                                code: 'admin'
-                            }
-                        }).then(success => {
-                            if (success.success && success.result.length <= 0) {
-                                SYSTEM.LOG.info('System requires initial data to be imported');
-                                NODICS.setInitRequired(true);
-                            }
-                            resolve(true);
-                        }).catch(error => {
-                            reject('Not able to check if initial data available within system');
-                        });
-                    } else {
-                        resolve(true);
-                    }
+                    resolve(true);
                 }).catch(error => {
                     reject(error);
                 });
