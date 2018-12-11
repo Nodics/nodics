@@ -55,7 +55,7 @@ module.exports = {
 
     processRetrySleepTime: 2000,
 
-    defaultAPIKey: '8171c4c4-1c97-5c76-8207-210039effc22',
+    defaultAPIKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
 
     cache: {
         authTokenTTL: 60 * 60,

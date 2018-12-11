@@ -108,13 +108,20 @@ module.exports = function () {
         return _apiKeys[tenant];
     };
 
+    this.getAPIKeys = function () {
+        return _apiKeys;
+    };
+
     this.findAPIKey = function (apiKey) {
-        _.each(_apiKeys, (value, tntCode) => {
-            if (value.key === apiKey) {
-                return value;
+        let tenants = NODICS.getTenants();
+        let value;
+        for (var index = 0; index < tenants.length; index++) {
+            if (_apiKeys[tenants[index]].key === apiKey) {
+                value = _apiKeys[tenants[index]];
+                break;
             }
-        });
-        return null;
+        }
+        return value;
     };
 
     this.removeAPIKey = function (tenant) {

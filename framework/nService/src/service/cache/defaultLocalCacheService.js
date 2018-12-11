@@ -135,18 +135,19 @@ module.exports = {
 
     flushKeys: function (cache, keys) {
         let _self = this;
+        let tmpKeys = [];
         if (keys && keys.length > 0) {
             for (var i = 0; i < keys.length; i++) {
-                keys[i] = (cache.cacheMap) ? cache.cacheMap + '_' + keys[i] : keys[i];
+                tmpKeys[i] = (cache.cacheMap) ? cache.cacheMap + '_' + keys[i] : keys[i];
             }
         }
         return new Promise((resolve, reject) => {
-            _self.LOG.debug('Flushing value in local cache stored with keys: ' + keys);
-            cache.client.del(keys);
+            _self.LOG.debug('Flushing value in local cache stored with keys: ' + tmpKeys);
+            cache.client.del(tmpKeys);
             resolve({
                 success: true,
                 code: 'SUC_CACHE_00000',
-                result: keys
+                result: tmpKeys
             });
         });
     },

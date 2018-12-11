@@ -23,6 +23,7 @@ module.exports = {
             loginId: 'admin',
             password: 'nodics'
         },
+        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
         userGroups: ['adminUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
@@ -40,7 +41,7 @@ module.exports = {
             loginId: 'apiAdmin',
             password: 'apiAdminInternalEmployee'
         },
-        apiKey: '8171c4c4-1c97-5c76-8207-210039effc22',
+        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
         userGroups: ['adminUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']

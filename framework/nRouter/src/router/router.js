@@ -117,8 +117,8 @@ module.exports = {
             get: {
                 secured: true,
                 cache: {
-                    enabled: false,
-                    ttl: 20,
+                    enabled: true,
+                    ttl: 100,
                 },
                 key: '/schemaName',
                 method: 'GET',

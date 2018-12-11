@@ -14,12 +14,20 @@ module.exports = {
     handleApiKeyUpdate: function (event, callback, request) {
         try {
             if (event.data && event.data.apiKey && event.data.tenant) {
-                NODICS.addAPIKey(event.data.tenant, event.data.apiKey, {});
-                callback(null, {
-                    success: true,
-                    code: 'SUC_SYS_00000',
-                    msg: 'Successfully updated API Key for all running tenants'
-                });
+                if (!NODICS.getTenants().includes(CONFIG.get('profileModuleName'))) {
+                    NODICS.addAPIKey(event.data.tenant, event.data.apiKey, {});
+                    callback(null, {
+                        success: true,
+                        code: 'SUC_SYS_00000',
+                        msg: 'Successfully updated API Key for all running tenants'
+                    });
+                } else {
+                    callback(null, {
+                        success: true,
+                        code: 'SUC_SYS_00000',
+                        msg: 'API key is already updated'
+                    });
+                }
             } else {
                 callback({
                     success: false,
@@ -39,12 +47,20 @@ module.exports = {
     handleApiKeyRemove: function (event, callback, request) {
         try {
             if (event.data && event.data.tenant) {
-                NODICS.removeAPIKey(event.data.tenant);
-                callback(null, {
-                    success: true,
-                    code: 'SUC_SYS_00000',
-                    msg: 'Successfully updated API Key for all running tenants'
-                });
+                if (!NODICS.getTenants().includes(CONFIG.get('profileModuleName'))) {
+                    NODICS.removeAPIKey(event.data.tenant);
+                    callback(null, {
+                        success: true,
+                        code: 'SUC_SYS_00000',
+                        msg: 'Successfully updated API Key for all running tenants'
+                    });
+                } else {
+                    callback(null, {
+                        success: true,
+                        code: 'SUC_SYS_00000',
+                        msg: 'API key is already updated'
+                    });
+                }
             } else {
                 callback({
                     success: false,

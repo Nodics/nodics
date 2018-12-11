@@ -56,6 +56,18 @@ module.exports = {
                             enterprise: enterprise,
                             type: 'apiKey'
                         }).then(success => {
+                            let moduleObject = NODICS.getModule(request.moduleName);
+                            if (moduleObject && moduleObject.authCache) {
+                                if (!moduleObject.authCache.tokens) {
+                                    moduleObject.authCache.tokens = {};
+                                }
+                                moduleObject.authCache.tokens[request.apiKey] = {
+                                    enterpriseCode: enterprise.code,
+                                    loginId: employee.loginId,
+                                    tenant: enterprise.tenant.code,
+                                    type: 'Employee'
+                                };
+                            }
                             resolve({
                                 success: true,
                                 code: 'SUC_AUTH_00000',
@@ -64,15 +76,6 @@ module.exports = {
                                     enterprise: enterprise
                                 }
                             });
-                            let moduleObject = NODICS.getModule(request.moduleName);
-                            if (moduleObject && moduleObject.authCache) {
-                                moduleObject.authCache.tokens[success.authToken] = {
-                                    enterpriseCode: enterprise.code,
-                                    loginId: employee.loginId,
-                                    tenant: enterprise.tenant.code,
-                                    type: 'Employee'
-                                };
-                            }
                         }).catch(error => {
                             reject(error);
                         });

@@ -13,7 +13,10 @@ module.exports = {
     generateAPIKey: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                if (options.model.tenant !== 'default' || options.model.loginId !== 'apiAdmin' || CONFIG.get('forceAPIKeyGenerate')) {
+                if ((options.model.tenant !== 'default' ||
+                    options.model.loginId !== 'apiAdmin' ||
+                    CONFIG.get('forceAPIKeyGenerate')) &&
+                    (options.model.loginId && options.model.password)) {
                     let key = options.model.loginId + options.model.password + (new Date()).getTime();
                     options.model.apiKey = SYSTEM.generateHash(key);
                 }
