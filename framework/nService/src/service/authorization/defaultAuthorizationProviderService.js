@@ -30,15 +30,11 @@ module.exports = {
                 resolve(success);
             }).catch(error => {
                 if (request.moduleName === CONFIG.get('profileModuleName')) {
-                    reject({
-                        success: false,
-                        code: 'ERR_AUTH_00001'
-                    });
-                    /*SERVICE.DefaultAuthenticationProviderService.reAuthenticate(request).then(success => {
+                    SERVICE.DefaultAuthenticationProviderService.reAuthenticate(request).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
-                    });*/
+                    });
                 } else {
                     this.LOG.debug('Authorizing request for token :', request.authToken);
                     SERVICE.DefaultModuleService.fetch(this.prepareAuthorizeTokenURL(request), (error, response) => {

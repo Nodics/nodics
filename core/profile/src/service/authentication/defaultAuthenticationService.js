@@ -29,33 +29,6 @@ module.exports = {
                 }).catch(error => {
                     reject(error);
                 });
-                /*
-                if (success.length > 0) {
-                    let eventsData = [];
-                    success.forEach(element => {
-                        let value = NODICS.findAPIKey(element);
-                        if (value) {
-                            if (isRemoved) {
-                                NODICS.removeAPIKey(enterprise.tenant.code);
-                                eventsData.push(value);
-                            } else {
-                                value.enterpriseCode = enterprise.code;
-                                value.tenant = enterprise.tenant.code;
-                                NODICS.addAPIKey(enterprise.tenant.code, element, value);
-                            }
-                        }
-                    });
-                    if (isRemoved) {
-                        _self.publishAPIKeyRemoveEvent(eventsData).then(success => {
-                            _self.LOG.debug('Successfully updated API keys to all servers');
-                        }).catch(error => {
-                            _self.LOG.error('Failed updating API keys to all servers');
-                            _self.LOG.error(error);
-                        });
-                    }
-                }
-                resolve(success);
-                */
             }).catch(error => {
                 reject(error);
             });
@@ -105,6 +78,7 @@ module.exports = {
     },
 
     updateAPIKeys: function (options) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 let apiKeys = NODICS.getAPIKeys();
@@ -171,54 +145,6 @@ module.exports = {
         });
     },
 
-    /*updateAPIKey: function (person, isRemoved) {
-        return new Promise((resolve, reject) => {
-            let apiKeys = NODICS.getAPIKeys();
-            if (Object.keys(apiKeys).length > 0) {
-                let matchKeys = [];
-                _.each(apiKeys, (kayObject, tenant) => {
-                    if (kayObject.enterpriseCode === person.enterpriseCode &&
-                        kayObject.tenant === person.tenant &&
-                        kayObject.loginId === person.loginId) {
-                        let oldValue = _.merge({}, kayObject);
-                        oldValue.newKey = person.apiKey;
-                        if (isRemoved) {
-                            oldValue.operation = 'removed';
-                            NODICS.removeAPIKey(person.tenant);
-                        } else {
-                            oldValue.operation = 'updated';
-                            kayObject.key = person.apiKey;
-                            NODICS.addAPIKey(person.tenant, person.apiKey, kayObject);
-                        }
-                        matchKeys.push(oldValue);
-                    }
-                });
-                if (matchKeys.length > 0) {
-                    _self.publishAPIKeyChangeEvent(matchKeys).then(success => {
-                        _self.LOG.debug('Successfully updated API keys to all servers');
-                        resolve(true);
-                    }).catch(error => {
-                        _self.LOG.error('Failed updating API keys to all servers');
-                        _self.LOG.error(error);
-                        reject(error);
-                    });
-                } else {
-                    resolve({
-                        success: true,
-                        code: 'SUC_SYS_00000',
-                        msg: 'None apiKeys found to update or remove'
-                    });
-                }
-            } else {
-                resolve({
-                    success: true,
-                    code: 'SUC_SYS_00000',
-                    msg: 'None apiKeys found to update or remove'
-                });
-            }
-        });
-    },*/
-
     invalidateAuthToken: function (options) {
         return new Promise((resolve, reject) => {
             let moduleObject = NODICS.getModule(CONFIG.get('profileModuleName'));
@@ -266,7 +192,7 @@ module.exports = {
             if (eventsData && eventsData.length > 0) {
                 let events = [];
                 eventsData.forEach(data => {
-                    let event = {
+                    let eventData = {
                         enterpriseCode: data.enterpriseCode,
                         tenant: 'default',
                         source: 'profile',
@@ -276,17 +202,17 @@ module.exports = {
                         type: "SYNC",
                         targetType: ENUMS.TargetType.EACH_NODE.key,
                         data: {
-                            tenantName: data.tenant,
+                            tenant: data.tenant,
                             oldKey: data.key,
                             apiKey: data.newKey
                         }
                     };
                     if (data.operation && data.operation === 'removed') {
-                        event = 'apiKeyRemove';
+                        eventData.event = 'apiKeyRemove';
                     } else {
-                        event = 'apiKeyUpdate';
+                        eventData.event = 'apiKeyUpdate';
                     }
-                    events.push(event);
+                    events.push(eventData);
                 });
                 if (events.length > 0) {
                     this.LOG.debug('Pushing event for enterprise updated');

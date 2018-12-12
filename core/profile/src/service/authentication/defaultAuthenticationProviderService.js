@@ -271,28 +271,24 @@ module.exports = {
                     request.loginId = authValues.loginId;
                     request.password = authValues.password;
                     if (authValues.type === 'Employee') {
-                        this.authenticateEmployee(request, (error, success) => {
-                            if (error) {
+                        this.authenticateEmployee(request).then(success => {
+                            _self.findToken(request.moduleName, request.authToken).then(success => {
+                                resolve(success);
+                            }).catch(error => {
                                 reject(error);
-                            } else {
-                                _self.findToken(request.moduleName, request.authToken).then(success => {
-                                    resolve(success);
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            }
+                            });
+                        }).catch(error => {
+                            reject(error);
                         });
                     } else {
-                        this.authenticateEmployee(request, (error, success) => {
-                            if (error) {
+                        this.authenticateCustomer(request).then(success => {
+                            _self.findToken(request.moduleName, request.authToken).then(success => {
+                                resolve(success);
+                            }).catch(error => {
                                 reject(error);
-                            } else {
-                                _self.findToken(request.moduleName, request.authToken).then(success => {
-                                    resolve(null, success);
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            }
+                            });
+                        }).catch(error => {
+                            reject(error);
                         });
                     }
                 } else {

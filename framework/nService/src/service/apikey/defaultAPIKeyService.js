@@ -14,7 +14,7 @@ module.exports = {
     handleApiKeyUpdate: function (event, callback, request) {
         try {
             if (event.data && event.data.apiKey && event.data.tenant) {
-                if (!NODICS.getTenants().includes(CONFIG.get('profileModuleName'))) {
+                if (!NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                     NODICS.addAPIKey(event.data.tenant, event.data.apiKey, {});
                     callback(null, {
                         success: true,
@@ -47,7 +47,7 @@ module.exports = {
     handleApiKeyRemove: function (event, callback, request) {
         try {
             if (event.data && event.data.tenant) {
-                if (!NODICS.getTenants().includes(CONFIG.get('profileModuleName'))) {
+                if (!NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                     NODICS.removeAPIKey(event.data.tenant);
                     callback(null, {
                         success: true,

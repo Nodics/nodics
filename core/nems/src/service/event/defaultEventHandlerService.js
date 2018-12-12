@@ -216,7 +216,8 @@ module.exports = {
                             source: event.source,
                             target: target.target,
                             type: event.type,
-                            params: event.params
+                            params: event.params,
+                            data: event.data
                         }, target)).then(success => {
                             if (success.success) {
                                 target.state = ENUMS.EventState.FINISHED.key;
