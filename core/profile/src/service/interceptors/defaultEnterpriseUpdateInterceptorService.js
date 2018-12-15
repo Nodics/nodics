@@ -131,7 +131,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let event = {
                 enterpriseCode: enterprise.code,
-                tenant: enterprise.tenant.code,
+                tenant: 'default',
                 source: 'profile',
                 target: 'profile',
                 excludeModules: ['profile'],
@@ -143,23 +143,38 @@ module.exports = {
                 }
             };
             if ((isRemoved || !enterprise.active || !enterprise.tenant.active) && NODICS.getTenants().includes(enterprise.tenant.code)) {
-                SYSTEM.removeTenants([enterprise.tenant.code]).then(success => {
-                    this.LOG.debug('Tenant: ' + enterprise.tenant.code + ' has been successfully deactivated from profile module');
-                    event.event = 'removeEnterprise';
-                    this.LOG.debug('Pushing event for enterprise removed or deactivated');
-                    SERVICE.DefaultEventService.publish(event).then(success => {
-                        this.LOG.debug('Event successfully posted');
+                SERVICE.DefaultEnterpriseService.get({
+                    tenant: 'default',
+                    query: {
+                        tenant: enterprise.tenant.code,
+                        active: true
+                    }
+                }).then(success => {
+                    if (success.success && (!success.result || success.result.length <= 0)) {
+                        SYSTEM.removeTenants([enterprise.tenant.code]).then(success => {
+                            this.LOG.debug('Tenant: ' + enterprise.tenant.code + ' has been successfully deactivated from profile module');
+                            event.event = 'removeEnterprise';
+                            this.LOG.debug('Pushing event for enterprise removed or deactivated');
+                            SERVICE.DefaultEventService.publish(event).then(success => {
+                                this.LOG.debug('Event successfully posted');
+                                resolve(success);
+                            }).catch(error => {
+                                this.LOG.error('While posting model change event : ', error);
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            this.LOG.error('Tenant: ' + enterprise.tenant.code + ' can not be deactivated from profile module');
+                            this.LOG.error(error);
+                            reject(error);
+                        });
+                    } else {
+                        this.LOG.debug('Tenant: ' + enterprise.tenant.code + ' is already being used with other enterprises as well');
                         resolve(success);
-                    }).catch(error => {
-                        this.LOG.error('While posting model change event : ', error);
-                        reject(error);
-                    });
+                    }
                 }).catch(error => {
-                    this.LOG.error('Tenant: ' + enterprise.tenant.code + ' can not be deactivated from profile module');
-                    this.LOG.error(error);
+                    this.LOG.error('Failed to check if current tenant is associated with other active enterprises as well : ', error);
                     reject(error);
                 });
-
             } else if (enterprise.active && enterprise.tenant.active && !NODICS.getTenants().includes(enterprise.tenant.code)) {
                 SYSTEM.buildEnterprise([enterprise]).then(success => {
                     this.LOG.debug('Enterprise: ' + enterprise.code + ' has been successfully activated within profile module');

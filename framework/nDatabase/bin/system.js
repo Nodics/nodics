@@ -171,7 +171,7 @@ module.exports = {
     removeTenantDatabase: function (tntCode) {
         return new Promise((resolve, reject) => {
             _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                NODICS.addTenantDatabase(moduleName, tntCode);
+                NODICS.removeTenantDatabase(moduleName, tntCode);
             });
             resolve(true);
         });
@@ -573,9 +573,7 @@ module.exports = {
     removeModelsForTenant: function (tntCode) {
         return new Promise((resolve, reject) => {
             _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                if (!moduleObject.models[tntCode]) {
-                    SYSTEM.LOG.warn('Invalid tenant: ' + tenant + ' or do not have any schema');
-                } else {
+                if (moduleObject.models && moduleObject.models[tntCode]) {
                     SYSTEM.LOG.debug('Deleting all models for tenant: ' + tenant + ' from module: ' + moduleName);
                     delete moduleObject.models[tntCode];
                 }
@@ -802,11 +800,12 @@ module.exports = {
                                                 }
                                             }).then(success => {
                                                 if (success.success && success.result.length > 0) {
-                                                    NODICS.addAPIKey(enterprise.tenant.code, success.result[0].apiKey, {
+                                                    let apiKeyValue = {
                                                         enterpriseCode: enterprise.code,
                                                         tenant: enterprise.tenant.code,
                                                         loginId: success.result[0].loginId
-                                                    });
+                                                    };
+                                                    NODICS.addAPIKey(enterprise.tenant.code, success.result[0].apiKey, apiKeyValue);
                                                     SYSTEM.buildEnterprise(enterprises).then(success => {
                                                         resolve(true);
                                                     }).catch(error => {
@@ -822,7 +821,12 @@ module.exports = {
                                             reject(error);
                                         });
                                     } else {
-                                        NODICS.addAPIKey(enterprise.tenant.code, success.result[0].apiKey);
+                                        let apiKeyValue = {
+                                            enterpriseCode: enterprise.code,
+                                            tenant: enterprise.tenant.code,
+                                            loginId: success.result[0].loginId
+                                        };
+                                        NODICS.addAPIKey(enterprise.tenant.code, success.result[0].apiKey, apiKeyValue);
                                         SYSTEM.buildEnterprise(enterprises).then(success => {
                                             resolve(true);
                                         }).catch(error => {

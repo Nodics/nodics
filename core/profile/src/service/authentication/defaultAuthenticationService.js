@@ -14,6 +14,7 @@ const _ = require('lodash');
 module.exports = {
 
     invalidateEnterpriseAuthToken: function (enterprise, isRemoved) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             this.invalidateAuthToken({
                 isEnterprise: true,
@@ -23,7 +24,8 @@ module.exports = {
                     isRemoved: isRemoved,
                     isEnterprise: true,
                     enterpriseCode: enterprise.code,
-                    tenant: enterprise.tenant.code
+                    tenant: enterprise.tenant.code,
+                    enterprise: enterprise
                 }).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -87,7 +89,7 @@ module.exports = {
                     _.each(apiKeys, (kayObject, tenant) => {
                         let oldValue = _.merge({}, kayObject);
                         if (options.isEnterprise && kayObject.enterpriseCode === options.enterpriseCode && kayObject.tenant === options.tenant) {
-                            if (options.isRemoved) {
+                            if (options.isRemoved || !options.enterprise.active || !options.enterprise.tenant.active) {
                                 oldValue.operation = 'removed';
                                 NODICS.removeAPIKey(options.tenant);
                                 matchKeys.push(oldValue);
@@ -154,6 +156,7 @@ module.exports = {
                     if (options.isEnterprise) {
                         if (authObj.enterpriseCode === options.enterpriseCode) {
                             authTokens.push(authToken);
+                            delete moduleObject.authCache.tokens[authToken];
                         }
                     } else {
                         if (authObj.enterpriseCode === options.enterpriseCode &&
@@ -161,6 +164,7 @@ module.exports = {
                             authObj.loginId === options.loginId &&
                             authObj.type === options.type) {
                             authTokens.push(authToken);
+                            delete moduleObject.authCache.tokens[authToken];
                         }
                     }
                 });

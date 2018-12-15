@@ -324,11 +324,10 @@ module.exports = function () {
     };
 
     this.removeTenantDatabase = function (moduleName, tenant) {
-        if (!_nodics.dbs[moduleName]) {
+        if (!this.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!_nodics.dbs[moduleName][tenant]) {
-            throw new Error('Invalid tenant name: ' + tenant);
-        } else {
+        }
+        if (_nodics.dbs[moduleName] && _nodics.dbs[moduleName][tenant]) {
             delete _nodics.dbs[moduleName][tenant];
         }
         return true;
