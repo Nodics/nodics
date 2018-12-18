@@ -12,7 +12,6 @@
 const _ = require('lodash');
 const MongoClient = require('mongodb').MongoClient;
 
-
 module.exports = {
 
     validateDatabaseConfiguration: function (dbName) {

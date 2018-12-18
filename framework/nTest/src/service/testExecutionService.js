@@ -35,7 +35,7 @@ const expect = Chai.expect;
 
 module.exports = {
 
-    runUTest: function(input, callback) {
+    runUTest: function (input, callback) {
         let _self = this;
         if (callback) {
             _self.executeUTest().then(success => {
@@ -50,7 +50,7 @@ module.exports = {
         }
     },
 
-    runNTest: function(input, callback) {
+    runNTest: function (input, callback) {
         let _self = this;
         if (callback) {
             _self.executeNTest().then(success => {
@@ -65,30 +65,34 @@ module.exports = {
         }
     },
 
-    executeUTest: function() {
+    executeUTest: function () {
         return new Promise((resolve, reject) => {
             let testConfig = CONFIG.get('test');
-            if (!UTILS.isBlank(TEST.uTestPool.suites) && testConfig.enabled && testConfig.uTest.enabled) {
-                NODICS.setActiveChannel('test');
-                this.LOG.debug('Starting Unit Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
-                try {
-                    let uTestMasterMocha = new Mocha({ timeout: 10 });
-                    let uTestMasterSuite = Mocha.Suite.create(uTestMasterMocha.suite, 'Starting master suite execution for U-Test');
-                    this.createSuites(uTestMasterSuite, TEST.uTestPool);
-                    uTestMasterMocha.run(failures => {
-                        process.on('exit', () => {
+            if (testConfig.enabled && testConfig.uTest.enabled) {
+                if (!UTILS.isBlank(TEST.uTestPool.suites)) {
+                    NODICS.setActiveChannel('test');
+                    this.LOG.debug('Starting Unit Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
+                    try {
+                        let uTestMasterMocha = new Mocha({ timeout: 10 });
+                        let uTestMasterSuite = Mocha.Suite.create(uTestMasterMocha.suite, 'Starting master suite execution for U-Test');
+                        this.createSuites(uTestMasterSuite, TEST.uTestPool);
+                        uTestMasterMocha.run(failures => {
+                            process.on('exit', () => {
+                                NODICS.setActiveChannel('master');
+                                process.exit(failures);
+                            });
+                        }).on('end', () => {
                             NODICS.setActiveChannel('master');
-                            process.exit(failures);
+                            resolve(true);
+                        }).on('error', (error) => {
+                            this.LOG.error('some error : ', error);
                         });
-                    }).on('end', () => {
+                    } catch (error) {
                         NODICS.setActiveChannel('master');
-                        resolve(true);
-                    }).on('error', (error) => {
-                        this.LOG.error('some error : ', error);
-                    });
-                } catch (error) {
-                    NODICS.setActiveChannel('master');
-                    reject('got error while starting unit test case execution : ' + error);
+                        reject('got error while starting unit test case execution : ' + error);
+                    }
+                } else {
+                    reject('There are none test cases to execute, please write some');
                 }
             } else {
                 reject('Test cases are not allowed to be executed, change configuration');
@@ -96,27 +100,31 @@ module.exports = {
         });
     },
 
-    executeNTest: function() {
+    executeNTest: function () {
         return new Promise((resolve, reject) => {
             let testConfig = CONFIG.get('test');
-            if (!UTILS.isBlank(TEST.nTestPool.suites) && testConfig.enabled && testConfig.nTest.enabled) {
-                NODICS.setNTestRunning(true);
-                this.LOG.debug('Starting N-Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
-                try {
-                    let nTestMasterMocha = new Mocha();
-                    let nTestMasterSuite = Mocha.Suite.create(nTestMasterMocha.suite, 'Starting master suite execution for N-Test');
-                    this.createSuites(nTestMasterSuite, TEST.nTestPool);
-                    nTestMasterMocha.run(function(failures) {
-                        process.on('exit', function() {
-                            process.exit(failures);
+            if (testConfig.enabled && testConfig.nTest.enabled) {
+                if (!UTILS.isBlank(TEST.nTestPool.suites)) {
+                    NODICS.setNTestRunning(true);
+                    this.LOG.debug('Starting N-Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
+                    try {
+                        let nTestMasterMocha = new Mocha();
+                        let nTestMasterSuite = Mocha.Suite.create(nTestMasterMocha.suite, 'Starting master suite execution for N-Test');
+                        this.createSuites(nTestMasterSuite, TEST.nTestPool);
+                        nTestMasterMocha.run(function (failures) {
+                            process.on('exit', function () {
+                                process.exit(failures);
+                            });
+                        }).on('end', () => {
+                            NODICS.setNTestRunning(false);
+                            resolve(true);
                         });
-                    }).on('end', () => {
+                    } catch (error) {
                         NODICS.setNTestRunning(false);
-                        resolve(true);
-                    });
-                } catch (error) {
-                    NODICS.setNTestRunning(false);
-                    reject('got error while starting n-test case execution : ' + error);
+                        reject('got error while starting n-test case execution : ' + error);
+                    }
+                } else {
+                    reject('There are none test cases to execute, please write some');
                 }
             } else {
                 reject('Test cases are not allowed to be executed, change configuration');
@@ -124,7 +132,7 @@ module.exports = {
         });
     },
 
-    createSuites: function(masterSuite, testSuites) {
+    createSuites: function (masterSuite, testSuites) {
         let _self = this;
         _.each(testSuites.suites, (testSuite, suiteName) => {
             if (!UTILS.isBlank(testSuite) && suiteName !== 'data') {
@@ -137,7 +145,7 @@ module.exports = {
         });
     },
 
-    createTestGroup: function(suiteName, testSuite, baseSuite) { //one top suite
+    createTestGroup: function (suiteName, testSuite, baseSuite) { //one top suite
         let _self = this;
         _.each(testSuite, (testGroup, groupName) => {
             if (groupName !== 'data' && groupName !== 'options') {
@@ -148,7 +156,7 @@ module.exports = {
         });
     },
 
-    createTestCase: function(groupName, testGroup, testSuite) {
+    createTestCase: function (groupName, testGroup, testSuite) {
         let _self = this;
         _.each(testGroup, (testCase, testName) => {
             if (testName !== 'data' && testName !== 'options') {
@@ -157,7 +165,7 @@ module.exports = {
         });
     },
 
-    createSuite: function(mocha, suiteName, testSuite, baseSuite) {
+    createSuite: function (mocha, suiteName, testSuite, baseSuite) {
         let suite = Mocha.Suite.create(mocha.suite, testSuite.options.description);
         if (testSuite.options.timeout) {
             suite.timeout(testSuite.options.timeout);
@@ -180,7 +188,7 @@ module.exports = {
         return suite;
     },
 
-    createTest: function(testName, testCase, suite) {
+    createTest: function (testName, testCase, suite) {
         suite.addTest(new Test(testCase.description, testCase.test));
     }
 };

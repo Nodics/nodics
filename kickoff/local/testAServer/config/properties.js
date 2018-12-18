@@ -14,9 +14,10 @@ module.exports = {
         updateGroups: true,
         //groups: ['core', 'ems'], // Group 'framework' will be included automatically
         modules: [
-            'profile',
-            'emsClient',
-            'storefront',
+            'cronjob',
+            'nems',
+            'ems',
+            'admin',
             'testAServer',
             'kickoff',
             'local'
@@ -32,6 +33,32 @@ module.exports = {
                 contextRoot: 'nodics',
                 connectToDefault: false
             },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3002,
+
+                httpsHost: 'localhost',
+                httpsPort: 3003
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3002,
+
+                httpsHost: 'localhost',
+                httpsPort: 3003
+            },
+            //Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3002,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3003
+                }
+            }
+        },
+        profile: {
             server: {
                 httpHost: 'localhost',
                 httpPort: 3000,

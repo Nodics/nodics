@@ -53,11 +53,7 @@ module.exports = {
 
     getModuleServerConfig: function (moduleName) {
         if (this.serversConfigPool.isAvailableModuleConfig(moduleName)) {
-            let moduleConfig = this.serversConfigPool.getModule(moduleName);
-            if (moduleConfig.getOptions() && moduleConfig.getOptions().connectToDefault) {
-                moduleConfig = this.serversConfigPool.getModule('default');
-            }
-            return moduleConfig;
+            return this.serversConfigPool.getModule(moduleName);
         } else {
             return this.serversConfigPool.getModule('default');
         }

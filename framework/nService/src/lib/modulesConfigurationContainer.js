@@ -25,6 +25,7 @@ module.exports = function () {
         _.each(CONFIG.get('server'), (moduleConfig, moduleName) => {
             if (moduleName !== 'options') {
                 try {
+                    moduleConfig.options = moduleConfig.options || CONFIG.get('server').options;
                     _self.addModule(moduleName, moduleConfig);
                 } catch (error) {
                     this.LOG.error('Invalid configuration found for module : ' + moduleName);

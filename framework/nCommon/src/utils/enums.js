@@ -10,33 +10,18 @@
  */
 
 module.exports = {
-    EventState: {
+    TargetType: {
         _options: {
-            name: 'EventState',
+            name: 'TargetType',
             separator: '|',
             endianness: 'BE',
             ignoreCase: false,
             freez: false
         },
         definition: [
-            'NEW',
-            'PROCESSING',
-            'FINISHED',
-            'ERROR'
-        ]
-    },
-
-    EventType: {
-        _options: {
-            name: 'EventState',
-            separator: '|',
-            endianness: 'BE',
-            ignoreCase: false,
-            freez: false
-        },
-        definition: [
-            'SYNC',
-            'ASYNC'
+            'EACH_NODE',
+            'EACH_MODULE',
+            'MODULE'
         ]
     }
 };

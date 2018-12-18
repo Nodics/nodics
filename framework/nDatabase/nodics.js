@@ -24,7 +24,8 @@ module.exports = {
                 NODICS.addTenant('default');
                 SYSTEM.buildModelsForTenants(tenants).then(success => {
                     SYSTEM.prepareInterceptors();
-                    NODICS.addAPIKey('default', CONFIG.get('defaultAPIKey'), CONFIG.get('profile').defaultAuthDetail);
+                    NODICS.addAPIKey('default', CONFIG.get('defaultAPIKey'),
+                        CONFIG.get('profile') ? CONFIG.get('profile').defaultAuthDetail : {});
                     resolve(true);
                 }).catch(error => {
                     reject(error);

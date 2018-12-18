@@ -13,7 +13,7 @@ module.exports = {
     generateAPIKey: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                if ((options.model.tenant !== 'default' ||
+                if ((options.tenant !== 'default' ||
                     options.model.loginId !== 'apiAdmin' ||
                     CONFIG.get('forceAPIKeyGenerate')) &&
                     (options.model.loginId && options.model.password)) {
