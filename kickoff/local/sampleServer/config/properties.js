@@ -12,11 +12,12 @@
 module.exports = {
     activeModules: {
         updateGroups: true,
-        groups: ['core', 'ems'], // Group 'framework' will be included automatically
+        groups: ['ems'], // Group 'framework' will be included automatically
         modules: [
-            'sampleServer',
+            'cronjob',
+            'nems',
             'admin',
-            'storefront',
+            'sampleServer',
             'kickoff',
             'local'
         ]
@@ -24,102 +25,37 @@ module.exports = {
     log: {
         level: 'debug'
     },
-    database: {
-        /* nems: {
-             databaseType: 'mongodb', //for Cassandra use 'cassandra'
-             mongodb: {
-                 master: {
-                     URI: 'mongodb://localhost:27017',
-                     databaseName: 'nemsMaster',
-                     options: {
-                         useNewUrlParser: true,
-                         poolSize: 5
-                     }
-                 },
-                 test: {
-                     URI: 'mongodb://localhost:27017',
-                     databaseName: 'nemsTest',
-                     options: {
-                         useNewUrlParser: true,
-                         poolSize: 5
-                     }
-                 }
-             }
-         },
-         profile: {
-             databaseType: 'mongodb', //for Cassandra use 'cassandra'
-             mongodb: {
-                 master: {
-                     URI: 'mongodb://localhost:27017',
-                     databaseName: 'profileMaster',
-                     options: {
-                         useNewUrlParser: true,
-                         poolSize: 5
-                     }
-                 },
-                 test: {
-                     URI: 'mongodb://localhost:27017',
-                     databaseName: 'profileTest',
-                     options: {
-                         useNewUrlParser: true,
-                         poolSize: 5
-                     }
-                 }
-             }
-         },
-         cronjob: {
-             databaseType: 'mongodb', //for Cassandra use 'cassandra'
-             mongodb: {
-                 master: {
-                     URI: 'mongodb://localhost:27017',
-                     databaseName: 'cronJobMaster',
-                     options: {
-                         useNewUrlParser: true,
-                         poolSize: 5
-                     }
-                 },
-                 test: {
-                     URI: 'mongodb://localhost:27017',
-                     databaseName: 'cronJobTest',
-                     options: {
-                         useNewUrlParser: true,
-                         poolSize: 5
-                     }
-                 }
-             }
-         }*/
-    },
 
     server: {
-        /*storefront: {
+        default: {
             options: {
                 contextRoot: 'nodics',
                 connectToDefault: false
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3011,
+                httpPort: 3002,
 
                 httpsHost: 'localhost',
-                httpsPort: 3012
+                httpsPort: 3003
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3011,
+                httpPort: 3002,
 
                 httpsHost: 'localhost',
-                httpsPort: 3012
+                httpsPort: 3003
             },
             //Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',
-                    httpPort: 3011,
+                    httpPort: 3002,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3012
+                    httpsPort: 3003
                 }
             }
-        }*/
-    },
+        }
+    }
 };

@@ -32,26 +32,26 @@ module.exports = {
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3012,
+                httpPort: 3004,
 
                 httpsHost: 'localhost',
-                httpsPort: 3013
+                httpsPort: 3005
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3012,
+                httpPort: 3004,
 
                 httpsHost: 'localhost',
-                httpsPort: 3013
+                httpsPort: 3005
             },
             //Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',
-                    httpPort: 3012,
+                    httpPort: 3004,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3013
+                    httpsPort: 3005
                 }
             }
         },

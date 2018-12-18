@@ -156,8 +156,6 @@ module.exports = {
         console.log('Modules: ', modulesStr);
     },
 
-
-
     loadModulesMetaData: function () {
         let _self = this;
         let moduleIndex = NODICS.getIndexedModules();

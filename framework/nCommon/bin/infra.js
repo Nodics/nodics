@@ -19,7 +19,7 @@ module.exports = {
         console.log('------------------------------------------------------------------------------------------');
         console.log('Folowing command can be used to generate APP, Group or module : ');
         console.log('');
-        console.log('==> $ npm run commandName [N=moduleName/NAME=moduleName] [P=destModule/PATH=destModule]');
+        console.log('==> $ npm run commandName [N=moduleName/NAME=moduleName]');
         console.log('{');
         console.log(' - commandName: command name could be one of app, module or help');
         console.log('      [app]     - if you want to generate application for your custom application');
@@ -27,8 +27,8 @@ module.exports = {
         console.log('      [module]  - if you want to generate module for your custom application');
         console.log('      [module:react]  - if you want to generate module for your custom application');
         console.log('      [module:vue]  - if you want to generate module for your custom application');
-        console.log(' - name: name of the module or application, based on command provided');
-        console.log(' - path: destination path module needs to be generated');
+        console.log(' - N or NAME: name of the module or application, based on command provided');
+        console.log(' This app, group or module will be generated under custom folder in NODICS root directory');
         console.log('}');
         console.log('------------------------------------------------------------------------------------------');
         console.log('');
@@ -44,24 +44,13 @@ module.exports = {
             if (element.startsWith('NAME=')) {
                 name = element.replace('NAME=', '');
             }
-            if (element.startsWith('P=')) {
-                path = element.replace('P=', '');
-            }
-            if (element.startsWith('PATH=')) {
-                path = element.replace('PATH=', '');
-            }
         });
         if (!name || name === '') {
             SYSTEM.LOG.error('Name can not be null or empty');
             this.moduleGenHelp();
             process.exit(1);
         }
-        if (!path || path === '') {
-            SYSTEM.LOG.error('Path can not be null or empty');
-            this.moduleGenHelp();
-            process.exit(1);
-        }
-        let distModule = NODICS.getRawModule(path);
+        let distModule = NODICS.getRawModule('nodics');
         if (!distModule) {
             SYSTEM.LOG.error('There is no module found for : ', path);
             this.moduleGenHelp();
@@ -69,9 +58,9 @@ module.exports = {
         }
         return {
             name: name,
-            path: distModule.path,
+            path: distModule.path + '/kickoff/custom',
             commonPath: NODICS.getRawModule('ncommon').path + '/templates'
-        }
+        };
     },
 
     generateTarget: function (templateName) {
@@ -125,4 +114,4 @@ module.exports = {
             return console.error('Copy failed: ' + error);
         });
     }
-}
+};

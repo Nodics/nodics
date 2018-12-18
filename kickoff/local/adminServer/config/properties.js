@@ -14,8 +14,8 @@ module.exports = {
         updateGroups: true,
         //groups: ['core', 'ems'], // Group 'framework' will be included automatically
         modules: [
-            'storefront',
-            'storeServer',
+            'admin',
+            'adminServer',
             'kickoff',
             'local'
         ]
@@ -32,30 +32,30 @@ module.exports = {
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3020,
+                httpPort: 3008,
 
                 httpsHost: 'localhost',
-                httpsPort: 3021
+                httpsPort: 3009
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3020,
+                httpPort: 3008,
 
                 httpsHost: 'localhost',
-                httpsPort: 3021
+                httpsPort: 3009
             },
             //Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',
-                    httpPort: 3020,
+                    httpPort: 3008,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3021
+                    httpsPort: 3009
                 }
             }
         },
-        profile: {
+        /*profile: {
             options: {
                 contextRoot: 'nodics',
                 connectToDefault: false
@@ -84,7 +84,7 @@ module.exports = {
                     httpsPort: 3005
                 }
             }
-        },
+        },*/
 
         /*storefront: {
             options: {
