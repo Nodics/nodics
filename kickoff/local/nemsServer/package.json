@@ -7,14 +7,14 @@
     "keywords": [
         "nemsServer"
     ],
-    "author": "authorName",
+    "author": "Himkar Dwivedi",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,
     "license": "GPL License",
     "repository": {
         "type": "git",
-        "url": "repository URL"
+        "url": "https://github.com/Nodics/nodics"
     },
     "dependencies": {}
 }
