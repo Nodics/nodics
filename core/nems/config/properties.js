@@ -13,38 +13,7 @@ module.exports = {
     eventFetchSize: 100,
     publishEventOnNode: '0',
     eventResetTimeInMinutes: 5 * 60,
-    server: {
-        nems: {
-            options: {
-                contextRoot: 'nodics'
-            },
-            server: {
-                httpHost: 'localhost',
-                httpPort: 3000,
-
-                httpsHost: 'localhost',
-                httpsPort: 3001
-            },
-            abstract: {
-                httpHost: 'localhost',
-                httpPort: 3000,
-
-                httpsHost: 'localhost',
-                httpsPort: 3001
-            },
-            //Clusters information is optional and will be managed for Backoffice application
-            nodes: {
-                0: {
-                    httpHost: 'localhost',
-                    httpPort: 3000,
-
-                    httpsHost: 'localhost',
-                    httpsPort: 3001
-                }
-            }
-        }
-    },
-
+    nemsModuleName: 'nems',
     cache: {
         nems: {
             apiCache: {
@@ -89,30 +58,5 @@ module.exports = {
                 }
             }
         }
-    },
-
-    /*database: {
-        nems: {
-            databaseType: 'mongodb', //for Cassandra use 'cassandra'
-            mongodb: {
-                master: {
-                    URI: 'mongodb://localhost:27017',
-                    databaseName: 'nemsMaster',
-                    options: {
-                        useNewUrlParser: true,
-                        poolSize: 5
-                    }
-                },
-                test: {
-                    URI: 'mongodb://localhost:27017',
-                    databaseName: 'nemsTest',
-                    options: {
-                        useNewUrlParser: true,
-                        poolSize: 5
-                    }
-                }
-            }
-        }
-    },*/
-
+    }
 };

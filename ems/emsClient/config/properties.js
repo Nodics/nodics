@@ -10,61 +10,6 @@
  */
 
 module.exports = {
-    /*database: {
-        emsClient: {
-            databaseType: 'mongodb', //for Cassandra use 'cassandra'
-            mongodb: {
-                master: {
-                    URI: 'mongodb://localhost:27017',
-                    databaseName: 'emsClientMaster',
-                    options: {
-                        useNewUrlParser: true,
-                        poolSize: 5
-                    }
-                },
-                test: {
-                    URI: 'mongodb://localhost:27017',
-                    databaseName: 'emsClientTest',
-                    options: {
-                        useNewUrlParser: true,
-                        poolSize: 5
-                    }
-                }
-            }
-        }
-    },*/
-
-    server: {
-        emsClient: {
-            options: {
-                contextRoot: 'nodics'
-            },
-            server: {
-                httpHost: 'localhost',
-                httpPort: 3000,
-
-                httpsHost: 'localhost',
-                httpsPort: 3001
-            },
-            abstract: {
-                httpHost: 'localhost',
-                httpPort: 3000,
-
-                httpsHost: 'localhost',
-                httpsPort: 3001
-            },
-            //Clusters information is optional and will be managed for Backoffice application
-            node: {
-                0: {
-                    httpHost: 'localhost',
-                    httpPort: 3000,
-
-                    httpsHost: 'localhost',
-                    httpsPort: 3001
-                }
-            }
-        }
-    },
 
     emsClient: {
         enabled: false,

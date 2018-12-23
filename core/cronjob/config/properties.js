@@ -37,38 +37,6 @@ module.exports = {
             }]
         }
     },
-    server: {
-        cronjob: {
-            options: {
-                contextRoot: 'nodics'
-            },
-            server: {
-                httpHost: 'localhost',
-                httpPort: 3000,
-
-                httpsHost: 'localhost',
-                httpsPort: 3001
-            },
-            abstract: {
-                httpHost: 'localhost',
-                httpPort: 3000,
-
-                httpsHost: 'localhost',
-                httpsPort: 3001
-            },
-            //Clusters information is optional and will be managed for Backoffice application
-            nodes: {
-                0: {
-                    httpHost: 'localhost',
-                    httpPort: 3000,
-
-                    httpsHost: 'localhost',
-                    httpsPort: 3001
-                }
-            }
-        }
-    },
-
     cache: {
         cronjob: {
             apiCache: {

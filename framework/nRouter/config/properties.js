@@ -40,19 +40,18 @@ module.exports = {
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: '3000',
+                httpPort: 3000,
 
                 httpsHost: 'localhost',
-                httpsPort: '3001'
-            },
-            //Clusters information is optional and will be managed for Backoffice application
+                httpsPort: 3001
+            },//Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',
-                    httpPort: '3000',
+                    httpPort: 3000,
 
                     httpsHost: 'localhost',
-                    httpsPort: '3001'
+                    httpsPort: 3001
                 }
             }
         }
