@@ -11,11 +11,11 @@
 
 module.exports = {
 
-    init: function() {
+    init: function () {
 
     },
 
-    initTest: function() {
+    initTest: function () {
         let _self = this;
         SYSTEM.LOG.info('---------------------------------------------------------------------------');
         SYSTEM.LOG.info('=> Starting test case execution process   ###');
@@ -40,7 +40,7 @@ module.exports = {
         });
     },
 
-    initUTest: function() {
+    initUTest: function () {
         return new Promise((resolve, reject) => {
             let testConfig = CONFIG.get('test');
             if (testConfig.uTest.runOnStartup) {
@@ -56,7 +56,7 @@ module.exports = {
         });
     },
 
-    initNTest: function() {
+    initNTest: function () {
         return new Promise((resolve, reject) => {
             let testConfig = CONFIG.get('test');
             if (testConfig.nTest.runOnStartup) {

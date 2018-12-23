@@ -10,6 +10,8 @@
  */
 
 module.exports = {
+    profileModuleReconnectTimeout: 5000,
+
     database: {
         processInitialData: false,
         modelSaveOptions: {
@@ -23,6 +25,7 @@ module.exports = {
         modelRemoveOptions: {
             j: false
         },
+
         default: {
             databaseType: 'mongodb', //for Cassandra use 'cassandra'
             mongodb: {

@@ -101,7 +101,8 @@ module.exports = {
                                     resolve(true);
                                 }).catch(error => {
                                     SYSTEM.LOG.error('Not able to load tenants : ', error);
-                                    reject(error);
+                                    //reject(error);
+                                    resolve(true);
                                 });
                             }).catch(error => {
                                 SYSTEM.LOG.error('Initial data import fails: ', error);
@@ -112,7 +113,8 @@ module.exports = {
                                 resolve(true);
                             }).catch(error => {
                                 SYSTEM.LOG.error('Not able to load tenants : ', error);
-                                reject(error);
+                                //reject(error);
+                                resolve(true);
                             });
                         }
                     }).catch(error => {

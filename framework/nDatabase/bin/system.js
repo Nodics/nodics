@@ -688,10 +688,18 @@ module.exports = {
                         resolve(success.result);
                     } else {
                         SYSTEM.LOG.error('Could not found any active enterprises currently');
-                        resolve([]);
+                        reject({
+                            success: false,
+                            code: 'ERR_CON_00000',
+                            error: error
+                        });
                     }
                 }).catch(error => {
-                    reject(error);
+                    reject({
+                        success: false,
+                        code: 'ERR_CON_00000',
+                        error: error
+                    });
                 });
             } else {
                 let requestUrl = SERVICE.DefaultModuleService.buildRequest({
@@ -708,18 +716,23 @@ module.exports = {
                 try {
                     SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
                         if (error) {
-                            SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
-                            resolve([]);
+                            reject({
+                                success: false,
+                                code: 'ERR_CON_00001',
+                                error: error
+                            });
                         } else {
                             resolve(response.result || []);
                         }
                     });
                 } catch (error) {
-                    SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants', error);
-                    resolve([]);
+                    reject({
+                        success: false,
+                        code: 'ERR_CON_00000',
+                        error: error
+                    });
                 }
             }
-
         });
     },
 
@@ -735,7 +748,6 @@ module.exports = {
                     apiKey: NODICS.getAPIKey('default').key
                 }
             });
-
             try {
                 SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
                     if (error) {
@@ -758,14 +770,39 @@ module.exports = {
                 SYSTEM.buildEnterprise(success).then(success => {
                     resolve({
                         success: true,
-                        code: ''
+                        code: 'SUC_SYS_00000'
                     });
                 }).catch(error => {
                     reject(error);
                 });
             }).catch(error => {
                 reject(error);
+                if (error.code && error.code === 'ERR_CON_00001') {
+                    SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants');
+                    SYSTEM.LOG.error('Please check if PROFILE module is running and have proper PORT configured');
+                    setTimeout(() => {
+                        SYSTEM.handleEnterpriseLoadFailure();
+                    }, CONFIG.get('profileModuleReconnectTimeout') || 2000);
+                }
             });
+        });
+    },
+
+    handleEnterpriseLoadFailure: function () {
+        SYSTEM.fetchEnterprise().then(success => {
+            SYSTEM.buildEnterprise(success).then(success => {
+                SYSTEM.LOG.info('Active tenants loaded successfully');
+            }).catch(error => {
+                SYSTEM.LOG.error('Failed while building tenant enviroment', error);
+            });
+        }).catch(error => {
+            if (error.code && error.code === 'ERR_CON_00001') {
+                SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants');
+                SYSTEM.LOG.error('Please check if PROFILE module is running and have proper PORT configured');
+                setTimeout(() => {
+                    SYSTEM.handleEnterpriseLoadFailure();
+                }, CONFIG.get('profileModuleReconnectTimeout') || 2000);
+            }
         });
     },
 

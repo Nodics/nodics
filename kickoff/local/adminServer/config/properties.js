@@ -43,8 +43,7 @@ module.exports = {
 
                 httpsHost: 'localhost',
                 httpsPort: 3009
-            },
-            //Clusters information is optional and will be managed for Backoffice application
+            },//Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',
@@ -55,36 +54,35 @@ module.exports = {
                 }
             }
         },
-        /*profile: {
+        profile: {
             options: {
                 contextRoot: 'nodics',
                 connectToDefault: false
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3004,
+                httpPort: 3000,
 
                 httpsHost: 'localhost',
-                httpsPort: 3005
+                httpsPort: 3001
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3004,
+                httpPort: 3000,
 
                 httpsHost: 'localhost',
-                httpsPort: 3005
-            },
-            //Clusters information is optional and will be managed for Backoffice application
+                httpsPort: 3001
+            },//Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',
-                    httpPort: 3004,
+                    httpPort: 3000,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3005
+                    httpsPort: 3001
                 }
             }
-        },*/
+        }
 
         /*storefront: {
             options: {
