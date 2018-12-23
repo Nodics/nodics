@@ -27,8 +27,7 @@ module.exports = {
     server: {
         default: {
             options: {
-                contextRoot: 'nodics',
-                connectToDefault: false
+                contextRoot: 'nodics'
             },
             server: {
                 httpHost: 'localhost',
@@ -55,35 +54,62 @@ module.exports = {
             }
         },
 
-        /*cronjob: {
+        profile: {
             options: {
-                contextRoot: 'nodics',
-                connectToDefault: false
+                contextRoot: 'nodics'
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3010,
+                httpPort: 3000,
 
                 httpsHost: 'localhost',
-                httpsPort: 3011
+                httpsPort: 3001
             },
             abstract: {
-               httpHost: 'localhost',
-                httpPort: 3010,
+                httpHost: 'localhost',
+                httpPort: 3000,
 
                 httpsHost: 'localhost',
-                httpsPort: 3011
-            },
-            //Clusters information is optional and will be managed for Backoffice application
+                httpsPort: 3001
+            },//Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
-                   httpHost: 'localhost',
-                httpPort: 3010,
+                    httpHost: 'localhost',
+                    httpPort: 3000,
 
-                httpsHost: 'localhost',
-                httpsPort: 3011
+                    httpsHost: 'localhost',
+                    httpsPort: 3001
                 }
             }
-        }*/
+        },
+
+        nems: {
+            options: {
+                contextRoot: 'nodics'
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3004,
+
+                httpsHost: 'localhost',
+                httpsPort: 3005
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3004,
+
+                httpsHost: 'localhost',
+                httpsPort: 3005
+            },//Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3004,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3005
+                }
+            }
+        }
     }
 };

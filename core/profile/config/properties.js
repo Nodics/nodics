@@ -17,8 +17,7 @@ module.exports = {
     server: {
         profile: {
             options: {
-                contextRoot: 'nodics',
-                connectToDefault: false
+                contextRoot: 'nodics'
             },
             server: {
                 httpHost: 'localhost',

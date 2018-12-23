@@ -16,8 +16,7 @@ module.exports = {
     server: {
         nems: {
             options: {
-                contextRoot: 'nodics',
-                connectToDefault: false
+                contextRoot: 'nodics'
             },
             server: {
                 httpHost: 'localhost',

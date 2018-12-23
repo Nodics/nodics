@@ -40,8 +40,7 @@ module.exports = {
     server: {
         cronjob: {
             options: {
-                contextRoot: 'nodics',
-                connectToDefault: false
+                contextRoot: 'nodics'
             },
             server: {
                 httpHost: 'localhost',

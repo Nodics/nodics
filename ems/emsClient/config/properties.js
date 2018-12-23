@@ -37,8 +37,7 @@ module.exports = {
     server: {
         emsClient: {
             options: {
-                contextRoot: 'nodics',
-                connectToDefault: false
+                contextRoot: 'nodics'
             },
             server: {
                 httpHost: 'localhost',
