@@ -10,13 +10,5 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        core: [
-            'core',
-            'cronjob',
-            'nems',
-            'elasticsearch',
-            'profile'
-        ]
-    }
+
 };

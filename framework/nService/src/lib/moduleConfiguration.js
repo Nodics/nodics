@@ -90,9 +90,9 @@ module.exports = function (moduleName) {
 
     this.setIsServerRunning = function (isServerRunning) {
         _isServerRunning = isServerRunning;
-    }
+    };
 
     this.isServerRunning = function () {
         return _isServerRunning;
-    }
+    };
 };

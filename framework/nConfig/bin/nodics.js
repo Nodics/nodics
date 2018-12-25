@@ -46,7 +46,7 @@ module.exports = function () {
     };
 
     this.initEnvironment = function () {
-        _serverName = 'sampleServer';
+        _serverName = 'nodicsDefaultServer';
         process.argv.forEach(element => {
             if (element.startsWith('S=')) {
                 _serverName = element.replace('S=', '');

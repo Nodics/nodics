@@ -1,15 +1,13 @@
 {
-    "name": "kickoff",
-    "index": "10000",
+    "name": "nemsServer",
+    "index": "10024",
     "publish": false,
-    "description": "Nodics applicaion module. It will hold all configuration and kickoff point to start nodics",
+    "description": "Nodics applicaion module. It will hold all configuration and nemsServer point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "server",
-        "environment",
-        "kickoff"
+        "nemsServer"
     ],
-    "author": "Nodics Framework",
+    "author": "Himkar Dwivedi",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,

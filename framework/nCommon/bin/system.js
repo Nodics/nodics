@@ -528,8 +528,8 @@ module.exports = {
                     let moduleConfig = SYSTEM.getModuleServerConfig('default');
                     const httpPort = moduleConfig.getServer().getHttpPort();
                     const httpsPort = moduleConfig.getServer().getHttpsPort();
-                    SYSTEM.registerListenEvents('default', httpPort, true, http.createServer(NODICS.getModules().default.app)).listen(httpPort);
-                    SYSTEM.registerListenEvents('default', httpPort, true, https.createServer(NODICS.getModules().default.app)).listen(httpsPort);
+                    SYSTEM.registerListenEvents('default', httpPort, false, http.createServer(NODICS.getModules().default.app)).listen(httpPort);
+                    SYSTEM.registerListenEvents('default', httpsPort, true, https.createServer(NODICS.getModules().default.app)).listen(httpsPort);
                     moduleConfig.setIsServerRunning(true);
                     resolve(true);
                 } else {
@@ -571,10 +571,18 @@ module.exports = {
 
     registerListenEvents: function (moduleName, port, isSecure, server) {
         server.on('error', function (error) {
-            isSecure ? SYSTEM.LOG.error('Failed to start HTTPS Server for module : ', moduleName, ' on PORT : ', port) : SYSTEM.LOG.error('Failed to start HTTP Server for module : ', moduleName, ' on PORT : ', port);
+            if (isSecure) {
+                SYSTEM.LOG.error('Failed to start HTTPS Server for module : ', moduleName, ' on PORT : ', port);
+            } else {
+                SYSTEM.LOG.error('Failed to start HTTP Server for module : ' + moduleName + ' on PORT : ' + port);
+            }
         });
         server.on('listening', function () {
-            isSecure ? SYSTEM.LOG.info('Starting HTTPS Server for module : ', moduleName, ' on PORT : ', port) : SYSTEM.LOG.info('Starting HTTP Server for module : ', moduleName, ' on PORT : ', port);
+            if (isSecure) {
+                SYSTEM.LOG.info('Starting HTTPS Server for module : ', moduleName, ' on PORT : ', port);
+            } else {
+                SYSTEM.LOG.info('Starting HTTP Server for module : ', moduleName, ' on PORT : ', port);
+            }
         });
         return server;
     },

@@ -1,15 +1,13 @@
 {
-    "name": "kickoff",
-    "index": "10000",
-    "publish": false,
-    "description": "Nodics applicaion module. It will hold all configuration and kickoff point to start nodics",
+    "name": "elasticsearch",
+    "index": "210",
+    "publish": true,
+    "description": "Nodics applicaion module. It will hold all elastic search related configurations",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "server",
-        "environment",
-        "kickoff"
+        "elasticsearch"
     ],
-    "author": "Nodics Framework",
+    "author": "Himkar Dwivedi",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,

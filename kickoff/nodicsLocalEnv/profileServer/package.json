@@ -1,15 +1,13 @@
 {
-    "name": "kickoff",
-    "index": "10000",
+    "name": "profileServer",
+    "index": "10022",
     "publish": false,
-    "description": "Nodics applicaion module. It will hold all configuration and kickoff point to start nodics",
+    "description": "Nodics applicaion module. It will hold all configuration and profileServer point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "server",
-        "environment",
-        "kickoff"
+        "profileServer"
     ],
-    "author": "Nodics Framework",
+    "author": "Himkar Dwivedi",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,
