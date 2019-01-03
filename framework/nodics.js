@@ -138,6 +138,7 @@ module.exports = {
             SYSTEM.startServers().then(success => {
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');
+                SYSTEM.finalizeApplication();
                 SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
                 this.initTestRuner();
             }).catch(error => {

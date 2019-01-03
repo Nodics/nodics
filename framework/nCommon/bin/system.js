@@ -157,6 +157,13 @@ module.exports = {
         SYSTEM.initModule();
     },
 
+    finalizeApplication: function () {
+        SYSTEM.finalizeDaos();
+        SYSTEM.finalizeServices();
+        SYSTEM.finalizeFacades();
+        SYSTEM.finalizeControllers();
+    },
+
     loadModule: function (moduleName) {
         SYSTEM.LOG.debug('Staring process for module : ', moduleName);
         let module = NODICS.getRawModule(moduleName);
@@ -259,9 +266,9 @@ module.exports = {
     initDaos: function () {
         SYSTEM.LOG.debug('Initializing DAOs');
         _.each(DAO, (daoClass, daoName) => {
-            if (daoClass.afterInitialize &&
-                typeof daoClass.afterInitialize === 'function') {
-                daoClass.afterInitialize();
+            if (daoClass.postInitialize &&
+                typeof daoClass.postInitialize === 'function') {
+                daoClass.postInitialize();
             }
         });
     },
@@ -269,9 +276,9 @@ module.exports = {
     initServices: function () {
         SYSTEM.LOG.debug('Initializing services');
         _.each(SERVICE, (serviceClass, serviceName) => {
-            if (serviceClass.afterInitialize &&
-                typeof serviceClass.afterInitialize === 'function') {
-                serviceClass.afterInitialize();
+            if (serviceClass.postInitialize &&
+                typeof serviceClass.postInitialize === 'function') {
+                serviceClass.postInitialize();
             }
         });
     },
@@ -279,9 +286,9 @@ module.exports = {
     initFacades: function () {
         SYSTEM.LOG.debug('Initializing facades');
         _.each(FACADE, (facadeClass, facadeName) => {
-            if (facadeClass.afterInitialize &&
-                typeof facadeClass.afterInitialize === 'function') {
-                facadeClass.afterInitialize();
+            if (facadeClass.postInitialize &&
+                typeof facadeClass.postInitialize === 'function') {
+                facadeClass.postInitialize();
             }
         });
     },
@@ -289,9 +296,49 @@ module.exports = {
     initControllers: function () {
         SYSTEM.LOG.debug('Initializing controllers');
         _.each(CONTROLLER, (controllerClass, controllerName) => {
-            if (controllerClass.afterInitialize &&
-                typeof controllerClass.afterInitialize === 'function') {
-                controllerClass.afterInitialize();
+            if (controllerClass.postInitialize &&
+                typeof controllerClass.postInitialize === 'function') {
+                controllerClass.postInitialize();
+            }
+        });
+    },
+
+    finalizeDaos: function () {
+        SYSTEM.LOG.debug('Initializing DAOs');
+        _.each(DAO, (daoClass, daoName) => {
+            if (daoClass.postApp &&
+                typeof daoClass.postApp === 'function') {
+                daoClass.postApp();
+            }
+        });
+    },
+
+    finalizeServices: function () {
+        SYSTEM.LOG.debug('Initializing services');
+        _.each(SERVICE, (serviceClass, serviceName) => {
+            if (serviceClass.postApp &&
+                typeof serviceClass.postApp === 'function') {
+                serviceClass.postApp();
+            }
+        });
+    },
+
+    finalizeFacades: function () {
+        SYSTEM.LOG.debug('Initializing facades');
+        _.each(FACADE, (facadeClass, facadeName) => {
+            if (facadeClass.postApp &&
+                typeof facadeClass.postApp === 'function') {
+                facadeClass.postApp();
+            }
+        });
+    },
+
+    finalizeControllers: function () {
+        SYSTEM.LOG.debug('Initializing controllers');
+        _.each(CONTROLLER, (controllerClass, controllerName) => {
+            if (controllerClass.postApp &&
+                typeof controllerClass.postApp === 'function') {
+                controllerClass.postApp();
             }
         });
     },

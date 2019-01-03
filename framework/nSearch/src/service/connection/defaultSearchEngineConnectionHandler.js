@@ -7,25 +7,16 @@
     You shall not disclose such Confidential Information and shall use it only in accordance with the 
     terms of the license agreement you entered into with Nodics.
 
- */
+*/
 
 module.exports = {
-
-    statusMap: {},
-
     postInitialize: function () {
-        SYSTEM.loadFiles('/src/utils/statusDefinitions.js', this.statusMap);
+
     },
 
-    updateStatus: function (code, definition) {
-        this.statusMap[code] = definition;
+    postApp: function () {
+
     },
 
-    get: function (code) {
-        if (!UTILS.isBlank(this.statusMap[code])) {
-            return this.statusMap[code];
-        } else {
-            throw new Error('Invalid status code');
-        }
-    },
+
 };

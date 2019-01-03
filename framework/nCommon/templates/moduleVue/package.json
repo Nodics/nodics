@@ -4,8 +4,7 @@
     "index": "index",
     "publish": true,
     "web": true,
-    "description": "Nodics applicaion module. It will hold all configuration and storefront point to start nodics",
-    "homepage": "http://www.nodics.com/",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to customApplication",
     "keywords": [
         "admin"
     ],

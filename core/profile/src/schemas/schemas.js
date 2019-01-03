@@ -49,6 +49,13 @@ module.exports = {
                 enabled: true,
                 ttl: 100
             },
+            refSchema: {
+                contacts: {
+                    schemaName: "contact",
+                    type: 'many',
+                    propertyName: 'code'
+                }
+            },
             definition: {
                 enterpriseCode: {
                     required: false
@@ -104,6 +111,11 @@ module.exports = {
                     default: true,
                     description: 'Flag to check if current address is active'
                 },
+                contacts: {
+                    type: 'array',
+                    required: false,
+                    description: 'All associated contacts with this enterprise'
+                }
             }
         },
 

@@ -10,22 +10,12 @@
  */
 
 module.exports = {
-
-    statusMap: {},
-
-    postInitialize: function () {
-        SYSTEM.loadFiles('/src/utils/statusDefinitions.js', this.statusMap);
-    },
-
-    updateStatus: function (code, definition) {
-        this.statusMap[code] = definition;
-    },
-
-    get: function (code) {
-        if (!UTILS.isBlank(this.statusMap[code])) {
-            return this.statusMap[code];
+    getSearchConfiguration: function (moduleName, tenant) {
+        let properties = CONFIG.get('search', tenant);
+        if (properties[moduleName]) {
+            return properties[moduleName];
         } else {
-            throw new Error('Invalid status code');
+            return properties.default;
         }
-    },
+    }
 };

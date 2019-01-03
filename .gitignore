@@ -29,3 +29,6 @@ yarn-error.log*
 **/gen/**
 **/web/lib/**
 **/tmp/**
+**/kickoff/custom/**
+
+**/rrldataengine/**

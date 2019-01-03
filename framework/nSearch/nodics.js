@@ -10,23 +10,7 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        framework: [
-            'framework',
-            'nconfig',
-            'ncommon',
-            'ndatabase',
-            'ndao',
-            'nservice',
-            'npipeline',
-            'nevent',
-            'nfacade',
-            'ncontroller',
-            'nrouter',
-            'ndata',
-            'ntest',
-            'system',
-            'nSearch'
-        ]
+    init: function(options) {
+        // 
     }
 };
