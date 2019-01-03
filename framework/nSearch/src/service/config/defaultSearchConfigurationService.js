@@ -10,12 +10,10 @@
  */
 
 module.exports = {
-    getSearchConfiguration: function (moduleName, tenant) {
-        let properties = CONFIG.get('search', tenant);
-        if (properties[moduleName]) {
-            return properties[moduleName];
-        } else {
-            return properties.default;
-        }
+    getSearchConfiguration: function (moduleName, tntCode) {
+        let searchConfig = CONFIG.get('search', tntCode);
+        let connOptions = searchConfig[moduleName] ? searchConfig[moduleName] : searchConfig.default;
+
+        return connOptions[connOptions.options.engine];
     }
 };

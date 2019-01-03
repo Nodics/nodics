@@ -28,6 +28,7 @@ module.exports = function () {
     let _nodics = {
         modules: {},
         dbs: {},
+        search: {},
         validators: {},
         interceptors: {}
     };
@@ -333,6 +334,26 @@ module.exports = function () {
         return true;
     };
 
+    this.addTenantSearchEngine = function (moduleName, tenant, searchEngine) {
+        if (!moduleName) {
+            moduleName = 'default';
+        }
+        if (!_nodics.search[moduleName]) {
+            _nodics.search[moduleName] = {};
+        }
+        _nodics.search[moduleName][tenant] = searchEngine;
+    };
+
+    this.removeTenantSearchEngine = function (moduleName, tenant) {
+        if (!this.isModuleActive(moduleName)) {
+            throw new Error('Invalid module name: ' + moduleName);
+        }
+        if (_nodics.search[moduleName] && _nodics.search[moduleName][tenant]) {
+            delete _nodics.search[moduleName][tenant];
+        }
+        return true;
+    };
+
     this.setValidators = function (validators) {
         _nodics.validators = validators;
     };
@@ -419,6 +440,7 @@ module.exports = function () {
             throw new Error('Invalid tenant id...');
         }
     };
+
     this.getDatabase = function (moduleName, tenant) {
         if (tenant && !UTILS.isBlank(tenant)) {
             let database = {};
@@ -439,6 +461,29 @@ module.exports = function () {
             return properties[moduleName];
         } else {
             return properties.default;
+        }
+    };
+
+    this.getModuleSearchEngine = function (moduleName, tenant) {
+        if (tenant && !UTILS.isBlank(tenant)) {
+            let searchEngine = _nodics.search[moduleName];
+            return searchEngine ? searchEngine[tenant] : searchEngine;
+        } else {
+            throw new Error('Invalid tenant id...');
+        }
+    };
+
+    this.getSearchEngine = function (moduleName, tenant) {
+        if (tenant && !UTILS.isBlank(tenant)) {
+            let searchEngine = {};
+            if (moduleName && _nodics.search[moduleName]) {
+                searchEngine = _nodics.search[moduleName];
+            } else {
+                searchEngine = _nodics.search.default;
+            }
+            return searchEngine[tenant];
+        } else {
+            throw new Error('Invalid tenant id...' + tenant);
         }
     };
 

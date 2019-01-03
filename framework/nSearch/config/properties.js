@@ -12,6 +12,8 @@
 module.exports = {
 
     search: {
+        requestTimeout: 1000,
+
         default: {
             options: {
                 enabled: false, //if false, system will not configure any search related functionalities
@@ -20,7 +22,8 @@ module.exports = {
             },
             elastic: {
                 hosts: ['http://localhost:9200'],
-                log: 'trace'
+                log: 'trace',
+                deadTimeout: 1000
             }
         }
     }

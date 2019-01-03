@@ -264,7 +264,6 @@ module.exports = {
     },
 
     initDaos: function () {
-        SYSTEM.LOG.debug('Initializing DAOs');
         _.each(DAO, (daoClass, daoName) => {
             if (daoClass.postInitialize &&
                 typeof daoClass.postInitialize === 'function') {
@@ -274,7 +273,6 @@ module.exports = {
     },
 
     initServices: function () {
-        SYSTEM.LOG.debug('Initializing services');
         _.each(SERVICE, (serviceClass, serviceName) => {
             if (serviceClass.postInitialize &&
                 typeof serviceClass.postInitialize === 'function') {
@@ -284,7 +282,6 @@ module.exports = {
     },
 
     initFacades: function () {
-        SYSTEM.LOG.debug('Initializing facades');
         _.each(FACADE, (facadeClass, facadeName) => {
             if (facadeClass.postInitialize &&
                 typeof facadeClass.postInitialize === 'function') {
@@ -294,7 +291,6 @@ module.exports = {
     },
 
     initControllers: function () {
-        SYSTEM.LOG.debug('Initializing controllers');
         _.each(CONTROLLER, (controllerClass, controllerName) => {
             if (controllerClass.postInitialize &&
                 typeof controllerClass.postInitialize === 'function') {
@@ -304,7 +300,6 @@ module.exports = {
     },
 
     finalizeDaos: function () {
-        SYSTEM.LOG.debug('Initializing DAOs');
         _.each(DAO, (daoClass, daoName) => {
             if (daoClass.postApp &&
                 typeof daoClass.postApp === 'function') {
@@ -314,7 +309,6 @@ module.exports = {
     },
 
     finalizeServices: function () {
-        SYSTEM.LOG.debug('Initializing services');
         _.each(SERVICE, (serviceClass, serviceName) => {
             if (serviceClass.postApp &&
                 typeof serviceClass.postApp === 'function') {
@@ -324,7 +318,6 @@ module.exports = {
     },
 
     finalizeFacades: function () {
-        SYSTEM.LOG.debug('Initializing facades');
         _.each(FACADE, (facadeClass, facadeName) => {
             if (facadeClass.postApp &&
                 typeof facadeClass.postApp === 'function') {
@@ -334,7 +327,6 @@ module.exports = {
     },
 
     finalizeControllers: function () {
-        SYSTEM.LOG.debug('Initializing controllers');
         _.each(CONTROLLER, (controllerClass, controllerName) => {
             if (controllerClass.postApp &&
                 typeof controllerClass.postApp === 'function') {

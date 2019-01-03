@@ -10,5 +10,22 @@
  */
 
 module.exports = function () {
+    let _options = {};
+    let _connection = {};
 
+    this.setOptions = function (options) {
+        _options = options;
+    };
+
+    this.getOptions = function () {
+        return _options;
+    };
+
+    this.setConnection = function (connection) {
+        _connection = connection;
+    };
+
+    this.getConnection = function () {
+        return _connection;
+    };
 };

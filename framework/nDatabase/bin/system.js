@@ -34,9 +34,10 @@ module.exports = {
         SYSTEM.LOG.debug('Starting interceptors loading process');
         NODICS.setInterceptors(SYSTEM.loadFiles('/src/schemas/interceptors.js'));
     },
-    prepareDatabaseList: function () {
+
+    getDatabaseActiveModules: function () {
         let modules = NODICS.getModules();
-        let dbModules = ['default'];
+        let dbModules = [];
         _.each(modules, (value, moduleName) => {
             if (CONFIG.get('database')[moduleName]) {
                 dbModules.push(moduleName);
@@ -46,10 +47,10 @@ module.exports = {
     },
 
     createConnection: function (dbType, dbConfig, tntCode, type) {
-        if (dbType === 'mysql') {
-
-        } else {
+        if (dbType === 'mongodb') {
             return this.createMongoDBConnection(dbConfig, tntCode, type);
+        } else {
+            return Promise.reject('Given database configuration not supported, Please your configuration');
         }
     },
 
@@ -145,7 +146,7 @@ module.exports = {
 
     createTenantDatabase: function (tntCode) {
         return new Promise((resolve, reject) => {
-            let dbModules = SYSTEM.prepareDatabaseList();
+            let dbModules = SYSTEM.getDatabaseActiveModules();
             dbModules.splice(dbModules.indexOf('default'), 1);
             SYSTEM.createDatabase('default', tntCode).then(success => {
                 let allModules = [];
@@ -690,14 +691,14 @@ module.exports = {
                         SYSTEM.LOG.error('Could not found any active enterprises currently');
                         reject({
                             success: false,
-                            code: 'ERR_CON_00000',
+                            code: 'ERR_DBS_00000',
                             error: error
                         });
                     }
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: 'ERR_CON_00000',
+                        code: 'ERR_DBS_00000',
                         error: error
                     });
                 });
@@ -718,7 +719,7 @@ module.exports = {
                         if (error) {
                             reject({
                                 success: false,
-                                code: 'ERR_CON_00001',
+                                code: 'ERR_DBS_00001',
                                 error: error
                             });
                         } else {
@@ -728,7 +729,7 @@ module.exports = {
                 } catch (error) {
                     reject({
                         success: false,
-                        code: 'ERR_CON_00000',
+                        code: 'ERR_DBS_00000',
                         error: error
                     });
                 }
@@ -777,7 +778,7 @@ module.exports = {
                 });
             }).catch(error => {
                 reject(error);
-                if (error.code && error.code === 'ERR_CON_00001') {
+                if (error.code && error.code === 'ERR_DBS_00001') {
                     SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants');
                     SYSTEM.LOG.error('Please check if PROFILE module is running and have proper PORT configured');
                     setTimeout(() => {
@@ -796,7 +797,7 @@ module.exports = {
                 SYSTEM.LOG.error('Failed while building tenant enviroment', error);
             });
         }).catch(error => {
-            if (error.code && error.code === 'ERR_CON_00001') {
+            if (error.code && error.code === 'ERR_DBS_00001') {
                 SYSTEM.LOG.error('While connecting tenant server to fetch all active tenants');
                 SYSTEM.LOG.error('Please check if PROFILE module is running and have proper PORT configured');
                 setTimeout(() => {
