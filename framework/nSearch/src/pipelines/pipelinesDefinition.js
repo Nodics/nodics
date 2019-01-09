@@ -11,4 +11,65 @@
 
 module.exports = {
 
+    modelsFindInitializerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.validateRequest',
+                success: 'buildOptions'
+            },
+            buildOptions: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.buildOptions',
+                success: 'lookupCache'
+            },
+            lookupCache: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.lookupCache',
+                success: 'applyPreInterceptors'
+            },
+            applyPreInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.applyPreInterceptors',
+                success: 'executeQuery'
+            },
+            executeQuery: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.executeQuery',
+                success: 'populateSubModels'
+            },
+            populateSubModels: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.populateSubModels',
+                success: 'populateVirtualProperties'
+            },
+            populateVirtualProperties: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.populateVirtualProperties',
+                success: 'applyPostInterceptors'
+            },
+            applyPostInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.applyPostInterceptors',
+                success: 'updateCache'
+            },
+            updateCache: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.updateCache',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultModelsFindInitializerService.handleErrorEnd'
+            }
+        }
+    },
 };

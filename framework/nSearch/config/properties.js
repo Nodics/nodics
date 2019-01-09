@@ -13,16 +13,18 @@ module.exports = {
 
     search: {
         requestTimeout: 1000,
-
+        defaultPropertyWeight: 0,
+        defaultPropertySequence: 0,
+        reloadConfiguration: true,
         default: {
             options: {
-                enabled: false, //if false, system will not configure any search related functionalities
-                fallback: false, // If true and search query return blank result, same query will be performed to Database
+                enabled: true, //if false, system will not configure any search related functionalities
+                fallback: true, // If true and search query return blank result, same query will be performed to Database
                 engine: 'elastic', //Engine could be like elastic, solr, googleCommerce, endeca
             },
             elastic: {
                 hosts: ['http://localhost:9200'],
-                log: 'trace',
+                log: 'info',
                 deadTimeout: 1000
             }
         }

@@ -66,6 +66,7 @@ module.exports = {
     },
 
     registerRouters: function (app, moduleObject, moduleName, routers) {
+        let urlPrefix = moduleObject.metaData.prefix || moduleName;
         _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
             if (schemaObject.service && schemaObject.router) {
                 _.each(routers.default, function (group, groupName) {
@@ -76,7 +77,7 @@ module.exports = {
                                 definition.method = definition.method.toLowerCase();
                                 definition.key = definition.key.replaceAll('schemaName', schemaName.toLowerCase());
                                 definition.controller = definition.controller.replaceAll('ctrlName', schemaName.toUpperCaseEachWord() + 'Controller');
-                                definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + definition.key;
+                                definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + urlPrefix + definition.key;
                                 definition.moduleName = moduleName;
                                 definition.prefix = schemaName + '_' + routerName;
                                 definition.routerName = moduleName + '_' + schemaName + '_' + routerName;
@@ -105,7 +106,7 @@ module.exports = {
                         if (routerName !== 'options') {
                             let definition = _.merge({}, routerDef);
                             definition.method = definition.method.toLowerCase();
-                            definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + definition.key;
+                            definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + urlPrefix + definition.key;
                             definition.moduleName = moduleName;
                             definition.prefix = routerName;
                             definition.routerName = moduleName + '_' + routerName;
@@ -126,7 +127,7 @@ module.exports = {
                         if (routerName !== 'options') {
                             let definition = _.merge({}, routerDef);
                             definition.method = definition.method.toLowerCase();
-                            definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + moduleName + definition.key;
+                            definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + urlPrefix + definition.key;
                             definition.moduleName = moduleName;
                             definition.prefix = routerName;
                             definition.routerName = moduleName + '_' + routerName;

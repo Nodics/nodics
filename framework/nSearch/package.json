@@ -1,7 +1,8 @@
 {
     "name": "nSearch",
+    "prefix": "search",
     "index": "14",
-    "publish": false,
+    "publish": true,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to Search",
     "homepage": "http://www.nodics.com/",
     "keywords": [

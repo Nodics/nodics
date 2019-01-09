@@ -29,12 +29,18 @@ module.exports = {
                 active: {
                     type: 'bool',
                     required: true,
-                    description: 'Flag to check if tenant is still active'
+                    description: 'Flag to check if tenant is still active',
+                    searchOptions: {
+                        enabled: true, // default is false
+                    }
                 },
                 properties: {
                     type: 'object',
                     required: false,
-                    description: 'JSON formate of properties defined for this tenant'
+                    description: 'JSON formate of properties defined for this tenant',
+                    searchOptions: {
+                        enabled: true, // default is false
+                    }
                 }
             }
         },
@@ -168,12 +174,20 @@ module.exports = {
                 ttl: 100
             },
             router: true,
-            tenants: ['default'],
+            tenants: ['default'], // if not null, only tenant will be used
+            search: {
+                enabled: true,
+                indexName: 'enterprise', // if null, moduleName will be taken
+                typeName: 'enterprise', // if null, schemaName will be taken
+                idPropertyName: 'code', // if null, code will be taken
+            },
             refSchema: {
                 tenant: {
                     schemaName: "tenant",
                     type: 'one',
-                    propertyName: 'code'
+                    propertyName: 'code',
+                    searchEnabled: true
+
                 },
                 superEnterprise: {
                     schemaName: "enterprise",
@@ -204,27 +218,39 @@ module.exports = {
             },
             definition: {
                 enterpriseCode: {
-                    required: false
+                    required: false,
                 },
                 name: {
                     type: 'string',
                     required: true,
-                    description: 'Name of enterprise'
+                    description: 'Name of enterprise',
+                    searchOptions: {
+                        enabled: true, // default is false
+                    }
                 },
                 tenant: {
                     type: 'string',
                     required: true,
-                    description: 'Required Code of associated tenant'
+                    description: 'Required Code of associated tenant',
+                    searchOptions: {
+                        enabled: true, // default is false
+                    }
                 },
                 active: {
                     type: 'bool',
                     required: true,
-                    description: 'Flag to check if tenant is still active'
+                    description: 'Flag to check if tenant is still active',
+                    searchOptions: {
+                        enabled: true, // default is false
+                    }
                 },
                 superEnterprise: {
                     type: 'objectId',
                     required: false,
-                    description: 'Parent enterprise code if any'
+                    description: 'Parent enterprise code if any',
+                    searchOptions: {
+                        enabled: true, // default is false
+                    }
                 },
                 subEnterprises: {
                     type: 'array',
@@ -234,12 +260,18 @@ module.exports = {
                 addresses: {
                     type: 'array',
                     required: false,
-                    description: 'All associated addresses with this enterprise'
+                    description: 'All associated addresses with this enterprise',
+                    searchOptions: {
+                        enabled: true, // default is false
+                    }
                 },
                 contacts: {
                     type: 'array',
                     required: false,
-                    description: 'All associated contacts with this enterprise'
+                    description: 'All associated contacts with this enterprise',
+                    searchOptions: {
+                        enabled: true, // default is false
+                    }
                 }
             }
         },

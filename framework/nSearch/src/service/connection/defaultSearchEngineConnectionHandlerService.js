@@ -10,7 +10,7 @@
 */
 
 const _ = require('lodash');
-
+const util = require('util');
 let elasticsearch = require('elasticsearch');
 
 module.exports = {
@@ -45,9 +45,7 @@ module.exports = {
             try {
                 if (tntCodes && tntCodes.length > 0) {
                     let tntCode = tntCodes.shift();
-                    console.log('=> Tenant code: ', tntCode);
                     let modules = _self.getSearchActiveModules();
-                    console.log(' => Modules: ', modules);
                     _self.createModulesSearchEngines(modules, tntCode).then(success => {
                         _self.createTenantSearchEngines(tntCodes).then(success => {
                             resolve(true);
@@ -78,7 +76,6 @@ module.exports = {
             try {
                 if (modules && modules.length > 0) {
                     let moduleName = modules.shift();
-                    console.log('  ==> Module name', moduleName);
                     _self.createModuleSearchEngines(moduleName, tntCode).then(success => {
                         _self.createModulesSearchEngines(modules, tntCode).then(success => {
                             resolve(true);
@@ -108,27 +105,37 @@ module.exports = {
             try {
                 let searchConfig = CONFIG.get('search');
                 let connectionOptions = SERVICE.DefaultSearchConfigurationService.getSearchConfiguration(moduleName, tntCode);
-                let client = new elasticsearch.Client(connectionOptions);
-                client.ping({
-                    requestTimeout: searchConfig.requestTimeout
-                }, function (error) {
-                    if (error) {
-                        reject({
-                            success: false,
-                            code: 'ERR_SRCH_00001'
-                        });
-                    } else {
-                        let searchEngine = new CLASSES.SearchEngine();
-                        searchEngine.setConnection(client);
-                        searchEngine.setOptions(connectionOptions);
-                        NODICS.addTenantSearchEngine(moduleName, tntCode, searchEngine);
-                        resolve({
-                            success: true,
-                            code: 'SUC_SRCH_00000'
-                        });
-                    }
-                });
+                if (connectionOptions) {
+                    let client = new elasticsearch.Client(connectionOptions);
+                    client.ping({
+                        requestTimeout: searchConfig.requestTimeout
+                    }, function (error) {
+                        if (error) {
+                            reject({
+                                success: false,
+                                code: 'ERR_SRCH_00001'
+                            });
+                        } else {
+                            let searchEngine = new CLASSES.SearchEngine();
+                            searchEngine.setConnection(client);
+                            searchEngine.setOptions(connectionOptions);
+                            SERVICE.DefaultSearchConfigurationService.addSearchEngine(moduleName, tntCode, searchEngine);
+                            resolve({
+                                success: true,
+                                code: 'SUC_SRCH_00000'
+                            });
+                        }
+                    });
+                } else {
+                    this.LOG.warn('Search is not enabled for module: ' + moduleName);
+                    resolve({
+                        success: true,
+                        code: 'SUC_SRCH_00000'
+                    });
+                }
             } catch (err) {
+                this.LOG.error('Facing issue to connect with search cluster');
+                this.LOG.error(err);
                 reject({
                     success: false,
                     code: 'ERR_SRCH_00000',
@@ -137,6 +144,4 @@ module.exports = {
             }
         });
     }
-
-
 };

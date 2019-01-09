@@ -28,7 +28,6 @@ module.exports = function () {
     let _nodics = {
         modules: {},
         dbs: {},
-        search: {},
         validators: {},
         interceptors: {}
     };
@@ -188,7 +187,7 @@ module.exports = function () {
     };
 
     this.getTenants = function () {
-        return _tenants;
+        return [].concat(_tenants);
     };
 
     this.removeTenant = function (tntCode) {
@@ -293,11 +292,10 @@ module.exports = function () {
             process.exit(1);
         }
     };
+
     this.getActiveChannel = function () {
         return _activeChannel;
     };
-
-
 
     this.setDatabases = function (databases) {
         _nodics.dbs = databases;
@@ -330,26 +328,6 @@ module.exports = function () {
         }
         if (_nodics.dbs[moduleName] && _nodics.dbs[moduleName][tenant]) {
             delete _nodics.dbs[moduleName][tenant];
-        }
-        return true;
-    };
-
-    this.addTenantSearchEngine = function (moduleName, tenant, searchEngine) {
-        if (!moduleName) {
-            moduleName = 'default';
-        }
-        if (!_nodics.search[moduleName]) {
-            _nodics.search[moduleName] = {};
-        }
-        _nodics.search[moduleName][tenant] = searchEngine;
-    };
-
-    this.removeTenantSearchEngine = function (moduleName, tenant) {
-        if (!this.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
-        }
-        if (_nodics.search[moduleName] && _nodics.search[moduleName][tenant]) {
-            delete _nodics.search[moduleName][tenant];
         }
         return true;
     };
@@ -464,29 +442,6 @@ module.exports = function () {
         }
     };
 
-    this.getModuleSearchEngine = function (moduleName, tenant) {
-        if (tenant && !UTILS.isBlank(tenant)) {
-            let searchEngine = _nodics.search[moduleName];
-            return searchEngine ? searchEngine[tenant] : searchEngine;
-        } else {
-            throw new Error('Invalid tenant id...');
-        }
-    };
-
-    this.getSearchEngine = function (moduleName, tenant) {
-        if (tenant && !UTILS.isBlank(tenant)) {
-            let searchEngine = {};
-            if (moduleName && _nodics.search[moduleName]) {
-                searchEngine = _nodics.search[moduleName];
-            } else {
-                searchEngine = _nodics.search.default;
-            }
-            return searchEngine[tenant];
-        } else {
-            throw new Error('Invalid tenant id...' + tenant);
-        }
-    };
-
     this.addRouters = function (routers, moduleName) {
         let moduleObject = this.getModule(moduleName);
         if (UTILS.isBlank(moduleObject)) {
@@ -497,6 +452,7 @@ module.exports = function () {
     };
 
     this.addRouter = function (prefix, router, moduleName) {
+        console.log(router.url);
         let moduleObject = this.getModule(moduleName);
         if (UTILS.isBlank(moduleObject)) {
             throw new Error('Invalid module name: ' + moduleName);

@@ -140,6 +140,10 @@ module.exports = {
                 NODICS.setServerState('started');
                 SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
                 SYSTEM.finalizeApplication();
+                /*Object.keys(SERVICE).forEach(name => {
+                    console.log('  --> ', name);
+                });*/
+                console.log(NODICS.getModels('profile', 'default').EnterpriseModel);
                 this.initTestRuner();
             }).catch(error => {
                 SYSTEM.LOG.error('Nodics server error : ', error);

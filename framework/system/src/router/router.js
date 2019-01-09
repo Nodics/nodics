@@ -124,7 +124,6 @@ module.exports = {
         },
 
 
-
         /* ------------------------------- */
         testRunner: {
             runAllUTest: {

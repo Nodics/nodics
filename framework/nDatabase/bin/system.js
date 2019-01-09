@@ -168,11 +168,9 @@ module.exports = {
         });
     },
 
-    removeTenantDatabase: function (tntCode) {
+    removeTenantDatabase: function (moduleName, tntCode) {
         return new Promise((resolve, reject) => {
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                NODICS.removeTenantDatabase(moduleName, tntCode);
-            });
+            NODICS.removeTenantDatabase(moduleName, tntCode);
             resolve(true);
         });
     },
@@ -570,15 +568,14 @@ module.exports = {
         });
     },
 
-    removeModelsForTenant: function (tntCode) {
+    removeModelsForTenant: function (moduleName, tntCode) {
         return new Promise((resolve, reject) => {
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                if (moduleObject.models && moduleObject.models[tntCode]) {
-                    SYSTEM.LOG.debug('Deleting all models for tenant: ' + tenant + ' from module: ' + moduleName);
-                    delete moduleObject.models[tntCode];
-                }
-                resolve(true);
-            });
+            let moduleObject = NODICS.getModule(moduleName);
+            if (moduleObject.models && moduleObject.models[tntCode]) {
+                SYSTEM.LOG.debug('Deleting all models for tenant: ' + tenant + ' from module: ' + moduleName);
+                delete moduleObject.models[tntCode];
+            }
+            resolve(true);
         });
     },
 
@@ -816,6 +813,14 @@ module.exports = {
                     let tntConfig = _.merge({}, CONFIG.getProperties());
                     tntConfig = _.merge(tntConfig, enterprise.tenant.properties);
                     CONFIG.setProperties(tntConfig, enterprise.tenant.code);
+                    if (SERVICE.DefaultSearchEngineConnectionHandlerService && SERVICE.DefaultSearchEngineConnectionHandlerService.createTenantSearchEngines) {
+                        SERVICE.DefaultSearchEngineConnectionHandlerService.createTenantSearchEngines([enterprise.tenant.code]).then(success => {
+                            this.LOG.debug('Search connections has been established successfully');
+                        }).catch(error => {
+                            this.LOG.error('Failed establishing connections with search engine');
+                            this.LOG.error(error);
+                        });
+                    }
                     SYSTEM.createTenantDatabase(enterprise.tenant.code).then(success => {
                         SYSTEM.buildModelsForTenant(enterprise.tenant.code).then(success => {
                             if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
@@ -911,20 +916,23 @@ module.exports = {
             if (tenants && tenants.length > 0) {
                 tenants.forEach(tenant => {
                     NODICS.removeTenant(tenant);
-                    SYSTEM.removeTenantDatabase(tenant).then(success => {
-                        SYSTEM.LOG.debug('Successfully removed database connections for tenant: ' + tenant);
-                        SYSTEM.removeModelsForTenant(tenant).then(success => {
-                            SYSTEM.LOG.debug('Successfully removed models for tenant: ' + tenant);
-                            resolve({
-                                success: true,
-                                code: 'SUC_SYS_00000',
-                                msg: 'Tenant successfully deactivated'
+                    _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                        SERVICE.DefaultSearchConfigurationService.removeSearchEngine(moduleName, tenant);
+                        SYSTEM.removeTenantDatabase(moduleName, tenant).then(success => {
+                            SYSTEM.LOG.debug('Successfully removed database connections for tenant: ' + tenant);
+                            SYSTEM.removeModelsForTenant(moduleName, tenant).then(success => {
+                                SYSTEM.LOG.debug('Successfully removed models for tenant: ' + tenant);
+                                resolve({
+                                    success: true,
+                                    code: 'SUC_SYS_00000',
+                                    msg: 'Tenant successfully deactivated'
+                                });
+                            }).catch(error => {
+                                reject(error);
                             });
                         }).catch(error => {
                             reject(error);
                         });
-                    }).catch(error => {
-                        reject(error);
                     });
                 });
             }
