@@ -15,7 +15,7 @@ module.exports = {
         requestTimeout: 1000,
         defaultPropertyWeight: 0,
         defaultPropertySequence: 0,
-        reloadConfiguration: true,
+        reloadSearchSchema: true,
         default: {
             options: {
                 enabled: true, //if false, system will not configure any search related functionalities

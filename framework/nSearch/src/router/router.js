@@ -10,5 +10,41 @@
  */
 
 module.exports = {
+    nSearch: {
+        indexing: {
+            fullIndexing: {
+                secured: true,
+                key: '/index/full/:indexName/:indexType',
+                method: 'POST',
+                controller: 'DefaultSearchIndexingController',
+                operation: 'fullIndex',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/search/index/full/:indexName/:indexType',
+                    body: {
+                        reloadSearchSchema: 'true / false'
+                    }
+                }
+            },
 
+            incrementalIndexing: {
+                secured: true,
+                key: '/index/incremental/:indexName/:indexType',
+                method: 'POST',
+                controller: 'DefaultSearchIndexingController',
+                operation: 'fullIndex',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/search/index/full/:indexName/:indexType',
+                    body: {
+                        reloadSearchSchema: 'true / false'
+                    }
+                }
+            }
+        }
+    }
 };

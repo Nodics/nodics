@@ -11,21 +11,15 @@
 
 module.exports = {
 
-    find: function (request) {
-        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        request.moduleName = request.moduleName || request.collection.moduleName;
-        return SERVICE.DefaultPipelineService.start('modelsFindInitializerPipeline', request, {});
-    },
-
-    fullIndex: function (request) {
+    fullIndex: function () {
         return new Promise((resolve, reject) => {
             resolve('Successfully performed full indexing');
         });
     },
 
-    incrementalIndex: function (request) {
+    incrementalIndex: function () {
         return new Promise((resolve, reject) => {
-            resolve('Successfully performed full indexing');
+            resolve('Successfully performed incremental indexing');
         });
     }
 };

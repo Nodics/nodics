@@ -23,6 +23,30 @@ module.exports = {
                     }
                 });
             };
+        },
+
+        defineDefaultFullIndex: function (collection, rawSchema) {
+            collection.fullIndex = function (input) {
+                return new Promise((resolve, reject) => {
+                    try {
+                        resolve('This sample response from full indexing');
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
+        defineDefaultIncrementalIndex: function (collection, rawSchema) {
+            collection.incrementalIndex = function (input) {
+                return new Promise((resolve, reject) => {
+                    try {
+                        resolve('This sample response from incremental indexing');
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
         }
     }
 };
