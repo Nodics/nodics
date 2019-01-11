@@ -73,6 +73,11 @@ module.exports = {
                     required: true,
                     description: 'Required name of property which can be used as unique key'
                 },
+                moduleNane: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required moduleNane name'
+                },
                 preProcessor: {
                     type: 'string',
                     required: false,

@@ -9,8 +9,25 @@
 
  */
 
+
+
 module.exports = {
-    init: function(options) {
+    init: function (options) {
         // 
+    },
+
+    loadSearchConfig: function () {
+        SYSTEM.LOG.info('Starting search configuration process');
+        return new Promise((resolve, reject) => {
+            SYSTEM.createSearchConnections().then(success => {
+                SYSTEM.prepareSearchSchema().then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
     }
 };

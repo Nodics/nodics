@@ -21,7 +21,7 @@ module.exports = {
             SYSTEM.createTenantDatabase('default').then(success => {
                 try {
                     if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                        let db = NODICS.getDatabase(CONFIG.get('profileModuleName'), 'default');
+                        let db = NODICS.getTenantDatabase(CONFIG.get('profileModuleName'), 'default');
                         if (db && db.master) {
                             SYSTEM.LOG.info('Checking if initialization required');
                             if (!db.master.getCollectionList() || db.master.getCollectionList().length <= 0) {

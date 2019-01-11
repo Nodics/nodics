@@ -118,7 +118,7 @@ module.exports = {
                             reject('Could not connect test database : ' + error);
                         });
                     } else {
-                        let testDB = NODICS.getDatabase('default', tntCode).test;
+                        let testDB = NODICS.getTenantDatabase('default', tntCode).test;
                         if (!testDB) {
                             SYSTEM.LOG.error('Default test database configuration not found. Please velidate database configuration');
                             process.exit(CONFIG.get('errorExitCode'));
@@ -524,7 +524,7 @@ module.exports = {
                     tntCode: tntCode,
                     moduleName: moduleName,
                     moduleObject: moduleObject,
-                    dataBase: NODICS.getDatabase(moduleName, tntCode),
+                    dataBase: NODICS.getTenantDatabase(moduleName, tntCode),
                     schemas: Object.keys(moduleObject.rawSchema),
 
                 };
@@ -813,14 +813,12 @@ module.exports = {
                     let tntConfig = _.merge({}, CONFIG.getProperties());
                     tntConfig = _.merge(tntConfig, enterprise.tenant.properties);
                     CONFIG.setProperties(tntConfig, enterprise.tenant.code);
-                    if (SERVICE.DefaultSearchEngineConnectionHandlerService && SERVICE.DefaultSearchEngineConnectionHandlerService.createTenantSearchEngines) {
-                        SERVICE.DefaultSearchEngineConnectionHandlerService.createTenantSearchEngines([enterprise.tenant.code]).then(success => {
-                            this.LOG.debug('Search connections has been established successfully');
-                        }).catch(error => {
-                            this.LOG.error('Failed establishing connections with search engine');
-                            this.LOG.error(error);
-                        });
-                    }
+                    SYSTEM.createTenantSearchEngines([enterprise.tenant.code]).then(success => {
+                        this.LOG.debug('Search connections has been established successfully');
+                    }).catch(error => {
+                        this.LOG.error('Failed establishing connections with search engine');
+                        this.LOG.error(error);
+                    });
                     SYSTEM.createTenantDatabase(enterprise.tenant.code).then(success => {
                         SYSTEM.buildModelsForTenant(enterprise.tenant.code).then(success => {
                             if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
@@ -917,7 +915,8 @@ module.exports = {
                 tenants.forEach(tenant => {
                     NODICS.removeTenant(tenant);
                     _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                        SERVICE.DefaultSearchConfigurationService.removeSearchEngine(moduleName, tenant);
+                        NODICS.removeTenantSearchEngine(moduleName, tenant);
+                        NODICS.removeTenantRawSearchSchema(moduleName, tenant);
                         SYSTEM.removeTenantDatabase(moduleName, tenant).then(success => {
                             SYSTEM.LOG.debug('Successfully removed database connections for tenant: ' + tenant);
                             SYSTEM.removeModelsForTenant(moduleName, tenant).then(success => {

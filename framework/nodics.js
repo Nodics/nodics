@@ -22,6 +22,7 @@ const facades = require('./nFacade');
 const controllers = require('./nController');
 const router = require('./nRouter');
 const test = require('./nTest');
+const search = require('./nSearch');
 
 module.exports = {
     init: function () {
@@ -97,24 +98,30 @@ module.exports = {
                                 tenant: 'default',
                                 modules: NODICS.getActiveModules()
                             }).then(success => {
-                                SYSTEM.buildEnterprises().then(success => {
-                                    resolve(true);
+                                search.loadSearchConfig().then(success => {
+                                    SYSTEM.buildEnterprises().then(success => {
+                                        resolve(true);
+                                    }).catch(error => {
+                                        SYSTEM.LOG.error('Not able to load tenants : ', error);
+                                        resolve(true);
+                                    });
                                 }).catch(error => {
-                                    SYSTEM.LOG.error('Not able to load tenants : ', error);
-                                    //reject(error);
-                                    resolve(true);
+                                    reject(error);
                                 });
                             }).catch(error => {
                                 SYSTEM.LOG.error('Initial data import fails: ', error);
                                 reject(error);
                             });
                         } else {
-                            SYSTEM.buildEnterprises().then(success => {
-                                resolve(true);
+                            search.loadSearchConfig().then(success => {
+                                SYSTEM.buildEnterprises().then(success => {
+                                    resolve(true);
+                                }).catch(error => {
+                                    SYSTEM.LOG.error('Not able to load tenants : ', error);
+                                    resolve(true);
+                                });
                             }).catch(error => {
-                                SYSTEM.LOG.error('Not able to load tenants : ', error);
-                                //reject(error);
-                                resolve(true);
+                                reject(error);
                             });
                         }
                     }).catch(error => {
@@ -140,10 +147,11 @@ module.exports = {
                 NODICS.setServerState('started');
                 SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
                 SYSTEM.finalizeApplication();
+                //console.log(NODICS.getTenantRawSearchSchema('profile', 'default', 'enterprise'));
                 /*Object.keys(SERVICE).forEach(name => {
                     console.log('  --> ', name);
                 });*/
-                console.log(NODICS.getModels('profile', 'default').EnterpriseModel);
+                //console.log(NODICS.getModels('profile', 'default').EnterpriseModel);
                 this.initTestRuner();
             }).catch(error => {
                 SYSTEM.LOG.error('Nodics server error : ', error);

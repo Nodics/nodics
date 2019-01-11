@@ -28,6 +28,7 @@ module.exports = function () {
     let _nodics = {
         modules: {},
         dbs: {},
+        search: {},
         validators: {},
         interceptors: {}
     };
@@ -297,19 +298,64 @@ module.exports = function () {
         return _activeChannel;
     };
 
-    this.setDatabases = function (databases) {
-        _nodics.dbs = databases;
+    /**
+     * This function is used to get module specific search configuration, if not enabled, it will return undefined
+     * @param {*} moduleName 
+     * @param {*} tntCode 
+     */
+    this.getSearchConfiguration = function (moduleName, tenant) {
+        let searchOptions = CONFIG.get('search', tenant);
+        let connOptions;
+        let connConfig = _.merge(searchOptions.default, searchOptions[moduleName] || {});
+        if (connConfig.options.enabled) {
+            connOptions = connConfig[connConfig.options.engine];
+        }
+        return connOptions;
     };
 
-    this.getDatabases = function () {
-        return _nodics.dbs;
-    };
-
-    this.addDatabase = function (moduleName, database) {
+    this.addTenantSearchEngine = function (moduleName, tenant, searchEngine) {
         if (!moduleName) {
             moduleName = 'default';
         }
-        _nodics.dbs[moduleName] = database;
+        if (!this.isModuleActive(moduleName)) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else if (!_nodics.search[moduleName]) {
+            _nodics.search[moduleName] = {};
+        }
+        _nodics.search[moduleName][tenant] = searchEngine;
+    };
+
+    this.removeTenantSearchEngine = function (moduleName, tenant) {
+        if (!this.isModuleActive(moduleName)) {
+            throw new Error('Invalid module name: ' + moduleName);
+        }
+        if (_nodics.search[moduleName] && _nodics.search[moduleName][tenant]) {
+            delete _nodics.search[moduleName][tenant];
+        }
+        return true;
+    };
+
+    this.getTenantSearchEngine = function (moduleName, tenant) {
+        if (tenant && !UTILS.isBlank(tenant)) {
+            let searchEngine = {};
+            if (moduleName && _nodics.search[moduleName]) {
+                searchEngine = _nodics.search[moduleName];
+            } else {
+                searchEngine = _nodics.search.default;
+            }
+            return searchEngine[tenant];
+        } else {
+            throw new Error('Invalid tenant id...' + tenant);
+        }
+    };
+
+    this.getDatabaseConfiguration = function (moduleName, tenant) {
+        let properties = CONFIG.get('database', tenant);
+        if (properties[moduleName]) {
+            return properties[moduleName];
+        } else {
+            return properties.default;
+        }
     };
 
     this.addTenantDatabase = function (moduleName, tenant, database) {
@@ -320,6 +366,24 @@ module.exports = function () {
             _nodics.dbs[moduleName] = {};
         }
         _nodics.dbs[moduleName][tenant] = database;
+    };
+
+    this.getDatabases = function () {
+        return _nodics.dbs;
+    };
+
+    this.getTenantDatabase = function (moduleName, tenant) {
+        if (tenant && !UTILS.isBlank(tenant)) {
+            let database = {};
+            if (moduleName && _nodics.dbs[moduleName]) {
+                database = _nodics.dbs[moduleName];
+            } else {
+                database = _nodics.dbs.default;
+            }
+            return database[tenant];
+        } else {
+            throw new Error('Invalid tenant id...' + tenant);
+        }
     };
 
     this.removeTenantDatabase = function (moduleName, tenant) {
@@ -396,49 +460,16 @@ module.exports = function () {
         }
     };
 
-    this.getModels = function (moduleName, tenant, channel) {
+    this.getModels = function (moduleName, tenant, channel = this.getActiveChannel()) {
         if (tenant && !UTILS.isBlank(tenant)) {
             let moduleObject = this.getModule(moduleName);
-            if ((channel && channel === 'master') ||
-                (!channel && this.getActiveChannel() === 'master')) {
+            if (channel === 'master') {
                 return (moduleObject.models) ? moduleObject.models[tenant].master : null;
             } else {
                 return (moduleObject.models) ? moduleObject.models[tenant].test : null;
             }
         } else {
             throw new Error('Invalid tenant id...');
-        }
-    };
-
-    this.getModuleDatabase = function (moduleName, tenant) {
-        if (tenant && !UTILS.isBlank(tenant)) {
-            let database = _nodics.dbs[moduleName];
-            return database ? database[tenant] : database;
-        } else {
-            throw new Error('Invalid tenant id...');
-        }
-    };
-
-    this.getDatabase = function (moduleName, tenant) {
-        if (tenant && !UTILS.isBlank(tenant)) {
-            let database = {};
-            if (moduleName && _nodics.dbs[moduleName]) {
-                database = _nodics.dbs[moduleName];
-            } else {
-                database = _nodics.dbs.default;
-            }
-            return database[tenant];
-        } else {
-            throw new Error('Invalid tenant id...' + tenant);
-        }
-    };
-
-    this.getDatabaseConfiguration = function (moduleName, tenant) {
-        let properties = CONFIG.get('database', tenant);
-        if (properties[moduleName]) {
-            return properties[moduleName];
-        } else {
-            return properties.default;
         }
     };
 
@@ -482,5 +513,43 @@ module.exports = function () {
         } else {
             return moduleObject.routers ? moduleObject.routers[prefix] : undefined;
         }
+    };
+
+    this.addTenantRawSearchSchema = function (moduleName, tenant, definition) {
+        let moduleObject = this.getModule(moduleName);
+        if (!moduleObject) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else {
+            if (!moduleObject.rawSearchSchema) {
+                moduleObject.rawSearchSchema = {};
+            }
+            if (!moduleObject.rawSearchSchema[tenant]) {
+                moduleObject.rawSearchSchema[tenant] = {};
+            }
+            moduleObject.rawSearchSchema[tenant][definition.typeName] = definition;
+        }
+    };
+
+    this.getTenantRawSearchSchema = function (moduleName, tenant, typeName) {
+        let moduleObject = this.getModule(moduleName);
+        if (!moduleObject) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else if (!moduleObject.rawSearchSchema[tenant]) {
+            throw new Error('Invalid tenant name: ' + tenant);
+        } else {
+            return moduleObject.rawSearchSchema[tenant][typeName];
+        }
+    };
+
+    this.removeTenantRawSearchSchema = function (moduleName, tenant) {
+        let moduleObject = this.getModule(moduleName);
+        if (!moduleObject) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else if (!moduleObject.rawSearchSchema[tenant]) {
+            throw new Error('Invalid tenant name: ' + tenant);
+        } else {
+            delete moduleObject.rawSearchSchema[tenant];
+        }
+        return true;
     };
 };
