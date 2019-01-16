@@ -10,8 +10,17 @@
  */
 
 module.exports = function () {
+    let _active = false;
     let _options = {};
+    let _connOptions = {};
     let _connection = {};
+
+    this.setActive = function (active) {
+        _active = active;
+    };
+    this.isActive = function () {
+        return _active;
+    };
 
     this.setOptions = function (options) {
         _options = options;
@@ -19,6 +28,14 @@ module.exports = function () {
 
     this.getOptions = function () {
         return _options;
+    };
+
+    this.setConnectionOptions = function (connOptions) {
+        _connOptions = connOptions;
+    };
+
+    this.getConnectionOptions = function () {
+        return _connOptions;
     };
 
     this.setConnection = function (connection) {

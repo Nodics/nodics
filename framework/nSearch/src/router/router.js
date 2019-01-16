@@ -10,6 +10,77 @@
  */
 
 module.exports = {
+    default: {
+        commonDoSearch: {
+            doGetGet: {
+                secured: true,
+                key: '/schemaName/search/id/:id',
+                method: 'GET',
+                controller: 'DefaultctrlName',
+                operation: 'doGet',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'doGet',
+                    url: 'http://host:port/nodics/{moduleName}//schemaName/search/:id',
+                }
+            },
+            doGetPost: {
+                secured: true,
+                key: '/schemaName/search',
+                method: 'POST',
+                controller: 'DefaultctrlName',
+                operation: 'doGet',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'doGet',
+                    url: 'http://host:port/nodics/{moduleName}//schemaName/search',
+                }
+            },
+            doSavePut: {
+                secured: true,
+                key: '/schemaName/search',
+                method: 'PUT',
+                controller: 'DefaultctrlName',
+                operation: 'doSave',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search',
+                    body: '{ complete model object } or [{}, {}] array of models'
+                }
+            },
+            doRemoveDeleteId: {
+                secured: true,
+                key: '/schemaName/search/id/:id',
+                method: 'DELETE',
+                controller: 'DefaultctrlName',
+                operation: 'doRemove',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/id/:id',
+                }
+            },
+            doRemoveDelete: {
+                secured: true,
+                key: '/schemaName/search',
+                method: 'DELETE',
+                controller: 'DefaultctrlName',
+                operation: 'doRemove',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search',
+                }
+            }
+        }
+    },
+
     nSearch: {
         indexing: {
             fullIndexing: {

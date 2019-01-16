@@ -10,15 +10,15 @@
  */
 
 module.exports = {
-    find: function (request) {
-        return SERVICE.srvcName.get(request);
+    doGet: function (request) {
+        return SERVICE.srvcName.doGet(request);
     },
 
-    fullIndex: function (request) {
-        return SERVICE.srvcName.fullIndex(request);
+    doSave: function (request) {
+        return SERVICE.srvcName.doSave(request);
     },
 
-    incrementalIndex: function (code, tenant) {
-        return SERVICE.srvcName.incrementalIndex(request);
+    doRemove: function (request) {
+        return SERVICE.srvcName.doRemove(request);
     }
 };

@@ -17,5 +17,26 @@ module.exports = {
 
     postApp: function () {
 
+    },
+
+    isSearchEnabled: function (moduleName, tntCode, indexTypeName) {
+        let flag = false;
+        try {
+            let searchEngine = NODICS.getTenantSearchEngine(moduleName, tntCode);
+            if (searchEngine) {
+                let indexDef = NODICS.getTenantRawSearchSchema(moduleName, tntCode, indexTypeName);
+                if (indexDef) {
+                    flag = indexDef.enabled || false;
+                } else {
+                    this.LOG.warn('Search schema not available for module: ' + moduleName + ', tenant: ' + tntCode + ', index type: ' + indexTypeName);
+                }
+            } else {
+                this.LOG.warn('Search engine not available for module: ' + moduleName + ' and tenant: ' + tntCode);
+            }
+        } catch (error) {
+            this.LOG.error('Please validate search configuration.');
+            this.LOG.error(error);
+        }
+        return flag;
     }
 };

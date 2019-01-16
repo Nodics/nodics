@@ -12,20 +12,29 @@
 module.exports = {
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating get request: ');
+        this.LOG.debug('Validating do get request');
         try {
-            let schemaName = request.collection.schemaName;
-            let rawSchema = request.collection.rawSchema;
+            let moduleName = request.collection.moduleName;
             let tntCode = request.collection.tenant;
-            if (rawSchema.search) {
-                let indexSchema = SERVICE.DefaultSearchConfigurationService.getIndexTypeMetaData(tntCode, rawSchema.search.typeName || schemaName);
-                if (indexSchema.enabled) {
-                    process.nextSuccess(request, response);
+            let searchEngine = NODICS.getTenantSearchEngine(moduleName, tntCode);
+            if (searchEngine) {
+                let indexTypeName = request.collection.schemaName;
+                if (request.collection.rawSchema.search && request.collection.rawSchema.search.typeName) {
+                    indexTypeName = request.collection.rawSchema.search.typeName;
+                }
+                let indexDef = NODICS.getTenantRawSearchSchema(moduleName, tntCode, indexTypeName);
+                if (indexDef) {
+                    if (indexDef.enabled) {
+                        request.rawSearchSchema = indexDef;
+                        process.nextSuccess(request, response);
+                    } else {
+                        throw new Error('Search not enabled for model: ' + modelName);
+                    }
                 } else {
-                    throw new Error('Search not supported for model: ' + request.collection.modelName);
+                    throw new Error('Search schema not available for module: ' + moduleName + ', tenant: ' + tntCode + ', index type: ' + indexTypeName);
                 }
             } else {
-                throw new Error('Search not supported for model: ' + request.collection.modelName);
+                throw new Error('Search engine not available for module: ' + moduleName + ' and tenant: ' + tntCode);
             }
         } catch (error) {
             process.error(request, response, {
@@ -52,7 +61,7 @@ module.exports = {
 
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
-        request.collection.findItems(request).then(result => {
+        request.collection.doGet(request).then(result => {
             response.success = {
                 success: true,
                 code: 'SUC_FIND_00000',
@@ -92,7 +101,7 @@ module.exports = {
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
+        process.resolve(response);
     },
 
     handleErrorEnd: function (request, response, process) {

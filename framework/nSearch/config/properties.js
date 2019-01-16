@@ -23,9 +23,15 @@ module.exports = {
                 engine: 'elastic', //Engine could be like elastic, solr, googleCommerce, endeca
             },
             elastic: {
-                hosts: ['http://localhost:9200'],
-                log: 'info',
-                deadTimeout: 1000
+                options: {
+                    fullIndexDataQuery: {},
+                    incrementalIndexDataQuery: {}
+                },
+                connection: {
+                    hosts: ['http://localhost:9200'],
+                    log: 'info',
+                    deadTimeout: 1000
+                }
             }
         }
     }

@@ -10,15 +10,16 @@
  */
 
 module.exports = {
-    find: function (request) {
-        return DAO.DaoName.find(request);
+
+    doGet: function (request) {
+        return DAO.DaoName.doGet(request);
     },
 
-    fullIndex: function (request) {
-        return DAO.DaoName.fullIndex(request);
+    doSave: function (request) {
+        return DAO.DaoName.doSave(request);
     },
 
-    incrementalIndex: function (request) {
-        return DAO.DaoName.incrementalIndex(request);
+    doRemove: function (request) {
+        return DAO.DaoName.doRemove(request);
     }
 };

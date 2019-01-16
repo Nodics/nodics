@@ -194,7 +194,6 @@ module.exports = {
                     let buf = new Buffer(response.value, "binary");
                     response.value = buf.toString();
                 }
-                console.log(response.value);
                 let message = JSON.parse(response.value);
                 let event = {
                     enterpriseCode: message.enterpriseCode || 'default',

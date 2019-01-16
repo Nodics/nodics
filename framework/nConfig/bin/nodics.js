@@ -304,13 +304,16 @@ module.exports = function () {
      * @param {*} tntCode 
      */
     this.getSearchConfiguration = function (moduleName, tenant) {
-        let searchOptions = CONFIG.get('search', tenant);
-        let connOptions;
-        let connConfig = _.merge(searchOptions.default, searchOptions[moduleName] || {});
-        if (connConfig.options.enabled) {
-            connOptions = connConfig[connConfig.options.engine];
+        let defaultSearchConfig = CONFIG.get('search', tenant);
+        let searchConfig = _.merge(_.merge({}, defaultSearchConfig.default), defaultSearchConfig[moduleName] || {});
+        let connConfig = searchConfig[searchConfig.options.engine];
+        if (connConfig) {
+            connConfig.options = _.merge(_.merge({}, searchConfig.options), connConfig.options);
+            return connConfig;
+        } else {
+            throw new Error('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
         }
-        return connOptions;
+
     };
 
     this.addTenantSearchEngine = function (moduleName, tenant, searchEngine) {
@@ -483,7 +486,6 @@ module.exports = function () {
     };
 
     this.addRouter = function (prefix, router, moduleName) {
-        console.log(router.url);
         let moduleObject = this.getModule(moduleName);
         if (UTILS.isBlank(moduleObject)) {
             throw new Error('Invalid module name: ' + moduleName);

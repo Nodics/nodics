@@ -28,10 +28,10 @@ module.exports = {
     createSearchConnections: function () {
         return new Promise((resolve, reject) => {
             this.createTenantSearchEngines(NODICS.getTenants()).then(success => {
-                this.LOG.debug('Search connections has been established successfully');
+                SYSTEM.LOG.debug('Search connections has been established successfully');
                 resolve(true);
             }).catch(error => {
-                this.LOG.error('Failed establishing connections with search engine');
+                SYSTEM.LOG.error('Failed establishing connections with search engine');
                 reject(error);
             });
         });
@@ -47,22 +47,20 @@ module.exports = {
                         SYSTEM.createTenantSearchEngines(tntCodes).then(success => {
                             resolve(true);
                         }).catch(error => {
-                            reject({
-                                success: false,
-                                code: ''
-                            });
+                            reject(error);
                         });
                     }).catch(error => {
-                        reject({
-                            success: false,
-                            code: ''
-                        });
+                        reject(error);
                     });
                 } else {
                     resolve(true);
                 }
             } catch (err) {
-                reject(err);
+                reject({
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: err
+                });
             }
         });
     },
@@ -76,22 +74,20 @@ module.exports = {
                         SYSTEM.createModulesSearchEngines(modules, tntCode).then(success => {
                             resolve(true);
                         }).catch(error => {
-                            reject({
-                                success: false,
-                                code: ''
-                            });
+                            reject(error);
                         });
                     }).catch(error => {
-                        reject({
-                            success: false,
-                            code: ''
-                        });
+                        reject(error);
                     });
                 } else {
                     resolve(true);
                 }
             } catch (err) {
-                reject(err);
+                reject({
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: err
+                });
             }
         });
     },
@@ -99,39 +95,37 @@ module.exports = {
     createModuleSearchEngines: function (moduleName, tntCode) {
         return new Promise((resolve, reject) => {
             try {
-                let searchConfig = CONFIG.get('search');
-                let connectionOptions = NODICS.getSearchConfiguration(moduleName, tntCode);
-                if (connectionOptions) {
-                    let client = new elasticsearch.Client(connectionOptions);
+                let defaultSearchConfig = CONFIG.get('search', tntCode);
+                let searchOptions = NODICS.getSearchConfiguration(moduleName, tntCode);
+                if (searchOptions && searchOptions.options.enabled) {
+                    let searchEngine = new CLASSES.SearchEngine();
+                    searchEngine.setOptions(searchOptions.options);
+                    searchEngine.setConnectionOptions(searchOptions.connection);
+
+                    let client = new elasticsearch.Client(searchOptions.connection);
                     client.ping({
-                        requestTimeout: searchConfig.requestTimeout
+                        requestTimeout: defaultSearchConfig.requestTimeout
                     }, function (error) {
                         if (error) {
+                            SYSTEM.LOG.warn('Search cluster is not reachable for module : ' + moduleName + ', tenant: ' + tntCode + ', hosts: ' + searchOptions.connection.hosts);
                             reject({
                                 success: false,
-                                code: 'ERR_SRCH_00001'
+                                code: 'ERR_SRCH_00000',
+                                msg: 'Search cluster is not reachable for module : ' + moduleName + ', tenant: ' + tntCode + ', hosts: ' + searchOptions.connection.hosts
                             });
                         } else {
-                            let searchEngine = new CLASSES.SearchEngine();
                             searchEngine.setConnection(client);
-                            searchEngine.setOptions(connectionOptions);
-                            NODICS.addTenantSearchEngine(moduleName, tntCode, searchEngine);
-                            resolve({
-                                success: true,
-                                code: 'SUC_SRCH_00000'
-                            });
+                            searchEngine.setActive(true);
+                            resolve(true);
                         }
                     });
                 } else {
-                    this.LOG.warn('Search is not enabled for module: ' + moduleName);
-                    resolve({
-                        success: true,
-                        code: 'SUC_SRCH_00000'
-                    });
+                    SYSTEM.LOG.warn('Search is not enabled for module: ' + moduleName);
+                    resolve(true);
                 }
             } catch (err) {
-                this.LOG.error('Facing issue to connect with search cluster');
-                this.LOG.error(err);
+                SYSTEM.LOG.error('Facing issue to connect with search cluster');
+                SYSTEM.LOG.error(err);
                 reject({
                     success: false,
                     code: 'ERR_SRCH_00000',
@@ -253,8 +247,8 @@ module.exports = {
                 });
             }
         } catch (error) {
-            this.LOG.error('Failed while loading search schema from schema definitions');
-            this.LOG.error(error);
+            SYSTEM.LOG.error('Failed while loading search schema from schema definitions');
+            SYSTEM.LOG.error(error);
             throw error;
         }
     },
@@ -266,7 +260,6 @@ module.exports = {
                 SERVICE.DefaultIndexerService.get({
                     tenant: tntCode,
                 }).then(indexers => {
-                    console.log('=====================> ', indexers);
                     if (indexers && indexers.success && indexers.result && indexers.result.length > 0) {
                         indexers.result.forEach(definition => {
                             let target = NODICS.getTenantRawSearchSchema(definition.moduleName, tntCode, definition.typeName) || {};

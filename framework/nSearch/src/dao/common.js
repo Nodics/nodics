@@ -11,21 +11,21 @@
 
 module.exports = {
 
-    find: function (request) {
+    doGet: function (request) {
+        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.collection.moduleName;
+        return SERVICE.DefaultPipelineService.start('modelsDoGetInitializerPipeline', request, {});
+    },
+
+    doSave: function (request) {
+        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.collection.moduleName;
+        return SERVICE.DefaultPipelineService.start('modelsDoSaveInitializerPipeline', request, {});
+    },
+
+    doRemove: function (request) {
         request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
         request.moduleName = request.moduleName || request.collection.moduleName;
         return SERVICE.DefaultPipelineService.start('modelsFindInitializerPipeline', request, {});
-    },
-
-    fullIndex: function (request) {
-        return new Promise((resolve, reject) => {
-            resolve('Successfully performed full indexing');
-        });
-    },
-
-    incrementalIndex: function (request) {
-        return new Promise((resolve, reject) => {
-            resolve('Successfully performed full indexing');
-        });
     }
 };

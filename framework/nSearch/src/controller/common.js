@@ -12,44 +12,57 @@
 const _ = require('lodash');
 
 module.exports = {
-    find: function (request, callback) {
-        request = _.merge(request, request.httpRequest.body || {});
+    doGet: function (request, callback) {
+        if (request.httpRequest.params.id) {
+            request.query = {
+                match: {
+                    id: request.httpRequest.params.id
+                }
+            };
+        } else {
+            request = _.merge(request, request.httpRequest.body || {});
+        }
         if (callback) {
-            FACADE.dsdName.get(request).then(success => {
+            FACADE.dsdName.doGet(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.get(request);
+            return FACADE.dsdName.doGet(request);
         }
     },
 
-    fullIndex: function (request, callback) {
-        request = _.merge(request, request.httpRequest.body || {});
-        request.reloadSearchSchema = request.reloadSearchSchema || CONFIG.get('search').reloadSearchSchema;
+    doSave: function (request, callback) {
+        request.models = request.httpRequest.body;
+        request.models = models;
         if (callback) {
-            FACADE.dsdName.fullIndex(request).then(success => {
+            FACADE.dsdName.doSave(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.fullIndex(request);
+            return FACADE.dsdName.doSave(request);
         }
     },
 
-    incrementalIndex: function (request, callback) {
-        request = _.merge(request, request.httpRequest.body || {});
-        request.reloadSearchSchema = request.reloadSearchSchema || CONFIG.get('search').reloadSearchSchema;
+    doRemove: function (request, callback) {
+        if (request.httpRequest.params.id) {
+            request.query = {
+                id: request.httpRequest.params.id
+            };
+        } else {
+            request = _.merge(request, request.httpRequest.body || {});
+        }
         if (callback) {
-            FACADE.dsdName.incrementalIndex(request).then(success => {
+            FACADE.dsdName.doRemove(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.incrementalIndex(request);
+            return FACADE.dsdName.doRemove(request);
         }
     }
 };
