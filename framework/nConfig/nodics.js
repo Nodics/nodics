@@ -15,8 +15,10 @@ const sys = require('./bin/system');
 
 
 module.exports = {
-    init: function () {
-
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
 
     common: function (options) {

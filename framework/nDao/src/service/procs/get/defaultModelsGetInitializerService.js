@@ -299,7 +299,7 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
+        this.LOG.debug('Request has been processed successfully: ', response.success.code);
         response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
         process.resolve(response.success);
     },

@@ -14,7 +14,7 @@ module.exports = {
 
     startRequestHandlerPipeline: function (request, response, routerDef) {
         let input = {
-            requestId: SYSTEM.generateUniqueCode(),
+            requestId: UTILS.generateUniqueCode(),
             parentRequestId: request.get('requestId'),
             router: routerDef,
             httpRequest: request,
@@ -116,7 +116,7 @@ module.exports = {
     lookupCache: function (request, response, process) {
         this.LOG.debug('Looking up result in cache system  : ', request.originalUrl);
         try {
-            request.apiCacheKeyHash = SYSTEM.generateHash(SERVICE.DefaultCacheService.createApiKey(request.httpRequest));
+            request.apiCacheKeyHash = UTILS.generateHash(SERVICE.DefaultCacheService.createApiKey(request.httpRequest));
             SERVICE.DefaultCacheService.getApi(request.router, request.apiCacheKeyHash).then(value => {
                 process.stop(request, response, {
                     success: true,

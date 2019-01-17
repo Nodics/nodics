@@ -11,6 +11,6 @@
 
 module.exports = {
     runJavaApp: function () {
-        SERVICE.DefaultEmsClientService.init();
+        SERVICE.DefaultEmsClientService.configureEMSClients();
     }
 };

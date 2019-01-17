@@ -13,7 +13,9 @@
 
 module.exports = {
     init: function (options) {
-        // 
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
 
     loadSearchConfig: function () {

@@ -149,8 +149,8 @@ module.exports = {
         let modulesStr = '';
         let activeModules = ['default'];
         _.each(NODICS.getIndexedModules(), (obj, key) => {
-            modulesStr = modulesStr + obj[0].name + ',';
-            activeModules.push(obj[0].name);
+            modulesStr = modulesStr + obj.name + ',';
+            activeModules.push(obj.name);
         });
         NODICS.setActiveModules(activeModules);
         console.log('Modules: ', modulesStr);
@@ -158,12 +158,9 @@ module.exports = {
 
     loadModulesMetaData: function () {
         let _self = this;
-        let moduleIndex = NODICS.getIndexedModules();
-        Object.keys(moduleIndex).forEach(function (index) {
-            let group = moduleIndex[index];
-            group.forEach(module => {
-                _self.loadModuleMetaData(module.name);
-            });
+        Object.keys(NODICS.getIndexedModules()).forEach(function (index) {
+            let moduleObject = NODICS.getIndexedModules()[index];
+            _self.loadModuleMetaData(moduleObject.name);
         });
     },
 
@@ -188,12 +185,9 @@ module.exports = {
     loadConfigurations: function (fileName) {
         let _self = this;
         fileName = fileName || '/config/properties.js';
-        let moduleIndex = NODICS.getIndexedModules();
-        Object.keys(moduleIndex).forEach(function (index) {
-            let group = moduleIndex[index];
-            group.forEach(module => {
-                _self.loadModuleConfiguration(module.name, fileName);
-            });
+        Object.keys(NODICS.getIndexedModules()).forEach(function (index) {
+            let moduleObject = NODICS.getIndexedModules()[index];
+            _self.loadModuleConfiguration(moduleObject.name, fileName);
         });
     },
 
@@ -326,7 +320,7 @@ module.exports = {
         let _self = this;
         let gVar = {};
         Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
-            var value = NODICS.getIndexedModules()[key][0];
+            var value = NODICS.getIndexedModules()[key];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
                 _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
@@ -365,7 +359,7 @@ module.exports = {
                         return file.endsWith(filePostFix);
                     }
                 }).forEach(function (file) {
-                    _self.LOG.debug('Loading file from : ', file.replace(NODICS.getNodicsHome(), '.'));
+                    _self.LOG.debug('   Loading file from : ', file.replace(NODICS.getNodicsHome(), '.'));
                     callback(file);
                 });
             }
@@ -376,7 +370,7 @@ module.exports = {
         let _self = this;
         let mergedFile = frameworkFile || {};
         Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
-            var value = NODICS.getIndexedModules()[key][0];
+            var value = NODICS.getIndexedModules()[key];
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
                 _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));

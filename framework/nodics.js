@@ -25,8 +25,10 @@ const test = require('./nTest');
 const search = require('./nSearch');
 
 module.exports = {
-    init: function () {
-        ////
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
 
     cleanAll: function (options) {
@@ -86,44 +88,43 @@ module.exports = {
             SYSTEM.executePreScripts();
             common.start();
             db.loadDatabase().then(success => {
-                SYSTEM.loadModules();
-                pipeline.loadPipelines().then(success => {
-                    SYSTEM.prepareModulesConfiguration();
-                    event.loadListeners();
-                    router.loadRouter().then(success => {
-                        SYSTEM.executePostScripts();
-                        //NODICS.isInitRequired()
-                        if (NODICS.isInitRequired()) {
-                            SERVICE.DefaultImportService.importInitData({
-                                tenant: 'default',
-                                modules: NODICS.getActiveModules()
-                            }).then(success => {
-                                search.loadSearchConfig().then(success => {
+                SYSTEM.loadModules().then(success => {
+                    SYSTEM.initEntities().then(success => {
+                        pipeline.loadPipelines().then(success => {
+                            SYSTEM.prepareModulesConfiguration();
+                            event.loadListeners();
+                            router.loadRouter().then(success => {
+                                SYSTEM.executePostScripts();
+                                //NODICS.isInitRequired()
+                                if (NODICS.isInitRequired()) {
+                                    SERVICE.DefaultImportService.importInitData({
+                                        tenant: 'default',
+                                        modules: NODICS.getActiveModules()
+                                    }).then(success => {
+                                        SYSTEM.buildEnterprises().then(success => {
+                                            resolve(true);
+                                        }).catch(error => {
+                                            SYSTEM.LOG.error('Not able to load tenants : ', error);
+                                            resolve(true);
+                                        });
+                                    }).catch(error => {
+                                        SYSTEM.LOG.error('Initial data import fails: ', error);
+                                        reject(error);
+                                    });
+                                } else {
                                     SYSTEM.buildEnterprises().then(success => {
                                         resolve(true);
                                     }).catch(error => {
                                         SYSTEM.LOG.error('Not able to load tenants : ', error);
                                         resolve(true);
                                     });
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            }).catch(error => {
-                                SYSTEM.LOG.error('Initial data import fails: ', error);
-                                reject(error);
-                            });
-                        } else {
-                            search.loadSearchConfig().then(success => {
-                                SYSTEM.buildEnterprises().then(success => {
-                                    resolve(true);
-                                }).catch(error => {
-                                    SYSTEM.LOG.error('Not able to load tenants : ', error);
-                                    resolve(true);
-                                });
+                                }
                             }).catch(error => {
                                 reject(error);
                             });
-                        }
+                        }).catch(error => {
+                            reject(error);
+                        });
                     }).catch(error => {
                         reject(error);
                     });
@@ -142,19 +143,21 @@ module.exports = {
 
     start: function (options) {
         this.initFrameworkExecute(options).then(success => {
-            SYSTEM.startServers().then(success => {
-                NODICS.setEndTime(new Date());
-                NODICS.setServerState('started');
-                SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
-                SYSTEM.finalizeApplication();
-                //console.log(NODICS.getTenantRawSearchSchema('profile', 'default', 'enterprise'));
-                /*Object.keys(SERVICE).forEach(name => {
-                    console.log('  --> ', name);
-                });*/
-                //console.log(NODICS.getModels('profile', 'default').EnterpriseModel);
-                this.initTestRuner();
+            SYSTEM.finalizeEntities().then(success => {
+                SYSTEM.finalizeModules().then(success => {
+                    SYSTEM.startServers().then(success => {
+                        NODICS.setEndTime(new Date());
+                        NODICS.setServerState('started');
+                        SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
+                        this.initTestRuner();
+                    }).catch(error => {
+                        SYSTEM.LOG.error('Nodics server error : ', error);
+                    });
+                }).catch(error => {
+                    SYSTEM.LOG.error('Failed while running postInit functions from all modules : ', error);
+                });
             }).catch(error => {
-                SYSTEM.LOG.error('Nodics server error : ', error);
+                SYSTEM.LOG.error('Failed while running postInit functions from all entities : ', error);
             });
         }).catch(error => {
             console.error('Nodics server not started properly : ', error);

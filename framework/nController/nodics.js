@@ -12,8 +12,10 @@
 const controller = require('./bin/controllerGenerator');
 
 module.exports = {
-    init: function () {
-
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
     genController: function () {
         let _self = this;

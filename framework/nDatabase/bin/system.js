@@ -305,11 +305,11 @@ module.exports = {
                 if (!UTILS.isBlank(schemaOptions.indexedFields)) {
                     model.indexes(function (err, indexes) {
                         if (indexes && indexes.length > 0) {
-                            let idKeyHash = SYSTEM.generateHash(JSON.stringify({
+                            let idKeyHash = UTILS.generateHash(JSON.stringify({
                                 _id: 1
                             }));
                             indexes.forEach(element => {
-                                let key = SYSTEM.generateHash(JSON.stringify(element.key));
+                                let key = UTILS.generateHash(JSON.stringify(element.key));
                                 if (key != idKeyHash) {
                                     liveIndexes[key] = {
                                         hash: key,
@@ -321,7 +321,7 @@ module.exports = {
                             });
                         }
                         _.each(schemaOptions.indexedFields, (config, field) => {
-                            let key = SYSTEM.generateHash(JSON.stringify(config.field));
+                            let key = UTILS.generateHash(JSON.stringify(config.field));
                             let tmpIndex = liveIndexes[key];
                             if (!tmpIndex || tmpIndex.unique !== config.options.unique) {
                                 allPromise.push(SYSTEM.createIndex(model, config));
@@ -452,34 +452,39 @@ module.exports = {
         return new Promise((resolve, reject) => {
             options.modelName = UTILS.createModelName(options.schemaName);
             let schema = options.moduleObject.rawSchema[options.schemaName];
-            if (options.dataBase.master && schema.model === true && (!schema.tenants || schema.tenants.includes(options.tntCode))) {
-                SYSTEM.prepareDatabaseOptions(options);
-                let cache = _.merge({}, schema.cache || {});
-                let itemLevelCache = CONFIG.get('cache').itemLevelCache;
-                options.cache = _.merge(cache, itemLevelCache[options.schemaName] || {});
-                options.channel = 'master';
-                SYSTEM.retrieveModel(options, options.dataBase.master).then(success => {
-                    if (!options.moduleObject.models[options.tntCode].master) {
-                        options.moduleObject.models[options.tntCode].master = {};
-                    }
-                    options.moduleObject.models[options.tntCode].master[options.modelName] = success;
-                    if (options.dataBase.test) {
-                        options.channel = 'test';
-                        SYSTEM.retrieveModel(options, options.dataBase.test).then(success => {
-                            if (!options.moduleObject.models[options.tntCode].test) {
-                                options.moduleObject.models[options.tntCode].test = {};
-                            }
-                            options.moduleObject.models[options.tntCode].test[options.modelName] = success;
+            if (options.dataBase.master) {
+                if (schema.model === true && (!schema.tenants || schema.tenants.includes(options.tntCode))) {
+                    SYSTEM.prepareDatabaseOptions(options);
+                    let cache = _.merge({}, schema.cache || {});
+                    let itemLevelCache = CONFIG.get('cache').itemLevelCache;
+                    options.cache = _.merge(cache, itemLevelCache[options.schemaName] || {});
+                    options.channel = 'master';
+                    SYSTEM.retrieveModel(options, options.dataBase.master).then(success => {
+                        if (!options.moduleObject.models[options.tntCode].master) {
+                            options.moduleObject.models[options.tntCode].master = {};
+                        }
+                        options.moduleObject.models[options.tntCode].master[options.modelName] = success;
+                        if (options.dataBase.test) {
+                            options.channel = 'test';
+                            SYSTEM.retrieveModel(options, options.dataBase.test).then(success => {
+                                if (!options.moduleObject.models[options.tntCode].test) {
+                                    options.moduleObject.models[options.tntCode].test = {};
+                                }
+                                options.moduleObject.models[options.tntCode].test[options.modelName] = success;
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
                             resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        resolve(true);
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
+                        }
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    SYSTEM.LOG.warn('Either model is disabled for schema: ' + options.schemaName + ', or not allowed for this tenant: ' + options.tntCode);
+                    resolve(true);
+                }
             } else {
                 SYSTEM.LOG.warn('Invalid database configuration for module: ', options.moduleName, ' and tenant: ', options.tntCode + '. Hence defailt will be used');
                 resolve(true);

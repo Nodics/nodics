@@ -12,8 +12,10 @@
 const facade = require('./bin/facadeGenerator');
 
 module.exports = {
-    init: function () {
-
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
     genFacade: function () {
         let _self = this;

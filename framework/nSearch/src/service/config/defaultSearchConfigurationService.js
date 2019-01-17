@@ -11,12 +11,16 @@
 
 module.exports = {
 
-    postInitialize: function () {
-
+    init: function () {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
 
-    postApp: function () {
-
+    postInit: function () {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
 
     isSearchEnabled: function (moduleName, tntCode, indexTypeName) {

@@ -12,11 +12,13 @@
 let listeners = require('./bin/registerEventListeners');
 
 module.exports = {
-    init: function(options) {
-        // 
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
 
-    loadListeners: function() {
+    loadListeners: function () {
         listeners.init();
     }
 };

@@ -14,7 +14,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let passwordLengthLimit = CONFIG.get('passwordLengthLimit') || 25;
             if (options.model.password && options.model.password.length < passwordLengthLimit) {
-                SYSTEM.encryptPassword(options.model.password).then(hash => {
+                UTILS.encryptPassword(options.model.password).then(hash => {
                     options.model.password = hash;
                     resolve(true);
                 }).catch(error => {

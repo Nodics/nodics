@@ -11,6 +11,18 @@
 
 module.exports = {
 
+    init: function () {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    postInit: function () {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
     /**
      * This function is used to change router level cache configuration
      * @param {*} request 

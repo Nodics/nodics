@@ -12,8 +12,10 @@
 const daoGenerator = require('./bin/daoGenerator');
 
 module.exports = {
-    init: function () {
-
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
 
     genDao: function () {

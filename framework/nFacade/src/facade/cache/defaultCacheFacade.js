@@ -11,6 +11,18 @@
 
 module.exports = {
 
+    init: function () {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    postInit: function () {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
     updateApiCacheConfiguration: function (request) {
         return SERVICE.DefaultCacheService.updateApiCacheConfiguration(request);
     },

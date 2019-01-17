@@ -372,7 +372,7 @@ module.exports = {
         options.query = request.query;
         return request.collection.schemaName + '_' +
             request.tenant + '_' +
-            SYSTEM.generateHash(JSON.stringify(options));
+            UTILS.generateHash(JSON.stringify(options));
     },
 
     getApi: function (routerDefinition, cacheKeyHash) {

@@ -240,7 +240,13 @@ module.exports = function () {
     };
 
     this.setIndexedModules = function (indexedModules) {
-        _indexedModules = indexedModules;
+        _indexedModules = {};
+        Object.keys(indexedModules).forEach((index) => {
+            let indexValues = indexedModules[index];
+            if (indexValues && indexValues.length > 0) {
+                _indexedModules[index] = indexValues[0];
+            }
+        });
     };
 
     this.getIndexedModules = function () {

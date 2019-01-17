@@ -10,7 +10,9 @@
  */
 
 module.exports = {
-    init: function(options) {
-        // 
+    init: function () {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     }
 };

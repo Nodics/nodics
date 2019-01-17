@@ -13,7 +13,9 @@ const conHandler = require('./bin/connectionHandler');
 
 module.exports = {
     init: function () {
-
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
     loadDatabase: function () {
         SYSTEM.LOG.info('Starting database configuration process');

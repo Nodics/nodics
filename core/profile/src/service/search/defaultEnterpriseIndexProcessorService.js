@@ -13,14 +13,12 @@ module.exports = {
 
     preEnterpriseIndexProcessor: function (enterprises) {
         return new Promise((resolve, reject) => {
-            this.LOG.debug('------------------- preEnterpriseIndexProcessor');
             resolve(true);
         });
     },
 
     postEnterpriseIndexProcessor: function (enterprises) {
         return new Promise((resolve, reject) => {
-            this.LOG.debug('------------------- postEnterpriseIndexProcessor');
             resolve(true);
         });
     }

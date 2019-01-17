@@ -170,7 +170,7 @@ module.exports = {
                             code: 'ERR_LIN_00002'
                         });
                     } else {
-                        SYSTEM.compareHash(options.request.password, options.person.password.password).then(match => {
+                        UTILS.compareHash(options.request.password, options.person.password.password).then(match => {
                             if (match) {
                                 state.attempts = 0;
                                 _self.updateAuthData({
@@ -237,7 +237,7 @@ module.exports = {
                     hash = options.request.authToken;
                 } else {
                     let key = options.enterprise._id + options.person._id + (new Date()).getTime();
-                    hash = SYSTEM.generateHash(key);
+                    hash = UTILS.generateHash(key);
                 }
                 _self.addToken(options.request.moduleName, options.request.source, hash, {
                     person: options.person,

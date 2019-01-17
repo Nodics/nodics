@@ -18,7 +18,7 @@ module.exports = {
                     CONFIG.get('forceAPIKeyGenerate')) &&
                     (options.model.loginId && options.model.password)) {
                     let key = options.model.loginId + options.model.password + (new Date()).getTime();
-                    options.model.apiKey = SYSTEM.generateHash(key);
+                    options.model.apiKey = UTILS.generateHash(key);
                 }
                 resolve(true);
             } catch (error) {

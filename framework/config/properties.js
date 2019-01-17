@@ -25,8 +25,7 @@ module.exports = {
             'nrouter',
             'ndata',
             'ntest',
-            'system',
-            'nSearch'
+            'system'
         ]
     }
 };

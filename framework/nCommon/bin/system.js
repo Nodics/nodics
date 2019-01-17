@@ -13,76 +13,10 @@ const _ = require('lodash');
 const fs = require('fs');
 const Enum = require('./enum');
 
-var https = require('https');
-var http = require('http');
-
-const bcrypt = require("bcrypt");
-const uuidv5 = require('uuid/v5');
-const uuidv4 = require('uuid/v4');
-
+const https = require('https');
+const http = require('http');
 
 module.exports = {
-
-    generateUniqueCode: function () {
-        return uuidv4();
-    },
-
-    /**
-     * generates random string of characters i.e salt
-     * @function
-     * @param {number} length - Length of the random string.
-     */
-    generateSalt: function (length) {
-        return bcrypt.genSaltSync(length || CONFIG.get('encryptSaltLength') || 10);
-    },
-
-    /**
-     * Generate Unique Hash
-     */
-    generateHash: function (key) {
-        return uuidv5(key, uuidv5.URL);
-    },
-
-    /**
-     * hash password with sha512.
-     * @function
-     * @param {string} value - List of required fields.
-     * @param {string} salt - Data to be validated.
-     */
-    generatePasswordHash: function (value, salt) {
-        return new Promise((resolve, reject) => {
-            try {
-                salt = salt || SYSTEM.generateSalt();
-                bcrypt.hash(value, salt).then(function (hash) {
-                    resolve(hash);
-                });
-            } catch (err) {
-                reject(err);
-            }
-        });
-    },
-
-    encryptPassword: function (password) {
-        return new Promise((resolve, reject) => {
-            SYSTEM.generatePasswordHash(password).then(hash => {
-                resolve(hash);
-            }).catch(error => {
-                reject(err);
-            });
-        });
-    },
-
-    compareHash: function (value, hash) {
-        return new Promise((resolve, reject) => {
-            try {
-                bcrypt.compare(value, hash).then(function (match) {
-                    resolve(match);
-                });
-            } catch (err) {
-                reject(err);
-            }
-        });
-    },
 
     loadEnums: function () {
         let enums = global.ENUMS;
@@ -115,9 +49,8 @@ module.exports = {
     },
 
     loadClasses: function () {
-        let moduleIndex = NODICS.getIndexedModules();
-        Object.keys(moduleIndex).forEach(function (key) {
-            var value = moduleIndex[key][0];
+        Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
+            var value = NODICS.getIndexedModules()[key];
             SYSTEM.loadModuleClasses(value);
         });
         SYSTEM.generalizeClasses();
@@ -141,57 +74,430 @@ module.exports = {
         let classesScripts = {};
         SYSTEM.LOG.debug('Generalizing defined classes');
         SYSTEM.loadFiles('/src/lib/classes.js', classesScripts);
-
         var methods = SYSTEM.getAllMethods(classesScripts);
         methods.forEach(function (instance) {
             classesScripts[instance]();
         });
     },
 
-    loadModules: function () {
-        let moduleIndex = NODICS.getIndexedModules();
-        Object.keys(moduleIndex).forEach(function (key) {
-            var value = moduleIndex[key][0];
-            SYSTEM.loadModule(value.name);
-        });
-        SYSTEM.initModule();
-    },
+    loadModules: function (modules = Object.keys(NODICS.getIndexedModules())) {
+        return new Promise((resolve, reject) => {
+            if (modules && modules.length > 0) {
+                let moduleIndex = modules.shift();
+                let moduleName = NODICS.getIndexedModules()[moduleIndex].name;
+                SYSTEM.loadModule(moduleName).then(success => {
+                    SYSTEM.loadModules(modules).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
 
-    finalizeApplication: function () {
-        SYSTEM.finalizeDaos();
-        SYSTEM.finalizeServices();
-        SYSTEM.finalizeFacades();
-        SYSTEM.finalizeControllers();
+            } else {
+                resolve(true);
+            }
+        });
     },
 
     loadModule: function (moduleName) {
-        SYSTEM.LOG.debug('Staring process for module : ', moduleName);
-        let module = NODICS.getRawModule(moduleName);
-
-        SYSTEM.loadDao(module);
-        SYSTEM.loadServices(module);
-        SYSTEM.loadPipelinesDefinition(module);
-        SYSTEM.loadFacades(module);
-        SYSTEM.loadControllers(module);
-        SYSTEM.loadTest(module);
-        let moduleFile = require(module.path + '/nodics.js');
-        if (moduleFile.init) {
-            moduleFile.init();
-        }
+        return new Promise((resolve, reject) => {
+            SYSTEM.LOG.debug('Staring process for module : ', moduleName);
+            let moduleObject = NODICS.getRawModule(moduleName);
+            let moduleFile = require(moduleObject.path + '/nodics.js');
+            if (moduleFile.init) {
+                moduleFile.init(moduleObject).then(success => {
+                    SYSTEM.loadDao(moduleObject).then(() => {
+                        return SYSTEM.loadServices(moduleObject);
+                    }).then(() => {
+                        SYSTEM.loadPipelinesDefinition(moduleObject);
+                    }).then(() => {
+                        return SYSTEM.loadFacades(moduleObject);
+                    }).then(() => {
+                        return SYSTEM.loadControllers(moduleObject);
+                    }).then(() => {
+                        resolve(true);
+                    }).catch((error) => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                SYSTEM.loadDao(moduleObject).then(() => {
+                    return SYSTEM.loadServices(moduleObject);
+                }).then(() => {
+                    SYSTEM.loadPipelinesDefinition(moduleObject);
+                }).then(() => {
+                    return SYSTEM.loadFacades(moduleObject);
+                }).then(() => {
+                    return SYSTEM.loadControllers(moduleObject);
+                }).then(() => {
+                    resolve(true);
+                }).catch((error) => {
+                    reject(error);
+                });
+            }
+        });
     },
 
-    initModule: function () {
-        SYSTEM.initDaos();
-        SYSTEM.initServices();
-        SYSTEM.initFacades();
-        SYSTEM.initControllers();
+    loadDao: function (module) {
+        return new Promise((resolve, reject) => {
+            SYSTEM.LOG.debug('  Loading all module DAO');
+            let path = module.path + '/src/dao';
+            try {
+                SYSTEM.processFiles(path, "Dao.js", (file) => {
+                    let daoName = SYSTEM.getFileNameWithoutExtension(file);
+                    if (DAO[daoName]) {
+                        DAO[daoName] = _.merge(DAO[daoName], require(file));
+                    } else {
+                        DAO[daoName] = require(file);
+                        DAO[daoName].LOG = SYSTEM.createLogger(daoName);
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    loadServices: function (module) {
+        return new Promise((resolve, reject) => {
+            SYSTEM.LOG.debug('  Loading all module services');
+            let path = module.path + '/src/service';
+            try {
+                SYSTEM.processFiles(path, "Service.js", (file) => {
+                    let serviceName = SYSTEM.getFileNameWithoutExtension(file);
+                    if (SERVICE[serviceName]) {
+                        SERVICE[serviceName] = _.merge(SERVICE[serviceName], require(file));
+                    } else {
+                        SERVICE[serviceName] = require(file);
+                        SERVICE[serviceName].LOG = SYSTEM.createLogger(serviceName);
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    loadPipelinesDefinition: function (module) {
+        return new Promise((resolve, reject) => {
+            SYSTEM.LOG.debug('  Loading all module process definitions');
+            let path = module.path + '/src/pipelines';
+            try {
+                SYSTEM.processFiles(path, "Definition.js", (file) => {
+                    let processName = SYSTEM.getFileNameWithoutExtension(file);
+                    if (PIPELINE[processName]) {
+                        PIPELINE[processName] = _.merge(PIPELINE[processName], require(file));
+                    } else {
+                        PIPELINE[processName] = require(file);
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    loadFacades: function (module) {
+        return new Promise((resolve, reject) => {
+            SYSTEM.LOG.debug('  Loading all module facades');
+            let path = module.path + '/src/facade';
+            try {
+                SYSTEM.processFiles(path, "Facade.js", (file) => {
+                    let facadeName = SYSTEM.getFileNameWithoutExtension(file);
+                    if (FACADE[facadeName]) {
+                        FACADE[facadeName] = _.merge(FACADE[facadeName], require(file));
+                    } else {
+                        FACADE[facadeName] = require(file);
+                        FACADE[facadeName].LOG = SYSTEM.createLogger(facadeName);
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    loadControllers: function (module) {
+        return new Promise((resolve, reject) => {
+            SYSTEM.LOG.debug('  Loading all module controllers');
+            let path = module.path + '/src/controller';
+            try {
+                SYSTEM.processFiles(path, "Controller.js", (file) => {
+                    let controllerName = SYSTEM.getFileNameWithoutExtension(file);
+                    if (CONTROLLER[controllerName]) {
+                        CONTROLLER[controllerName] = _.merge(CONTROLLER[controllerName], require(file));
+                    } else {
+                        CONTROLLER[controllerName] = require(file);
+                        CONTROLLER[controllerName].LOG = SYSTEM.createLogger(controllerName);
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    initEntities: function () {
+        return new Promise((resolve, reject) => {
+            SYSTEM.LOG.debug('Initializing all entities');
+            SYSTEM.initDaos().then(
+                SYSTEM.initServices
+            ).then(
+                SYSTEM.initFacades
+            ).then(
+                SYSTEM.initControllers
+            ).then(() => {
+                resolve(true);
+            }).catch((error) => {
+                reject(error);
+            });
+        });
+    },
+
+    initDaos: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(DAO, (daoClass, daoName) => {
+                if (daoClass.init &&
+                    typeof daoClass.init === 'function') {
+                    allPromise.push(daoClass.init());
+                }
+            });
+            if (allPromise.length > 0) {
+                SYSTEM.LOG.debug('  Initializing all DAOs');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    initServices: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(SERVICE, (serviceClass, serviceName) => {
+                if (serviceClass.init &&
+                    typeof serviceClass.init === 'function') {
+                    allPromise.push(serviceClass.init());
+                }
+            });
+            if (allPromise.length > 0) {
+                SYSTEM.LOG.debug('  Initializing all Services');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    initFacades: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(FACADE, (facadeClass, facadeName) => {
+                if (facadeClass.init &&
+                    typeof facadeClass.init === 'function') {
+                    allPromise.push(facadeClass.init());
+                }
+            });
+            if (allPromise.length > 0) {
+                SYSTEM.LOG.debug('  Initializing all Facades');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    initControllers: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(CONTROLLER, (controllerClass, controllerName) => {
+                if (controllerClass.init &&
+                    typeof controllerClass.init === 'function') {
+                    allPromise.push(controllerClass.init());
+                }
+            });
+            if (allPromise.length > 0) {
+                SYSTEM.LOG.debug('  Initializing all Controllers');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    finalizeEntities: function () {
+        return new Promise((resolve, reject) => {
+            SYSTEM.LOG.debug('Finalizing all entities');
+            SYSTEM.finalizeDaos().then(() => {
+                return SYSTEM.finalizeServices();
+            }).then(
+                SYSTEM.finalizeFacades
+            ).then(
+                SYSTEM.finalizeControllers
+            ).then(() => {
+                resolve(true);
+            }).catch((error) => {
+                reject(error);
+            });
+        });
+    },
+
+    finalizeDaos: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(DAO, (daoClass, daoName) => {
+                if (daoClass.postInit &&
+                    typeof daoClass.postInit === 'function') {
+                    allPromise.push(daoClass.postInit());
+                }
+            });
+            if (allPromise.length > 0) {
+                SYSTEM.LOG.debug('  Finalizing all DAOs');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    finalizeServices: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(SERVICE, (serviceClass, serviceName) => {
+                if (serviceClass.postInit &&
+                    typeof serviceClass.postInit === 'function') {
+                    allPromise.push(serviceClass.postInit());
+                }
+            });
+            if (allPromise.length > 0) {
+                SYSTEM.LOG.debug('  Finalizing all Services');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    finalizeFacades: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(FACADE, (facadeClass, facadeName) => {
+                if (facadeClass.postInit &&
+                    typeof facadeClass.postInit === 'function') {
+                    allPromise.push(facadeClass.postInit());
+                }
+            });
+            if (allPromise.length > 0) {
+                SYSTEM.LOG.debug('  Finalizing all Facades');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    finalizeControllers: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(CONTROLLER, (controllerClass, controllerName) => {
+                if (controllerClass.postInit &&
+                    typeof controllerClass.postInit === 'function') {
+                    allPromise.push(controllerClass.postInit());
+                }
+            });
+            if (allPromise.length > 0) {
+                SYSTEM.LOG.debug('  Finalizing all controllers');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    finalizeModules: function (modules = Object.keys(NODICS.getIndexedModules())) {
+        return new Promise((resolve, reject) => {
+            if (modules && modules.length > 0) {
+                let moduleIndex = modules.shift();
+                let moduleName = NODICS.getIndexedModules()[moduleIndex].name;
+                SYSTEM.finalizeModule(moduleName).then(success => {
+                    SYSTEM.finalizeModules(modules).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    finalizeModule: function (moduleName) {
+        return new Promise((resolve, reject) => {
+            SYSTEM.LOG.debug('Staring process to finalize module : ', moduleName);
+            let moduleObject = NODICS.getRawModule(moduleName);
+            let moduleFile = require(moduleObject.path + '/nodics.js');
+            if (moduleFile.postInit && typeof moduleFile.postInit === 'function') {
+                moduleFile.postInit(moduleObject).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
     },
 
     cleanModules: function () {
-        let moduleIndex = NODICS.getIndexedModules();
-        Object.keys(moduleIndex).forEach(function (key) {
-            var value = moduleIndex[key][0];
-            SYSTEM.cleanModule(value.name);
+        Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
+            let moduleName = NODICS.getIndexedModules()[key];
+            SYSTEM.cleanModule(moduleName);
         });
     },
 
@@ -207,20 +513,6 @@ module.exports = {
         if (moduleFile.clean) {
             moduleFile.clean();
         }
-    },
-
-    loadDao: function (module) {
-        SYSTEM.LOG.debug('Loading all module DAO');
-        let path = module.path + '/src/dao';
-        SYSTEM.processFiles(path, "Dao.js", (file) => {
-            let daoName = SYSTEM.getFileNameWithoutExtension(file);
-            if (DAO[daoName]) {
-                DAO[daoName] = _.merge(DAO[daoName], require(file));
-            } else {
-                DAO[daoName] = require(file);
-                DAO[daoName].LOG = SYSTEM.createLogger(daoName);
-            }
-        });
     },
 
     cleanDao: function (module) {
@@ -249,211 +541,6 @@ module.exports = {
         UTILS.removeDir(path.join(module.path + '/dist'));
     },
 
-    loadServices: function (module) {
-        SYSTEM.LOG.debug('Loading all module services');
-        let path = module.path + '/src/service';
-        SYSTEM.processFiles(path, "Service.js", (file) => {
-            let serviceName = SYSTEM.getFileNameWithoutExtension(file);
-            if (SERVICE[serviceName]) {
-                SERVICE[serviceName] = _.merge(SERVICE[serviceName], require(file));
-            } else {
-                SERVICE[serviceName] = require(file);
-                SERVICE[serviceName].LOG = SYSTEM.createLogger(serviceName);
-            }
-        });
-    },
-
-    initDaos: function () {
-        _.each(DAO, (daoClass, daoName) => {
-            if (daoClass.postInitialize &&
-                typeof daoClass.postInitialize === 'function') {
-                daoClass.postInitialize();
-            }
-        });
-    },
-
-    initServices: function () {
-        _.each(SERVICE, (serviceClass, serviceName) => {
-            if (serviceClass.postInitialize &&
-                typeof serviceClass.postInitialize === 'function') {
-                serviceClass.postInitialize();
-            }
-        });
-    },
-
-    initFacades: function () {
-        _.each(FACADE, (facadeClass, facadeName) => {
-            if (facadeClass.postInitialize &&
-                typeof facadeClass.postInitialize === 'function') {
-                facadeClass.postInitialize();
-            }
-        });
-    },
-
-    initControllers: function () {
-        _.each(CONTROLLER, (controllerClass, controllerName) => {
-            if (controllerClass.postInitialize &&
-                typeof controllerClass.postInitialize === 'function') {
-                controllerClass.postInitialize();
-            }
-        });
-    },
-
-    finalizeDaos: function () {
-        _.each(DAO, (daoClass, daoName) => {
-            if (daoClass.postApp &&
-                typeof daoClass.postApp === 'function') {
-                daoClass.postApp();
-            }
-        });
-    },
-
-    finalizeServices: function () {
-        _.each(SERVICE, (serviceClass, serviceName) => {
-            if (serviceClass.postApp &&
-                typeof serviceClass.postApp === 'function') {
-                serviceClass.postApp();
-            }
-        });
-    },
-
-    finalizeFacades: function () {
-        _.each(FACADE, (facadeClass, facadeName) => {
-            if (facadeClass.postApp &&
-                typeof facadeClass.postApp === 'function') {
-                facadeClass.postApp();
-            }
-        });
-    },
-
-    finalizeControllers: function () {
-        _.each(CONTROLLER, (controllerClass, controllerName) => {
-            if (controllerClass.postApp &&
-                typeof controllerClass.postApp === 'function') {
-                controllerClass.postApp();
-            }
-        });
-    },
-
-    loadPipelinesDefinition: function (module) {
-        SYSTEM.LOG.debug('Loading all module process definitions');
-        let path = module.path + '/src/pipelines';
-        SYSTEM.processFiles(path, "Definition.js", (file) => {
-            let processName = SYSTEM.getFileNameWithoutExtension(file);
-            if (PIPELINE[processName]) {
-                PIPELINE[processName] = _.merge(PIPELINE[processName], require(file));
-            } else {
-                PIPELINE[processName] = require(file);
-            }
-        });
-    },
-
-    loadFacades: function (module) {
-        SYSTEM.LOG.debug('Loading all module facades');
-        let path = module.path + '/src/facade';
-        SYSTEM.processFiles(path, "Facade.js", (file) => {
-            let facadeName = SYSTEM.getFileNameWithoutExtension(file);
-            if (FACADE[facadeName]) {
-                FACADE[facadeName] = _.merge(FACADE[facadeName], require(file));
-            } else {
-                FACADE[facadeName] = require(file);
-                FACADE[facadeName].LOG = SYSTEM.createLogger(facadeName);
-            }
-        });
-    },
-
-    loadControllers: function (module) {
-        SYSTEM.LOG.debug('Loading all module controllers');
-        let path = module.path + '/src/controller';
-        SYSTEM.processFiles(path, "Controller.js", (file) => {
-            let controllerName = SYSTEM.getFileNameWithoutExtension(file);
-            if (CONTROLLER[controllerName]) {
-                CONTROLLER[controllerName] = _.merge(CONTROLLER[controllerName], require(file));
-            } else {
-                CONTROLLER[controllerName] = require(file);
-                CONTROLLER[controllerName].LOG = SYSTEM.createLogger(controllerName);
-            }
-        });
-    },
-
-    loadTest: function (module) {
-        if (CONFIG.get('test').uTest.enabled) {
-            this.loadCommonTest(module);
-        }
-        if (CONFIG.get('test').nTest.enabled) {
-            this.loadEnvTest(module);
-        }
-    },
-
-    loadCommonTest: function (module) {
-        SYSTEM.LOG.debug('Loading module test cases');
-        let path = module.path + '/test/common';
-        SYSTEM.processFiles(path, "Test.js", (file) => {
-            let testFile = this.collectTest(require(file));
-            _.each(testFile, (testSuite, suiteName) => {
-                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
-                    if (TEST.nTestPool.suites[suiteName]) {
-                        TEST.nTestPool.suites[suiteName] = _.merge(TEST.nTestPool.suites[suiteName], testSuite);
-                    } else {
-                        TEST.nTestPool.suites[suiteName] = testSuite;
-                    }
-                } else {
-                    if (TEST.uTestPool.suites[suiteName]) {
-                        TEST.uTestPool.suites[suiteName] = _.merge(TEST.uTestPool.suites[suiteName], testSuite);
-                    } else {
-                        TEST.uTestPool.suites[suiteName] = testSuite;
-                    }
-                }
-            });
-        });
-    },
-
-    loadEnvTest: function (module) {
-        SYSTEM.LOG.debug('Loading test cases for ENV : ', NODICS.getEnvironmentName());
-        let path = module.path + '/test/env/' + NODICS.getEnvironmentName();
-        SYSTEM.processFiles(path, "Test.js", (file) => {
-            let testFile = this.collectTest(require(file));
-            _.each(testFile, (testSuite, suiteName) => {
-                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
-                    if (TEST.nTestPool.suites[suiteName]) {
-                        TEST.nTestPool.suites[suiteName] = _.merge(TEST.nTestPool.suites[suiteName], testSuite);
-                    } else {
-                        TEST.nTestPool.suites[suiteName] = testSuite;
-                    }
-                } else {
-                    if (TEST.uTestPool.suites[suiteName]) {
-                        TEST.uTestPool.suites[suiteName] = _.merge(TEST.uTestPool.suites[suiteName], testSuite);
-                    } else {
-                        TEST.uTestPool.suites[suiteName] = testSuite;
-                    }
-                }
-            });
-        });
-    },
-
-    collectTest: function (file) {
-        _.each(file, (testSuite, suiteName) => {
-            if (testSuite.data) {
-                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
-                    TEST.nTestPool.data = _.merge(TEST.nTestPool.data, testSuite.data);
-                } else {
-                    TEST.uTestPool.data = _.merge(TEST.uTestPool.data, testSuite.data);
-                }
-                delete testSuite.data;
-            }
-            _.each(testSuite, (testGroup, groupName) => {
-                if (testGroup.data) {
-                    if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
-                        TEST.nTestPool.data = _.merge(TEST.nTestPool.data, testGroup.data);
-                    } else {
-                        TEST.uTestPool.data = _.merge(TEST.uTestPool.data, testGroup.data);
-                    }
-                    delete testGroup.data;
-                }
-            });
-        });
-        return file;
-    },
 
     getFileNameWithoutExtension: function (filePath) {
         let fileName = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf("."));
@@ -636,5 +723,86 @@ module.exports = {
                 }
             });
         });
+    },
+
+    //=============================
+
+    loadTest: function (module) {
+        if (CONFIG.get('test').uTest.enabled) {
+            this.loadCommonTest(module);
+        }
+        if (CONFIG.get('test').nTest.enabled) {
+            this.loadEnvTest(module);
+        }
+    },
+
+    loadCommonTest: function (module) {
+        SYSTEM.LOG.debug('Loading module test cases');
+        let path = module.path + '/test/common';
+        SYSTEM.processFiles(path, "Test.js", (file) => {
+            let testFile = this.collectTest(require(file));
+            _.each(testFile, (testSuite, suiteName) => {
+                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                    if (TEST.nTestPool.suites[suiteName]) {
+                        TEST.nTestPool.suites[suiteName] = _.merge(TEST.nTestPool.suites[suiteName], testSuite);
+                    } else {
+                        TEST.nTestPool.suites[suiteName] = testSuite;
+                    }
+                } else {
+                    if (TEST.uTestPool.suites[suiteName]) {
+                        TEST.uTestPool.suites[suiteName] = _.merge(TEST.uTestPool.suites[suiteName], testSuite);
+                    } else {
+                        TEST.uTestPool.suites[suiteName] = testSuite;
+                    }
+                }
+            });
+        });
+    },
+
+    loadEnvTest: function (module) {
+        SYSTEM.LOG.debug('Loading test cases for ENV : ', NODICS.getEnvironmentName());
+        let path = module.path + '/test/env/' + NODICS.getEnvironmentName();
+        SYSTEM.processFiles(path, "Test.js", (file) => {
+            let testFile = this.collectTest(require(file));
+            _.each(testFile, (testSuite, suiteName) => {
+                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                    if (TEST.nTestPool.suites[suiteName]) {
+                        TEST.nTestPool.suites[suiteName] = _.merge(TEST.nTestPool.suites[suiteName], testSuite);
+                    } else {
+                        TEST.nTestPool.suites[suiteName] = testSuite;
+                    }
+                } else {
+                    if (TEST.uTestPool.suites[suiteName]) {
+                        TEST.uTestPool.suites[suiteName] = _.merge(TEST.uTestPool.suites[suiteName], testSuite);
+                    } else {
+                        TEST.uTestPool.suites[suiteName] = testSuite;
+                    }
+                }
+            });
+        });
+    },
+
+    collectTest: function (file) {
+        _.each(file, (testSuite, suiteName) => {
+            if (testSuite.data) {
+                if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                    TEST.nTestPool.data = _.merge(TEST.nTestPool.data, testSuite.data);
+                } else {
+                    TEST.uTestPool.data = _.merge(TEST.uTestPool.data, testSuite.data);
+                }
+                delete testSuite.data;
+            }
+            _.each(testSuite, (testGroup, groupName) => {
+                if (testGroup.data) {
+                    if (testSuite.options.type && testSuite.options.type.toLowerCase() === 'ntest') {
+                        TEST.nTestPool.data = _.merge(TEST.nTestPool.data, testGroup.data);
+                    } else {
+                        TEST.uTestPool.data = _.merge(TEST.uTestPool.data, testGroup.data);
+                    }
+                    delete testGroup.data;
+                }
+            });
+        });
+        return file;
     }
 };

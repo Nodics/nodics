@@ -12,8 +12,10 @@
 const pipelineBuilder = require('./bin/pipelineDefinitionBuilder');
 
 module.exports = {
-    init: function () {
-
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
     loadPipelines: function () {
         SYSTEM.LOG.info('Starting Pipelines Defintion builder process');

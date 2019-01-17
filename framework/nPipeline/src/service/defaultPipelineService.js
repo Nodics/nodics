@@ -27,7 +27,7 @@ module.exports = {
     start: function (name, request, response) {
         return new Promise((resolve, reject) => {
             if (name !== 'defaultPipeline' && PIPELINE[name]) {
-                let id = name + '_' + SYSTEM.generateUniqueCode();
+                let id = name + '_' + UTILS.generateUniqueCode();
                 try {
                     let defaultPipeline = _.merge({}, PIPELINE.defaultPipeline);
                     let pipelineDef = _.merge(defaultPipeline, PIPELINE[name]);

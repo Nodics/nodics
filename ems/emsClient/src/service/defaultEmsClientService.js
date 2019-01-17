@@ -11,12 +11,12 @@
 
 module.exports = {
 
-    init: function () {
+    configureEMSClients: function (options) {
         let _self = this;
         let emsConfig = CONFIG.get('emsClient');
         if (emsConfig.enabled && emsConfig.type) {
             let conf = emsConfig[emsConfig.type];
-            SERVICE[conf.handler].init(conf).then(success => {
+            SERVICE[conf.handler].configureClent(conf).then(success => {
                 _self.LOG.debug('Successfully established connection with : ', emsConfig.type);
             }).catch(error => {
                 _self.LOG.error(error);

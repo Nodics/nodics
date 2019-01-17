@@ -16,7 +16,7 @@ module.exports = {
     publisher: {},
     consumerPool: {},
 
-    init: function (config) {
+    configureClent: function (config) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.options) {

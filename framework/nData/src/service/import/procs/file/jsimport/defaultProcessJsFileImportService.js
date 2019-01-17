@@ -91,7 +91,7 @@ module.exports = {
                 if (options.pendingRecords && options.pendingRecords.length > 0) {
                     request.currentRecord = options.pendingRecords.shift();
                     request.currentModel = request.finalData[request.currentRecord];
-                    let uniqueHash = request.tenant + '_' + SYSTEM.generateHash(JSON.stringify(request.currentModel));
+                    let uniqueHash = request.tenant + '_' + UTILS.generateHash(JSON.stringify(request.currentModel));
                     if (!fileObj.processedRecords.includes(uniqueHash)) {
                         SERVICE.DefaultPipelineService.start('modelImportPipeline', request, {}).then(success => {
                             if (success && UTILS.isArray(success)) {

@@ -18,7 +18,7 @@ module.exports = {
     publisherPool: {},
     consumerPool: {},
 
-    init: function(config) {
+    configureClent: function (config) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.options) {
@@ -28,14 +28,14 @@ module.exports = {
             let libPath = baseDir + 'ext/lib';
 
             let dependencies = fs.readdirSync(libPath);
-            dependencies.forEach(function(dependency) {
+            dependencies.forEach(function (dependency) {
                 _self.LOG.debug('Setting classpath for : ', libPath + "/" + dependency);
                 java.classpath.push(libPath + "/" + dependency);
             });
             _self.LOG.debug('Setting classpath for : ', baseDir + '/ext/bin');
             java.classpath.push(baseDir + '/ext/bin');
             try {
-                java.newInstance("com.tibco.tibjms.TibjmsConnectionFactory", config.options.url, function(error, tibcoConnectionFactory) {
+                java.newInstance("com.tibco.tibjms.TibjmsConnectionFactory", config.options.url, function (error, tibcoConnectionFactory) {
                     if (error) {
                         reject('While creating tibco connection factory');
                     } else {
@@ -43,7 +43,7 @@ module.exports = {
                             config.options.username,
                             config.options.password,
                             tibcoConnectionFactory,
-                            function(err, connectionFactory) {
+                            function (err, connectionFactory) {
                                 if (error) {
                                     reject('While creating tibco connection : ', config.options.url);
                                 } else {
@@ -80,7 +80,7 @@ module.exports = {
 
     },
 
-    createPublisher: function(connectionFactory, queue) {
+    createPublisher: function (connectionFactory, queue) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -88,7 +88,7 @@ module.exports = {
                     connectionFactory,
                     queue.messageType,
                     queue.inputQueue,
-                    function(error, publisher) {
+                    function (error, publisher) {
                         if (error) {
                             _self.LOG.error(error);
                             reject('While creating publisher for queue : ' + queue.inputQueue);
@@ -108,7 +108,7 @@ module.exports = {
         });
     },
 
-    createConsumer: function(connectionFactory, queue) {
+    createConsumer: function (connectionFactory, queue) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -119,7 +119,7 @@ module.exports = {
                     queue.targetModule,
                     queue.nodeId,
                     evantUrl,
-                    function(error, consumer) {
+                    function (error, consumer) {
                         if (error) {
                             _self.LOG.error(error);
                             reject('While creating consumer for queue : ' + queue.outputQueue);
@@ -139,7 +139,7 @@ module.exports = {
         });
     },
 
-    publish: function(queueName, message) {
+    publish: function (queueName, message) {
         return new Promise((resolve, reject) => {
             let publisher = this.publisherPool[queueName];
             if (publisher) {

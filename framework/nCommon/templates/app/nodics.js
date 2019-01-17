@@ -10,7 +10,9 @@
  */
 
 module.exports = {
-    init: function(options) {
-        //put Application specific code here
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     }
 };
