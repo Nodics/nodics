@@ -12,7 +12,7 @@
 const _ = require('lodash');
 
 module.exports = {
-    init: function () {
+    loadPipelines: function () {
         return new Promise((resolve, reject) => {
             global.PIPELINE = SYSTEM.loadFiles('/src/pipelines/pipelinesDefinition.js');
             resolve(true);

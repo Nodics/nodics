@@ -28,7 +28,7 @@ module.exports = {
     loadFacade: function () {
         let _self = this;
         SYSTEM.LOG.info('Starting Facade Generation process');
-        return facade.init().then(success => { }).catch(error => {
+        return facade.loadFacade().then(success => { }).catch(error => {
             _self.LOG.error(error);
         });
     }

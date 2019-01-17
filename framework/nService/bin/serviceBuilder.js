@@ -36,7 +36,7 @@ module.exports = {
         });
     },
 
-    init: function () {
+    loadService: function () {
         return new Promise((resolve, reject) => {
             let gVar = SYSTEM.getGlobalVariables('/src/service/common.js');
             let serviceCommon = SYSTEM.loadFiles('/src/service/common.js');

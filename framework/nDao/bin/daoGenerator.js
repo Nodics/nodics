@@ -32,7 +32,7 @@ module.exports = {
             });
         });
     },
-    init: function () {
+    loadDao: function () {
         return this.gen(true);
     }
 };

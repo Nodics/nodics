@@ -12,7 +12,7 @@
 const _ = require('lodash');
 
 module.exports = {
-    init: function () {
+    configServers: function () {
         SYSTEM.LOG.debug('Starting server configuration');
         let modules = NODICS.getModules();
         let commonConfig = SYSTEM.loadFiles('/src/router/appConfig.js');

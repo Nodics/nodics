@@ -38,7 +38,7 @@ module.exports = {
     },
 
 
-    init: function () {
+    loadController: function () {
         return new Promise((resolve, reject) => {
             let gVar = SYSTEM.getGlobalVariables('/src/controller/common.js');
             let serviceCommon = SYSTEM.loadFiles('/src/controller/common.js');

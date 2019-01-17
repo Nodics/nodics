@@ -19,6 +19,6 @@ module.exports = {
     },
     loadPipelines: function () {
         SYSTEM.LOG.info('Starting Pipelines Defintion builder process');
-        return pipelineBuilder.init();
+        return pipelineBuilder.loadPipelines();
     }
 };

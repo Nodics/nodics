@@ -20,7 +20,7 @@ module.exports = {
     loadDatabase: function () {
         SYSTEM.LOG.info('Starting database configuration process');
         return new Promise((resolve, reject) => {
-            conHandler.init().then(success => {
+            conHandler.createConnections().then(success => {
                 SYSTEM.buildSchemas();
                 let tenants = ['default'];
                 NODICS.addTenant('default');

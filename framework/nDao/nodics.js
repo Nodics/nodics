@@ -27,7 +27,7 @@ module.exports = {
 
     loadDao: function () {
         SYSTEM.LOG.info('Starting Dao generation process.');
-        return daoGenerator.init().then(success => { }).catch(error => {
+        return daoGenerator.loadDao().then(success => { }).catch(error => {
             SYSTEM.LOG.error(error);
         });
     }

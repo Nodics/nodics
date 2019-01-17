@@ -28,7 +28,7 @@ module.exports = {
     loadController: function () {
         let _self = this;
         SYSTEM.LOG.info('Starting Controller Generation process');
-        return controller.init().then(success => { }).catch(error => {
+        return controller.loadController().then(success => { }).catch(error => {
             _self.LOG.error(error);
         });
     }

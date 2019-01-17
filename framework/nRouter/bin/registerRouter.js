@@ -12,7 +12,7 @@
 const _ = require('lodash');
 
 module.exports = {
-    init: function () {
+    registerRouter: function () {
         let _self = this;
         let modules = NODICS.getModules();
         let routers = SYSTEM.loadFiles('/src/router/router.js');

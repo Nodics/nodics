@@ -55,7 +55,7 @@ module.exports = {
         });
     },
 
-    init: function () {
+    createConnections: function () {
         SYSTEM.LOG.info("Starting Database creating process");
         return this.createDefaultDatabases();
     }

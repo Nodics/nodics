@@ -12,7 +12,7 @@
 const _ = require('lodash');
 
 module.exports = {
-    init: function () {
+    initServers: function () {
         let _self = this;
         SYSTEM.LOG.info('Initializing servers');
         let modules = NODICS.getModules();

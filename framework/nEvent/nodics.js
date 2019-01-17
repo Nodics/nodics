@@ -19,6 +19,6 @@ module.exports = {
     },
 
     loadListeners: function () {
-        listeners.init();
+        listeners.register();
     }
 };

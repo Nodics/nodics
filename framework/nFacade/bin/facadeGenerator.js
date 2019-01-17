@@ -36,7 +36,7 @@ module.exports = {
         });
     },
 
-    init: function () {
+    loadFacade: function () {
         return new Promise((resolve, reject) => {
             let gVar = SYSTEM.getGlobalVariables('/src/facade/common.js');
             let serviceCommon = SYSTEM.loadFiles('/src/facade/common.js');

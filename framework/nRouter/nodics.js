@@ -8,11 +8,10 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-
+const _ = require('lodash');
 const initServers = require('./bin/initializeServers');
 const serverConfig = require('./bin/loadServerConfiguration');
 const registerRouter = require('./bin/registerRouter');
-const _ = require('lodash');
 
 module.exports = {
     init: function (options) {
@@ -31,9 +30,9 @@ module.exports = {
     loadRouter: function () {
         SYSTEM.LOG.info('Staring servers initialization process');
         return new Promise((resolve, reject) => {
-            initServers.init();
-            serverConfig.init();
-            registerRouter.init().then(success => {
+            initServers.initServers();
+            serverConfig.configServers();
+            registerRouter.registerRouter().then(success => {
                 resolve(true);
             }).catch(error => {
                 reject(error);

@@ -32,3 +32,4 @@ yarn-error.log*
 **/kickoff/custom/**
 
 **/rrldataengine/**
+**/config/modules.js
