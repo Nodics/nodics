@@ -9,7 +9,7 @@
 
  */
 
-const FRAMEWORK = require('./framework');
+const FRAMEWORK = require('./gFramework');
 
 module.exports = {
 

@@ -1,7 +1,7 @@
-module.exports = { core: [ 'core', 'cronjob', 'nems', 'elasticsearch', 'profile' ],
-  ems: [ 'emsClient', 'ems' ],
+module.exports = { core: [ 'gCore', 'cronjob', 'nems', 'profile' ],
+  ems: [ 'gEms', 'emsClient' ],
   framework: 
-   [ 'framework',
+   [ 'gFramework',
      'nconfig',
      'ncommon',
      'ndatabase',
@@ -15,6 +15,7 @@ module.exports = { core: [ 'core', 'cronjob', 'nems', 'elasticsearch', 'profile'
      'ndata',
      'ntest',
      'system' ],
+  search: [ 'search', 'elasticsearch', 'gSearch' ],
   extdatarecords: [],
   environments: [],
   dev: [],

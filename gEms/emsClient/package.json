@@ -1,0 +1,20 @@
+{
+    "name": "emsClient",
+    "index": "500",
+    "publish": true,
+    "description": "Nodics applicaion module. It will hold all configuration and emsClient point to start nodics",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "emsClient"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

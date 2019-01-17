@@ -1,0 +1,20 @@
+{
+    "name": "search",
+    "index": "600",
+    "publish": false,
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to search",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "search"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

@@ -10,17 +10,12 @@
  */
 
 module.exports = {
-    activeModules: {
-        updateGroups: true,
-        groups: ['core', 'ems', 'search'], // Group 'framework' will be included automatically
-        modules: [
-            'admin',
-            'nodicsDefaultServer',
-            'kickoff',
-            'nodicsLocalEnv'
+    moduleGroups: {
+        core: [
+            'gCore',
+            'cronjob',
+            'nems',
+            'profile'
         ]
-    },
-    log: {
-        level: 'debug'
     }
 };
