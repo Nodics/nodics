@@ -13,7 +13,7 @@ module.exports = {
     moduleGroups: {
         search: [
             'search',
-            'elasticsearch',
+            'elastic',
             'gSearch'
         ]
     }

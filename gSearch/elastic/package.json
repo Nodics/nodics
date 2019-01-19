@@ -1,11 +1,11 @@
 {
-    "name": "elasticsearch",
+    "name": "elastic",
     "index": "610",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all elastic search related configurations",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "elasticsearch"
+        "elastic"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",
