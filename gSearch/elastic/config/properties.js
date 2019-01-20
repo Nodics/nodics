@@ -14,8 +14,8 @@ module.exports = {
         default: {
             elastic: {
                 options: {
-                    connectionHandler: '',
-                    schemaHandler: '',
+                    connectionHandler: 'DefaultElasticSearchEngineConnectionHandlerService',
+                    schemaHandler: 'DefaultElasticSearchSchemaHandlerService',
                     fullIndexDataQuery: {},
                     incrementalIndexDataQuery: {}
                 },

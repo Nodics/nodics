@@ -84,7 +84,7 @@ module.exports = {
 
     getActiveModules: function (options) {
         try {
-            let modules = ['default'];
+            let modules = [];
             let appHome = NODICS.getApplicationPath();
             let envHome = NODICS.getEnvironmentPath();
             let serverHome = NODICS.getServerPath();
@@ -130,7 +130,6 @@ module.exports = {
 
     loadModuleIndex: function () {
         let _self = this;
-        let config = CONFIG.getProperties();
         let moduleIndex = [];
         _.each(NODICS.getRawModules(), (moduleObject, moduleName) => {
             if (NODICS.isModuleActive(moduleObject.metaData.name)) {
@@ -147,7 +146,7 @@ module.exports = {
 
     printModuleSequence: function () {
         let modulesStr = '';
-        let activeModules = ['default'];
+        let activeModules = [];
         _.each(NODICS.getIndexedModules(), (obj, key) => {
             modulesStr = modulesStr + obj.name + ',';
             activeModules.push(obj.name);

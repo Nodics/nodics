@@ -304,60 +304,6 @@ module.exports = function () {
         return _activeChannel;
     };
 
-    /**
-     * This function is used to get module specific search configuration, if not enabled, it will return undefined
-     * @param {*} moduleName 
-     * @param {*} tntCode 
-     */
-    this.getSearchConfiguration = function (moduleName, tenant) {
-        let defaultSearchConfig = CONFIG.get('search', tenant);
-        let searchConfig = _.merge(_.merge({}, defaultSearchConfig.default), defaultSearchConfig[moduleName] || {});
-        let connConfig = searchConfig[searchConfig.options.engine];
-        if (connConfig) {
-            connConfig.options = _.merge(_.merge({}, searchConfig.options), connConfig.options);
-            return connConfig;
-        } else {
-            throw new Error('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
-        }
-
-    };
-
-    this.addTenantSearchEngine = function (moduleName, tenant, searchEngine) {
-        if (!moduleName) {
-            moduleName = 'default';
-        }
-        if (!this.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
-        } else if (!_nodics.search[moduleName]) {
-            _nodics.search[moduleName] = {};
-        }
-        _nodics.search[moduleName][tenant] = searchEngine;
-    };
-
-    this.removeTenantSearchEngine = function (moduleName, tenant) {
-        if (!this.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
-        }
-        if (_nodics.search[moduleName] && _nodics.search[moduleName][tenant]) {
-            delete _nodics.search[moduleName][tenant];
-        }
-        return true;
-    };
-
-    this.getTenantSearchEngine = function (moduleName, tenant) {
-        if (tenant && !UTILS.isBlank(tenant)) {
-            let searchEngine = {};
-            if (moduleName && _nodics.search[moduleName]) {
-                searchEngine = _nodics.search[moduleName];
-            } else {
-                searchEngine = _nodics.search.default;
-            }
-            return searchEngine[tenant];
-        } else {
-            throw new Error('Invalid tenant id...' + tenant);
-        }
-    };
-
     this.getDatabaseConfiguration = function (moduleName, tenant) {
         let properties = CONFIG.get('database', tenant);
         if (properties[moduleName]) {
@@ -521,43 +467,5 @@ module.exports = function () {
         } else {
             return moduleObject.routers ? moduleObject.routers[prefix] : undefined;
         }
-    };
-
-    this.addTenantRawSearchSchema = function (moduleName, tenant, definition) {
-        let moduleObject = this.getModule(moduleName);
-        if (!moduleObject) {
-            throw new Error('Invalid module name: ' + moduleName);
-        } else {
-            if (!moduleObject.rawSearchSchema) {
-                moduleObject.rawSearchSchema = {};
-            }
-            if (!moduleObject.rawSearchSchema[tenant]) {
-                moduleObject.rawSearchSchema[tenant] = {};
-            }
-            moduleObject.rawSearchSchema[tenant][definition.typeName] = definition;
-        }
-    };
-
-    this.getTenantRawSearchSchema = function (moduleName, tenant, typeName) {
-        let moduleObject = this.getModule(moduleName);
-        if (!moduleObject) {
-            throw new Error('Invalid module name: ' + moduleName);
-        } else if (!moduleObject.rawSearchSchema[tenant]) {
-            throw new Error('Invalid tenant name: ' + tenant);
-        } else {
-            return moduleObject.rawSearchSchema[tenant][typeName];
-        }
-    };
-
-    this.removeTenantRawSearchSchema = function (moduleName, tenant) {
-        let moduleObject = this.getModule(moduleName);
-        if (!moduleObject) {
-            throw new Error('Invalid module name: ' + moduleName);
-        } else if (!moduleObject.rawSearchSchema[tenant]) {
-            throw new Error('Invalid tenant name: ' + tenant);
-        } else {
-            delete moduleObject.rawSearchSchema[tenant];
-        }
-        return true;
     };
 };

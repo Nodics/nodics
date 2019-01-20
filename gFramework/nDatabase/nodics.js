@@ -12,11 +12,25 @@
 const conHandler = require('./bin/connectionHandler');
 
 module.exports = {
-    init: function () {
+    /**
+     * This function is used to setup your module just before loading all services.
+     */
+    init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
+
+    /**
+     * This function is used to setup your module just before routers are getting activated.
+     */
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+
     loadDatabase: function () {
         SYSTEM.LOG.info('Starting database configuration process');
         return new Promise((resolve, reject) => {

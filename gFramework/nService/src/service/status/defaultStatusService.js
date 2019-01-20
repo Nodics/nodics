@@ -13,6 +13,9 @@ module.exports = {
 
     statusMap: {},
 
+    /**
+     * This function is used to setup your service just after service is loaded.
+     */
     init: function () {
         return new Promise((resolve, reject) => {
             try {
@@ -21,6 +24,15 @@ module.exports = {
             } catch (error) {
                 reject(error);
             }
+        });
+    },
+
+    /**
+     * This function is used to setup your service just before routers are getting activated.
+     */
+    postInit: function () {
+        return new Promise((resolve, reject) => {
+            resolve(true);
         });
     },
 

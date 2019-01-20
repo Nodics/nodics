@@ -2,6 +2,7 @@ module.exports = { core: [ 'gCore', 'cronjob', 'nems', 'profile' ],
   ems: [ 'gEms', 'emsClient' ],
   framework: 
    [ 'gFramework',
+     'default',
      'nconfig',
      'ncommon',
      'ndatabase',

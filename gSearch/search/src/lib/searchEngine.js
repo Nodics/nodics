@@ -14,7 +14,6 @@ module.exports = function () {
     let _options = {};
     let _connOptions = {};
     let _connection = {};
-    let _rawSearchSchema = {};
 
     this.setActive = function (active) {
         _active = active;
@@ -45,13 +44,5 @@ module.exports = function () {
 
     this.getConnection = function () {
         return _connection;
-    };
-
-    this.setRawSearchSchema = function (rawSearchSchema) {
-        _rawSearchSchema = rawSearchSchema;
-    };
-
-    this.getRawSearchSchema = function () {
-        return _rawSearchSchema;
     };
 };

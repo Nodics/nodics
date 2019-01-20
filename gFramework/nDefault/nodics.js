@@ -10,24 +10,14 @@
  */
 
 module.exports = {
-
     init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
-
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultSearchEngineConnectionHandlerService.createSearchConnections().then(success => {
-                SERVICE.DefaultSearchSchemaHandlerService.prepareSearchSchema().then(success => {
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
-            }).catch(error => {
-                reject(error);
-            });
+            resolve(true);
         });
     }
 };

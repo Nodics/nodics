@@ -14,7 +14,7 @@ let elasticsearch = require('elasticsearch');
 
 module.exports = {
 
-    getSearchActiveModules: function () {
+    /*getSearchActiveModules: function () {
         let modules = NODICS.getModules();
         let dbModules = [];
         _.each(modules, (value, moduleName) => {
@@ -294,5 +294,5 @@ module.exports = {
             });
         }
         return _.merge(target, source);
-    }
+    }*/
 };

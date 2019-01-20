@@ -496,8 +496,8 @@ module.exports = {
 
     cleanModules: function () {
         Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
-            let moduleName = NODICS.getIndexedModules()[key];
-            SYSTEM.cleanModule(moduleName);
+            let moduleObject = NODICS.getIndexedModules()[key];
+            SYSTEM.cleanModule(moduleObject.name);
         });
     },
 

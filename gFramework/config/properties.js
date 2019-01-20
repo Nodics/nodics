@@ -13,6 +13,7 @@ module.exports = {
     moduleGroups: {
         framework: [
             'gFramework',
+            'default',
             'nconfig',
             'ncommon',
             'ndatabase',
