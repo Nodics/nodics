@@ -226,6 +226,7 @@ module.exports = {
                     description: 'Name of enterprise',
                     searchOptions: {
                         enabled: true, // default is false
+                        type: 'string'
                     }
                 },
                 tenant: {
@@ -234,6 +235,7 @@ module.exports = {
                     description: 'Required Code of associated tenant',
                     searchOptions: {
                         enabled: true, // default is false
+                        type: 'string'
                     }
                 },
                 active: {
@@ -242,6 +244,7 @@ module.exports = {
                     description: 'Flag to check if tenant is still active',
                     searchOptions: {
                         enabled: true, // default is false
+                        type: 'string'
                     }
                 },
                 superEnterprise: {
@@ -250,6 +253,7 @@ module.exports = {
                     description: 'Parent enterprise code if any',
                     searchOptions: {
                         enabled: true, // default is false
+                        type: 'string'
                     }
                 },
                 subEnterprises: {
@@ -263,6 +267,7 @@ module.exports = {
                     description: 'All associated addresses with this enterprise',
                     searchOptions: {
                         enabled: true, // default is false
+                        type: 'string'
                     }
                 },
                 contacts: {
@@ -271,6 +276,7 @@ module.exports = {
                     description: 'All associated contacts with this enterprise',
                     searchOptions: {
                         enabled: true, // default is false
+                        type: 'string'
                     }
                 }
             }

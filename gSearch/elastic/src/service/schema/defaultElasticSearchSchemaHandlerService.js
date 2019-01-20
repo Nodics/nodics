@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+const util = require('util');
 
 module.exports = {
 
@@ -55,7 +56,8 @@ module.exports = {
                             let propName = options.searchOptions.name || name;
                             searchSchema.properties[propName] = options.searchOptions;
                             searchSchema.properties[propName].name = searchSchema.properties[propName].name || name;
-                            searchSchema.properties[propName].type = searchSchema.properties[propName].type || 'search';
+                            searchSchema.properties[propName].type = searchSchema.properties[propName].type || 'string';
+                            searchSchema.properties[propName].index = searchSchema.properties[propName].index || 'not_analyzed';
                             searchSchema.properties[propName].weight = searchSchema.properties[propName].weight || searchConfig.defaultPropertyWeight;
                             searchSchema.properties[propName].sequence = searchSchema.properties[propName].sequence || searchConfig.defaultPropertySequence;
                             if (rawSchema.refSchema && rawSchema.refSchema[name] &&
@@ -113,12 +115,30 @@ module.exports = {
             Object.keys(source.properties).forEach(propName => {
                 source.properties[propName].enabled = source.properties[propName].enabled || false;
                 source.properties[propName].name = source.properties[propName].name || propName;
-                source.properties[propName].type = source.properties[propName].type || 'search';
+                source.properties[propName].type = source.properties[propName].type || 'string';
+                source.properties[propName].index = source.properties[propName].index || 'not_analyzed';
                 source.properties[propName].weight = source.properties[propName].weight || searchConfig.defaultPropertyWeight;;
                 source.properties[propName].sequence = source.properties[propName].sequence || searchConfig.defaultPropertySequence;;
             });
         }
         return _.merge(target, source);
-    }
+    },
 
+    updateIndexTypeMapping: function (options) {
+        return new Promise((resolve, reject) => {
+            console.log('  ==> ', util.inspect(options.indexDefinition, true, 4));
+            //console.log('  ==> ', SERVICE.DefaultSearchConfigurationService.getRawSearchModelDefinition(options.searchEngine.getOptions().engine));
+
+            resolve(true);
+        });
+    },
+
+    prepareSearchModel: function (options) {
+        return new Promise((resolve, reject) => {
+            // console.log('  ==> ', util.inspect(options.indexDefinition, true, 4));
+            console.log('  ==> ', SERVICE.DefaultSearchConfigurationService.getRawSearchModelDefinition(options.searchEngine.getOptions().engine));
+
+            resolve(true);
+        });
+    }
 };

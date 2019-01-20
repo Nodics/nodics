@@ -150,11 +150,13 @@ module.exports = {
                         NODICS.setServerState('started');
                         SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
                         this.initTestRuner();
-                        /*Object.keys(NODICS.getModules()).forEach(moduleName => {
-                            console.log('Module: ', moduleName);
-                            console.log(SERVICE.DefaultSearchConfigurationService.getRawSearchSchema(moduleName));
-                            console.log('-------------------------------');
-                        });*/
+                        /*
+                            Object.keys(NODICS.getModules()).forEach(moduleName => {
+                                console.log('--------------', moduleName, '-----------------');
+                                console.log(NODICS.getSearchModels(moduleName, 'default'));
+                                console.log('-------------------------------');
+                            });
+                         */
                     }).catch(error => {
                         SYSTEM.LOG.error('Nodics server error : ', error);
                     });

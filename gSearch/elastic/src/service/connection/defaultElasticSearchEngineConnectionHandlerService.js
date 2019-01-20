@@ -27,9 +27,17 @@ module.exports = {
      * This function is used to setup your service just before routers are getting activated.
      */
     postInit: function () {
+        let _self = this;
         return new Promise((resolve, reject) => {
+            _self.loadRawSearchModelDefinition();
             resolve(true);
         });
+    },
+
+    loadRawSearchModelDefinition: function () {
+        let modelDefinition = {};
+        SYSTEM.loadFiles('/src/schemas/elasticSearchModel.js', modelDefinition);
+        SERVICE.DefaultSearchConfigurationService.addRawSearchModelDefinition('elastic', modelDefinition);
     },
 
     createSearchConnection: function (searchOptions) {

@@ -15,6 +15,7 @@ module.exports = {
 
     searchEngines: {},
     searchSchema: {},
+    rawSearchModel: {},
 
     /**
      * This function is used to setup your service just after service is loaded.
@@ -33,6 +34,16 @@ module.exports = {
             resolve(true);
         });
     },
+
+    getRawSearchModelDefinition: function (engine) {
+        return this.rawSearchModel[engine];
+    },
+
+    addRawSearchModelDefinition: function (engine, definition) {
+        this.rawSearchModel[engine] = definition;
+    },
+
+
 
     getSearchActiveModules: function () {
         let modules = NODICS.getModules();
@@ -112,8 +123,16 @@ module.exports = {
         }
     },
 
-    getRawSearchSchema: function (moduleName, tenant, typeName) {
-        return this.searchSchema[moduleName]
+    getRawSearchSchema: function (moduleName, tenant) {
+        if (!NODICS.isModuleActive(moduleName)) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else if (!NODICS.getTenants().includes(tenant)) {
+            throw new Error('Invalid tenant name: ' + tenant);
+        } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
+            return this.searchSchema[moduleName][tenant];
+        } else {
+            return {};
+        }
     },
 
     getTenantRawSearchSchema: function (moduleName, tenant, typeName) {

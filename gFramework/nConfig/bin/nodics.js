@@ -428,6 +428,17 @@ module.exports = function () {
         }
     };
 
+    this.getSearchModels = function (moduleName, tenant) {
+        if (!NODICS.isModuleActive(moduleName) || !this.getModule(moduleName)) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else if (!NODICS.getTenants().includes(tenant)) {
+            throw new Error('Invalid tenant name: ' + tenant);
+        } else {
+            let moduleObject = this.getModule(moduleName);
+            return (moduleObject.searchModels) ? moduleObject.searchModels[tenant] : null;
+        }
+    };
+
     this.addRouters = function (routers, moduleName) {
         let moduleObject = this.getModule(moduleName);
         if (UTILS.isBlank(moduleObject)) {

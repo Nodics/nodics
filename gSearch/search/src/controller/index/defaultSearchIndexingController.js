@@ -13,7 +13,7 @@ module.exports = {
 
     fullIndex: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName;
-        request.indexType = request.httpRequest.params.indexType;
+        request.typeName = request.httpRequest.params.typeName;
         request = _.merge(request, request.httpRequest.body || {});
         request.reloadSearchSchema = request.reloadSearchSchema || CONFIG.get('search').reloadSearchSchema;
         if (callback) {
@@ -29,7 +29,7 @@ module.exports = {
 
     incrementalIndex: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName;
-        request.indexType = request.httpRequest.params.indexType;
+        request.typeName = request.httpRequest.params.typeName;
         request = _.merge(request, request.httpRequest.body || {});
         request.reloadSearchSchema = request.reloadSearchSchema || CONFIG.get('search').reloadSearchSchema;
         if (callback) {

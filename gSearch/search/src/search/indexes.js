@@ -10,7 +10,7 @@
 */
 
 module.exports = {
-    default: {
+    search: {
         order: {
             enabled: false,
             idPropertyName: 'code',

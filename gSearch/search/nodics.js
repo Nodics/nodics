@@ -21,6 +21,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultSearchEngineConnectionHandlerService.createSearchConnections().then(success => {
                 SERVICE.DefaultSearchSchemaHandlerService.prepareSearchSchema().then(success => {
+                    SERVICE.DefaultSearchSchemaHandlerService.prepareSearchModels();
                     resolve(true);
                 }).catch(error => {
                     reject(error);

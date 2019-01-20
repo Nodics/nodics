@@ -167,7 +167,34 @@ module.exports = {
                     }
                 });
             };
-        }
+        },
+
+        defineDefaultDoUpdateMapping: function (collection, rawSchema) {
+            collection.doUpdateMapping = function (input) {
+                return new Promise((resolve, reject) => {
+                    try {
+                        let searchEngine = input.searchEngine;
+                        let indexDef = input.rawSearchSchema;
+                        searchEngine.getConnection().indices.putMapping({
+                            index: indexDef.indexName,
+                            type: indexDef.typeName,
+                            body: {
+                                query: input.query
+                            }
+                        }, function (error, response, status) {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(response);
+                            }
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
 
         /*
         defineDefaultCreateIndex: function (collection, rawSchema) {

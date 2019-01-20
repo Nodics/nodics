@@ -24,7 +24,6 @@ module.exports = {
                     searchOptions: {
                         enabled: true, // default is false
                         name: 'enterpriseCode', // default is property name
-                        type: 'both', // search, facet or both - default is search
                         weight: 0, // default is 0, heigher value have heigher weight
                         sequence: 0,// default is 0
                         //handler: 'EnterpriseCodeHandlerService.getEnterpriseCode'
