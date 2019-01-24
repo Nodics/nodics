@@ -14,6 +14,7 @@ module.exports = function () {
     let _options = {};
     let _connOptions = {};
     let _connection = {};
+    let _indexesList = [];
 
     this.setActive = function (active) {
         _active = active;
@@ -44,5 +45,19 @@ module.exports = function () {
 
     this.getConnection = function () {
         return _connection;
+    };
+
+    this.addIndexName = function (indexName) {
+        _indexesList.push(indexName);
+    };
+
+    this.removeIndexName = function (indexName) {
+        if (_indexesList.indexOf(indexName) > -1) {
+            _indexesList.splice(_indexesList.indexOf(indexName), 1);
+        }
+    };
+
+    this.isActiveIndex = function (indexName) {
+        return _indexesList.includes(indexName);
     };
 };

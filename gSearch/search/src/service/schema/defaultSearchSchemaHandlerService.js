@@ -44,37 +44,6 @@ module.exports = {
         });
     },
 
-    prepareSearchModels: function () {
-        let _self = this;
-        try {
-            Object.keys(NODICS.getModules()).forEach(moduleName => {
-                let moduleObject = NODICS.getModule(moduleName);
-                if (!moduleObject.searchModels) {
-                    moduleObject.searchModels = {};
-                }
-                _self.prepareModuleSearchModels(moduleName);
-            });
-        } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
-            throw error;
-        }
-    },
-
-    updateIndexesMapping: function () {
-        let _self = this;
-        try {
-            Object.keys(NODICS.getModules()).forEach(moduleName => {
-                _self.updateModuleIndexesMapping(moduleName);
-            });
-        } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
-            throw error;
-        }
-    },
-
-
     loadSearchSchemaFromSchema: function () {
         let _self = this;
         try {
@@ -107,6 +76,10 @@ module.exports = {
                                 typeof SERVICE[searchOptions.schemaHandler].prepareFromSchema === 'function') {
                                 let searchSchema = SERVICE[searchOptions.schemaHandler].prepareFromSchema(moduleName, schemaName);
                                 if (searchSchema && !UTILS.isBlank(searchSchema)) {
+                                    let collection = NODICS.getModels(moduleName, tntCode)[schemaName.toUpperCaseFirstChar() + 'Model'];
+                                    if (collection) {
+                                        collection.typeName = searchSchema.typeName;
+                                    }
                                     SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(moduleName, tntCode, searchSchema);
                                 }
                             } else {
@@ -198,135 +171,5 @@ module.exports = {
                 });
             });
         });
-    },
-
-    updateModuleIndexesMapping: function (moduleName) {
-        let _self = this;
-        try {
-            NODICS.getTenants().forEach(tntCode => {
-                let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(moduleName, tntCode);
-                if (searchEngine) {
-                    let searchOptions = searchEngine.getOptions();
-                    if (searchOptions.enabled && searchOptions.schemaHandler &&
-                        SERVICE[searchOptions.schemaHandler] &&
-                        SERVICE[searchOptions.schemaHandler].prepareFromDefinitions &&
-                        typeof SERVICE[searchOptions.schemaHandler].prepareFromDefinitions === 'function') {
-                        _self.updateTenantIndexesMapping(moduleName, tntCode);
-                    }
-                }
-            });
-        } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
-            throw error;
-        }
-    },
-
-    updateTenantIndexesMapping: function (moduleName, tntCode) {
-        let _self = this;
-        try {
-            let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(moduleName, tntCode);
-            if (searchEngine) {
-                let searchOptions = searchEngine.getOptions();
-                if (searchOptions.enabled && searchOptions.schemaHandler &&
-                    SERVICE[searchOptions.schemaHandler] &&
-                    SERVICE[searchOptions.schemaHandler].updateIndexTypeMapping &&
-                    typeof SERVICE[searchOptions.schemaHandler].updateIndexTypeMapping === 'function') {
-                    let moduleTenantSearchRawSchema = SERVICE.DefaultSearchConfigurationService.getRawSearchSchema(moduleName, tntCode);
-                    if (moduleTenantSearchRawSchema && !UTILS.isBlank(moduleTenantSearchRawSchema)) {
-                        let allPromise = [];
-                        console.log('==> ', moduleName);
-                        Object.keys(moduleTenantSearchRawSchema).forEach(typeName => {
-                            let indexDefinition = moduleTenantSearchRawSchema[typeName];
-                            allPromise.push(SERVICE[searchOptions.schemaHandler].updateIndexTypeMapping({
-                                moduleName: moduleName,
-                                tntCode: tntCode,
-                                searchEngine: searchEngine,
-                                rawSearchSchema: moduleTenantSearchRawSchema,
-                                typeName: typeName,
-                                indexDefinition: indexDefinition
-                            }));
-                        });
-                    }
-                }
-            }
-        } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
-            throw error;
-        }
-    },
-
-    prepareModuleSearchModels: function (moduleName) {
-        let _self = this;
-        try {
-            let moduleObject = NODICS.getModule(moduleName);
-            NODICS.getTenants().forEach(tntCode => {
-                if (!moduleObject.searchModels[tntCode]) {
-                    moduleObject.searchModels[tntCode] = {};
-                }
-                let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(moduleName, tntCode);
-                if (searchEngine) {
-                    let searchOptions = searchEngine.getOptions();
-                    if (searchOptions.enabled && searchOptions.schemaHandler &&
-                        SERVICE[searchOptions.schemaHandler] &&
-                        SERVICE[searchOptions.schemaHandler].prepareFromDefinitions &&
-                        typeof SERVICE[searchOptions.schemaHandler].prepareFromDefinitions === 'function') {
-                        _self.prepareTenantSearchModels(moduleName, tntCode);
-                    }
-                }
-            });
-        } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
-            throw error;
-        }
-    },
-
-    prepareTenantSearchModels: function (moduleName, tntCode) {
-        let _self = this;
-        try {
-            let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(moduleName, tntCode);
-            if (searchEngine) {
-                let searchOptions = searchEngine.getOptions();
-                if (searchOptions.enabled && searchOptions.schemaHandler &&
-                    SERVICE[searchOptions.schemaHandler] &&
-                    SERVICE[searchOptions.schemaHandler].prepareSearchModel &&
-                    typeof SERVICE[searchOptions.schemaHandler].prepareSearchModel === 'function') {
-                    let rawSearchModelDef = SERVICE.DefaultSearchConfigurationService.getRawSearchModelDefinition(searchOptions.engine);
-                    let moduleTenantSearchRawSchema = SERVICE.DefaultSearchConfigurationService.getRawSearchSchema(moduleName, tntCode);
-                    let moduleObject = NODICS.getModule(moduleName);
-                    if (moduleObject && moduleTenantSearchRawSchema && !UTILS.isBlank(moduleTenantSearchRawSchema)) {
-                        Object.keys(moduleTenantSearchRawSchema).forEach(typeName => {
-                            let indexDef = moduleTenantSearchRawSchema[typeName];
-                            let searchModelName = typeName.toUpperCaseFirstChar() + 'SearchModel';
-                            let searchModel = {
-                                moduleName: moduleName,
-                                tntCode: tntCode,
-                                searchEngine: searchEngine,
-                                typeName: typeName,
-                                indexDef: indexDef
-                            };
-                            _self.registerSearchModels(rawSearchModelDef.default, searchModel);
-                            _self.registerSearchModels(rawSearchModelDef[moduleName], searchModel);
-                            _self.registerSearchModels(rawSearchModelDef[typeName], searchModel);
-                            moduleObject.searchModels[tntCode][searchModelName] = searchModel;
-                        });
-                    }
-                }
-            }
-        } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
-            throw error;
-        }
-    },
-
-    registerSearchModels: function (defaultSearchModelDef, modelSchema) {
-        if (defaultSearchModelDef) {
-            Object.keys(defaultSearchModelDef).forEach(element => {
-                defaultSearchModelDef[element](modelSchema);
-            });
-        }
     }
 };

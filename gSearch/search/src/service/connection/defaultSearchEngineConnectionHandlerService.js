@@ -114,8 +114,19 @@ module.exports = {
                         searchOptions.moduleName = moduleName;
                         searchOptions.tenant = tntCode;
                         SERVICE[searchOptions.options.connectionHandler].createSearchConnection(searchOptions).then(searchEngine => {
-                            SERVICE.DefaultSearchConfigurationService.addTenantSearchEngine(moduleName, tntCode, searchEngine);
-                            resolve(true);
+                            searchEngine.getConnection().cat.indices({
+                                "format": "json"
+                            }, function (err, res) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    res.forEach(idx => {
+                                        searchEngine.addIndexName(idx.index);
+                                    });
+                                    SERVICE.DefaultSearchConfigurationService.addTenantSearchEngine(moduleName, tntCode, searchEngine);
+                                    resolve(true);
+                                }
+                            });
                         }).catch(error => {
                             reject(error);
                         });

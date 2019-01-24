@@ -21,8 +21,15 @@ module.exports = {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultSearchEngineConnectionHandlerService.createSearchConnections().then(success => {
                 SERVICE.DefaultSearchSchemaHandlerService.prepareSearchSchema().then(success => {
-                    SERVICE.DefaultSearchSchemaHandlerService.prepareSearchModels();
-                    resolve(true);
+                    SERVICE.DefaultSearchModelHandlerService.prepareSearchModels().then(success => {
+                        SERVICE.DefaultSearchModelHandlerService.updateIndexesMapping().then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
                 }).catch(error => {
                     reject(error);
                 });

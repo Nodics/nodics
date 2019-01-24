@@ -16,6 +16,7 @@ module.exports = {
     searchEngines: {},
     searchSchema: {},
     rawSearchModel: {},
+    indexesList: [],
 
     /**
      * This function is used to setup your service just after service is loaded.
@@ -35,16 +36,6 @@ module.exports = {
         });
     },
 
-    getRawSearchModelDefinition: function (engine) {
-        return this.rawSearchModel[engine];
-    },
-
-    addRawSearchModelDefinition: function (engine, definition) {
-        this.rawSearchModel[engine] = definition;
-    },
-
-
-
     getSearchActiveModules: function () {
         let modules = NODICS.getModules();
         let dbModules = [];
@@ -54,6 +45,14 @@ module.exports = {
             }
         });
         return dbModules;
+    },
+
+    getRawSearchModelDefinition: function (engine) {
+        return this.rawSearchModel[engine];
+    },
+
+    addRawSearchModelDefinition: function (engine, definition) {
+        this.rawSearchModel[engine] = definition;
     },
 
     /**
@@ -71,6 +70,10 @@ module.exports = {
         } else {
             throw new Error('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
         }
+    },
+
+    getIndexesList: function () {
+        return this.indexesList;
     },
 
     addTenantSearchEngine: function (moduleName, tenant, searchEngine) {
@@ -119,6 +122,9 @@ module.exports = {
             if (!this.searchSchema[moduleName][tenant]) {
                 this.searchSchema[moduleName][tenant] = {};
             }
+            if (!this.indexesList.includes(definition.indexName)) {
+                this.indexesList.push(definition.indexName);
+            }
             this.searchSchema[moduleName][tenant][definition.typeName] = definition;
         }
     },
@@ -158,5 +164,19 @@ module.exports = {
             delete this.searchSchema[moduleName][tenant];
         }
         return true;
+    },
+
+    getSearchModel: function (collection) {
+        if (collection.searchModelName) {
+            let searchModel = NODICS.getSearchModels(collection.moduleName, collection.tenant)[collection.searchModelName];
+            if (searchModel) {
+                return searchModel;
+            } else {
+                throw new Error('Invalid search configuration, none search model found for ' + collection.modelName);
+            }
+        } else {
+            throw new Error('Search is not enable for model: ' + collection.modelName);
+        }
+
     }
 };

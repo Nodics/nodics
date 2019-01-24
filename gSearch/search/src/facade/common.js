@@ -10,8 +10,21 @@
  */
 
 module.exports = {
+
+    doExists: function (request) {
+        return SERVICE.srvcName.doExists(request);
+    },
+
+    doCheckHealth: function (request) {
+        return SERVICE.srvcName.doCheckHealth(request);
+    },
+
     doGet: function (request) {
         return SERVICE.srvcName.doGet(request);
+    },
+
+    doSearch: function (request) {
+        return SERVICE.srvcName.doSearch(request);
     },
 
     doSave: function (request) {
@@ -20,5 +33,21 @@ module.exports = {
 
     doRemove: function (request) {
         return SERVICE.srvcName.doRemove(request);
+    },
+
+    doRemoveByQuery: function (request) {
+        return SERVICE.srvcName.doRemoveByQuery(request);
+    },
+
+    getMapping: function (request) {
+        return SERVICE.srvcName.getMapping(request);
+    },
+
+    updateMapping: function (request) {
+        return SERVICE.srvcName.updateMapping(request);
+    },
+
+    removeType: function (request) {
+        return SERVICE.srvcName.removeType(request);
     }
 };

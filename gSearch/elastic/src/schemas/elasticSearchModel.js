@@ -12,18 +12,25 @@
 const _ = require('lodash');
 
 module.exports = {
+    /*
+        Default object which available in this class
+        - moduleName: moduleName,
+        - tntCode: tntCode,
+        - searchEngine: searchEngine,
+        - typeName: typeName,
+        - indexDef: indexDef
+    */
     default: {
-        defineDefaultDoExists: function (collection, rawSchema) {
-            collection.doExists = function (input) {
+        defineDefaultDoExists: function (searchModel) {
+            searchModel.doExists = function (input) {
+                let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchEngine = input.searchEngine;
-                        let indexDef = input.rawSearchSchema;
-                        searchEngine.getConnection().exists({
-                            index: indexDef.indexName,
-                            type: indexDef.typeName,
+                        _self.searchEngine.getConnection().exists({
+                            index: _self.indexDef.indexName,
+                            type: _self.indexDef.typeName,
                             body: input.query.id
-                        }, function (error, response, status) {
+                        }, function (error, response) {
                             if (error) {
                                 reject(error);
                             }
@@ -38,17 +45,35 @@ module.exports = {
             };
         },
 
-        defineDefaultDoGet: function (collection, rawSchema) {
-            collection.doGet = function (input) {
+        defineDefaultDoCheckHealth: function (searchModel) {
+            searchModel.doCheckHealth = function (input) {
+                let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchEngine = input.searchEngine;
-                        let indexDef = input.rawSearchSchema;
-                        searchEngine.getConnection().get({
-                            index: indexDef.indexName,
-                            type: indexDef.typeName,
+                        _self.searchEngine.getConnection().cluster.health({}, function (error, response) {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(response);
+                            }
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
+        defineDefaultDoGet: function (searchModel) {
+            searchModel.doGet = function (input) {
+                let _self = this;
+                return new Promise((resolve, reject) => {
+                    try {
+                        _self.searchEngine.getConnection().get({
+                            index: _self.indexDef.indexName,
+                            type: _self.indexDef.typeName,
                             body: input.query.id
-                        }, function (error, response, status) {
+                        }, function (error, response) {
                             if (error) {
                                 reject(error);
                             }
@@ -63,17 +88,16 @@ module.exports = {
             };
         },
 
-        defineDefaultDoSearch: function (collection, rawSchema) {
-            collection.doSearch = function (input) {
+        defineDefaultDoSearch: function (searchModel) {
+            searchModel.doSearch = function (input) {
+                let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchEngine = input.searchEngine;
-                        let indexDef = input.rawSearchSchema;
-                        searchEngine.getConnection().search({
-                            index: indexDef.indexName,
-                            type: indexDef.typeName,
+                        _self.searchEngine.getConnection().search({
+                            index: _self.indexDef.indexName,
+                            type: _self.indexDef.typeName,
                             body: input.query
-                        }, function (error, response, status) {
+                        }, function (error, response) {
                             if (error) {
                                 reject(error);
                             }
@@ -88,19 +112,18 @@ module.exports = {
             };
         },
 
-        defineDefaultDoSave: function (collection, rawSchema) {
-            collection.doSave = function (input) {
+        defineDefaultDoSave: function (searchModel) {
+            searchModel.doSave = function (input) {
+                let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
                         try {
-                            let searchEngine = input.searchEngine;
-                            let indexDef = input.rawSearchSchema;
-                            searchEngine.getConnection().index({
-                                index: indexDef.indexName,
-                                type: indexDef.typeName,
-                                id: input.model[indexDef.idPropertyName],
+                            _self.searchEngine.getConnection().index({
+                                index: _self.indexDef.indexName,
+                                type: _self.indexDef.typeName,
+                                id: input.model[_self.indexDef.idPropertyName],
                                 body: input.model
-                            }, function (error, response, status) {
+                            }, function (error, response) {
                                 if (error) {
                                     reject(error);
                                 }
@@ -118,18 +141,16 @@ module.exports = {
             };
         },
 
-        defineDefaultDoRemove: function (collection, rawSchema) {
-            collection.doRemove = function (input) {
+        defineDefaultDoRemove: function (searchModel) {
+            searchModel.doRemove = function (input) {
+                let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchEngine = input.searchEngine;
-                        let indexDef = input.rawSearchSchema;
-                        searchEngine.getConnection().delete({
-                            index: indexDef.indexName,
-                            type: indexDef.typeName,
-                            id: input.query.id,
-                            opType: 'create'
-                        }, function (error, response, status) {
+                        _self.searchEngine.getConnection().delete({
+                            index: _self.indexDef.indexName,
+                            type: _self.indexDef.typeName,
+                            id: input.query.id
+                        }, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -143,19 +164,18 @@ module.exports = {
             };
         },
 
-        defineDefaultDoRemoveByQuery: function (collection, rawSchema) {
-            collection.doRemoveByQuery = function (input) {
+        defineDefaultDoRemoveByQuery: function (searchModel) {
+            searchModel.doRemoveByQuery = function (input) {
+                let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchEngine = input.searchEngine;
-                        let indexDef = input.rawSearchSchema;
-                        searchEngine.getConnection().deleteByQuery({
-                            index: indexDef.indexName,
-                            type: indexDef.typeName,
+                        _self.searchEngine.getConnection().deleteByQuery({
+                            index: _self.indexDef.indexName,
+                            type: _self.indexDef.typeName,
                             body: {
                                 query: input.query
                             }
-                        }, function (error, response, status) {
+                        }, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -169,19 +189,15 @@ module.exports = {
             };
         },
 
-        defineDefaultDoUpdateMapping: function (collection, rawSchema) {
-            collection.doUpdateMapping = function (input) {
+        defineDefaultGetMapping: function (searchModel) {
+            searchModel.getMapping = function (input) {
+                let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchEngine = input.searchEngine;
-                        let indexDef = input.rawSearchSchema;
-                        searchEngine.getConnection().indices.putMapping({
-                            index: indexDef.indexName,
-                            type: indexDef.typeName,
-                            body: {
-                                query: input.query
-                            }
-                        }, function (error, response, status) {
+                        _self.searchEngine.getConnection().indices.getMapping({
+                            index: _self.indexDef.indexName,
+                            type: _self.indexDef.typeName,
+                        }, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -195,17 +211,16 @@ module.exports = {
             };
         },
 
-
-        /*
-        defineDefaultCreateIndex: function (collection, rawSchema) {
-            collection.createIndex = function (input) {
+        defineDefaultUpdateMapping: function (searchModel) {
+            searchModel.updateMapping = function (input) {
+                let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchEngine = input.searchEngine;
-                        let indexDef = input.rawSearchSchema;
-                        searchEngine.getConnection().indices.create({
-                            index: input.query.indexName
-                        }, function (error, response, status) {
+                        _self.searchEngine.getConnection().indices.putMapping({
+                            index: _self.indexDef.indexName,
+                            type: _self.indexDef.typeName,
+                            body: input.searchSchema
+                        }, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -219,57 +234,14 @@ module.exports = {
             };
         },
 
-        defineDefaultRemoveIndex: function (collection, rawSchema) {
-            collection.removeIndex = function (input) {
+        defineDefaultRemoveType: function (searchModel) {
+            searchModel.removeType = function (input) {
+                let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchEngine = input.searchEngine;
-                        let indexDef = input.rawSearchSchema;
-                        searchEngine.getConnection().indices.delete({
-                            index: input.query.indexName
-                        }, function (error, response, status) {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                resolve(response);
-                            }
-                        });
-                    } catch (error) {
-                        reject(error);
-                    }
-                });
-            };
-        },
-
-        defineDefaultRemoveType: function (collection, rawSchema) {
-            collection.removeType = function (input) {
-                return new Promise((resolve, reject) => {
-                    try {
-                        let searchEngine = input.searchEngine;
-                        let indexDef = input.rawSearchSchema;
-                        searchEngine.getConnection().indices.delete({
-                            type: input.query.typeName
-                        }, function (error, response, status) {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                resolve(response);
-                            }
-                        });
-                    } catch (error) {
-                        reject(error);
-                    }
-                });
-            };
-        },
-
-        defineDefaultHealthCheck: function (collection, rawSchema) {
-            collection.checkHealth = function (input) {
-                return new Promise((resolve, reject) => {
-                    try {
-                        let searchEngine = input.searchEngine;
-                        let indexDef = input.rawSearchSchema;
-                        searchEngine.getConnection().cluster.health({}, function (error, response, status) {
+                        _self.searchEngine.getConnection().indices.delete({
+                            type: _self.indexDef.typeName,
+                        }, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -282,6 +254,5 @@ module.exports = {
                 });
             };
         }
-        */
     }
 };

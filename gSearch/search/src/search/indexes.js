@@ -25,6 +25,22 @@ module.exports = {
                     handler: 'DefaultEnterpriseIndexHandlerService.getEnterpriseCustom'
                 }
             }
+        },
+        catalog: {
+            enabled: false,
+            indexName: 'catal',
+            idPropertyName: 'code',
+            preProcessor: 'DefaultEnterpriseIndexProcessorService.preEnterpriseIndexProcessor', // Will get executed just after data fetch from DB
+            postProcessor: 'DefaultEnterpriseIndexProcessorService.postEnterpriseIndexProcessor', // will get executed once every data got collected and processed
+            properties: {
+                description: {
+                    handler: 'DefaultEnterpriseIndexHandlerService.getEnterpriseDescription'
+                },
+                custom: {
+                    enabled: true,
+                    handler: 'DefaultEnterpriseIndexHandlerService.getEnterpriseCustom'
+                }
+            }
         }
     }
 };

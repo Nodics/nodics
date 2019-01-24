@@ -12,33 +12,77 @@
 module.exports = {
     default: {
         commonDoSearch: {
+            doGetExists: {
+                secured: true,
+                key: '/schemaName/search/exists/id/:id',
+                method: 'GET',
+                controller: 'DefaultctrlName',
+                operation: 'doExists',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/exists/id/:id',
+                }
+            },
+            // This operation belongs to conection level, which needs to be module level - need to re-validate it
+            doGetCheckHealth: {
+                secured: true,
+                key: '/schemaName/search/check/health',
+                method: 'GET',
+                controller: 'DefaultctrlName',
+                operation: 'doCheckHealth',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/check/health',
+                }
+            },
+
             doGetGet: {
                 secured: true,
-                key: '/schemaName/search/id/:id',
+                key: '/schemaName/search/get/id/:id',
                 method: 'GET',
                 controller: 'DefaultctrlName',
                 operation: 'doGet',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'doGet',
-                    url: 'http://host:port/nodics/{moduleName}//schemaName/search/:id',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/get/id/:id',
                 }
             },
-            doGetPost: {
+
+            doGetSearch: {
+                secured: true,
+                key: '/schemaName/search/id/:id',
+                method: 'GET',
+                controller: 'DefaultctrlName',
+                operation: 'doSearch',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'doSearch',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/:id',
+                }
+            },
+
+            doPostSearch: {
                 secured: true,
                 key: '/schemaName/search',
                 method: 'POST',
                 controller: 'DefaultctrlName',
-                operation: 'doGet',
+                operation: 'doSearch',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'doGet',
-                    url: 'http://host:port/nodics/{moduleName}//schemaName/search',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search',
                 }
             },
-            doSavePut: {
+
+            doPutSave: {
                 secured: true,
                 key: '/schemaName/search',
                 method: 'PUT',
@@ -52,7 +96,8 @@ module.exports = {
                     body: '{ complete model object } or [{}, {}] array of models'
                 }
             },
-            doRemoveDeleteId: {
+
+            doGetRemove: {
                 secured: true,
                 key: '/schemaName/search/id/:id',
                 method: 'DELETE',
@@ -65,19 +110,63 @@ module.exports = {
                     url: 'http://host:port/nodics/{moduleName}/schemaName/search/id/:id',
                 }
             },
+
             doRemoveDelete: {
                 secured: true,
                 key: '/schemaName/search',
                 method: 'DELETE',
                 controller: 'DefaultctrlName',
-                operation: 'doRemove',
+                operation: 'doRemoveByQuery',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/search',
                 }
-            }
+            },
+
+            doGetMapping: {
+                secured: true,
+                key: '/schemaName/search/schema',
+                method: 'GET',
+                controller: 'DefaultctrlName',
+                operation: 'getMapping',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/schema',
+                }
+            },
+
+            doGetUpdateMapping: {
+                secured: true,
+                key: '/schemaName/search/schema/update',
+                method: 'GET',
+                controller: 'DefaultctrlName',
+                operation: 'updateMapping',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/schema/update',
+                }
+            },
+
+            doGetRemoveType: {
+                secured: true,
+                key: '/schemaName/search/type',
+                method: 'DELETE',
+                controller: 'DefaultctrlName',
+                operation: 'removeType',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/check/health',
+                }
+            },
+
         }
     },
 

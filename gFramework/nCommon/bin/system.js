@@ -249,13 +249,13 @@ module.exports = {
     initEntities: function () {
         return new Promise((resolve, reject) => {
             SYSTEM.LOG.debug('Initializing all entities');
-            SYSTEM.initDaos().then(
-                SYSTEM.initServices
-            ).then(
-                SYSTEM.initFacades
-            ).then(
-                SYSTEM.initControllers
-            ).then(() => {
+            SYSTEM.initDaos().then(() => {
+                SYSTEM.initServices();
+            }).then(() => {
+                SYSTEM.initFacades();
+            }).then(() => {
+                SYSTEM.initControllers();
+            }).then(() => {
                 resolve(true);
             }).catch((error) => {
                 reject(error);
@@ -356,11 +356,11 @@ module.exports = {
             SYSTEM.LOG.debug('Finalizing all entities');
             SYSTEM.finalizeDaos().then(() => {
                 return SYSTEM.finalizeServices();
-            }).then(
-                SYSTEM.finalizeFacades
-            ).then(
-                SYSTEM.finalizeControllers
-            ).then(() => {
+            }).then(() => {
+                SYSTEM.finalizeFacades();
+            }).then(() => {
+                SYSTEM.finalizeControllers();
+            }).then(() => {
                 resolve(true);
             }).catch((error) => {
                 reject(error);

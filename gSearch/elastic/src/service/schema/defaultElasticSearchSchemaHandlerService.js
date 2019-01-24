@@ -124,21 +124,9 @@ module.exports = {
         return _.merge(target, source);
     },
 
-    updateIndexTypeMapping: function (options) {
+    prepareTypeSchema: function (options) {
         return new Promise((resolve, reject) => {
-            console.log('  ==> ', util.inspect(options.indexDefinition, true, 4));
-            //console.log('  ==> ', SERVICE.DefaultSearchConfigurationService.getRawSearchModelDefinition(options.searchEngine.getOptions().engine));
-
-            resolve(true);
-        });
-    },
-
-    prepareSearchModel: function (options) {
-        return new Promise((resolve, reject) => {
-            // console.log('  ==> ', util.inspect(options.indexDefinition, true, 4));
-            console.log('  ==> ', SERVICE.DefaultSearchConfigurationService.getRawSearchModelDefinition(options.searchEngine.getOptions().engine));
-
-            resolve(true);
+            resolve({});
         });
     }
 };

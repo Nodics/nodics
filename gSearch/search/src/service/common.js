@@ -11,8 +11,20 @@
 
 module.exports = {
 
+    doExists: function (request) {
+        return DAO.DaoName.doExists(request);
+    },
+
+    doCheckHealth: function (request) {
+        return DAO.DaoName.doCheckHealth(request);
+    },
+
     doGet: function (request) {
         return DAO.DaoName.doGet(request);
+    },
+
+    doSearch: function (request) {
+        return DAO.DaoName.doSearch(request);
     },
 
     doSave: function (request) {
@@ -21,5 +33,21 @@ module.exports = {
 
     doRemove: function (request) {
         return DAO.DaoName.doRemove(request);
+    },
+
+    doRemoveByQuery: function (request) {
+        return DAO.DaoName.doRemoveByQuery(request);
+    },
+
+    getMapping: function (request) {
+        return DAO.DaoName.getMapping(request);
+    },
+
+    updateMapping: function (request) {
+        return DAO.DaoName.updateMapping(request);
+    },
+
+    removeType: function (request) {
+        return DAO.DaoName.removeType(request);
     }
 };

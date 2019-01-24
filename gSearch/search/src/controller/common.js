@@ -12,15 +12,40 @@
 const _ = require('lodash');
 
 module.exports = {
-    doGet: function (request, callback) {
+    doExists: function (request, callback) {
         if (request.httpRequest.params.id) {
             request.query = {
-                match: {
-                    id: request.httpRequest.params.id
-                }
+                id: request.httpRequest.params.id
             };
+        }
+        if (callback) {
+            FACADE.dsdName.doExists(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
         } else {
-            request = _.merge(request, request.httpRequest.body || {});
+            return FACADE.dsdName.doExists(request);
+        }
+    },
+
+    doCheckHealth: function (request) {
+        if (callback) {
+            FACADE.dsdName.doCheckHealth(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doCheckHealth(request);
+        }
+    },
+
+    doGet: function (request) {
+        if (request.httpRequest.params.id) {
+            request.query = {
+                id: request.httpRequest.params.id
+            };
         }
         if (callback) {
             FACADE.dsdName.doGet(request).then(success => {
@@ -33,9 +58,29 @@ module.exports = {
         }
     },
 
-    doSave: function (request, callback) {
+    doSearch: function (request) {
+        if (request.httpRequest.params.id) {
+            request.query = {
+                match: {
+                    id: request.httpRequest.params.id
+                }
+            };
+        } else {
+            request = _.merge(request, request.httpRequest.body || {});
+        }
+        if (callback) {
+            FACADE.dsdName.doSearch(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doSearch(request);
+        }
+    },
+
+    doSave: function (request) {
         request.models = request.httpRequest.body;
-        request.models = models;
         if (callback) {
             FACADE.dsdName.doSave(request).then(success => {
                 callback(null, success);
@@ -47,13 +92,11 @@ module.exports = {
         }
     },
 
-    doRemove: function (request, callback) {
+    doRemove: function (request) {
         if (request.httpRequest.params.id) {
             request.query = {
                 id: request.httpRequest.params.id
             };
-        } else {
-            request = _.merge(request, request.httpRequest.body || {});
         }
         if (callback) {
             FACADE.dsdName.doRemove(request).then(success => {
@@ -63,6 +106,55 @@ module.exports = {
             });
         } else {
             return FACADE.dsdName.doRemove(request);
+        }
+    },
+
+    doRemoveByQuery: function (request) {
+        request = _.merge(request, request.httpRequest.body || {});
+        if (callback) {
+            FACADE.dsdName.doRemoveByQuery(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doRemoveByQuery(request);
+        }
+    },
+
+    getMapping: function (request) {
+        if (callback) {
+            FACADE.dsdName.getMapping(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.getMapping(request);
+        }
+    },
+
+    updateMapping: function (request) {
+        if (callback) {
+            FACADE.dsdName.updateMapping(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.updateMapping(request);
+        }
+    },
+
+    removeType: function (request) {
+        if (callback) {
+            FACADE.dsdName.removeType(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.removeType(request);
         }
     }
 };
