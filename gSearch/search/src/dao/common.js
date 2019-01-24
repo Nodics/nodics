@@ -11,11 +11,23 @@
 
 module.exports = {
 
+    getSearchModel: function (request) {
+        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        let moduleName = collection ? collection.moduleName : request.moduleName;
+        let tenant = collection ? collection.tenant : request.tenant;
+        let typeName = collection ? collection.typeName : request.typeName;
+        if (!moduleName || !tenant || !typeName) {
+            throw new Error('Invalid request or search is not active for this type');
+        } else {
+            return NODICS.getSearchModel(moduleName, tenant)[typeName];
+        }
+    },
+
     doExists: function (request) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
             try {
-                request.searchModel = SERVICE.DefaultSearchConfigurationService.getSearchModel(request.collection);
+                request.searchModel = _self.getSearchModel(request);
                 request.searchModel.doExists(request).then(success => {
                     resolve({
                         success: true,
@@ -40,10 +52,10 @@ module.exports = {
     },
 
     doCheckHealth: function (request) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
             try {
-                request.searchModel = SERVICE.DefaultSearchConfigurationService.getSearchModel(request.collection);
+                request.searchModel = _self.getSearchModel(request);
                 request.searchModel.doCheckHealth(request).then(success => {
                     resolve({
                         success: true,
@@ -68,10 +80,10 @@ module.exports = {
     },
 
     doGet: function (request) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
             try {
-                request.searchModel = SERVICE.DefaultSearchConfigurationService.getSearchModel(request.collection);
+                request.searchModel = _self.getSearchModel(request);
                 request.searchModel.doGet(request).then(success => {
                     resolve({
                         success: true,
@@ -96,10 +108,10 @@ module.exports = {
     },
 
     doSearch: function (request) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
             try {
-                request.searchModel = SERVICE.DefaultSearchConfigurationService.getSearchModel(request.collection);
+                request.searchModel = _self.getSearchModel(request);
                 request.searchModel.doSearch(request).then(success => {
                     resolve({
                         success: true,
@@ -124,10 +136,10 @@ module.exports = {
     },
 
     doSave: function (request) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
             try {
-                request.searchModel = SERVICE.DefaultSearchConfigurationService.getSearchModel(request.collection);
+                request.searchModel = _self.getSearchModel(request);
                 request.searchModel.doSave(request).then(success => {
                     resolve({
                         success: true,
@@ -152,10 +164,10 @@ module.exports = {
     },
 
     doRemove: function (request) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
             try {
-                request.searchModel = SERVICE.DefaultSearchConfigurationService.getSearchModel(request.collection);
+                request.searchModel = _self.getSearchModel(request);
                 request.searchModel.doRemove(request).then(success => {
                     resolve({
                         success: true,
@@ -180,10 +192,10 @@ module.exports = {
     },
 
     doRemoveByQuery: function (request) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
             try {
-                request.searchModel = SERVICE.DefaultSearchConfigurationService.getSearchModel(request.collection);
+                request.searchModel = _self.getSearchModel(request);
                 request.searchModel.doRemoveByQuery(request).then(success => {
                     resolve({
                         success: true,
@@ -208,10 +220,10 @@ module.exports = {
     },
 
     getMapping: function (request) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
             try {
-                request.searchModel = SERVICE.DefaultSearchConfigurationService.getSearchModel(request.collection);
+                request.searchModel = _self.getSearchModel(request);
                 request.searchModel.getMapping(request).then(success => {
                     resolve({
                         success: true,
@@ -236,10 +248,10 @@ module.exports = {
     },
 
     updateMapping: function (request) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
             try {
-                request.searchModel = SERVICE.DefaultSearchConfigurationService.getSearchModel(request.collection);
+                request.searchModel = _self.getSearchModel(request);
                 request.searchModel.updateMapping(request).then(success => {
                     resolve({
                         success: true,
@@ -264,10 +276,66 @@ module.exports = {
     },
 
     removeType: function (request) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
             try {
-                request.searchModel = SERVICE.DefaultSearchConfigurationService.getSearchModel(request.collection);
+                request.searchModel = _self.getSearchModel(request);
+                request.searchModel.removeType(request).then(success => {
+                    resolve({
+                        success: true,
+                        code: '',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject({
+                        success: false,
+                        code: '',
+                        error: error
+                    });
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: '',
+                    error: error
+                });
+            }
+        });
+    },
+
+    fullIndex: function (request) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                request.searchModel = _self.getSearchModel(request);
+                request.searchModel.removeType(request).then(success => {
+                    resolve({
+                        success: true,
+                        code: '',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject({
+                        success: false,
+                        code: '',
+                        error: error
+                    });
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: '',
+                    error: error
+                });
+            }
+        });
+    },
+
+    incrementalIndex: function (request) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                request.searchModel = _self.getSearchModel(request);
                 request.searchModel.removeType(request).then(success => {
                     resolve({
                         success: true,

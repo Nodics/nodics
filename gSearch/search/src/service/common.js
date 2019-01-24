@@ -49,5 +49,13 @@ module.exports = {
 
     removeType: function (request) {
         return DAO.DaoName.removeType(request);
+    },
+
+    fullIndex: function (request) {
+        return DAO.DaoName.fullIndex(request);
+    },
+
+    incrementalIndex: function (request) {
+        return DAO.DaoName.incrementalIndex(request);
     }
 };

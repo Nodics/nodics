@@ -129,6 +129,7 @@ module.exports = {
                                 let collection = NODICS.getModels(moduleName, tntCode)[indexDef.schemaName.toUpperCaseFirstChar() + 'Model'];
                                 if (collection) {
                                     collection.searchModelName = searchModelName;
+                                    collection.typeName = typeName;
                                 }
                             }
 

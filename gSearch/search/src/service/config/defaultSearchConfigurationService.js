@@ -164,19 +164,5 @@ module.exports = {
             delete this.searchSchema[moduleName][tenant];
         }
         return true;
-    },
-
-    getSearchModel: function (collection) {
-        if (collection.searchModelName) {
-            let searchModel = NODICS.getSearchModels(collection.moduleName, collection.tenant)[collection.searchModelName];
-            if (searchModel) {
-                return searchModel;
-            } else {
-                throw new Error('Invalid search configuration, none search model found for ' + collection.modelName);
-            }
-        } else {
-            throw new Error('Search is not enable for model: ' + collection.modelName);
-        }
-
     }
 };

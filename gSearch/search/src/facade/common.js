@@ -49,5 +49,13 @@ module.exports = {
 
     removeType: function (request) {
         return SERVICE.srvcName.removeType(request);
+    },
+
+    fullIndex: function (request) {
+        return SERVICE.srvcName.fullIndex(request);
+    },
+
+    incrementalIndex: function (request) {
+        return SERVICE.srvcName.incrementalIndex(request);
     }
 };

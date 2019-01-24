@@ -439,6 +439,20 @@ module.exports = function () {
         }
     };
 
+    getSearchModel = function (moduleName, tenant, typeName) {
+        let searchModels = NODICS.getSearchModels(moduleName, tenant);
+        if (searchModels) {
+            let searchModel = searchModels[typeName.toUpperCaseFirstChar() + 'SearchModel'];
+            if (searchModel) {
+                return searchModel;
+            } else {
+                throw new Error('Search is not enable for model: ' + typeName);
+            }
+        } else {
+            throw new Error('Invalid search configuration, none search model found for ' + typeName);
+        }
+    };
+
     this.addRouters = function (routers, moduleName) {
         let moduleObject = this.getModule(moduleName);
         if (UTILS.isBlank(moduleObject)) {

@@ -13,6 +13,8 @@ const _ = require('lodash');
 
 module.exports = {
     doExists: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         if (request.httpRequest.params.id) {
             request.query = {
                 id: request.httpRequest.params.id
@@ -29,7 +31,9 @@ module.exports = {
         }
     },
 
-    doCheckHealth: function (request) {
+    doCheckHealth: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         if (callback) {
             FACADE.dsdName.doCheckHealth(request).then(success => {
                 callback(null, success);
@@ -41,7 +45,9 @@ module.exports = {
         }
     },
 
-    doGet: function (request) {
+    doGet: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         if (request.httpRequest.params.id) {
             request.query = {
                 id: request.httpRequest.params.id
@@ -58,7 +64,9 @@ module.exports = {
         }
     },
 
-    doSearch: function (request) {
+    doSearch: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         if (request.httpRequest.params.id) {
             request.query = {
                 match: {
@@ -79,7 +87,9 @@ module.exports = {
         }
     },
 
-    doSave: function (request) {
+    doSave: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         request.models = request.httpRequest.body;
         if (callback) {
             FACADE.dsdName.doSave(request).then(success => {
@@ -92,7 +102,9 @@ module.exports = {
         }
     },
 
-    doRemove: function (request) {
+    doRemove: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         if (request.httpRequest.params.id) {
             request.query = {
                 id: request.httpRequest.params.id
@@ -109,7 +121,9 @@ module.exports = {
         }
     },
 
-    doRemoveByQuery: function (request) {
+    doRemoveByQuery: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
             FACADE.dsdName.doRemoveByQuery(request).then(success => {
@@ -122,7 +136,9 @@ module.exports = {
         }
     },
 
-    getMapping: function (request) {
+    getMapping: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         if (callback) {
             FACADE.dsdName.getMapping(request).then(success => {
                 callback(null, success);
@@ -134,7 +150,9 @@ module.exports = {
         }
     },
 
-    updateMapping: function (request) {
+    updateMapping: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         if (callback) {
             FACADE.dsdName.updateMapping(request).then(success => {
                 callback(null, success);
@@ -146,7 +164,9 @@ module.exports = {
         }
     },
 
-    removeType: function (request) {
+    removeType: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         if (callback) {
             FACADE.dsdName.removeType(request).then(success => {
                 callback(null, success);
@@ -155,6 +175,38 @@ module.exports = {
             });
         } else {
             return FACADE.dsdName.removeType(request);
+        }
+    },
+
+    fullIndex: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName;
+        request.typeName = request.httpRequest.params.typeName;
+        request = _.merge(request, request.httpRequest.body || {});
+        request.reloadSearchSchema = request.reloadSearchSchema || CONFIG.get('search').reloadSearchSchema;
+        if (callback) {
+            FACADE.dsdName.fullIndex(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.fullIndex(request);
+        }
+    },
+
+    incrementalIndex: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName;
+        request.typeName = request.httpRequest.params.typeName;
+        request = _.merge(request, request.httpRequest.body || {});
+        request.reloadSearchSchema = request.reloadSearchSchema || CONFIG.get('search').reloadSearchSchema;
+        if (callback) {
+            FACADE.dsdName.incrementalIndex(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.incrementalIndex(request);
         }
     }
 };

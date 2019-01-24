@@ -11,7 +11,7 @@
 
 module.exports = {
     default: {
-        commonDoSearch: {
+        defaultDoSearch: {
             doGetExists: {
                 secured: true,
                 key: '/schemaName/search/exists/id/:id',
@@ -169,7 +169,165 @@ module.exports = {
 
         }
     },
+    common: {
+        commonDoSearch: {
+            doGetExists: {
+                secured: true,
+                key: '/:indexName/:typeName/search/exists/id/:id',
+                method: 'GET',
+                controller: 'DefaultSearchController',
+                operation: 'doExists',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/exists/id/:id',
+                }
+            },
+            // This operation belongs to conection level, which needs to be module level - need to re-validate it
+            doGetCheckHealth: {
+                secured: true,
+                key: '/:indexName/:typeName/search/check/health',
+                method: 'GET',
+                controller: 'DefaultSearchController',
+                operation: 'doCheckHealth',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/check/health',
+                }
+            },
 
+            doGetGet: {
+                secured: true,
+                key: '/:indexName/:typeName/search/get/id/:id',
+                method: 'GET',
+                controller: 'DefaultSearchController',
+                operation: 'doGet',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/get/id/:id',
+                }
+            },
+
+            doGetSearch: {
+                secured: true,
+                key: '/:indexName/:typeName/search/id/:id',
+                method: 'GET',
+                controller: 'DefaultSearchController',
+                operation: 'doSearch',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'doSearch',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/:id',
+                }
+            },
+
+            doPostSearch: {
+                secured: true,
+                key: '/:indexName/:typeName/search',
+                method: 'POST',
+                controller: 'DefaultSearchController',
+                operation: 'doSearch',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search',
+                }
+            },
+
+            doPutSave: {
+                secured: true,
+                key: '/:indexName/:typeName/search',
+                method: 'PUT',
+                controller: 'DefaultSearchController',
+                operation: 'doSave',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search',
+                    body: '{ complete model object } or [{}, {}] array of models'
+                }
+            },
+
+            doGetRemove: {
+                secured: true,
+                key: '/:indexName/:typeName/search/id/:id',
+                method: 'DELETE',
+                controller: 'DefaultSearchController',
+                operation: 'doRemove',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/id/:id',
+                }
+            },
+
+            doRemoveDelete: {
+                secured: true,
+                key: '/:indexName/:typeName/search',
+                method: 'DELETE',
+                controller: 'DefaultSearchController',
+                operation: 'doRemoveByQuery',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search',
+                }
+            },
+
+            doGetMapping: {
+                secured: true,
+                key: '/:indexName/:typeName/search/schema',
+                method: 'GET',
+                controller: 'DefaultSearchController',
+                operation: 'getMapping',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/schema',
+                }
+            },
+
+            doGetUpdateMapping: {
+                secured: true,
+                key: '/:indexName/:typeName/search/schema/update',
+                method: 'GET',
+                controller: 'DefaultSearchController',
+                operation: 'updateMapping',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/schema/update',
+                }
+            },
+
+            doGetRemoveType: {
+                secured: true,
+                key: '/:indexName/:typeName/search/type',
+                method: 'DELETE',
+                controller: 'DefaultSearchController',
+                operation: 'removeType',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'DELETE',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/check/health',
+                }
+            },
+
+        }
+    },
     search: {
         indexing: {
             fullIndexing: {

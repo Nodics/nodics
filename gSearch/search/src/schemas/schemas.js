@@ -11,6 +11,13 @@
 
 module.exports = {
     search: {
+        search: {
+            super: 'super',
+            model: true,
+            service: true,
+            event: false,
+            router: false,
+        },
         indexLog: {
             super: 'super',
             model: true,
