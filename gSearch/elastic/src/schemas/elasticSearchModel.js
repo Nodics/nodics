@@ -64,6 +64,25 @@ module.exports = {
             };
         },
 
+        defineDefaultDoIndex: function (searchModel) {
+            searchModel.doIndex = function (input) {
+                let _self = this;
+                return new Promise((resolve, reject) => {
+                    try {
+                        _self.searchEngine.getConnection().cluster.health({}, function (error, response) {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(response);
+                            }
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
         defineDefaultDoGet: function (searchModel) {
             searchModel.doGet = function (input) {
                 let _self = this;
@@ -124,6 +143,36 @@ module.exports = {
                                 id: input.model[_self.indexDef.idPropertyName],
                                 body: input.model
                             }, function (error, response) {
+                                if (error) {
+                                    reject(error);
+                                }
+                                else {
+                                    resolve(response);
+                                }
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
+        defineDefaultDoRefresh: function (searchModel) {
+            searchModel.doRefresh = function (input) {
+                let _self = this;
+                return new Promise((resolve, reject) => {
+                    try {
+                        try {
+                            let indexDetail = _.merge(_self.searchEngine.getOptions().refreshOptions || {}, {
+                                index: _self.indexDef.indexName,
+                                body: input.refreshOptions || {}
+                            });
+                            _self.LOG.debug('Executing refresh command with options: ');
+                            _self.LOG.debug(indexDetail);
+                            _self.searchEngine.getConnection().indices.refresh(indexDetail, function (error, response) {
                                 if (error) {
                                     reject(error);
                                 }

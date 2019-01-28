@@ -17,7 +17,12 @@ module.exports = {
                     connectionHandler: 'DefaultElasticSearchEngineConnectionHandlerService',
                     schemaHandler: 'DefaultElasticSearchSchemaHandlerService',
                     fullIndexDataQuery: {},
-                    incrementalIndexDataQuery: {}
+                    incrementalIndexDataQuery: {},
+
+                    refreshOptions: {
+                        ignoreUnavailable: false,
+                        expandWildcards: all
+                    }
                 },
                 connection: {
                     hosts: ['http://localhost:9200'],

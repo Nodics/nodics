@@ -79,6 +79,34 @@ module.exports = {
         });
     },
 
+    doIndex: function (request) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                request.searchModel = _self.getSearchModel(request);
+                request.searchModel.doIndex(request).then(success => {
+                    resolve({
+                        success: true,
+                        code: '',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject({
+                        success: false,
+                        code: '',
+                        error: error
+                    });
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: '',
+                    error: error
+                });
+            }
+        });
+    },
+
     doGet: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {

@@ -19,6 +19,10 @@ module.exports = {
         return DAO.DaoName.doCheckHealth(request);
     },
 
+    doIndex: function (request) {
+        return DAO.DaoName.doIndex(request);
+    },
+
     doGet: function (request) {
         return DAO.DaoName.doGet(request);
     },

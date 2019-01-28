@@ -19,6 +19,10 @@ module.exports = {
         return SERVICE.srvcName.doCheckHealth(request);
     },
 
+    doIndex: function (request) {
+        return SERVICE.srvcName.doIndex(request);
+    },
+
     doGet: function (request) {
         return SERVICE.srvcName.doGet(request);
     },

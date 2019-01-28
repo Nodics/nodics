@@ -45,6 +45,20 @@ module.exports = {
         }
     },
 
+    doIndex: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
+        if (callback) {
+            FACADE.dsdName.doIndex(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doCheckHealth(request);
+        }
+    },
+
     doGet: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
