@@ -43,23 +43,15 @@ module.exports = {
         return SERVICE.srvcName.doRemoveByQuery(request);
     },
 
-    getMapping: function (request) {
-        return SERVICE.srvcName.getMapping(request);
+    doGetMapping: function (request) {
+        return SERVICE.srvcName.doGetMapping(request);
     },
 
-    updateMapping: function (request) {
-        return SERVICE.srvcName.updateMapping(request);
+    doUpdateMapping: function (request) {
+        return SERVICE.srvcName.doUpdateMapping(request);
     },
 
-    removeType: function (request) {
-        return SERVICE.srvcName.removeType(request);
-    },
-
-    fullIndex: function (request) {
-        return SERVICE.srvcName.fullIndex(request);
-    },
-
-    incrementalIndex: function (request) {
-        return SERVICE.srvcName.incrementalIndex(request);
+    doRemoveType: function (request) {
+        return SERVICE.srvcName.doRemoveType(request);
     }
 };

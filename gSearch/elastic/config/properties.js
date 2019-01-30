@@ -19,10 +19,47 @@ module.exports = {
                     fullIndexDataQuery: {},
                     incrementalIndexDataQuery: {},
 
+                    existsOptions: {
+                        level: 'indices'
+                    },
+
+                    healthOptions: {
+                        level: 'indices'
+                    },
+
+                    saveOptions: {
+                        opType: 'create'
+                    },
+
+                    bulkOptions: {
+                        opType: 'create'
+                    },
+
+                    searchOptions: {
+
+                    },
+
+                    removeOptions: {
+
+                    },
+
+                    removeTypeOptions: {
+
+                    },
+
+                    mappingGetOptions: {
+
+                    },
+
+                    mappingPutOptions: {
+
+                    },
+
                     refreshOptions: {
                         ignoreUnavailable: false,
-                        expandWildcards: all
+                        expandWildcards: 'all'
                     }
+
                 },
                 connection: {
                     hosts: ['http://localhost:9200'],

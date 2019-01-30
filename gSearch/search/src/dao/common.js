@@ -247,12 +247,12 @@ module.exports = {
         });
     },
 
-    getMapping: function (request) {
+    doGetMapping: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 request.searchModel = _self.getSearchModel(request);
-                request.searchModel.getMapping(request).then(success => {
+                request.searchModel.doGetMapping(request).then(success => {
                     resolve({
                         success: true,
                         code: '',
@@ -275,12 +275,12 @@ module.exports = {
         });
     },
 
-    updateMapping: function (request) {
+    doUpdateMapping: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 request.searchModel = _self.getSearchModel(request);
-                request.searchModel.updateMapping(request).then(success => {
+                request.searchModel.doUpdateMapping(request).then(success => {
                     resolve({
                         success: true,
                         code: '',
@@ -303,12 +303,12 @@ module.exports = {
         });
     },
 
-    removeType: function (request) {
+    doRemoveType: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 request.searchModel = _self.getSearchModel(request);
-                request.searchModel.removeType(request).then(success => {
+                request.searchModel.doRemoveType(request).then(success => {
                     resolve({
                         success: true,
                         code: '',
@@ -330,60 +330,60 @@ module.exports = {
             }
         });
     },
-
-    fullIndex: function (request) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                request.searchModel = _self.getSearchModel(request);
-                request.searchModel.removeType(request).then(success => {
-                    resolve({
-                        success: true,
-                        code: '',
-                        result: success
+    /*
+        fullIndex: function (request) {
+            let _self = this;
+            return new Promise((resolve, reject) => {
+                try {
+                    request.searchModel = _self.getSearchModel(request);
+                    request.searchModel.removeType(request).then(success => {
+                        resolve({
+                            success: true,
+                            code: '',
+                            result: success
+                        });
+                    }).catch(error => {
+                        reject({
+                            success: false,
+                            code: '',
+                            error: error
+                        });
                     });
-                }).catch(error => {
+                } catch (error) {
                     reject({
                         success: false,
                         code: '',
                         error: error
                     });
-                });
-            } catch (error) {
-                reject({
-                    success: false,
-                    code: '',
-                    error: error
-                });
-            }
-        });
-    },
-
-    incrementalIndex: function (request) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                request.searchModel = _self.getSearchModel(request);
-                request.searchModel.removeType(request).then(success => {
-                    resolve({
-                        success: true,
-                        code: '',
-                        result: success
+                }
+            });
+        },
+    
+        incrementalIndex: function (request) {
+            let _self = this;
+            return new Promise((resolve, reject) => {
+                try {
+                    request.searchModel = _self.getSearchModel(request);
+                    request.searchModel.removeType(request).then(success => {
+                        resolve({
+                            success: true,
+                            code: '',
+                            result: success
+                        });
+                    }).catch(error => {
+                        reject({
+                            success: false,
+                            code: '',
+                            error: error
+                        });
                     });
-                }).catch(error => {
+                } catch (error) {
                     reject({
                         success: false,
                         code: '',
                         error: error
                     });
-                });
-            } catch (error) {
-                reject({
-                    success: false,
-                    code: '',
-                    error: error
-                });
-            }
-        });
-    }
+                }
+            });
+        }*/
 };

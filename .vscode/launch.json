@@ -5,12 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/nodics.js"
-        },
-        {
             "name": "Remote Debug",
             "type": "node",
             "request": "attach",

@@ -85,8 +85,6 @@ module.exports = {
                             } else {
                                 _self.LOG.error('Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode);
                             }
-                        } else {
-                            _self.LOG.error('Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode);
                         }
                     });
                 });
@@ -125,8 +123,6 @@ module.exports = {
                             } else {
                                 _self.LOG.error('Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode);
                             }
-                        } else {
-                            _self.LOG.error('Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode);
                         }
                     });
                 });

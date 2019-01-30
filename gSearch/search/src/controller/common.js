@@ -12,13 +12,43 @@
 const _ = require('lodash');
 
 module.exports = {
+
+    /**
+     * This function is used to check if search cluster is live and running fine
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
+    doRefresh: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
+        if (request.httpRequest.params.id) {
+            request.query = request.query || {};
+            request.query.id = request.httpRequest.params.id;
+        }
+        if (callback) {
+            FACADE.dsdName.doRefresh(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doCheckHealth(request);
+        }
+    },
+
+    /**
+     * This function is used to check if requested document is available withing current index and its type
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
     doExists: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
         if (request.httpRequest.params.id) {
-            request.query = {
-                id: request.httpRequest.params.id
-            };
+            request.query = request.query || {};
+            request.query.id = request.httpRequest.params.id;
         }
         if (callback) {
             FACADE.dsdName.doExists(request).then(success => {
@@ -31,9 +61,15 @@ module.exports = {
         }
     },
 
+    /**
+     * This function is used to check if search cluster is live and running fine
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
     doCheckHealth: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
             FACADE.dsdName.doCheckHealth(request).then(success => {
                 callback(null, success);
@@ -45,20 +81,63 @@ module.exports = {
         }
     },
 
-    doIndex: function (request, callback) {
+    /**
+     * This function is used to put document within indeces
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
+    doSave: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
-        if (callback) {
-            FACADE.dsdName.doIndex(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
+        request = _.merge(request, request.httpRequest.body || {});
+        if (request.httpRequest.body &&
+            request.httpRequest.body.models &&
+            request.httpRequest.body.models.length > 1) {
+            if (callback) {
+                FACADE.dsdName.doSave(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                return FACADE.dsdName.doSave(request);
+            }
         } else {
-            return FACADE.dsdName.doCheckHealth(request);
+
         }
     },
 
+    /**
+     * This function is used to perform bulk operation within single or multiple indexes
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
+    doBulk: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
+        if (request.httpRequest.body &&
+            request.httpRequest.body.models &&
+            request.httpRequest.body.models.length > 1) {
+            if (callback) {
+                FACADE.dsdName.doBulk(request).then(success => {
+                    callback(null, success);
+                }).catch(error => {
+                    callback(error);
+                });
+            } else {
+                return FACADE.dsdName.doBulk(request);
+            }
+        } else {
+
+        }
+    },
+
+    /**
+     * This function is used to fetch a single document from index
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
     doGet: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
@@ -66,6 +145,8 @@ module.exports = {
             request.query = {
                 id: request.httpRequest.params.id
             };
+        } else {
+            request = _.merge(request, request.httpRequest.body || {});
         }
         if (callback) {
             FACADE.dsdName.doGet(request).then(success => {
@@ -78,17 +159,21 @@ module.exports = {
         }
     },
 
+    /**
+     * This function is used to search term or document within whole index
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
     doSearch: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
         if (request.httpRequest.params.id) {
             request.query = {
                 match: {
                     id: request.httpRequest.params.id
                 }
             };
-        } else {
-            request = _.merge(request, request.httpRequest.body || {});
         }
         if (callback) {
             FACADE.dsdName.doSearch(request).then(success => {
@@ -101,24 +186,15 @@ module.exports = {
         }
     },
 
-    doSave: function (request, callback) {
-        request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
-        request.models = request.httpRequest.body;
-        if (callback) {
-            FACADE.dsdName.doSave(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.dsdName.doSave(request);
-        }
-    },
-
+    /**
+     * This function is used to remove a document from index
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
     doRemove: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
         if (request.httpRequest.params.id) {
             request.query = {
                 id: request.httpRequest.params.id
@@ -135,6 +211,11 @@ module.exports = {
         }
     },
 
+    /**
+     * This function is used to remove all documents based on query
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
     doRemoveByQuery: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
@@ -150,77 +231,63 @@ module.exports = {
         }
     },
 
-    getMapping: function (request, callback) {
+    /**
+     * This function is used to get defined mapping for the type
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
+    doGetMapping: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
-        if (callback) {
-            FACADE.dsdName.getMapping(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.dsdName.getMapping(request);
-        }
-    },
-
-    updateMapping: function (request, callback) {
-        request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
-        if (callback) {
-            FACADE.dsdName.updateMapping(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.dsdName.updateMapping(request);
-        }
-    },
-
-    removeType: function (request, callback) {
-        request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
-        if (callback) {
-            FACADE.dsdName.removeType(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.dsdName.removeType(request);
-        }
-    },
-
-    fullIndex: function (request, callback) {
-        request.indexName = request.httpRequest.params.indexName;
-        request.typeName = request.httpRequest.params.typeName;
         request = _.merge(request, request.httpRequest.body || {});
-        request.reloadSearchSchema = request.reloadSearchSchema || CONFIG.get('search').reloadSearchSchema;
         if (callback) {
-            FACADE.dsdName.fullIndex(request).then(success => {
+            FACADE.dsdName.doGetMapping(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.fullIndex(request);
+            return FACADE.dsdName.doGetMapping(request);
         }
     },
 
-    incrementalIndex: function (request, callback) {
-        request.indexName = request.httpRequest.params.indexName;
-        request.typeName = request.httpRequest.params.typeName;
+    /**
+     * This function is used to update mapping for the type
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
+    doUpdateMapping: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
-        request.reloadSearchSchema = request.reloadSearchSchema || CONFIG.get('search').reloadSearchSchema;
         if (callback) {
-            FACADE.dsdName.incrementalIndex(request).then(success => {
+            FACADE.dsdName.doUpdateMapping(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.incrementalIndex(request);
+            return FACADE.dsdName.doUpdateMapping(request);
+        }
+    },
+
+    /**
+     * This function is used to remove type from index
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
+    doRemoveType: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
+        if (callback) {
+            FACADE.dsdName.doRemoveType(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doRemoveType(request);
         }
     }
 };

@@ -83,9 +83,8 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        _self.LOG.error('Invalid search engine configuration for module: ' + moduleName + ', tenant: ' + tntCode);
-                        _self.LOG.error(error);
-                        reject(error);
+                        //_self.LOG.warn('Search is not enabled for module: ' + moduleName + ', tenant: ' + tntCode);
+                        resolve(true);
                     }
                 } else {
                     resolve(true);
@@ -150,9 +149,8 @@ module.exports = {
                         resolve(true);
                     }
                 } else {
-                    _self.LOG.error('Invalid search engine configuration for module: ' + moduleName + ', tenant: ' + tntCode);
-                    _self.LOG.error(error);
-                    reject(error);
+                    //_self.LOG.warn('Search is not enabled for module: ' + moduleName + ', tenant: ' + tntCode);
+                    resolve(true);
                 }
             } catch (error) {
                 _self.LOG.error('Failed while loading search schema from schema definitions');
@@ -252,9 +250,8 @@ module.exports = {
                             resolve(true);
                         }
                     } else {
-                        _self.LOG.error('Invalid search engine configuration for module: ' + moduleName + ', tenant: ' + tntCode);
-                        _self.LOG.error(error);
-                        reject(error);
+                        //_self.LOG.warn('Search is not enabled for module: ' + moduleName + ', tenant: ' + tntCode);
+                        resolve(true);
                     }
                 } else {
                     resolve(true);

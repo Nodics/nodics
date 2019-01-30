@@ -22,7 +22,6 @@ const facades = require('./nFacade');
 const controllers = require('./nController');
 const router = require('./nRouter');
 const test = require('./nTest');
-const search = require('./nSearch');
 
 module.exports = {
     init: function (options) {

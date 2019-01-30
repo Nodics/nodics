@@ -140,7 +140,7 @@ module.exports = {
                     }
                 } else {
                     _self.LOG.warn('Search is not enabled for module: ' + moduleName);
-                    reject(true);
+                    resolve(true);
                 }
             } catch (err) {
                 _self.LOG.error('Facing issue to connect with search cluster');

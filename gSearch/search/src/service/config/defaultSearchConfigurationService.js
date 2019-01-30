@@ -106,7 +106,7 @@ module.exports = {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             let searchEngine = this.searchEngines[moduleName] || this.searchEngines.default;
-            return searchEngine[tenant];
+            return searchEngine ? searchEngine[tenant] : null;
         }
     },
 

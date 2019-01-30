@@ -21,16 +21,51 @@ module.exports = {
         - indexDef: indexDef
     */
     default: {
+
+        defineDefaultDoRefresh: function (searchModel) { //Required pipeline to process this request
+            searchModel.doRefresh = function (input) {
+                let _self = this;
+                return new Promise((resolve, reject) => {
+                    try {
+                        try {
+                            let indexQuery = _.merge(_self.searchEngine.getOptions().refreshOptions || {}, {
+                                index: _self.indexDef.indexName,
+                                body: input.refreshOptions || {}
+                            });
+                            _self.LOG.debug('Executing refresh command with options: ');
+                            _self.LOG.debug(indexDetail);
+                            _self.searchEngine.getConnection().indices.refresh(indexQuery, function (error, response) {
+                                if (error) {
+                                    reject(error);
+                                }
+                                else {
+                                    resolve(response);
+                                }
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
         defineDefaultDoExists: function (searchModel) {
             searchModel.doExists = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        _self.searchEngine.getConnection().exists({
+                        //Get configured options, merge input options on top of that
+                        let indexQuery = _.merge(_self.searchEngine.getOptions().existsOptions || {}, _.merge(input.options || {}, {
                             index: _self.indexDef.indexName,
                             type: _self.indexDef.typeName,
-                            body: input.query.id
-                        }, function (error, response) {
+                            id: input.query.id
+                        }));
+                        _self.LOG.debug('Executing health command with options');
+                        _self.LOG.debug(indexQuery);
+                        _self.searchEngine.getConnection().exists(indexQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             }
@@ -50,7 +85,13 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        _self.searchEngine.getConnection().cluster.health({}, function (error, response) {
+                        //Get configured options, merge input options on top of that
+                        let indexQuery = _.merge(_self.searchEngine.getOptions().healthOptions || {}, _.merge(input.options || {}, {
+                            index: _self.indexDef.indexName
+                        }));
+                        _self.LOG.debug('Executing health command with options');
+                        _self.LOG.debug(indexQuery);
+                        _self.searchEngine.getConnection().cluster.health(indexQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -64,18 +105,60 @@ module.exports = {
             };
         },
 
-        defineDefaultDoIndex: function (searchModel) {
-            searchModel.doIndex = function (input) {
+        defineDefaultDoSave: function (searchModel) { //Required pipeline to process this request
+            searchModel.doSave = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        _self.searchEngine.getConnection().cluster.health({}, function (error, response) {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                resolve(response);
-                            }
-                        });
+                        try {
+                            let putQuery = _.merge(_self.searchEngine.getOptions().saveOptions || {}, _.merge(input.options || {}, {
+                                index: _self.indexDef.indexName,
+                                type: _self.indexDef.typeName,
+                                id: input.model[_self.indexDef.idPropertyName],
+                                body: input.model
+                            }));
+                            _self.LOG.debug('Executing save command with options');
+                            _self.LOG.debug(putQuery);
+                            _self.searchEngine.getConnection().index(putQuery, function (error, response) {
+                                if (error) {
+                                    reject(error);
+                                }
+                                else {
+                                    resolve(response);
+                                }
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
+        defineDefaultDoBulk: function (searchModel) { //Required pipeline to process this request
+            searchModel.doBulk = function (input) {
+                let _self = this;
+                return new Promise((resolve, reject) => {
+                    try {
+                        try {
+                            let bulkQuery = _.merge(_self.searchEngine.getOptions().bulkOptions || {}, _.merge(input.options || {}, {
+                                body: input.data
+                            }));
+                            _self.LOG.debug('Executing bulk command with options');
+                            _self.LOG.debug(bulkQuery);
+                            _self.searchEngine.getConnection().bulk(bulkQuery, function (error, response) {
+                                if (error) {
+                                    reject(error);
+                                }
+                                else {
+                                    resolve(response);
+                                }
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
                     } catch (error) {
                         reject(error);
                     }
@@ -84,15 +167,20 @@ module.exports = {
         },
 
         defineDefaultDoGet: function (searchModel) {
-            searchModel.doGet = function (input) {
+            searchModel.doGet = function (input) { //Required pipeline to process this request
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        _self.searchEngine.getConnection().get({
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
-                            body: input.query.id
-                        }, function (error, response) {
+                        let searchQuery = _.merge(_self.searchEngine.getOptions().getOptions || {},
+                            _.merge(input.query || {}, {
+                                index: _self.indexDef.indexName,
+                                type: _self.indexDef.typeName,
+                                id: input.query.id
+                            })
+                        );
+                        _self.LOG.debug('Executing get command with options');
+                        _self.LOG.debug(searchQuery);
+                        _self.searchEngine.getConnection().get(searchQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             }
@@ -107,16 +195,21 @@ module.exports = {
             };
         },
 
-        defineDefaultDoSearch: function (searchModel) {
+        defineDefaultDoSearch: function (searchModel) { //Required pipeline to process this request
             searchModel.doSearch = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        _self.searchEngine.getConnection().search({
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
-                            body: input.query
-                        }, function (error, response) {
+                        let searchQuery = _.merge(_self.searchEngine.searchOptions().searchOptions || {},
+                            _.merge(input.options || {}, {
+                                index: _self.indexDef.indexName,
+                                type: _self.indexDef.typeName
+                            })
+                        );
+                        searchQuery.body = input.query || {};
+                        _self.LOG.debug('Executing search command with options');
+                        _self.LOG.debug(searchQuery);
+                        _self.searchEngine.getConnection().search(searchQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             }
@@ -131,75 +224,21 @@ module.exports = {
             };
         },
 
-        defineDefaultDoSave: function (searchModel) {
-            searchModel.doSave = function (input) {
-                let _self = this;
-                return new Promise((resolve, reject) => {
-                    try {
-                        try {
-                            _self.searchEngine.getConnection().index({
-                                index: _self.indexDef.indexName,
-                                type: _self.indexDef.typeName,
-                                id: input.model[_self.indexDef.idPropertyName],
-                                body: input.model
-                            }, function (error, response) {
-                                if (error) {
-                                    reject(error);
-                                }
-                                else {
-                                    resolve(response);
-                                }
-                            });
-                        } catch (error) {
-                            reject(error);
-                        }
-                    } catch (error) {
-                        reject(error);
-                    }
-                });
-            };
-        },
-
-        defineDefaultDoRefresh: function (searchModel) {
-            searchModel.doRefresh = function (input) {
-                let _self = this;
-                return new Promise((resolve, reject) => {
-                    try {
-                        try {
-                            let indexDetail = _.merge(_self.searchEngine.getOptions().refreshOptions || {}, {
-                                index: _self.indexDef.indexName,
-                                body: input.refreshOptions || {}
-                            });
-                            _self.LOG.debug('Executing refresh command with options: ');
-                            _self.LOG.debug(indexDetail);
-                            _self.searchEngine.getConnection().indices.refresh(indexDetail, function (error, response) {
-                                if (error) {
-                                    reject(error);
-                                }
-                                else {
-                                    resolve(response);
-                                }
-                            });
-                        } catch (error) {
-                            reject(error);
-                        }
-                    } catch (error) {
-                        reject(error);
-                    }
-                });
-            };
-        },
-
-        defineDefaultDoRemove: function (searchModel) {
+        defineDefaultDoRemove: function (searchModel) { //Required pipeline to process this request
             searchModel.doRemove = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        _self.searchEngine.getConnection().delete({
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
-                            id: input.query.id
-                        }, function (error, response) {
+                        let removeQuery = _.merge(_self.searchEngine.searchOptions().removeOptions || {},
+                            _.merge(input.options || {}, {
+                                index: _self.indexDef.indexName,
+                                type: _self.indexDef.typeName,
+                                id: input.query.id
+                            })
+                        );
+                        _self.LOG.debug('Executing remove command with options');
+                        _self.LOG.debug(removeQuery);
+                        _self.searchEngine.getConnection().delete(removeQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -213,18 +252,23 @@ module.exports = {
             };
         },
 
-        defineDefaultDoRemoveByQuery: function (searchModel) {
+        defineDefaultDoRemoveByQuery: function (searchModel) { //Required pipeline to process this request
             searchModel.doRemoveByQuery = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        _self.searchEngine.getConnection().deleteByQuery({
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
-                            body: {
-                                query: input.query
-                            }
-                        }, function (error, response) {
+                        let removeQuery = _.merge(_self.searchEngine.searchOptions().removeOptions || {},
+                            _.merge(input.options || {}, {
+                                index: _self.indexDef.indexName,
+                                type: _self.indexDef.typeName,
+                                body: {
+                                    query: input.query
+                                }
+                            })
+                        );
+                        _self.LOG.debug('Executing remove command with options');
+                        _self.LOG.debug(removeQuery);
+                        _self.searchEngine.getConnection().deleteByQuery(removeQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -238,15 +282,18 @@ module.exports = {
             };
         },
 
-        defineDefaultGetMapping: function (searchModel) {
-            searchModel.getMapping = function (input) {
+        defineDefaultGetMapping: function (searchModel) {  //Required pipeline to process this request
+            searchModel.doGetMapping = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        _self.searchEngine.getConnection().indices.getMapping({
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
-                        }, function (error, response) {
+                        let mappingQuery = _.merge(_self.searchEngine.searchOptions().mappingGetOptions || {},
+                            _.merge(input.options || {}, {
+                                index: _self.indexDef.indexName,
+                                type: _self.indexDef.typeName,
+                            })
+                        );
+                        _self.searchEngine.getConnection().indices.getMapping(mappingQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -260,16 +307,19 @@ module.exports = {
             };
         },
 
-        defineDefaultUpdateMapping: function (searchModel) {
-            searchModel.updateMapping = function (input) {
+        defineDefaultUpdateMapping: function (searchModel) { //Required pipeline to process this request
+            searchModel.doUpdateMapping = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        _self.searchEngine.getConnection().indices.putMapping({
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
-                            body: input.searchSchema
-                        }, function (error, response) {
+                        let mappingQuery = _.merge(_self.searchEngine.searchOptions().mappingPutOptions || {},
+                            _.merge(input.options || {}, {
+                                index: _self.indexDef.indexName,
+                                type: _self.indexDef.typeName,
+                                body: input.searchSchema
+                            })
+                        );
+                        _self.searchEngine.getConnection().indices.putMapping(mappingQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -283,14 +333,17 @@ module.exports = {
             };
         },
 
-        defineDefaultRemoveType: function (searchModel) {
-            searchModel.removeType = function (input) {
+        defineDefaultRemoveType: function (searchModel) { //Required pipeline to process this request
+            searchModel.doRemoveType = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        _self.searchEngine.getConnection().indices.delete({
-                            type: _self.indexDef.typeName,
-                        }, function (error, response) {
+                        let deleteQuery = _.merge(_self.searchEngine.searchOptions().removeTypeOptions || {},
+                            _.merge(input.options || {}, {
+                                type: _self.indexDef.typeName,
+                            })
+                        );
+                        _self.searchEngine.getConnection().indices.delete(deleteQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {

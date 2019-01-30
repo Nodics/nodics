@@ -43,23 +43,15 @@ module.exports = {
         return DAO.DaoName.doRemoveByQuery(request);
     },
 
-    getMapping: function (request) {
-        return DAO.DaoName.getMapping(request);
+    doGetMapping: function (request) {
+        return DAO.DaoName.doGetMapping(request);
     },
 
-    updateMapping: function (request) {
-        return DAO.DaoName.updateMapping(request);
+    doUpdateMapping: function (request) {
+        return DAO.DaoName.doUpdateMapping(request);
     },
 
-    removeType: function (request) {
-        return DAO.DaoName.removeType(request);
-    },
-
-    fullIndex: function (request) {
-        return DAO.DaoName.fullIndex(request);
-    },
-
-    incrementalIndex: function (request) {
-        return DAO.DaoName.incrementalIndex(request);
+    doRemoveType: function (request) {
+        return DAO.DaoName.doRemoveType(request);
     }
 };
