@@ -1,6 +1,6 @@
 {
     "name": "kickoff",
-    "index": "10000",
+    "index": "1000",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and kickoff point to start nodics",
     "homepage": "http://www.nodics.com/",

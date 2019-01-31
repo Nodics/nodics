@@ -75,9 +75,9 @@ module.exports = function () {
         if (!metaData.name || !metaData.index) {
             throw new Error('Invalid module meta data properties, verify name and index');
         }
-        if (isNaN(metaData.index)) {
-            throw new Error('Property index contain invalid value in package.json for module : ' + metaData.name);
-        }
+        // if (isNaN(metaData.index)) {
+        //     throw new Error('Property index contain invalid value in package.json for module : ' + metaData.name);
+        // }
         _rawModules[metaData.name] = {
             path: path,
             index: metaData.index,
@@ -240,13 +240,13 @@ module.exports = function () {
     };
 
     this.setIndexedModules = function (indexedModules) {
-        _indexedModules = {};
-        Object.keys(indexedModules).forEach((index) => {
-            let indexValues = indexedModules[index];
-            if (indexValues && indexValues.length > 0) {
-                _indexedModules[index] = indexValues[0];
-            }
-        });
+        _indexedModules = indexedModules;
+        // Object.keys(indexedModules).forEach((index) => {
+        //     let indexValues = indexedModules[index];
+        //     if (indexValues && indexValues.length > 0) {
+        //         _indexedModules[index] = indexValues[0];
+        //     }
+        // });
     };
 
     this.getIndexedModules = function () {
@@ -392,7 +392,7 @@ module.exports = function () {
         _.each(_nodics.interceptors, (moduleInterceptors, moduleName) => {
             _.each(moduleInterceptors, (modelInterceptors, modelName) => {
                 _.each(modelInterceptors, (typeInterceptors, typeName) => {
-                    let indexedInterceptors = UTILS.sortModules(typeInterceptors, 'index');
+                    let indexedInterceptors = UTILS.sortObject(typeInterceptors, 'index');
                     let list = [];
                     if (indexedInterceptors) {
                         _.each(indexedInterceptors, (intList, index) => {

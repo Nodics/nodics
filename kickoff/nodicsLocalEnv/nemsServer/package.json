@@ -1,6 +1,6 @@
 {
     "name": "nemsServer",
-    "index": "10024",
+    "index": "1000.1.4",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and nemsServer point to start nodics",
     "homepage": "http://www.nodics.com/",

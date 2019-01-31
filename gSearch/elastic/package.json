@@ -1,6 +1,6 @@
 {
     "name": "elastic",
-    "index": "610",
+    "index": "15.5",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all elastic search related configurations",
     "homepage": "http://www.nodics.com/",

@@ -1,6 +1,6 @@
 {
     "name": "default",
-    "index": "0",
+    "index": "1.0",
     "publish": false,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to default",
     "homepage": "http://www.nodics.com/",

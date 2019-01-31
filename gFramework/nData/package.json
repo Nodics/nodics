@@ -1,6 +1,6 @@
 {
     "name": "ndata",
-    "index": "11",
+    "index": "1.11",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and nData point to start nodics",
     "homepage": "http://www.nodics.com/",

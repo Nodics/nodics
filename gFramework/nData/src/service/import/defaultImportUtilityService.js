@@ -37,8 +37,8 @@ module.exports = {
                     reject('Invalid list of modules to be proccesses');
                 } else {
                     let fileList = {};
-                    _.each(NODICS.getIndexedModules(), (modules, moduleIndex) => {
-                        modules.forEach(element => {
+                    NODICS.getIndexedModules().forEach((moduleObject, moduleIndex) => {
+                        moduleObject.forEach(element => {
                             if (moduleList.includes(element.name)) {
                                 let dataFilesRoot = element.path;
                                 if (dataType === 'core') {
@@ -111,7 +111,7 @@ module.exports = {
                     reject('Invalid list of modules to be proccesses');
                 } else {
                     let fileList = {};
-                    _.each(NODICS.getIndexedModules(), (modules, moduleIndex) => {
+                    NODICS.getIndexedModules().forEach((moduleObject, moduleIndex) => {
                         modules.forEach(element => {
                             if (moduleList.includes(element.name)) {
                                 let dataFilesRoot = element.path;

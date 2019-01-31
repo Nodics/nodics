@@ -1,6 +1,6 @@
 {
     "name": "emsClient",
-    "index": "500",
+    "index": "10.0",
     "publish": true,
     "description": "Nodics applicaion module. It will hold all configuration and emsClient point to start nodics",
     "homepage": "http://www.nodics.com/",

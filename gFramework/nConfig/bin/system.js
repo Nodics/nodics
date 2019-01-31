@@ -130,24 +130,40 @@ module.exports = {
 
     loadModuleIndex: function () {
         let _self = this;
-        let moduleIndex = [];
+        let moduleIndex = {};
+        let indexValue = [];
         _.each(NODICS.getRawModules(), (moduleObject, moduleName) => {
             if (NODICS.isModuleActive(moduleObject.metaData.name)) {
-                moduleIndex.push({
-                    index: moduleObject.index,
-                    name: moduleName,
-                    path: moduleObject.path,
-                });
+                indexValue.push(moduleObject.index);
+                if (!moduleIndex[moduleObject.index]) {
+                    moduleIndex[moduleObject.index] = {
+                        index: moduleObject.index,
+                        name: moduleName,
+                        path: moduleObject.path,
+                    };
+                } else {
+                    throw new Error('Module with index: ' + moduleObject.index + ' already exist ' + moduleIndex[moduleObject.index].name);
+                }
             }
         });
-        NODICS.setIndexedModules(UTILS.sortModules(moduleIndex, 'index'));
+
+        let indexedValue = UTILS.sortModules(indexValue);
+        let moduleList = new Map();
+        indexedValue.forEach((key) => {
+            moduleList.set(key, moduleIndex[key]);
+        });
+        NODICS.setIndexedModules(moduleList);
         _self.printModuleSequence();
+        //console.log(NODICS.getIndexedModules().get('1.0'));
+        //Array.from(NODICS.getIndexedModules().keys())
+        process.exit(1);
     },
 
     printModuleSequence: function () {
         let modulesStr = '';
         let activeModules = [];
-        _.each(NODICS.getIndexedModules(), (obj, key) => {
+        NODICS.getIndexedModules().forEach((obj, key) => {
+            console.log(key, ' ------ ' + obj.name);
             modulesStr = modulesStr + obj.name + ',';
             activeModules.push(obj.name);
         });
@@ -157,8 +173,7 @@ module.exports = {
 
     loadModulesMetaData: function () {
         let _self = this;
-        Object.keys(NODICS.getIndexedModules()).forEach(function (index) {
-            let moduleObject = NODICS.getIndexedModules()[index];
+        NODICS.getIndexedModules().forEach(function (moduleObject, index) {
             _self.loadModuleMetaData(moduleObject.name);
         });
     },
@@ -184,8 +199,7 @@ module.exports = {
     loadConfigurations: function (fileName) {
         let _self = this;
         fileName = fileName || '/config/properties.js';
-        Object.keys(NODICS.getIndexedModules()).forEach(function (index) {
-            let moduleObject = NODICS.getIndexedModules()[index];
+        NODICS.getIndexedModules().forEach(function (moduleObject, index) {
             _self.loadModuleConfiguration(moduleObject.name, fileName);
         });
     },
@@ -296,6 +310,7 @@ module.exports = {
         let fileConfig = _.merge({}, logConfig.fileConfig);
         fileConfig.label = entityName;
         if (fileConfig.dirname.startsWith('.')) {
+            console.log('-------------------------------:', NODICS.getServerPath());
             fileConfig.dirname = NODICS.getServerPath() + '/logs';
         }
         if (!fs.existsSync(fileConfig.dirname)) {
@@ -318,8 +333,7 @@ module.exports = {
     getGlobalVariables: function (fileName) {
         let _self = this;
         let gVar = {};
-        Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
-            var value = NODICS.getIndexedModules()[key];
+        NODICS.getIndexedModules().forEach(function (value, key) {
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
                 _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
@@ -368,8 +382,7 @@ module.exports = {
     loadFiles: function (fileName, frameworkFile) {
         let _self = this;
         let mergedFile = frameworkFile || {};
-        Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
-            var value = NODICS.getIndexedModules()[key];
+        NODICS.getIndexedModules().forEach(function (value, key) {
             var filePath = value.path + fileName;
             if (fs.existsSync(filePath)) {
                 _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));

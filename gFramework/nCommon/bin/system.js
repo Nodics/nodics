@@ -49,10 +49,13 @@ module.exports = {
     },
 
     loadClasses: function () {
-        Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
-            var value = NODICS.getIndexedModules()[key];
+        NODICS.getIndexedModules().forEach((value, key) => {
             SYSTEM.loadModuleClasses(value);
         });
+        // Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
+        //     var value = NODICS.getIndexedModules()[key];
+        //     SYSTEM.loadModuleClasses(value);
+        // });
         SYSTEM.generalizeClasses();
     },
 
@@ -80,11 +83,11 @@ module.exports = {
         });
     },
 
-    loadModules: function (modules = Object.keys(NODICS.getIndexedModules())) {
+    loadModules: function (modules = Array.from(NODICS.getIndexedModules().keys())) {
         return new Promise((resolve, reject) => {
             if (modules && modules.length > 0) {
                 let moduleIndex = modules.shift();
-                let moduleName = NODICS.getIndexedModules()[moduleIndex].name;
+                let moduleName = NODICS.getIndexedModules().get(moduleIndex).name;
                 SYSTEM.loadModule(moduleName).then(success => {
                     SYSTEM.loadModules(modules).then(success => {
                         resolve(true);
@@ -456,11 +459,11 @@ module.exports = {
         });
     },
 
-    finalizeModules: function (modules = Object.keys(NODICS.getIndexedModules())) {
+    finalizeModules: function (modules = Array.from(NODICS.getIndexedModules().keys())) {
         return new Promise((resolve, reject) => {
             if (modules && modules.length > 0) {
                 let moduleIndex = modules.shift();
-                let moduleName = NODICS.getIndexedModules()[moduleIndex].name;
+                let moduleName = NODICS.getIndexedModules().get(moduleIndex).name;
                 SYSTEM.finalizeModule(moduleName).then(success => {
                     SYSTEM.finalizeModules(modules).then(success => {
                         resolve(true);
@@ -495,9 +498,8 @@ module.exports = {
     },
 
     cleanModules: function () {
-        Object.keys(NODICS.getIndexedModules()).forEach(function (key) {
-            let moduleObject = NODICS.getIndexedModules()[key];
-            SYSTEM.cleanModule(moduleObject.name);
+        NODICS.getIndexedModules().forEach(function (value, key) {
+            SYSTEM.cleanModule(value.name);
         });
     },
 

@@ -1,6 +1,6 @@
 {
     "name": "nconfig",
-    "index": "1",
+    "index": "1.1",
     "publish": false,
     "description": "Build configuration related functionalities for Nodics",
     "homepage": "http://www.nodics.com/",

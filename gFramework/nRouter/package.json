@@ -1,6 +1,6 @@
 {
     "name": "nrouter",
-    "index": "10",
+    "index": "1.10",
     "publish": false,
     "description": "Register routers for all defined items",
     "homepage": "http://www.nodics.com/",

@@ -1,6 +1,6 @@
 {
     "name": "ncommon",
-    "index": "2",
+    "index": "1.2",
     "publish": false,
     "description": "Build common functionalities for Nodics",
     "homepage": "http://www.nodics.com/",

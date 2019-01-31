@@ -1,6 +1,6 @@
 {
     "name": "testAServer",
-    "index": "10030",
+    "index": "1000.1.7",
     "publish": false,
     "description": "This Server hold cronjob, nems, ems and admin module to up with default 3002 and 3003 port",
     "homepage": "http://www.nodics.com/",

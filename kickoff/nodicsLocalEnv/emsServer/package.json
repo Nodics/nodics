@@ -1,6 +1,6 @@
 {
     "name": "emsServer",
-    "index": "10025",
+    "index": "1000.1.3",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and emsServer point to start nodics",
     "homepage": "http://www.nodics.com/",

@@ -1,6 +1,6 @@
 {
     "name": "nservice",
-    "index": "5",
+    "index": "1.5",
     "publish": false,
     "description": "Generate services for all defined items",
     "homepage": "http://www.nodics.com/",

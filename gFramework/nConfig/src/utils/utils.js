@@ -41,7 +41,13 @@ module.exports = {
         }
     },
 
-    sortModules: function (moduleIndex, property) {
+    sortModules: function (rawData) {
+        indexedData = rawData.map(a => a.split('.').map(n => +n + 100000).join('.')).sort()
+            .map(a => a.split('.').map(n => +n - 100000).join('.'));
+        return indexedData;
+    },
+
+    sortObject: function (moduleIndex, property) {
         moduleIndex = _.groupBy(moduleIndex, function (element) {
             return parseInt(element[property]);
         });
