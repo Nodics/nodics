@@ -10,16 +10,14 @@
  */
 
 module.exports = {
-    activeModules: {
-        updateGroups: true,
-        groups: ['core', 'ems', 'search', 'admindesk'], // Group 'framework' will be included automatically
-        modules: [
-            'nodicsDefaultServer',
-            'kickoff',
-            'nodicsLocalEnv'
-        ]
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
-    log: {
-        level: 'debug'
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     }
 };

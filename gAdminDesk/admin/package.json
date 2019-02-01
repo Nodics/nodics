@@ -1,0 +1,21 @@
+{
+    "name": "admin",
+    "index": "500.0",
+    "publish": true,
+    "web": true,
+    "description": "Nodics applicaion module. It will hold all configuration and storefront point to start nodics",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "admin"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

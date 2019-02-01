@@ -50,15 +50,15 @@ module.exports = {
             this.moduleGenHelp();
             process.exit(1);
         }
-        let distModule = NODICS.getRawModule('nodics');
-        if (!distModule) {
-            SYSTEM.LOG.error('There is no module found for : ', path);
-            this.moduleGenHelp();
-            process.exit(1);
+        let moduleObject = NODICS.getIndexedModules().get(path);
+        console.log(moduleObject);
+        if (!moduleObject) {
+            SYSTEM.LOG.warn('Could not found module by given index, So generating at root level');
+            moduleObject = NODICS.getRawModule('nodics');
         }
         return {
             name: name,
-            path: distModule.path + '/kickoff/custom',
+            path: moduleObject.path,
             commonPath: NODICS.getRawModule('ncommon').path + '/templates'
         };
     },
@@ -69,7 +69,7 @@ module.exports = {
         let destPath = command.path + '/' + command.name;
         let appName = command.name;
         if (fs.existsSync(destPath)) {
-            console.log('Module directory already exist');
+            SYSTEM.LOG.error('Module directory already exist');
             process.exit(0);
         }
         var options = {

@@ -12,9 +12,8 @@
 module.exports = {
     activeModules: {
         updateGroups: true,
-        //groups: ['core', 'ems'], // Group 'framework' will be included automatically
+        groups: ['admindesk'], // Group 'framework' will be included automatically
         modules: [
-            'admin',
             'adminServer',
             'kickoff',
             'nodicsLocalEnv'

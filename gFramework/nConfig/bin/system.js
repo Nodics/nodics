@@ -156,7 +156,7 @@ module.exports = {
         _self.printModuleSequence();
         //console.log(NODICS.getIndexedModules().get('1.0'));
         //Array.from(NODICS.getIndexedModules().keys())
-        process.exit(1);
+        //process.exit(1);
     },
 
     printModuleSequence: function () {
@@ -310,7 +310,6 @@ module.exports = {
         let fileConfig = _.merge({}, logConfig.fileConfig);
         fileConfig.label = entityName;
         if (fileConfig.dirname.startsWith('.')) {
-            console.log('-------------------------------:', NODICS.getServerPath());
             fileConfig.dirname = NODICS.getServerPath() + '/logs';
         }
         if (!fs.existsSync(fileConfig.dirname)) {

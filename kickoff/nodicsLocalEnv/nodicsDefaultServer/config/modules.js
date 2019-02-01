@@ -1,4 +1,5 @@
-module.exports = { core: [ 'gCore', 'cronjob', 'nems', 'profile' ],
+module.exports = { admindesk: [ 'gAdminDesk', 'admin' ],
+  core: [ 'gCore', 'cronjob', 'nems', 'profile' ],
   ems: [ 'gEms', 'emsClient' ],
   framework: 
    [ 'gFramework',
