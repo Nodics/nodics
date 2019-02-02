@@ -11,6 +11,7 @@
 const _ = require('lodash');
 
 module.exports = {
+
     cronJobContainer: new CLASSES.CronJobContainer(),
 
     getCronJobContainer: function () {

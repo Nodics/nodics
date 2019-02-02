@@ -19,7 +19,52 @@ module.exports = {
         return !value || !Object.keys(value).length;
     },
 
+    sortModules: function (rawData) {
+        indexedData = rawData.map(a => a.split('.').map(n => +n + 100000).join('.')).sort()
+            .map(a => a.split('.').map(n => +n - 100000).join('.'));
+        return indexedData;
+    },
+
+    sortObject: function (moduleIndex, property) {
+        moduleIndex = _.groupBy(moduleIndex, function (element) {
+            return parseInt(element[property]);
+        });
+        return moduleIndex;
+    },
+
     subFolders: function (folder) {
+        return fs.readdirSync(folder)
+            .filter(subFolder => fs.statSync(path.join(folder, subFolder)).isDirectory())
+            .filter(subFolder => subFolder !== 'node_modules' && subFolder !== 'templates' && subFolder[0] !== '.')
+            .map(subFolder => path.join(folder, subFolder));
+    },
+
+    collectModulesList: function (folder, parent) {
+        let metaDataPath = path.join(folder, 'package.json');
+        if (fs.existsSync(metaDataPath)) {
+            let metaData = require(metaDataPath);
+            NODICS.addRawModule(metaData, folder, parent);
+            parent = metaData.name;
+        }
+        for (let subFolder of this.subFolders(folder)) {
+            this.collectModulesList(subFolder, parent);
+        }
+    },
+
+    getAllMethods: function (envScripts) {
+        return Object.getOwnPropertyNames(envScripts).filter(function (prop) {
+            return typeof envScripts[prop] == 'function';
+        });
+    },
+
+    getFileNameWithoutExtension: function (filePath) {
+        let fileName = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf("."));
+        return fileName.toUpperCaseFirstChar();
+    },
+
+    //===================================================================
+
+    /*subFolders: function (folder) {
         return fs.readdirSync(folder)
             .filter(subFolder => fs.statSync(path.join(folder, subFolder)).isDirectory())
             .filter(subFolder => subFolder !== 'node_modules' && subFolder !== 'templates' && subFolder[0] !== '.')
@@ -33,24 +78,6 @@ module.exports = {
         }
         for (let subFolder of this.subFolders(folder)) {
             this.collectModulesList(subFolder, modulePathList);
-            /*
-                if (!subFolder.endsWith(NODICS.getActiveApplication())) {
-                    this.collectModulesList(subFolder, modulePathList);
-                }
-            */
         }
-    },
-
-    sortModules: function (rawData) {
-        indexedData = rawData.map(a => a.split('.').map(n => +n + 100000).join('.')).sort()
-            .map(a => a.split('.').map(n => +n - 100000).join('.'));
-        return indexedData;
-    },
-
-    sortObject: function (moduleIndex, property) {
-        moduleIndex = _.groupBy(moduleIndex, function (element) {
-            return parseInt(element[property]);
-        });
-        return moduleIndex;
-    },
+    }*/
 };

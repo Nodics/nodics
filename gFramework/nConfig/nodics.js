@@ -8,11 +8,19 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const _ = require('lodash');
 
 const Nodics = require('./bin/nodics');
-
-const sys = require('./bin/system');
-
+const Config = require('./bin/config');
+const utils = require('./src/utils/utils');
+const initService = require('./src/service/DefaultFrameworkInitializerService');
+const logger = require('./src/service/DefaultLoggerService');
+const scriptHandler = require('./src/service/DefaultScriptsHandlerService');
+const enumService = require('./src/service/defaultEnumService');
+const moduleService = require('./src/service/defaultModuleInitializerService');
+const fileLoader = require('./src/service/defaultFilesLoaderService');
+const classesLoader = require('./src/service/defaultClassesHandlerService');
+const system = require('./bin/system');
 
 module.exports = {
     init: function (options) {
@@ -21,50 +29,106 @@ module.exports = {
         });
     },
 
-    common: function (options) {
+    start: function (options) {
+        this.prepareStart(options);
+        initService.LOG.info('Starting Post Scripts loader process');
+        scriptHandler.loadPostScript();
+    },
+
+    prepareClean: function (options) {
+        this.prepareStart(options);
+    },
+
+    prepareBuild: function (options) {
+        this.prepareStart(options);
+    },
+
+    prepareStart: function (options) {
         let startTime = new Date();
         global.NODICS = new Nodics();
+        global.CONFIG = new Config();
         NODICS.init(options);
         NODICS.setStartTime(startTime);
-        sys.loadAllModules();
+        utils.collectModulesList(NODICS.getNodicsHome());
         NODICS.initEnvironment();
-        sys.prepareOptions();
-        if (!NODICS) {
-            sys.LOG.error("System initialization error: options cann't be null or empty");
-            process.exit(1);
-        }
-        sys.LOG.info('###   Initializing Nodics, Node based enterprise application solution   ###');
-        sys.LOG.info('---------------------------------------------------------------------------');
-        sys.LOG.info('NODICS_HOME       : ', NODICS.getNodicsHome());
-        sys.LOG.info('NODICS_APP        : ', NODICS.getApplicationPath());
-        sys.LOG.info('NODICS_ENV        : ', NODICS.getEnvironmentPath());
-        sys.LOG.info('SERVER_PATH       : ', NODICS.getServerPath());
-        sys.LOG.info('---------------------------------------------------------------------------');
-        sys.LOG.info('Starting Configuration loader process ##');
-        sys.loadModuleIndex();
-        sys.LOG.info('Loading modules meta data');
-        sys.loadModulesMetaData();
-        sys.LOG.info('Loading modules common configurations');
-        sys.loadConfigurations();
-        sys.loadExternalProperties();
-        sys.LOG.info('Starting System loader process');
-        sys.loadFiles('/bin/system.js', global.SYSTEM);
-        SYSTEM.LOG = SYSTEM.createLogger('SYSTEM');
-        NODICS.LOG = SYSTEM.createLogger('NODICS');
+        initService.prepareOptions();
+        initService.loadModuleIndex();
+        initService.printInfo();
+        initService.LOG.info('Starting Utils loader process');
+        initService.LOG.info('Loading modules meta data');
+        initService.loadModulesMetaData();
+        initService.LOG.info('Loading modules common configurations');
+        initService.loadConfigurations();
+        initService.loadExternalProperties();
+        NODICS.LOG = logger.createLogger('NODICS');
+        CONFIG.LOG = logger.createLogger('CONFIG');
+        scriptHandler.LOG = logger.createLogger('DefaultScriptHandlerService');
+        enumService.LOG = logger.createLogger('DefaultEnumService');
+        moduleService.LOG = logger.createLogger('DefaultModuleInitializerService');
+        fileLoader.LOG = logger.createLogger('DefaultFilesLoaderService');
+        classesLoader.LOG = logger.createLogger('DefaultClassesHandlerService');
+        fileLoader.loadFiles('/src/utils/utils.js', global.UTILS);
+
+        UTILS.LOG = logger.createLogger('UTILS');
+        scriptHandler.loadPreScript();
+        scriptHandler.executePreScripts();
     },
 
-    cleanAll: function (options) {
-        this.common(options);
+    initUtilities: function (options) {
+        return system.initUtilities(options);
     },
 
-    buildAll: function (options) {
-        this.common(options);
-        SYSTEM.loadPreScript();
+    loadModules: function (options) {
+        return system.loadModules(options);
     },
 
-    start: function (options) {
-        this.common(options);
-        SYSTEM.loadPreScript();
-        SYSTEM.loadPostScript();
-    }
+    initEntities: function (options) {
+        return system.initEntities(options);
+    },
+
+    finalizeEntities: function (options) {
+        return system.finalizeEntities(options);
+    },
+
+    finalizeModules: function (options) {
+        return system.finalizeModules(options);
+    },
+
+    /*initModules: function (options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            system.initUtilities(options).then(() => {
+                return system.loadModules();
+            }).then(() => {
+                return system.initEntities();
+            }).then(() => {
+                return system.finalizeEntities();
+            }).then(() => {
+                return system.finalizeModules();
+            }).then(() => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+    
+    initModules: function (options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            system.initUtilities(options).then(() => {
+                return system.loadModules();
+            }).then(() => {
+                return system.initEntities();
+            }).then(() => {
+                return system.finalizeEntities();
+            }).then(() => {
+                return system.finalizeModules();
+            }).then(() => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }*/
 };

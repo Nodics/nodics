@@ -99,7 +99,7 @@ module.exports = {
         let _self = this;
         try {
             let searchSchemas = {};
-            SYSTEM.loadFiles('/src/search/indexes.js', searchSchemas);
+            SERVICE.DefaultFilesLoaderService.loadFiles('/src/search/indexes.js', searchSchemas);
             let tenants = NODICS.getTenants();
             if (!UTILS.isBlank(searchSchemas) && tenants && tenants.length > 0) {
                 tenants.forEach(tntCode => {

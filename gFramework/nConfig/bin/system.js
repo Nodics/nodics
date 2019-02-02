@@ -10,420 +10,452 @@
  */
 
 const _ = require('lodash');
-const path = require('path');
-const fs = require('fs');
-const util = require('util');
-const winston = require('winston');
-require('winston-daily-rotate-file');
-const Elasticsearch = require('winston-elasticsearch');
-const UTILS = require('../src/utils/utils');
-const Nodics = require('./nodics');
-const Config = require('./config');
-const props = require('../config/properties');
+const initService = require('../src/service/DefaultFrameworkInitializerService');
+const logger = require('../src/service/DefaultLoggerService');
+const enumService = require('../src/service/defaultEnumService');
+const fileLoader = require('../src/service/defaultFilesLoaderService');
+const classesLoader = require('../src/service/defaultClassesHandlerService');
 
 module.exports = {
-
-    loadAllModules: function () {
-        this.collectModulesList(NODICS.getNodicsHome());
-    },
-
-    subFolders: function (folder) {
-        return fs.readdirSync(folder)
-            .filter(subFolder => fs.statSync(path.join(folder, subFolder)).isDirectory())
-            .filter(subFolder => subFolder !== 'node_modules' && subFolder !== 'templates' && subFolder[0] !== '.')
-            .map(subFolder => path.join(folder, subFolder));
-    },
-
-    collectModulesList: function (folder, parent) {
-        let metaDataPath = path.join(folder, 'package.json');
-        if (fs.existsSync(metaDataPath)) {
-            let metaData = require(metaDataPath);
-            NODICS.addRawModule(metaData, folder, parent);
-            parent = metaData.name;
-        }
-        for (let subFolder of this.subFolders(folder)) {
-            this.collectModulesList(subFolder, parent);
-        }
-    },
-
-    prepareOptions: function () {
-        NODICS.setActiveModules(this.getActiveModules());
-        global.CONFIG = new Config();
-        CONFIG.setProperties({});
-
-        global.SYSTEM = {};
-        global.CLASSES = {};
-        global.ENUMS = {};
-        global.UTILS = {};
-
-        global.DAO = {};
-        global.SERVICE = {};
-        global.PIPELINE = {};
-        global.FACADE = {};
-        global.CONTROLLER = {};
-
-        global.TEST = {
-            nTestPool: {
-                data: {
-                    //All the test cases, those needs to be executed in secific environment.
-                },
-                suites: {
-                    //Best usecase could be testing all created pages     
+    initUtilities: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (!CONFIG || !NODICS) {
+                    initService.LOG.error("System initialization error: configuration initializer failure.");
+                    process.exit(1);
                 }
-            },
-            uTestPool: {
-                data: {
-                    // This pool for all test cases
-                },
-                suites: {
-                    // This pool for all test cases
-                }
+                enumService.LOG.info('Starting Enums loader process');
+                enumService.loadEnums();
+                classesLoader.LOG.info('Starting Classes loader process');
+                classesLoader.loadClasses();
+                resolve(true);
+            } catch (error) {
+                reject(error);
             }
-        };
+        });
     },
 
-    getActiveModules: function (options) {
-        try {
-            let modules = [];
-            let appHome = NODICS.getApplicationPath();
-            let envHome = NODICS.getEnvironmentPath();
-            let serverHome = NODICS.getServerPath();
-
-            let moduleGroupsFilePath = serverHome + '/config/modules.js';
-            let serverProperties = {};
-            serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
-            serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
-            serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
-            let prop = _.merge(props, serverProperties);
-            this.LOG = this.createLogger('SYSTEM', prop.log);
-            if (!fs.existsSync(moduleGroupsFilePath) || serverProperties.activeModules.updateGroups) {
-                let mergedFile = {};
-                _.each(NODICS.getRawModules(), (moduleObject, moduleName) => {
-                    if (fs.existsSync(moduleObject.path + '/config/properties.js')) {
-                        mergedFile = _.merge(mergedFile, require(moduleObject.path + '/config/properties.js'));
-                    }
+    loadModules: function (modules = Array.from(NODICS.getIndexedModules().keys())) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (modules && modules.length > 0) {
+                let moduleIndex = modules.shift();
+                let moduleName = NODICS.getIndexedModules().get(moduleIndex).name;
+                _self.loadModule(moduleName).then(success => {
+                    _self.loadModules(modules).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
                 });
-                if (!_.isEmpty(mergedFile.moduleGroups)) {
-                    if (fs.existsSync(moduleGroupsFilePath)) {
-                        fs.unlinkSync(moduleGroupsFilePath);
-                    }
-                    fs.writeFileSync(moduleGroupsFilePath, 'module.exports = ' + util.inspect(mergedFile.moduleGroups) + ';', 'utf8');
-                }
+
+            } else {
+                resolve(true);
             }
-            let moduleData = require(moduleGroupsFilePath);
-            modules = moduleData.framework;
-            if (serverProperties.activeModules.groups) {
-                serverProperties.activeModules.groups.forEach((groupName) => {
-                    if (!moduleData[groupName]) {
-                        console.error('Invalid module group : ', groupName);
-                        process.exit(1);
-                    }
-                    modules = modules.concat(moduleData[groupName]);
+        });
+    },
+
+    loadModule: function (moduleName) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            initService.LOG.debug('Staring process for module : ', moduleName);
+            let moduleObject = NODICS.getRawModule(moduleName);
+            let moduleFile = require(moduleObject.path + '/nodics.js');
+            if (moduleFile.init) {
+                moduleFile.init(moduleObject).then(success => {
+                    _self.loadDao(moduleObject).then(() => {
+                        return _self.loadServices(moduleObject);
+                    }).then(() => {
+                        return _self.loadPipelinesDefinition(moduleObject);
+                    }).then(() => {
+                        return _self.loadFacades(moduleObject);
+                    }).then(() => {
+                        return _self.loadControllers(moduleObject);
+                    }).then(() => {
+                        resolve(true);
+                    }).catch((error) => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                _self.loadDao(moduleObject).then(() => {
+                    return _self.loadServices(moduleObject);
+                }).then(() => {
+                    return _self.loadPipelinesDefinition(moduleObject);
+                }).then(() => {
+                    return _self.loadFacades(moduleObject);
+                }).then(() => {
+                    return _self.loadControllers(moduleObject);
+                }).then(() => {
+                    resolve(true);
+                }).catch((error) => {
+                    reject(error);
                 });
             }
-            modules = modules.concat(serverProperties.activeModules.modules);
-            return modules;
-        } catch (error) {
-            console.error('While preparing active module list : ', error);
-        }
+        });
     },
 
-    loadModuleIndex: function () {
+    loadDao: function (module) {
         let _self = this;
-        let moduleIndex = {};
-        let indexValue = [];
-        _.each(NODICS.getRawModules(), (moduleObject, moduleName) => {
-            if (NODICS.isModuleActive(moduleObject.metaData.name)) {
-                indexValue.push(moduleObject.index);
-                if (!moduleIndex[moduleObject.index]) {
-                    moduleIndex[moduleObject.index] = {
-                        index: moduleObject.index,
-                        name: moduleName,
-                        path: moduleObject.path,
-                    };
-                } else {
-                    throw new Error('Module with index: ' + moduleObject.index + ' already exist ' + moduleIndex[moduleObject.index].name);
-                }
+        return new Promise((resolve, reject) => {
+            initService.LOG.debug('  Loading all module DAO');
+            let path = module.path + '/src/dao';
+            try {
+                fileLoader.processFiles(path, "Dao.js", (file) => {
+                    let daoName = UTILS.getFileNameWithoutExtension(file);
+                    if (DAO[daoName]) {
+                        DAO[daoName] = _.merge(DAO[daoName], require(file));
+                    } else {
+                        DAO[daoName] = require(file);
+                        DAO[daoName].LOG = logger.createLogger(daoName);
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
             }
         });
-
-        let indexedValue = UTILS.sortModules(indexValue);
-        let moduleList = new Map();
-        indexedValue.forEach((key) => {
-            moduleList.set(key, moduleIndex[key]);
-        });
-        NODICS.setIndexedModules(moduleList);
-        _self.printModuleSequence();
-        //console.log(NODICS.getIndexedModules().get('1.0'));
-        //Array.from(NODICS.getIndexedModules().keys())
-        //process.exit(1);
     },
 
-    printModuleSequence: function () {
-        let modulesStr = '';
-        let activeModules = [];
-        NODICS.getIndexedModules().forEach((obj, key) => {
-            console.log(key, ' ------ ' + obj.name);
-            modulesStr = modulesStr + obj.name + ',';
-            activeModules.push(obj.name);
-        });
-        NODICS.setActiveModules(activeModules);
-        console.log('Modules: ', modulesStr);
-    },
-
-    loadModulesMetaData: function () {
+    loadServices: function (module) {
         let _self = this;
-        NODICS.getIndexedModules().forEach(function (moduleObject, index) {
-            _self.loadModuleMetaData(moduleObject.name);
+        return new Promise((resolve, reject) => {
+            initService.LOG.debug('  Loading all module services');
+            let path = module.path + '/src/service';
+            try {
+                fileLoader.processFiles(path, "Service.js", (file) => {
+                    let serviceName = UTILS.getFileNameWithoutExtension(file);
+                    if (SERVICE[serviceName]) {
+                        SERVICE[serviceName] = _.merge(SERVICE[serviceName], require(file));
+                    } else {
+                        SERVICE[serviceName] = require(file);
+                        SERVICE[serviceName].LOG = logger.createLogger(serviceName);
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
         });
     },
 
-    /*
-     * This function is used to load module meta data if that module is active
-     */
-    loadModuleMetaData: function (moduleName) {
-        let module = NODICS.getRawModule(moduleName);
-        if (module) {
-            NODICS.addModule({
-                metaData: module.metaData,
-                modulePath: module.path
+    loadPipelinesDefinition: function (module) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            initService.LOG.debug('  Loading all module process definitions');
+            let path = module.path + '/src/pipelines';
+            try {
+                fileLoader.processFiles(path, "Definition.js", (file) => {
+                    let processName = UTILS.getFileNameWithoutExtension(file);
+                    if (PIPELINE[processName]) {
+                        PIPELINE[processName] = _.merge(PIPELINE[processName], require(file));
+                    } else {
+                        PIPELINE[processName] = require(file);
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    loadFacades: function (module) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            initService.LOG.debug('  Loading all module facades');
+            let path = module.path + '/src/facade';
+            try {
+                fileLoader.processFiles(path, "Facade.js", (file) => {
+                    let facadeName = UTILS.getFileNameWithoutExtension(file);
+                    if (FACADE[facadeName]) {
+                        FACADE[facadeName] = _.merge(FACADE[facadeName], require(file));
+                    } else {
+                        FACADE[facadeName] = require(file);
+                        FACADE[facadeName].LOG = logger.createLogger(facadeName);
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    loadControllers: function (module) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            initService.LOG.debug('  Loading all module controllers');
+            let path = module.path + '/src/controller';
+            try {
+                fileLoader.processFiles(path, "Controller.js", (file) => {
+                    let controllerName = UTILS.getFileNameWithoutExtension(file);
+                    if (CONTROLLER[controllerName]) {
+                        CONTROLLER[controllerName] = _.merge(CONTROLLER[controllerName], require(file));
+                    } else {
+                        CONTROLLER[controllerName] = require(file);
+                        CONTROLLER[controllerName].LOG = logger.createLogger(controllerName);
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    initEntities: function () {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            initService.LOG.debug('Initializing all entities');
+            _self.initDaos().then(() => {
+                return _self.initServices();
+            }).then(() => {
+                return _self.initFacades();
+            }).then(() => {
+                return _self.initControllers();
+            }).then(() => {
+                resolve(true);
+            }).catch((error) => {
+                reject(error);
             });
-        }
-    },
-
-    /*
-     * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
-     * will load properties from $MODULE/common/properties.js
-     */
-
-    loadConfigurations: function (fileName) {
-        let _self = this;
-        fileName = fileName || '/config/properties.js';
-        NODICS.getIndexedModules().forEach(function (moduleObject, index) {
-            _self.loadModuleConfiguration(moduleObject.name, fileName);
         });
     },
 
-    /*
-     * This function used to load configuration file for given moduleName
-     */
-    loadModuleConfiguration: function (moduleName, fileName) {
-        let module = NODICS.getRawModule(moduleName);
-        if (module) {
-            this.loadConfiguration(module.path + fileName);
-        }
-    },
-
-    /*
-     * This function used to load configuration file
-     */
-    loadConfiguration: function (filePath) {
-        let config = CONFIG.getProperties();
-        if (fs.existsSync(filePath)) {
-            this.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
-            var propertyFile = require(filePath);
-            config = _.merge(config, propertyFile);
-        }
-    },
-
-    /*
-     * This function is used to loop through all module (Nodics and Server), and based on thier priority and active state,
-     * will load properties from $APP_MODULE/config/env-{NODICS_ENV}/properties.js
-     */
-    loadExternalProperties: function (externalFiles, tntCode) {
-        let _self = this;
-        let files = externalFiles || CONFIG.get('externalPropertyFile');
-        if (externalFiles && externalFiles.length > 0) {
-            externalFiles.forEach(function (filePath) {
-                if (fs.existsSync(filePath)) {
-                    _self.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
-                    let props = CONFIG.getProperties();
-                    if (tntCode) {
-                        props = CONFIG.getProperties(tntCode);
-                    }
-                    _.merge(props, require(filePath));
-                } else {
-                    _self.LOG.warn('System cant find configuration at : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+    initDaos: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(DAO, (daoClass, daoName) => {
+                if (daoClass.init &&
+                    typeof daoClass.init === 'function') {
+                    allPromise.push(daoClass.init());
                 }
             });
-        }
-    },
-
-    getAllMethods: function (envScripts) {
-        return Object.getOwnPropertyNames(envScripts).filter(function (prop) {
-            return typeof envScripts[prop] == 'function';
-        });
-    },
-
-    changeLogLevel: function (input) {
-        let logger = NODICS.getLogger(input.entityName);
-        if (logger) {
-            logger.level = input.logLevel;
-            return true;
-        }
-        return false;
-    },
-    createLogger: function (entityName, logConfig) {
-        logConfig = logConfig || CONFIG.get('log');
-        let entityLevel = logConfig['logLevel' + entityName];
-        let config = this.getLoggerConfiguration(entityName, entityLevel, logConfig);
-        let logger = new winston.Logger(config);
-        NODICS.addLogger(entityName, logger);
-        return logger;
-    },
-
-    getLoggerConfiguration: function (entityName, level, logConfig) {
-        return {
-            level: level || logConfig.level || 'info',
-            //format: //SYSTEM.getLogFormat(logConfig),
-            transports: this.getLogTransports(entityName, logConfig)
-        };
-    },
-
-    getLogFormat: function (logConfig) {
-        if (logConfig.format == 'json') {
-            return winston.format.json();
-        } else {
-            return winston.format.simple();
-        }
-    },
-    getLogTransports: function (entityName, logConfig) {
-        let transports = [];
-        transports.push(this.createConsoleTransport(entityName, logConfig));
-        if (logConfig.output.file) {
-            transports.push(this.createFileTransport(entityName, logConfig));
-        }
-        if (logConfig.output.elastic) {
-            transports.push(this.createFileTransport(entityName, logConfig));
-        }
-        return transports;
-    },
-
-    createConsoleTransport: function (entityName, logConfig) {
-        let consoleConfig = _.merge({}, logConfig.consoleConfig);
-        consoleConfig.label = entityName;
-        return new winston.transports.Console(consoleConfig);
-    },
-
-    createFileTransport: function (entityName, logConfig) {
-        let transport = {};
-        let fileConfig = _.merge({}, logConfig.fileConfig);
-        fileConfig.label = entityName;
-        if (fileConfig.dirname.startsWith('.')) {
-            fileConfig.dirname = NODICS.getServerPath() + '/logs';
-        }
-        if (!fs.existsSync(fileConfig.dirname)) {
-            fs.mkdirSync(fileConfig.dirname);
-        }
-        try {
-            transport = new winston.transports.DailyRotateFile(fileConfig);
-        } catch (error) {
-            console.error(error);
-        }
-        return transport;
-    },
-
-    createElasticTransport: function (entityName, logConfig) {
-        let elasticConfig = _.merge({}, logConfig.elasticConfig);
-        elasticConfig.label = entityName;
-        return new Elasticsearch(elasticConfig);
-    },
-
-    getGlobalVariables: function (fileName) {
-        let _self = this;
-        let gVar = {};
-        NODICS.getIndexedModules().forEach(function (value, key) {
-            var filePath = value.path + fileName;
-            if (fs.existsSync(filePath)) {
-                _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
-                fs.readFileSync(filePath).toString().split('\n').forEach((line) => {
-                    if (line.startsWith('const') || line.startsWith('let') || line.startsWith('var')) {
-                        let value = line.trim().split(' ');
-                        if (!gVar[value[1]]) {
-                            gVar[value[1]] = {
-                                value: line.trim()
-                            };
-                        }
-                    }
+            if (allPromise.length > 0) {
+                initService.LOG.debug('  Initializing all DAOs');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
                 });
+            } else {
+                resolve(true);
             }
         });
-        return gVar;
     },
 
-    processFiles: function (filePath, filePostFix, callback) {
-        let _self = this;
-        if (fs.existsSync(filePath)) {
-            let files = fs.readdirSync(filePath);
-            if (files) {
-                files.map(function (file) {
-                    return path.join(filePath, file);
-                }).filter(function (file) {
-                    if (fs.statSync(file).isDirectory()) {
-                        _self.processFiles(file, filePostFix, callback);
-                    } else {
-                        return fs.statSync(file).isFile();
-                    }
-                }).filter(function (file) {
-                    if (!filePostFix || filePostFix === '*') {
-                        return true;
-                    } else {
-                        return file.endsWith(filePostFix);
-                    }
-                }).forEach(function (file) {
-                    _self.LOG.debug('   Loading file from : ', file.replace(NODICS.getNodicsHome(), '.'));
-                    callback(file);
+    initServices: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(SERVICE, (serviceClass, serviceName) => {
+                if (serviceClass.init &&
+                    typeof serviceClass.init === 'function') {
+                    allPromise.push(serviceClass.init());
+                }
+            });
+            if (allPromise.length > 0) {
+                initService.LOG.debug('  Initializing all Services');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
                 });
+            } else {
+                resolve(true);
             }
-        }
+        });
     },
 
-    loadFiles: function (fileName, frameworkFile) {
+    initFacades: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(FACADE, (facadeClass, facadeName) => {
+                if (facadeClass.init &&
+                    typeof facadeClass.init === 'function') {
+                    allPromise.push(facadeClass.init());
+                }
+            });
+            if (allPromise.length > 0) {
+                initService.LOG.debug('  Initializing all Facades');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    initControllers: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(CONTROLLER, (controllerClass, controllerName) => {
+                if (controllerClass.init &&
+                    typeof controllerClass.init === 'function') {
+                    allPromise.push(controllerClass.init());
+                }
+            });
+            if (allPromise.length > 0) {
+                initService.LOG.debug('  Initializing all Controllers');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    finalizeEntities: function () {
         let _self = this;
-        let mergedFile = frameworkFile || {};
-        NODICS.getIndexedModules().forEach(function (value, key) {
-            var filePath = value.path + fileName;
-            if (fs.existsSync(filePath)) {
-                _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
-                var commonPropertyFile = require(filePath);
-                mergedFile = _.merge(mergedFile, commonPropertyFile);
+        return new Promise((resolve, reject) => {
+            initService.LOG.debug('Finalizing all entities');
+            _self.finalizeDaos().then(() => {
+                return _self.finalizeServices();
+            }).then(() => {
+                return _self.finalizeFacades();
+            }).then(() => {
+                return _self.finalizeControllers();
+            }).then(() => {
+                resolve(true);
+            }).catch((error) => {
+                reject(error);
+            });
+        });
+    },
+
+    finalizeDaos: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(DAO, (daoClass, daoName) => {
+                if (daoClass.postInit &&
+                    typeof daoClass.postInit === 'function') {
+                    allPromise.push(daoClass.postInit());
+                }
+            });
+            if (allPromise.length > 0) {
+                initService.LOG.debug('  Finalizing all DAOs');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
             }
         });
-        return mergedFile;
     },
 
-    loadPreScript: function () {
-        SYSTEM.LOG.info('Starting Pre Scripts loader process');
-        NODICS.setPreScripts(this.loadFiles('/config/prescripts.js'));
-    },
-
-    executePreScripts: function () {
-        SYSTEM.LOG.info("Starting pre-script execution process");
-        var preScripts = NODICS.getPreScripts();
-        var methods = SYSTEM.getAllMethods(preScripts);
-        methods.forEach(function (instance) {
-            preScripts[instance]();
+    finalizeServices: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(SERVICE, (serviceClass, serviceName) => {
+                if (serviceClass.postInit &&
+                    typeof serviceClass.postInit === 'function') {
+                    allPromise.push(serviceClass.postInit());
+                }
+            });
+            if (allPromise.length > 0) {
+                initService.LOG.debug('  Finalizing all Services');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
         });
-        SYSTEM.LOG.info("Pre-Script executed successfully");
     },
 
-    loadPostScript: function () {
-        SYSTEM.LOG.info('Starting Post Scripts loader process');
-        NODICS.setPostScripts(this.loadFiles('/config/postscripts.js'));
-    },
-
-    executePostScripts: function () {
-        SYSTEM.LOG.info("Starting post-script execution process");
-        var postScripts = NODICS.getPostScripts();
-        var methods = SYSTEM.getAllMethods(postScripts);
-        methods.forEach(function (instance) {
-            postScripts[instance]();
+    finalizeFacades: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(FACADE, (facadeClass, facadeName) => {
+                if (facadeClass.postInit &&
+                    typeof facadeClass.postInit === 'function') {
+                    allPromise.push(facadeClass.postInit());
+                }
+            });
+            if (allPromise.length > 0) {
+                initService.LOG.debug('  Finalizing all Facades');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
         });
-        SYSTEM.LOG.info("Post-Script executed successfully");
     },
 
-    performAsync: function (callback) {
-        callback();
+    finalizeControllers: function () {
+        return new Promise((resolve, reject) => {
+            let allPromise = [];
+            _.each(CONTROLLER, (controllerClass, controllerName) => {
+                if (controllerClass.postInit &&
+                    typeof controllerClass.postInit === 'function') {
+                    allPromise.push(controllerClass.postInit());
+                }
+            });
+            if (allPromise.length > 0) {
+                initService.LOG.debug('  Finalizing all controllers');
+                Promise.all(allPromise).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    finalizeModules: function (modules = Array.from(NODICS.getIndexedModules().keys())) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (modules && modules.length > 0) {
+                let moduleIndex = modules.shift();
+                let moduleName = NODICS.getIndexedModules().get(moduleIndex).name;
+                _self.finalizeModule(moduleName).then(success => {
+                    _self.finalizeModules(modules).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    finalizeModule: function (moduleName) {
+        return new Promise((resolve, reject) => {
+            initService.LOG.debug('Starting process to finalize module : ', moduleName);
+            let moduleObject = NODICS.getRawModule(moduleName);
+            let moduleFile = require(moduleObject.path + '/nodics.js');
+            if (moduleFile.postInit && typeof moduleFile.postInit === 'function') {
+                moduleFile.postInit(moduleObject).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
     }
-
 };

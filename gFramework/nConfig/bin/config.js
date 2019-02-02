@@ -30,7 +30,7 @@ module.exports = function () {
     this.get = function (key, tenant) {
         let tntProperties = this.getProperties(tenant);
         if (!tntProperties) {
-            SYSTEM.LOG.error("System could't find any properties for current Tanent : ", tenant ? tenant : NODICS.getActiveTanent());
+            this.LOG.error("System could't find any properties for current Tanent : ", tenant ? tenant : NODICS.getActiveTanent());
             return null;
         }
         return tntProperties[key];

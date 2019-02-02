@@ -10,44 +10,13 @@
  */
 
 module.exports = {
-    profileModuleReconnectTimeout: 5000,
-
-    database: {
-        processInitialData: false,
-        modelSaveOptions: {
-            upsert: true,
-            returnOriginal: false
-        },
-        modelUpdateOptions: {
-            upsert: false,
-            returnOriginal: false
-        },
-        modelRemoveOptions: {
-            j: false
-        },
-
-        default: {
-            databaseType: 'mongodb', //for Cassandra use 'cassandra'
-            mongodb: {
-                master: {
-                    URI: 'mongodb://127.0.0.1:27017',
-                    databaseName: 'nodicsMaster',
-                    options: {
-                        useNewUrlParser: true,
-                        poolSize: 5,
-                        ignoreUndefined: true
-                    }
-                },
-                test: {
-                    URI: 'mongodb://127.0.0.1:27017',
-                    databaseName: 'nodicsTest',
-                    options: {
-                        useNewUrlParser: true,
-                        poolSize: 5,
-                        ignoreUndefined: true
-                    }
-                }
-            }
-        }
+    moduleGroups: {
+        database: [
+            'nDatabase',
+            'database',
+            'mongodb',
+            'elasticdb',
+            'cassandradb'
+        ]
     }
 };

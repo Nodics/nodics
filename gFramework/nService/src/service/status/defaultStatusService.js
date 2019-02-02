@@ -19,7 +19,7 @@ module.exports = {
     init: function () {
         return new Promise((resolve, reject) => {
             try {
-                SYSTEM.loadFiles('/src/utils/statusDefinitions.js', this.statusMap);
+                SERVICE.DefaultFilesLoaderService.loadFiles('/src/utils/statusDefinitions.js', this.statusMap);
                 resolve(true);
             } catch (error) {
                 reject(error);

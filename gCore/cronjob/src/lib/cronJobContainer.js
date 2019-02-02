@@ -12,9 +12,8 @@
 const _ = require('lodash');
 module.exports = function () {
     let _jobPool = {};
-    let _jobLOG = SYSTEM.createLogger('CronJob');
 
-    this.LOG = SYSTEM.createLogger('CronJobContainer');
+    this.LOG = SERVICE.DefaultLoggerService.createLogger('CronJobContainer');
 
     this.createCronJobs = function (definitions) {
         return new Promise((resolve, reject) => {
@@ -88,7 +87,7 @@ module.exports = function () {
                         definition.triggers.forEach(function (value) {
                             if (value.isActive && CONFIG.get('nodeId') === definition.nodeId) {
                                 let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
-                                tmpCronJob.LOG = _jobLOG;
+                                tmpCronJob.LOG = SERVICE.DefaultLoggerService.createLogger('CronJob');
                                 tmpCronJob.validate();
                                 tmpCronJob.init();
                                 tmpCronJob.setAuthToken(authToken);

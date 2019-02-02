@@ -24,31 +24,78 @@ const router = require('./nRouter');
 const test = require('./nTest');
 
 module.exports = {
-    init: function (options) {
+    initFramework: function (options) {
         return new Promise((resolve, reject) => {
-            resolve(true);
+            config.start(options);
+            config.initUtilities(options).then(() => {
+                return config.loadModules();
+            }).then(() => {
+                return config.initEntities();
+            }).then(() => {
+                return config.finalizeEntities();
+            }).then(() => {
+                return config.finalizeModules();
+            }).then(() => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 
-    cleanAll: function (options) {
-        config.cleanAll(options);
-        common.cleanAll();
+    start: function (options) {
+        this.initFramework(options).then(success => {
+            /*SYSTEM.finalizeEntities().then(success => {
+                SYSTEM.finalizeModules().then(success => {
+                    SYSTEM.startServers().then(success => {
+                        NODICS.setEndTime(new Date());
+                        NODICS.setServerState('started');
+                        SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
+                        this.initTestRuner();
+                    }).catch(error => {
+                        SYSTEM.LOG.error('Nodics server error : ', error);
+                    });
+                }).catch(error => {
+                    SYSTEM.LOG.error('Failed while running postInit functions from all modules : ', error);
+                });
+            }).catch(error => {
+                SYSTEM.LOG.error('Failed while running postInit functions from all entities : ', error);
+            });*/
+            console.log('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
+            //SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
+        }).catch(error => {
+            console.error('Nodics server not started properly : ', error);
+            process.exit(1);
+        });
     },
 
     genApp: function (options) {
-        config.common(options);
+        config.start(options);
         common.generateModuleGroup();
     },
 
     genGroup: function (options) {
-        config.common(options);
+        config.start(options);
         common.generateModuleGroup();
     },
 
     genModule: function (options) {
-        config.common(options);
-        common.generateModule(options);
+        config.start(options);
+        config.initUtilities(options).then(() => {
+            return config.loadModules();
+        }).then(() => {
+            return SERVICE.DefaultInfraService.generateModule(options);
+        }).catch(error => {
+            SERVICE.DefaultInfraService.LOG.error(error);
+        });
     },
+
+    /*cleanAll: function (options) {
+        config.cleanAll(options);
+        common.cleanAll();
+    },
+
+    
 
     genReactModule: function (options) {
         config.common(options);
@@ -81,12 +128,18 @@ module.exports = {
         });
     },
 
-    initFrameworkExecute: function (options) {
+    initFramework: function (options) {
         return new Promise((resolve, reject) => {
             config.start(options);
-            SYSTEM.executePreScripts();
-            common.start();
-            db.loadDatabase().then(success => {
+            consif.initModules(options).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+            //SYSTEM.executePreScripts();
+            //common.start();
+
+            /*db.loadDatabase().then(success => {
                 SYSTEM.loadModules().then(success => {
                     SYSTEM.initEntities().then(success => {
                         pipeline.loadPipelines().then(success => {
@@ -140,34 +193,5 @@ module.exports = {
         test.initTest().then(success => { }).catch(error => { });
     },
 
-    start: function (options) {
-        this.initFrameworkExecute(options).then(success => {
-            SYSTEM.finalizeEntities().then(success => {
-                SYSTEM.finalizeModules().then(success => {
-                    SYSTEM.startServers().then(success => {
-                        NODICS.setEndTime(new Date());
-                        NODICS.setServerState('started');
-                        SYSTEM.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
-                        this.initTestRuner();
-                        /*
-                            Object.keys(NODICS.getModules()).forEach(moduleName => {
-                                console.log('--------------', moduleName, '-----------------');
-                                console.log(NODICS.getSearchModels(moduleName, 'default'));
-                                console.log('-------------------------------');
-                            });
-                         */
-                    }).catch(error => {
-                        SYSTEM.LOG.error('Nodics server error : ', error);
-                    });
-                }).catch(error => {
-                    SYSTEM.LOG.error('Failed while running postInit functions from all modules : ', error);
-                });
-            }).catch(error => {
-                SYSTEM.LOG.error('Failed while running postInit functions from all entities : ', error);
-            });
-        }).catch(error => {
-            console.error('Nodics server not started properly : ', error);
-            process.exit(1);
-        });
-    }
+    */
 };

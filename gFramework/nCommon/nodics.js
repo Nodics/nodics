@@ -18,6 +18,11 @@ module.exports = {
         });
     },
 
+
+
+
+
+
     common: function () {
         if (!CONFIG || !SYSTEM || !NODICS) {
             SYSTEM.LOG.error("System initialization error: configuration initializer failure.");
@@ -48,19 +53,5 @@ module.exports = {
         this.common();
     },
 
-    generateModuleGroup: function () {
-        infra.generateTarget('app');
-    },
 
-    generateModule: function () {
-        infra.generateTarget('module');
-    },
-
-    generateReactModule: function () {
-        infra.generateTarget('moduleReact');
-    },
-
-    generateVueModule: function () {
-        infra.generateTarget('moduleVue');
-    }
 };

@@ -29,14 +29,14 @@ module.exports = {
     postInit: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.loadRawSearchModelDefinition();
+            //_self.loadRawSearchModelDefinition();
             resolve(true);
         });
     },
 
     loadRawSearchModelDefinition: function () {
         let modelDefinition = {};
-        SYSTEM.loadFiles('/src/schemas/elasticSearchModel.js', modelDefinition);
+        SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/elasticSearchModel.js', modelDefinition);
         SERVICE.DefaultSearchConfigurationService.addRawSearchModelDefinition('elastic', modelDefinition);
     },
 

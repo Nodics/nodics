@@ -1,6 +1,6 @@
 {
     "name": "gCore",
-    "index": "5",
+    "index": "5.99999",
     "description": "Module core, groups all core module in Nodics framework. Index value will be from 200 to 499",
     "homepage": "http://www.nodics.com/",
     "keywords": [

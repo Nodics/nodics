@@ -12,8 +12,6 @@
 const _ = require('lodash');
 
 module.exports = {
-    pipelineLOG: SYSTEM.createLogger('PipelineHead'),
-
     handleSucessEnd: function (request, response, process) {
         this.LOG.warn('This is default success handler, will not perform anything ');
         process.resolve(response.success);
@@ -32,7 +30,7 @@ module.exports = {
                     let defaultPipeline = _.merge({}, PIPELINE.defaultPipeline);
                     let pipelineDef = _.merge(defaultPipeline, PIPELINE[name]);
                     let pipeline = new CLASSES.PipelineHead(name, pipelineDef);
-                    pipeline.LOG = this.pipelineLOG;
+                    pipeline.LOG = SERVICE.DefaultLoggerService.createLogger('PipelineHead');
                     pipeline.buildPipeline();
                     pipeline.start(id, request, response, resolve, reject);
                 } catch (err) {
