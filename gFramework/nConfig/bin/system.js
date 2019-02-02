@@ -64,6 +64,7 @@ module.exports = {
             let moduleObject = NODICS.getRawModule(moduleName);
             let moduleFile = require(moduleObject.path + '/nodics.js');
             if (moduleFile.init) {
+                moduleFile.LOG = logger.createLogger("Module-" + moduleName);
                 moduleFile.init(moduleObject).then(success => {
                     _self.loadDao(moduleObject).then(() => {
                         return _self.loadServices(moduleObject);

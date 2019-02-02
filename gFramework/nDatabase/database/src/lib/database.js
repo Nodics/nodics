@@ -13,6 +13,7 @@ module.exports = function () {
     let _name = '';
     let _uri = '';
     let _options = {};
+    let _connectionOptions = {};
     let _connection = {};
     let _collections = [];
     let _colectionList = [];
@@ -55,6 +56,14 @@ module.exports = function () {
 
     this.getOptions = function () {
         return _options;
+    };
+
+    this.setConnectionOptions = function (options) {
+        _connectionOptions = options;
+    };
+
+    this.getConnectionOptions = function () {
+        return _connectionOptions;
     };
 
     this.setConnection = function (connection) {

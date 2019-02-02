@@ -12,12 +12,13 @@
 const _ = require('lodash');
 
 module.exports = {
-    initServers: function () {
+    initializeRouters: function () {
         let _self = this;
-        SYSTEM.LOG.info('Initializing servers');
+        _self.LOG.info('Initializing servers');
         let modules = NODICS.getModules();
+        //TODO: This option look not in used, verify and remove if not rquired
         if (CONFIG.get('server').options.runAsDefault) {
-            SYSTEM.LOG.debug('Initializing single server for whole application. As CONFIG.server.runAsSingleModule set to true.');
+            _self.LOG.debug('Initializing single server for whole application. As CONFIG.server.runAsSingleModule set to true.');
             if (!modules.default) {
                 modules.default = {};
             }
@@ -26,10 +27,10 @@ module.exports = {
             _.each(modules, function (value, moduleName) {
                 if (value.metaData.publish) {
                     if (SYSTEM.getModulesPool().isAvailableModuleConfig(moduleName)) {
-                        SYSTEM.LOG.debug('Initializing server for module : ', moduleName);
+                        _self.LOG.debug('Initializing server for module : ', moduleName);
                         value.app = require('express')();
                     } else {
-                        SYSTEM.LOG.warn('Module : ', moduleName, ' initializing with default');
+                        _self.LOG.warn('Module : ', moduleName, ' initializing with default');
                         if (!modules.default) {
                             modules.default = {};
                         }

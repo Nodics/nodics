@@ -34,6 +34,13 @@ module.exports = {
         });
     },
 
+    loadPipelines: function () {
+        return new Promise((resolve, reject) => {
+            global.PIPELINE = SERVICE.DefaultFilesLoaderService.loadFiles('/src/pipelines/pipelinesDefinition.js');
+            resolve(true);
+        });
+    },
+
     handleSucessEnd: function (request, response, process) {
         this.LOG.warn('This is default success handler, will not perform anything ');
         process.resolve(response.success);

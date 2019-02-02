@@ -14,21 +14,7 @@ const MongoClient = require('mongodb').MongoClient;
 
 module.exports = {
 
-    validateDatabaseConfiguration: function (dbName) {
-        var flag = true;
-        if (!dbName) {
-            dbName = 'default';
-        }
-        if (!CONFIG.get('database')) {
-            this.LOG.error('Databse configuration not found. Please configure in properties.js file.');
-            flag = false;
-        }
-        if (!CONFIG.get('database')[dbName]) {
-            this.LOG.error('Default databse configuration not found. Please configure in properties.js file.');
-            flag = false;
-        }
-        return flag;
-    },
+
 
     prepareInterceptors: function () {
         SYSTEM.LOG.debug('Starting interceptors loading process');

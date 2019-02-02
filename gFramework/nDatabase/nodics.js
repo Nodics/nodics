@@ -9,7 +9,7 @@
 
  */
 
-const conHandler = require('./bin/connectionHandler');
+//const conHandler = require('./bin/connectionHandler');
 
 module.exports = {
     /**
@@ -38,21 +38,22 @@ module.exports = {
     loadDatabase: function () {
         SYSTEM.LOG.info('Starting database configuration process');
         return new Promise((resolve, reject) => {
-            conHandler.createConnections().then(success => {
-                SYSTEM.buildSchemas();
-                let tenants = ['default'];
-                NODICS.addTenant('default');
-                SYSTEM.buildModelsForTenants(tenants).then(success => {
-                    SYSTEM.prepareInterceptors();
-                    NODICS.addAPIKey('default', CONFIG.get('defaultAPIKey'),
-                        CONFIG.get('profile') ? CONFIG.get('profile').defaultAuthDetail : {});
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
-            }).catch(error => {
-                reject(error);
-            });
+            // conHandler.createConnections().then(success => {
+            //     SYSTEM.buildSchemas();
+            //     let tenants = ['default'];
+            //     NODICS.addTenant('default');
+            //     SYSTEM.buildModelsForTenants(tenants).then(success => {
+            //         SYSTEM.prepareInterceptors();
+            //         NODICS.addAPIKey('default', CONFIG.get('defaultAPIKey'),
+            //             CONFIG.get('profile') ? CONFIG.get('profile').defaultAuthDetail : {});
+            //         resolve(true);
+            //     }).catch(error => {
+            //         reject(error);
+            //     });
+            // }).catch(error => {
+            //     reject(error);
+            // });
+            resolve(true);
         });
     },
 

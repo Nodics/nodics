@@ -13,14 +13,13 @@ module.exports = {
     profileModuleReconnectTimeout: 5000,
 
     database: {
-
         default: {
-            options: {
-                databaseType: 'mongodb', //for Cassandra use 'cassandra'
-            },
             mongodb: {
                 options: {
-                    databaseType: 'mongodb', //for Cassandra use 'cassandra'
+                    connectionHandler: 'DefaultMongodbDatabaseConnectionHandlerService',
+                    schemaHandler: 'DefaultMongodbDatabaseSchemaHandlerService',
+                    modelHandler: 'DefaultMongodbDatabaseModelHandlerService',
+                    interceptorHandler: 'DefaultMongodbDatabaseInterceptorHandlerService',
                     modelSaveOptions: {
                         upsert: true,
                         returnOriginal: false

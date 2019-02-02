@@ -28,7 +28,22 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            resolve(true);
+            this.LOG.info('Starting database configuration process');
+            SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnections().then(() => {
+                return SERVICE.DefaultDatabaseConnectionHandlerService.isInitRequired();
+            }).then(() => {
+                return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema();
+            }).then(() => {
+                return SERVICE.DefaultDatabaseModelHandlerService.buildModelsForTenant();
+            }).then(() => {
+                NODICS.addAPIKey('default', CONFIG.get('defaultAPIKey'),
+                    CONFIG.get('profile') ? CONFIG.get('profile').defaultAuthDetail : {});
+                return Promise.resolve(true);
+            }).then(() => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 };

@@ -1,3 +1,4 @@
+
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -9,9 +10,52 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
+
+    serversConfigPool: '',
+
+    /**
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    /**
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    prepareModulesConfiguration: function () {
+        return new Promise((resolve, reject) => {
+            this.serversConfigPool = new CLASSES.ModulesConfigurationContainer();
+            this.serversConfigPool.prepareModulesConfiguration();
+            resolve(true);
+        });
+    },
+
+    getModulesPool: function () {
+        return this.serversConfigPool;
+    },
+
+    getModuleServerConfig: function (moduleName) {
+        if (this.serversConfigPool.isAvailableModuleConfig(moduleName)) {
+            return this.serversConfigPool.getModule(moduleName);
+        } else {
+            return this.serversConfigPool.getModule('default');
+        }
+    },
+
     registerRouter: function () {
         let _self = this;
         let modules = NODICS.getModules();
@@ -40,15 +84,15 @@ module.exports = {
                                 }
                                 if (cachePromises.length > 0) {
                                     Promise.all(cachePromises).then(success => {
-                                        _self.registerRouters(app, moduleObject, moduleName, routers);
+                                        _self.activateRouters(app, moduleObject, moduleName, routers);
                                         resolve(true);
                                     }).catch(error => {
                                         SYSTEM.LOG.error('got error while initializing cache for module : ', moduleName);
-                                        _self.registerRouters(app, moduleObject, moduleName, routers);
+                                        _self.activateRouters(app, moduleObject, moduleName, routers);
                                         resolve(true);
                                     });
                                 } else {
-                                    _self.registerRouters(app, moduleObject, moduleName, routers);
+                                    _self.activateRouters(app, moduleObject, moduleName, routers);
                                     resolve(true);
                                 }
                             } catch (error) {
@@ -65,7 +109,7 @@ module.exports = {
         });
     },
 
-    registerRouters: function (app, moduleObject, moduleName, routers) {
+    activateRouters: function (app, moduleObject, moduleName, routers) {
         let urlPrefix = moduleObject.metaData.prefix || moduleName;
         _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
             if (schemaObject.service && schemaObject.router) {

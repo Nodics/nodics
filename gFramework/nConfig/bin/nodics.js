@@ -28,8 +28,7 @@ module.exports = function () {
     let _nodics = {
         modules: {},
         dbs: {},
-        search: {},
-        validators: {},
+        //validators: {},
         interceptors: {}
     };
 
@@ -301,7 +300,7 @@ module.exports = function () {
         return _activeChannel;
     };
 
-    this.getDatabaseConfiguration = function (moduleName, tenant) {
+    /*this.getDatabaseConfiguration = function (moduleName, tenant) {
         let properties = CONFIG.get('database', tenant);
         if (properties[moduleName]) {
             return properties[moduleName];
@@ -346,17 +345,17 @@ module.exports = function () {
             delete _nodics.dbs[moduleName][tenant];
         }
         return true;
-    };
+    };*/
 
-    this.setValidators = function (validators) {
+    /*this.setValidators = function (validators) {
         _nodics.validators = validators;
     };
 
     this.getValidators = function () {
         return _nodics.validators;
-    };
+    };*/
 
-    this.setInterceptors = function (interceptors) {
+    /*this.setInterceptors = function (interceptors) {
         let defaultInterceptors = _.merge({}, interceptors.default);
         _.each(this.getModules(), (moduleObject, moduleName) => {
             if (!_nodics.interceptors[moduleName]) {
@@ -410,7 +409,7 @@ module.exports = function () {
         } else {
             return _nodics.interceptors[moduleName][modelName];
         }
-    };
+    };*/
 
     this.getModels = function (moduleName, tenant, channel = this.getActiveChannel()) {
         if (tenant && !UTILS.isBlank(tenant)) {
@@ -436,7 +435,7 @@ module.exports = function () {
         }
     };
 
-    getSearchModel = function (moduleName, tenant, typeName) {
+    this.getSearchModel = function (moduleName, tenant, typeName) {
         let searchModels = NODICS.getSearchModels(moduleName, tenant);
         if (searchModels) {
             let searchModel = searchModels[typeName.toUpperCaseFirstChar() + 'SearchModel'];

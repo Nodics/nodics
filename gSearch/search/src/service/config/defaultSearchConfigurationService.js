@@ -65,14 +65,20 @@ module.exports = {
      * @param {*} tntCode 
      */
     getSearchConfiguration: function (moduleName, tenant) {
-        let defaultSearchConfig = CONFIG.get('search', tenant);
-        let searchConfig = _.merge(_.merge({}, defaultSearchConfig.default), defaultSearchConfig[moduleName] || {});
-        let connConfig = searchConfig[searchConfig.options.engine];
-        if (connConfig) {
-            connConfig.options = _.merge(_.merge({}, searchConfig.options), connConfig.options);
-            return connConfig;
+        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+            throw new Error('Invalid tenant name: ' + tenant);
         } else {
-            throw new Error('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
+            let defaultSearchConfig = CONFIG.get('search', tenant);
+            let searchConfig = _.merge(_.merge({}, defaultSearchConfig.default), defaultSearchConfig[moduleName] || {});
+            let connConfig = searchConfig[searchConfig.options.engine];
+            if (connConfig) {
+                connConfig.options = _.merge(_.merge({}, searchConfig.options), connConfig.options);
+                return connConfig;
+            } else {
+                throw new Error('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
+            }
         }
     },
 
@@ -81,9 +87,9 @@ module.exports = {
     },
 
     addTenantSearchEngine: function (moduleName, tenant, searchEngine) {
-        if (!NODICS.isModuleActive(moduleName)) {
+        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else if (!this.searchEngines[moduleName]) {
             this.searchEngines[moduleName] = {};
@@ -92,21 +98,20 @@ module.exports = {
     },
 
     removeTenantSearchEngine: function (moduleName, tenant) {
-        if (!NODICS.isModuleActive(moduleName)) {
+        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
-        }
-        if (this.searchEngines[moduleName] && this.searchEngines[moduleName][tenant]) {
+        } else if (this.searchEngines[moduleName] && this.searchEngines[moduleName][tenant]) {
             delete this.searchEngines[moduleName][tenant];
         }
         return true;
     },
 
     getTenantSearchEngine: function (moduleName, tenant) {
-        if (!NODICS.isModuleActive(moduleName)) {
+        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             let searchEngine = this.searchEngines[moduleName] || this.searchEngines.default;
@@ -115,9 +120,9 @@ module.exports = {
     },
 
     addTenantRawSearchSchema: function (moduleName, tenant, definition) {
-        if (!NODICS.isModuleActive(moduleName)) {
+        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             if (!this.searchSchema[moduleName]) {
@@ -134,9 +139,9 @@ module.exports = {
     },
 
     getRawSearchSchema: function (moduleName, tenant) {
-        if (!NODICS.isModuleActive(moduleName)) {
+        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
             return this.searchSchema[moduleName][tenant];
@@ -146,23 +151,21 @@ module.exports = {
     },
 
     getTenantRawSearchSchema: function (moduleName, tenant, typeName) {
-        if (!NODICS.isModuleActive(moduleName)) {
+        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
+        } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
+            return this.searchSchema[moduleName][tenant][typeName];
         } else {
-            if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
-                return this.searchSchema[moduleName][tenant][typeName];
-            } else {
-                return null;
-            }
+            return null;
         }
     },
 
     removeTenantRawSearchSchema: function (moduleName, tenant) {
-        if (!NODICS.isModuleActive(moduleName) || !this.searchSchema[moduleName]) {
+        if (!moduleName && !NODICS.isModuleActive(moduleName) || !this.searchSchema[moduleName]) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!NODICS.getTenants().includes(tenant) || !this.searchSchema[moduleName][tenant]) {
+        } else if (!tenant && !NODICS.getTenants().includes(tenant) || !this.searchSchema[moduleName][tenant]) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             delete this.searchSchema[moduleName][tenant];

@@ -8,12 +8,9 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-const _ = require('lodash');
-const initServers = require('./bin/initializeServers');
-const serverConfig = require('./bin/loadServerConfiguration');
-const registerRouter = require('./bin/registerRouter');
 
 module.exports = {
+
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
      * defined it that with Promise way
@@ -32,29 +29,17 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    },
-
-    cleanAll: function () {
-
-    },
-
-    buildAll: function () {
-
-    },
-
-    loadRouter: function () {
-        SYSTEM.LOG.info('Staring servers initialization process');
-        return new Promise((resolve, reject) => {
-            initServers.initServers();
-            serverConfig.configServers();
-            registerRouter.registerRouter().then(success => {
+            SERVICE.DefaultRouterService.prepareModulesConfiguration().then(() => {
+                return SERVICE.DefaultRouterInitializerService.initializeRouters();
+            }).then(() => {
+                return SERVICE.DefaultRouterConfigurationService.configureRouters();
+            }).then(() => {
+                return SERVICE.DefaultRouterService.registerRouter();
+            }).then(() => {
                 resolve(true);
             }).catch(error => {
                 reject(error);
             });
         });
-
     }
 };

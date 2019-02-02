@@ -95,7 +95,7 @@ module.exports = {
             serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
             serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
             let prop = _.merge(props, serverProperties);
-            this.LOG = logger.createLogger('Framework', prop.log);
+            this.LOG = logger.createLogger('DefaultModuleInitializerService', prop.log);
             if (!fs.existsSync(moduleGroupsFilePath) || serverProperties.activeModules.updateGroups) {
                 let mergedFile = {};
                 _.each(NODICS.getRawModules(), (moduleObject, moduleName) => {
