@@ -12,13 +12,26 @@
 const FRAMEWORK = require('./gFramework');
 
 module.exports = {
-
-    cleanAll: function () {
-        FRAMEWORK.cleanAll({});
+    /**
+    * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
+    * defined it that with Promise way
+    * @param {*} options 
+    */
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
 
-    buildAll: function () {
-        FRAMEWORK.buildAll({});
+    /**
+     * This function is used to finalize module loading process. If there is any functionalities, required to be executed after module loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     },
 
     start: function () {
@@ -43,5 +56,17 @@ module.exports = {
 
     genVueModule: function () {
         FRAMEWORK.genVueModule({});
-    }
+    },
+
+    // =======================================================
+
+
+    cleanAll: function () {
+        FRAMEWORK.cleanAll({});
+    },
+
+    buildAll: function () {
+        FRAMEWORK.buildAll({});
+    },
+
 };

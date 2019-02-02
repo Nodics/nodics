@@ -12,11 +12,28 @@
 const controller = require('./bin/controllerGenerator');
 
 module.exports = {
+    /**
+     * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
     init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
+
+    /**
+     * This function is used to finalize module loading process. If there is any functionalities, required to be executed after module loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
     genController: function () {
         let _self = this;
         SYSTEM.LOG.info('Starting Controller Generation process');

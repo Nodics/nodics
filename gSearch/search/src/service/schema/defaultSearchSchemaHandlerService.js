@@ -12,20 +12,23 @@
 const _ = require('lodash');
 
 module.exports = {
-
     /**
-     * This function is used to setup your service just after service is loaded.
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
      */
-    init: function () {
+    init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
 
     /**
-     * This function is used to setup your service just before routers are getting activated.
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
      */
-    postInit: function () {
+    postInit: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
@@ -34,13 +37,20 @@ module.exports = {
     prepareSearchSchema: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.loadSearchSchemaFromSchema();
-            _self.loadSearchSchema();
-            _self.loadSearchSchemaFromDatabase().then(success => {
-                resolve(true);
-            }).catch(error => {
+            try {
+                _self.loadSearchSchemaFromSchema();
+                console.log('1--------------------');
+                _self.loadSearchSchema();
+                console.log('2--------------------');
+                _self.loadSearchSchemaFromDatabase().then(success => {
+                    console.log('3--------------------');
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
                 reject(error);
-            });
+            }
         });
     },
 
@@ -138,34 +148,38 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             let tenants = NODICS.getTenants();
-            tenants.forEach(tntCode => {
-                SERVICE.DefaultIndexerService.get({
-                    tenant: tntCode,
-                }).then(indexers => {
-                    if (indexers && indexers.success && indexers.result && indexers.result.length > 0) {
-                        indexers.result.forEach(definition => {
-                            let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(definition.moduleName, tntCode);
-                            if (searchEngine) {
-                                let searchOptions = searchEngine.getOptions();
-                                if (searchOptions.enabled && searchOptions.schemaHandler &&
-                                    SERVICE[searchOptions.schemaHandler] &&
-                                    SERVICE[searchOptions.schemaHandler].prepareFromDefinitions &&
-                                    typeof SERVICE[searchOptions.schemaHandler].prepareFromDefinitions === 'function') {
-                                    let target = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(definition.moduleName, tntCode, definition.typeName) || {};
-                                    let mergedTypeSchema = SERVICE[searchOptions.schemaHandler].loadSearchSchemaFromDatabase(definition.moduleName, tntCode, source, target, definition.typeName);
-                                    if (mergedTypeSchema && !UTILS.isBlank(mergedTypeSchema)) {
-                                        SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(moduleName, tntCode, mergedTypeSchema);
+            try {
+                tenants.forEach(tntCode => {
+                    SERVICE.DefaultIndexerService.get({
+                        tenant: tntCode,
+                    }).then(indexers => {
+                        if (indexers && indexers.success && indexers.result && indexers.result.length > 0) {
+                            indexers.result.forEach(definition => {
+                                let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(definition.moduleName, tntCode);
+                                if (searchEngine) {
+                                    let searchOptions = searchEngine.getOptions();
+                                    if (searchOptions.enabled && searchOptions.schemaHandler &&
+                                        SERVICE[searchOptions.schemaHandler] &&
+                                        SERVICE[searchOptions.schemaHandler].prepareFromDefinitions &&
+                                        typeof SERVICE[searchOptions.schemaHandler].prepareFromDefinitions === 'function') {
+                                        let target = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(definition.moduleName, tntCode, definition.typeName) || {};
+                                        let mergedTypeSchema = SERVICE[searchOptions.schemaHandler].loadSearchSchemaFromDatabase(definition.moduleName, tntCode, source, target, definition.typeName);
+                                        if (mergedTypeSchema && !UTILS.isBlank(mergedTypeSchema)) {
+                                            SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(moduleName, tntCode, mergedTypeSchema);
+                                        }
                                     }
                                 }
-                            }
-                        });
-                    }
-                    resolve(true);
-                }).catch(error => {
-                    _self.LOG.error('Failed while loading search schema from schema definitions');
-                    reject(error);
+                            });
+                        }
+                        resolve(true);
+                    }).catch(error => {
+                        _self.LOG.error('Failed while loading search schema from schema definitions');
+                        reject(error);
+                    });
                 });
-            });
+            } catch (error) {
+                reject(error);
+            }
         });
     }
 };

@@ -11,18 +11,31 @@
 
 module.exports = {
 
+    /**
+    * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
+    * defined it that with Promise way
+    * @param {*} options 
+    */
     init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
 
+    /**
+     * This function is used to finalize module loading process. If there is any functionalities, required to be executed after module loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultSearchEngineConnectionHandlerService.createSearchConnections().then(success => {
+            /*SERVICE.DefaultSearchEngineConnectionHandlerService.createSearchConnections().then(success => {
                 SERVICE.DefaultSearchSchemaHandlerService.prepareSearchSchema().then(success => {
+                    console.log('--------------------');
                     SERVICE.DefaultSearchModelHandlerService.prepareSearchModels().then(success => {
+                        console.log('--------------------1');
                         SERVICE.DefaultSearchModelHandlerService.updateIndexesMapping().then(success => {
+                            console.log('--------------------2');
                             resolve(true);
                         }).catch(error => {
                             reject(error);
@@ -35,7 +48,8 @@ module.exports = {
                 });
             }).catch(error => {
                 reject(error);
-            });
+            });*/
+            resolve(true);
         });
     }
 };

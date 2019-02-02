@@ -34,23 +34,26 @@ module.exports = {
         this.LOG.info('NODICS_APP        : ', NODICS.getApplicationPath());
         this.LOG.info('NODICS_ENV        : ', NODICS.getEnvironmentPath());
         this.LOG.info('SERVER_PATH       : ', NODICS.getServerPath());
-        this.LOG.info('---------------------------------------------------------------------------');
-
-        let modulesStr = '';
+        this.LOG.info('---------------------------------------------------------------------------\n');
+        this.LOG.info('###   Sequence in which modules has been loaded (Top to Bottom)   ###');
         let activeModules = [];
         NODICS.getIndexedModules().forEach((obj, key) => {
-            console.log(key, ' ------ ' + obj.name);
-            modulesStr = modulesStr + obj.name + ',';
+            if (obj.name.length < 7) {
+                this.LOG.info('    ' + obj.name + '\t\t\t\t : ' + key);
+            } else if (obj.name.length > 17) {
+                this.LOG.info('    ' + obj.name + '\t\t : ' + key);
+            } else {
+                this.LOG.info('    ' + obj.name + '\t\t\t : ' + key);
+            }
             activeModules.push(obj.name);
         });
+        console.log();
         NODICS.setActiveModules(activeModules);
-        console.log('Modules: ', modulesStr);
     },
 
     prepareOptions: function () {
         NODICS.setActiveModules(this.getActiveModules());
         CONFIG.setProperties({});
-
         global.CLASSES = {};
         global.ENUMS = {};
         global.UTILS = {};
@@ -59,7 +62,6 @@ module.exports = {
         global.PIPELINE = {};
         global.FACADE = {};
         global.CONTROLLER = {};
-
         global.TEST = {
             nTestPool: {
                 data: {

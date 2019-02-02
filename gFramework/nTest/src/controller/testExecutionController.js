@@ -10,8 +10,29 @@
  */
 
 module.exports = {
+    /**
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
 
-    runUTest: function(requestContext, callback) {
+    /**
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    runUTest: function (requestContext, callback) {
         let input = {
             tenant: requestContext.tenant,
             enterpriseCode: requestContext.enterpriseCode
@@ -19,7 +40,7 @@ module.exports = {
         FACADE.TestExecutionFacade.runUTest(input, callback);
     },
 
-    runNTest: function(requestContext, callback) {
+    runNTest: function (requestContext, callback) {
         let input = {
             tenant: requestContext.tenant,
             enterpriseCode: requestContext.enterpriseCode

@@ -13,7 +13,9 @@ const conHandler = require('./bin/connectionHandler');
 
 module.exports = {
     /**
-     * This function is used to setup your module just before loading all services.
+     * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
+     * defined it that with Promise way
+     * @param {*} options 
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -22,7 +24,9 @@ module.exports = {
     },
 
     /**
-     * This function is used to setup your module just before routers are getting activated.
+     * This function is used to finalize module loading process. If there is any functionalities, required to be executed after module loading. 
+     * defined it that with Promise way
+     * @param {*} options 
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {

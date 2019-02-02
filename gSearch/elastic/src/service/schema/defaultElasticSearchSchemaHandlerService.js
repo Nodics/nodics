@@ -13,20 +13,23 @@ const _ = require('lodash');
 const util = require('util');
 
 module.exports = {
-
     /**
-     * This function is used to setup your service just after service is loaded.
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
      */
-    init: function () {
+    init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
 
     /**
-     * This function is used to setup your service just before routers are getting activated.
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
      */
-    postInit: function () {
+    postInit: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
