@@ -14,7 +14,7 @@ const _ = require('lodash');
 module.exports = function () {
 
     let _modules = {};
-    this.LOG = SYSTEM.createLogger('ExternalModulesContainer');
+    this.LOG = SERVICE.DefaultLoggerService.createLogger('ExternalModulesContainer');
 
     this.getModules = function () {
         return _modules;

@@ -48,8 +48,9 @@ module.exports = {
 
     initFramework: function (options) {
         return new Promise((resolve, reject) => {
-            config.start(options);
-            config.initUtilities(options).then(() => {
+            config.start(options).then(() => {
+                return config.initUtilities(options);
+            }).then(() => {
                 return config.loadModules();
             }).then(() => {
                 return config.initEntities();
@@ -57,6 +58,12 @@ module.exports = {
                 return config.finalizeEntities();
             }).then(() => {
                 return config.finalizeModules();
+            }).then(() => {
+                return SERVICE.DefaultScriptsHandlerService.executePostScripts();
+            }).then(() => {
+                return new Promise((resolve, reject) => {
+                    resolve(true);
+                });
             }).then(() => {
                 resolve(true);
             }).catch(error => {

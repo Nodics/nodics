@@ -46,48 +46,76 @@ module.exports = {
     },
 
     start: function (options) {
-        this.prepareStart(options);
-        initService.LOG.info('Starting Post Scripts loader process');
-        scriptHandler.loadPostScript();
+        return new Promise((resolve, reject) => {
+            this.prepareStart(options).then(success => {
+                initService.LOG.info('Starting Post Scripts loader process');
+                scriptHandler.loadPostScript();
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
 
     prepareClean: function (options) {
-        this.prepareStart(options);
+        return new Promise((resolve, reject) => {
+            this.prepareStart(options).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
 
     prepareBuild: function (options) {
-        this.prepareStart(options);
+        return new Promise((resolve, reject) => {
+            this.prepareStart(options).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
 
     prepareStart: function (options) {
-        let startTime = new Date();
-        global.NODICS = new Nodics();
-        global.CONFIG = new Config();
-        NODICS.init(options);
-        NODICS.setStartTime(startTime);
-        utils.collectModulesList(NODICS.getNodicsHome());
-        NODICS.initEnvironment();
-        initService.prepareOptions();
-        initService.loadModuleIndex();
-        initService.printInfo();
-        initService.LOG.info('Starting Utils loader process');
-        initService.LOG.info('Loading modules meta data');
-        initService.loadModulesMetaData();
-        initService.LOG.info('Loading modules common configurations');
-        initService.loadConfigurations();
-        initService.loadExternalProperties();
-        NODICS.LOG = logger.createLogger('NODICS');
-        CONFIG.LOG = logger.createLogger('CONFIG');
-        scriptHandler.LOG = logger.createLogger('DefaultScriptHandlerService');
-        enumService.LOG = logger.createLogger('DefaultEnumService');
-        moduleService.LOG = logger.createLogger('DefaultModuleInitializerService');
-        fileLoader.LOG = logger.createLogger('DefaultFilesLoaderService');
-        classesLoader.LOG = logger.createLogger('DefaultClassesHandlerService');
-        fileLoader.loadFiles('/src/utils/utils.js', global.UTILS);
+        return new Promise((resolve, reject) => {
+            try {
+                let startTime = new Date();
+                global.NODICS = new Nodics();
+                global.CONFIG = new Config();
+                NODICS.init(options);
+                NODICS.setStartTime(startTime);
+                utils.collectModulesList(NODICS.getNodicsHome());
+                NODICS.initEnvironment();
+                initService.prepareOptions();
+                initService.loadModuleIndex();
+                initService.printInfo();
+                initService.LOG.info('Starting Utils loader process');
+                initService.LOG.info('Loading modules meta data');
+                initService.loadModulesMetaData();
+                initService.LOG.info('Loading modules common configurations');
+                initService.loadConfigurations();
+                initService.loadExternalProperties();
+                NODICS.LOG = logger.createLogger('NODICS');
+                CONFIG.LOG = logger.createLogger('CONFIG');
+                scriptHandler.LOG = logger.createLogger('DefaultScriptHandlerService');
+                enumService.LOG = logger.createLogger('DefaultEnumService');
+                moduleService.LOG = logger.createLogger('DefaultModuleInitializerService');
+                fileLoader.LOG = logger.createLogger('DefaultFilesLoaderService');
+                classesLoader.LOG = logger.createLogger('DefaultClassesHandlerService');
+                fileLoader.loadFiles('/src/utils/utils.js', global.UTILS);
 
-        UTILS.LOG = logger.createLogger('UTILS');
-        scriptHandler.loadPreScript();
-        scriptHandler.executePreScripts();
+                UTILS.LOG = logger.createLogger('UTILS');
+                scriptHandler.loadPreScript();
+                scriptHandler.executePreScripts().then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
     },
 
     initUtilities: function (options) {
@@ -108,43 +136,5 @@ module.exports = {
 
     finalizeModules: function (options) {
         return system.finalizeModules(options);
-    },
-
-    /*initModules: function (options) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            system.initUtilities(options).then(() => {
-                return system.loadModules();
-            }).then(() => {
-                return system.initEntities();
-            }).then(() => {
-                return system.finalizeEntities();
-            }).then(() => {
-                return system.finalizeModules();
-            }).then(() => {
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
-    
-    initModules: function (options) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            system.initUtilities(options).then(() => {
-                return system.loadModules();
-            }).then(() => {
-                return system.initEntities();
-            }).then(() => {
-                return system.finalizeEntities();
-            }).then(() => {
-                return system.finalizeModules();
-            }).then(() => {
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }*/
+    }
 };

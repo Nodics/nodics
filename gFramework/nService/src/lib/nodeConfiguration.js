@@ -9,32 +9,32 @@
 
  */
 
-module.exports = function(nodeId, httpHost, httpsHost, httpPort, httpsPort) {
+module.exports = function (nodeId, httpHost, httpsHost, httpPort, httpsPort) {
     let _nodeId = nodeId;
     let _httpHost = httpHost;
     let _httpsHost = httpsHost;
     let _httpPort = httpPort;
     let _httpsPort = httpsPort;
 
-    this.LOG = SYSTEM.createLogger('ExternalNode');
+    this.LOG = SERVICE.DefaultLoggerService.createLogger('ExternalNode');
 
-    this.getNodeId = function() {
+    this.getNodeId = function () {
         return _nodeId;
     };
 
-    this.getHttpHost = function() {
+    this.getHttpHost = function () {
         return _httpHost;
     };
 
-    this.getHttpsHost = function() {
+    this.getHttpsHost = function () {
         return _httpsHost;
     };
 
-    this.getHttpPort = function() {
+    this.getHttpPort = function () {
         return _httpPort;
     };
 
-    this.getHttpsPort = function() {
+    this.getHttpsPort = function () {
         return _httpsPort;
     };
 };

@@ -29,6 +29,9 @@ module.exports = {
             'ncontroller',
             'nrouter',
             'ndata',
+            'dataImport',
+            'jsonImport',
+            'csvImport',
             'ntest',
             'system'
         ]

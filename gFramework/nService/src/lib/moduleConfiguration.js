@@ -19,7 +19,7 @@ module.exports = function (moduleName) {
     let _abstractServer = {};
     let _nodes = {};
     let _isServerRunning = false;
-    this.LOG = SYSTEM.createLogger('ExternalModule');
+    this.LOG = SERVICE.DefaultLoggerService.createLogger('ExternalModule');
 
     this.getModuleName = function () {
         return _moduleName;

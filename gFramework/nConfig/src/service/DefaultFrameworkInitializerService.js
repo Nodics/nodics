@@ -38,12 +38,12 @@ module.exports = {
         this.LOG.info('###   Sequence in which modules has been loaded (Top to Bottom)   ###');
         let activeModules = [];
         NODICS.getIndexedModules().forEach((obj, key) => {
-            if (obj.name.length < 7) {
-                this.LOG.info('    ' + obj.name + '\t\t\t\t : ' + key);
-            } else if (obj.name.length > 17) {
+            if (obj.name.length > 0 && obj.name.length <= 8) {
+                this.LOG.info('    ' + obj.name + '\t\t\t : ' + key);
+            } else if (obj.name.length > 8 && obj.name.length < 15) {
                 this.LOG.info('    ' + obj.name + '\t\t : ' + key);
             } else {
-                this.LOG.info('    ' + obj.name + '\t\t\t : ' + key);
+                this.LOG.info('    ' + obj.name + '\t : ' + key);
             }
             activeModules.push(obj.name);
         });

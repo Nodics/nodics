@@ -11,4 +11,33 @@
 
 module.exports = {
 
+    isObject: function (value) {
+        return Object.prototype.toString.call(value) == "[object Object]";
+    },
+
+    isArray: function (value) {
+        return value instanceof Array;
+    },
+
+    isBlankArray: function (value) {
+        return (value instanceof Array && !value[0]);
+    },
+
+    isArrayOfObject: function (value) {
+        return this.isArray(value) && this.isObject(value[0]) && !this.isObjectId(value[0]);
+    },
+
+    isObjectId: function (value) {
+        return (this.isObject(value) && value._bsontype && value._bsontype === 'ObjectID');
+    },
+
+    createModelName: function (modelName) {
+        var name = modelName.toUpperCaseFirstChar() + 'Model';
+        return name;
+    },
+
+    getModelName: function (modelName) {
+        var name = modelName.toUpperCaseFirstChar().replace("Model", "");
+        return name;
+    },
 };

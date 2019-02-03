@@ -189,14 +189,14 @@ module.exports = {
                             let key = UTILS.generateHash(JSON.stringify(config.field));
                             let tmpIndex = liveIndexes[key];
                             if (!tmpIndex || tmpIndex.unique !== config.options.unique) {
-                                allPromise.push(SYSTEM.createIndex(model, config));
+                                allPromise.push(_self.createIndex(model, config));
                             } else {
                                 delete liveIndexes[key];
                             }
                         });
                         if (cleanOrphan && !UTILS.isBlank(liveIndexes)) {
                             _.each(liveIndexes, (indexConfig, key) => {
-                                allPromise.push(SYSTEM.dropIndex(model, indexConfig.name));
+                                allPromise.push(_self.dropIndex(model, indexConfig.name));
                             });
                         }
                         if (allPromise.length > 0) {
@@ -227,4 +227,53 @@ module.exports = {
             }
         });
     },
+
+    createIndex: function (model, indexConfig) {
+        return new Promise((resolve, reject) => {
+            try {
+                model.dataBase.getConnection().createIndex(model.modelName, indexConfig.field, indexConfig.options).then(success => {
+                    resolve('Index updated for ' + Object.keys(indexConfig.field)[0]);
+                }).catch(error => {
+                    reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());
+                });
+            } catch (error) {
+                reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());
+            }
+        });
+    },
+
+    dropIndex: function (model, indexName) {
+        return new Promise((resolve, reject) => {
+            try {
+                model.dropIndex(indexName).then(success => {
+                    resolve('Index deleted for ' + indexName);
+                }).catch(error => {
+                    reject('Index deleting failed for ' + indexName + ' : ' + error.toString());
+                });
+            } catch (error) {
+                reject('Index deleting failed for ' + indexName + ' : ' + error.toString());
+            }
+        });
+    },
+
+    updateValidator: function (model) {
+        return new Promise((resolve, reject) => {
+            let schema = model.rawSchema;
+            let schemaOptions = model.rawSchema.schemaOptions[model.tenant];
+            let tmpOptions = { collMod: model.modelName };
+            tmpOptions = _.merge(tmpOptions, schema.options || {});
+            if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
+                tmpOptions = _.merge(tmpOptions, schemaOptions.options);
+            }
+            model.dataBase.getConnection().command(tmpOptions).then(success => {
+                let response = {};
+                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator updated';
+                resolve(response);
+            }).catch(error => {
+                let response = {};
+                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator update failed';
+                reject(response);
+            });
+        });
+    }
 };

@@ -16,30 +16,21 @@ module.exports = {
         let _self = this;
         _self.LOG.info('Initializing servers');
         let modules = NODICS.getModules();
-        //TODO: This option look not in used, verify and remove if not rquired
-        if (CONFIG.get('server').options.runAsDefault) {
-            _self.LOG.debug('Initializing single server for whole application. As CONFIG.server.runAsSingleModule set to true.');
-            if (!modules.default) {
-                modules.default = {};
-            }
-            modules.default.app = require('express')();
-        } else {
-            _.each(modules, function (value, moduleName) {
-                if (value.metaData.publish) {
-                    if (SYSTEM.getModulesPool().isAvailableModuleConfig(moduleName)) {
-                        _self.LOG.debug('Initializing server for module : ', moduleName);
-                        value.app = require('express')();
-                    } else {
-                        _self.LOG.warn('Module : ', moduleName, ' initializing with default');
-                        if (!modules.default) {
-                            modules.default = {};
-                        }
-                        if (!modules.default.app) {
-                            modules.default.app = require('express')();
-                        }
+        _.each(modules, function (value, moduleName) {
+            if (value.metaData.publish) {
+                if (SERVICE.DefaultRouterService.getModulesPool().isAvailableModuleConfig(moduleName)) {
+                    _self.LOG.debug('Initializing server for module : ', moduleName);
+                    value.app = require('express')();
+                } else {
+                    _self.LOG.warn('Module : ', moduleName, ' initializing with default');
+                    if (!modules.default) {
+                        modules.default = {};
+                    }
+                    if (!modules.default.app) {
+                        modules.default.app = require('express')();
                     }
                 }
-            });
-        }
+            }
+        });
     }
 };

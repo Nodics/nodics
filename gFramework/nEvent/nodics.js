@@ -9,8 +9,6 @@
 
  */
 
-let listeners = require('./bin/registerEventListeners');
-
 module.exports = {
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
@@ -30,7 +28,11 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            resolve(true);
+            SERVICE.DefaultEventService.registerEventListeners().then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 

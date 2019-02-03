@@ -44,7 +44,7 @@ module.exports = {
         let _self = this;
         _self.LOG.debug('Starting server configuration');
         let modules = NODICS.getModules();
-        let commonConfig = SYSTEM.loadFiles('/src/router/appConfig.js');
+        let commonConfig = SERVICE.DefaultFilesLoaderService.loadFiles('/src/router/appConfig.js');
 
         if (modules.default && modules.default.app) {
             _self.LOG.debug('Configuring Default App');

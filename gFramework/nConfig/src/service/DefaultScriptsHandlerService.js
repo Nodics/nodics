@@ -25,18 +25,32 @@ module.exports = {
     },
 
     executePreScripts: function () {
-        var preScripts = NODICS.getPreScripts();
-        var methods = utils.getAllMethods(preScripts);
-        methods.forEach(function (instance) {
-            preScripts[instance]();
+        return new Promise((resolve, reject) => {
+            try {
+                var preScripts = NODICS.getPreScripts();
+                var methods = utils.getAllMethods(preScripts);
+                methods.forEach(function (instance) {
+                    preScripts[instance]();
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
         });
     },
 
     executePostScripts: function () {
-        var postScripts = NODICS.getPostScripts();
-        var methods = utils.getAllMethods(postScripts);
-        methods.forEach(function (instance) {
-            postScripts[instance]();
+        return new Promise((resolve, reject) => {
+            try {
+                var postScripts = NODICS.getPostScripts();
+                var methods = utils.getAllMethods(postScripts);
+                methods.forEach(function (instance) {
+                    postScripts[instance]();
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
         });
     }
 };

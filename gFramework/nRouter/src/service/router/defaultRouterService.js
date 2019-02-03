@@ -10,6 +10,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     serversConfigPool: '',
@@ -59,17 +61,17 @@ module.exports = {
     registerRouter: function () {
         let _self = this;
         let modules = NODICS.getModules();
-        let routers = SYSTEM.loadFiles('/src/router/router.js');
+        let routers = SERVICE.DefaultFilesLoaderService.loadFiles('/src/router/router.js');
         return new Promise((resolve, reject) => {
             _.each(modules, function (moduleObject, moduleName) {
                 let app = {};
                 if (moduleObject.metaData && moduleObject.metaData.publish) {
                     if (CONFIG.get('server').options.runAsDefault || !moduleObject.app) {
                         app = modules.default.app;
-                        SYSTEM.LOG.debug('Found default App for module : ', moduleName);
+                        _self.LOG.debug('Found default App for module : ', moduleName);
                     } else {
                         app = moduleObject.app;
-                        SYSTEM.LOG.debug('Found module App for module : ', moduleName);
+                        _self.LOG.debug('Found module App for module : ', moduleName);
                     }
                     if (!UTILS.isBlank(app)) {
                         try {
@@ -87,7 +89,7 @@ module.exports = {
                                         _self.activateRouters(app, moduleObject, moduleName, routers);
                                         resolve(true);
                                     }).catch(error => {
-                                        SYSTEM.LOG.error('got error while initializing cache for module : ', moduleName);
+                                        _self.LOG.error('got error while initializing cache for module : ', moduleName);
                                         _self.activateRouters(app, moduleObject, moduleName, routers);
                                         resolve(true);
                                     });
@@ -96,11 +98,11 @@ module.exports = {
                                     resolve(true);
                                 }
                             } catch (error) {
-                                SYSTEM.LOG.error('While initializing cache or router registration process for module : ', moduleName);
+                                _self.LOG.error('While initializing cache or router registration process for module : ', moduleName);
                                 reject(error);
                             }
                         } catch (error) {
-                            SYSTEM.LOG.error('While registration process of web path for module : ', moduleName);
+                            _self.LOG.error('While registration process of web path for module : ', moduleName);
                             reject(error);
                         }
                     }

@@ -45,29 +45,6 @@ module.exports = {
         });
     },
 
-    /*buildModelsForTenants: function (tenants = ['default']) {
-        return new Promise((resolve, reject) => {
-            let tntCode = tenants.shift();
-            if (tntCode) {
-                SYSTEM.buildModelsForTenant(tntCode).then(success => {
-                    if (tenants.length > 0) {
-                        SYSTEM.buildModelsForTenants(tenants).then(success => {
-                            resolve(success);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        resolve(success);
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(true);
-            }
-        });
-    },*/
-
     buildModelsForTenant: function (tntCode = 'default') {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -217,5 +194,21 @@ module.exports = {
             this.modelMiddleware(rawModels[options.moduleName].default, collection, rawSchema);
             this.modelMiddleware(rawModels[options.moduleName][options.schemaName], collection, rawSchema);
         }
+    },
+
+    updateValidator: function (model) {
+        return new Promise((resolve, reject) => {
+            if (model) {
+                SERVICE[model.dataBase.getOptions().modelHandler].updateValidator(model).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                let response = {};
+                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Invalid schema value to update validator';
+                reject(response);
+            }
+        });
     },
 };

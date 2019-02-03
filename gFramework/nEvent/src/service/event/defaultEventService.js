@@ -9,7 +9,10 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
+    listeners: {},
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -28,7 +31,36 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
+            this.listeners = SERVICE.DefaultFilesLoaderService.loadFiles('/src/event/listeners.js');
             resolve(true);
+        });
+    },
+
+    registerEventListeners: function () {
+        this.LOG.debug('Registering events');
+        return new Promise((resolve, reject) => {
+            try {
+                let commonListeners = this.listeners.common;
+                _.each(NODICS.getModules(), (value, moduleName) => {
+                    value.eventService = new CLASSES.EventService();
+                    if (commonListeners) {
+                        _.each(commonListeners, (listenerDefinition, listenerName) => {
+                            listenerDefinition.moduleName = moduleName;
+                            value.eventService.registerListener(listenerDefinition);
+                        });
+                    }
+                    let moduleListeners = this.listeners[moduleName];
+                    if (moduleListeners) {
+                        _.each(moduleListeners, (listenerDefinition, listenerName) => {
+                            listenerDefinition.moduleName = moduleName;
+                            value.eventService.registerListener(listenerDefinition);
+                        });
+                    }
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
         });
     },
 

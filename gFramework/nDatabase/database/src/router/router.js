@@ -10,5 +10,62 @@
  */
 
 module.exports = {
-
+    common: {
+        schemaIndexes: {
+            updateSchemaIndexesBySchemaName: {
+                secured: true,
+                key: '/schema/indexes/schema/:schema',
+                method: 'GET',
+                controller: 'DefaultSchemaIndexController',
+                operation: 'updateSchemaIndexes',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schema/indexes/schema/:schema'
+                }
+            },
+            updateSchemaIndexesByModuleName: {
+                secured: true,
+                key: '/schema/indexes',
+                method: 'GET',
+                controller: 'DefaultSchemaIndexController',
+                operation: 'updateSchemaIndexes',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schema/indexes'
+                }
+            }
+        },
+        schemaValidation: {
+            updateSchemaValidatorBySchemaName: {
+                secured: true,
+                key: '/schema/validator/schema/:schema',
+                method: 'GET',
+                controller: 'DefaultSchemaValidatorController',
+                operation: 'updateSchemaValidator',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schema/validator/schema/:schema'
+                }
+            },
+            updateSchemaValidatorByModuleName: {
+                secured: true,
+                key: '/schema/validator',
+                method: 'GET',
+                controller: 'DefaultSchemaValidatorController',
+                operation: 'updateSchemaValidator',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schema/validator'
+                }
+            }
+        }
+    }
 };
