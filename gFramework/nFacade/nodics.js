@@ -9,8 +9,6 @@
 
  */
 
-const facade = require('./bin/facadeGenerator');
-
 module.exports = {
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
@@ -34,19 +32,11 @@ module.exports = {
         });
     },
 
-    genFacade: function () {
-        let _self = this;
-        SYSTEM.LOG.info('Starting Facade Generation process');
-        return facade.gen().then(success => { }).catch(error => {
-            _self.LOG.error(error);
-        });
-    },
-
-    loadFacade: function () {
-        let _self = this;
-        SYSTEM.LOG.info('Starting Facade Generation process');
-        return facade.loadFacade().then(success => { }).catch(error => {
-            _self.LOG.error(error);
-        });
-    }
+    // genFacade: function () {
+    //     let _self = this;
+    //     NODICS.LOG.info('Starting Facade Generation process');
+    //     return facade.gen().then(success => { }).catch(error => {
+    //         _self.LOG.error(error);
+    //     });
+    // }
 };

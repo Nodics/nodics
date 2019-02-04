@@ -33,11 +33,12 @@ module.exports = {
     },
 
     handleAddEnterprise: function (event, callback, request) {
+        let _self = this;
         if (event.data.enterprise) {
             let enterprise = event.data.enterprise;
             if (enterprise.tenant && enterprise.tenant.code) {
                 if (!NODICS.getTenants().includes(enterprise.tenant.code)) {
-                    SYSTEM.buildEnterprise([enterprise]).then(success => {
+                    _self.buildEnterprise([enterprise]).then(success => {
                         this.LOG.debug('Enterprise: ' + enterprise.code + ' has been successfully activated');
                         callback(null, {
                             success: true,
@@ -84,7 +85,7 @@ module.exports = {
             let enterprise = event.data.enterprise;
             if (enterprise.tenant && enterprise.tenant.code) {
                 if (NODICS.getTenants().includes(enterprise.tenant.code)) {
-                    SYSTEM.removeTenants([enterprise.tenant.code]).then(success => {
+                    SERVICE.DefaultTenantService.removeTenants([enterprise.tenant.code]).then(success => {
                         this.LOG.debug('Tenant: ' + enterprise.tenant.code + ' has been successfully deactivated');
                         callback(null, {
                             success: true,

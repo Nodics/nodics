@@ -45,36 +45,24 @@ module.exports = {
         });
     },
 
-    start: function (options) {
-        return new Promise((resolve, reject) => {
-            this.prepareStart(options).then(success => {
-                initService.LOG.info('Starting Post Scripts loader process');
-                scriptHandler.loadPostScript();
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+    initUtilities: function (options) {
+        return system.initUtilities(options);
     },
 
-    prepareClean: function (options) {
-        return new Promise((resolve, reject) => {
-            this.prepareStart(options).then(success => {
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+    loadModules: function (options) {
+        return system.loadModules(options);
     },
 
-    prepareBuild: function (options) {
-        return new Promise((resolve, reject) => {
-            this.prepareStart(options).then(success => {
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+    initEntities: function (options) {
+        return system.initEntities(options);
+    },
+
+    finalizeEntities: function (options) {
+        return system.finalizeEntities(options);
+    },
+
+    finalizeModules: function (options) {
+        return system.finalizeModules(options);
     },
 
     prepareStart: function (options) {
@@ -118,23 +106,35 @@ module.exports = {
         });
     },
 
-    initUtilities: function (options) {
-        return system.initUtilities(options);
+    start: function (options) {
+        return new Promise((resolve, reject) => {
+            this.prepareStart(options).then(success => {
+                initService.LOG.info('Starting Post Scripts loader process');
+                scriptHandler.loadPostScript();
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
 
-    loadModules: function (options) {
-        return system.loadModules(options);
+    prepareClean: function (options) {
+        return new Promise((resolve, reject) => {
+            this.prepareStart(options).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
 
-    initEntities: function (options) {
-        return system.initEntities(options);
+    prepareBuild: function (options) {
+        return new Promise((resolve, reject) => {
+            this.prepareStart(options).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
-
-    finalizeEntities: function (options) {
-        return system.finalizeEntities(options);
-    },
-
-    finalizeModules: function (options) {
-        return system.finalizeModules(options);
-    }
 };

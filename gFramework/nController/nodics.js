@@ -9,8 +9,6 @@
 
  */
 
-const controller = require('./bin/controllerGenerator');
-
 module.exports = {
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
@@ -36,16 +34,8 @@ module.exports = {
 
     genController: function () {
         let _self = this;
-        SYSTEM.LOG.info('Starting Controller Generation process');
+        NODICS.LOG.info('Starting Controller Generation process');
         return controller.gen().then(success => { }).catch(error => {
-            _self.LOG.error(error);
-        });
-    },
-
-    loadController: function () {
-        let _self = this;
-        SYSTEM.LOG.info('Starting Controller Generation process');
-        return controller.loadController().then(success => { }).catch(error => {
             _self.LOG.error(error);
         });
     }

@@ -33,6 +33,35 @@ module.exports = {
         });
     },
 
+    fetchAPIKey: function (tntCode) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            let requestUrl = SERVICE.DefaultModuleService.buildRequest({
+                moduleName: 'profile',
+                methodName: 'GET',
+                apiName: '/apikey/' + tntCode,
+                requestBody: {},
+                isJsonResponse: true,
+                header: {
+                    apiKey: NODICS.getAPIKey('default').key
+                }
+            });
+            try {
+                SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
+                    if (error) {
+                        _self.LOG.error('While connecting profile server to fetch API Key', error);
+                        resolve([]);
+                    } else {
+                        resolve(response.result || []);
+                    }
+                });
+            } catch (error) {
+                _self.LOG.error('While connecting profile server to fetch API Key', error);
+                resolve([]);
+            }
+        });
+    },
+
     handleApiKeyUpdate: function (event, callback, request) {
         try {
             if (event.data && event.data.apiKey && event.data.tenant) {

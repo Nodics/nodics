@@ -43,7 +43,7 @@ module.exports = {
         if (options.header) {
             _.merge(header, options.header);
         }
-        let url = SYSTEM.prepareUrl(options);
+        let url = SERVICE.DefaultRouterService.prepareUrl(options);
         if (!options.apiName.startsWith('/')) {
             url += '/';
         }

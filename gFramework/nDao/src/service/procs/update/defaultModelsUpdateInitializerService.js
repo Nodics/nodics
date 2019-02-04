@@ -68,7 +68,7 @@ module.exports = {
         this.LOG.debug('Applying pre update model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
-        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preUpdate) {
             SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors([].concat(interceptors.preUpdate), {
                 collection: request.collection,
@@ -228,7 +228,7 @@ module.exports = {
         if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0) {
             let moduleName = request.moduleName || request.collection.moduleName;
             let modelName = request.collection.modelName;
-            let interceptors = NODICS.getInterceptors(moduleName, modelName);
+            let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
             if (interceptors && interceptors.postUpdate) {
                 SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors([].concat(interceptors.postUpdate), {
                     collection: request.collection,

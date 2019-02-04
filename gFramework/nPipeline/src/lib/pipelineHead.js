@@ -24,7 +24,7 @@ module.exports = function (name, pipelineDefinition) {
     let _successEndNode = {};
     let _resolve = null;
     let _reject = null;
-    let _nodeLog = SYSTEM.createLogger('PipelineNode');
+    let _nodeLog = SERVICE.DefaultLoggerService.createLogger('PipelineNode');
 
     this.setPipelineId = function (id) {
         _pipelineId = id;

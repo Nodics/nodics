@@ -34,6 +34,7 @@ module.exports = {
         });
     },
 
+
     removeTenantDatabase: function (moduleName, tntCode) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultDatabaseConfigurationService.removeTenantDatabase(moduleName, tntCode);
@@ -41,7 +42,7 @@ module.exports = {
         });
     },
 
-    createDatabaseConnections: function (tntCode = 'default') {
+    createDatabaseConnection: function (tntCode = 'default') {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -85,6 +86,7 @@ module.exports = {
                     masterDatabase.setConnectionOptions(dbConfig.master.options);
                     if (SERVICE[dbConfig.options.connectionHandler] &&
                         SERVICE[dbConfig.options.connectionHandler].createConnection && typeof SERVICE[dbConfig.options.connectionHandler].createConnection === 'function') {
+                        _self.LOG.info('Connecting data for tenant: ' + tntCode);
                         SERVICE[dbConfig.options.connectionHandler].createConnection(dbConfig.master).then(success => {
                             masterDatabase.setConnection(success.connection);
                             masterDatabase.setCollections(success.collections);
@@ -140,7 +142,7 @@ module.exports = {
         });
     },
 
-    isInitRequired: function () {
+    /*isInitRequired: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
@@ -167,5 +169,5 @@ module.exports = {
                 resolve(false);
             }
         });
-    }
+    }*/
 };

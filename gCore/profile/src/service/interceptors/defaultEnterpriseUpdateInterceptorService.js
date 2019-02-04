@@ -151,7 +151,7 @@ module.exports = {
                     }
                 }).then(success => {
                     if (success.success && (!success.result || success.result.length <= 0)) {
-                        SYSTEM.removeTenants([enterprise.tenant.code]).then(success => {
+                        SERVICE.DefaultTenantHandlerService.removeTenants([enterprise.tenant.code]).then(success => {
                             this.LOG.debug('Tenant: ' + enterprise.tenant.code + ' has been successfully deactivated from profile module');
                             event.event = 'removeEnterprise';
                             this.LOG.debug('Pushing event for enterprise removed or deactivated');
@@ -176,7 +176,7 @@ module.exports = {
                     reject(error);
                 });
             } else if (enterprise.active && enterprise.tenant.active && !NODICS.getTenants().includes(enterprise.tenant.code)) {
-                SYSTEM.buildEnterprise([enterprise]).then(success => {
+                SERVICE.DefaultEnterpriseHandlerService.buildEnterprise([enterprise]).then(success => {
                     this.LOG.debug('Enterprise: ' + enterprise.code + ' has been successfully activated within profile module');
                     event.event = 'addEnterprise';
                     this.LOG.debug('Pushing event for enterprise activation');

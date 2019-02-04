@@ -31,7 +31,7 @@ module.exports = {
                     }));
                     app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, express.static(path.join(moduleObject.modulePath, '/' + moduleObject.webRootDirName)));
                 } catch (error) {
-                    SYSTEM.LOG.error(error);
+                    SERVICE.DefaultRouterService.LOG.error(error);
                 }
             }
         },
@@ -40,7 +40,7 @@ module.exports = {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
-                    SYSTEM.LOG.error(error);
+                    SERVICE.DefaultRouterService.LOG.error(error);
                     res.json({
                         success: false,
                         code: 'ERR001',
@@ -55,7 +55,7 @@ module.exports = {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
-                    SYSTEM.LOG.error(error);
+                    SERVICE.DefaultRouterService.LOG.error(error);
                     res.json({
                         success: false,
                         code: 'ERR001',
@@ -70,7 +70,7 @@ module.exports = {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
-                    SYSTEM.LOG.error(error);
+                    SERVICE.DefaultRouterService.LOG.error(error);
                     res.json({
                         success: false,
                         code: 'ERR001',
@@ -85,7 +85,7 @@ module.exports = {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
-                    SYSTEM.LOG.error(error);
+                    SERVICE.DefaultRouterService.LOG.error(error);
                     res.json({
                         success: false,
                         code: 'ERR001',
@@ -100,7 +100,7 @@ module.exports = {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
-                    SYSTEM.LOG.error(error);
+                    SERVICE.DefaultRouterService.LOG.error(error);
                     res.json({
                         success: false,
                         code: 'ERR001',

@@ -58,7 +58,7 @@ module.exports = {
         this.LOG.debug('Applying pre processors in models');
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
-        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preProcessor) {
             SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors([].concat(interceptors.preProcessor), {
                 request: request,
@@ -139,7 +139,7 @@ module.exports = {
         this.LOG.debug('Applying post processors in models');
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
-        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.postProcessor) {
             SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors([].concat(interceptors.postProcessor), {
                 request: request,

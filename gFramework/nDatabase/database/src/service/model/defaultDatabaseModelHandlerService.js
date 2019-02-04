@@ -38,7 +38,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let moduleObject = NODICS.getModule(moduleName);
             if (moduleObject.models && moduleObject.models[tntCode]) {
-                SYSTEM.LOG.debug('Deleting all models for tenant: ' + tenant + ' from module: ' + moduleName);
+                this.LOG.debug('Deleting all models for tenant: ' + tenant + ' from module: ' + moduleName);
                 delete moduleObject.models[tntCode];
             }
             resolve(true);
@@ -48,7 +48,6 @@ module.exports = {
     buildModelsForTenant: function (tntCode = 'default') {
         let _self = this;
         return new Promise((resolve, reject) => {
-            console.log(NODICS.getActiveModules());
             _self.buildModelsForModules(tntCode, NODICS.getActiveModules()).then(success => {
                 resolve(success);
             }).catch(error => {
@@ -60,20 +59,20 @@ module.exports = {
     buildModelsForModules: function (tntCode, modules) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            let moduleName = modules.shift();
-            _self.buildModelsForModule(tntCode, moduleName).then(success => {
-                if (modules.length > 0) {
+            if (modules.length > 0) {
+                let moduleName = modules.shift();
+                _self.buildModelsForModule(tntCode, moduleName).then(success => {
                     _self.buildModelsForModules(tntCode, modules).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
-                } else {
-                    resolve(success);
-                }
-            }).catch(error => {
-                reject(error);
-            });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
         });
     },
 
@@ -88,15 +87,14 @@ module.exports = {
                 if (!moduleObject.models[tntCode]) {
                     moduleObject.models[tntCode] = {};
                 }
-                let options = {
+                _self.buildModels({
                     tntCode: tntCode,
                     moduleName: moduleName,
                     moduleObject: moduleObject,
                     dataBase: SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(moduleName, tntCode),
                     schemas: Object.keys(moduleObject.rawSchema),
 
-                };
-                _self.buildModels(options).then(success => {
+                }).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
@@ -208,6 +206,26 @@ module.exports = {
                 let response = {};
                 response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Invalid schema value to update validator';
                 reject(response);
+            }
+        });
+    },
+
+    createIndexes: function (model, cleanOrphan) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (model) {
+                    SERVICE[model.dataBase.getOptions().modelHandler].createIndexes(model, cleanOrphan).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    let response = {};
+                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Invalid schema value to update indexes';
+                    reject(response);
+                }
+            } catch (error) {
+                reject(error);
             }
         });
     },

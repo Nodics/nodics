@@ -58,6 +58,41 @@ module.exports = {
         }
     },
 
+    getURL: function (nodeConfig, secured) {
+        if (secured) {
+            return 'https://' +
+                nodeConfig.getHttpHost() +
+                ':' +
+                nodeConfig.getHttpPort();
+        } else {
+            return 'http://' +
+                nodeConfig.getHttpHost() +
+                ':' +
+                nodeConfig.getHttpPort();
+        }
+    },
+
+    prepareUrl: function (options) {
+        let url = '';
+        try {
+            let moduleConfig = this.getModuleServerConfig(options.moduleName);
+            let contextRoot = moduleConfig.getOptions().contextRoot || CONFIG.get('server').options.contextRoot;
+            if (options.nodeId && options.nodeId > 0) {
+                if (moduleConfig.getNode(options.nodeId)) {
+                    url = this.getURL(moduleConfig.getNode(options.nodeId));
+                } else {
+                    this.LOG.error('Invalid node id : ' + options.nodeId + ' while preparing URL for module : ' + options.moduleName);
+                }
+            } else {
+                url = this.getURL(moduleConfig.getAbstractServer());
+            }
+            url += '/' + contextRoot + '/' + options.moduleName;
+        } catch (error) {
+            this.LOG.error('While Preparing URL for :', options.moduleName, ' : ', error);
+        }
+        return url;
+    },
+
     registerRouter: function () {
         let _self = this;
         let modules = NODICS.getModules();

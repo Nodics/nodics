@@ -94,6 +94,7 @@ module.exports = {
         } else if (!this.searchEngines[moduleName]) {
             this.searchEngines[moduleName] = {};
         }
+        console.log(moduleName, ' --------------------------- ', tenant);
         this.searchEngines[moduleName][tenant] = searchEngine;
     },
 

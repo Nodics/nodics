@@ -8,8 +8,6 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-const infra = require('./bin/infra');
-
 
 module.exports = {
     /**
@@ -41,28 +39,28 @@ module.exports = {
 
     common: function () {
         if (!CONFIG || !SYSTEM || !NODICS) {
-            SYSTEM.LOG.error("System initialization error: configuration initializer failure.");
+            NODICS.LOG.error("System initialization error: configuration initializer failure.");
             process.exit(1);
         }
 
-        SYSTEM.LOG.info('Starting Utils loader process');
-        SYSTEM.loadFiles('/src/utils/utils.js', global.UTILS);
+        NODICS.LOG.info('Starting Utils loader process');
+        NODICS.loadFiles('/src/utils/utils.js', global.UTILS);
 
-        SYSTEM.LOG.info('Starting Enums loader process');
-        SYSTEM.loadEnums();
+        NODICS.LOG.info('Starting Enums loader process');
+        NODICS.loadEnums();
 
     },
 
     start: function () {
         this.common();
 
-        SYSTEM.LOG.info('Staring Classes loader process');
-        SYSTEM.loadClasses();
+        NODICS.LOG.info('Staring Classes loader process');
+        NODICS.loadClasses();
     },
 
     cleanAll: function () {
         this.common();
-        SYSTEM.cleanModules();
+        NODICS.cleanModules();
     },
 
     buildAll: function () {

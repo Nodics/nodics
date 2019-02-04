@@ -29,12 +29,17 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             this.LOG.info('Starting database configuration process');
-            SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnections().then(() => {
-                return SERVICE.DefaultDatabaseConnectionHandlerService.isInitRequired();
-            }).then(() => {
+            SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection().then(() => {
                 return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema();
             }).then(() => {
+                NODICS.addTenant('default');
                 return SERVICE.DefaultDatabaseModelHandlerService.buildModelsForTenant();
+            }).then(() => {
+                return new Promise((resolve, reject) => {
+                    this.LOG.debug('Collecting database interceptors definitions');
+                    SERVICE.DefaultDatabaseConfigurationService.setInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/interceptors.js'));
+                    resolve(true);
+                });
             }).then(() => {
                 NODICS.addAPIKey('default', CONFIG.get('defaultAPIKey'),
                     CONFIG.get('profile') ? CONFIG.get('profile').defaultAuthDetail : {});

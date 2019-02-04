@@ -9,8 +9,6 @@
 
  */
 
-const service = require('./bin/serviceBuilder');
-
 module.exports = {
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
@@ -34,23 +32,11 @@ module.exports = {
         });
     },
 
-    genService: function () {
-        let _self = this;
-        SYSTEM.LOG.info('Starting Service Generation process');
-        return service.gen().then(success => { }).catch(error => {
-            _self.LOG.error(error);
-        });
-    },
-
-    loadService: function () {
-        let _self = this;
-        SYSTEM.LOG.info('Starting Service Generation process');
-        return service.loadService().then(success => {
-            let statusScript = {};
-            SYSTEM.loadFiles('/src/utils/statusDefinitions.js', statusScript);
-            SERVICE.DefaultStatusService.loadStatus(statusScript);
-        }).catch(error => {
-            _self.LOG.error(error);
-        });
-    }
+    // genService: function () {
+    //     let _self = this;
+    //     NODICS.LOG.info('Starting Service Generation process');
+    //     return service.gen().then(success => { }).catch(error => {
+    //         _self.LOG.error(error);
+    //     });
+    // }
 };

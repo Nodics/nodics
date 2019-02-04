@@ -291,7 +291,7 @@ module.exports = function () {
         if (channel === 'master' || channel === 'test') {
             _activeChannel = channel;
         } else {
-            SYSTEM.LOG.error('Given channel not supported here : ', channel);
+            NODICS.LOG.error('Given channel not supported here : ', channel);
             process.exit(1);
         }
     };

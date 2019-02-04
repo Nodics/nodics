@@ -35,33 +35,33 @@ module.exports = {
     },
 
 
-    loadDatabase: function () {
-        SYSTEM.LOG.info('Starting database configuration process');
-        return new Promise((resolve, reject) => {
-            // conHandler.createConnections().then(success => {
-            //     SYSTEM.buildSchemas();
-            //     let tenants = ['default'];
-            //     NODICS.addTenant('default');
-            //     SYSTEM.buildModelsForTenants(tenants).then(success => {
-            //         SYSTEM.prepareInterceptors();
-            //         NODICS.addAPIKey('default', CONFIG.get('defaultAPIKey'),
-            //             CONFIG.get('profile') ? CONFIG.get('profile').defaultAuthDetail : {});
-            //         resolve(true);
-            //     }).catch(error => {
-            //         reject(error);
-            //     });
-            // }).catch(error => {
-            //     reject(error);
-            // });
-            resolve(true);
-        });
-    },
+    // loadDatabase: function () {
+    //     NODICS.LOG.info('Starting database configuration process');
+    //     return new Promise((resolve, reject) => {
+    //         // conHandler.createConnections().then(success => {
+    //         //     NODICS.buildSchemas();
+    //         //     let tenants = ['default'];
+    //         //     NODICS.addTenant('default');
+    //         //     NODICS.buildModelsForTenants(tenants).then(success => {
+    //         //         NODICS.prepareInterceptors();
+    //         //         NODICS.addAPIKey('default', CONFIG.get('defaultAPIKey'),
+    //         //             CONFIG.get('profile') ? CONFIG.get('profile').defaultAuthDetail : {});
+    //         //         resolve(true);
+    //         //     }).catch(error => {
+    //         //         reject(error);
+    //         //     });
+    //         // }).catch(error => {
+    //         //     reject(error);
+    //         // });
+    //         resolve(true);
+    //     });
+    // },
 
-    loadOnlySchema: function () {
-        SYSTEM.LOG.info('Starting database configuration process');
-        return new Promise((resolve, reject) => {
-            SYSTEM.buildSchemas();
-            resolve(true);
-        });
-    },
+    // loadOnlySchema: function () {
+    //     NODICS.LOG.info('Starting database configuration process');
+    //     return new Promise((resolve, reject) => {
+    //         NODICS.buildSchemas();
+    //         resolve(true);
+    //     });
+    // },
 };

@@ -9,8 +9,6 @@
 
  */
 
-const daoGenerator = require('./bin/daoGenerator');
-
 module.exports = {
     /**
     * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
@@ -34,17 +32,10 @@ module.exports = {
         });
     },
 
-    genDao: function () {
-        SYSTEM.LOG.info('Starting Dao generation process.');
-        return daoGenerator.gen().then(success => { }).catch(error => {
-            SYSTEM.LOG.error(error);
-        });
-    },
-
-    loadDao: function () {
-        SYSTEM.LOG.info('Starting Dao generation process.');
-        return daoGenerator.loadDao().then(success => { }).catch(error => {
-            SYSTEM.LOG.error(error);
-        });
-    }
+    // genDao: function () {
+    //     NODICS.LOG.info('Starting Dao generation process.');
+    //     return daoGenerator.gen().then(success => { }).catch(error => {
+    //         NODICS.LOG.error(error);
+    //     });
+    // }
 };

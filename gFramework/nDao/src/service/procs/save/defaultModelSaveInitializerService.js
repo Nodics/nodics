@@ -252,7 +252,7 @@ module.exports = {
         this.LOG.debug('Applying pre save model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
-        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preSave) {
             SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors([].concat(interceptors.preSave), {
                 collection: request.collection,
@@ -264,7 +264,6 @@ module.exports = {
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                console.log(error);
                 process.error(request, response, {
                     success: false,
                     code: 'ERR_FIND_00004',
@@ -414,7 +413,7 @@ module.exports = {
         this.LOG.debug('Applying post save model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
-        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.postSave) {
             SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors([].concat(interceptors.postSave), {
                 collection: request.collection,

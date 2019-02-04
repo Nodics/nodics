@@ -27,7 +27,7 @@ module.exports = {
                         if (models) {
                             let model = models[UTILS.createModelName(schemaName)];
                             if (model) {
-                                allPromise.push(SYSTEM.createIndexes(model));
+                                allPromise.push(SERVICE.DefaultDatabaseModelHandlerService.createIndexes(model));
                             }
                         }
                     });
@@ -73,7 +73,7 @@ module.exports = {
                         if (models) {
                             _.each(models, (model, modelName) => {
                                 if (model) {
-                                    allPromise.push(SYSTEM.createIndexes(model));
+                                    allPromise.push(SERVICE.DefaultDatabaseModelHandlerService.createIndexes(model));
                                 }
                             });
                         }
@@ -116,7 +116,7 @@ module.exports = {
                             if (models) {
                                 _.each(models, (model, modelName) => {
                                     if (model) {
-                                        allPromise.push(SYSTEM.createIndexes(model));
+                                        allPromise.push(SERVICE.DefaultDatabaseModelHandlerService.createIndexes(model));
                                     }
                                 });
                             }

@@ -26,7 +26,7 @@ module.exports = {
                         if (models) {
                             let model = models[UTILS.createModelName(schemaName)];
                             if (model) {
-                                allPromise.push(SYSTEM.updateValidator(model));
+                                allPromise.push(SERVICE.DefaultDatabaseModelHandlerService.updateValidator(model));
                             }
                         }
                     });
@@ -60,7 +60,7 @@ module.exports = {
                         if (models) {
                             _.each(models, (model, modelName) => {
                                 if (model) {
-                                    allPromise.push(SYSTEM.updateValidator(model));
+                                    allPromise.push(SERVICE.DefaultDatabaseModelHandlerService.updateValidator(model));
                                 }
                             });
                         }
@@ -104,7 +104,7 @@ module.exports = {
                             if (models) {
                                 _.each(models, (model, modelName) => {
                                     if (model) {
-                                        allPromise.push(SYSTEM.updateValidator(model));
+                                        allPromise.push(SERVICE.DefaultDatabaseModelHandlerService.updateValidator(model));
                                     }
                                 });
                             }

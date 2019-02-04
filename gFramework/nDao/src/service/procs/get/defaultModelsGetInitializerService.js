@@ -113,10 +113,10 @@ module.exports = {
     },
 
     applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post get model interceptors');
+        this.LOG.debug('Applying pre get model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
-        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preGet) {
             SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors([].concat(interceptors.preGet), {
                 collection: request.collection,
@@ -188,7 +188,7 @@ module.exports = {
         this.LOG.debug('Applying post model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
-        let interceptors = NODICS.getInterceptors(moduleName, modelName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.postGet) {
             SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors([].concat(interceptors.postGet), {
                 collection: request.collection,
