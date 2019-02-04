@@ -1,6 +1,6 @@
 {
     "name": "nodicsDefaultServer",
-    "index": "1000.1.5",
+    "index": "1000.0.5",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and nodicsDefaultServer point to start nodics",
     "homepage": "http://www.nodics.com/",

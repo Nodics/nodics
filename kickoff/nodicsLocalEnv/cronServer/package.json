@@ -1,6 +1,6 @@
 {
     "name": "cronServer",
-    "index": "1000.1.2",
+    "index": "1000.0.2",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and cronServer point to start nodics",
     "homepage": "http://www.nodics.com/",

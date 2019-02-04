@@ -32,6 +32,13 @@ module.exports = {
             'dataImport',
             'jsonImport',
             'csvImport',
+            'xlsImport',
+            'nImport',
+            'dataExport',
+            'jsonExport',
+            'csvExport',
+            'xlsExport',
+            'nExport',
             'ntest',
             'system'
         ]

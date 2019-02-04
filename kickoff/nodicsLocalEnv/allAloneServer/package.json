@@ -1,6 +1,6 @@
 {
     "name": "allAloneServer",
-    "index": "1000.1.1",
+    "index": "1000.0.1",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and allAloneServer point to start nodics",
     "homepage": "http://www.nodics.com/",

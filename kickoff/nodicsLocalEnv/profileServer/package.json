@@ -1,6 +1,6 @@
 {
     "name": "profileServer",
-    "index": "1000.1.6",
+    "index": "1000.0.6",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and profileServer point to start nodics",
     "homepage": "http://www.nodics.com/",

@@ -1,6 +1,6 @@
 {
     "name": "adminServer",
-    "index": "1000.1.0",
+    "index": "1000.0.0",
     "publish": false,
     "description": "Nodics applicaion module. It will hold all configuration and adminServer point to start nodics",
     "homepage": "http://www.nodics.com/",
