@@ -86,7 +86,7 @@ module.exports = {
                     masterDatabase.setConnectionOptions(dbConfig.master.options);
                     if (SERVICE[dbConfig.options.connectionHandler] &&
                         SERVICE[dbConfig.options.connectionHandler].createConnection && typeof SERVICE[dbConfig.options.connectionHandler].createConnection === 'function') {
-                        _self.LOG.info('Connecting data for tenant: ' + tntCode);
+                        _self.LOG.info('Connecting database for tenant: ' + tntCode);
                         SERVICE[dbConfig.options.connectionHandler].createConnection(dbConfig.master).then(success => {
                             masterDatabase.setConnection(success.connection);
                             masterDatabase.setCollections(success.collections);

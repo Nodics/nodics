@@ -77,7 +77,6 @@ module.exports = {
                 });
             }).then(() => {
                 return new Promise((resolve, reject) => {
-                    console.log('-------------------------------------------------');
                     SERVICE.DefaultEnterpriseHandlerService.buildEnterprises().then(success => {
                         resolve(true);
                     }).catch(error => {
@@ -96,7 +95,7 @@ module.exports = {
 
     start: function (options) {
         this.initFramework(options).then(success => {
-            NODICS.startServers().then(success => {
+            SERVICE.DefaultRouterService.startServers().then(success => {
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');
                 NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');

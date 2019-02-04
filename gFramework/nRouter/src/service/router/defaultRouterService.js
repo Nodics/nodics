@@ -220,5 +220,77 @@ module.exports = {
                 }
             });
         }
-    }
+    },
+
+    startServers: function () {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                if (CONFIG.get('server').options.runAsDefault) {
+                    if (!NODICS.getModules().default || !NODICS.getModules().default.app) {
+                        _self.LOG.error('Server configurations has not be initialized. Please verify.');
+                        process.exit(CONFIG.get('errorExitCode'));
+                    }
+                    let moduleConfig = _self.getModuleServerConfig('default');
+                    const httpPort = moduleConfig.getServer().getHttpPort();
+                    const httpsPort = moduleConfig.getServer().getHttpsPort();
+                    _self.registerListenEvents('default', httpPort, false, http.createServer(NODICS.getModules().default.app)).listen(httpPort);
+                    _self.registerListenEvents('default', httpsPort, true, https.createServer(NODICS.getModules().default.app)).listen(httpsPort);
+                    moduleConfig.setIsServerRunning(true);
+                    resolve(true);
+                } else {
+                    try {
+                        _.each(NODICS.getModules(), function (value, moduleName) {
+                            if (value.metaData && value.metaData.publish) {
+                                let app = {};
+                                let moduleConfig;
+                                if (_self.getModulesPool().isAvailableModuleConfig(moduleName)) {
+                                    moduleConfig = _self.getModuleServerConfig(moduleName);
+                                    app = value.app;
+                                } else {
+                                    moduleConfig = _self.getModuleServerConfig('default');
+                                    app = NODICS.getModules().default.app;
+                                }
+                                const httpPort = moduleConfig.getServer().getHttpPort();
+                                const httpsPort = moduleConfig.getServer().getHttpsPort();
+                                if (!httpPort) {
+                                    _self.LOG.error('Please define listening PORT for module: ', moduleName);
+                                    process.exit(CONFIG.get('errorExitCode'));
+                                }
+                                if (!moduleConfig.isServerRunning()) {
+                                    _self.registerListenEvents(moduleName, httpPort, false, http.createServer(app)).listen(httpPort);
+                                    _self.registerListenEvents(moduleName, httpsPort, true, https.createServer(app)).listen(httpsPort);
+                                    moduleConfig.setIsServerRunning(true);
+                                }
+                            }
+                        });
+                        resolve(true);
+                    } catch (err) {
+                        reject(err);
+                    }
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    registerListenEvents: function (moduleName, port, isSecure, server) {
+        let _self = this;
+        server.on('error', function (error) {
+            if (isSecure) {
+                _self.LOG.error('Failed to start HTTPS Server for module : ', moduleName, ' on PORT : ', port);
+            } else {
+                _self.LOG.error('Failed to start HTTP Server for module : ' + moduleName + ' on PORT : ' + port);
+            }
+        });
+        server.on('listening', function () {
+            if (isSecure) {
+                _self.LOG.info('Starting HTTPS Server for module : ', moduleName, ' on PORT : ', port);
+            } else {
+                _self.LOG.info('Starting HTTP Server for module : ', moduleName, ' on PORT : ', port);
+            }
+        });
+        return server;
+    },
 };

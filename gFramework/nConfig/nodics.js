@@ -20,7 +20,6 @@ const enumService = require('./src/service/defaultEnumService');
 const moduleService = require('./src/service/defaultModuleInitializerService');
 const fileLoader = require('./src/service/defaultFilesLoaderService');
 const classesLoader = require('./src/service/defaultClassesHandlerService');
-const system = require('./bin/system');
 
 module.exports = {
     /**
@@ -46,23 +45,23 @@ module.exports = {
     },
 
     initUtilities: function (options) {
-        return system.initUtilities(options);
+        return initService.initUtilities(options);
     },
 
     loadModules: function (options) {
-        return system.loadModules(options);
+        return initService.loadModules(options);
     },
 
     initEntities: function (options) {
-        return system.initEntities(options);
+        return initService.initEntities(options);
     },
 
     finalizeEntities: function (options) {
-        return system.finalizeEntities(options);
+        return initService.finalizeEntities(options);
     },
 
     finalizeModules: function (options) {
-        return system.finalizeModules(options);
+        return initService.finalizeModules(options);
     },
 
     prepareStart: function (options) {

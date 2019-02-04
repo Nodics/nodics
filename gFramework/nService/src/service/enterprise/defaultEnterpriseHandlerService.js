@@ -105,7 +105,6 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 _self.fetchEnterprise().then(success => {
-                    console.log('==========: ', success);
                     _self.buildEnterprise(success).then(success => {
                         resolve({
                             success: true,
@@ -247,7 +246,9 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        _self.LOG.info('Enterprise: ' + enterprise.code + ' is not active or already running');
+                        if (enterprise.code != 'default') {
+                            _self.LOG.info('Enterprise: ' + enterprise.code + ' is not active or already running');
+                        }
                         _self.buildEnterprise(enterprises).then(success => {
                             resolve(true);
                         }).catch(error => {
