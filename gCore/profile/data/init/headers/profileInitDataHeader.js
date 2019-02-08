@@ -13,8 +13,8 @@ module.exports = {
     profile: {
         defaultTenant: {
             options: {
-                modelName: 'tenant',
-                operation: 'save', //save, update and saveOrUpdate
+                modelName: 'tenant', //put type name, if want to push data into search
+                operation: 'save', //save, update and saveOrUpdate, put doSave, if data needs to be pushed into serach
                 tenant: 'default',
                 dataFilePrefix: 'defaultTenantData'
             },

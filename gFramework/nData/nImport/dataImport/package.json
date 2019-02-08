@@ -1,6 +1,6 @@
 {
     "name": "dataImport",
-    "index": "1.11.0.0",
+    "index": "1.11.1.0",
     "publish": false,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataImport",
     "homepage": "http://www.nodics.com/",

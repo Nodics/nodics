@@ -1,6 +1,6 @@
 {
     "name": "csvImport",
-    "index": "1.11.0.2",
+    "index": "1.11.1.2",
     "publish": false,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to csvImport",
     "homepage": "http://www.nodics.com/",

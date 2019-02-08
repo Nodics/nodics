@@ -1,11 +1,11 @@
 {
-    "name": "xlsExport",
-    "index": "1.11.2.3",
+    "name": "dataCore",
+    "index": "1.11.0",
     "publish": false,
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to xlsExport",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataCore",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "xlsExport"
+        "dataCore"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

@@ -1,6 +1,6 @@
 {
     "name": "nExport",
-    "index": "1.11.1.99",
+    "index": "1.11.2.99",
     "publish": false,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to export",
     "homepage": "http://www.nodics.com/",

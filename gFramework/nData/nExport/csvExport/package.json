@@ -1,6 +1,6 @@
 {
     "name": "csvExport",
-    "index": "1.11.1.2",
+    "index": "1.11.2.2",
     "publish": false,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to csvExport",
     "homepage": "http://www.nodics.com/",

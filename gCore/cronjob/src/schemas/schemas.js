@@ -72,12 +72,6 @@ module.exports = {
                     required: true,
                     description: 'Number of trigger expression'
                 },
-                active: {
-                    type: 'bool',
-                    required: true,
-                    default: true,
-                    description: 'Required to define if job is active'
-                },
                 start: {
                     type: 'date',
                     required: true,

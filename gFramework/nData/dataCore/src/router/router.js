@@ -10,21 +10,5 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        data: [
-            'nData',
-            'dataCore',
-            'dataImport',
-            'jsonImport',
-            'csvImport',
-            'xlsImport',
-            'nImport',
-            'dataExport',
-            'jsonExport',
-            'csvExport',
-            'xlsExport',
-            'nExport',
-        ]
-    }
 
 };

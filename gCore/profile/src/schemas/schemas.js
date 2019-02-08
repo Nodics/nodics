@@ -26,14 +26,6 @@ module.exports = {
                 enterpriseCode: {
                     required: false
                 },
-                active: {
-                    type: 'bool',
-                    required: true,
-                    description: 'Flag to check if tenant is still active',
-                    searchOptions: {
-                        enabled: true, // default is false
-                    }
-                },
                 properties: {
                     type: 'object',
                     required: false,
@@ -111,12 +103,6 @@ module.exports = {
                     required: true,
                     description: 'PastalCode of the address'
                 },
-                active: {
-                    type: 'bool',
-                    required: true,
-                    default: true,
-                    description: 'Flag to check if current address is active'
-                },
                 contacts: {
                     type: 'array',
                     required: false,
@@ -155,13 +141,7 @@ module.exports = {
                     required: true,
                     default: 0
                 },
-                active: {
-                    type: 'bool',
-                    required: true,
-                    default: false,
-                    description: 'Flag to check if current contact is active'
-                },
-            }
+            },
         },
 
         enterprise: {
@@ -233,15 +213,6 @@ module.exports = {
                     type: 'string',
                     required: true,
                     description: 'Required Code of associated tenant',
-                    searchOptions: {
-                        enabled: true, // default is false
-                        type: 'string'
-                    }
-                },
-                active: {
-                    type: 'bool',
-                    required: true,
-                    description: 'Flag to check if tenant is still active',
                     searchOptions: {
                         enabled: true, // default is false
                         type: 'string'
@@ -428,12 +399,6 @@ module.exports = {
                     type: 'string',
                     required: true,
                     description: 'Required password for the login'
-                },
-                active: {
-                    type: 'bool',
-                    required: true,
-                    default: true,
-                    description: 'Required flag to check if user in active currently'
                 },
                 userGroups: {
                     type: 'array',
