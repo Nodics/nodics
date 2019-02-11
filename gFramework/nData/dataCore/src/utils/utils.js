@@ -8,7 +8,11 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+var mkdirp = require('mkdirp');
 
 module.exports = {
 
+    ensureExists: function (path, options) {
+        return mkdirp.sync(path, options || {});
+    }
 };

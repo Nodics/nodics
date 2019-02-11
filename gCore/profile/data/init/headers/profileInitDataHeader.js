@@ -16,7 +16,8 @@ module.exports = {
                 modelName: 'tenant', //put type name, if want to push data into search
                 operation: 'save', //save, update and saveOrUpdate, put doSave, if data needs to be pushed into serach
                 tenant: 'default',
-                dataFilePrefix: 'defaultTenantData'
+                dataFilePrefix: 'defaultTenantData',
+                processPipeline: 'defaultDataFinalizerProcessPipeline'
             },
             query: {
                 //addresses.code: '$code'

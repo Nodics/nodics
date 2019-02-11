@@ -157,6 +157,7 @@ module.exports = {
                     });
                 });
             });
+            // console.log(this.interceptors);
         } catch (error) {
             this.LOG.error(error);
         }

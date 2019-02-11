@@ -60,24 +60,5 @@ module.exports = {
     getFileNameWithoutExtension: function (filePath) {
         let fileName = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf("."));
         return fileName.toUpperCaseFirstChar();
-    },
-
-    //===================================================================
-
-    /*subFolders: function (folder) {
-        return fs.readdirSync(folder)
-            .filter(subFolder => fs.statSync(path.join(folder, subFolder)).isDirectory())
-            .filter(subFolder => subFolder !== 'node_modules' && subFolder !== 'templates' && subFolder[0] !== '.')
-            .map(subFolder => path.join(folder, subFolder));
-    },
-
-    collectModulesList: function (folder, modulePathList) {
-        const hasPackageJson = fs.existsSync(path.join(folder, 'package.json'));
-        if (hasPackageJson) {
-            modulePathList.push(folder);
-        }
-        for (let subFolder of this.subFolders(folder)) {
-            this.collectModulesList(subFolder, modulePathList);
-        }
-    }*/
+    }
 };
