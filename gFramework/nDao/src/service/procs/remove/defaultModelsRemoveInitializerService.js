@@ -59,12 +59,14 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preRemove) {
-            SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors([].concat(interceptors.preRemove), {
+            let interceptorRequest = {
                 collection: request.collection,
                 tenant: request.tenant,
                 options: request.options || {},
                 query: request.query
-            }).then(success => {
+            };
+            let interceptorResponse = {};
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preRemove), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -218,12 +220,14 @@ module.exports = {
             let modelName = request.collection.modelName;
             let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
             if (interceptors && interceptors.postRemove) {
-                SERVICE.DefaultInterceptorHandlerService.executeRemoveInterceptors([].concat(interceptors.postRemove), {
+                let interceptorRequest = {
                     collection: request.collection,
                     tenant: request.tenant,
                     query: request.query,
                     result: response.success.result
-                }).then(success => {
+                };
+                let interceptorResponse = {};
+                SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postRemove), interceptorRequest, interceptorResponse).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, {

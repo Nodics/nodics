@@ -39,11 +39,8 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 _self.loadSearchSchemaFromSchema();
-                console.log('1--------------------');
                 _self.loadSearchSchema();
-                console.log('2--------------------');
                 _self.loadSearchSchemaFromDatabase().then(success => {
-                    console.log('3--------------------');
                     resolve(true);
                 }).catch(error => {
                     reject(error);

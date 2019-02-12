@@ -254,14 +254,16 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preSave) {
-            SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors([].concat(interceptors.preSave), {
+            let interceptorRequest = {
                 collection: request.collection,
                 tenant: request.tenant,
                 options: request.options,
                 query: request.query,
                 originalModel: request.model,
                 model: request.model
-            }).then(success => {
+            };
+            let interceptorResponse = {};
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preSave), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -415,13 +417,15 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.postSave) {
-            SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors([].concat(interceptors.postSave), {
+            let interceptorRequest = {
                 collection: request.collection,
                 tenant: request.tenant,
                 query: request.query,
                 originalModel: request.model,
                 model: response.model.result
-            }).then(success => {
+            };
+            let interceptorResponse = {};
+            SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors([].concat(interceptors.postSave), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {

@@ -9,6 +9,12 @@
 
  */
 
+const StreamArray = require('stream-json/streamers/StreamArray');
+const path = require('path');
+const fs = require('fs');
+var sizeof = require('object-sizeof');
+
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,41 +39,44 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        request.outputPath.dataType = 'externalFile'; // value could be here as 'local', 'external', 'direct'
-        process.nextSuccess(request, response);
-    },
-
-    prepareFileType: function (request, response, process) {
-        request.outputPath.fileType = request.inputFileName.substring(request.inputFileName.lastIndexOf('.') + 1, request.inputFileName.length);
-        process.nextSuccess(request, response);
-    },
-
-    redirectToFileTypeProcess: function (request, response, process) {
-        let fileTypeProcess = CONFIG.get('data').fileTypeProcess;
-        if (fileTypeProcess) {
-            this.LOG.debug('Processing data for file type: ', request.outputPath.fileType);
-            SERVICE.DefaultPipelineService.start(fileTypeProcess, request, {}).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
+        this.LOG.debug('Validating request to process JSON file');
+        if (!request.dataObject) {
+            process.error(request, response, 'Invalid data object to process');
         } else {
-            process.error(request, response, 'Could not find file type process for type: ' + request.outputPath.fileType);
+            process.nextSuccess(request, response);
         }
     },
 
-    writeDataFile: function (request, response, process) {
-        this.LOG.debug('Staring file write process for local data import');
-
+    executeDataProcessor: function (request, response, process) {
+        this.LOG.debug('Applying data process interceptors');
+        let moduleName = request.header.options.moduleName;
+        let modelName = request.header.options.modelName;
+        let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(moduleName, modelName);
+        if (interceptors && interceptors.processor) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.processor), {
+                dataObject: request.dataObject
+            }).then(success => {
+                request.dataObject = success;
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00004',
+                    error: error
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
+
+
     handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
+        process.resolve(response);
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        process.reject(response.errors);
+        process.reject(response);
     }
 };

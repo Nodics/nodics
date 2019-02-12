@@ -70,13 +70,15 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preUpdate) {
-            SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors([].concat(interceptors.preUpdate), {
+            let interceptorRequest = {
                 collection: request.collection,
                 tenant: request.tenant,
                 options: request.options || {},
                 query: request.query,
                 model: request.model
-            }).then(success => {
+            };
+            let interceptorResponse = {};
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preUpdate), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -230,13 +232,15 @@ module.exports = {
             let modelName = request.collection.modelName;
             let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
             if (interceptors && interceptors.postUpdate) {
-                SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors([].concat(interceptors.postUpdate), {
+                let interceptorRequest = {
                     collection: request.collection,
                     tenant: request.tenant,
                     query: request.query,
                     model: request.model,
                     result: response.success.result
-                }).then(success => {
+                };
+                let interceptorResponse = {};
+                SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors([].concat(interceptors.postUpdate), interceptorRequest, interceptorResponse).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, {

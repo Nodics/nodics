@@ -25,7 +25,7 @@ module.exports = {
                 handler: 'DefaultEventSplitInterceptorService.eventSplitPostSave'
             },
             eventSplitPostProcessor: {
-                type: 'postProcessor',
+                type: 'postSaveProcessor',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultEventSplitInterceptorService.handleSyncEvents'

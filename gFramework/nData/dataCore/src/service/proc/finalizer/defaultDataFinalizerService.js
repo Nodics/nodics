@@ -58,14 +58,14 @@ module.exports = {
         if (request.dataObject && request.dataObject instanceof Array && request.dataObject.length > 0) {
             this.LOG.debug('Redirecting to finalize local data');
             response.targetNode = 'finalizeLocalData';
-            process.nextSuccess(request, response);
         } else if (request.inputFileName) {
             this.LOG.debug('Redirecting to finalize external file data');
             response.targetNode = 'finalizeExternalFileData';
-            process.nextSuccess(request, response);
         } else {
-            process.error(request, response, 'Please validate request. nither found dataObject nor filePath');
+            this.LOG.debug('Redirecting to finalize external direct data');
+            response.targetNode = 'finalizeExternalDirectData';
         }
+        process.nextSuccess(request, response);
     },
 
     handleSucessEnd: function (request, response, process) {

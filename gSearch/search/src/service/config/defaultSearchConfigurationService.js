@@ -17,6 +17,7 @@ module.exports = {
     searchSchema: {},
     rawSearchModel: {},
     indexesList: [],
+    interceptors: {},
 
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -94,7 +95,6 @@ module.exports = {
         } else if (!this.searchEngines[moduleName]) {
             this.searchEngines[moduleName] = {};
         }
-        console.log(moduleName, ' --------------------------- ', tenant);
         this.searchEngines[moduleName][tenant] = searchEngine;
     },
 
@@ -172,5 +172,20 @@ module.exports = {
             delete this.searchSchema[moduleName][tenant];
         }
         return true;
+    },
+
+    setInterceptors: function (interceptors) {
+        this.interceptors = interceptors;
+
+    },
+
+    getInterceptors: function (moduleName, modelName) {
+        if (!this.interceptors[moduleName]) {
+            throw new Error('Invalid module name: ' + moduleName);
+        } else if (!this.interceptors[moduleName][modelName]) {
+            throw new Error('Invalid model name: ' + modelName);
+        } else {
+            return this.interceptors[moduleName][modelName];
+        }
     }
 };

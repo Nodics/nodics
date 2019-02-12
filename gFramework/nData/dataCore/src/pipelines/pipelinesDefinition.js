@@ -19,7 +19,7 @@ module.exports = {
             processData: {
                 type: 'function',
                 handler: 'DefaultDataFinalizerProcessService.processData',
-                success: 'prepareOutputURL'
+                success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
@@ -54,7 +54,8 @@ module.exports = {
                 handler: 'DefaultDataFinalizerService.redirectToImportType',
                 success: {
                     finalizeLocalData: 'finalizeLocalData',
-                    finalizeExternalFileData: 'finalizeExternalFileData'
+                    finalizeExternalFileData: 'finalizeExternalFileData',
+                    finalizeExternalDirectData: 'finalizeExternalDirectData'
                 }
             },
             finalizeLocalData: {
@@ -64,7 +65,12 @@ module.exports = {
             },
             finalizeExternalFileData: {
                 type: 'process',
-                handler: 'finalizeExternalDataInitializerPipeline',
+                handler: 'finalizeExternalFileDataInitializerPipeline',
+                success: 'successEnd'
+            },
+            finalizeExternalDirectData: {
+                type: 'process',
+                handler: 'finalizeExternalDirectDataInitializerPipeline',
                 success: 'successEnd'
             },
             successEnd: {
@@ -103,47 +109,6 @@ module.exports = {
             handleError: {
                 type: 'function',
                 handler: 'DefaultLocalDataFinalizerService.handleErrorEnd'
-            }
-        }
-    },
-
-    finalizeExternalDataInitializerPipeline: {
-        startNode: "validateRequest",
-        hardStop: true, //default value is false
-        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultExternalDataFinalizerService.validateRequest',
-                success: 'redirectToImportType'
-            },
-            redirectToImportType: {
-                type: 'function',
-                handler: 'DefaultExternalDataFinalizerService.redirectToImportType',
-                success: {
-                    finalizeExternalFileData: 'finalizeExternalFileData',
-                    finalizeExternalDirectData: 'finalizeExternalDirectData'
-                }
-            },
-            finalizeExternalFileData: {
-                type: 'process',
-                handler: 'finalizeExternalFileDataInitializerPipeline',
-                success: 'successEnd'
-            },
-            finalizeExternalDirectData: {
-                type: 'process',
-                handler: 'finalizeExternalDirectDataInitializerPipeline',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultExternalDataFinalizerService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultExternalDataFinalizerService.handleErrorEnd'
             }
         }
     },

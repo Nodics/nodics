@@ -10,5 +10,59 @@
  */
 
 module.exports = {
+    jsonFileDataInitializerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
 
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultJsonFileDataProcessService.validateRequest',
+                success: 'processDataChunk'
+            },
+            processDataChunk: {
+                type: 'function',
+                handler: 'DefaultJsonFileDataProcessService.processDataChunk',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultJsonFileDataProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultJsonFileDataProcessService.handleErrorEnd'
+            }
+        }
+    },
+
+    JsonDataHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultJsonDataHandlerProcessService.validateRequest',
+                success: 'executeDataProcessor'
+            },
+            executeDataProcessor: {
+                type: 'function',
+                handler: 'DefaultJsonDataHandlerProcessService.executeDataProcessor',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultJsonDataHandlerProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultJsonDataHandlerProcessService.handleErrorEnd'
+            }
+        }
+    },
 };

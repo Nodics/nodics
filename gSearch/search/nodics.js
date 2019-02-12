@@ -29,27 +29,24 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            /*SERVICE.DefaultSearchEngineConnectionHandlerService.createSearchConnections().then(success => {
-                SERVICE.DefaultSearchSchemaHandlerService.prepareSearchSchema().then(success => {
-                    console.log('--------------------');
-                    SERVICE.DefaultSearchModelHandlerService.prepareSearchModels().then(success => {
-                        console.log('--------------------1');
-                        SERVICE.DefaultSearchModelHandlerService.updateIndexesMapping().then(success => {
-                            console.log('--------------------2');
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
+            SERVICE.DefaultSearchEngineConnectionHandlerService.createSearchConnections().then(() => {
+                return SERVICE.DefaultSearchSchemaHandlerService.prepareSearchSchema();
+            }).then(() => {
+                return new Promise((resolve, reject) => {
+                    this.LOG.debug('Collecting search interceptors definitions');
+                    let importInterceptors = SERVICE.DefaultInterceptorHandlerService.buildInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/search/interceptors.js'));
+                    SERVICE.DefaultDataConfigurationService.setImportInterceptors(importInterceptors);
+                    resolve(true);
                 });
+            }).then(() => {
+                return SERVICE.DefaultSearchModelHandlerService.prepareSearchModels();
+            }).then(() => {
+                return SERVICE.DefaultSearchModelHandlerService.updateIndexesMapping();
+            }).then(() => {
+                resolve(true);
             }).catch(error => {
                 reject(error);
-            });*/
-            resolve(true);
+            });
         });
     }
 };

@@ -9,6 +9,12 @@
 
  */
 
+const StreamArray = require('stream-json/streamers/StreamArray');
+const path = require('path');
+const fs = require('fs');
+var sizeof = require('object-sizeof');
+
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,37 +38,15 @@ module.exports = {
         });
     },
 
-    handlePreGet: function (request, responce) {
+    handleDefaultImportProcessor: function (options) {
         return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    },
-    handlePostGet: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
+            resolve(options.data);
         });
     },
 
-    handlePostSave: function (request, responce) {
+    handleEnterpriseImportProcessor: function (options) {
         return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    },
-
-    handlePreRemove: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    },
-    handlePostRemove: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    },
-
-    handlePostUpdate: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
+            resolve(options.data);
         });
     },
 

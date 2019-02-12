@@ -37,7 +37,8 @@ module.exports = {
             }).then(() => {
                 return new Promise((resolve, reject) => {
                     this.LOG.debug('Collecting database interceptors definitions');
-                    SERVICE.DefaultDatabaseConfigurationService.setInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/schema/interceptors.js'));
+                    let interceptors = SERVICE.DefaultInterceptorHandlerService.buildInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/schema/interceptors.js'));
+                    SERVICE.DefaultDatabaseConfigurationService.setInterceptors(interceptors);
                     resolve(true);
                 });
             }).then(() => {

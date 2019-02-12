@@ -10,5 +10,20 @@
  */
 
 module.exports = {
-
+    default: {
+        importDataProcessor: {
+            active: 'true',
+            index: 0,
+            handler: 'DefaultSampleImportInterceptorService.handleDefaultImportProcessor'
+        },
+    },
+    profile: {
+        enterprise: {
+            importEnterpriseDataProcessor: {
+                active: 'true',
+                index: 0,
+                handler: 'DefaultSampleImportInterceptorService.handleEnterpriseImportProcessor'
+            },
+        }
+    }
 };

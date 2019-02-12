@@ -10,5 +10,9 @@
  */
 
 module.exports = {
-
+    data: {
+        fileTypeProcess: {
+            csv: 'csvFileDataFinalizerPipeline'
+        }
+    }
 };

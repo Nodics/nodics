@@ -10,5 +10,12 @@
  */
 
 module.exports = {
-
+    data: {
+        fileTypeProcess: {
+            xls: 'excelFileDataFinalizerPipeline',
+            xlsb: 'excelFileDataFinalizerPipeline',
+            xlsm: 'excelFileDataFinalizerPipeline',
+            xlsx: 'excelFileDataFinalizerPipeline'
+        }
+    }
 };

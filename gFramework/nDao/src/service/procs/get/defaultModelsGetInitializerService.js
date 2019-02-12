@@ -118,12 +118,14 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.preGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors([].concat(interceptors.preGet), {
+            let interceptorRequest = {
                 collection: request.collection,
                 tenant: request.tenant,
                 query: request.query,
                 options: request.options
-            }).then(success => {
+            };
+            let interceptorResponse = {};
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preGet), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -190,13 +192,15 @@ module.exports = {
         let modelName = request.collection.modelName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
         if (interceptors && interceptors.postGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeGetInterceptors([].concat(interceptors.postGet), {
+            let interceptorRequest = {
                 collection: request.collection,
                 tenant: request.tenant,
                 query: request.query,
                 options: request.options,
                 result: response.success
-            }).then(success => {
+            };
+            let interceptorResponse = {};
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postGet), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 response.error = {

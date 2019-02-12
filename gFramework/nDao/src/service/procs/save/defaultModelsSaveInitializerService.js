@@ -59,11 +59,13 @@ module.exports = {
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
-        if (interceptors && interceptors.preProcessor) {
-            SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors([].concat(interceptors.preProcessor), {
+        if (interceptors && interceptors.preSaveProcessor && interceptors.preSaveProcessor.length > 0) {
+            let interceptorRequest = {
                 request: request,
                 response: response
-            }).then(success => {
+            };
+            let interceptorResponse = {};
+            SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors([].concat(interceptors.preSaveProcessor), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -140,11 +142,13 @@ module.exports = {
         let moduleName = request.moduleName || request.collection.moduleName;
         let modelName = request.collection.modelName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
-        if (interceptors && interceptors.postProcessor) {
-            SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors([].concat(interceptors.postProcessor), {
+        if (interceptors && interceptors.postSaveProcessor && interceptors.postSaveProcessor.length > 0) {
+            let interceptorRequest = {
                 request: request,
                 response: response
-            }).then(success => {
+            };
+            let interceptorResponse = {};
+            SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors([].concat(interceptors.postSaveProcessor), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {

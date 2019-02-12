@@ -39,10 +39,6 @@ module.exports = {
         });
     },
 
-    // getDatabases: function () {
-    //     return this.dbs;
-    // },
-
     getDatabaseActiveModules: function () {
         let modules = NODICS.getModules();
         let dbModules = [];
@@ -113,54 +109,7 @@ module.exports = {
     },
 
     setInterceptors: function (interceptors) {
-        try {
-            let defaultInterceptors = _.merge({}, interceptors.default);
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                if (!this.interceptors[moduleName]) {
-                    this.interceptors[moduleName] = {};
-                }
-                let moduleInterceptors = _.merge({}, interceptors[moduleName]);
-                let moduleDefault = _.merge(_.merge({}, defaultInterceptors), moduleInterceptors.default || {});
-                _.each(moduleObject.models, (tenantObject, tenantName) => {
-                    _.each(tenantObject.master, (model, modelName) => {
-                        let modelInterceptors = _.merge({}, moduleInterceptors[model.schemaName]);
-                        if (!this.interceptors[moduleName][modelName]) {
-                            this.interceptors[moduleName][modelName] = {};
-                        }
-                        let interceptorPool = this.interceptors[moduleName][modelName];
-                        _.each(moduleDefault, (interceptor, interceptorName) => {
-                            if (!interceptorPool[interceptor.type]) {
-                                interceptorPool[interceptor.type] = [];
-                            }
-                            interceptorPool[interceptor.type].push(interceptor);
-                        });
-                        _.each(modelInterceptors, (interceptor, interceptorName) => {
-                            if (!interceptorPool[interceptor.type]) {
-                                interceptorPool[interceptor.type] = [];
-                            }
-                            interceptorPool[interceptor.type].push(interceptor);
-                        });
-                    });
-                });
-            });
-            _.each(this.interceptors, (moduleInterceptors, moduleName) => {
-                _.each(moduleInterceptors, (modelInterceptors, modelName) => {
-                    _.each(modelInterceptors, (typeInterceptors, typeName) => {
-                        let indexedInterceptors = UTILS.sortObject(typeInterceptors, 'index');
-                        let list = [];
-                        if (indexedInterceptors) {
-                            _.each(indexedInterceptors, (intList, index) => {
-                                list = list.concat(intList);
-                            });
-                            modelInterceptors[typeName] = list;
-                        }
-                    });
-                });
-            });
-            // console.log(this.interceptors);
-        } catch (error) {
-            this.LOG.error(error);
-        }
+        this.interceptors = interceptors;
 
     },
 
