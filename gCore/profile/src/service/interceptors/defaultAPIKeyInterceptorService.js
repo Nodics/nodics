@@ -10,15 +10,15 @@
  */
 
 module.exports = {
-    generateAPIKey: function (options) {
+    generateAPIKey: function (request, responce) {
         return new Promise((resolve, reject) => {
             try {
-                if ((options.tenant !== 'default' ||
-                    options.model.loginId !== 'apiAdmin' ||
+                if ((request.tenant !== 'default' ||
+                    request.model.loginId !== 'apiAdmin' ||
                     CONFIG.get('forceAPIKeyGenerate')) &&
-                    (options.model.loginId && options.model.password)) {
-                    let key = options.model.loginId + options.model.password + (new Date()).getTime();
-                    options.model.apiKey = UTILS.generateHash(key);
+                    (request.model.loginId && request.model.password)) {
+                    let key = request.model.loginId + request.model.password + (new Date()).getTime();
+                    request.model.apiKey = UTILS.generateHash(key);
                 }
                 resolve(true);
             } catch (error) {

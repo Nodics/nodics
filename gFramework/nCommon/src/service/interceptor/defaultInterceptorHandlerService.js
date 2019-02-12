@@ -31,14 +31,12 @@ module.exports = {
                         }
                         let interceptorPool = finalInterceptors[moduleName][modelName];
                         _.each(moduleDefault, (interceptor, interceptorName) => {
-                            interceptor.type = interceptor.type || 'processor';
                             if (!interceptorPool[interceptor.type]) {
                                 interceptorPool[interceptor.type] = [];
                             }
                             interceptorPool[interceptor.type].push(interceptor);
                         });
                         _.each(modelInterceptors, (interceptor, interceptorName) => {
-                            interceptor.type = interceptor.type || 'processor';
                             if (!interceptorPool[interceptor.type]) {
                                 interceptorPool[interceptor.type] = [];
                             }

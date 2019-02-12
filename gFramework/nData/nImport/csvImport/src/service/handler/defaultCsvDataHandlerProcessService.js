@@ -9,6 +9,12 @@
 
  */
 
+const StreamArray = require('stream-json/streamers/StreamArray');
+const path = require('path');
+const fs = require('fs');
+var sizeof = require('object-sizeof');
+
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,12 +38,13 @@ module.exports = {
         });
     },
 
-    //This request will have dataObject and header and outputPath
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to finalize local data import');
-        request.outputPath.dataType = 'local'; // value could be here as 'local', 'external', 'direct'
-        request.outputPath.version = '0';
-        process.nextSuccess(request, response);
+        this.LOG.debug('Validating request to process JSON file');
+        if (!request.dataObject) {
+            process.error(request, response, 'Invalid data object to process');
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     executeDataProcessor: function (request, response, process) {
@@ -94,13 +101,14 @@ module.exports = {
         });
     },
 
+
+
     handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
         process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
+        this.LOG.debug('Request has been processed and got errors');
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {

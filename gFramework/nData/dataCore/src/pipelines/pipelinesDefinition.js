@@ -94,7 +94,12 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultLocalDataFinalizerService.validateRequest',
-                success: 'redirectToImportType'
+                success: 'executeDataProcessor'
+            },
+            executeDataProcessor: {
+                type: 'function',
+                handler: 'DefaultLocalDataFinalizerService.executeDataProcessor',
+                success: 'processData'
             },
             processData: {
                 type: 'function',
@@ -122,16 +127,16 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultExternalFileDataFinalizerService.validateRequest',
-                success: 'generateDataKey'
+                success: 'prepareFileType'
             },
-            generateDataKey: {
+            prepareFileType: {
                 type: 'function',
-                handler: 'DefaultExternalFileDataFinalizerService.generateDataKey',
-                success: 'writeIntoFile'
+                handler: 'DefaultExternalFileDataFinalizerService.prepareFileType',
+                success: 'redirectToFileTypeProcess'
             },
-            writeIntoFile: {
+            redirectToFileTypeProcess: {
                 type: 'function',
-                handler: 'DefaultExternalFileDataFinalizerService.writeIntoFile',
+                handler: 'DefaultExternalFileDataFinalizerService.redirectToFileTypeProcess',
                 success: 'successEnd'
             },
             successEnd: {

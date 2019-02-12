@@ -9,7 +9,7 @@
 
  */
 
-const StreamArray = require('stream-json/streamers/StreamArray');
+const csv = require('csvtojson');
 const path = require('path');
 const fs = require('fs');
 var sizeof = require('object-sizeof');
@@ -51,32 +51,31 @@ module.exports = {
 
     processDataChunk: function (request, response, process) {
         this.LOG.debug('Starting processing data chunks');
-        const jsonStream = StreamArray.withParser();
+        let converter = csv(CONFIG.get('data').csvTypeParserOptions | {});
         let dataChunk = [];
         let readBytes = 0;
         let version = 0;
-        jsonStream.on("data", function (data) {
-            jsonStream.pause();
+        converter.fromStream(fs.createReadStream(csvFilePath)).on('data', (data) => {
+            converter.pause();
             readBytes = readBytes + sizeof(data.value);
             if (readBytes > CONFIG.get('data').readBufferSize) {
                 request.dataObject = [].concat(dataChunk);
-                SERVICE.DefaultPipelineService.start('JsonDataHandlerPipeline', request, {}).then(success => {
+                SERVICE.DefaultPipelineService.start('csvDataHandlerPipeline', request, {}).then(success => {
                     dataChunk = [data];
                     readBytes = 0;
                     version = version + 1;
-                    jsonStream.resume();
+                    converter.resume();
                 }).catch(error => {
                     process.error(request, response, error);
                 });
             } else {
                 dataChunk.push(data.value);
-                jsonStream.resume();
+                converter.resume();
             }
-        });
-        jsonStream.on('end', () => {
+        }).on('end', (error) => {
             if (dataChunk.length > 0) {
                 request.dataObject = [].concat(dataChunk);
-                SERVICE.DefaultPipelineService.start('JsonDataHandlerPipeline', request, {}).then(success => {
+                SERVICE.DefaultPipelineService.start('csvDataHandlerPipeline', request, {}).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);
@@ -84,8 +83,9 @@ module.exports = {
             } else {
                 process.nextSuccess(request, response);
             }
+        }).on('error', (error) => {
+            process.error(request, response, error);
         });
-        fs.createReadStream(request.inputFileName).pipe(jsonStream.input);
     },
 
     handleSucessEnd: function (request, response, process) {

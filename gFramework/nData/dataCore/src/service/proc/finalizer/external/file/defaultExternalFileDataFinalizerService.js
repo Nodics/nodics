@@ -56,18 +56,36 @@ module.exports = {
         }
     },
 
-    writeDataFile: function (request, response, process) {
-        this.LOG.debug('Staring file write process for local data import');
-
-    },
-
     handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
         process.resolve(response.success);
+        SERVICE.DefaultDataWriterService.moveToSuccess({
+            fileName: request.fileName
+        }).then(success => {
+            this.LOG.debug('File moved to success bucket: ' + success);
+        }).catch(error => {
+            this.LOG.error('Facing issued while moving file to success bucket: ' + error);
+        });
     },
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
-        process.reject(response.errors);
+        if (response.errors && response.errors.length === 1) {
+            process.reject(response.errors[0]);
+        } else if (response.errors && response.errors.length > 1) {
+            process.reject({
+                success: false,
+                code: 'ERR_SYS_00000',
+                error: esponse.errors
+            });
+        } else {
+            process.reject(response.error);
+        }
+        SERVICE.DefaultDataWriterService.moveToError({
+            fileName: request.fileName
+        }).then(success => {
+            this.LOG.debug('File moved to error bucket: ' + success);
+        }).catch(error => {
+            this.LOG.error('Facing issued while moving file to error bucket: ' + error);
+        });
     }
 };

@@ -48,35 +48,93 @@ module.exports = {
     },
 
     executeDataProcessor: function (request, response, process) {
-        this.LOG.debug('Applying data process interceptors');
-        let moduleName = request.header.options.moduleName;
-        let modelName = request.header.options.modelName;
+        this.LOG.debug('Applying pre processors in models');
+        let moduleName = request.moduleName || request.collection.moduleName;
+        let modelName = request.collection.modelName;
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(moduleName, modelName);
-        if (interceptors && interceptors.processor) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.processor), {
+        if (interceptors && interceptors.importProcessor && interceptors.importProcessor.length > 0) {
+            let interceptorRequest = {
                 dataObject: request.dataObject
-            }).then(success => {
-                request.dataObject = success;
+            };
+            let interceptorResponse = {};
+            SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors([].concat(interceptors.importProcessor), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
         }
     },
 
+    processData: function (request, response, process) {
+        this.LOG.debug('Checking target process to handle request');
+        let processPipeline = 'defaultDataFinalizerProcessPipeline';
+        if (request.header.options && request.header.options.processPipeline) {
+            processPipeline = request.header.options.processPipeline;
+        }
+        SERVICE.DefaultPipelineService.start(processPipeline, {
+            header: request.header,
+            dataObject: request.dataObject,
+            outputPath: outputPath
+        }, {}).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+
+    writeDataFile: function (request, response, process) {
+        this.LOG.debug('Staring file write process for local data import');
+        SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
+            header: request.header,
+            dataObject: request.dataObject,
+            outputPath: outputPath
+        }, {}).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+
 
 
     handleSucessEnd: function (request, response, process) {
-        process.resolve(response);
+        // if (response.success.length > 0 && response.errors.length <= 0) {
+        //     process.resolve({
+        //         success: true,
+        //         code: 'SUC_SAVE_00000',
+        //         result: response.success
+        //     });
+        // } else if (response.success.length <= 0 && response.errors.length > 0) {
+        //     process.reject({
+        //         success: false,
+        //         code: 'ERR_SAVE_00000',
+        //         error: response.errors
+        //     });
+        // } else {
+        //     process.resolve({
+        //         success: false,
+        //         code: 'ERR_SAVE_00003',
+        //         result: response.success,
+        //         error: response.errors
+        //     });
+        // }
+        process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
-        process.reject(response);
+        this.LOG.debug('Request has been processed and got errors');
+        if (response.errors && response.errors.length === 1) {
+            process.reject(response.errors[0]);
+        } else if (response.errors && response.errors.length > 1) {
+            process.reject({
+                success: false,
+                code: 'ERR_SYS_00000',
+                error: esponse.errors
+            });
+        } else {
+            process.reject(response.error);
+        }
     }
 };

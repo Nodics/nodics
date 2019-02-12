@@ -10,12 +10,12 @@
  */
 
 module.exports = {
-    encryptPassword: function (options) {
+    encryptPassword: function (request, responce) {
         return new Promise((resolve, reject) => {
             let passwordLengthLimit = CONFIG.get('passwordLengthLimit') || 25;
-            if (options.model.password && options.model.password.length < passwordLengthLimit) {
-                UTILS.encryptPassword(options.model.password).then(hash => {
-                    options.model.password = hash;
+            if (request.model.password && request.model.password.length < passwordLengthLimit) {
+                UTILS.encryptPassword(request.model.password).then(hash => {
+                    request.model.password = hash;
                     resolve(true);
                 }).catch(error => {
                     next(error);

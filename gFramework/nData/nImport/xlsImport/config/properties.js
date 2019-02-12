@@ -11,11 +11,17 @@
 
 module.exports = {
     data: {
+        excelTypeParserOptions: {
+            sheet: 1,
+            isColOriented: false,
+            omitEmptyFields: false,
+            convertTextToNumber: true
+        },
         fileTypeProcess: {
-            xls: 'excelFileDataFinalizerPipeline',
-            xlsb: 'excelFileDataFinalizerPipeline',
-            xlsm: 'excelFileDataFinalizerPipeline',
-            xlsx: 'excelFileDataFinalizerPipeline'
+            xls: 'excelFileDataInitializerPipeline',
+            xlsb: 'excelFileDataInitializerPipeline',
+            xlsm: 'excelFileDataInitializerPipeline',
+            xlsx: 'excelFileDataInitializerPipeline'
         }
     }
 };

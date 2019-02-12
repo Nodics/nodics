@@ -10,5 +10,59 @@
  */
 
 module.exports = {
+    csvFileDataInitializerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
 
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultCsvFileDataProcessService.validateRequest',
+                success: 'processDataChunk'
+            },
+            processDataChunk: {
+                type: 'function',
+                handler: 'DefaultCsvFileDataProcessService.processDataChunk',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultCsvFileDataProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultCsvFileDataProcessService.handleErrorEnd'
+            }
+        }
+    },
+
+    JsonDataHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultCsvDataHandlerProcessService.validateRequest',
+                success: 'executeDataProcessor'
+            },
+            executeDataProcessor: {
+                type: 'function',
+                handler: 'DefaultCsvDataHandlerProcessService.executeDataProcessor',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultCsvDataHandlerProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultCsvDataHandlerProcessService.handleErrorEnd'
+            }
+        }
+    },
 };

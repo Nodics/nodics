@@ -10,5 +10,59 @@
  */
 
 module.exports = {
+    excelFileDataInitializerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
 
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultExcelFileDataProcessService.validateRequest',
+                success: 'processDataChunk'
+            },
+            processDataChunk: {
+                type: 'function',
+                handler: 'DefaultExcelFileDataProcessService.processDataChunk',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultExcelFileDataProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultExcelFileDataProcessService.handleErrorEnd'
+            }
+        }
+    },
+
+    JsonDataHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultExcelDataHandlerProcessService.validateRequest',
+                success: 'executeDataProcessor'
+            },
+            executeDataProcessor: {
+                type: 'function',
+                handler: 'DefaultExcelDataHandlerProcessService.executeDataProcessor',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultExcelDataHandlerProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultExcelDataHandlerProcessService.handleErrorEnd'
+            }
+        }
+    },
 };

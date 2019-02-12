@@ -37,10 +37,21 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response, process) {
-        process.resolve(response);
+        process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
-        process.reject(response);
+        this.LOG.error('Request has been processed and got errors');
+        if (response.errors && response.errors.length === 1) {
+            process.reject(response.errors[0]);
+        } else if (response.errors && response.errors.length > 1) {
+            process.reject({
+                success: false,
+                code: 'ERR_SYS_00000',
+                error: esponse.errors
+            });
+        } else {
+            process.reject(response.error);
+        }
     }
 };

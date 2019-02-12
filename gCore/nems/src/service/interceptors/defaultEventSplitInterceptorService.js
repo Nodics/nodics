@@ -13,10 +13,10 @@ const _ = require('lodash');
 
 module.exports = {
 
-    eventSplitPreSave: function (options) {
+    eventSplitPreSave: function (request, responce) {
         return new Promise((resolve, reject) => {
             try {
-                let model = options.model;
+                let model = request.model;
                 model.excludeModules = model.excludeModules || [];
                 if (!UTILS.isBlank(model) && !model.targets) {
                     if (model.type == ENUMS.EventType.SYNC.key) {
@@ -82,15 +82,15 @@ module.exports = {
         });
     },
 
-    eventSplitPostSave: function (options) {
+    eventSplitPostSave: function (request, responce) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
 
-    handleSyncEvents: function (options) {
+    handleSyncEvents: function (request, responce) {
         return new Promise((resolve, reject) => {
-            let events = options.response.success;
+            let events = request.response.success;
             let syncEvents = [];
             events.forEach(element => {
                 if (element.type === ENUMS.EventType.SYNC.key) {

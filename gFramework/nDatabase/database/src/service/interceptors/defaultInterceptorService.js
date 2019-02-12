@@ -11,17 +11,17 @@
 
 module.exports = {
 
-    setUpdatedTimestamp: function (options) {
+    setUpdatedTimestamp: function (request, response) {
         return new Promise((resolve, reject) => {
-            if (options.model) {
-                options.model.updated = new Date();
+            if (request.model) {
+                request.model.updated = new Date();
             }
             resolve(true);
         });
     },
 
 
-    blockNTest: function (options) {
+    blockNTest: function (request, response) {
         return new Promise((resolve, reject) => {
             if (NODICS.isNTestRunning()) {
                 reject('Save operation not allowed, while running N-Test cases');

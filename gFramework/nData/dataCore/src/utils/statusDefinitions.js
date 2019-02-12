@@ -10,12 +10,16 @@
  */
 
 module.exports = {
-    data: {
-        csvTypeParserOptions: {
-            output: "json"
-        },
-        fileTypeProcess: {
-            csv: 'csvFileDataInitializerPipeline'
-        }
+
+    SUC_IMP_00000: {
+        code: '160000',
+        description: 'Successfully processed',
+        message: 'Successfully processed',
+    },
+
+    ERR_DBS_00000: {
+        code: '160000',
+        description: 'Failed due to some internal error',
+        message: 'Failed due to some internal error',
     }
 };

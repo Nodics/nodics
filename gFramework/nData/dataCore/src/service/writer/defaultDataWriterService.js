@@ -9,6 +9,9 @@
 
  */
 
+const path = require('path');
+const moveFile = require('move-file');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +35,7 @@ module.exports = {
         });
     },
 
+
     writeToFile: function (options) {
         return new Promise((resolve, reject) => {
             try {
@@ -41,11 +45,48 @@ module.exports = {
                     if (fileName.indexOf('.') > 0) {
                         fileName = fileName.substring(0, fileName.lastIndexOf('.') - 1);
                     }
+                    if (options.outputPath.version) {
+                        fileName = fileName + '_' + version;
+                    }
                     fileName = fileName + '.js';
                     this.LOG.debug('  Writing data into file: ' + fileName);
-                    fs.writeFileSync(fileName,
-                        JSON.stringify(options.header) + '\n\n' + JSON.stringify(options.finalData),
+                    fs.writeFileSync(fileName, "module.exports = {\n" + JSON.stringify(options.header) + '\n\n models[' + JSON.stringify(options.finalData) + ']\n}',
                         CONFIG.get('importDataConvertEncoding'));
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    moveToSuccess: function (options) {
+        options.destDir = 'success';
+    },
+
+    moveToError: function (options) {
+        options.destDir = 'error';
+    },
+
+    moveFile: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                let filePath = path.dirname(options.fileName);
+                let fileName = path.basename(options.fileName);
+                let fileExt = path.extname(fileName);
+                let fileNameWithoutExt = fileName.replace(fileExt, '');
+                if (fileNameWithoutExt.endsWith('_processing')) {
+                    fileNameWithoutExt = fileNameWithoutExt.replace('_processing', '');
+                }
+                filePath = filePath + '/' + options.destDir;
+                UTILS.ensureExists(filePath).then(success => {
+                    moveFile(options.fileName, filePath + '/' + fileNameWithoutExt + '_' + Date.now() + fileExt).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
                 }).catch(error => {
                     reject(error);
                 });
@@ -54,5 +95,4 @@ module.exports = {
             }
         });
     }
-
 };

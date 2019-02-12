@@ -10,14 +10,14 @@
  */
 
 module.exports = {
-    convertToDate: function (options) {
+    convertToDate: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
-                if (options.model.start && !(options.model.start instanceof Date)) {
-                    options.model.start = new Date(options.model.start);
+                if (request.model.start && !(request.model.start instanceof Date)) {
+                    request.model.start = new Date(request.model.start);
                 }
-                if (options.model.end && !(options.model.end instanceof Date)) {
-                    options.model.end = new Date(options.model.end);
+                if (request.model.end && !(request.model.end instanceof Date)) {
+                    request.model.end = new Date(request.model.end);
                 }
                 resolve(true);
             } catch (error) {

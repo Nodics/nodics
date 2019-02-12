@@ -12,50 +12,50 @@
 module.exports = {
 
     // Enterprise Save Events
-    enterprisePreSave: function (options) {
+    enterprisePreSave: function (request, responce) {
         return new Promise((resolve, reject) => {
-            options.options.returnModified = options.options.returnModified || true;
-            options.options.recursive = options.options.recursive || true;
+            request.request.returnModified = request.request.returnModified || true;
+            request.request.recursive = request.request.recursive || true;
             resolve(true);
         });
     },
 
-    enterprisePreUpdate: function (options) {
+    enterprisePreUpdate: function (request, responce) {
         return new Promise((resolve, reject) => {
-            options.options.returnModified = options.options.returnModified || true;
-            options.options.recursive = options.options.recursive || true;
+            request.request.returnModified = request.request.returnModified || true;
+            request.request.recursive = request.request.recursive || true;
             resolve(true);
         });
     },
-    enterprisePreRemove: function (options) {
+    enterprisePreRemove: function (request, responce) {
         return new Promise((resolve, reject) => {
-            options.options.returnModified = options.options.returnModified || true;
-            options.options.recursive = options.options.recursive || true;
+            request.request.returnModified = request.request.returnModified || true;
+            request.request.recursive = request.request.recursive || true;
             resolve(true);
         });
     },
 
-    enterpriseInvalidateAuthToken: function (options) {
+    enterpriseInvalidateAuthToken: function (request, responce) {
         return new Promise((resolve, reject) => {
             resolve(true);
-            if (options.model.code) {
-                options.model.tenant = options.model.tenant || options.tenant;
-                SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(options.model).then(success => {
-                    this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', options.model.code);
+            if (request.model.code) {
+                request.model.tenant = request.model.tenant || request.tenant;
+                SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(request.model).then(success => {
+                    this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', request.model.code);
                 }).catch(error => {
-                    this.LOG.error('Failed invalidating authToken for enterprise: ', options.model.code);
+                    this.LOG.error('Failed invalidating authToken for enterprise: ', request.model.code);
                     this.LOG.error(error);
                 });
             }
         });
     },
 
-    enterpriseUpdateInvalidateAuthToken: function (options) {
+    enterpriseUpdateInvalidateAuthToken: function (request, responce) {
         return new Promise((resolve, reject) => {
             resolve(true);
-            if (options.result && options.result.models && options.result.models.length > 0) {
-                options.result.models.forEach(model => {
-                    options.model.tenant = options.model.tenant || options.tenant;
+            if (request.result && request.result.models && request.result.models.length > 0) {
+                request.result.models.forEach(model => {
+                    request.model.tenant = request.model.tenant || request.tenant;
                     SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model.code).then(success => {
                         this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', model.code);
                     }).catch(error => {
@@ -67,11 +67,11 @@ module.exports = {
         });
     },
 
-    enterpriseRemoveInvalidateAuthToken: function (options) {
+    enterpriseRemoveInvalidateAuthToken: function (request, responce) {
         return new Promise((resolve, reject) => {
             resolve(true);
-            if (options.result && options.result.models && options.result.models.length > 0) {
-                options.result.models.forEach(model => {
+            if (request.result && request.result.models && request.result.models.length > 0) {
+                request.result.models.forEach(model => {
                     SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model.code, true).then(success => {
                         this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', model.code);
                     }).catch(error => {
@@ -83,24 +83,24 @@ module.exports = {
         });
     },
 
-    enterpriseSaveEvent: function (options) {
+    enterpriseSaveEvent: function (request, responce) {
         return new Promise((resolve, reject) => {
             resolve(true);
-            this.triggerEnterpriseUpdateEvent(options.model).then(success => {
-                this.LOG.debug('All modules have been informed about Enterprise model changes: ', options.model.code);
+            this.triggerEnterpriseUpdateEvent(request.model).then(success => {
+                this.LOG.debug('All modules have been informed about Enterprise model changes: ', request.model.code);
             }).catch(error => {
-                this.LOG.error('Failed to update modules about Enterprise model changes: ', options.model.code);
+                this.LOG.error('Failed to update modules about Enterprise model changes: ', request.model.code);
                 this.LOG.error(error);
             });
         });
     },
 
-    enterpriseUpdateEvent: function (options) {
+    enterpriseUpdateEvent: function (request, responce) {
         return new Promise((resolve, reject) => {
             resolve(true);
-            if (options.result && options.result.models && options.result.models.length > 0) {
-                options.result.models.forEach(model => {
-                    this.triggerEnterpriseUpdateEvent(options.model).then(success => {
+            if (request.result && request.result.models && request.result.models.length > 0) {
+                request.result.models.forEach(model => {
+                    this.triggerEnterpriseUpdateEvent(request.model).then(success => {
                         this.LOG.debug('All modules have been informed about Enterprise model changes: ', model.code);
                     }).catch(error => {
                         this.LOG.error('Failed to update modules about Enterprise model changes: ', model.code);
@@ -111,12 +111,12 @@ module.exports = {
         });
     },
 
-    enterpriseRemoveEvent: function (options) {
+    enterpriseRemoveEvent: function (request, responce) {
         return new Promise((resolve, reject) => {
             resolve(true);
-            if (options.result && options.result.models && options.result.models.length > 0) {
-                options.result.models.forEach(model => {
-                    this.triggerEnterpriseUpdateEvent(options.model, true).then(success => {
+            if (request.result && request.result.models && request.result.models.length > 0) {
+                request.result.models.forEach(model => {
+                    this.triggerEnterpriseUpdateEvent(request.model, true).then(success => {
                         this.LOG.debug('All modules have been informed about Enterprise model changes: ', model.code);
                     }).catch(error => {
                         this.LOG.error('Failed to update modules about Enterprise model changes: ', model.code);
