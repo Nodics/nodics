@@ -9,6 +9,8 @@
 
  */
 
+const excelProcess = require('excel-as-json');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,48 +35,39 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to finalize import data');
-        if (!request.header && UTILS.isBlank(request.header)) {
-            process.error(request, response, 'Please validate request. Mandate header not found');
-        } else if (!request.outputFileName) {
-            process.error(request, response, 'Please validate request. Mandate output path not found');
+        this.LOG.debug('Validating request to process JSON file');
+        if (!request.inputFileName) {
+            process.error(request, response, 'Invalid file path to read data');
+        } else if (!request.outputPath || UTILS.isBlank(request.outputPath)) {
+            process.error(request, response, 'Invalid output path to write data');
         } else {
             process.nextSuccess(request, response);
         }
     },
 
-    prepareOutputURL: function (request, response, process) {
-        this.LOG.debug('Preparing output file path');
-        request.outputPath = {
-            destDir: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName || 'temp',
-            fileName: request.outputFileName,
-            importType: 'import' // In-case of export, value will be 'export'
-        };
-        process.nextSuccess(request, response);
-    },
-
-    redirectToImportType: function (request, response, process) {
-        this.LOG.debug('Checking target process to handle request');
-        if (request.dataObject && request.dataObject instanceof Array && request.dataObject.length > 0) {
-            this.LOG.debug('Redirecting to finalize local data');
-            response.targetNode = 'finalizeLocalData';
-        } else if (request.inputFileName) {
-            this.LOG.debug('Redirecting to finalize external file data');
-            response.targetNode = 'finalizeExternalFileData';
-        } else {
-            this.LOG.debug('Redirecting to finalize external direct data');
-            response.targetNode = 'finalizeExternalDirectData';
-        }
-        process.nextSuccess(request, response);
+    processDataChunk: function (request, response, process) {
+        this.LOG.debug('Starting processing data chunks');
+        let convertExcel = excelProcess.processFile;
+        convertExcel(request.inputFileName, null, CONFIG.get('data').excelTypeParserOptions, (error, jsonData) => {
+            if (error) {
+                process.error(request, response, error);
+            } else {
+                request.dataObject = jsonData;
+                SERVICE.DefaultPipelineService.start('excelDataHandlerPipeline', request, {}).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            }
+        });
     },
 
     handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
         process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
+        this.LOG.debug('Request has been processed and got errors');
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {

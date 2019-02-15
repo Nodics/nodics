@@ -74,6 +74,7 @@ module.exports = {
                 NODICS.setStartTime(startTime);
                 utils.collectModulesList(NODICS.getNodicsHome());
                 NODICS.initEnvironment();
+                utils.ensureExists(NODICS.getServerPath() + '/temp/logs');
                 initService.prepareOptions();
                 initService.loadModuleIndex();
                 initService.printInfo();

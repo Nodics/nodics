@@ -12,8 +12,8 @@
 module.exports = {
     data: {
         fileTypeReaderPipeline: {
-            js: '',
-            json: ''
+            js: 'jsonFileDataReaderPipeline',
+            json: 'jsonFileDataReaderPipeline'
         },
         fileTypeProcess: {
             json: 'jsonFileDataInitializerPipeline'

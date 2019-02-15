@@ -42,8 +42,9 @@ module.exports = {
 
     executeDataProcessor: function (request, response, process) {
         this.LOG.debug('Applying pre processors in models');
-        let moduleName = request.moduleName || request.collection.moduleName;
-        let modelName = request.collection.modelName;
+        let moduleName = request.header.options.moduleName;
+        let modelName = request.header.options.modelName;
+        modelName = modelName.toUpperCaseFirstChar() + 'Model';
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(moduleName, modelName);
         if (interceptors && interceptors.importProcessor && interceptors.importProcessor.length > 0) {
             let interceptorRequest = {
@@ -70,10 +71,11 @@ module.exports = {
         if (request.header.options && request.header.options.processPipeline) {
             processPipeline = request.header.options.processPipeline;
         }
+        console.log('3---------:', request.dataObject);
         SERVICE.DefaultPipelineService.start(processPipeline, {
             header: request.header,
             dataObject: request.dataObject,
-            outputPath: outputPath
+            outputPath: request.outputPath
         }, {}).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -83,10 +85,11 @@ module.exports = {
 
     writeDataFile: function (request, response, process) {
         this.LOG.debug('Staring file write process for local data import');
+        console.log('4---------:', request.dataObject);
         SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
             header: request.header,
             dataObject: request.dataObject,
-            outputPath: outputPath
+            outputPath: request.outputPath
         }, {}).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {

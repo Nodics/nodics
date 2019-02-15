@@ -68,28 +68,37 @@ module.exports = {
             if (options.pendingFileList && options.pendingFileList.length > 0) {
                 let fileName = options.pendingFileList.shift(); //Actual Files group name
                 _self.LOG.debug('Processing file: ', fileName, ' from header: ', request.headerName);
-                let fileObj = header.dataFiles[request.fileName];
-                SERVICE.DefaultPipelineService.start(CONFIG.get('fileTypeReaderPipeline')[fileObj.type], {
-                    fileName: fileName,
-                    header: header,
-                    files: fileObj.list
-                }, {}).then(dataObjects => {
-                    SERVICE.DefaultPipelineService.start('processDataFinalizer', {
+                let fileObj = header.dataFiles[fileName];
+                if (fileObj.list && fileObj.list.length > 0) {
+                    SERVICE.DefaultPipelineService.start(CONFIG.get('data').fileTypeReaderPipeline[fileObj.type], {
                         fileName: fileName,
-                        header: header,
-                        dataObjects: dataObjects
-                    }, {}).then(success => {
-                        _self.processAllFiles(request, response, options).then(success => {
-                            resolve(success);
+                        header: header.header,
+                        files: fileObj.list
+                    }, {}).then(dataObject => {
+                        console.log('2---------:', request.dataObject);
+                        SERVICE.DefaultPipelineService.start('finalizeDataInitializerPipeline', {
+                            outputFileName: fileName,
+                            header: header.header,
+                            dataObject: dataObject
+                        }, {}).then(success => {
+                            _self.processAllFiles(request, response, options).then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
+                            });
                         }).catch(error => {
                             reject(error);
                         });
                     }).catch(error => {
                         reject(error);
                     });
-                }).catch(error => {
-                    reject(error);
-                });
+                } else {
+                    _self.processAllFiles(request, response, options).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
             } else {
                 _self.LOG.debug('Done import for files for header : ', request.headerName);
                 header.done = true;

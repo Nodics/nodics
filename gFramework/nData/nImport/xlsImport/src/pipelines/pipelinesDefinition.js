@@ -10,6 +10,35 @@
  */
 
 module.exports = {
+
+    excelFileDataReaderPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultExcelFileDataReaderProcessService.validateRequest',
+                success: 'readFilesData'
+            },
+            readFilesData: {
+                type: 'function',
+                handler: 'DefaultExcelFileDataReaderProcessService.readFilesData',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultExcelFileDataReaderProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultExcelFileDataReaderProcessService.handleErrorEnd'
+            }
+        }
+    },
+
     excelFileDataInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false

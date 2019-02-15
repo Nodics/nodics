@@ -10,6 +10,34 @@
  */
 
 module.exports = {
+    jsonFileDataReaderPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultJsonFileDataReaderProcessService.validateRequest',
+                success: 'readDataChunk'
+            },
+            readDataChunk: {
+                type: 'function',
+                handler: 'DefaultJsonFileDataReaderProcessService.readDataChunk',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultJsonFileDataReaderProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultJsonFileDataReaderProcessService.handleErrorEnd'
+            }
+        }
+    },
+
     jsonFileDataInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false

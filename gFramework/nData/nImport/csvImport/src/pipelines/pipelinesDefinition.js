@@ -10,6 +10,35 @@
  */
 
 module.exports = {
+
+    csvFileDataReaderPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultCsvFileDataReaderProcessService.validateRequest',
+                success: 'readFilesData'
+            },
+            readFilesData: {
+                type: 'function',
+                handler: 'DefaultCsvFileDataReaderProcessService.readFilesData',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultCsvFileDataReaderProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultCsvFileDataReaderProcessService.handleErrorEnd'
+            }
+        }
+    },
+
     csvFileDataInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false

@@ -104,6 +104,11 @@ module.exports = {
             processData: {
                 type: 'function',
                 handler: 'DefaultLocalDataFinalizerService.processData',
+                success: 'writeDataFile'
+            },
+            writeDataFile: {
+                type: 'function',
+                handler: 'DefaultLocalDataFinalizerService.writeDataFile',
                 success: 'successEnd'
             },
             successEnd: {

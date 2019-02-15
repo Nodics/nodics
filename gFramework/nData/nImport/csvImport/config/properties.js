@@ -14,6 +14,9 @@ module.exports = {
         csvTypeParserOptions: {
             output: "json"
         },
+        fileTypeReaderPipeline: {
+            csv: 'csvFileDataReaderPipeline'
+        },
         fileTypeProcess: {
             csv: 'csvFileDataInitializerPipeline'
         }

@@ -40,22 +40,19 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let filePath = options.outputPath.destDir + '/' + options.outputPath.importType + '/' + options.outputPath.dataType;
-                UTILS.ensureExists(filePath).then(success => {
-                    let fileName = filePath + '/' + options.outputPath.fileName;
-                    if (fileName.indexOf('.') > 0) {
-                        fileName = fileName.substring(0, fileName.lastIndexOf('.') - 1);
-                    }
-                    if (options.outputPath.version) {
-                        fileName = fileName + '_' + version;
-                    }
-                    fileName = fileName + '.js';
-                    this.LOG.debug('  Writing data into file: ' + fileName);
-                    fs.writeFileSync(fileName, "module.exports = {\n" + JSON.stringify(options.header) + '\n\n models[' + JSON.stringify(options.finalData) + ']\n}',
-                        CONFIG.get('importDataConvertEncoding'));
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
+                UTILS.ensureExists(filePath);
+                let fileName = options.outputPath.fileName;
+                if (fileName.indexOf('.') > 0) {
+                    fileName = fileName.substring(0, fileName.lastIndexOf('.') - 1);
+                }
+                if (options.outputPath.version) {
+                    fileName = fileName + '_' + options.outputPath.version;
+                }
+                fileName = filePath + '/' + fileName + '.js';
+                this.LOG.debug('  Writing data into file: ' + fileName);// + '\n\n models[' + JSON.stringify(options.finalData) + ']\n}'
+                fs.writeFileSync(fileName, "\nmodule.exports = {\nheader:" + JSON.stringify(options.header) + ',\n\n models:' + JSON.stringify(options.finalData) + '\n};',
+                    CONFIG.get('importDataConvertEncoding'));
+                resolve(true);
             } catch (error) {
                 reject(error);
             }
@@ -81,12 +78,9 @@ module.exports = {
                     fileNameWithoutExt = fileNameWithoutExt.replace('_processing', '');
                 }
                 filePath = filePath + '/' + options.destDir;
-                UTILS.ensureExists(filePath).then(success => {
-                    moveFile(options.fileName, filePath + '/' + fileNameWithoutExt + '_' + Date.now() + fileExt).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
+                UTILS.ensureExists(filePath);
+                moveFile(options.fileName, filePath + '/' + fileNameWithoutExt + '_' + Date.now() + fileExt).then(success => {
+                    resolve(true);
                 }).catch(error => {
                     reject(error);
                 });

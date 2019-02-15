@@ -17,6 +17,12 @@ module.exports = {
             omitEmptyFields: false,
             convertTextToNumber: true
         },
+        fileTypeReaderPipeline: {
+            xls: 'csvFileDataReaderPipeline',
+            xlsb: 'csvFileDataReaderPipeline',
+            xlsm: 'csvFileDataReaderPipeline',
+            xlsx: 'csvFileDataReaderPipeline'
+        },
         fileTypeProcess: {
             xls: 'excelFileDataInitializerPipeline',
             xlsb: 'excelFileDataInitializerPipeline',

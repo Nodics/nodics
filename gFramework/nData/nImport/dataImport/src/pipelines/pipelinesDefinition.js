@@ -72,6 +72,11 @@ module.exports = {
             validateHeader: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.validateHeader',
+                success: 'processHeaderFiles'
+            },
+            processHeaderFiles: {
+                type: 'function',
+                handler: 'DefaultHeaderProcessService.processHeaderFiles',
                 success: 'successEnd'
             },
             successEnd: {

@@ -11,11 +11,6 @@
 
 const excelProcess = require('excel-as-json');
 
-const path = require('path');
-const fs = require('fs');
-var sizeof = require('object-sizeof');
-
-
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -41,29 +36,48 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process JSON file');
-        if (!request.inputFileName) {
-            process.error(request, response, 'Invalid file path to read data');
-        } else if (!request.outputPath || UTILS.isBlank(request.outputPath)) {
-            process.error(request, response, 'Invalid output path to write data');
+        if (!request.fileName) {
+            process.error(request, response, 'Invalid file name to read data');
+        } else if (!request.header || UTILS.isBlank(header)) {
+            process.error(request, response, 'Invalid header to write data');
+        } else if (!request.files || request.files.length <= 0) {
+            process.error(request, response, 'Invalid file list to read data');
         } else {
             process.nextSuccess(request, response);
         }
     },
 
-    processDataChunk: function (request, response, process) {
+    readFilesData: function (request, response, process) {
         this.LOG.debug('Starting processing data chunks');
-        let convertExcel = excelProcess.processFile;
-        convertExcel(request.inputFileName, null, CONFIG.get('data').excelTypeParserOptions, (error, jsonData) => {
-            if (error) {
-                process.error(request, response, error);
-            } else {
-                request.dataObject = jsonData;
-                SERVICE.DefaultPipelineService.start('excelDataHandlerPipeline', request, {}).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
-            }
+        this.readFiles(request.files, []).then(success => {
+            response.success = success;
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+
+    readFiles: function (files, data) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            let fileName = files.shift();
+            let convertExcel = excelProcess.processFile;
+            convertExcel(fileName, null, CONFIG.get('data').excelTypeParserOptions, (error, jsonData) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    data.concat(jsonData);
+                    if (files.length > 0) {
+                        _self.readFiles(files, data).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        resolve(data);
+                    }
+                }
+            });
         });
     },
 

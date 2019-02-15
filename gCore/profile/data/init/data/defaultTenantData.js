@@ -16,7 +16,7 @@ module.exports = {
         description: 'Default tenant, which take configuration from properties configuration'
     },
 
-    record1: {
+    /*record1: {
         code: 'testOne',
         active: true,
         description: 'This tenant is just for testing purose',
@@ -75,5 +75,5 @@ module.exports = {
                 }
             }
         }
-    }
+    }*/
 };

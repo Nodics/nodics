@@ -14,6 +14,7 @@ const fs = require('fs');
 const winston = require('winston');
 require('winston-daily-rotate-file');
 const Elasticsearch = require('winston-elasticsearch');
+const utils = require('../utils/utils');
 
 module.exports = {
 
@@ -72,10 +73,7 @@ module.exports = {
         let fileConfig = _.merge({}, logConfig.fileConfig);
         fileConfig.label = entityName;
         if (fileConfig.dirname.startsWith('.')) {
-            fileConfig.dirname = NODICS.getServerPath() + '/logs';
-        }
-        if (!fs.existsSync(fileConfig.dirname)) {
-            fs.mkdirSync(fileConfig.dirname);
+            fileConfig.dirname = NODICS.getServerPath() + '/temp/logs';
         }
         try {
             transport = new winston.transports.DailyRotateFile(fileConfig);

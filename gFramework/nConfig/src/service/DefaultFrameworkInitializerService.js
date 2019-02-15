@@ -37,6 +37,7 @@ module.exports = {
         this.LOG.info('NODICS_APP        : ', NODICS.getApplicationPath());
         this.LOG.info('NODICS_ENV        : ', NODICS.getEnvironmentPath());
         this.LOG.info('SERVER_PATH       : ', NODICS.getServerPath());
+        this.LOG.info('LOG_PATH          : ', NODICS.getServerPath() + '/temp/logs');
         this.LOG.info('---------------------------------------------------------------------------\n');
         this.LOG.info('###   Sequence in which modules has been loaded (Top to Bottom)   ###');
         let activeModules = [];
