@@ -30,7 +30,6 @@ module.exports = {
                 }
             }
         },
-        //Need to remove this service, for init data, only system will take care
         importInitData: {
             importInitPost: {
                 secured: true,
@@ -50,6 +49,7 @@ module.exports = {
                 }
             }
         },
+        // ======================================================================
         importCoreData: {
             importCorePost: {
                 secured: true,

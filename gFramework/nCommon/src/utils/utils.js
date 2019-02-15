@@ -125,7 +125,7 @@ module.exports = {
                     } else {
                         let name = element.substring(0, element.lastIndexOf("."));
                         name = name.replace(/\./g, '');
-                        if (!UTILS.isBlank(name) && name.endsWith('Header')) {
+                        if (!UTILS.isBlank(name) && (name.endsWith('Header') || name.endsWith('Headers'))) {
                             fileList[name] = file;
                         }
                     }
@@ -144,10 +144,10 @@ module.exports = {
                     if (fs.statSync(file).isDirectory()) {
                         _self.getAllDataFiles(file, fileList);
                     } else {
-                        let name = element.substring(0, element.lastIndexOf("."));
-                        name = name.replace(/\./g, '');
-                        if (!UTILS.isBlank(name) && !name.endsWith('Header')) {
-                            fileList[name] = file;
+                        let name = element.split('.').shift();
+                        let extname = element.split('.').pop();
+                        if (!UTILS.isBlank(name) && !name.endsWith('Header') && !name.endsWith('Headers')) {
+                            fileList[name + '_' + extname] = file;
                         }
                     }
                 });

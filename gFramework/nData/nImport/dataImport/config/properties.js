@@ -12,6 +12,7 @@
 module.exports = {
 
     data: {
+        fileTypeReaderPipeline: {},
         fileTypeProcess: {}
     }
 };

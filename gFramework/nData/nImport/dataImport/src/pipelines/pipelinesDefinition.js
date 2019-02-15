@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    dataImportInitializerPipeline: {
+    internalDataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -19,52 +19,74 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultDataImportInitializerService.validateRequest',
-                success: 'redirectToImportType'
+                handler: 'DefaultInternalDataImportInitializerService.validateRequest',
+                success: 'loadInternalHeaderFileList'
             },
-            redirectToImportType: {
+            loadInternalHeaderFileList: {
                 type: 'function',
-                handler: 'DefaultDataImportInitializerService.redirectToImportType',
-                success: {
-                    fileImport: 'importFromFile',
-                    directImport: 'importFromDirect'
-                }
+                handler: 'DefaultInternalDataImportInitializerService.loadInternalHeaderFileList',
+                success: 'loadInternalDataFileList'
             },
-            importFromFile: {
-                type: 'process',
-                handler: 'fileDataImportInitializerPipeline',
-                success: 'successEnd'
+            loadInternalDataFileList: {
+                type: 'function',
+                handler: 'DefaultInternalDataImportInitializerService.loadInternalDataFileList',
+                success: 'resolveFileType'
             },
-            importFromDirect: {
-                type: 'process',
-                handler: 'directDataImportInitializerPipeline',
+            resolveFileType: {
+                type: 'function',
+                handler: 'DefaultInternalDataImportInitializerService.resolveFileType',
+                success: 'buildHeaderInstances'
+            },
+            buildHeaderInstances: {
+                type: 'function',
+                handler: 'DefaultInternalDataImportInitializerService.buildHeaderInstances',
+                success: 'assignDataFilesToHeader'
+            },
+            assignDataFilesToHeader: {
+                type: 'function',
+                handler: 'DefaultInternalDataImportInitializerService.assignDataFilesToHeader',
+                success: 'processInternalDataHeaders'
+            },
+            processInternalDataHeaders: {// Loop through all headers available for internal data
+                type: 'function',       // Call headerProcessPipeline for each header
+                handler: 'DefaultInternalDataImportInitializerService.processInternalDataHeaders',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultDataImportInitializerService.handleSucessEnd'
+                handler: 'DefaultInternalDataImportInitializerService.handleSucessEnd'
             },
-
             handleError: {
                 type: 'function',
-                handler: 'DefaultDataImportInitializerService.handleErrorEnd'
+                handler: 'DefaultInternalDataImportInitializerService.handleErrorEnd'
             }
         }
     },
 
-    directDataImportInitializerPipeline: {
-        startNode: "placeholder",
+    internalHeaderProcessPipeline: {
+        startNode: "validateHeader",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
 
         nodes: {
-            placeholder: {
+            validateHeader: {
                 type: 'function',
-                handler: 'DefaultDirectDataImportInitializerPipeline.placeholder',
+                handler: 'DefaultHeaderProcessService.validateHeader',
                 success: 'successEnd'
             },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultInternalDataImportInitializerService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultInternalDataImportInitializerService.handleErrorEnd'
+            }
         }
     },
+
+    //=================================================================================================
 
     fileDataImportInitializerPipeline: {
         startNode: "loadInternalHeaderFileList",

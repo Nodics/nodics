@@ -31,15 +31,23 @@ module.exports = {
             resolve(true);
         });
     },
+
+    imporInternaltData: function (input) {
+        return SERVICE.DefaultPipelineService.start('internalDataImportInitializerPipeline', input, {});
+    },
+
     importInitData: function (request) {
-        return SERVICE.DefaultImportService.importInitData(request);
+        request.dataType = 'init';
+        return this.imporInternaltData(request);
     },
 
     importCoreData: function (request) {
-        return SERVICE.DefaultImportService.importCoreData(request);
+        request.dataType = 'core';
+        return this.imporInternaltData(request);
     },
 
     importSampleData: function (request) {
-        return SERVICE.DefaultImportService.importSampleData(request);
+        request.dataType = 'sample';
+        return this.imporInternaltData(request);
     }
 };
