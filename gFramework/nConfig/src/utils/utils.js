@@ -12,13 +12,8 @@
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
-var mkdirp = require('mkdirp');
 
 module.exports = {
-
-    ensureExists: function (path, options) {
-        mkdirp.sync(path, options || {});
-    },
 
     isBlank: function (value) {
         return !value || !Object.keys(value).length;

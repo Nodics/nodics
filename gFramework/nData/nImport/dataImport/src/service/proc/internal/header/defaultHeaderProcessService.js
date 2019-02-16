@@ -75,20 +75,29 @@ module.exports = {
                         header: header.header,
                         files: fileObj.list
                     }, {}).then(dataObject => {
-                        console.log('2---------:', request.dataObject);
-                        SERVICE.DefaultPipelineService.start('finalizeDataInitializerPipeline', {
-                            outputFileName: fileName,
-                            header: header.header,
-                            dataObject: dataObject
-                        }, {}).then(success => {
+                        if (dataObject && dataObject.length > 0) {
+                            request.outputPath.fileName = fileName;
+                            SERVICE.DefaultPipelineService.start('finalizeDataInitializerPipeline', {
+                                dataType: request.dataType,
+                                outputPath: request.outputPath,
+                                header: header.header,
+                                dataObject: dataObject
+                            }, {}).then(success => {
+                                _self.processAllFiles(request, response, options).then(success => {
+                                    resolve(success);
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
                             _self.processAllFiles(request, response, options).then(success => {
                                 resolve(success);
                             }).catch(error => {
                                 reject(error);
                             });
-                        }).catch(error => {
-                            reject(error);
-                        });
+                        }
                     }).catch(error => {
                         reject(error);
                     });

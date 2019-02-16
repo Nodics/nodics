@@ -10,7 +10,7 @@
  */
 
 const _ = require('lodash');
-const util = require('util');
+const fse = require('fs-extra');
 
 module.exports = {
     /**
@@ -127,10 +127,27 @@ module.exports = {
         }
         delete request.internal.headerFiles;
         delete request.internal.dataFiles;
-        // console.log('------------------------------------------------------------------');
-        // console.log(options.headerName, ' : ', options.header);
-        //console.log(util.inspect(request.internal.headers, true, 4));
         process.nextSuccess(request, response);
+    },
+
+    prepareOutputURL: function (request, response, process) {
+        this.LOG.debug('Preparing output file path');
+        request.outputPath = {
+            destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/' + request.dataType,
+            //fileName: request.outputFileName,
+            dataType: request.dataType,
+            importType: 'import' // In-case of export, value will be 'export'
+        };
+        process.nextSuccess(request, response);
+    },
+
+    flushOutputFolder: function (request, response, process) {
+        this.LOG.debug('Cleaning output directory : ' + request.outputPath.destDir);
+        fse.remove(request.outputPath.destDir).then(() => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
 
     processInternalDataHeaders: function (request, response, process) {

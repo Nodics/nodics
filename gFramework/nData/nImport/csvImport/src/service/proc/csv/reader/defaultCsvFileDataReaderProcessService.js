@@ -48,7 +48,7 @@ module.exports = {
     },
 
     readFilesData: function (request, response, process) {
-        this.LOG.debug('Starting processing data chunks');
+        this.LOG.debug('Starting processing data chunks: ', request.files);
         this.readFiles(request.files, []).then(success => {
             response.success = success;
             process.nextSuccess(request, response);
@@ -62,7 +62,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let fileName = files.shift();
             csv(CONFIG.get('data').csvTypeParserOptions | {}).fromFile(fileName).then(jsonObj => {
-                data.concat(jsonObj);
+                if (jsonObj && jsonObj.length > 0) {
+                    jsonObj.forEach(element => {
+                        data.push(element);
+                    });
+                }
                 if (files.length > 0) {
                     _self.readFiles(files, data).then(success => {
                         resolve(success);

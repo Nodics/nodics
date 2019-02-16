@@ -42,11 +42,6 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultDataFinalizerService.validateRequest',
-                success: 'prepareOutputURL'
-            },
-            prepareOutputURL: {
-                type: 'function',
-                handler: 'DefaultDataFinalizerService.prepareOutputURL',
                 success: 'redirectToImportType'
             },
             redirectToImportType: {

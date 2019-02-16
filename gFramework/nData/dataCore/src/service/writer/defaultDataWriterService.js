@@ -9,8 +9,7 @@
 
  */
 
-const path = require('path');
-const moveFile = require('move-file');
+const fse = require('fs-extra');
 
 module.exports = {
     /**
@@ -40,46 +39,21 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let filePath = options.outputPath.destDir + '/' + options.outputPath.importType + '/' + options.outputPath.dataType;
-                UTILS.ensureExists(filePath);
-                let fileName = options.outputPath.fileName;
-                if (fileName.indexOf('.') > 0) {
-                    fileName = fileName.substring(0, fileName.lastIndexOf('.') - 1);
-                }
-                if (options.outputPath.version) {
-                    fileName = fileName + '_' + options.outputPath.version;
-                }
-                fileName = filePath + '/' + fileName + '.js';
-                this.LOG.debug('  Writing data into file: ' + fileName);// + '\n\n models[' + JSON.stringify(options.finalData) + ']\n}'
-                fs.writeFileSync(fileName, "\nmodule.exports = {\nheader:" + JSON.stringify(options.header) + ',\n\n models:' + JSON.stringify(options.finalData) + '\n};',
-                    CONFIG.get('importDataConvertEncoding'));
-                resolve(true);
-            } catch (error) {
-                reject(error);
-            }
-        });
-    },
-
-    moveToSuccess: function (options) {
-        options.destDir = 'success';
-    },
-
-    moveToError: function (options) {
-        options.destDir = 'error';
-    },
-
-    moveFile: function (options) {
-        return new Promise((resolve, reject) => {
-            try {
-                let filePath = path.dirname(options.fileName);
-                let fileName = path.basename(options.fileName);
-                let fileExt = path.extname(fileName);
-                let fileNameWithoutExt = fileName.replace(fileExt, '');
-                if (fileNameWithoutExt.endsWith('_processing')) {
-                    fileNameWithoutExt = fileNameWithoutExt.replace('_processing', '');
-                }
-                filePath = filePath + '/' + options.destDir;
-                UTILS.ensureExists(filePath);
-                moveFile(options.fileName, filePath + '/' + fileNameWithoutExt + '_' + Date.now() + fileExt).then(success => {
+                fse.ensureDir(filePath).then(success => {
+                    let fileName = options.outputPath.fileName;
+                    if (fileName.indexOf('.') > 0) {
+                        fileName = fileName.substring(0, fileName.lastIndexOf('.') - 1);
+                    }
+                    if (options.outputPath.version) {
+                        fileName = fileName + '_' + options.outputPath.version;
+                    }
+                    fileName = filePath + '/' + fileName + '.js';
+                    let finalObject = {
+                        header: options.header,
+                        models: options.finalData
+                    };
+                    this.LOG.debug('  Writing data into file: ' + fileName.replace(NODICS.getNodicsHome(), '.'));
+                    fs.writeFileSync(fileName, 'module.export = ' + JSON.stringify(finalObject, null, 4) + ';', CONFIG.get('importDataConvertEncoding'));
                     resolve(true);
                 }).catch(error => {
                     reject(error);

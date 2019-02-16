@@ -39,7 +39,6 @@ module.exports = {
 
     generateDataKey: function (request, response, process) {
         this.LOG.debug('Validating request to finalize local data import');
-        console.log('5---------:', request.dataObject);
         request.finalData = {};
         do {
             let data = request.dataObject.shift();

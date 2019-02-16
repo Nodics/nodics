@@ -71,7 +71,6 @@ module.exports = {
         if (request.header.options && request.header.options.processPipeline) {
             processPipeline = request.header.options.processPipeline;
         }
-        console.log('3---------:', request.dataObject);
         SERVICE.DefaultPipelineService.start(processPipeline, {
             header: request.header,
             dataObject: request.dataObject,
@@ -85,7 +84,6 @@ module.exports = {
 
     writeDataFile: function (request, response, process) {
         this.LOG.debug('Staring file write process for local data import');
-        console.log('4---------:', request.dataObject);
         SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
             header: request.header,
             dataObject: request.dataObject,

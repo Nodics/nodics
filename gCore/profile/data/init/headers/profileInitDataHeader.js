@@ -26,7 +26,7 @@ module.exports = {
             }
         },
 
-        /*defaultAddress: {
+        defaultAddress: {
             options: {
                 modelName: 'address',
                 operation: 'save', //save, update and saveOrUpdate
@@ -98,7 +98,7 @@ module.exports = {
             }
         },*/
 
-        /*defaultEnterprise: {
+        defaultEnterprise: {
             options: {
                 modelName: 'enterprise',
                 operation: 'save', //save, update and saveOrUpdate
@@ -310,6 +310,6 @@ module.exports = {
                     }
                 }
             }
-        }*/
+        }
     }
 };

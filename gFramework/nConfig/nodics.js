@@ -9,6 +9,7 @@
 
  */
 const _ = require('lodash');
+const fse = require('fs-extra');
 
 const Nodics = require('./bin/nodics');
 const Config = require('./bin/config');
@@ -74,29 +75,31 @@ module.exports = {
                 NODICS.setStartTime(startTime);
                 utils.collectModulesList(NODICS.getNodicsHome());
                 NODICS.initEnvironment();
-                utils.ensureExists(NODICS.getServerPath() + '/temp/logs');
-                initService.prepareOptions();
-                initService.loadModuleIndex();
-                initService.printInfo();
-                initService.LOG.info('Starting Utils loader process');
-                initService.LOG.info('Loading modules meta data');
-                initService.loadModulesMetaData();
-                initService.LOG.info('Loading modules common configurations');
-                initService.loadConfigurations();
-                initService.loadExternalProperties();
-                NODICS.LOG = logger.createLogger('NODICS');
-                CONFIG.LOG = logger.createLogger('CONFIG');
-                scriptHandler.LOG = logger.createLogger('DefaultScriptHandlerService');
-                enumService.LOG = logger.createLogger('DefaultEnumService');
-                moduleService.LOG = logger.createLogger('DefaultModuleInitializerService');
-                fileLoader.LOG = logger.createLogger('DefaultFilesLoaderService');
-                classesLoader.LOG = logger.createLogger('DefaultClassesHandlerService');
-                fileLoader.loadFiles('/src/utils/utils.js', global.UTILS);
-
-                UTILS.LOG = logger.createLogger('UTILS');
-                scriptHandler.loadPreScript();
-                scriptHandler.executePreScripts().then(success => {
-                    resolve(true);
+                fse.ensureDir(NODICS.getServerPath() + '/temp/logs').then(success => {
+                    initService.prepareOptions();
+                    initService.loadModuleIndex();
+                    initService.printInfo();
+                    initService.LOG.info('Starting Utils loader process');
+                    initService.LOG.info('Loading modules meta data');
+                    initService.loadModulesMetaData();
+                    initService.LOG.info('Loading modules common configurations');
+                    initService.loadConfigurations();
+                    initService.loadExternalProperties();
+                    NODICS.LOG = logger.createLogger('NODICS');
+                    CONFIG.LOG = logger.createLogger('CONFIG');
+                    scriptHandler.LOG = logger.createLogger('DefaultScriptHandlerService');
+                    enumService.LOG = logger.createLogger('DefaultEnumService');
+                    moduleService.LOG = logger.createLogger('DefaultModuleInitializerService');
+                    fileLoader.LOG = logger.createLogger('DefaultFilesLoaderService');
+                    classesLoader.LOG = logger.createLogger('DefaultClassesHandlerService');
+                    fileLoader.loadFiles('/src/utils/utils.js', global.UTILS);
+                    UTILS.LOG = logger.createLogger('UTILS');
+                    scriptHandler.loadPreScript();
+                    scriptHandler.executePreScripts().then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
                 }).catch(error => {
                     reject(error);
                 });

@@ -62,11 +62,15 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let fileName = files.shift();
             let convertExcel = excelProcess.processFile;
-            convertExcel(fileName, null, CONFIG.get('data').excelTypeParserOptions, (error, jsonData) => {
+            convertExcel(fileName, null, CONFIG.get('data').excelTypeParserOptions, (error, jsonObj) => {
                 if (error) {
                     reject(error);
                 } else {
-                    data.concat(jsonData);
+                    if (jsonObj && jsonObj.length > 0) {
+                        jsonObj.forEach(element => {
+                            data.push(element);
+                        });
+                    }
                     if (files.length > 0) {
                         _self.readFiles(files, data).then(success => {
                             resolve(success);

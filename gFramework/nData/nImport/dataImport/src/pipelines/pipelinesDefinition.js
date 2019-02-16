@@ -45,6 +45,16 @@ module.exports = {
             assignDataFilesToHeader: {
                 type: 'function',
                 handler: 'DefaultInternalDataImportInitializerService.assignDataFilesToHeader',
+                success: 'prepareOutputURL'
+            },
+            prepareOutputURL: {
+                type: 'function',
+                handler: 'DefaultInternalDataImportInitializerService.prepareOutputURL',
+                success: 'flushOutputFolder'
+            },
+            flushOutputFolder: {
+                type: 'function',
+                handler: 'DefaultInternalDataImportInitializerService.flushOutputFolder',
                 success: 'processInternalDataHeaders'
             },
             processInternalDataHeaders: {// Loop through all headers available for internal data

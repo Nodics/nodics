@@ -36,21 +36,11 @@ module.exports = {
         this.LOG.debug('Validating request to finalize import data');
         if (!request.header && UTILS.isBlank(request.header)) {
             process.error(request, response, 'Please validate request. Mandate header not found');
-        } else if (!request.outputFileName) {
+        } else if (!request.outputPath) {
             process.error(request, response, 'Please validate request. Mandate output path not found');
         } else {
             process.nextSuccess(request, response);
         }
-    },
-
-    prepareOutputURL: function (request, response, process) {
-        this.LOG.debug('Preparing output file path');
-        request.outputPath = {
-            destDir: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName || 'temp',
-            fileName: request.outputFileName,
-            importType: 'import' // In-case of export, value will be 'export'
-        };
-        process.nextSuccess(request, response);
     },
 
     redirectToImportType: function (request, response, process) {
