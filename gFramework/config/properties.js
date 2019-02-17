@@ -30,16 +30,8 @@ module.exports = {
             'nrouter',
             'ndata',
             'dataCore',
-            'dataImport',
-            'jsonImport',
-            'csvImport',
-            'xlsImport',
-            'nImport',
-            'dataExport',
-            'jsonExport',
-            'csvExport',
-            'xlsExport',
-            'nExport',
+            'import',
+            'export',
             'ntest',
             'system'
         ]

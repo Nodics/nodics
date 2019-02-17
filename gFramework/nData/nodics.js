@@ -10,12 +10,11 @@
  */
 
 module.exports = {
-
     /**
-    * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
-    * defined it that with Promise way
-    * @param {*} options 
-    */
+     * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
     init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
@@ -31,5 +30,5 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
-    }
+    },
 };

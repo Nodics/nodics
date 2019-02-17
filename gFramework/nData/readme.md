@@ -1,1 +1,1 @@
-This is a sample readme file for your nData module
+This is a sample readme file for your custom application

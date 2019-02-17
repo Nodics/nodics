@@ -1,1 +1,0 @@
-This is a sample readme file for your custom application
