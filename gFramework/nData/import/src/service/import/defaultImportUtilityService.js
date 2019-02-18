@@ -50,7 +50,7 @@ module.exports = {
         }
     },
 
-    getInternalDataHeaders: function (moduleList, dataType) {
+    getSystemDataHeaders: function (moduleList, dataType) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -85,7 +85,7 @@ module.exports = {
      * @return - object hold files based on thier name
     **/
 
-    getExternalDataHeaders: function (path) {
+    getLocalDataHeaders: function (path) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -122,7 +122,7 @@ module.exports = {
      * @argument - moduleList - list of modules to be processed
      * @return - object hold files based on thier name
     **/
-    getInternalFiles: function (moduleList, dataType) {
+    getSystemFiles: function (moduleList, dataType) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -157,7 +157,7 @@ module.exports = {
      * @return - object hold files based on thier name
     **/
 
-    getExternalFiles: function (path) {
+    getLocalFiles: function (path) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {

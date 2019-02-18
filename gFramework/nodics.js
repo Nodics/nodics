@@ -99,9 +99,17 @@ module.exports = {
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');
                 NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
-                SERVICE.DefaultImportService.importInitData({
+                // SERVICE.DefaultImportService.importInitData({
+                //     tenant: 'default',
+                //     modules: NODICS.getActiveModules()
+                // }).then(success => {
+                //     NODICS.LOG.info('Nodics Import Success');
+                // }).catch(error => {
+                //     NODICS.LOG.error('Nodics Import error : ', error);
+                // });
+                SERVICE.DefaultImportService.importLocalData({
                     tenant: 'default',
-                    modules: NODICS.getActiveModules()
+                    path: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data'
                 }).then(success => {
                     NODICS.LOG.info('Nodics Import Success');
                 }).catch(error => {

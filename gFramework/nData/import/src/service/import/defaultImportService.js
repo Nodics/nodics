@@ -32,22 +32,26 @@ module.exports = {
         });
     },
 
-    imporInternaltData: function (input) {
-        return SERVICE.DefaultPipelineService.start('internalDataImportInitializerPipeline', input, {});
-    },
-
     importInitData: function (request) {
         request.dataType = 'init';
-        return this.imporInternaltData(request);
+        return SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {});
     },
 
     importCoreData: function (request) {
         request.dataType = 'core';
-        return this.imporInternaltData(request);
+        return SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {});
     },
 
     importSampleData: function (request) {
         request.dataType = 'sample';
-        return this.imporInternaltData(request);
+        return SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {});
+    },
+
+    importLocalData: function (request) {
+        return SERVICE.DefaultPipelineService.start('localDataImportInitializerPipeline', request, {});
+    },
+
+    importRemoteData: function (request) {
+        return SERVICE.DefaultPipelineService.start('remoteDataImportInitializerPipeline', request, {});
     }
 };

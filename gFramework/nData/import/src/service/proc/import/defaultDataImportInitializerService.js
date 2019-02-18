@@ -37,28 +37,18 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
-        if (!request.modules && !UTILS.isArray(request.modules) && request.modules.length <= 0) {
-            process.error(request, response, 'Please validate request. Mandate property modules not have valid value');
+        if (!request.data) {
+            process.error(request, response, 'Please validate request. Mandate property data not have valid value');
+        } else if (!request.outputPath) {
+            process.error(request, response, 'Please validate request. Mandate property outputPath not have valid value');
         } else {
-            request.internal = {};
             process.nextSuccess(request, response);
         }
     },
 
-    loadInternalHeaderFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of header files from modules to be imported');
-        SERVICE.DefaultImportUtilityService.getInternalDataHeaders(request.modules, request.dataType).then(success => {
-            request.internal.headerFiles = success;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
-
-    loadInternalDataFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of data files from modules to be imported');
-        SERVICE.DefaultImportUtilityService.getInternalFiles(request.modules, request.dataType).then(success => {
-            request.internal.dataFiles = success;
+    flushOutputFolder: function (request, response, process) {
+        this.LOG.debug('Cleaning output directory : ' + request.outputPath.destDir);
+        fse.remove(request.outputPath.destDir).then(() => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -67,10 +57,10 @@ module.exports = {
 
     resolveFileType: function (request, response, process) {
         this.LOG.debug('Resolving file type');
-        if (request.internal && request.internal.dataFiles) {
-            _.each(request.internal.dataFiles, (list, name) => {
+        if (request.data && request.data.dataFiles) {
+            _.each(request.data.dataFiles, (list, name) => {
                 let fileType = list[0].substring(list[0].lastIndexOf('.') + 1, list[0].length);
-                request.internal.dataFiles[name] = {
+                request.data.dataFiles[name] = {
                     type: fileType,
                     list: list,
                     processedRecords: []
@@ -83,8 +73,8 @@ module.exports = {
     buildHeaderInstances: function (request, response, process) {
         this.LOG.debug('Generating header instances from header files');
         let internalHeaderObj = {};
-        if (request.internal && request.internal.headerFiles) {
-            _.each(request.internal.headerFiles, (list, name) => {
+        if (request.data && request.data.headerFiles) {
+            _.each(request.data.headerFiles, (list, name) => {
                 list.forEach(element => {
                     internalHeaderObj[name] = _.merge(internalHeaderObj[name] || {}, require(element));
                 });
@@ -94,17 +84,17 @@ module.exports = {
                 _.each(headerFile, (moduleHeaders, moduleName) => {
                     if (NODICS.isModuleActive(moduleName)) {
                         _.each(moduleHeaders, (header, headerName) => {
-                            if (!request.internal.headers) {
-                                request.internal.headers = {};
+                            if (!request.data.headers) {
+                                request.data.headers = {};
                             }
-                            if (!request.internal.headers[headerName]) {
-                                request.internal.headers[headerName] = {
+                            if (!request.data.headers[headerName]) {
+                                request.data.headers[headerName] = {
                                     header: {},
                                     dataFiles: {}
                                 };
                             }
-                            request.internal.headers[headerName].header = _.merge(request.internal.headers[headerName].header, header);
-                            request.internal.headers[headerName].header.options.moduleName = moduleName;
+                            request.data.headers[headerName].header = _.merge(request.data.headers[headerName].header, header);
+                            request.data.headers[headerName].header.options.moduleName = moduleName;
                         });
                     }
                 });
@@ -115,55 +105,39 @@ module.exports = {
 
     assignDataFilesToHeader: function (request, response, process) {
         this.LOG.debug('Associating data files with corresponding headers');
-        if (request.internal && request.internal.headers) {
-            _.each(request.internal.headers, (headerObject, headerName) => {
+        if (request.data && request.data.headers) {
+            _.each(request.data.headers, (headerObject, headerName) => {
                 let dataPreFix = headerObject.header.options.dataFilePrefix || headerName;
-                _.each(request.internal.dataFiles, (object, fileName) => {
+                _.each(request.data.dataFiles, (object, fileName) => {
                     if (fileName.startsWith(dataPreFix)) {
                         headerObject.dataFiles[fileName] = object;
                     }
                 });
             });
         }
-        delete request.internal.headerFiles;
-        delete request.internal.dataFiles;
+        console.log('---------------------------------------------------');
+        console.log(request.data.headerFiles);
+        console.log('---------------------------------------------------');
+        console.log(request.data.dataFiles);
+        delete request.data.headerFiles;
+        delete request.data.dataFiles;
         process.nextSuccess(request, response);
     },
 
-    prepareOutputURL: function (request, response, process) {
-        this.LOG.debug('Preparing output file path');
-        request.outputPath = {
-            destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/' + request.dataType,
-            //fileName: request.outputFileName,
-            dataType: request.dataType,
-            importType: 'import' // In-case of export, value will be 'export'
-        };
-        process.nextSuccess(request, response);
-    },
-
-    flushOutputFolder: function (request, response, process) {
-        this.LOG.debug('Cleaning output directory : ' + request.outputPath.destDir);
-        fse.remove(request.outputPath.destDir).then(() => {
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
-
-    processInternalDataHeaders: function (request, response, process) {
-        this.LOG.debug('Starting internal data import process');
+    processDataHeaders: function (request, response, process) {
+        this.LOG.debug('Starting data import process');
         try {
-            if (request.internal && request.internal.headers) {
+            if (request.data && request.data.headers) {
                 this.processHeaders(request, response, {
                     importType: 'internal',
-                    pendingHeaders: Object.keys(request.internal.headers)
+                    pendingHeaders: Object.keys(request.data.headers)
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);
                 });
             } else {
-                this.LOG.debug('No data found from internal path to import');
+                this.LOG.debug('No data found to import');
                 process.nextSuccess(request, response);
             }
         } catch (error) {
@@ -175,15 +149,15 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (options.pendingHeaders && options.pendingHeaders.length > 0) {
-                let headers = request[options.importType].headers;
+                let headers = request.data.headers;
                 let headerName = options.pendingHeaders.shift();
                 let header = headers[headerName];
                 if (!header.done || header.done === false) {
-                    this.LOG.debug('Starting process for header: ', headerName);
+                    _self.LOG.debug('Starting process for header: ', headerName);
                     request.importType = options.importType;
                     request.headerName = headerName;
-                    SERVICE.DefaultPipelineService.start('internalHeaderProcessPipeline', request, {}).then(success => {
-                        this.processHeaders(request, response, options).then(success => {
+                    SERVICE.DefaultPipelineService.start('headerProcessPipeline', request, {}).then(success => {
+                        _self.processHeaders(request, response, options).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);
@@ -192,7 +166,7 @@ module.exports = {
                         reject(error);
                     });
                 } else {
-                    this.processHeaders(request, response, options).then(success => {
+                    _self.processHeaders(request, response, options).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);

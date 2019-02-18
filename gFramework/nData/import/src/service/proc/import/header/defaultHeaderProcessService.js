@@ -11,7 +11,6 @@
 
 const _ = require('lodash');
 
-
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -43,7 +42,7 @@ module.exports = {
     processHeaderFiles: function (request, response, process) {
         this.LOG.debug('Triggering process to import all files for header');
         try {
-            let header = request[request.importType].headers[request.headerName];
+            let header = request.data.headers[request.headerName];
             if (!UTILS.isBlank(header.dataFiles)) {
                 this.processAllFiles(request, response, {
                     pendingFileList: Object.keys(header.dataFiles)
@@ -63,7 +62,7 @@ module.exports = {
 
     processAllFiles: function (request, response, options) {
         let _self = this;
-        let header = request[request.importType].headers[request.headerName];
+        let header = request.data.headers[request.headerName];
         return new Promise((resolve, reject) => {
             if (options.pendingFileList && options.pendingFileList.length > 0) {
                 let fileName = options.pendingFileList.shift(); //Actual Files group name
