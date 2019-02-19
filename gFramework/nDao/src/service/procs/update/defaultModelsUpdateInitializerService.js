@@ -356,7 +356,7 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_UPD_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

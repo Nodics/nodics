@@ -38,8 +38,7 @@ module.exports = {
     writeToFile: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                let filePath = options.outputPath.destDir + '/' + options.outputPath.importType + '/' + options.outputPath.dataType;
-                fse.ensureDir(filePath).then(success => {
+                fse.ensureDir(options.outputPath.destDir).then(success => {
                     let fileName = options.outputPath.fileName;
                     if (fileName.indexOf('.') > 0) {
                         fileName = fileName.substring(0, fileName.lastIndexOf('.') - 1);
@@ -47,13 +46,13 @@ module.exports = {
                     if (options.outputPath.version) {
                         fileName = fileName + '_' + options.outputPath.version;
                     }
-                    fileName = filePath + '/' + fileName + '.js';
+                    fileName = options.outputPath.destDir + '/' + fileName + '.js';
                     let finalObject = {
                         header: options.header,
                         models: options.finalData
                     };
                     this.LOG.debug('  Writing data into file: ' + fileName.replace(NODICS.getNodicsHome(), '.'));
-                    fs.writeFileSync(fileName, 'module.export = ' + JSON.stringify(finalObject, null, 4) + ';', CONFIG.get('importDataConvertEncoding'));
+                    fs.writeFileSync(fileName, 'module.export = ' + JSON.stringify(finalObject, null, 4) + ';', CONFIG.get('data').importDataConvertEncoding || 'utf8');
                     resolve(true);
                 }).catch(error => {
                     reject(error);

@@ -52,7 +52,6 @@ module.exports = {
             }
         }
     },
-
     localDataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -94,7 +93,6 @@ module.exports = {
             }
         }
     },
-
     remoteDataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -136,7 +134,6 @@ module.exports = {
             }
         }
     },
-
     dataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -183,7 +180,6 @@ module.exports = {
             }
         }
     },
-
     headerProcessPipeline: {
         startNode: "validateHeader",
         hardStop: true,
@@ -208,34 +204,6 @@ module.exports = {
             handleError: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.handleErrorEnd'
-            }
-        }
-    },
-
-    jsonFileDataReaderPipeline: {
-        startNode: "validateRequest",
-        hardStop: true, //default value is false
-        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultJsonFileDataReaderProcessService.validateRequest',
-                success: 'readDataChunk'
-            },
-            readDataChunk: {
-                type: 'function',
-                handler: 'DefaultJsonFileDataReaderProcessService.readDataChunk',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultJsonFileDataReaderProcessService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultJsonFileDataReaderProcessService.handleErrorEnd'
             }
         }
     },
@@ -267,7 +235,6 @@ module.exports = {
             }
         }
     },
-
     JsonDataHandlerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -282,44 +249,25 @@ module.exports = {
             executeDataProcessor: {
                 type: 'function',
                 handler: 'DefaultJsonDataHandlerProcessService.executeDataProcessor',
+                success: 'processData'
+            },
+            processData: {
+                type: 'function',
+                handler: 'DefaultJsonDataHandlerProcessService.processData',
+                success: 'writeDataFile'
+            },
+            writeDataFile: {
+                type: 'function',
+                handler: 'DefaultJsonDataHandlerProcessService.writeDataFile',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
                 handler: 'DefaultJsonDataHandlerProcessService.handleSucessEnd'
             },
-
             handleError: {
                 type: 'function',
                 handler: 'DefaultJsonDataHandlerProcessService.handleErrorEnd'
-            }
-        }
-    },
-
-    csvFileDataReaderPipeline: {
-        startNode: "validateRequest",
-        hardStop: true, //default value is false
-        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultCsvFileDataReaderProcessService.validateRequest',
-                success: 'readFilesData'
-            },
-            readFilesData: {
-                type: 'function',
-                handler: 'DefaultCsvFileDataReaderProcessService.readFilesData',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCsvFileDataReaderProcessService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCsvFileDataReaderProcessService.handleErrorEnd'
             }
         }
     },
@@ -366,6 +314,16 @@ module.exports = {
             executeDataProcessor: {
                 type: 'function',
                 handler: 'DefaultCsvDataHandlerProcessService.executeDataProcessor',
+                success: 'processData'
+            },
+            processData: {
+                type: 'function',
+                handler: 'DefaultCsvDataHandlerProcessService.processData',
+                success: 'writeDataFile'
+            },
+            writeDataFile: {
+                type: 'function',
+                handler: 'DefaultCsvDataHandlerProcessService.writeDataFile',
                 success: 'successEnd'
             },
             successEnd: {
@@ -376,34 +334,6 @@ module.exports = {
             handleError: {
                 type: 'function',
                 handler: 'DefaultCsvDataHandlerProcessService.handleErrorEnd'
-            }
-        }
-    },
-
-    excelFileDataReaderPipeline: {
-        startNode: "validateRequest",
-        hardStop: true, //default value is false
-        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultExcelFileDataReaderProcessService.validateRequest',
-                success: 'readFilesData'
-            },
-            readFilesData: {
-                type: 'function',
-                handler: 'DefaultExcelFileDataReaderProcessService.readFilesData',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultExcelFileDataReaderProcessService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultExcelFileDataReaderProcessService.handleErrorEnd'
             }
         }
     },
@@ -435,7 +365,6 @@ module.exports = {
             }
         }
     },
-
     excelDataHandlerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -450,13 +379,22 @@ module.exports = {
             executeDataProcessor: {
                 type: 'function',
                 handler: 'DefaultExcelDataHandlerProcessService.executeDataProcessor',
+                success: 'processData'
+            },
+            processData: {
+                type: 'function',
+                handler: 'DefaultExcelDataHandlerProcessService.processData',
+                success: 'writeDataFile'
+            },
+            writeDataFile: {
+                type: 'function',
+                handler: 'DefaultExcelDataHandlerProcessService.writeDataFile',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
                 handler: 'DefaultExcelDataHandlerProcessService.handleSucessEnd'
             },
-
             handleError: {
                 type: 'function',
                 handler: 'DefaultExcelDataHandlerProcessService.handleErrorEnd'

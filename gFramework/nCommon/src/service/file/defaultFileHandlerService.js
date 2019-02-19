@@ -36,16 +36,22 @@ module.exports = {
     },
 
     moveToProcessing: function (options) {
-        let filePath = path.dirname(options.fileName);
-        let fileName = path.basename(options.fileName);
-        let fileExt = path.extname(options.fileName);
-        let fileNameWithoutExt = fileName.replace(fileExt, '');
-        fse.move(options.fileName, filePath + '/' + fileNameWithoutExt + '_processing' + fileExt).then(() => {
-            resolve(true);
-        }).catch(err => {
-            reject(error);
+        return new Promise((resolve, reject) => {
+            try {
+                let filePath = path.dirname(options.fileName);
+                let fileName = path.basename(options.fileName);
+                let fileExt = path.extname(options.fileName);
+                let fileNameWithoutExt = fileName.replace(fileExt, '');
+                let outputFileName = filePath + '/' + fileNameWithoutExt + '_processing' + fileExt;
+                fse.move(options.fileName, outputFileName).then(() => {
+                    resolve(outputFileName);
+                }).catch(err => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(error);
+            }
         });
-
     },
 
     moveToSuccess: function (options) {

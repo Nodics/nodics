@@ -43,8 +43,9 @@ module.exports = {
 
     executeDataProcessor: function (request, response, process) {
         this.LOG.debug('Applying pre processors in models');
-        let moduleName = request.moduleName || request.collection.moduleName;
-        let modelName = request.collection.modelName;
+        let moduleName = request.header.options.moduleName;
+        let modelName = request.header.options.modelName;
+        modelName = modelName.toUpperCaseFirstChar() + 'Model';
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(moduleName, modelName);
         if (interceptors && interceptors.importProcessor && interceptors.importProcessor.length > 0) {
             let interceptorRequest = {
@@ -67,14 +68,14 @@ module.exports = {
 
     processData: function (request, response, process) {
         this.LOG.debug('Checking target process to handle request');
-        let processPipeline = 'defaultDataFinalizerProcessPipeline';
+        let processPipeline = 'defaultFinalizerDataFilterPipeline';
         if (request.header.options && request.header.options.processPipeline) {
             processPipeline = request.header.options.processPipeline;
         }
         SERVICE.DefaultPipelineService.start(processPipeline, {
             header: request.header,
             dataObject: request.dataObject,
-            outputPath: outputPath
+            outputPath: request.outputPath
         }, {}).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -87,7 +88,7 @@ module.exports = {
         SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
             header: request.header,
             dataObject: request.dataObject,
-            outputPath: outputPath
+            outputPath: request.outputPath
         }, {}).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -107,7 +108,7 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_SYS_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

@@ -115,10 +115,6 @@ module.exports = {
                 });
             });
         }
-        console.log('---------------------------------------------------');
-        console.log(request.data.headerFiles);
-        console.log('---------------------------------------------------');
-        console.log(request.data.dataFiles);
         delete request.data.headerFiles;
         delete request.data.dataFiles;
         process.nextSuccess(request, response);
@@ -129,7 +125,6 @@ module.exports = {
         try {
             if (request.data && request.data.headers) {
                 this.processHeaders(request, response, {
-                    importType: 'internal',
                     pendingHeaders: Object.keys(request.data.headers)
                 }).then(success => {
                     process.nextSuccess(request, response);
@@ -154,7 +149,6 @@ module.exports = {
                 let header = headers[headerName];
                 if (!header.done || header.done === false) {
                     _self.LOG.debug('Starting process for header: ', headerName);
-                    request.importType = options.importType;
                     request.headerName = headerName;
                     SERVICE.DefaultPipelineService.start('headerProcessPipeline', request, {}).then(success => {
                         _self.processHeaders(request, response, options).then(success => {
@@ -191,7 +185,7 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_SYS_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

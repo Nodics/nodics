@@ -43,19 +43,28 @@ module.exports = {
         }
     },
 
+    moveToProcessing: function (request, response, process) {
+        this.LOG.debug('Moving file to processing state');
+        if (request.outputPath.importType !== 'system') {
+
+        } else {
+
+        }
+    },
+
     redirectToImportType: function (request, response, process) {
         this.LOG.debug('Checking target process to handle request');
-        if (request.dataObject && request.dataObject instanceof Array && request.dataObject.length > 0) {
-            this.LOG.debug('Redirecting to finalize local data');
-            response.targetNode = 'finalizeLocalData';
-        } else if (request.inputFileName) {
-            this.LOG.debug('Redirecting to finalize external file data');
-            response.targetNode = 'finalizeExternalFileData';
+        if (request.outputPath.importType === 'system') {
+            this.LOG.debug('Redirecting to finalize system data');
+            response.targetNode = 'finalizeSystemData';
+            process.nextSuccess(request, response);
+        } else if (request.outputPath.importType === 'local') {
+            this.LOG.debug('Redirecting to finalize local file data');
+            response.targetNode = 'finalizeLocalFileData';
+            process.nextSuccess(request, response);
         } else {
-            this.LOG.debug('Redirecting to finalize external direct data');
-            response.targetNode = 'finalizeExternalDirectData';
+            process.error(request, response, 'Please validate request. Mandate output path not found');
         }
-        process.nextSuccess(request, response);
     },
 
     handleSucessEnd: function (request, response, process) {
@@ -71,7 +80,7 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_SYS_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

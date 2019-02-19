@@ -47,9 +47,8 @@ module.exports = {
     prepareOutputURL: function (request, response, process) {
         this.LOG.debug('Preparing output file path');
         request.outputPath = {
-            destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp'),
-            dataType: request.dataType,
-            importType: 'import'
+            destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/import/local',
+            importType: 'local'
         };
         process.nextSuccess(request, response);
     },
@@ -87,7 +86,7 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_SYS_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

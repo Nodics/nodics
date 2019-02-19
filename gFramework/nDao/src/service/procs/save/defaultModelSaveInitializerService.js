@@ -538,7 +538,7 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_FIND_00005',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

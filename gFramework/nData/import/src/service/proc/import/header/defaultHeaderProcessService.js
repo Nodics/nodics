@@ -44,13 +44,23 @@ module.exports = {
         try {
             let header = request.data.headers[request.headerName];
             if (!UTILS.isBlank(header.dataFiles)) {
-                this.processAllFiles(request, response, {
-                    pendingFileList: Object.keys(header.dataFiles)
-                }).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
+                if (request.outputPath.importType === 'system') {
+                    this.processSystemFiles(request, response, {
+                        pendingFileList: Object.keys(header.dataFiles)
+                    }).then(success => {
+                        process.nextSuccess(request, response);
+                    }).catch(error => {
+                        process.error(request, response, error);
+                    });
+                } else {
+                    this.processFiles(request, response, {
+                        pendingFileList: Object.keys(header.dataFiles)
+                    }).then(success => {
+                        process.nextSuccess(request, response);
+                    }).catch(error => {
+                        process.error(request, response, error);
+                    });
+                }
             } else {
                 this.LOG.debug('There is no data to import for header : ' + request.headerName);
                 process.nextSuccess(request, response);
@@ -60,7 +70,7 @@ module.exports = {
         }
     },
 
-    processAllFiles: function (request, response, options) {
+    processFiles: function (request, response, options) {
         let _self = this;
         let header = request.data.headers[request.headerName];
         return new Promise((resolve, reject) => {
@@ -69,39 +79,88 @@ module.exports = {
                 _self.LOG.debug('Processing file: ', fileName, ' from header: ', request.headerName);
                 let fileObj = header.dataFiles[fileName];
                 if (fileObj.list && fileObj.list.length > 0) {
-                    SERVICE.DefaultPipelineService.start(CONFIG.get('data').fileTypeReaderPipeline[fileObj.type], {
-                        fileName: fileName,
-                        header: header.header,
-                        files: fileObj.list
-                    }, {}).then(dataObject => {
-                        if (dataObject && dataObject.length > 0) {
-                            request.outputPath.fileName = fileName;
-                            SERVICE.DefaultPipelineService.start('finalizeDataInitializerPipeline', {
-                                dataType: request.dataType,
-                                outputPath: request.outputPath,
-                                header: header.header,
-                                dataObject: dataObject
-                            }, {}).then(success => {
-                                _self.processAllFiles(request, response, options).then(success => {
-                                    resolve(success);
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        } else {
-                            _self.processAllFiles(request, response, options).then(success => {
+                    SERVICE.DefaultFileHandlerService.moveToProcessing({
+                        fileName: fileObj.list[0]
+                    }).then(inputFileName => {
+                        request.outputPath.fileName = fileName;
+                        SERVICE.DefaultPipelineService.start('finalizeDataInitializerPipeline', {
+                            inputFileName: inputFileName,
+                            outputPath: request.outputPath,
+                            header: header.header
+                        }, {}).then(success => {
+                            _self.processFiles(request, response, options).then(success => {
                                 resolve(success);
                             }).catch(error => {
                                 reject(error);
                             });
-                        }
+                        }).catch(error => {
+                            reject(error);
+                        });
                     }).catch(error => {
                         reject(error);
                     });
                 } else {
-                    _self.processAllFiles(request, response, options).then(success => {
+                    _self.processFiles(request, response, options).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            } else {
+                _self.LOG.debug('Done import for files for header : ', request.headerName);
+                header.done = true;
+                resolve(true);
+            }
+        });
+    },
+
+    processSystemFiles: function (request, response, options) {
+        let _self = this;
+        let header = request.data.headers[request.headerName];
+        return new Promise((resolve, reject) => {
+            if (options.pendingFileList && options.pendingFileList.length > 0) {
+                let fileName = options.pendingFileList.shift();
+                _self.LOG.debug('Processing file: ', fileName, ' from header: ', request.headerName);
+                let fileObj = header.dataFiles[fileName];
+                if (fileObj.list && fileObj.list.length > 0) {
+                    let readerService = CONFIG.get('data').fileTypeReaderService[fileObj.type];
+                    if (readerService) {
+                        SERVICE[readerService].readData({
+                            fileName: fileName,
+                            header: header.header,
+                            files: fileObj.list
+                        }, {}).then(dataObject => {
+                            if (dataObject && dataObject.length > 0) {
+                                request.outputPath.fileName = fileName;
+                                SERVICE.DefaultPipelineService.start('finalizeDataInitializerPipeline', {
+                                    dataType: request.dataType,
+                                    outputPath: request.outputPath,
+                                    header: header.header,
+                                    dataObject: dataObject
+                                }, {}).then(success => {
+                                    _self.processSystemFiles(request, response, options).then(success => {
+                                        resolve(success);
+                                    }).catch(error => {
+                                        reject(error);
+                                    });
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            } else {
+                                _self.processSystemFiles(request, response, options).then(success => {
+                                    resolve(success);
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            }
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        reject('Could not found any reader for file type: ' + fileObj.type);
+                    }
+                } else {
+                    _self.processSystemFiles(request, response, options).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -128,7 +187,7 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_SYS_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

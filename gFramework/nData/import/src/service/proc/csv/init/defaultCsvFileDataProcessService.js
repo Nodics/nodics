@@ -10,7 +10,6 @@
  */
 
 const csv = require('csvtojson');
-const path = require('path');
 const fs = require('fs');
 var sizeof = require('object-sizeof');
 
@@ -39,7 +38,7 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to process JSON file');
+        this.LOG.debug('Validating request to process CSV file');
         if (!request.inputFileName) {
             process.error(request, response, 'Invalid file path to read data');
         } else if (!request.outputPath || UTILS.isBlank(request.outputPath)) {
@@ -55,13 +54,14 @@ module.exports = {
         let dataChunk = [];
         let readBytes = 0;
         let version = 0;
-        converter.fromStream(fs.createReadStream(csvFilePath)).on('data', (data) => {
+        converter.fromStream(fs.createReadStream(request.inputFileName)).on('data', (data) => {
+            let strData = JSON.parse(data.toString(CONFIG.get('data').importDataConvertEncoding || 'utf8'));
             converter.pause();
-            readBytes = readBytes + sizeof(data.value);
+            readBytes = readBytes + sizeof(data);
             if (readBytes > CONFIG.get('data').readBufferSize) {
                 request.dataObject = [].concat(dataChunk);
                 SERVICE.DefaultPipelineService.start('csvDataHandlerPipeline', request, {}).then(success => {
-                    dataChunk = [data];
+                    dataChunk = [strData];
                     readBytes = 0;
                     version = version + 1;
                     converter.resume();
@@ -69,7 +69,7 @@ module.exports = {
                     process.error(request, response, error);
                 });
             } else {
-                dataChunk.push(data.value);
+                dataChunk.push(strData);
                 converter.resume();
             }
         }).on('end', (error) => {
@@ -100,7 +100,7 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_SYS_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

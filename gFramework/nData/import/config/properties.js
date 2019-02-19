@@ -22,17 +22,18 @@ module.exports = {
             convertTextToNumber: true
         },
 
-        fileTypeReaderPipeline: {
-            csv: 'csvFileDataReaderPipeline',
-            js: 'jsonFileDataReaderPipeline',
-            json: 'jsonFileDataReaderPipeline',
-            xls: 'csvFileDataReaderPipeline',
-            xlsb: 'csvFileDataReaderPipeline',
-            xlsm: 'csvFileDataReaderPipeline',
-            xlsx: 'csvFileDataReaderPipeline'
+        fileTypeReaderService: {
+            js: 'DefaultJsonFileDataReaderService',
+            json: 'DefaultJsonFileDataReaderService',
+            csv: 'DefaultCsvFileDataReaderService',
+            xls: 'DefaultExcelFileDataReaderService',
+            xlsb: 'DefaultExcelFileDataReaderService',
+            xlsm: 'DefaultExcelFileDataReaderService',
+            xlsx: 'DefaultExcelFileDataReaderService'
         },
 
         fileTypeProcess: {
+            js: 'jsonFileDataInitializerPipeline',
             json: 'jsonFileDataInitializerPipeline',
             csv: 'csvFileDataInitializerPipeline',
             xls: 'excelFileDataInitializerPipeline',

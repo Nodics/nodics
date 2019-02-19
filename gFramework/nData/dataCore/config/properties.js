@@ -10,8 +10,9 @@
  */
 
 module.exports = {
-    importDataConvertEncoding: 'utf8',
+
     data: {
+        importDataConvertEncoding: 'utf8',
         dataDirName: 'temp'
     }
 };

@@ -35,9 +35,12 @@ module.exports = {
     //This request will have dataObject and header and outputPath
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to finalize local data import');
-        request.outputPath.dataType = 'local'; // value could be here as 'local', 'external', 'direct'
-        request.outputPath.version = '0';
-        process.nextSuccess(request, response);
+        if (request.dataObject && request.dataObject instanceof Array && request.dataObject.length > 0) {
+            request.outputPath.version = '0';
+            process.nextSuccess(request, response);
+        } else {
+            process.error(request, response, 'Please validate request. data formate is not supported');
+        }
     },
 
     executeDataProcessor: function (request, response, process) {
@@ -67,7 +70,7 @@ module.exports = {
 
     processData: function (request, response, process) {
         this.LOG.debug('Checking target process to handle request');
-        let processPipeline = 'defaultDataFinalizerProcessPipeline';
+        let processPipeline = 'defaultFinalizerDataFilterPipeline';
         if (request.header.options && request.header.options.processPipeline) {
             processPipeline = request.header.options.processPipeline;
         }
@@ -108,7 +111,7 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_SYS_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

@@ -10,7 +10,6 @@
  */
 
 const _ = require('lodash');
-const fse = require('fs-extra');
 
 module.exports = {
     /**
@@ -48,9 +47,9 @@ module.exports = {
     prepareOutputURL: function (request, response, process) {
         this.LOG.debug('Preparing output file path');
         request.outputPath = {
-            destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/' + request.dataType,
+            destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/import/' + request.dataType,
             dataType: request.dataType,
-            importType: 'import'
+            importType: 'system'
         };
         process.nextSuccess(request, response);
     },
@@ -88,7 +87,7 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_SYS_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

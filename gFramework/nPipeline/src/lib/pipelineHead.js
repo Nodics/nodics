@@ -167,6 +167,7 @@ module.exports = function (name, pipelineDefinition) {
                     let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
                     SERVICE[serviceName][operation](request, response, this);
                 } catch (error) {
+                    _self.LOG.error(_currentNode.getHandler());
                     _self.LOG.error(error);
                     _self.error(request, response, {
                         success: false,

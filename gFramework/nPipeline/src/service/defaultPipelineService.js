@@ -53,7 +53,7 @@ module.exports = {
 
     start: function (name, request, response) {
         return new Promise((resolve, reject) => {
-            if (name !== 'defaultPipeline' && PIPELINE[name]) {
+            if ((typeof name === 'string' || name instanceof String) && name !== 'defaultPipeline' && PIPELINE[name]) {
                 let id = name + '_' + UTILS.generateUniqueCode();
                 try {
                     let defaultPipeline = _.merge({}, PIPELINE.defaultPipeline);
@@ -66,6 +66,10 @@ module.exports = {
                     this.LOG.error(err);
                     reject('Error while creating pipeline: ' + id + ' - ' + err.toString());
                 }
+            } else {
+                this.LOG.error('Error while creating pipeline, Please provide a valid pipeline name');
+                this.LOG.error(name);
+                reject('Error while creating pipeline, Please provide a valid pipeline name');
             }
         });
     }

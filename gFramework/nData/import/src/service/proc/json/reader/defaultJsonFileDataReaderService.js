@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,28 +34,56 @@ module.exports = {
         });
     },
 
-    //This request will have dataObject and header and outputPath
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to finalize local data import');
-        request.outputPath.dataType = 'externalDirect'; // value could be here as 'local', 'external', 'direct'
-        process.error(request, response, 'Importing data directly from other source not supported');
-        //process.nextSuccess(request, response);
+        this.LOG.debug('Validating request to process JSON file');
+        if (!request.fileName) {
+            process.error(request, response, 'Invalid file name to read data');
+        } else if (!request.header || UTILS.isBlank(request.header)) {
+            process.error(request, response, 'Invalid header to write data');
+        } else if (!request.files || request.files.length <= 0) {
+            process.error(request, response, 'Invalid file list to read data');
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    readDataChunk: function (request, response, process) {
+        this.LOG.debug('Starting processing data chunks');
+        try {
+            let dataObject = {};
+            let data = [];
+            request.files.forEach(file => {
+                let fileData = require(file);
+                if (!UTILS.isBlank(fileData)) {
+                    dataObject = _.merge(dataObject, fileData);
+                }
+            });
+            if (dataObject && !UTILS.isBlank(dataObject)) {
+                Object.keys(dataObject).forEach(element => {
+                    data.push(dataObject[element]);
+                });
+            }
+            response.success = data;
+            process.nextSuccess(request, response);
+        } catch (error) {
+            process.error(request, response, error);
+        }
+
     },
 
     handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response);
+        process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
+        this.LOG.debug('Request has been processed and got errors');
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {
             process.reject({
                 success: false,
                 code: 'ERR_SYS_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);

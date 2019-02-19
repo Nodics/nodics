@@ -33,20 +33,19 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        request.outputPath.dataType = 'externalFile'; // value could be here as 'local', 'external', 'direct'
         process.nextSuccess(request, response);
     },
 
     prepareFileType: function (request, response, process) {
-        request.outputPath.fileType = request.inputFileName.substring(request.inputFileName.lastIndexOf('.') + 1, request.inputFileName.length);
+        request.outputPath.fileType = request.inputFileName.split('.').pop();
         process.nextSuccess(request, response);
     },
 
     redirectToFileTypeProcess: function (request, response, process) {
         let fileTypeProcess = CONFIG.get('data').fileTypeProcess;
-        if (fileTypeProcess) {
-            this.LOG.debug('Processing data for file type: ', request.outputPath.fileType);
-            SERVICE.DefaultPipelineService.start(fileTypeProcess, request, {}).then(success => {
+        if (fileTypeProcess && fileTypeProcess[request.outputPath.fileType]) {
+            this.LOG.debug('Processing data for file type: ', request.outputPath.fileType, ' with pipeline: ', fileTypeProcess[request.outputPath.fileType]);
+            SERVICE.DefaultPipelineService.start(fileTypeProcess[request.outputPath.fileType], request, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -57,9 +56,10 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response, process) {
+        this.LOG.debug('Request has been processed successfully');
         process.resolve(response.success);
-        SERVICE.DefaultDataWriterService.moveToSuccess({
-            fileName: request.fileName
+        SERVICE.DefaultFileHandlerService.moveToSuccess({
+            fileName: request.inputFileName
         }).then(success => {
             this.LOG.debug('File moved to success bucket: ' + success);
         }).catch(error => {
@@ -75,13 +75,13 @@ module.exports = {
             process.reject({
                 success: false,
                 code: 'ERR_SYS_00000',
-                error: esponse.errors
+                error: response.errors
             });
         } else {
             process.reject(response.error);
         }
-        SERVICE.DefaultDataWriterService.moveToError({
-            fileName: request.fileName
+        SERVICE.DefaultFileHandlerService.moveToError({
+            fileName: request.inputFileName
         }).then(success => {
             this.LOG.debug('File moved to error bucket: ' + success);
         }).catch(error => {
