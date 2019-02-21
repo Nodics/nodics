@@ -64,7 +64,7 @@ module.exports = {
 
     processData: function (request, response, process) {
         this.LOG.debug('Checking target process to handle request');
-        let processPipeline = 'defaultFinalizerDataFilterPipeline';
+        let processPipeline = 'defaultImportDataFilterPipeline';
         if (request.header.options && request.header.options.processPipeline) {
             processPipeline = request.header.options.processPipeline;
         }

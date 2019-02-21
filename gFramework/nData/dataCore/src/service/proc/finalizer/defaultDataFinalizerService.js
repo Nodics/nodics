@@ -33,47 +33,48 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to finalize import data');
-        if (!request.header && UTILS.isBlank(request.header)) {
-            process.error(request, response, 'Please validate request. Mandate header not found');
-        } else if (!request.outputPath) {
-            process.error(request, response, 'Please validate request. Mandate output path not found');
-        } else {
-            process.nextSuccess(request, response);
-        }
+        process.nextSuccess(request, response);
     },
 
-    moveToProcessing: function (request, response, process) {
-        this.LOG.debug('Moving file to processing state');
-        if (request.outputPath.importType !== 'system') {
-
-        } else {
-
-        }
+    prepareFileType: function (request, response, process) {
+        process.nextSuccess(request, response);
     },
 
-    redirectToImportType: function (request, response, process) {
-        this.LOG.debug('Checking target process to handle request');
-        if (request.outputPath.importType === 'system') {
-            this.LOG.debug('Redirecting to finalize system data');
-            response.targetNode = 'finalizeSystemData';
-            process.nextSuccess(request, response);
-        } else if (request.outputPath.importType === 'local') {
-            this.LOG.debug('Redirecting to finalize local file data');
-            response.targetNode = 'finalizeLocalFileData';
-            process.nextSuccess(request, response);
+    redirectToFileTypeProcess: function (request, response, process) {
+        let fileTypeProcess = CONFIG.get('data').fileTypeProcess;
+        if (fileTypeProcess && fileTypeProcess[request.outputPath.fileType]) {
+            this.LOG.debug('Processing data for file type: ', request.outputPath.fileType, ' with pipeline: ', fileTypeProcess[request.outputPath.fileType]);
+            SERVICE.DefaultPipelineService.start(fileTypeProcess[request.outputPath.fileType], request, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
         } else {
-            process.error(request, response, 'Please validate request. Mandate output path not found');
+            process.error(request, response, 'Could not find file type process for type: ' + request.outputPath.fileType);
         }
     },
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
+        if (request.outputPath.importType !== 'system') {
+            SERVICE.DefaultFileHandlerService.moveToSuccess(request.files).then(success => {
+                this.LOG.debug('File moved to success bucket: ' + success);
+            }).catch(error => {
+                this.LOG.error('Facing issued while moving file to success bucket: ' + error);
+            });
+        }
         process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
+        if (request.outputPath.importType !== 'system') {
+            SERVICE.DefaultFileHandlerService.moveToError(request.files).then(success => {
+                this.LOG.debug('File moved to error bucket: ' + success);
+            }).catch(error => {
+                this.LOG.error('Facing issued while moving file to error bucket: ' + error);
+            });
+        }
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {

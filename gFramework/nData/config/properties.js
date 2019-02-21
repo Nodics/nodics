@@ -12,9 +12,20 @@
 module.exports = {
     moduleGroups: {
         nData: [
+            'ndata',
             'coreData',
             'import',
-            'export'
+            'jsImport',
+            'jsonImport',
+            'csvImport',
+            'excelImport',
+            'nImport',
+            'export',
+            'jsExport',
+            'jsonExport',
+            'csvExport',
+            'excelExport',
+            'nExport'
         ]
     }
 };

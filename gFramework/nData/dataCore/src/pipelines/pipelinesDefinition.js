@@ -10,7 +10,8 @@
  */
 
 module.exports = {
-    /*finalizeDataInitializerPipeline: {
+
+    dataFinalizerInitPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -19,104 +20,25 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultDataFinalizerService.validateRequest',
-                success: 'redirectToImportType'
+                success: 'prepareFileType'
             },
-            redirectToImportType: {
+            prepareFileType: {
                 type: 'function',
-                handler: 'DefaultDataFinalizerService.redirectToImportType',
-                success: {
-                    finalizeSystemData: 'finalizeSystemData',
-                    finalizeLocalFileData: 'finalizeLocalFileData'
-                }
+                handler: 'DefaultDataFinalizerService.prepareFileType',
+                success: 'redirectToFileTypeProcess'
             },
-            finalizeSystemData: {
-                type: 'process',
-                handler: 'finalizeSystemInitializerPipeline',
-                success: 'successEnd'
-            },
-            finalizeLocalFileData: {
-                type: 'process',
-                handler: 'finalizeLocalFileDataInitializerPipeline',
+            redirectToFileTypeProcess: {
+                type: 'function',
+                handler: 'DefaultDataFinalizerService.redirectToFileTypeProcess',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
                 handler: 'DefaultDataFinalizerService.handleSucessEnd'
             },
-
             handleError: {
                 type: 'function',
                 handler: 'DefaultDataFinalizerService.handleErrorEnd'
-            }
-        }
-    },
-
-    finalizeSystemInitializerPipeline: {
-        startNode: "validateRequest",
-        hardStop: true, //default value is false
-        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultSystemDataFinalizerService.validateRequest',
-                success: 'executeDataProcessor'
-            },
-            executeDataProcessor: {
-                type: 'function',
-                handler: 'DefaultSystemDataFinalizerService.executeDataProcessor',
-                success: 'processData'
-            },
-            processData: {
-                type: 'function',
-                handler: 'DefaultSystemDataFinalizerService.processData',
-                success: 'writeDataFile'
-            },
-            writeDataFile: {
-                type: 'function',
-                handler: 'DefaultSystemDataFinalizerService.writeDataFile',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultSystemDataFinalizerService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultSystemDataFinalizerService.handleErrorEnd'
-            }
-        }
-    },*/
-
-    finalizeFileDataInitializerPipeline: {
-        startNode: "validateRequest",
-        hardStop: true, //default value is false
-        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultLocalFileDataFinalizerService.validateRequest',
-                success: 'prepareFileType'
-            },
-            prepareFileType: {
-                type: 'function',
-                handler: 'DefaultLocalFileDataFinalizerService.prepareFileType',
-                success: 'redirectToFileTypeProcess'
-            },
-            redirectToFileTypeProcess: {
-                type: 'function',
-                handler: 'DefaultLocalFileDataFinalizerService.redirectToFileTypeProcess',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultLocalFileDataFinalizerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultLocalFileDataFinalizerService.handleErrorEnd'
             }
         }
     },
@@ -161,7 +83,7 @@ module.exports = {
     /**
      * This Pipeline is used to filter all data, which needs to be finalize
      */
-    defaultFinalizerDataFilterPipeline: {
+    defaultImportDataFilterPipeline: {
         startNode: "processData",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -169,17 +91,17 @@ module.exports = {
         nodes: {
             processData: {
                 type: 'function',
-                handler: 'DefaultFinalizerDataProcessService.processData',
+                handler: 'DefaultImportDataFilterProcessService.processData',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultFinalizerDataProcessService.handleSucessEnd'
+                handler: 'DefaultImportDataFilterProcessService.handleSucessEnd'
             },
 
             handleError: {
                 type: 'function',
-                handler: 'DefaultFinalizerDataProcessService.handleErrorEnd'
+                handler: 'DefaultImportDataFilterProcessService.handleErrorEnd'
             }
         }
     },
@@ -192,27 +114,27 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultFileWriterService.validateRequest',
+                handler: 'DefaultFileWriterProcessService.validateRequest',
                 success: 'generateDataKey'
             },
             generateDataKey: {
                 type: 'function',
-                handler: 'DefaultFileWriterService.generateDataKey',
+                handler: 'DefaultFileWriterProcessService.generateDataKey',
                 success: 'writeIntoFile'
             },
             writeIntoFile: {
                 type: 'function',
-                handler: 'DefaultFileWriterService.writeIntoFile',
+                handler: 'DefaultFileWriterProcessService.writeIntoFile',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultFileWriterService.handleSucessEnd'
+                handler: 'DefaultFileWriterProcessService.handleSucessEnd'
             },
 
             handleError: {
                 type: 'function',
-                handler: 'DefaultFileWriterService.handleErrorEnd'
+                handler: 'DefaultFileWriterProcessService.handleErrorEnd'
             }
         }
     }

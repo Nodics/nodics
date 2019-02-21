@@ -68,7 +68,7 @@ module.exports = {
         return this.moveFile([].concat(files), 'success');
     },
 
-    moveToError: function (options) {
+    moveToError: function (files) {
         return this.moveFile([].concat(files), 'error');
     },
 

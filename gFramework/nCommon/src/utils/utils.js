@@ -162,9 +162,10 @@ module.exports = {
                     let file = path.join(filePath, element);
                     if (!fs.statSync(file).isDirectory()) {
                         let name = element.substring(0, element.lastIndexOf("."));
+                        let extname = element.split('.').pop();
                         name = name.replace(/\./g, '');
-                        if (!UTILS.isBlank(name)) {
-                            fileList[name] = file;
+                        if (!UTILS.isBlank(name) && !name.endsWith('Header') && !name.endsWith('Headers')) {
+                            fileList[name + '_' + extname] = file;
                         }
                     }
                 });
