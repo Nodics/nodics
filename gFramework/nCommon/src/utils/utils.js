@@ -92,6 +92,87 @@ module.exports = {
         }
     },
 
+    getSystemHeaderFiles: function (filePath, fileList) {
+        let _self = this;
+        if (fs.existsSync(filePath)) {
+            let files = fs.readdirSync(filePath);
+            if (files) {
+                files.forEach(element => {
+                    let file = path.join(filePath, element);
+                    if (fs.statSync(file).isDirectory()) {
+                        _self.getSystemHeaderFiles(file, fileList);
+                    } else {
+                        let name = element.substring(0, element.lastIndexOf("."));
+                        name = name.replace(/\./g, '');
+                        if (!UTILS.isBlank(name) && (name.endsWith('Header') || name.endsWith('Headers'))) {
+                            fileList[name] = file;
+                        }
+                    }
+                });
+            }
+        }
+    },
+
+    getSystemDataFiles: function (filePath, fileList) {
+        let _self = this;
+        if (fs.existsSync(filePath)) {
+            let files = fs.readdirSync(filePath);
+            if (files) {
+                files.forEach(element => {
+                    let file = path.join(filePath, element);
+                    if (fs.statSync(file).isDirectory()) {
+                        _self.getSystemDataFiles(file, fileList);
+                    } else {
+                        let name = element.split('.').shift();
+                        let extname = element.split('.').pop();
+                        if (!UTILS.isBlank(name) && !name.endsWith('Header') && !name.endsWith('Headers')) {
+                            fileList[name + '_' + extname] = file;
+                        }
+                    }
+                });
+            }
+        }
+    },
+
+    getLocalHeaderFiles: function (filePath, fileList) {
+        let _self = this;
+        if (fs.existsSync(filePath)) {
+            let files = fs.readdirSync(filePath);
+            if (files) {
+                files.forEach(element => {
+                    let file = path.join(filePath, element);
+                    if (!fs.statSync(file).isDirectory()) {
+                        let name = element.substring(0, element.lastIndexOf("."));
+                        name = name.replace(/\./g, '');
+                        if (!UTILS.isBlank(name) && (name.endsWith('Header') || name.endsWith('Headers'))) {
+                            fileList[name] = file;
+                        }
+                    }
+                });
+            }
+        }
+    },
+
+    getLocalDataFiles: function (filePath, fileList) {
+        let _self = this;
+        if (fs.existsSync(filePath)) {
+            let files = fs.readdirSync(filePath);
+            if (files) {
+                files.forEach(element => {
+                    let file = path.join(filePath, element);
+                    if (!fs.statSync(file).isDirectory()) {
+                        let name = element.substring(0, element.lastIndexOf("."));
+                        name = name.replace(/\./g, '');
+                        if (!UTILS.isBlank(name)) {
+                            fileList[name] = file;
+                        }
+                    }
+                });
+            }
+        }
+    },
+
+
     getAllFiles: function (filePath, fileList) {
         let _self = this;
         if (fs.existsSync(filePath)) {
@@ -113,47 +194,9 @@ module.exports = {
         }
     },
 
-    getAllHeaderFiles: function (filePath, fileList) {
-        let _self = this;
-        if (fs.existsSync(filePath)) {
-            let files = fs.readdirSync(filePath);
-            if (files) {
-                files.forEach(element => {
-                    let file = path.join(filePath, element);
-                    if (fs.statSync(file).isDirectory()) {
-                        _self.getAllHeaderFiles(file, fileList);
-                    } else {
-                        let name = element.substring(0, element.lastIndexOf("."));
-                        name = name.replace(/\./g, '');
-                        if (!UTILS.isBlank(name) && (name.endsWith('Header') || name.endsWith('Headers'))) {
-                            fileList[name] = file;
-                        }
-                    }
-                });
-            }
-        }
-    },
 
-    getAllDataFiles: function (filePath, fileList) {
-        let _self = this;
-        if (fs.existsSync(filePath)) {
-            let files = fs.readdirSync(filePath);
-            if (files) {
-                files.forEach(element => {
-                    let file = path.join(filePath, element);
-                    if (fs.statSync(file).isDirectory()) {
-                        _self.getAllDataFiles(file, fileList);
-                    } else {
-                        let name = element.split('.').shift();
-                        let extname = element.split('.').pop();
-                        if (!UTILS.isBlank(name) && !name.endsWith('Header') && !name.endsWith('Headers')) {
-                            fileList[name + '_' + extname] = file;
-                        }
-                    }
-                });
-            }
-        }
-    },
+
+
 
     getAllFrefixFiles: function (filePath, fileList, preFix) {
         let _self = this;

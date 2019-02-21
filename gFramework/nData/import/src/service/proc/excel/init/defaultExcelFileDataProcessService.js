@@ -35,8 +35,8 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to process JSON file');
-        if (!request.inputFileName) {
+        this.LOG.debug('Validating request to process Excel file');
+        if (!request.files || !(request.files instanceof Array) || request.files.length <= 0) {
             process.error(request, response, 'Invalid file path to read data');
         } else if (!request.outputPath || UTILS.isBlank(request.outputPath)) {
             process.error(request, response, 'Invalid output path to write data');
@@ -44,20 +44,40 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     processDataChunk: function (request, response, process) {
         this.LOG.debug('Starting processing data chunks');
-        let convertExcel = excelProcess.processFile;
-        convertExcel(request.inputFileName, null, CONFIG.get('data').excelTypeParserOptions, (error, jsonData) => {
-            if (error) {
-                process.error(request, response, error);
-            } else {
-                request.dataObject = jsonData;
-                SERVICE.DefaultPipelineService.start('excelDataHandlerPipeline', request, {}).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
+        this.handleFiles(request, response, [].concat(request.files), 0).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+
+    handleFiles: function (request, response, files, index) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (files.length > 0) {
+                let file = files.shift();
+                let convertExcel = excelProcess.processFile;
+                convertExcel(file, null, CONFIG.get('data').excelTypeParserOptions, (error, jsonData) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        request.dataObject = jsonData;
+                        request.outputPath.version = index + '_0';
+                        SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
+                            _self.handleFiles(request, response, files, ++index).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }
                 });
+            } else {
+                resolve(true);
             }
         });
     },

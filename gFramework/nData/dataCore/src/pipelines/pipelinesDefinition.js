@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    finalizeDataInitializerPipeline: {
+    /*finalizeDataInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -87,9 +87,9 @@ module.exports = {
                 handler: 'DefaultSystemDataFinalizerService.handleErrorEnd'
             }
         }
-    },
+    },*/
 
-    finalizeLocalFileDataInitializerPipeline: {
+    finalizeFileDataInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -117,6 +117,69 @@ module.exports = {
             handleError: {
                 type: 'function',
                 handler: 'DefaultLocalFileDataFinalizerService.handleErrorEnd'
+            }
+        }
+    },
+
+    dataHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultDataHandlerProcessService.validateRequest',
+                success: 'executeDataProcessor'
+            },
+            executeDataProcessor: {
+                type: 'function',
+                handler: 'DefaultDataHandlerProcessService.executeDataProcessor',
+                success: 'processData'
+            },
+            processData: {
+                type: 'function',
+                handler: 'DefaultDataHandlerProcessService.processData',
+                success: 'writeDataFile'
+            },
+            writeDataFile: {
+                type: 'function',
+                handler: 'DefaultDataHandlerProcessService.writeDataFile',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultDataHandlerProcessService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultDataHandlerProcessService.handleErrorEnd'
+            }
+        }
+    },
+
+    /**
+     * This Pipeline is used to filter all data, which needs to be finalize
+     */
+    defaultFinalizerDataFilterPipeline: {
+        startNode: "processData",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            processData: {
+                type: 'function',
+                handler: 'DefaultFinalizerDataProcessService.processData',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultFinalizerDataProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultFinalizerDataProcessService.handleErrorEnd'
             }
         }
     },
@@ -152,31 +215,5 @@ module.exports = {
                 handler: 'DefaultFileWriterService.handleErrorEnd'
             }
         }
-    },
-
-    /**
-     * This Pipeline is used to filter all data, which needs to be finalize
-     */
-    defaultFinalizerDataFilterPipeline: {
-        startNode: "processData",
-        hardStop: true, //default value is false
-        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-        nodes: {
-            processData: {
-                type: 'function',
-                handler: 'DefaultFinalizerDataProcessService.processData',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultFinalizerDataProcessService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultFinalizerDataProcessService.handleErrorEnd'
-            }
-        }
-    },
+    }
 };

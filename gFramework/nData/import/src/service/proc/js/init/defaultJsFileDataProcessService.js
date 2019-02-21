@@ -8,7 +8,6 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-
 const _ = require('lodash');
 
 module.exports = {
@@ -35,40 +34,54 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to process JSON file');
-        if (!request.fileName) {
-            process.error(request, response, 'Invalid file name to read data');
-        } else if (!request.header || UTILS.isBlank(request.header)) {
-            process.error(request, response, 'Invalid header to write data');
-        } else if (!request.files || request.files.length <= 0) {
-            process.error(request, response, 'Invalid file list to read data');
+        this.LOG.debug('Validating request to process JS file');
+        if (!request.files || !(request.files instanceof Array) || request.files.length <= 0) {
+            process.error(request, response, 'Invalid file path to read data');
+        } else if (!request.outputPath || UTILS.isBlank(request.outputPath)) {
+            process.error(request, response, 'Invalid output path to write data');
         } else {
             process.nextSuccess(request, response);
         }
     },
 
-    readDataChunk: function (request, response, process) {
+    processDataChunk: function (request, response, process) {
         this.LOG.debug('Starting processing data chunks');
-        try {
-            let dataObject = {};
-            let data = [];
-            request.files.forEach(file => {
-                let fileData = require(file);
-                if (!UTILS.isBlank(fileData)) {
-                    dataObject = _.merge(dataObject, fileData);
-                }
-            });
-            if (dataObject && !UTILS.isBlank(dataObject)) {
-                Object.keys(dataObject).forEach(element => {
-                    data.push(dataObject[element]);
+        this.handleFiles(request, response, [].concat(request.files)).then(dataObject => {
+            if (dataObject && Object.keys(dataObject).length > 0) {
+                request.dataObject = [];
+                Object.keys(dataObject).forEach(key => {
+                    request.dataObject.push(dataObject[key]);
                 });
+                request.outputPath.version = '0_0';
+                SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            } else {
+                this.LOG.warn('No data foud to import in files: ' + request.files);
+                process.nextSuccess(request, response);
             }
-            response.success = data;
-            process.nextSuccess(request, response);
-        } catch (error) {
+        }).catch(error => {
             process.error(request, response, error);
-        }
+        });
+    },
 
+    handleFiles: function (request, response, files, dataObject = {}) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (files.length > 0) {
+                let file = files.shift();
+                dataObject = _.merge(dataObject, require(file));
+                _self.handleFiles(request, response, files, dataObject).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(dataObject);
+            }
+        });
     },
 
     handleSucessEnd: function (request, response, process) {

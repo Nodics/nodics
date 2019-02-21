@@ -95,26 +95,6 @@ module.exports = {
 
 
     handleSucessEnd: function (request, response, process) {
-        // if (response.success.length > 0 && response.errors.length <= 0) {
-        //     process.resolve({
-        //         success: true,
-        //         code: 'SUC_SAVE_00000',
-        //         result: response.success
-        //     });
-        // } else if (response.success.length <= 0 && response.errors.length > 0) {
-        //     process.reject({
-        //         success: false,
-        //         code: 'ERR_SAVE_00000',
-        //         error: response.errors
-        //     });
-        // } else {
-        //     process.resolve({
-        //         success: false,
-        //         code: 'ERR_SAVE_00003',
-        //         result: response.success,
-        //         error: response.errors
-        //     });
-        // }
         process.resolve(response.success);
     },
 

@@ -54,38 +54,56 @@ module.exports = {
         });
     },
 
-    moveToSuccess: function (options) {
-        options.destDir = 'success';
-        return this.moveFile(options);
+    moveSyncToProcessing: function (options) {
+        let filePath = path.dirname(options.fileName);
+        let fileName = path.basename(options.fileName);
+        let fileExt = path.extname(options.fileName);
+        let fileNameWithoutExt = fileName.replace(fileExt, '');
+        let outputFileName = filePath + '/' + fileNameWithoutExt + '_processing' + fileExt;
+        fse.moveSync(options.fileName, outputFileName, { overwrite: true });
+        return outputFileName;
+    },
+
+    moveToSuccess: function (files) {
+        return this.moveFile([].concat(files), 'success');
     },
 
     moveToError: function (options) {
-        options.destDir = 'error';
-        return this.moveFile(options);
+        return this.moveFile([].concat(files), 'error');
     },
 
-    moveFile: function (options) {
+    moveFile: function (files, type) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            try {
-                let filePath = path.dirname(options.fileName);
-                let fileName = path.basename(options.fileName);
-                let fileExt = path.extname(fileName);
-                let fileNameWithoutExt = fileName.replace(fileExt, '');
-                if (fileNameWithoutExt.endsWith('_processing')) {
-                    fileNameWithoutExt = fileNameWithoutExt.replace('_processing', '');
-                }
-                filePath = filePath + '/' + options.destDir;
-                fse.ensureDir(filePath).then(() => {
-                    fse.move(options.fileName, filePath + '/' + fileNameWithoutExt + '_' + Date.now() + fileExt).then(() => {
-                        resolve(true);
+            if (files.length > 0) {
+                let file = files.shift();
+                try {
+                    let filePath = path.dirname(file);
+                    let fileName = path.basename(file);
+                    let fileExt = path.extname(fileName);
+                    let fileNameWithoutExt = fileName.replace(fileExt, '');
+                    if (fileNameWithoutExt.endsWith('_processing')) {
+                        fileNameWithoutExt = fileNameWithoutExt.replace('_processing', '');
+                    }
+                    filePath = filePath + '/' + type;
+                    fse.ensureDir(filePath).then(() => {
+                        fse.move(file, filePath + '/' + fileNameWithoutExt + '_' + Date.now() + fileExt).then(() => {
+                            _self.moveFile(files, type).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            reject(error);
+                        });
                     }).catch(error => {
                         reject(error);
                     });
-                }).catch(error => {
+                } catch (error) {
                     reject(error);
-                });
-            } catch (error) {
-                reject(error);
+                }
+            } else {
+                resolve(true);
             }
         });
     }

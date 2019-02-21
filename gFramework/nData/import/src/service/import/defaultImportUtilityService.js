@@ -35,21 +35,6 @@ module.exports = {
         });
     },
 
-    getDataHeaders: function (path, fileList) {
-        if (fs.existsSync(path)) {
-            let moduleFiles = {};
-            UTILS.getAllHeaderFiles(path, moduleFiles);
-            _.each(moduleFiles, (dataFile, name) => {
-                if (fileList[name]) {
-                    fileList[name].push(dataFile);
-                } else {
-                    fileList[name] = [dataFile];
-                }
-            });
-            return fileList;
-        }
-    },
-
     getSystemDataHeaders: function (moduleList, dataType) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -68,7 +53,7 @@ module.exports = {
                             } else {
                                 dataFilesRoot = dataFilesRoot + '/data/sample';
                             }
-                            _self.getDataHeaders(dataFilesRoot, fileList);
+                            _self.getSystemHeaders(dataFilesRoot, fileList);
                         }
                     });
                     resolve(fileList);
@@ -79,11 +64,70 @@ module.exports = {
         });
     },
 
-    /*
-     * This function will return list of files from given path grouped by file name
-     * @argument - path - path to the external directory
-     * @return - object hold files based on thier name
-    **/
+    getSystemHeaders: function (path, fileList) {
+        if (fs.existsSync(path)) {
+            let moduleFiles = {};
+            UTILS.getSystemHeaderFiles(path, moduleFiles);
+            _.each(moduleFiles, (dataFile, name) => {
+                if (fileList[name]) {
+                    fileList[name].push(dataFile);
+                } else {
+                    fileList[name] = [dataFile];
+                }
+            });
+            return fileList;
+        }
+    },
+
+    /**
+     * This function will return list of files from all modules grouped by file name
+     * @param {*} moduleList 
+     * @param {*} dataType 
+     */
+    getSystemDataFiles: function (moduleList, dataType) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                if (!moduleList || moduleList.length == 0) {
+                    reject('Invalid list of modules to be proccesses');
+                } else {
+                    let fileList = {};
+                    NODICS.getIndexedModules().forEach((moduleObject, moduleIndex) => {
+                        if (moduleList.includes(moduleObject.name)) {
+                            let dataFilesRoot = moduleObject.path;
+                            if (dataType === 'init') {
+                                dataFilesRoot = dataFilesRoot + '/data/init';
+                            } else if (dataType === 'core') {
+                                dataFilesRoot = dataFilesRoot + '/data/core';
+                            } else {
+                                dataFilesRoot = dataFilesRoot + '/data/sample';
+                            }
+                            _self.getSystemFiles(dataFilesRoot, fileList);
+                        }
+                    });
+                    resolve(fileList);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    getSystemFiles: function (path, fileList) {
+        if (fs.existsSync(path)) {
+            let moduleFiles = {};
+            UTILS.getSystemDataFiles(path, moduleFiles);
+            _.each(moduleFiles, (dataFile, name) => {
+                if (fileList[name]) {
+                    fileList[name].push(dataFile);
+                } else {
+                    fileList[name] = [dataFile];
+                }
+            });
+            return fileList;
+        }
+    },
+
 
     getLocalDataHeaders: function (path) {
         let _self = this;
@@ -102,10 +146,10 @@ module.exports = {
         });
     },
 
-    getDataFiles: function (path, fileList) {
+    getDataHeaders: function (path, fileList) {
         if (fs.existsSync(path)) {
             let moduleFiles = {};
-            UTILS.getAllDataFiles(path, moduleFiles);
+            UTILS.getLocalHeaderFiles(path, moduleFiles);
             _.each(moduleFiles, (dataFile, name) => {
                 if (fileList[name]) {
                     fileList[name].push(dataFile);
@@ -117,47 +161,7 @@ module.exports = {
         }
     },
 
-    /*
-     * This function will return list of files from all modules grouped by file name
-     * @argument - moduleList - list of modules to be processed
-     * @return - object hold files based on thier name
-    **/
-    getSystemFiles: function (moduleList, dataType) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                if (!moduleList || moduleList.length == 0) {
-                    reject('Invalid list of modules to be proccesses');
-                } else {
-                    let fileList = {};
-                    NODICS.getIndexedModules().forEach((moduleObject, moduleIndex) => {
-                        if (moduleList.includes(moduleObject.name)) {
-                            let dataFilesRoot = moduleObject.path;
-                            if (dataType === 'init') {
-                                dataFilesRoot = dataFilesRoot + '/data/init';
-                            } else if (dataType === 'core') {
-                                dataFilesRoot = dataFilesRoot + '/data/core';
-                            } else {
-                                dataFilesRoot = dataFilesRoot + '/data/sample';
-                            }
-                            _self.getDataFiles(dataFilesRoot, fileList);
-                        }
-                    });
-                    resolve(fileList);
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    },
-
-    /*
-     * This function will return list of files from given path grouped by file name
-     * @argument - path - path to the external directory
-     * @return - object hold files based on thier name
-    **/
-
-    getLocalFiles: function (path) {
+    getLocalDataFiles: function (path) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -172,6 +176,21 @@ module.exports = {
                 reject(error);
             }
         });
+    },
+
+    getDataFiles: function (path, fileList) {
+        if (fs.existsSync(path)) {
+            let moduleFiles = {};
+            UTILS.getLocalDataFiles(path, moduleFiles);
+            _.each(moduleFiles, (dataFile, name) => {
+                if (fileList[name]) {
+                    fileList[name].push(dataFile);
+                } else {
+                    fileList[name] = [dataFile];
+                }
+            });
+            return fileList;
+        }
     },
 
     isImportPending: function (headers) {

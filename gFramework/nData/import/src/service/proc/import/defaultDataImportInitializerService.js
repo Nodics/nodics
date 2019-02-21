@@ -117,6 +117,7 @@ module.exports = {
         }
         delete request.data.headerFiles;
         delete request.data.dataFiles;
+        //console.log(request.data.headers.defaultTenant.dataFiles);
         process.nextSuccess(request, response);
     },
 

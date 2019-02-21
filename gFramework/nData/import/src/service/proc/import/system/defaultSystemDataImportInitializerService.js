@@ -64,9 +64,10 @@ module.exports = {
         });
     },
 
+
     loadDataFileList: function (request, response, process) {
         this.LOG.debug('Loading list of data files from modules to be imported');
-        SERVICE.DefaultImportUtilityService.getSystemFiles(request.modules, request.dataType).then(success => {
+        SERVICE.DefaultImportUtilityService.getSystemDataFiles(request.modules, request.dataType).then(success => {
             request.data.dataFiles = success;
             process.nextSuccess(request, response);
         }).catch(error => {

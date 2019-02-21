@@ -39,7 +39,7 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process CSV file');
-        if (!request.inputFileName) {
+        if (!request.files || !(request.files instanceof Array) || request.files.length <= 0) {
             process.error(request, response, 'Invalid file path to read data');
         } else if (!request.outputPath || UTILS.isBlank(request.outputPath)) {
             process.error(request, response, 'Invalid output path to write data');
@@ -50,41 +50,63 @@ module.exports = {
 
     processDataChunk: function (request, response, process) {
         this.LOG.debug('Starting processing data chunks');
-        let converter = csv(CONFIG.get('data').csvTypeParserOptions | {});
-        let dataChunk = [];
-        let readBytes = 0;
-        let version = 0;
-        converter.fromStream(fs.createReadStream(request.inputFileName)).on('data', (data) => {
-            let strData = JSON.parse(data.toString(CONFIG.get('data').importDataConvertEncoding || 'utf8'));
-            converter.pause();
-            readBytes = readBytes + sizeof(data);
-            if (readBytes > CONFIG.get('data').readBufferSize) {
-                request.dataObject = [].concat(dataChunk);
-                SERVICE.DefaultPipelineService.start('csvDataHandlerPipeline', request, {}).then(success => {
-                    dataChunk = [strData];
-                    readBytes = 0;
-                    version = version + 1;
-                    converter.resume();
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
-            } else {
-                dataChunk.push(strData);
-                converter.resume();
-            }
-        }).on('end', (error) => {
-            if (dataChunk.length > 0) {
-                request.dataObject = [].concat(dataChunk);
-                SERVICE.DefaultPipelineService.start('csvDataHandlerPipeline', request, {}).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
-            } else {
-                process.nextSuccess(request, response);
-            }
-        }).on('error', (error) => {
+        this.handleFiles(request, response, [].concat(request.files), 0).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
             process.error(request, response, error);
+        });
+    },
+
+    handleFiles: function (request, response, files, index) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (files.length > 0) {
+                let file = files.shift();
+                let converter = csv(CONFIG.get('data').csvTypeParserOptions | {});
+                let dataChunk = [];
+                let readBytes = 0;
+                let version = 0;
+                converter.fromStream(fs.createReadStream(file)).on('data', (data) => {
+                    let strData = JSON.parse(data.toString(CONFIG.get('data').importDataConvertEncoding || 'utf8'));
+                    converter.pause();
+                    readBytes = readBytes + sizeof(data);
+                    if (readBytes > CONFIG.get('data').readBufferSize) {
+                        request.dataObject = [].concat(dataChunk);
+                        request.outputPath.version = index + '_' + version;
+                        SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
+                            dataChunk = [strData];
+                            readBytes = 0;
+                            version = version + 1;
+                            converter.resume();
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        dataChunk.push(strData);
+                        converter.resume();
+                    }
+                }).on('end', (error) => {
+                    if (dataChunk.length > 0) {
+                        request.dataObject = [].concat(dataChunk);
+                        request.outputPath.version = index + '_' + version;
+                        SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
+                            _self.handleFiles(request, response, files, ++index).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        resolve(true);
+                    }
+                }).on('error', (error) => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
         });
     },
 
