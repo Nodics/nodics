@@ -123,14 +123,37 @@ module.exports = {
     processDataHeaders: function (request, response, process) {
         this.LOG.debug('Starting data import process');
         try {
-            if (request.data && request.data.headers) {
-                this.processHeaders(request, response, {
-                    pendingHeaders: Object.keys(request.data.headers)
-                }).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
+            if (request.data && request.data.headers && Object.keys(request.data.headers).length > 0) {
+                if (CONFIG.get('data').finalizeImportDataAsync) {
+                    let allHeaders = [];
+                    Object.keys(request.data.headers).forEach(headerName => {
+                        allHeaders.push(SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
+                            header: request.data.headers[headerName],
+                            headerName: headerName,
+                            outputPath: _.merge({}, request.outputPath)
+                        }, {}));
+                    });
+                    Promise.all(allHeaders).then(success => {
+                        process.nextSuccess(request, response);
+                    }).catch(errors => {
+                        if (errors instanceof Array) {
+                            errors.forEach(err => {
+                                response.errors.push(err);
+                            });
+                            process.error(request, response);
+                        } else {
+                            process.error(request, response, errors);
+                        }
+                    });
+                } else {
+                    this.processHeaders(request, response, {
+                        pendingHeaders: Object.keys(request.data.headers)
+                    }).then(success => {
+                        process.nextSuccess(request, response);
+                    }).catch(error => {
+                        process.error(request, response, error);
+                    });
+                }
             } else {
                 this.LOG.debug('No data found to import');
                 process.nextSuccess(request, response);
@@ -147,25 +170,20 @@ module.exports = {
                 let headers = request.data.headers;
                 let headerName = options.pendingHeaders.shift();
                 let header = headers[headerName];
-                if (!header.done || header.done === false) {
-                    _self.LOG.debug('Starting process for header: ', headerName);
-                    request.headerName = headerName;
-                    SERVICE.DefaultPipelineService.start('headerProcessPipeline', request, {}).then(success => {
-                        _self.processHeaders(request, response, options).then(success => {
-                            resolve(success);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
+                _self.LOG.debug('Starting process for header: ', headerName);
+                SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
+                    header: header,
+                    headerName: headerName,
+                    outputPath: _.merge({}, request.outputPath)
+                }, {}).then(success => {
                     _self.processHeaders(request, response, options).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
-                }
+                }).catch(error => {
+                    reject(error);
+                });
             } else {
                 resolve(true);
             }

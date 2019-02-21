@@ -280,7 +280,7 @@ module.exports = {
     loadModule: function (moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.LOG.debug('Staring process for module : ', moduleName);
+            _self.LOG.debug('Starting process for module : ', moduleName);
             let moduleObject = NODICS.getRawModule(moduleName);
             let moduleFile = require(moduleObject.path + '/nodics.js');
             if (moduleFile.init) {

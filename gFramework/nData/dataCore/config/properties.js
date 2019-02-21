@@ -12,7 +12,6 @@
 module.exports = {
 
     data: {
-        importDataConvertEncoding: 'utf8',
         dataDirName: 'temp'
     }
 };

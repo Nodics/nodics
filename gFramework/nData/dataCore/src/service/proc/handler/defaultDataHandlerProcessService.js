@@ -80,7 +80,7 @@ module.exports = {
     },
 
     writeDataFile: function (request, response, process) {
-        this.LOG.debug('Staring file write process for local data import');
+        this.LOG.debug('Starting file write process for local data import');
         SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
             header: request.header,
             dataObject: request.dataObject,

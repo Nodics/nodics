@@ -207,4 +207,27 @@ module.exports = {
         }
     },
 
+    processDataImportPipeline: {
+        startNode: "validateHeader",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateHeader: {
+                type: 'function',
+                handler: 'DefaultDataImportProcessService.validateHeader',
+                success: 'processHeaderFiles'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultDataImportProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultDataImportProcessService.handleErrorEnd'
+            }
+        }
+    }
+
 };

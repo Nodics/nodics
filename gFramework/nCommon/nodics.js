@@ -54,7 +54,7 @@ module.exports = {
     start: function () {
         this.common();
 
-        NODICS.LOG.info('Staring Classes loader process');
+        NODICS.LOG.info('Starting Classes loader process');
         NODICS.loadClasses();
     },
 

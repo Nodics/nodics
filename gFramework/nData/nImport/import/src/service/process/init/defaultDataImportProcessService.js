@@ -9,8 +9,6 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -36,54 +34,30 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
-        console.time('Processing Time');
-        if (!request.modules && !UTILS.isArray(request.modules) && request.modules.length <= 0) {
-            process.error(request, response, 'Please validate request. Mandate property modules not have valid value');
+        if (!request.data) {
+            process.error(request, response, 'Please validate request. Mandate property data not have valid value');
+        } else if (!request.outputPath) {
+            process.error(request, response, 'Please validate request. Mandate property outputPath not have valid value');
         } else {
-            request.data = {};
             process.nextSuccess(request, response);
         }
     },
 
-    prepareOutputURL: function (request, response, process) {
-        this.LOG.debug('Preparing output file path');
-        request.outputPath = {
-            destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/import/' + request.dataType,
-            dataType: request.dataType,
-            importType: 'system'
-        };
-        process.nextSuccess(request, response);
+    loadAllDataFiles: function (request, response, process) {
+
     },
 
-    loadHeaderFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of header files from modules to be imported');
-        SERVICE.DefaultImportUtilityService.getSystemDataHeaders(request.modules, request.dataType).then(success => {
-            request.data.headerFiles = success;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
+    processAllDataFiles: function (request, response, process) {
 
-
-    loadDataFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of data files from modules to be imported');
-        SERVICE.DefaultImportUtilityService.getSystemDataFiles(request.modules, request.dataType).then(success => {
-            request.data.dataFiles = success;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
     },
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        console.timeEnd('Processing Time');
         process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed and got errors');
+        this.LOG.error('Request has been processed and got errors');
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {

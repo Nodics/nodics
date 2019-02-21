@@ -42,15 +42,42 @@ module.exports = {
     processHeaderFiles: function (request, response, process) {
         this.LOG.debug('Triggering process to import all files for header');
         try {
-            let header = request.data.headers[request.headerName];
+            let header = request.header;
             if (!UTILS.isBlank(header.dataFiles)) {
-                this.processFiles(request, response, {
-                    pendingFileList: Object.keys(header.dataFiles)
-                }).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
+                if (CONFIG.get('data').finalizeImportDataAsync) {
+                    let allFileTypes = [];
+                    Object.keys(header.dataFiles).forEach(fileName => {
+                        let fileObj = header.dataFiles[fileName];
+                        let outputPath = _.merge({}, request.outputPath);
+                        outputPath.fileName = fileName;
+                        outputPath.fileType = fileName.split('_').pop();
+                        allFileTypes.push(SERVICE.DefaultPipelineService.start('dataFinalizerInitPipeline', {
+                            files: fileObj.list,
+                            outputPath: outputPath,
+                            header: header.header
+                        }, {}));
+                    });
+                    Promise.all(allFileTypes).then(success => {
+                        process.nextSuccess(request, response);
+                    }).catch(errors => {
+                        if (errors instanceof Array) {
+                            errors.forEach(err => {
+                                response.errors.push(err);
+                            });
+                            process.error(request, response);
+                        } else {
+                            process.error(request, response, errors);
+                        }
+                    });
+                } else {
+                    this.processFiles(request, response, {
+                        pendingFileList: Object.keys(header.dataFiles)
+                    }).then(success => {
+                        process.nextSuccess(request, response);
+                    }).catch(error => {
+                        process.error(request, response, error);
+                    });
+                }
             } else {
                 this.LOG.debug('There is no data to import for header : ' + request.headerName);
                 process.nextSuccess(request, response);
@@ -62,7 +89,7 @@ module.exports = {
 
     processFiles: function (request, response, options) {
         let _self = this;
-        let header = request.data.headers[request.headerName];
+        let header = request.header;
         return new Promise((resolve, reject) => {
             if (options.pendingFileList && options.pendingFileList.length > 0) {
                 let fileName = options.pendingFileList.shift(); //Actual Files group name
@@ -109,7 +136,7 @@ module.exports = {
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.error(' Request has been processed and got errors');
+        this.LOG.error('Request has been processed and got errors');
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {

@@ -10,5 +10,9 @@
  */
 
 module.exports = {
-
+    data: {
+        finalizeImportDataAsync: true,
+        importDataConvertEncoding: 'utf8',
+        readBufferSize: 1024
+    }
 };
