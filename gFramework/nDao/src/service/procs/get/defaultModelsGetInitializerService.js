@@ -115,8 +115,8 @@ module.exports = {
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre get model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
-        let modelName = request.collection.modelName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
+        let schemaName = request.collection.schemaName;
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.preGet) {
             let interceptorRequest = {
                 collection: request.collection,
@@ -189,8 +189,8 @@ module.exports = {
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
-        let modelName = request.collection.modelName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
+        let schemaName = request.collection.schemaName;
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.postGet) {
             let interceptorRequest = {
                 collection: request.collection,

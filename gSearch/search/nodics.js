@@ -35,7 +35,7 @@ module.exports = {
                 return new Promise((resolve, reject) => {
                     this.LOG.debug('Collecting search interceptors definitions');
                     let importInterceptors = SERVICE.DefaultInterceptorHandlerService.buildInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/search/interceptors.js'));
-                    SERVICE.DefaultDataConfigurationService.setImportInterceptors(importInterceptors);
+                    SERVICE.DefaultSearchConfigurationService.setInterceptors(importInterceptors);
                     resolve(true);
                 });
             }).then(() => {

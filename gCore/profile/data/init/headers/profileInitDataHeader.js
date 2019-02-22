@@ -13,7 +13,7 @@ module.exports = {
     profile: {
         defaultTenant: {
             options: {
-                modelName: 'tenant', //put type name, if want to push data into search
+                schemaName: 'tenant', //put type name, if want to push data into search
                 operation: 'save', //save, update and saveOrUpdate, put doSave, if data needs to be pushed into serach
                 tenant: 'default',
                 dataFilePrefix: 'defaultTenantData'
@@ -28,7 +28,7 @@ module.exports = {
 
         defaultAddress: {
             options: {
-                modelName: 'address',
+                schemaName: 'address',
                 operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultAddressData'
@@ -40,7 +40,7 @@ module.exports = {
 
         tenantDefaultAddresses: {
             options: {
-                modelName: 'address',
+                schemaName: 'address',
                 operation: 'save', //save, update and saveOrUpdate
                 //tenant: 'default',
                 dataFilePrefix: 'tenantDefaultAddressesData'
@@ -52,7 +52,7 @@ module.exports = {
 
         defaultContact: {
             options: {
-                modelName: 'contact',
+                schemaName: 'contact',
                 operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultContactData'
@@ -64,7 +64,7 @@ module.exports = {
 
         tenantDefaultContact: {
             options: {
-                modelName: 'contact',
+                schemaName: 'contact',
                 operation: 'save', //save, update and saveOrUpdate
                 //tenant: 'default',
                 dataFilePrefix: 'tenantDefaultContactData'
@@ -76,7 +76,7 @@ module.exports = {
 
         defaultUserGroup: {
             options: {
-                modelName: 'userGroup',
+                schemaName: 'userGroup',
                 operation: 'save', //save, update and saveOrUpdate
                 //tenant: 'default',
                 dataFilePrefix: 'defaultUserGroupData'
@@ -88,7 +88,7 @@ module.exports = {
 
         /*tenantDefaultUserGroup: {
             options: {
-                modelName: 'userGroup',
+                schemaName: 'userGroup',
                 operation: 'save', //save, update and saveOrUpdate
                 //tenant: 'default',
                 dataFilePrefix: 'tenantDefaultUserGroupData'
@@ -100,7 +100,7 @@ module.exports = {
 
         defaultEnterprise: {
             options: {
-                modelName: 'enterprise',
+                schemaName: 'enterprise',
                 operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultEnterpriseData'
@@ -154,7 +154,7 @@ module.exports = {
 
         defaultEmployee: {
             options: {
-                modelName: 'employee',
+                schemaName: 'employee',
                 operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultEmployeeData'
@@ -194,7 +194,7 @@ module.exports = {
 
         tenantDefaultEmployee: {
             options: {
-                modelName: 'employee',
+                schemaName: 'employee',
                 operation: 'save', //save, update and saveOrUpdate
                 tenant: 'testOne',
                 dataFilePrefix: 'tenantDefaultEmployeeData'
@@ -234,7 +234,7 @@ module.exports = {
 
         defaultCustomer: {
             options: {
-                modelName: 'customer',
+                schemaName: 'customer',
                 operation: 'save', //save, update and saveOrUpdate
                 tenant: 'default',
                 dataFilePrefix: 'defaultCutomerData'
@@ -274,7 +274,7 @@ module.exports = {
 
         tenantDefaultCustomer: {
             options: {
-                modelName: 'customer',
+                schemaName: 'customer',
                 operation: 'save', //save, update and saveOrUpdate
                 tenant: 'testOne',
                 dataFilePrefix: 'tenantDefaultCustomerData'

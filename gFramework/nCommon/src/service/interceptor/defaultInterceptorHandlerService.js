@@ -26,10 +26,10 @@ module.exports = {
                 _.each(moduleObject.models, (tenantObject, tenantName) => {
                     _.each(tenantObject.master, (model, modelName) => {
                         let modelInterceptors = _.merge({}, moduleInterceptors[model.schemaName]);
-                        if (!finalInterceptors[moduleName][modelName]) {
-                            finalInterceptors[moduleName][modelName] = {};
+                        if (!finalInterceptors[moduleName][model.schemaName]) {
+                            finalInterceptors[moduleName][model.schemaName] = {};
                         }
-                        let interceptorPool = finalInterceptors[moduleName][modelName];
+                        let interceptorPool = finalInterceptors[moduleName][model.schemaName];
                         _.each(moduleDefault, (interceptor, interceptorName) => {
                             if (!interceptorPool[interceptor.type]) {
                                 interceptorPool[interceptor.type] = [];
@@ -62,6 +62,7 @@ module.exports = {
         } catch (error) {
             throw (error);
         }
+        console.log(finalInterceptors);
         return finalInterceptors;
     },
 
@@ -92,6 +93,7 @@ module.exports = {
     },
 
     executeProcessorInterceptors: function (interceptorList, request, responce) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 if (interceptorList && interceptorList.length > 0) {

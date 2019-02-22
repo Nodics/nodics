@@ -40,15 +40,15 @@ module.exports = {
 
     handleDefaultImportProcessor: function (options) {
         return new Promise((resolve, reject) => {
-            console.log('=============================== >> ', handleDefaultImportProcessor);
-            resolve(options.data);
+            console.log('=============================== >> handleDefaultImportProcessor');
+            resolve(options.dataObject);
         });
     },
 
     handleEnterpriseImportProcessor: function (options) {
         return new Promise((resolve, reject) => {
-            console.log('=============================== >> ', handleEnterpriseImportProcessor);
-            resolve(options.data);
+            console.log('=============================== >> handleEnterpriseImportProcessor');
+            resolve(options.dataObject);
         });
     },
 

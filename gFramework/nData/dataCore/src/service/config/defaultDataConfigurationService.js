@@ -41,11 +41,9 @@ module.exports = {
 
     setImportInterceptors: function (interceptors) {
         this.importInterceptors = interceptors;
-
     },
 
     getImportInterceptors: function (moduleName, modelName) {
-        //console.log(this.importInterceptors);
         if (!this.importInterceptors[moduleName]) {
             throw new Error('Invalid module name: ' + moduleName);
         } else if (!this.importInterceptors[moduleName][modelName]) {

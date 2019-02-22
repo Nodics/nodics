@@ -44,15 +44,15 @@ module.exports = {
     executeDataProcessor: function (request, response, process) {
         this.LOG.debug('Applying pre processors in models');
         let moduleName = request.header.options.moduleName;
-        let modelName = request.header.options.modelName;
-        modelName = modelName.toUpperCaseFirstChar() + 'Model';
-        let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(moduleName, modelName);
+        let schemaName = request.header.options.schemaName;
+        let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.importProcessor && interceptors.importProcessor.length > 0) {
             let interceptorRequest = {
                 dataObject: request.dataObject
             };
             let interceptorResponse = {};
             SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors([].concat(interceptors.importProcessor), interceptorRequest, interceptorResponse).then(success => {
+                //request.dataObject = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -91,8 +91,6 @@ module.exports = {
             process.error(request, response, error);
         });
     },
-
-
 
     handleSucessEnd: function (request, response, process) {
         process.resolve(response.success);

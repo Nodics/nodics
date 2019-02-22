@@ -56,8 +56,8 @@ module.exports = {
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre update model interceptors');
         let moduleName = request.moduleName || request.collection.moduleName;
-        let modelName = request.collection.modelName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
+        let schemaName = request.collection.schemaName;
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.preRemove) {
             let interceptorRequest = {
                 collection: request.collection,
@@ -217,8 +217,8 @@ module.exports = {
         this.LOG.debug('Applying post remove model interceptors');
         if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0) {
             let moduleName = request.moduleName || request.collection.moduleName;
-            let modelName = request.collection.modelName;
-            let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, modelName);
+            let schemaName = request.collection.schemaName;
+            let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
             if (interceptors && interceptors.postRemove) {
                 let interceptorRequest = {
                     collection: request.collection,
