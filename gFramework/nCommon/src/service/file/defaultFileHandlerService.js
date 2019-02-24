@@ -35,15 +35,15 @@ module.exports = {
         });
     },
 
-    moveToProcessing: function (options) {
+    moveToProcessing: function (file) {
         return new Promise((resolve, reject) => {
             try {
-                let filePath = path.dirname(options.fileName);
-                let fileName = path.basename(options.fileName);
-                let fileExt = path.extname(options.fileName);
+                let filePath = path.dirname(file);
+                let fileName = path.basename(file);
+                let fileExt = path.extname(file);
                 let fileNameWithoutExt = fileName.replace(fileExt, '');
                 let outputFileName = filePath + '/' + fileNameWithoutExt + '_processing' + fileExt;
-                fse.move(options.fileName, outputFileName).then(() => {
+                fse.move(file, outputFileName).then(() => {
                     resolve(outputFileName);
                 }).catch(err => {
                     reject(error);
@@ -54,13 +54,13 @@ module.exports = {
         });
     },
 
-    moveSyncToProcessing: function (options) {
-        let filePath = path.dirname(options.fileName);
-        let fileName = path.basename(options.fileName);
-        let fileExt = path.extname(options.fileName);
+    moveSyncToProcessing: function (file) {
+        let filePath = path.dirname(file);
+        let fileName = path.basename(file);
+        let fileExt = path.extname(file);
         let fileNameWithoutExt = fileName.replace(fileExt, '');
         let outputFileName = filePath + '/' + fileNameWithoutExt + '_processing' + fileExt;
-        fse.moveSync(options.fileName, outputFileName, { overwrite: true });
+        fse.moveSync(file, outputFileName, { overwrite: true });
         return outputFileName;
     },
 

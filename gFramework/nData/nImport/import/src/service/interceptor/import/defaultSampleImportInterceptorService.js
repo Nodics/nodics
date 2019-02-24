@@ -40,14 +40,14 @@ module.exports = {
 
     handleDefaultImportProcessor: function (options) {
         return new Promise((resolve, reject) => {
-            console.log('=============================== >> handleDefaultImportProcessor');
+            this.LOG.debug('Executing default import interceptor');
             resolve(true);
         });
     },
 
     handleEnterpriseImportProcessor: function (options) {
         return new Promise((resolve, reject) => {
-            console.log('=============================== >> handleEnterpriseImportProcessor');
+            this.LOG.debug('Executing Enterprise import interceptor');
             resolve(true);
         });
     },

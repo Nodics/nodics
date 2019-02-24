@@ -28,11 +28,7 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultEmsClientService.configureEMSClients().then(success => {
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
+            resolve(true);
         });
-    }
+    },
 };

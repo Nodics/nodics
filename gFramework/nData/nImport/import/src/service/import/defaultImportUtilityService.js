@@ -170,7 +170,8 @@ module.exports = {
                     _self.getDataFiles(path, fileList);
                     resolve(fileList);
                 } else {
-                    reject('Given path :' + path + ' is not valid');
+                    this.LOG.warn('Could not found any data in path: ' + path);
+                    resolve({});
                 }
             } catch (error) {
                 reject(error);

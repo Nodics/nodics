@@ -1,6 +1,6 @@
 module.exports = { admindesk: [ 'gAdminDesk', 'admin' ],
   core: [ 'gCore', 'cronjob', 'nems', 'profile' ],
-  ems: [ 'gEms', 'emsClient' ],
+  ems: [ 'gEms', 'emsClient', 'activemq', 'kafka' ],
   framework: 
    [ 'gFramework',
      'default',

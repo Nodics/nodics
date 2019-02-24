@@ -10,18 +10,45 @@
  */
 
 module.exports = {
+    /**
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    /**
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
 
     configureEMSClients: function (options) {
         let _self = this;
-        let emsConfig = CONFIG.get('emsClient');
-        if (emsConfig.enabled && emsConfig.type) {
-            let conf = emsConfig[emsConfig.type];
-            SERVICE[conf.handler].configureClent(conf).then(success => {
-                _self.LOG.debug('Successfully established connection with : ', emsConfig.type);
-            }).catch(error => {
-                _self.LOG.error(error);
-            });
-        }
+        return new Promise((resolve, reject) => {
+            let emsConfig = CONFIG.get('emsClient');
+            if (emsConfig.enabled && emsConfig.type) {
+                let conf = emsConfig[emsConfig.type];
+                SERVICE[conf.handler].configureClent(conf).then(success => {
+                    _self.LOG.debug('Successfully established connection with : ', emsConfig.type);
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                _self.LOG.warn('EMS Client configurationn is not enabled, please check [emsClient.enabled] property in emsClient module');
+                resolve(true);
+            }
+        });
     },
 
     /*

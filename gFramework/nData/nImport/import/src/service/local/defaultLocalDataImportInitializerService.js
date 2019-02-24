@@ -73,6 +73,11 @@ module.exports = {
         });
     },
 
+    moveFilesToProcessing: function (request, response, process) {
+        this.LOG.debug('Moving files to processing state');
+
+    },
+
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         process.resolve(response.success);

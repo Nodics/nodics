@@ -56,7 +56,6 @@ module.exports = {
             });
             request.dataFiles = files;
             request.nonMacroFiles = {};
-            //console.log(request.dataFiles);
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -107,7 +106,6 @@ module.exports = {
                         let fileObj = request.dataFiles[fileName];
                         if (!fileObj.done || fileObj.done === false) {
                             let fileData = require(fileObj.file);
-                            console.log(fileData);
                             if (fileData.header.macros) {
                                 SERVICE.DefaultPipelineService.start('processFileDataImportPipeline', {
                                     dataFiles: request.dataFiles,
