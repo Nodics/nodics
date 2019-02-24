@@ -240,7 +240,7 @@ module.exports = {
                     result: response.success.result
                 };
                 let interceptorResponse = {};
-                SERVICE.DefaultInterceptorHandlerService.executeUpdateInterceptors([].concat(interceptors.postUpdate), interceptorRequest, interceptorResponse).then(success => {
+                SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postUpdate), interceptorRequest, interceptorResponse).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, {

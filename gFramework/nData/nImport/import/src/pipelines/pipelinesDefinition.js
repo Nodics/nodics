@@ -180,14 +180,14 @@ module.exports = {
         }
     },
     headerProcessPipeline: {
-        startNode: "validateHeader",
+        startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
 
         nodes: {
-            validateHeader: {
+            validateRequest: {
                 type: 'function',
-                handler: 'DefaultHeaderProcessService.validateHeader',
+                handler: 'DefaultHeaderProcessService.validateRequest',
                 success: 'processHeaderFiles'
             },
             processHeaderFiles: {
@@ -207,16 +207,39 @@ module.exports = {
         }
     },
 
+
+
+
     processDataImportPipeline: {
-        startNode: "validateHeader",
+        startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
 
         nodes: {
-            validateHeader: {
+            validateRequest: {
                 type: 'function',
-                handler: 'DefaultDataImportProcessService.validateHeader',
-                success: 'processHeaderFiles'
+                handler: 'DefaultDataImportProcessService.validateRequest',
+                success: 'loadDataFiles'
+            },
+            loadDataFiles: {
+                type: 'function',
+                handler: 'DefaultDataImportProcessService.loadDataFiles',
+                success: 'filterMacroAndNonMacroFiles'
+            },
+            filterMacroAndNonMacroFiles: {
+                type: 'function',
+                handler: 'DefaultDataImportProcessService.filterMacroAndNonMacroFiles',
+                success: 'processDataFiles'
+            },
+            processDataFiles: {
+                type: 'function',
+                handler: 'DefaultDataImportProcessService.processDataFiles',
+                success: 'processNonMacroFiles'
+            },
+            processNonMacroFiles: {
+                type: 'function',
+                handler: 'DefaultDataImportProcessService.processNonMacroFiles',
+                success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
@@ -228,6 +251,75 @@ module.exports = {
                 handler: 'DefaultDataImportProcessService.handleErrorEnd'
             }
         }
-    }
+    },
 
+    processFileDataImportPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultFileDataImportProcessService.validateRequest',
+                success: 'loadRawSchema'
+            },
+            loadRawSchema: {
+                type: 'function',
+                handler: 'DefaultFileDataImportProcessService.loadRawSchema',
+                success: 'processModels'
+            },
+            processModels: {
+                type: 'function',
+                handler: 'DefaultFileDataImportProcessService.processModels',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultFileDataImportProcessService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultFileDataImportProcessService.handleErrorEnd'
+            }
+        }
+    },
+
+    processModelImportPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultModelImportProcessService.validateRequest',
+                success: 'populateSchemaDependancies'
+            },
+            populateSchemaDependancies: {
+                type: 'function',
+                handler: 'DefaultModelImportProcessService.populateSchemaDependancies',
+                success: 'populateSearchDependancies'
+            },
+            populateSearchDependancies: {
+                type: 'function',
+                handler: 'DefaultModelImportProcessService.populateSearchDependancies',
+                success: 'insertData'
+            },
+            insertData: {
+                type: 'function',
+                handler: 'DefaultModelImportProcessService.insertData',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultModelImportProcessService.handleSucessEnd'
+            },
+
+            handleError: {
+                type: 'function',
+                handler: 'DefaultModelImportProcessService.handleErrorEnd'
+            }
+        }
+    }
 };

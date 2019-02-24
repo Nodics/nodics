@@ -31,7 +31,6 @@ module.exports = {
             this.LOG.debug('Collecting database interceptors definitions');
             try {
                 let importInterceptors = SERVICE.DefaultInterceptorHandlerService.buildInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/import/interceptors.js'));
-                console.log(importInterceptors);
                 SERVICE.DefaultDataConfigurationService.setImportInterceptors(importInterceptors);
                 let exportInterceptors = SERVICE.DefaultInterceptorHandlerService.buildInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/export/interceptors.js'));
                 SERVICE.DefaultDataConfigurationService.setExportInterceptors(exportInterceptors);

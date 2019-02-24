@@ -57,11 +57,11 @@ module.exports = {
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         if (request.outputPath.importType !== 'system') {
-            // SERVICE.DefaultFileHandlerService.moveToSuccess(request.files).then(success => {
-            //     this.LOG.debug('File moved to success bucket: ' + success);
-            // }).catch(error => {
-            //     this.LOG.error('Facing issued while moving file to success bucket: ' + error);
-            // });
+            SERVICE.DefaultFileHandlerService.moveToSuccess(request.files).then(success => {
+                this.LOG.debug('File moved to success bucket: ' + success);
+            }).catch(error => {
+                this.LOG.error('Facing issued while moving file to success bucket: ' + error);
+            });
         }
         process.resolve(response.success);
     },
@@ -69,11 +69,11 @@ module.exports = {
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
         if (request.outputPath.importType !== 'system') {
-            // SERVICE.DefaultFileHandlerService.moveToError(request.files).then(success => {
-            //     this.LOG.debug('File moved to error bucket: ' + success);
-            // }).catch(error => {
-            //     this.LOG.error('Facing issued while moving file to error bucket: ' + error);
-            // });
+            SERVICE.DefaultFileHandlerService.moveToError(request.files).then(success => {
+                this.LOG.debug('File moved to error bucket: ' + success);
+            }).catch(error => {
+                this.LOG.error('Facing issued while moving file to error bucket: ' + error);
+            });
         }
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);

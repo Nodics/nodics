@@ -34,19 +34,27 @@ module.exports = {
         defineDefaultSave: function (collection, rawSchema) {
             collection.saveItems = function (input) {
                 return new Promise((resolve, reject) => {
+                    console.log(input.model);
                     if (!input.model) {
                         reject('Invalid model value to save');
                     } else if (input.query && !UTILS.isBlank(input.query)) {
                         try {
-                            this.findOneAndUpdate(input.query, { $set: input.model }, CONFIG.get('database').modelSaveOptions || {}).then(result => {
-                                if (result && result.value) {
-                                    resolve(result.value);
-                                } else {
-                                    reject('Failed to update doc');
-                                }
-                            }).catch(error => {
-                                reject(error);
-                            });
+                            this.findOneAndUpdate(input.query,
+                                {
+                                    $set: input.model
+                                },
+                                this.dataBase.getOptions().modelSaveOptions || {
+                                    upsert: true,
+                                    returnOriginal: false
+                                }).then(result => {
+                                    if (result && result.value) {
+                                        resolve(result.value);
+                                    } else {
+                                        reject('Failed to update doc, Please check your modelSaveOptions');
+                                    }
+                                }).catch(error => {
+                                    reject(error);
+                                });
                         } catch (error) {
                             reject(error);
                         }
@@ -56,7 +64,7 @@ module.exports = {
                                 if (result.ops && result.ops.length > 0) {
                                     resolve(result.ops[0]);
                                 } else {
-                                    reject('Failed to create doc');
+                                    reject('Failed to create doc, , Please check your modelSaveOptions');
                                 }
                             }).catch(error => {
                                 reject(error);
@@ -82,24 +90,37 @@ module.exports = {
                                 if (error) {
                                     reject(error);
                                 } else {
-                                    this.updateMany(input.query, { $set: input.model }, CONFIG.get('database').modelUpdateOptions || {}).then(success => {
-                                        let result = success.result;
-                                        response.forEach(element => {
-                                            _.merge(element, input.model);
+                                    this.updateMany(input.query,
+                                        {
+                                            $set: input.model
+                                        }, this.dataBase.getOptions().modelUpdateOptions || {
+                                            upsert: false,
+                                            returnOriginal: false
+                                        }).then(success => {
+                                            let result = success.result;
+                                            response.forEach(element => {
+                                                _.merge(element, input.model);
+                                            });
+                                            result.models = response;
+                                            resolve(result);
+                                        }).catch(error => {
+                                            reject(error);
                                         });
-                                        result.models = response;
-                                        resolve(result);
-                                    }).catch(error => {
-                                        reject(error);
-                                    });
                                 }
                             });
                         } else {
-                            this.updateMany(input.query, { $set: input.model }, CONFIG.get('database').modelUpdateOptions || {}).then(success => {
-                                resolve(success.result);
-                            }).catch(error => {
-                                reject(error);
-                            });
+                            this.updateMany(input.query,
+                                {
+                                    $set: input.model
+                                },
+                                this.dataBase.getOptions().modelUpdateOptions || {
+                                    upsert: false,
+                                    returnOriginal: false
+                                }).then(success => {
+                                    resolve(success.result);
+                                }).catch(error => {
+                                    reject(error);
+                                });
                         }
                     }
                 });
@@ -115,17 +136,22 @@ module.exports = {
                                 if (error) {
                                     reject(error);
                                 } else {
-                                    this.deleteMany(input.query, CONFIG.get('database').modelRemoveOptions || {}).then(success => {
-                                        let result = success.result;
-                                        result.models = response;
-                                        resolve(result);
-                                    }).catch(error => {
-                                        reject(error);
-                                    });
+                                    this.deleteMany(input.query,
+                                        this.dataBase.getOptions().modelRemoveOptions || {
+                                            j: false
+                                        }).then(success => {
+                                            let result = success.result;
+                                            result.models = response;
+                                            resolve(result);
+                                        }).catch(error => {
+                                            reject(error);
+                                        });
                                 }
                             });
                         } else {
-                            this.deleteMany(input.query, CONFIG.get('database').modelRemoveOptions || {}).then(success => {
+                            this.deleteMany(input.query, this.dataBase.getOptions().modelRemoveOptions || {
+                                j: false
+                            }).then(success => {
                                 resolve(success.result);
                             }).catch(error => {
                                 reject(error);

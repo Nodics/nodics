@@ -14,23 +14,23 @@ module.exports = {
     // Enterprise Save Events
     enterprisePreSave: function (request, responce) {
         return new Promise((resolve, reject) => {
-            request.request.returnModified = request.request.returnModified || true;
-            request.request.recursive = request.request.recursive || true;
+            request.returnModified = request.returnModified || true;
+            request.recursive = request.recursive || true;
             resolve(true);
         });
     },
 
     enterprisePreUpdate: function (request, responce) {
         return new Promise((resolve, reject) => {
-            request.request.returnModified = request.request.returnModified || true;
-            request.request.recursive = request.request.recursive || true;
+            request.returnModified = request.returnModified || true;
+            request.recursive = request.recursive || true;
             resolve(true);
         });
     },
     enterprisePreRemove: function (request, responce) {
         return new Promise((resolve, reject) => {
-            request.request.returnModified = request.request.returnModified || true;
-            request.request.recursive = request.request.recursive || true;
+            request.returnModified = request.returnModified || true;
+            request.recursive = request.recursive || true;
             resolve(true);
         });
     },

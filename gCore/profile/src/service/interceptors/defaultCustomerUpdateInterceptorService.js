@@ -12,13 +12,13 @@
 module.exports = {
     customerPreUpdate: function (request, responce) {
         return new Promise((resolve, reject) => {
-            request.request.returnModified = request.request.returnModified || true;
+            request.returnModified = request.returnModified || true;
             resolve(true);
         });
     },
     customerPreRemove: function (request, responce) {
         return new Promise((resolve, reject) => {
-            request.request.returnModified = request.request.returnModified || true;
+            request.returnModified = request.returnModified || true;
             resolve(true);
         });
     },

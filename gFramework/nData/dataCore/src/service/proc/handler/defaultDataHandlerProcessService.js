@@ -51,12 +51,14 @@ module.exports = {
                 dataObject: request.dataObject
             };
             let interceptorResponse = {};
-            SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors([].concat(interceptors.importProcessor), interceptorRequest, interceptorResponse).then(success => {
-                //request.dataObject = success;
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
+            SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors(
+                [].concat(interceptors.importProcessor),
+                interceptorRequest,
+                interceptorResponse).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
         } else {
             process.nextSuccess(request, response);
         }

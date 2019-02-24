@@ -57,7 +57,6 @@ module.exports = {
         this.LOG.debug('Loading list of headers from Path to be imported: ', request.path);
         SERVICE.DefaultImportUtilityService.getLocalDataHeaders(request.path).then(success => {
             request.data.headerFiles = success;
-            console.log(request.data.headerFiles);
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);

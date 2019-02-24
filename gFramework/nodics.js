@@ -111,7 +111,16 @@ module.exports = {
                     tenant: 'default',
                     path: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data'
                 }).then(success => {
-                    NODICS.LOG.info('Nodics Import Success');
+                    SERVICE.DefaultImportService.processImportData({
+                        tenant: 'default',
+                        inputPath: {
+                            path: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import/local'
+                        }
+                    }).then(success => {
+                        NODICS.LOG.info('Nodics Import Success');
+                    }).catch(error => {
+                        NODICS.LOG.error('Nodics Import error : ', error);
+                    });
                 }).catch(error => {
                     NODICS.LOG.error('Nodics Import error : ', error);
                 });

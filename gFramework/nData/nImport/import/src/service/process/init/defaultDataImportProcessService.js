@@ -34,21 +34,135 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
-        if (!request.data) {
-            process.error(request, response, 'Please validate request. Mandate property data not have valid value');
-        } else if (!request.outputPath) {
-            process.error(request, response, 'Please validate request. Mandate property outputPath not have valid value');
+        if (!request.inputPath) {
+            process.error(request, response, 'Please validate request. Mandate property inputPath not have valid value');
         } else {
             process.nextSuccess(request, response);
         }
     },
 
-    loadAllDataFiles: function (request, response, process) {
-
+    loadDataFiles: function (request, response, process) {
+        this.LOG.debug('Loading list of files from Path to be imported');
+        SERVICE.DefaultImportUtilityService.getLocalDataFiles(request.inputPath.path).then(success => {
+            let files = {};
+            Object.keys(success).forEach(fileName => {
+                let fileList = success[fileName];
+                files[fileName] = {
+                    file: fileList[0],
+                    name: fileName,
+                    processed: [],
+                    done: false
+                };
+            });
+            request.dataFiles = files;
+            request.nonMacroFiles = {};
+            //console.log(request.dataFiles);
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
 
-    processAllDataFiles: function (request, response, process) {
+    filterMacroAndNonMacroFiles: function (request, response, process) {
+        process.nextSuccess(request, response);
+    },
 
+    processDataFiles: function (request, response, process) {
+        this.LOG.debug('Starting data import process');
+        try {
+            if (request.dataFiles && Object.keys(request.dataFiles).length > 0) {
+                this.processFiles(request, response, {
+                    phase: 0,
+                    phaseLimit: CONFIG.get('data').dataImportPhasesLimit || 1,
+                    pendingFiles: Object.keys(request.dataFiles)
+                }).then(success => {
+                    if (response.errors.length > 0) {
+                        process.error(request, response);
+                    } else {
+                        process.nextSuccess(request, response);
+                    }
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            } else {
+                this.LOG.debug('No data found to import from: ' + request.inputPath.path);
+                process.nextSuccess(request, response);
+            }
+        } catch (error) {
+            process.error(request, response, error);
+        }
+    },
+
+    processNonMacroFiles: function (request, response, process) {
+        process.nextSuccess(request, response);
+    },
+
+    processFiles: function (request, response, options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                if (options.phase < options.phaseLimit) {
+                    if (options.pendingFiles && options.pendingFiles.length > 0) {
+                        let fileName = options.pendingFiles.shift();
+                        let fileObj = request.dataFiles[fileName];
+                        if (!fileObj.done || fileObj.done === false) {
+                            let fileData = require(fileObj.file);
+                            console.log(fileData);
+                            if (fileData.header.macros) {
+                                SERVICE.DefaultPipelineService.start('processFileDataImportPipeline', {
+                                    dataFiles: request.dataFiles,
+                                    phase: options.phase,
+                                    phaseLimit: options.phaseLimit,
+                                    fileName: fileName,
+                                    fileData: fileData
+                                }, {}).then(success => {
+                                    fileObj.done = true;
+                                    _self.processNextFile(request, response, options, resolve, reject);
+                                }).catch(error => {
+                                    if (options.phase >= options.phaseLimit - 1) {
+                                        if (error instanceof Array) {
+                                            error.forEach(element => {
+                                                response.errors.push({ element });
+                                            });
+                                        } else {
+                                            response.errors.push({ error });
+                                        }
+                                    }
+                                    _self.processNextFile(request, response, options, resolve, reject);
+                                });
+                            } else {
+                                request.nonMacroFiles[fileName] = fileObj;
+                                _self.processNextFile(request, response, options, resolve, reject);
+                            }
+                        } else {
+                            _self.processNextFile(request, response, options, resolve, reject);
+                        }
+                    } else {
+                        resolve(true);
+                    }
+                } else {
+                    resolve(true);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    processNextFile: function (request, response, options, resolve, reject) {
+        if (options.pendingFiles && options.pendingFiles.length <= 0) {
+            if (SERVICE.DefaultImportUtilityService.isImportPending(request.dataFiles)) {
+                options.phase = options.phase + 1;
+                options.pendingFiles = Object.keys(request.dataFiles);
+            } else {
+                options.phase = options.phaseLimit;
+            }
+        }
+        this.processFiles(request, response, options).then(success => {
+            resolve(success);
+        }).catch(error => {
+            reject(error);
+        });
     },
 
     handleSucessEnd: function (request, response, process) {

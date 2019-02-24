@@ -11,6 +11,7 @@
 
 module.exports = {
     data: {
+        dataImportPhasesLimit: 5,
         finalizeImportDataAsync: true,
         importDataConvertEncoding: 'utf8',
         readBufferSize: 1024

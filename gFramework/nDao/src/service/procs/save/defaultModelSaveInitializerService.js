@@ -292,6 +292,7 @@ module.exports = {
             response.model = model;
             process.nextSuccess(request, response);
         }).catch(error => {
+            this.LOG.error(error);
             process.error(request, response, {
                 success: false,
                 code: 'ERR_SAVE_00000',
@@ -425,7 +426,7 @@ module.exports = {
                 model: response.model.result
             };
             let interceptorResponse = {};
-            SERVICE.DefaultInterceptorHandlerService.executeSaveInterceptors([].concat(interceptors.postSave), interceptorRequest, interceptorResponse).then(success => {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postSave), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {

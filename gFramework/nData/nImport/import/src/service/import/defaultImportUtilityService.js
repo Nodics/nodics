@@ -193,10 +193,10 @@ module.exports = {
         }
     },
 
-    isImportPending: function (headers) {
+    isImportPending: function (dataFiles) {
         let pending = false;
-        _.each(headers, (header, headerName) => {
-            if (!header.done || header.done === false) {
+        _.each(dataFiles, (fileObj, fileName) => {
+            if (!fileObj.done || fileObj.done === false) {
                 pending = true;
                 return false;
             }

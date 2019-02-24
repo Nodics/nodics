@@ -41,14 +41,14 @@ module.exports = {
     handleDefaultImportProcessor: function (options) {
         return new Promise((resolve, reject) => {
             console.log('=============================== >> handleDefaultImportProcessor');
-            resolve(options.dataObject);
+            resolve(true);
         });
     },
 
     handleEnterpriseImportProcessor: function (options) {
         return new Promise((resolve, reject) => {
             console.log('=============================== >> handleEnterpriseImportProcessor');
-            resolve(options.dataObject);
+            resolve(true);
         });
     },
 

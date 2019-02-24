@@ -34,7 +34,7 @@ module.exports = {
         });
     },
 
-    validateHeader: function (request, response, process) {
+    validateRequest: function (request, response, process) {
         this.LOG.debug('Validating Header: ', request.headerName, ' for processing');
         process.nextSuccess(request, response);
     },

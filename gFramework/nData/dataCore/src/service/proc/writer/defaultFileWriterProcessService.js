@@ -38,7 +38,7 @@ module.exports = {
     },
 
     generateDataKey: function (request, response, process) {
-        this.LOG.debug('Validating request to finalize local data import');
+        this.LOG.debug('Generating unique hash key');
         request.finalData = {};
         do {
             let data = request.dataObject.shift();
@@ -48,7 +48,7 @@ module.exports = {
     },
 
     writeIntoFile: function (request, response, process) {
-        this.LOG.debug('Validating request to finalize local data import');
+        this.LOG.debug('Writing data object into file');
         SERVICE.DefaultDataWriterService.writeToFile({
             header: request.header,
             finalData: request.finalData,
