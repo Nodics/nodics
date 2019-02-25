@@ -24,6 +24,11 @@ module.exports = {
             prepareOutputURL: {
                 type: 'function',
                 handler: 'DefaultSystemDataImportInitializerService.prepareOutputURL',
+                success: 'flushOutputFolder'
+            },
+            flushOutputFolder: {
+                type: 'function',
+                handler: 'DefaultSystemDataImportInitializerService.flushOutputFolder',
                 success: 'loadHeaderFileList'
             },
             loadHeaderFileList: {
@@ -34,11 +39,26 @@ module.exports = {
             loadDataFileList: {
                 type: 'function',
                 handler: 'DefaultSystemDataImportInitializerService.loadDataFileList',
-                success: 'initDataImport'
+                success: 'resolveFileType'
             },
-            initDataImport: {
-                type: 'process',
-                handler: 'dataImportInitializerPipeline',
+            resolveFileType: {
+                type: 'function',
+                handler: 'DefaultSystemDataImportInitializerService.resolveFileType',
+                success: 'buildHeaderInstances'
+            },
+            buildHeaderInstances: {
+                type: 'function',
+                handler: 'DefaultSystemDataImportInitializerService.buildHeaderInstances',
+                success: 'assignDataFilesToHeader'
+            },
+            assignDataFilesToHeader: {
+                type: 'function',
+                handler: 'DefaultSystemDataImportInitializerService.assignDataFilesToHeader',
+                success: 'processDataHeaders'
+            },
+            processDataHeaders: {
+                type: 'function',
+                handler: 'DefaultSystemDataImportInitializerService.processDataHeaders',
                 success: 'successEnd'
             },
             successEnd: {
@@ -51,6 +71,7 @@ module.exports = {
             }
         }
     },
+
     localDataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -133,7 +154,8 @@ module.exports = {
             }
         }
     },
-    dataImportInitializerPipeline: {
+
+    /*dataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -178,7 +200,8 @@ module.exports = {
                 handler: 'DefaultDataImportInitializerService.handleErrorEnd'
             }
         }
-    },
+    },*/
+
     headerProcessPipeline: {
         startNode: "validateRequest",
         hardStop: true,
