@@ -63,7 +63,7 @@ module.exports = {
                     if (error) {
                         reject(error);
                     } else {
-                        request.dataObject = jsonData;
+                        request.dataObjects = jsonData;
                         request.outputPath.version = index + '_0';
                         SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
                             _self.handleFiles(request, response, files, ++index).then(success => {

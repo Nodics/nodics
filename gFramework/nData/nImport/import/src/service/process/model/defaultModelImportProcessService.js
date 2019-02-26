@@ -188,7 +188,7 @@ module.exports = {
                 }
             }
             SERVICE['Default' + options.macro.options.model.toUpperCaseFirstChar() + 'Service'].get({
-                tenant: header.options.tenant || request.tenant,
+                tenant: request.tenant,
                 query: query
             }).then(result => {
                 if (result && result.success && result.result && result.result.length > 0) {
@@ -228,7 +228,7 @@ module.exports = {
             models.push(model);
         }
         SERVICE['Default' + header.options.schemaName.toUpperCaseFirstChar() + 'Service'][header.options.operation]({
-            tenant: header.options.tenant || request.tenant,
+            tenant: request.tenant,
             query: header.query,
             models: models
         }).then(result => {
@@ -257,12 +257,10 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Import Model Process Request has been processed successfully');
         process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Import Model Process Request has been processed and got errors');
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {

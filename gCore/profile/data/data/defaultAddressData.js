@@ -10,14 +10,14 @@
  */
 
 module.exports = {
-    profile: {
-        tenant: {
-            tenantActiveDataProcessor: {
-                type: 'importProcessor',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultTenantImportInterceptorService.convertActiveValueToBoolean'
-            },
-        }
+    record0: {
+        code: 'defaultEntAddress',
+        active: true,
+        flatNo: '100',
+        building: 'Nodics Technology Park',
+        street: '100 lake side',
+        city: 'Bangalore',
+        state: 'Karnataka',
+        postalCode: '560001'
     }
 };

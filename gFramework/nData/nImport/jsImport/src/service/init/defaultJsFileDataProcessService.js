@@ -46,11 +46,11 @@ module.exports = {
 
     processDataChunk: function (request, response, process) {
         this.LOG.debug('Starting processing data chunks');
-        this.handleFiles(request, response, [].concat(request.files)).then(dataObject => {
-            if (dataObject && Object.keys(dataObject).length > 0) {
-                request.dataObject = [];
-                Object.keys(dataObject).forEach(key => {
-                    request.dataObject.push(dataObject[key]);
+        this.handleFiles(request, response, [].concat(request.files)).then(dataObjects => {
+            if (dataObjects && Object.keys(dataObjects).length > 0) {
+                request.dataObjects = [];
+                Object.keys(dataObjects).forEach(key => {
+                    request.dataObjects.push(dataObjects[key]);
                 });
                 request.outputPath.version = '0_0';
                 SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
@@ -67,19 +67,19 @@ module.exports = {
         });
     },
 
-    handleFiles: function (request, response, files, dataObject = {}) {
+    handleFiles: function (request, response, files, dataObjects = {}) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (files.length > 0) {
                 let file = files.shift();
-                dataObject = _.merge(dataObject, require(file));
-                _self.handleFiles(request, response, files, dataObject).then(success => {
+                dataObjects = _.merge(dataObjects, require(file));
+                _self.handleFiles(request, response, files, dataObjects).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
                 });
             } else {
-                resolve(dataObject);
+                resolve(dataObjects);
             }
         });
     },

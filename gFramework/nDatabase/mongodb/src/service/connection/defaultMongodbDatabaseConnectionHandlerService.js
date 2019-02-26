@@ -63,32 +63,32 @@ module.exports = {
         });
     },
 
-    /* isInitRequired: function () {
-         let _self = this;
-         return new Promise((resolve, reject) => {
-             try {
-                 let db = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(CONFIG.get('profileModuleName'), 'default');
-                 if (db && db.master) {
-                     if (!db.master.getCollectionList() || db.master.getCollectionList().length <= 0) {
-                         _self.LOG.info('System requires initial data to be imported');
-                         resolve(true);
-                     } else {
-                         db.master.getConnection().collection('EnterpriseModel').findOne({}, function (err, result) {
-                             if (err) {
-                                 _self.LOG.error('Not able to fetch if initial data required or not');
-                                 _self.LOG.error(err);
-                             } else if (!result) {
-                                 resolve(true);
-                             }
-                             resolve(false);
-                         });
-                     }
-                 } else {
-                     resolve(false);
-                 }
-             } catch (error) {
-                 reject(error);
-             }
-         });
-     }*/
+    isInitRequired: function () {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                let db = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(CONFIG.get('profileModuleName'), 'default');
+                if (db && db.master) {
+                    if (!db.master.getCollectionList() || db.master.getCollectionList().length <= 0) {
+                        _self.LOG.info('System requires initial data to be imported');
+                        resolve(true);
+                    } else {
+                        db.master.getConnection().collection('EnterpriseModel').findOne({}, function (err, result) {
+                            if (err) {
+                                _self.LOG.error('Not able to fetch if initial data required or not');
+                                _self.LOG.error(err);
+                            } else if (!result) {
+                                resolve(true);
+                            }
+                            resolve(false);
+                        });
+                    }
+                } else {
+                    resolve(false);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
 };

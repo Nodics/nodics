@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 schemaName: 'contact',
                 operation: 'save', //save, update and saveOrUpdate
-                tenant: 'default',
+                tenants: ['default'],
                 dataFilePrefix: 'defaultContactData'
             },
             query: {
@@ -27,7 +27,6 @@ module.exports = {
             options: {
                 schemaName: 'contact',
                 operation: 'save', //save, update and saveOrUpdate
-                //tenant: 'default',
                 dataFilePrefix: 'tenantDefaultContactData'
             },
             query: {

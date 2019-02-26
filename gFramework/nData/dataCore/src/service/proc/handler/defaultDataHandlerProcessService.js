@@ -34,7 +34,7 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process JSON file');
-        if (!request.dataObject) {
+        if (!request.dataObjects) {
             process.error(request, response, 'Invalid data object to process');
         } else {
             process.nextSuccess(request, response);
@@ -48,7 +48,7 @@ module.exports = {
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.importProcessor && interceptors.importProcessor.length > 0) {
             let interceptorRequest = {
-                dataObject: request.dataObject
+                dataObjects: request.dataObjects
             };
             let interceptorResponse = {};
             SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors(
@@ -72,7 +72,7 @@ module.exports = {
         }
         SERVICE.DefaultPipelineService.start(processPipeline, {
             header: request.header,
-            dataObject: request.dataObject,
+            dataObjects: request.dataObjects,
             outputPath: request.outputPath
         }, {}).then(success => {
             process.nextSuccess(request, response);
@@ -85,7 +85,7 @@ module.exports = {
         this.LOG.debug('Starting file write process for local data import');
         SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
             header: request.header,
-            dataObject: request.dataObject,
+            dataObjects: request.dataObjects,
             outputPath: request.outputPath
         }, {}).then(success => {
             process.nextSuccess(request, response);

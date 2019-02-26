@@ -15,24 +15,11 @@ module.exports = {
             options: {
                 schemaName: 'userGroup',
                 operation: 'save', //save, update and saveOrUpdate
-                //tenant: 'default',
                 dataFilePrefix: 'defaultUserGroupData'
             },
             query: {
                 code: '$code'
             }
-        },
-
-        /*tenantDefaultUserGroup: {
-            options: {
-                schemaName: 'userGroup',
-                operation: 'save', //save, update and saveOrUpdate
-                //tenant: 'default',
-                dataFilePrefix: 'tenantDefaultUserGroupData'
-            },
-            query: {
-                code: '$code'
-            }
-        },*/
+        }
     }
 };

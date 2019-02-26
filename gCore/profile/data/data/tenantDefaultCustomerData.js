@@ -13,6 +13,7 @@ module.exports = {
     record0: {
         code: 'guest',
         enterpriseCode: 'testOneEnt',
+        active: true,
         name: {
             title: 'Mr.',
             firstName: 'Nodics',
@@ -22,6 +23,7 @@ module.exports = {
         password: {
             loginId: 'guest',
             password: 'nodics',
+            active: true,
         },
         userGroups: ['guestUserGroup'],
         addresses: ['defaultCustomerAddress'],

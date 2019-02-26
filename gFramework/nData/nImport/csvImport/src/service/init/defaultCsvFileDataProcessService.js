@@ -71,7 +71,7 @@ module.exports = {
                     converter.pause();
                     readBytes = readBytes + sizeof(data);
                     if (readBytes > CONFIG.get('data').readBufferSize) {
-                        request.dataObject = [].concat(dataChunk);
+                        request.dataObjects = [].concat(dataChunk);
                         request.outputPath.version = index + '_' + version;
                         SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
                             dataChunk = [strData];
@@ -87,7 +87,7 @@ module.exports = {
                     }
                 }).on('end', (error) => {
                     if (dataChunk.length > 0) {
-                        request.dataObject = [].concat(dataChunk);
+                        request.dataObjects = [].concat(dataChunk);
                         request.outputPath.version = index + '_' + version;
                         SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
                             _self.handleFiles(request, response, files, ++index).then(success => {

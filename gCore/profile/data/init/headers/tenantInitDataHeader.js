@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 schemaName: 'tenant', //put type name, if want to push data into search
                 operation: 'save', //save, update and saveOrUpdate, put doSave, if data needs to be pushed into serach
-                tenant: 'default',
+                tenants: ['default'],
                 dataFilePrefix: 'defaultTenantData'
             },
             query: {

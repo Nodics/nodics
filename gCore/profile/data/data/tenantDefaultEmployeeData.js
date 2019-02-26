@@ -12,7 +12,7 @@
 module.exports = {
     record0: {
         code: 'admin',
-        enterpriseCode: 'default',
+        enterpriseCode: 'testOneEnt',
         active: true,
         name: {
             title: 'Mr.',
@@ -25,14 +25,13 @@ module.exports = {
             password: 'nodics',
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
         userGroups: ['adminUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
     record1: {
         code: 'apiAdmin',
-        enterpriseCode: 'default',
+        enterpriseCode: 'testOneEnt',
         active: true,
         name: {
             title: 'Mr.',
@@ -43,9 +42,8 @@ module.exports = {
         password: {
             loginId: 'apiAdmin',
             password: 'apiAdminInternalEmployee',
-            active: true
+            active: true,
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
         userGroups: ['adminUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']

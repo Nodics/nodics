@@ -10,14 +10,11 @@
  */
 
 module.exports = {
-    profile: {
-        tenant: {
-            tenantActiveDataProcessor: {
-                type: 'importProcessor',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultTenantImportInterceptorService.convertActiveValueToBoolean'
-            },
-        }
+    record0: {
+        code: 'defaultEntContact',
+        active: true,
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
     }
 };

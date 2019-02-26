@@ -11,15 +11,21 @@
 
 module.exports = {
     record0: {
-        code: 'adminUserGroup',
-        name: 'adminUserGroup',
+        code: 'default',
+        name: 'Default',
         active: true,
-        enterpriseCode: 'default'
+        description: 'Default Enterprise',
+        tenant: 'default:true',
+        addresses: ['defaultEntAddress'],
+        contacts: ['defaultEntContact']
     },
-    record1: {
-        code: 'guestUserGroup',
-        name: 'guestUserGroup',
+    /*record1: {
+        code: 'testOneEnt',
+        name: 'testOneEnt',
         active: true,
-        enterpriseCode: 'default'
-    }
+        description: 'Default Enterprise',
+        tenant: 'testOne:true',
+        addresses: ['defaultEntAddress'],
+        contacts: ['defaultEntContact']
+    }*/
 };

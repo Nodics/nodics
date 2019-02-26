@@ -38,7 +38,8 @@ module.exports = {
                     options: {
                         useNewUrlParser: true,
                         poolSize: 5,
-                        ignoreUndefined: true
+                        ignoreUndefined: true,
+                        connectTimeoutMS:60000
                     }
                 },
                 test: {
@@ -47,7 +48,8 @@ module.exports = {
                     options: {
                         useNewUrlParser: true,
                         poolSize: 5,
-                        ignoreUndefined: true
+                        ignoreUndefined: true,
+                        connectTimeoutMS:60000
                     }
                 }
             }

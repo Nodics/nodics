@@ -15,48 +15,7 @@ module.exports = {
             options: {
                 schemaName: 'employee',
                 operation: 'save', //save, update and saveOrUpdate
-                tenant: 'default',
                 dataFilePrefix: 'defaultEmployeeData'
-            },
-            query: {
-                code: '$code',
-                loginId: '$loginId',
-                enterpriseCode: '$enterpriseCode'
-            },
-            macros: {
-                addresses: {
-                    options: {
-                        model: 'address',
-                        returnProperty: 'code'
-                    },
-                    rule: {
-                        code: {
-                            type: 'string',
-                            index: 0
-                        }
-                    }
-                },
-                contacts: {
-                    options: {
-                        model: 'contact',
-                        returnProperty: 'code'
-                    },
-                    rule: {
-                        code: {
-                            type: 'string',
-                            index: 0
-                        }
-                    }
-                }
-            }
-        },
-
-        tenantDefaultEmployee: {
-            options: {
-                schemaName: 'employee',
-                operation: 'save', //save, update and saveOrUpdate
-                tenant: 'testOne',
-                dataFilePrefix: 'tenantDefaultEmployeeData'
             },
             query: {
                 code: '$code',
@@ -95,7 +54,7 @@ module.exports = {
             options: {
                 schemaName: 'customer',
                 operation: 'save', //save, update and saveOrUpdate
-                tenant: 'default',
+                tenants: ['default'],
                 dataFilePrefix: 'defaultCutomerData'
             },
             query: {
@@ -135,7 +94,7 @@ module.exports = {
             options: {
                 schemaName: 'customer',
                 operation: 'save', //save, update and saveOrUpdate
-                tenant: 'testOne',
+                tenants: ['testOne'],
                 dataFilePrefix: 'tenantDefaultCustomerData'
             },
             query: {

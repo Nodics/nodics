@@ -247,28 +247,17 @@ module.exports = {
             loadDataFiles: {
                 type: 'function',
                 handler: 'DefaultDataImportProcessService.loadDataFiles',
-                success: 'filterMacroAndNonMacroFiles'
-            },
-            filterMacroAndNonMacroFiles: {
-                type: 'function',
-                handler: 'DefaultDataImportProcessService.filterMacroAndNonMacroFiles',
                 success: 'processDataFiles'
             },
             processDataFiles: {
                 type: 'function',
                 handler: 'DefaultDataImportProcessService.processDataFiles',
-                success: 'processNonMacroFiles'
-            },
-            processNonMacroFiles: {
-                type: 'function',
-                handler: 'DefaultDataImportProcessService.processNonMacroFiles',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
                 handler: 'DefaultDataImportProcessService.handleSucessEnd'
             },
-
             handleError: {
                 type: 'function',
                 handler: 'DefaultDataImportProcessService.handleErrorEnd'

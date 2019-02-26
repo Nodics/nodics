@@ -11,15 +11,23 @@
 
 module.exports = {
     record0: {
-        code: 'adminUserGroup',
-        name: 'adminUserGroup',
+        code: 'defaultEmployeeAddress',
         active: true,
-        enterpriseCode: 'default'
+        flatNo: '100',
+        building: 'Nodics Technology Park',
+        street: '100 lake side',
+        city: 'Bangalore',
+        state: 'Karnataka',
+        postalCode: '560001'
     },
     record1: {
-        code: 'guestUserGroup',
-        name: 'guestUserGroup',
+        code: 'defaultCustomerAddress',
         active: true,
-        enterpriseCode: 'default'
-    }
+        flatNo: '100',
+        building: 'Nodics Technology Park',
+        street: '100 lake side',
+        city: 'Bangalore',
+        state: 'Karnataka',
+        postalCode: '560001'
+    },
 };

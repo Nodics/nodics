@@ -67,7 +67,16 @@ module.exports = {
                             tenant: 'default',
                             modules: NODICS.getActiveModules()
                         }).then(success => {
-                            resolve(true);
+                            SERVICE.DefaultImportService.processImportData({
+                                tenant: 'default',
+                                inputPath: {
+                                    path: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import/init'
+                                }
+                            }).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                NODICS.LOG.error('Initial data import failed : ', error);
+                            });
                         }).catch(error => {
                             reject(error);
                         });
@@ -99,14 +108,14 @@ module.exports = {
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');
                 NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
-                SERVICE.DefaultImportService.importInitData({
-                    tenant: 'default',
-                    modules: NODICS.getActiveModules()
-                }).then(success => {
-                    NODICS.LOG.info('Nodics Import Success');
-                }).catch(error => {
-                    NODICS.LOG.error('Nodics Import error : ', error);
-                });
+                // SERVICE.DefaultImportService.importInitData({
+                //     tenant: 'default',
+                //     modules: NODICS.getActiveModules()
+                // }).then(success => {
+                //     NODICS.LOG.info('Nodics Import Success');
+                // }).catch(error => {
+                //     NODICS.LOG.error('Nodics Import error : ', error);
+                // });
                 // SERVICE.DefaultImportService.importLocalData({
                 //     tenant: 'default',
                 //     path: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data'

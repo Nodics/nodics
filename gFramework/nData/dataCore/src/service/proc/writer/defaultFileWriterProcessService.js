@@ -41,9 +41,9 @@ module.exports = {
         this.LOG.debug('Generating unique hash key');
         request.finalData = {};
         do {
-            let data = request.dataObject.shift();
+            let data = request.dataObjects.shift();
             request.finalData[UTILS.generateHash(JSON.stringify(data))] = data;
-        } while (request.dataObject.length > 0);
+        } while (request.dataObjects.length > 0);
         process.nextSuccess(request, response);
     },
 

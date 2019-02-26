@@ -9,6 +9,8 @@
 
  */
 
+const util = require('util');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -55,7 +57,21 @@ module.exports = {
     processModels: function (request, response, process) {
         this.LOG.debug('Processing models from file: ' + request.fileName);
         if (request.fileData.models && Object.keys(request.fileData.models).length > 0) {
-            this.processModel(request, response, {
+            let header = request.fileData.header;
+            let tenants = [];
+            if (request.tenant && (!header.options.tenants || header.options.tenants.includes(request.tenant))) {
+                tenants = [request.tenant];
+            } else if (!header.options.tenants) {
+                tenants = NODICS.getTenants();
+            } else {
+                header.options.tenants.forEach(tenantName => {
+                    if (NODICS.getTenants().includes(tenantName)) {
+                        tenants.push(tenantName);
+                    }
+                });
+            }
+            this.processTenantModel(request, response, {
+                tenants: tenants,
                 pendingModels: Object.keys(request.fileData.models)
             }).then(success => {
                 process.nextSuccess(request, response);
@@ -68,6 +84,29 @@ module.exports = {
 
     },
 
+    processTenantModel: function (request, response, options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (options.tenants && options.tenants.length > 0) {
+                let tenant = options.tenants.shift();
+                this.processModel(request, response, {
+                    tenant: tenant,
+                    pendingModels: Object.keys(request.fileData.models)
+                }).then(success => {
+                    _self.processTenantModel(request, response, options).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
     processModel: function (request, response, options) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -78,6 +117,7 @@ module.exports = {
                     let dataModel = request.fileData.models[modelHash];
                     if (!fileObj.processed.includes(modelHash)) {
                         SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
+                            tenant: options.tenant,
                             dataFiles: request.dataFiles,
                             fileName: request.fileName,
                             fileData: request.fileData,

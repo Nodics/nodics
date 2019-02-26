@@ -11,13 +11,17 @@
 
 module.exports = {
     record0: {
-        code: 'adminUserGroup',
-        name: 'adminUserGroup',
-        enterpriseCode: 'default'
+        code: 'defaultEmployeeContact',
+        active: true,
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
     },
     record1: {
-        code: 'guestUserGroup',
-        name: 'guestUserGroup',
-        enterpriseCode: 'default'
-    }
+        code: 'defaultCustomerContact',
+        active: true,
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
+    },
 };

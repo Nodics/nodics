@@ -10,14 +10,9 @@
  */
 
 module.exports = {
-    profile: {
-        tenant: {
-            tenantActiveDataProcessor: {
-                type: 'importProcessor',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultTenantImportInterceptorService.convertActiveValueToBoolean'
-            },
-        }
+    record0: {
+        code: 'default',
+        active: true,
+        description: 'Default tenant, which take configuration from properties configuration'
     }
 };

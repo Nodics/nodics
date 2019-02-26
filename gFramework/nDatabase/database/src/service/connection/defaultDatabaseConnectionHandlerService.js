@@ -142,7 +142,7 @@ module.exports = {
         });
     },
 
-    /*isInitRequired: function () {
+    isInitRequired: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
@@ -169,5 +169,5 @@ module.exports = {
                 resolve(false);
             }
         });
-    }*/
+    }
 };

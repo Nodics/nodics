@@ -62,17 +62,13 @@ module.exports = {
         });
     },
 
-    filterMacroAndNonMacroFiles: function (request, response, process) {
-        process.nextSuccess(request, response);
-    },
-
     processDataFiles: function (request, response, process) {
         this.LOG.debug('Starting data import process');
         try {
             if (request.dataFiles && Object.keys(request.dataFiles).length > 0) {
                 this.processFiles(request, response, {
                     phase: 0,
-                    phaseLimit: CONFIG.get('data').dataImportPhasesLimit || 1,
+                    phaseLimit: CONFIG.get('data').dataImportPhasesLimit || 5,
                     pendingFiles: Object.keys(request.dataFiles)
                 }).then(success => {
                     if (response.errors.length > 0) {
@@ -92,10 +88,6 @@ module.exports = {
         }
     },
 
-    processNonMacroFiles: function (request, response, process) {
-        process.nextSuccess(request, response);
-    },
-
     processFiles: function (request, response, options) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -106,32 +98,28 @@ module.exports = {
                         let fileObj = request.dataFiles[fileName];
                         if (!fileObj.done || fileObj.done === false) {
                             let fileData = require(fileObj.file);
-                            if (fileData.header.macros) {
-                                SERVICE.DefaultPipelineService.start('processFileDataImportPipeline', {
-                                    dataFiles: request.dataFiles,
-                                    phase: options.phase,
-                                    phaseLimit: options.phaseLimit,
-                                    fileName: fileName,
-                                    fileData: fileData
-                                }, {}).then(success => {
-                                    fileObj.done = true;
-                                    _self.processNextFile(request, response, options, resolve, reject);
-                                }).catch(error => {
-                                    if (options.phase >= options.phaseLimit - 1) {
-                                        if (error instanceof Array) {
-                                            error.forEach(element => {
-                                                response.errors.push({ element });
-                                            });
-                                        } else {
-                                            response.errors.push({ error });
-                                        }
-                                    }
-                                    _self.processNextFile(request, response, options, resolve, reject);
-                                });
-                            } else {
-                                request.nonMacroFiles[fileName] = fileObj;
+                            SERVICE.DefaultPipelineService.start('processFileDataImportPipeline', {
+                                tenant: request.tenant,
+                                dataFiles: request.dataFiles,
+                                phase: options.phase,
+                                phaseLimit: options.phaseLimit,
+                                fileName: fileName,
+                                fileData: fileData
+                            }, {}).then(success => {
+                                fileObj.done = true;
                                 _self.processNextFile(request, response, options, resolve, reject);
-                            }
+                            }).catch(error => {
+                                if (options.phase >= options.phaseLimit - 1) {
+                                    if (error instanceof Array) {
+                                        error.forEach(element => {
+                                            response.errors.push({ element });
+                                        });
+                                    } else {
+                                        response.errors.push({ error });
+                                    }
+                                }
+                                _self.processNextFile(request, response, options, resolve, reject);
+                            });
                         } else {
                             _self.processNextFile(request, response, options, resolve, reject);
                         }
