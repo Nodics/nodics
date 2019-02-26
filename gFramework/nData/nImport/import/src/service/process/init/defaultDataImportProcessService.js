@@ -9,6 +9,8 @@
 
  */
 
+const util = require('util');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -43,19 +45,18 @@ module.exports = {
 
     loadDataFiles: function (request, response, process) {
         this.LOG.debug('Loading list of files from Path to be imported');
-        SERVICE.DefaultImportUtilityService.getLocalDataFiles(request.inputPath.path).then(success => {
+        SERVICE.DefaultImportUtilityService.getImportFiles(request.inputPath.path).then(success => {
             let files = {};
             Object.keys(success).forEach(fileName => {
-                let fileList = success[fileName];
+                let filePath = success[fileName];
                 files[fileName] = {
-                    file: fileList[0],
+                    file: filePath,
                     name: fileName,
                     processed: [],
                     done: false
                 };
             });
             request.dataFiles = files;
-            request.nonMacroFiles = {};
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -97,6 +98,7 @@ module.exports = {
                         let fileName = options.pendingFiles.shift();
                         let fileObj = request.dataFiles[fileName];
                         if (!fileObj.done || fileObj.done === false) {
+                            _self.LOG.debug('Processing file: ' + fileObj.file.replace(NODICS.getNodicsHome(), '.') + ' on phase: ' + options.phase + 1);
                             let fileData = require(fileObj.file);
                             SERVICE.DefaultPipelineService.start('processFileDataImportPipeline', {
                                 tenant: request.tenant,
@@ -107,18 +109,19 @@ module.exports = {
                                 fileData: fileData
                             }, {}).then(success => {
                                 fileObj.done = true;
+                                SERVICE.DefaultFileHandlerService.moveToSuccess(fileObj.file).then(success => {
+                                    _self.LOG.debug('File has been moved to success folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
+                                }).catch(error => {
+                                    _self.LOG.error('Facing issue while moving file to success folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
+                                });
                                 _self.processNextFile(request, response, options, resolve, reject);
                             }).catch(error => {
                                 if (options.phase >= options.phaseLimit - 1) {
-                                    if (error instanceof Array) {
-                                        error.forEach(element => {
-                                            response.errors.push({ element });
-                                        });
-                                    } else {
-                                        response.errors.push({ error });
-                                    }
+                                    _self.LOG.error('Import process failed due to error on file: ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
+                                    reject(error);
+                                } else {
+                                    _self.processNextFile(request, response, options, resolve, reject);
                                 }
-                                _self.processNextFile(request, response, options, resolve, reject);
                             });
                         } else {
                             _self.processNextFile(request, response, options, resolve, reject);
@@ -157,7 +160,18 @@ module.exports = {
     },
 
     handleErrorEnd: function (request, response, process) {
+        let _self = this;
         this.LOG.error('Request has been processed and got errors');
+        Object.keys(request.dataFiles).forEach(fileName => {
+            let fileObj = request.dataFiles[fileName];
+            if (!fileObj.done) {
+                SERVICE.DefaultFileHandlerService.moveToError(fileObj.file).then(success => {
+                    _self.LOG.debug('File has been moved to error folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
+                }).catch(error => {
+                    _self.LOG.error('Facing issue while moving file to error folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
+                });
+            }
+        });
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {

@@ -53,7 +53,7 @@ module.exports = {
                             } else {
                                 dataFilesRoot = dataFilesRoot + '/data/sample';
                             }
-                            _self.getSystemHeaders(dataFilesRoot, fileList);
+                            _self.getHeaderFiles(dataFilesRoot, fileList);
                         }
                     });
                     resolve(fileList);
@@ -64,10 +64,10 @@ module.exports = {
         });
     },
 
-    getSystemHeaders: function (path, fileList) {
+    getHeaderFiles: function (path, fileList) {
         if (fs.existsSync(path)) {
             let moduleFiles = {};
-            UTILS.getSystemHeaderFiles(path, moduleFiles);
+            UTILS.getHeaderFiles(path, moduleFiles);
             _.each(moduleFiles, (dataFile, name) => {
                 if (fileList[name]) {
                     fileList[name].push(dataFile);
@@ -102,7 +102,7 @@ module.exports = {
                             } else {
                                 dataFilesRoot = dataFilesRoot + '/data/sample';
                             }
-                            _self.getSystemFiles(dataFilesRoot, fileList);
+                            _self.getDataFiles(dataFilesRoot, fileList);
                         }
                     });
                     resolve(fileList);
@@ -113,76 +113,10 @@ module.exports = {
         });
     },
 
-    getSystemFiles: function (path, fileList) {
-        if (fs.existsSync(path)) {
-            let moduleFiles = {};
-            UTILS.getSystemDataFiles(path, moduleFiles);
-            _.each(moduleFiles, (dataFile, name) => {
-                if (fileList[name]) {
-                    fileList[name].push(dataFile);
-                } else {
-                    fileList[name] = [dataFile];
-                }
-            });
-            return fileList;
-        }
-    },
-
-
-    getLocalDataHeaders: function (path) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                if (fs.existsSync(path)) {
-                    let fileList = {};
-                    _self.getDataHeaders(path, fileList);
-                    resolve(fileList);
-                } else {
-                    reject('Given path :' + path + ' is not valid');
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    },
-
-    getDataHeaders: function (path, fileList) {
-        if (fs.existsSync(path)) {
-            let moduleFiles = {};
-            UTILS.getLocalHeaderFiles(path, moduleFiles);
-            _.each(moduleFiles, (dataFile, name) => {
-                if (fileList[name]) {
-                    fileList[name].push(dataFile);
-                } else {
-                    fileList[name] = [dataFile];
-                }
-            });
-            return fileList;
-        }
-    },
-
-    getLocalDataFiles: function (path) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                if (fs.existsSync(path)) {
-                    let fileList = {};
-                    _self.getDataFiles(path, fileList);
-                    resolve(fileList);
-                } else {
-                    this.LOG.warn('Could not found any data in path: ' + path);
-                    resolve({});
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    },
-
     getDataFiles: function (path, fileList) {
         if (fs.existsSync(path)) {
             let moduleFiles = {};
-            UTILS.getLocalDataFiles(path, moduleFiles);
+            UTILS.getDataFiles(path, moduleFiles);
             _.each(moduleFiles, (dataFile, name) => {
                 if (fileList[name]) {
                     fileList[name].push(dataFile);
@@ -194,6 +128,97 @@ module.exports = {
         }
     },
 
+    getImportFiles: function (filePath) {
+        let fileList = {};
+        return new Promise((resolve, reject) => {
+            try {
+                if (fs.existsSync(filePath)) {
+                    let files = fs.readdirSync(filePath);
+                    if (files) {
+                        for (let count = 0; count < files.length; count++) {
+                            let element = files[count];
+                            let file = path.join(filePath, element);
+                            if (!fs.statSync(file).isDirectory()) {
+                                let name = element.split('.').shift();
+                                let extname = element.split('.').pop();
+                                fileList[name + '_' + extname] = SERVICE.DefaultFileHandlerService.moveSyncToProcessing(file);
+                            }
+                        }
+                    }
+                }
+                resolve(fileList);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    //=========================================================
+    /* getLocalDataHeaders: function (path) {
+         let _self = this;
+         return new Promise((resolve, reject) => {
+             try {
+                 if (fs.existsSync(path)) {
+                     let fileList = {};
+                     _self.getDataHeaders(path, fileList);
+                     resolve(fileList);
+                 } else {
+                     reject('Given path :' + path + ' is not valid');
+                 }
+             } catch (error) {
+                 reject(error);
+             }
+         });
+     },
+ 
+     getDataHeaders: function (path, fileList) {
+         if (fs.existsSync(path)) {
+             let moduleFiles = {};
+             UTILS.getLocalHeaderFiles(path, moduleFiles);
+             _.each(moduleFiles, (dataFile, name) => {
+                 if (fileList[name]) {
+                     fileList[name].push(dataFile);
+                 } else {
+                     fileList[name] = [dataFile];
+                 }
+             });
+             return fileList;
+         }
+     },
+ 
+     getLocalDataFiles: function (path) {
+         let _self = this;
+         return new Promise((resolve, reject) => {
+             try {
+                 if (fs.existsSync(path)) {
+                     let fileList = {};
+                     _self.getDataFiles(path, fileList);
+                     resolve(fileList);
+                 } else {
+                     this.LOG.warn('Could not found any data in path: ' + path);
+                     resolve({});
+                 }
+             } catch (error) {
+                 reject(error);
+             }
+         });
+     },
+ 
+     getDataFiles: function (path, fileList) {
+         if (fs.existsSync(path)) {
+             let moduleFiles = {};
+             UTILS.getLocalDataFiles(path, moduleFiles);
+             _.each(moduleFiles, (dataFile, name) => {
+                 if (fileList[name]) {
+                     fileList[name].push(dataFile);
+                 } else {
+                     fileList[name] = [dataFile];
+                 }
+             });
+             return fileList;
+         }
+     },
+ */
     isImportPending: function (dataFiles) {
         let pending = false;
         _.each(dataFiles, (fileObj, fileName) => {

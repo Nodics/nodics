@@ -37,7 +37,6 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
-        console.time('Processing Time');
         if (!request.modules && !UTILS.isArray(request.modules) && request.modules.length <= 0) {
             process.error(request, response, 'Please validate request. Mandate property modules not have valid value');
         } else {
@@ -146,8 +145,6 @@ module.exports = {
                 });
             });
         }
-        console.log(request.data.headerFiles);
-        console.log(request.data.dataFiles);
         delete request.data.headerFiles;
         delete request.data.dataFiles;
         process.nextSuccess(request, response);
@@ -225,7 +222,6 @@ module.exports = {
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        console.timeEnd('Processing Time');
         process.resolve(response.success);
     },
 
