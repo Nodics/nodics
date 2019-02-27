@@ -57,7 +57,7 @@ module.exports = {
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         if (request.outputPath.importType !== 'system') {
-            SERVICE.DefaultFileHandlerService.moveFile(request.files, request.outputPath.successPath).then(success => {
+            SERVICE.DefaultFileHandlerService.moveFile(request.files, request.outputPath.successPath + '/data').then(success => {
                 this.LOG.debug('File moved to success bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(request.files);
@@ -70,7 +70,7 @@ module.exports = {
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
         if (request.outputPath.importType !== 'system') {
-            SERVICE.DefaultFileHandlerService.moveFile(request.files, request.outputPath.errorPath).then(success => {
+            SERVICE.DefaultFileHandlerService.moveFile(request.files, request.outputPath.errorPath + '/data').then(success => {
                 this.LOG.debug('File moved to success bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(request.files);

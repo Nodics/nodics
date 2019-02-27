@@ -62,7 +62,7 @@ module.exports = {
                 return SERVICE.DefaultScriptsHandlerService.executePostScripts();
             }).then(() => {
                 return new Promise((resolve, reject) => {
-                    console.log('==============================================: ', NODICS.isInitRequired());
+                    //console.log('==============================================: ', NODICS.isInitRequired());
                     if (NODICS.isInitRequired()) {
                         SERVICE.DefaultImportService.importInitData({
                             tenant: 'default',
@@ -120,8 +120,8 @@ module.exports = {
                 // });
                 // console.log('===========================================================================================================');
                 // SERVICE.DefaultImportService.importLocalData({
-                //     dataPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data',
-                //     headerPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data',
+                //     dataPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data/data',
+                //     headerPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data/headers',
                 //     successPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data',
                 //     errorPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data'
                 // }).then(success => {
@@ -139,7 +139,7 @@ module.exports = {
                 // }).catch(error => {
                 //     NODICS.LOG.error('Nodics Import error : ', error);
                 // });
-                NODICS.LOG.info('Nodics Import Success');
+                // NODICS.LOG.info('Nodics Import Success');
                 //this.initTestRuner();
             }).catch(error => {
                 NODICS.LOG.error('Nodics server error : ', error);

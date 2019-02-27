@@ -44,40 +44,47 @@ module.exports = {
         try {
             let header = request.header;
             if (!UTILS.isBlank(header.dataFiles)) {
-                if (CONFIG.get('data').finalizeImportDataAsync) {
-                    let allFileTypes = [];
-                    Object.keys(header.dataFiles).forEach(fileName => {
-                        let fileObj = header.dataFiles[fileName];
-                        let outputPath = _.merge({}, request.outputPath);
-                        outputPath.fileName = fileName;
-                        outputPath.fileType = fileName.split('_').pop();
-                        allFileTypes.push(SERVICE.DefaultPipelineService.start('dataFinalizerInitPipeline', {
-                            files: fileObj.list,
-                            outputPath: outputPath,
-                            header: header.header
-                        }, {}));
-                    });
-                    Promise.all(allFileTypes).then(success => {
-                        process.nextSuccess(request, response);
-                    }).catch(errors => {
-                        if (errors instanceof Array) {
-                            errors.forEach(err => {
-                                response.errors.push(err);
-                            });
-                            process.error(request, response);
-                        } else {
-                            process.error(request, response, errors);
-                        }
-                    });
-                } else {
-                    this.processFiles(request, response, {
-                        pendingFileList: Object.keys(header.dataFiles)
-                    }).then(success => {
-                        process.nextSuccess(request, response);
-                    }).catch(error => {
-                        process.error(request, response, error);
-                    });
-                }
+                this.processFiles(request, response, {
+                    pendingFileList: Object.keys(header.dataFiles)
+                }).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+                // if (CONFIG.get('data').finalizeImportDataAsync) {
+                //     let allFileTypes = [];
+                //     Object.keys(header.dataFiles).forEach(fileName => {
+                //         let fileObj = header.dataFiles[fileName];
+                //         let outputPath = _.merge({}, request.outputPath);
+                //         outputPath.fileName = fileName;
+                //         outputPath.fileType = fileName.split('_').pop();
+                //         allFileTypes.push(SERVICE.DefaultPipelineService.start('dataFinalizerInitPipeline', {
+                //             files: fileObj.list,
+                //             outputPath: outputPath,
+                //             header: header.header
+                //         }, {}));
+                //     });
+                //     Promise.all(allFileTypes).then(success => {
+                //         process.nextSuccess(request, response);
+                //     }).catch(errors => {
+                //         if (errors instanceof Array) {
+                //             errors.forEach(err => {
+                //                 response.errors.push(err);
+                //             });
+                //             process.error(request, response);
+                //         } else {
+                //             process.error(request, response, errors);
+                //         }
+                //     });
+                // } else {
+                //     this.processFiles(request, response, {
+                //         pendingFileList: Object.keys(header.dataFiles)
+                //     }).then(success => {
+                //         process.nextSuccess(request, response);
+                //     }).catch(error => {
+                //         process.error(request, response, error);
+                //     });
+                // }
             } else {
                 this.LOG.debug('There is no data to import for header : ' + request.headerName);
                 process.nextSuccess(request, response);
@@ -104,6 +111,7 @@ module.exports = {
                             outputPath: request.outputPath,
                             header: header.header
                         }, {}).then(success => {
+
                             _self.processFiles(request, response, options).then(success => {
                                 resolve(success);
                             }).catch(error => {

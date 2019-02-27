@@ -15,6 +15,6 @@ module.exports = {
         finalizeImportDataAsync: true,
         importDataConvertEncoding: 'utf8',
         readBufferSize: 1024,
-        headerBatchSize: 1
+        headerBatchSize: 0
     }
 };

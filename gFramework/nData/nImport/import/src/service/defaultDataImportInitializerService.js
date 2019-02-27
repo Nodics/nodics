@@ -50,36 +50,43 @@ module.exports = {
         this.LOG.debug('Starting data import process');
         try {
             if (request.data && request.data.headers && Object.keys(request.data.headers).length > 0) {
-                if (CONFIG.get('data').finalizeImportDataAsync) {
-                    let allHeaders = [];
-                    Object.keys(request.data.headers).forEach(headerName => {
-                        allHeaders.push(SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
-                            header: request.data.headers[headerName],
-                            headerName: headerName,
-                            outputPath: _.merge({}, request.outputPath)
-                        }, {}));
-                    });
-                    Promise.all(allHeaders).then(success => {
-                        process.nextSuccess(request, response);
-                    }).catch(errors => {
-                        if (errors instanceof Array) {
-                            errors.forEach(err => {
-                                response.errors.push(err);
-                            });
-                            process.error(request, response);
-                        } else {
-                            process.error(request, response, errors);
-                        }
-                    });
-                } else {
-                    this.processHeaders(request, response, {
-                        pendingHeaders: Object.keys(request.data.headers)
-                    }).then(success => {
-                        process.nextSuccess(request, response);
-                    }).catch(error => {
-                        process.error(request, response, error);
-                    });
-                }
+                this.processHeaders(request, response, {
+                    pendingHeaders: Object.keys(request.data.headers)
+                }).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+                // if (CONFIG.get('data').finalizeImportDataAsync) {
+                //     let allHeaders = [];
+                //     Object.keys(request.data.headers).forEach(headerName => {
+                //         allHeaders.push(SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
+                //             header: request.data.headers[headerName],
+                //             headerName: headerName,
+                //             outputPath: _.merge({}, request.outputPath)
+                //         }, {}));
+                //     });
+                //     Promise.all(allHeaders).then(success => {
+                //         process.nextSuccess(request, response);
+                //     }).catch(errors => {
+                //         if (errors instanceof Array) {
+                //             errors.forEach(err => {
+                //                 response.errors.push(err);
+                //             });
+                //             process.error(request, response);
+                //         } else {
+                //             process.error(request, response, errors);
+                //         }
+                //     });
+                // } else {
+                //     this.processHeaders(request, response, {
+                //         pendingHeaders: Object.keys(request.data.headers)
+                //     }).then(success => {
+                //         process.nextSuccess(request, response);
+                //     }).catch(error => {
+                //         process.error(request, response, error);
+                //     });
+                // }
             } else {
                 this.LOG.debug('No data found to import');
                 process.nextSuccess(request, response);
@@ -102,20 +109,20 @@ module.exports = {
                     headerName: headerName,
                     outputPath: _.merge({}, request.outputPath)
                 }, {}).then(success => {
-                    if (request.outputPath.importType !== 'system') {
+                    if (request.outputPath.importType && request.outputPath.importType !== 'system') {
                         header.header.options.done = true;
                         let fileName = header.header.options.fileName;
                         let headers = Object.keys(request.data.headers);
                         let done = true;
                         for (let count = 0; count < headers.length; count++) {
                             let headerName = headers[count];
-                            let headerObj = request.data.headers[headerName];
+                            let headerObj = request.data.headers[headerName].header;
                             if (fileName === headerObj.options.fileName && !headerObj.options.done) {
                                 done = false;
                             }
                         }
                         if (done) {
-                            SERVICE.DefaultFileHandlerService.moveFile([header.header.options.filePath], request.outputPath.successPath).then(success => {
+                            SERVICE.DefaultFileHandlerService.moveFile([header.header.options.filePath], request.outputPath.successPath + '/headers').then(success => {
                                 _self.LOG.debug('File has been moved to error folder : ' + header.header.options.filePath.replace(NODICS.getNodicsHome(), '.'));
                             }).catch(error => {
                                 _self.LOG.error('Facing issue while moving file to error folder : ' + header.header.options.filePath.replace(NODICS.getNodicsHome(), '.'));
@@ -145,7 +152,7 @@ module.exports = {
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
         let errorFiles = [];
-        if (request.outputPath.importType !== 'system') {
+        if (request.outputPath.importType && request.outputPath.importType !== 'system') {
             let headers = Object.keys(request.data.headers);
             for (let count = 0; count < headers.length; count++) {
                 let headerName = headers[count];
@@ -156,7 +163,7 @@ module.exports = {
             }
         }
         if (errorFiles.length > 0) {
-            SERVICE.DefaultFileHandlerService.moveFile(errorFiles, request.outputPath.errorPath).then(success => {
+            SERVICE.DefaultFileHandlerService.moveFile(errorFiles, request.outputPath.errorPath + '/headers').then(success => {
                 this.LOG.debug('File moved to error bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(errorFiles);

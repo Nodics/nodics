@@ -53,8 +53,8 @@ module.exports = {
         request.outputPath = {
             destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/import/local',
             importType: 'local',
-            successPath: request.success,
-            errorPath: request.errorPath
+            successPath: request.successPath + '/success',
+            errorPath: request.errorPath + '/error'
         };
         process.nextSuccess(request, response);
     },
@@ -71,7 +71,7 @@ module.exports = {
 
     loadHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of headers from Path to be imported: ', request.path);
-        SERVICE.DefaultImportUtilityService.getLocalHeaderFiles(request.headerPath + '/headers').then(success => {
+        SERVICE.DefaultImportUtilityService.getLocalHeaderFiles(request.headerPath).then(success => {
             request.data.headerFiles = success;
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -108,7 +108,6 @@ module.exports = {
                     });
                 });
             }
-            console.log(util.inspect(request.data.headers, true, 6));
             delete request.data.headerFiles;
             process.nextSuccess(request, response);
         } catch (error) {
@@ -124,7 +123,7 @@ module.exports = {
                 let headerData = request.data.headers[headerName];
                 let filePrefix = headerData.header.options.dataFilePrefix || headerName;
                 let fileList = {};
-                SERVICE.DefaultImportUtilityService.getAllFrefixFiles(request.dataPath + '/data', fileList, filePrefix);
+                SERVICE.DefaultImportUtilityService.getAllFrefixFiles(request.dataPath, fileList, filePrefix);
                 _.each(fileList, (dataFile, name) => {
                     if (headerData.dataFiles[name]) {
                         headerData.dataFiles[name].push(dataFile);
@@ -133,6 +132,7 @@ module.exports = {
                     }
                 });
             });
+            //console.log(util.inspect(request.data.headers, true, 6));
             process.nextSuccess(request, response);
         } else {
             this.LOG.debug('Could not found any header to import local data');

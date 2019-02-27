@@ -171,9 +171,10 @@ module.exports = {
                     } else {
                         let name = element.substring(0, element.lastIndexOf("."));
                         name = name.replace(/\./g, '');
+                        let extname = element.split('.').pop();
                         if (!UTILS.isBlank(name) && (!preFix || element.startsWith(preFix)) &&
                             !name.endsWith('Header') && !name.endsWith('Headers') && !name.endsWith('processing')) {
-                            fileList[name] = SERVICE.DefaultFileHandlerService.moveSyncToProcessing(file);
+                            fileList[name + '_' + extname] = SERVICE.DefaultFileHandlerService.moveSyncToProcessing(file);
                         }
                     }
                 });
