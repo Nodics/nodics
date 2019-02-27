@@ -64,46 +64,40 @@ module.exports = {
         return outputFileName;
     },
 
-    moveToSuccess: function (files) {
-        return this.moveFile([].concat(files), 'success');
-    },
-
-    moveToError: function (files) {
-        return this.moveFile([].concat(files), 'error');
-    },
-
-    moveFile: function (files, type) {
+    moveFile: function (files, destPath) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (files.length > 0) {
-                let file = files.shift();
-                try {
-                    let filePath = path.dirname(file);
-                    let fileName = path.basename(file);
-                    let fileExt = path.extname(fileName);
-                    let fileNameWithoutExt = fileName.replace(fileExt, '');
-                    if (fileNameWithoutExt.endsWith('_processing')) {
-                        fileNameWithoutExt = fileNameWithoutExt.replace('_processing', '');
-                    }
-                    filePath = filePath + '/' + type;
-                    fse.ensureDir(filePath).then(() => {
-                        fse.move(file, filePath + '/' + fileNameWithoutExt + '_' + Date.now() + fileExt).then(() => {
-                            _self.moveFile(files, type).then(success => {
-                                resolve(true);
+            try {
+                if (files.length > 0) {
+                    let file = files.shift();
+                    try {
+                        let fileName = path.basename(file);
+                        let fileExt = path.extname(fileName);
+                        let fileNameWithoutExt = fileName.replace(fileExt, '');
+                        if (fileNameWithoutExt.endsWith('_processing')) {
+                            fileNameWithoutExt = fileNameWithoutExt.replace('_processing', '');
+                        }
+                        fse.ensureDir(destPath).then(() => {
+                            fse.move(file, destPath + '/' + fileNameWithoutExt + '_' + Date.now() + fileExt).then(() => {
+                                _self.moveFile(files, destPath).then(success => {
+                                    resolve(true);
+                                }).catch(error => {
+                                    reject(error);
+                                });
                             }).catch(error => {
                                 reject(error);
                             });
                         }).catch(error => {
                             reject(error);
                         });
-                    }).catch(error => {
+                    } catch (error) {
                         reject(error);
-                    });
-                } catch (error) {
-                    reject(error);
+                    }
+                } else {
+                    resolve(true);
                 }
-            } else {
-                resolve(true);
+            } catch (error) {
+                reject(error);
             }
         });
     }

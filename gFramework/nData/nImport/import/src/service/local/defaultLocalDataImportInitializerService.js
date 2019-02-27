@@ -10,6 +10,8 @@
  */
 
 const _ = require('lodash');
+const fse = require('fs-extra');
+const util = require('util');
 
 module.exports = {
     /**
@@ -36,7 +38,9 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
-        if (!request.path) {
+        if (!request.headerPath) {
+            process.error(request, response, 'Please validate request. Mandate property modules not have valid value');
+        } if (!request.dataPath) {
             process.error(request, response, 'Please validate request. Mandate property modules not have valid value');
         } else {
             request.data = {};
@@ -48,14 +52,26 @@ module.exports = {
         this.LOG.debug('Preparing output file path');
         request.outputPath = {
             destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/import/local',
-            importType: 'local'
+            importType: 'local',
+            successPath: request.success,
+            errorPath: request.errorPath
         };
         process.nextSuccess(request, response);
     },
 
+    flushOutputFolder: function (request, response, process) {
+        this.LOG.debug('Cleaning output directory : ' + request.outputPath.destDir);
+        fse.remove(request.outputPath.destDir).then(() => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+
+
     loadHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of headers from Path to be imported: ', request.path);
-        SERVICE.DefaultImportUtilityService.getLocalDataHeaders(request.path).then(success => {
+        SERVICE.DefaultImportUtilityService.getLocalHeaderFiles(request.headerPath + '/headers').then(success => {
             request.data.headerFiles = success;
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -63,19 +79,85 @@ module.exports = {
         });
     },
 
-    loadDataFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of files from Path to be imported');
-        SERVICE.DefaultImportUtilityService.getLocalDataFiles(request.path).then(success => {
-            request.data.dataFiles = success;
+    buildHeaderInstances: function (request, response, process) {
+        this.LOG.debug('Generating header instances from header files');
+        try {
+            if (request.data && request.data.headerFiles) {
+                if (!request.data.headers) {
+                    request.data.headers = {};
+                }
+                _.each(request.data.headerFiles, (list, name) => {
+                    list.forEach(element => {
+                        let fileObj = require(element);
+                        _.each(fileObj, (moduleObject, moduleName) => {
+                            _.each(moduleObject, (headerObj, headerName) => {
+                                headerObj.options.moduleName = headerObj.options.moduleName || moduleName;
+                                headerObj.options.fileName = name;
+                                headerObj.options.filePath = element;
+                                headerObj.options.done = false;
+                                if (!request.data.headers[headerName]) {
+                                    request.data.headers[headerName] = {
+                                        header: headerObj,
+                                        dataFiles: {}
+                                    };
+                                } else {
+                                    throw new Error('Same header: ' + headerName + 'can not be in two different header files');
+                                }
+                            });
+                        });
+                    });
+                });
+            }
+            console.log(util.inspect(request.data.headers, true, 6));
+            delete request.data.headerFiles;
             process.nextSuccess(request, response);
-        }).catch(error => {
+        } catch (error) {
             process.error(request, response, error);
-        });
+        }
+
     },
 
-    moveFilesToProcessing: function (request, response, process) {
-        this.LOG.debug('Moving files to processing state');
+    loadDataFileList: function (request, response, process) {
+        this.LOG.debug('Loading list of files from Path to be imported');
+        if (request.data.headers && Object.keys(request.data.headers).length > 0) {
+            Object.keys(request.data.headers).forEach(headerName => {
+                let headerData = request.data.headers[headerName];
+                let filePrefix = headerData.header.options.dataFilePrefix || headerName;
+                let fileList = {};
+                SERVICE.DefaultImportUtilityService.getAllFrefixFiles(request.dataPath + '/data', fileList, filePrefix);
+                _.each(fileList, (dataFile, name) => {
+                    if (headerData.dataFiles[name]) {
+                        headerData.dataFiles[name].push(dataFile);
+                    } else {
+                        headerData.dataFiles[name] = [dataFile];
+                    }
+                });
+            });
+            process.nextSuccess(request, response);
+        } else {
+            this.LOG.debug('Could not found any header to import local data');
+            process.nextSuccess(request, response);
+        }
+    },
 
+    resolveFileType: function (request, response, process) {
+        this.LOG.debug('Resolving file type');
+        if (request.data.headers && Object.keys(request.data.headers).length > 0) {
+            Object.keys(request.data.headers).forEach(headerName => {
+                let headerData = request.data.headers[headerName];
+                let dataFiles = {};
+                _.each(headerData.dataFiles, (list, name) => {
+                    let fileType = list[0].substring(list[0].lastIndexOf('.') + 1, list[0].length);
+                    dataFiles[name] = {
+                        type: fileType,
+                        list: list,
+                        processedRecords: []
+                    };
+                });
+                headerData.dataFiles = dataFiles;
+            });
+        }
+        process.nextSuccess(request, response);
     },
 
     handleSucessEnd: function (request, response, process) {

@@ -62,6 +62,7 @@ module.exports = {
                 return SERVICE.DefaultScriptsHandlerService.executePostScripts();
             }).then(() => {
                 return new Promise((resolve, reject) => {
+                    console.log('==============================================: ', NODICS.isInitRequired());
                     if (NODICS.isInitRequired()) {
                         SERVICE.DefaultImportService.importInitData({
                             tenant: 'default',
@@ -70,7 +71,8 @@ module.exports = {
                             SERVICE.DefaultImportService.processImportData({
                                 tenant: 'default',
                                 inputPath: {
-                                    path: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import/init'
+                                    rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
+                                    dataType: 'init'
                                 }
                             }).then(success => {
                                 resolve(true);
@@ -116,23 +118,28 @@ module.exports = {
                 // }).catch(error => {
                 //     NODICS.LOG.error('Nodics Import error : ', error);
                 // });
+                // console.log('===========================================================================================================');
                 // SERVICE.DefaultImportService.importLocalData({
-                //     tenant: 'default',
-                //     path: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data'
+                //     dataPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data',
+                //     headerPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data',
+                //     successPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data',
+                //     errorPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data'
                 // }).then(success => {
-                //     SERVICE.DefaultImportService.processImportData({
-                //         tenant: 'default',
-                //         inputPath: {
-                //             path: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import/local'
-                //         }
-                //     }).then(success => {
-                //         NODICS.LOG.info('Nodics Import Success');
-                //     }).catch(error => {
-                //         NODICS.LOG.error('Nodics Import error : ', error);
-                //     });
+                //     // SERVICE.DefaultImportService.processImportData({
+                //     //     tenant: 'default',
+                //     //     inputPath: {
+                //     //         path: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import/local'
+                //     //     }
+                //     // }).then(success => {
+                //     //     NODICS.LOG.info('Nodics Import Success');
+                //     // }).catch(error => {
+                //     //     NODICS.LOG.error('Nodics Import error : ', error);
+                //     // });
+                //     NODICS.LOG.info('Nodics Import Success');
                 // }).catch(error => {
                 //     NODICS.LOG.error('Nodics Import error : ', error);
                 // });
+                NODICS.LOG.info('Nodics Import Success');
                 //this.initTestRuner();
             }).catch(error => {
                 NODICS.LOG.error('Nodics server error : ', error);

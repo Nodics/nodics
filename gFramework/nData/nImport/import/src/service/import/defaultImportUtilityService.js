@@ -128,6 +128,60 @@ module.exports = {
         }
     },
 
+    getLocalHeaderFiles: function (filePath) {
+        let fileList = {};
+        let headerBatchSize = CONFIG.get('data').headerBatchSize || 0;
+        return new Promise((resolve, reject) => {
+            try {
+                if (fs.existsSync(filePath)) {
+                    let files = fs.readdirSync(filePath);
+                    if (files) {
+                        for (let count = 0; count < files.length; count++) {
+                            let element = files[count];
+                            let file = path.join(filePath, element);
+                            if (!fs.statSync(file).isDirectory()) {
+                                let name = element.split('.').shift();
+                                let extname = element.split('.').pop();
+                                if (!UTILS.isBlank(name) && (name.endsWith('Header') || name.endsWith('Headers'))) {
+                                    fileList[name + '_' + extname] = [SERVICE.DefaultFileHandlerService.moveSyncToProcessing(file)];
+                                    if (headerBatchSize && headerBatchSize > 0 && Object.keys(fileList).length >= headerBatchSize) {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                resolve(fileList);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    getAllFrefixFiles: function (filePath, fileList, preFix) {
+        let _self = this;
+        if (fs.existsSync(filePath)) {
+            let files = fs.readdirSync(filePath);
+            if (files) {
+                files.forEach(element => {
+                    let file = path.join(filePath, element);
+                    if (fs.statSync(file).isDirectory()) {
+                        _self.getAllFrefixFiles(file, fileList, preFix);
+                    } else {
+                        let name = element.substring(0, element.lastIndexOf("."));
+                        name = name.replace(/\./g, '');
+                        if (!UTILS.isBlank(name) && (!preFix || element.startsWith(preFix)) &&
+                            !name.endsWith('Header') && !name.endsWith('Headers') && !name.endsWith('processing')) {
+                            fileList[name] = SERVICE.DefaultFileHandlerService.moveSyncToProcessing(file);
+                        }
+                    }
+                });
+            }
+        }
+    },
+
+
     getImportFiles: function (filePath) {
         let fileList = {};
         return new Promise((resolve, reject) => {
@@ -152,6 +206,17 @@ module.exports = {
             }
         });
     },
+
+    isImportPending: function (dataFiles) {
+        let pending = false;
+        _.each(dataFiles, (fileObj, fileName) => {
+            if (!fileObj.done || fileObj.done === false) {
+                pending = true;
+                return false;
+            }
+        });
+        return pending;
+    }
 
     //=========================================================
     /* getLocalDataHeaders: function (path) {
@@ -219,14 +284,5 @@ module.exports = {
          }
      },
  */
-    isImportPending: function (dataFiles) {
-        let pending = false;
-        _.each(dataFiles, (fileObj, fileName) => {
-            if (!fileObj.done || fileObj.done === false) {
-                pending = true;
-                return false;
-            }
-        })
-        return pending;
-    }
+
 };

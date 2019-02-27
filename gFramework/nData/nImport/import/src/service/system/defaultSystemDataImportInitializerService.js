@@ -50,7 +50,9 @@ module.exports = {
         request.outputPath = {
             destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/import/' + request.dataType,
             dataType: request.dataType,
-            importType: 'system'
+            importType: 'system',
+            successPath: request.successPath,
+            errorPath: request.errorPath
         };
         process.nextSuccess(request, response);
     },
@@ -109,7 +111,6 @@ module.exports = {
                     internalHeaderObj[name] = _.merge(internalHeaderObj[name] || {}, require(element));
                 });
             });
-
             _.each(internalHeaderObj, (headerFile, headerFileName) => {
                 _.each(headerFile, (moduleHeaders, moduleName) => {
                     if (NODICS.isModuleActive(moduleName)) {
@@ -130,6 +131,7 @@ module.exports = {
                 });
             });
         }
+        console.log(util.inspect(request.data.headers, true, 6));
         process.nextSuccess(request, response);
     },
 
@@ -147,77 +149,8 @@ module.exports = {
         }
         delete request.data.headerFiles;
         delete request.data.dataFiles;
+        //console.log(util.inspect(request.data.headers, true, 6));
         process.nextSuccess(request, response);
-    },
-
-    processDataHeaders: function (request, response, process) {
-        this.LOG.debug('Starting data import process');
-        try {
-            if (request.data && request.data.headers && Object.keys(request.data.headers).length > 0) {
-                if (CONFIG.get('data').finalizeImportDataAsync) {
-                    let allHeaders = [];
-                    Object.keys(request.data.headers).forEach(headerName => {
-                        allHeaders.push(SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
-                            header: request.data.headers[headerName],
-                            headerName: headerName,
-                            outputPath: _.merge({}, request.outputPath)
-                        }, {}));
-                    });
-                    Promise.all(allHeaders).then(success => {
-                        process.nextSuccess(request, response);
-                    }).catch(errors => {
-                        if (errors instanceof Array) {
-                            errors.forEach(err => {
-                                response.errors.push(err);
-                            });
-                            process.error(request, response);
-                        } else {
-                            process.error(request, response, errors);
-                        }
-                    });
-                } else {
-                    this.processHeaders(request, response, {
-                        pendingHeaders: Object.keys(request.data.headers)
-                    }).then(success => {
-                        process.nextSuccess(request, response);
-                    }).catch(error => {
-                        process.error(request, response, error);
-                    });
-                }
-            } else {
-                this.LOG.debug('No data found to import');
-                process.nextSuccess(request, response);
-            }
-        } catch (error) {
-            process.error(request, response, error);
-        }
-    },
-
-    processHeaders: function (request, response, options) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            if (options.pendingHeaders && options.pendingHeaders.length > 0) {
-                let headers = request.data.headers;
-                let headerName = options.pendingHeaders.shift();
-                let header = headers[headerName];
-                _self.LOG.debug('Starting process for header: ', headerName);
-                SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
-                    header: header,
-                    headerName: headerName,
-                    outputPath: _.merge({}, request.outputPath)
-                }, {}).then(success => {
-                    _self.processHeaders(request, response, options).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(true);
-            }
-        });
     },
 
     handleSucessEnd: function (request, response, process) {

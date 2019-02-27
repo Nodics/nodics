@@ -43,6 +43,24 @@ module.exports = {
         }
     },
 
+    prepareInputPath: function (request, response, process) {
+        this.LOG.debug('Preparing data import input path');
+        request.inputPath.path = request.inputPath.rootPath;
+        if (request.inputPath.dataType) {
+            request.inputPath.path = request.inputPath.path + '/' + request.inputPath.dataType;
+        }
+        process.nextSuccess(request, response);
+    },
+
+    prepareOutputPath: function (request, response, process) {
+        this.LOG.debug('Preparing data import putput path');
+        request.outputPath = {
+            successPath: request.inputPath.rootPath + '/success',
+            errorPath: request.inputPath.rootPath + '/error'
+        };
+        process.nextSuccess(request, response);
+    },
+
     loadDataFiles: function (request, response, process) {
         this.LOG.debug('Loading list of files from Path to be imported');
         SERVICE.DefaultImportUtilityService.getImportFiles(request.inputPath.path).then(success => {
@@ -109,10 +127,11 @@ module.exports = {
                                 fileData: fileData
                             }, {}).then(success => {
                                 fileObj.done = true;
-                                SERVICE.DefaultFileHandlerService.moveToSuccess(fileObj.file).then(success => {
+                                SERVICE.DefaultFileHandlerService.moveFile([fileObj.file], request.outputPath.successPath).then(success => {
                                     _self.LOG.debug('File has been moved to success folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
                                 }).catch(error => {
                                     _self.LOG.error('Facing issue while moving file to success folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
+                                    _self.LOG.error(error);
                                 });
                                 _self.processNextFile(request, response, options, resolve, reject);
                             }).catch(error => {
@@ -165,10 +184,11 @@ module.exports = {
         Object.keys(request.dataFiles).forEach(fileName => {
             let fileObj = request.dataFiles[fileName];
             if (!fileObj.done) {
-                SERVICE.DefaultFileHandlerService.moveToError(fileObj.file).then(success => {
+                SERVICE.DefaultFileHandlerService.moveFile([fileObj.file], request.outputPath.errorPath).then(success => {
                     _self.LOG.debug('File has been moved to error folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
                 }).catch(error => {
                     _self.LOG.error('Facing issue while moving file to error folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
+                    _self.LOG.error(error);
                 });
             }
         });

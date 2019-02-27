@@ -54,11 +54,11 @@ module.exports = {
             assignDataFilesToHeader: {
                 type: 'function',
                 handler: 'DefaultSystemDataImportInitializerService.assignDataFilesToHeader',
-                success: 'processDataHeaders'
+                success: 'initDataImport'
             },
-            processDataHeaders: {
-                type: 'function',
-                handler: 'DefaultSystemDataImportInitializerService.processDataHeaders',
+            initDataImport: {
+                type: 'process',
+                handler: 'dataImportInitializerPipeline',
                 success: 'successEnd'
             },
             successEnd: {
@@ -86,16 +86,31 @@ module.exports = {
             prepareOutputURL: {
                 type: 'function',
                 handler: 'DefaultLocalDataImportInitializerService.prepareOutputURL',
+                success: 'flushOutputFolder'
+            },
+            flushOutputFolder: {
+                type: 'function',
+                handler: 'DefaultLocalDataImportInitializerService.flushOutputFolder',
                 success: 'loadHeaderFileList'
             },
             loadHeaderFileList: {
                 type: 'function',
                 handler: 'DefaultLocalDataImportInitializerService.loadHeaderFileList',
+                success: 'buildHeaderInstances'
+            },
+            buildHeaderInstances: {
+                type: 'function',
+                handler: 'DefaultLocalDataImportInitializerService.buildHeaderInstances',
                 success: 'loadDataFileList'
             },
             loadDataFileList: {
                 type: 'function',
                 handler: 'DefaultLocalDataImportInitializerService.loadDataFileList',
+                success: 'resolveFileType'
+            },
+            resolveFileType: {
+                type: 'function',
+                handler: 'DefaultLocalDataImportInitializerService.resolveFileType',
                 success: 'initDataImport'
             },
             initDataImport: {
@@ -155,7 +170,7 @@ module.exports = {
         }
     },
 
-    /*dataImportInitializerPipeline: {
+    dataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -164,26 +179,6 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultDataImportInitializerService.validateRequest',
-                success: 'flushOutputFolder'
-            },
-            flushOutputFolder: {
-                type: 'function',
-                handler: 'DefaultDataImportInitializerService.flushOutputFolder',
-                success: 'resolveFileType'
-            },
-            resolveFileType: {
-                type: 'function',
-                handler: 'DefaultDataImportInitializerService.resolveFileType',
-                success: 'buildHeaderInstances'
-            },
-            buildHeaderInstances: {
-                type: 'function',
-                handler: 'DefaultDataImportInitializerService.buildHeaderInstances',
-                success: 'assignDataFilesToHeader'
-            },
-            assignDataFilesToHeader: {
-                type: 'function',
-                handler: 'DefaultDataImportInitializerService.assignDataFilesToHeader',
                 success: 'processDataHeaders'
             },
             processDataHeaders: {
@@ -200,7 +195,7 @@ module.exports = {
                 handler: 'DefaultDataImportInitializerService.handleErrorEnd'
             }
         }
-    },*/
+    },
 
     headerProcessPipeline: {
         startNode: "validateRequest",
@@ -242,6 +237,16 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultDataImportProcessService.validateRequest',
+                success: 'prepareInputPath'
+            },
+            prepareInputPath: {
+                type: 'function',
+                handler: 'DefaultDataImportProcessService.prepareInputPath',
+                success: 'prepareOutputPath'
+            },
+            prepareOutputPath: {
+                type: 'function',
+                handler: 'DefaultDataImportProcessService.prepareOutputPath',
                 success: 'loadDataFiles'
             },
             loadDataFiles: {

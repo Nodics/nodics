@@ -92,7 +92,7 @@ module.exports = {
         }
     },
 
-    getHeaderFiles: function (filePath, fileList) {
+    getHeaderFiles: function (filePath, fileList, limit, moveProcessing) {
         let _self = this;
         if (fs.existsSync(filePath)) {
             let files = fs.readdirSync(filePath);
@@ -105,7 +105,14 @@ module.exports = {
                         let name = element.substring(0, element.lastIndexOf("."));
                         name = name.replace(/\./g, '');
                         if (!UTILS.isBlank(name) && (name.endsWith('Header') || name.endsWith('Headers'))) {
-                            fileList[name] = file;
+                            if (moveProcessing) {
+                                fileList[name] = SERVICE.DefaultFileHandlerService.moveSyncToProcessing(file);
+                            } else {
+                                fileList[name] = file;
+                            }
+                            if (limit && limit > 0 && Object.keys(fileList).length >= limit) {
+                                return false;
+                            }
                         }
                     }
                 });
@@ -133,6 +140,38 @@ module.exports = {
             }
         }
     },
+
+    getAllFiles: function (filePath, fileList) {
+        let _self = this;
+        if (fs.existsSync(filePath)) {
+            let files = fs.readdirSync(filePath);
+            if (files) {
+                files.forEach(element => {
+                    let file = path.join(filePath, element);
+                    if (fs.statSync(file).isDirectory()) {
+                        _self.getAllFiles(file, fileList);
+                    } else {
+                        let name = element.substring(0, element.lastIndexOf("."));
+                        name = name.replace(/\./g, '');
+                        if (!UTILS.isBlank(name)) {
+                            fileList[name] = file;
+                        }
+                    }
+                });
+            }
+        }
+    },
+
+    getPages: function (moduleName) {
+        let moduleObject = NODICS.getRawModule(moduleName);
+        let webPath = moduleObject.path + '/' + CONFIG.get('webRootDirName');
+        let pagesPath = webPath + '/pages';
+        if (fs.existsSync(webPath) && fs.existsSync(pagesPath)) {
+            let fileList = {};
+            this.getAllFiles(pagesPath, fileList);
+            return fileList;
+        }
+    }
 
     //==================================================================
 
@@ -177,28 +216,9 @@ module.exports = {
     },
 
 */
-    getAllFiles: function (filePath, fileList) {
-        let _self = this;
-        if (fs.existsSync(filePath)) {
-            let files = fs.readdirSync(filePath);
-            if (files) {
-                files.forEach(element => {
-                    let file = path.join(filePath, element);
-                    if (fs.statSync(file).isDirectory()) {
-                        _self.getAllFiles(file, fileList);
-                    } else {
-                        let name = element.substring(0, element.lastIndexOf("."));
-                        name = name.replace(/\./g, '');
-                        if (!UTILS.isBlank(name)) {
-                            fileList[name] = file;
-                        }
-                    }
-                });
-            }
-        }
-    },
 
-    getAllFrefixFiles: function (filePath, fileList, preFix) {
+
+    /*getAllFrefixFiles: function (filePath, fileList, preFix) {
         let _self = this;
         if (fs.existsSync(filePath)) {
             let files = fs.readdirSync(filePath);
@@ -242,16 +262,5 @@ module.exports = {
                 });
             }
         }
-    },
-
-    getPages: function (moduleName) {
-        let moduleObject = NODICS.getRawModule(moduleName);
-        let webPath = moduleObject.path + '/' + CONFIG.get('webRootDirName');
-        let pagesPath = webPath + '/pages';
-        if (fs.existsSync(webPath) && fs.existsSync(pagesPath)) {
-            let fileList = {};
-            this.getAllFiles(pagesPath, fileList);
-            return fileList;
-        }
-    }
-}
+    },*/
+};

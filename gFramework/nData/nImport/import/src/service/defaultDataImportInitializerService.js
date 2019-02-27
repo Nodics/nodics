@@ -37,87 +37,13 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
-        if (!request.data) {
-            process.error(request, response, 'Please validate request. Mandate property data not have valid value');
+        if (!request.data.headers) {
+            process.error(request, response, 'Please validate request. Mandate property headers not have valid value');
         } else if (!request.outputPath) {
             process.error(request, response, 'Please validate request. Mandate property outputPath not have valid value');
         } else {
             process.nextSuccess(request, response);
         }
-    },
-
-    flushOutputFolder: function (request, response, process) {
-        this.LOG.debug('Cleaning output directory : ' + request.outputPath.destDir);
-        fse.remove(request.outputPath.destDir).then(() => {
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
-
-    resolveFileType: function (request, response, process) {
-        this.LOG.debug('Resolving file type');
-        if (request.data && request.data.dataFiles) {
-            _.each(request.data.dataFiles, (list, name) => {
-                let fileType = list[0].substring(list[0].lastIndexOf('.') + 1, list[0].length);
-                request.data.dataFiles[name] = {
-                    type: fileType,
-                    list: list,
-                    processedRecords: []
-                };
-            });
-        }
-        process.nextSuccess(request, response);
-    },
-
-    buildHeaderInstances: function (request, response, process) {
-        this.LOG.debug('Generating header instances from header files');
-        let internalHeaderObj = {};
-        if (request.data && request.data.headerFiles) {
-            _.each(request.data.headerFiles, (list, name) => {
-                list.forEach(element => {
-                    internalHeaderObj[name] = _.merge(internalHeaderObj[name] || {}, require(element));
-                });
-            });
-
-            _.each(internalHeaderObj, (headerFile, headerFileName) => {
-                _.each(headerFile, (moduleHeaders, moduleName) => {
-                    if (NODICS.isModuleActive(moduleName)) {
-                        _.each(moduleHeaders, (header, headerName) => {
-                            if (!request.data.headers) {
-                                request.data.headers = {};
-                            }
-                            if (!request.data.headers[headerName]) {
-                                request.data.headers[headerName] = {
-                                    header: {},
-                                    dataFiles: {}
-                                };
-                            }
-                            request.data.headers[headerName].header = _.merge(request.data.headers[headerName].header, header);
-                            request.data.headers[headerName].header.options.moduleName = moduleName;
-                        });
-                    }
-                });
-            });
-        }
-        process.nextSuccess(request, response);
-    },
-
-    assignDataFilesToHeader: function (request, response, process) {
-        this.LOG.debug('Associating data files with corresponding headers');
-        if (request.data && request.data.headers) {
-            _.each(request.data.headers, (headerObject, headerName) => {
-                let dataPreFix = headerObject.header.options.dataFilePrefix || headerName;
-                _.each(request.data.dataFiles, (object, fileName) => {
-                    if (fileName.startsWith(dataPreFix)) {
-                        headerObject.dataFiles[fileName] = object;
-                    }
-                });
-            });
-        }
-        delete request.data.headerFiles;
-        delete request.data.dataFiles;
-        process.nextSuccess(request, response);
     },
 
     processDataHeaders: function (request, response, process) {
@@ -176,6 +102,27 @@ module.exports = {
                     headerName: headerName,
                     outputPath: _.merge({}, request.outputPath)
                 }, {}).then(success => {
+                    if (request.outputPath.importType !== 'system') {
+                        header.header.options.done = true;
+                        let fileName = header.header.options.fileName;
+                        let headers = Object.keys(request.data.headers);
+                        let done = true;
+                        for (let count = 0; count < headers.length; count++) {
+                            let headerName = headers[count];
+                            let headerObj = request.data.headers[headerName];
+                            if (fileName === headerObj.options.fileName && !headerObj.options.done) {
+                                done = false;
+                            }
+                        }
+                        if (done) {
+                            SERVICE.DefaultFileHandlerService.moveFile([header.header.options.filePath], request.outputPath.successPath).then(success => {
+                                _self.LOG.debug('File has been moved to error folder : ' + header.header.options.filePath.replace(NODICS.getNodicsHome(), '.'));
+                            }).catch(error => {
+                                _self.LOG.error('Facing issue while moving file to error folder : ' + header.header.options.filePath.replace(NODICS.getNodicsHome(), '.'));
+                                _self.LOG.error(error);
+                            });
+                        }
+                    }
                     _self.processHeaders(request, response, options).then(success => {
                         resolve(success);
                     }).catch(error => {
@@ -197,6 +144,25 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
+        let errorFiles = [];
+        if (request.outputPath.importType !== 'system') {
+            let headers = Object.keys(request.data.headers);
+            for (let count = 0; count < headers.length; count++) {
+                let headerName = headers[count];
+                let headerObj = request.data.headers[headerName];
+                if (!headerObj.header.options.done && !errorFiles.includes(headerObj.header.options.filePath)) {
+                    errorFiles.push(headerObj.header.options.filePath);
+                }
+            }
+        }
+        if (errorFiles.length > 0) {
+            SERVICE.DefaultFileHandlerService.moveFile(errorFiles, request.outputPath.errorPath).then(success => {
+                this.LOG.debug('File moved to error bucket: ' + success);
+            }).catch(error => {
+                this.LOG.error(errorFiles);
+                this.LOG.error('Facing issued while moving file to error bucket: ' + error);
+            });
+        }
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {
