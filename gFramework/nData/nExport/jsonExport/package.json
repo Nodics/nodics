@@ -1,6 +1,6 @@
 {
     "name": "jsonExport",
-    "index": "1.11.10.5",
+    "index": "1.17.10.5",
     "publish": false,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to jsonExport",
     "homepage": "http://www.nodics.com/",

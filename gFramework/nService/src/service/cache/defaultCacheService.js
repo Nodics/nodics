@@ -33,6 +33,8 @@ module.exports = {
             resolve(true);
         });
     },
+
+
     initApiCache: function (moduleObject, moduleName) {
         return new Promise((resolve, reject) => {
             try {

@@ -1,6 +1,6 @@
 {
     "name": "system",
-    "index": "1.13",
+    "index": "1.20",
     "publish": true,
     "description": "Nodics applicaion module. It will hold all configuration and system point to start nodics",
     "homepage": "http://www.nodics.com/",

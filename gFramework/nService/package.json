@@ -1,5 +1,5 @@
 {
-    "name": "nservice",
+    "name": "nService",
     "index": "1.5",
     "publish": false,
     "description": "Generate services for all defined items",

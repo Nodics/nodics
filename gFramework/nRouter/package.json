@@ -1,5 +1,5 @@
 {
-    "name": "nrouter",
+    "name": "nRouter",
     "index": "1.10",
     "publish": false,
     "description": "Register routers for all defined items",

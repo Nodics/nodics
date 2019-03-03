@@ -1,6 +1,6 @@
 {
     "name": "dataCore",
-    "index": "1.11.0",
+    "index": "1.17.0",
     "publish": false,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataCore",
     "homepage": "http://www.nodics.com/",

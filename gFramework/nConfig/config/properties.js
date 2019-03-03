@@ -50,71 +50,9 @@ module.exports = {
     // databaseUserURI = mongodb://nonexistent.domain:27000
 
     defaultContentType: 'application/json',
-
     profileModuleName: 'profile',
-
     processRetrySleepTime: 2000,
-
     defaultAPIKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
-
-    cache: {
-        authTokenTTL: 60 * 60,
-        default: {
-            apiCache: {
-                enabled: true,
-                fallback: true,
-                engine: 'local'
-            },
-            itemCache: {
-                enabled: true,
-                fallback: true,
-                engine: 'local'
-            },
-            //https://stackoverflow.com/questions/42027970/how-to-receive-redis-expire-events-with-node
-            authCache: {
-                enabled: true,
-                fallback: true,
-                engine: 'local',
-                events: {
-                    expired: 'DefaultAuthTokenInvalidationService.publishTokenExpiredEvent',
-                    del: 'DefaultAuthTokenInvalidationService.publishTokenDeletedEvent',
-                    flushed: 'DefaultAuthTokenInvalidationService.publishTokenFlushedEvent'
-                }
-            },
-            local: {
-                handler: 'DefaultLocalCacheService',
-                ttl: 100,
-                options: {
-                    stdTTL: 100,
-                    checkperiod: 10,
-                    errorOnMissing: false,
-                    useClones: true,
-                    deleteOnExpire: true
-                }
-            },
-            redis: {
-                handler: 'DefaultRedisCacheService',
-                ttl: 100,
-                options: {
-                    host: 'localhost',
-                    port: 6379,
-                    db: 0
-                }
-            },
-            hazelcast: {
-                handler: 'DefaultHazelcastCacheService',
-                ttl: 100,
-                options: {
-                    host: 'localhost',
-                    port: 6379
-                }
-            }
-        },
-        itemLevelCache: {
-            //only placeholder
-        }
-    },
-
     log: {
         enabled: true,
         level: 'debug',
@@ -146,6 +84,5 @@ module.exports = {
         elasticConfig: {
 
         }
-        //logLevelEventController: 'error'
     }
 };

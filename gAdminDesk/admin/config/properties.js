@@ -37,7 +37,7 @@ module.exports = {
                 plugins: [
 
                 ].concat(this.getHtmlWebpackPlugin(moduleObject))
-            }
+            };
         },
 
         getHtmlWebpackPlugin: function (moduleObject) {

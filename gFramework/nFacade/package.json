@@ -1,5 +1,5 @@
 {
-    "name": "nfacade",
+    "name": "nFacade",
     "index": "1.8",
     "publish": false,
     "description": "Generate facade layer for application",

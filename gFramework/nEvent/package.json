@@ -1,5 +1,5 @@
 {
-    "name": "nevent",
+    "name": "nEvent",
     "index": "1.7",
     "publish": false,
     "description": "Nodics applicaion module. It gives functionalities to publish and execute events",

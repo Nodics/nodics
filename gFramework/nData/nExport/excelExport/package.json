@@ -1,6 +1,6 @@
 {
     "name": "excelExport",
-    "index": "1.11.10.15",
+    "index": "1.17.10.15",
     "publish": false,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to excelExport",
     "homepage": "http://www.nodics.com/",

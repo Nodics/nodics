@@ -92,7 +92,7 @@ module.exports = {
         return {
             name: name,
             path: moduleObject.path,
-            commonPath: NODICS.getRawModule('ncommon').path + '/templates'
+            commonPath: NODICS.getRawModule('nCommon').path + '/templates'
         };
     },
 

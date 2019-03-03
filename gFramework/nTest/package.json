@@ -1,6 +1,6 @@
 {
-    "name": "ntest",
-    "index": "1.12",
+    "name": "nTest",
+    "index": "1.19",
     "publish": false,
     "description": "Generate test scripts for all generated layers for application",
     "homepage": "http://www.nodics.com/",

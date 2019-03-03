@@ -1,5 +1,5 @@
 {
-    "name": "npipeline",
+    "name": "nPipeline",
     "index": "1.6",
     "publish": false,
     "description": "Generate Pipelines configurations",

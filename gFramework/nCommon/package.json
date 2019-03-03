@@ -1,5 +1,5 @@
 {
-    "name": "ncommon",
+    "name": "nCommon",
     "index": "1.2",
     "publish": false,
     "description": "Build common functionalities for Nodics",
