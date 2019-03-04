@@ -21,6 +21,7 @@ const enumService = require('./src/service/defaultEnumService');
 const moduleService = require('./src/service/defaultModuleInitializerService');
 const fileLoader = require('./src/service/defaultFilesLoaderService');
 const classesLoader = require('./src/service/defaultClassesHandlerService');
+const infra = require('./src/service/defaultInfraService');
 
 module.exports = {
     /**
@@ -92,6 +93,7 @@ module.exports = {
                     moduleService.LOG = logger.createLogger('DefaultModuleInitializerService');
                     fileLoader.LOG = logger.createLogger('DefaultFilesLoaderService');
                     classesLoader.LOG = logger.createLogger('DefaultClassesHandlerService');
+                    infra.LOG = logger.createLogger('DefaultInfraService');
                     fileLoader.loadFiles('/src/utils/utils.js', global.UTILS);
                     UTILS.LOG = logger.createLogger('UTILS');
                     scriptHandler.loadPreScript();
@@ -125,6 +127,20 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.prepareStart(options).then(success => {
                 resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    cleanModules: function () {
+        return new Promise((resolve, reject) => {
+            infra.cleanEntities().then(success => {
+                infra.cleanModules().then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });

@@ -60,5 +60,19 @@ module.exports = {
     getFileNameWithoutExtension: function (filePath) {
         let fileName = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf("."));
         return fileName.toUpperCaseFirstChar();
-    }
+    },
+
+    removeDir: function (path) {
+        if (fs.existsSync(path)) {
+            fs.readdirSync(path).forEach(function (file, index) {
+                var curPath = path + "/" + file;
+                if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                    UTILS.removeDir(curPath);
+                } else {
+                    fs.unlinkSync(curPath);
+                }
+            });
+            fs.rmdirSync(path);
+        }
+    },
 };

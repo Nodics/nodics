@@ -32,11 +32,6 @@ module.exports = {
         });
     },
 
-
-
-
-
-
     common: function () {
         if (!CONFIG || !SYSTEM || !NODICS) {
             NODICS.LOG.error("System initialization error: configuration initializer failure.");

@@ -12,16 +12,6 @@
 const _ = require('lodash');
 
 const config = require('./nConfig');
-const common = require('./nCommon');
-const db = require('./nDatabase');
-const dao = require('./nDao');
-const services = require('./nService');
-const pipeline = require('./nPipeline');
-const event = require('./nEvent');
-const facades = require('./nFacade');
-const controllers = require('./nController');
-const router = require('./nRouter');
-const test = require('./nTest');
 
 module.exports = {
     /**
@@ -62,7 +52,6 @@ module.exports = {
                 return SERVICE.DefaultScriptsHandlerService.executePostScripts();
             }).then(() => {
                 return new Promise((resolve, reject) => {
-                    //console.log('==============================================: ', NODICS.isInitRequired());
                     if (NODICS.isInitRequired()) {
                         SERVICE.DefaultImportService.importInitData({
                             tenant: 'default',
@@ -184,5 +173,38 @@ module.exports = {
         }).catch(error => {
             SERVICE.DefaultInfraService.LOG.error(error);
         });
-    }
+    },
+    genReactModule: function (options) {
+        config.start(options).then(() => {
+            return config.initUtilities(options);
+        }).then(() => {
+            return config.loadModules();
+        }).then(() => {
+            return SERVICE.DefaultInfraService.generateReactModule(options);
+        }).catch(error => {
+            SERVICE.DefaultInfraService.LOG.error(error);
+        });
+    },
+
+    genVueModule: function (options) {
+        config.start(options).then(() => {
+            return config.initUtilities(options);
+        }).then(() => {
+            return config.loadModules();
+        }).then(() => {
+            return SERVICE.DefaultInfraService.generateVueModule(options);
+        }).catch(error => {
+            SERVICE.DefaultInfraService.LOG.error(error);
+        });
+    },
+
+    cleanAll: function (options) {
+        config.prepareClean(options).then(() => {
+            return config.initUtilities(options);
+        }).then(() => {
+            return config.cleanModules();
+        }).catch(error => {
+            NODICS.LOG.error(error);
+        });
+    },
 };
