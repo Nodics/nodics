@@ -134,10 +134,8 @@ module.exports = {
                 if (schema.model === true && (!schema.tenants || schema.tenants.includes(options.tntCode))) {
                     conOptions = options.dataBase.master.getOptions();
                     SERVICE[conOptions.modelHandler].prepareDatabaseOptions(options).then(success => {
-                        // let cache = _.merge({}, schema.cache || {});
-                        // let itemLevelCache = CONFIG.get('cache').itemLevelCache;
-                        // options.cache = _.merge(cache, itemLevelCache[options.schemaName] || {});
-                        // options.channel = 'master';
+                        options.cache = _.merge(_.merge({}, schema.cache || {}), SERVICE.DefaultCacheConfigurationService.getSchemaCacheOptions(options.schemaName) || {});
+                        options.channel = 'master';
                         SERVICE[conOptions.modelHandler].retrieveModel(options, options.dataBase.master).then(collection => {
                             _self.registerModelMiddleWare(options, collection, schema);
                             if (!options.moduleObject.models[options.tntCode].master) {

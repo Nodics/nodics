@@ -118,7 +118,7 @@ module.exports = {
                 secured: true,
                 cache: {
                     enabled: true,
-                    ttl: 100,
+                    ttl: 180,
                 },
                 key: '/schemaName',
                 method: 'GET',
@@ -160,7 +160,7 @@ module.exports = {
                 secured: true,
                 cache: {
                     enabled: false,
-                    ttl: 50
+                    ttl: 60
                 },
                 key: '/schemaName/id/:id',
                 method: 'GET',

@@ -42,18 +42,18 @@ module.exports = {
         schemaLevelCache: {
             enterprise: {
                 enabled: true,
-                ttl: 100
+                ttl: 10
             }
         },
         routerLevelCache: {
             address: {
                 get: {
                     enabled: true,
-                    ttl: 50
+                    ttl: 10
                 },
                 post: {
                     enabled: true,
-                    ttl: 70
+                    ttl: 10
                 }
             }
         }

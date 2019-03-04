@@ -138,12 +138,14 @@ module.exports = {
         let _self = this;
         this.LOG.debug('Looking up result in cache system  : ', request.originalUrl);
         try {
-            request.apiCacheKeyHash = UTILS.generateHash(SERVICE.DefaultCacheConfigurationService.createApiKey(request.httpRequest));
+            let keyHash = UTILS.generateHash(SERVICE.DefaultCacheConfigurationService.createApiKey(request.httpRequest));
+            request.apiCacheKeyHash = request.router.prefix ? request.router.prefix + '_' + keyHash : keyHash;
             if (request.router.cache && request.router.cache.enabled) {
                 SERVICE.DefaultCacheService.get({
                     moduleName: request.moduleName,
                     channelName: 'router',
-                    key: request.apiCacheKeyHash
+                    key: request.apiCacheKeyHash,
+                    ttl: request.router.cache.ttl
                 }).then(value => {
                     process.stop(request, response, {
                         success: true,
@@ -184,7 +186,8 @@ module.exports = {
                             moduleName: request.moduleName,
                             channelName: 'router',
                             key: request.apiCacheKeyHash,
-                            value: response.success.result
+                            value: response.success.result,
+                            ttl: request.router.cache ? request.router.cache.ttl : undefined
                         }).then(cuccess => {
                             _self.LOG.debug('Data pushed into cache successfully');
                         }).catch(error => {

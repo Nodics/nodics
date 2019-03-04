@@ -82,16 +82,14 @@ module.exports = {
     },
 
     lookupCache: function (request, response, process) {
-        let moduleObject = NODICS.getModules()[request.collection.moduleName];
-        if (moduleObject.itemCache &&
-            request.collection.cache &&
+        if (request.collection.cache &&
             request.collection.cache.enabled) {
-            request.cacheKeyHash = SERVICE.DefaultCacheService.createItemKey(request);
+            request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createItemKey(request);
             this.LOG.debug('Model cache lookup for key: ', request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
-                cache: moduleObject.itemCache,
-                hashKey: request.cacheKeyHash,
-                options: request.collection.cache
+                moduleName: request.moduleName || request.collection.moduleName,
+                channelName: 'schema',
+                key: request.cacheKeyHash
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
                 process.stop(request, response, {
@@ -102,6 +100,9 @@ module.exports = {
                 });
             }).catch(error => {
                 if (error.code === 'ERR_CACHE_00001') {
+                    process.nextSuccess(request, response);
+                } else if (error.code === 'ERR_CACHE_00010') {
+                    this.LOG.warn(error.msg);
                     process.nextSuccess(request, response);
                 } else {
                     process.error(request, response, error);
@@ -217,17 +218,13 @@ module.exports = {
 
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
-        let moduleObject = NODICS.getModules()[request.collection.moduleName];
-        if (UTILS.isItemCashable(response.success.result, request.collection) && moduleObject.itemCache) {
-            if (request.collection.cache.ttl === undefined) {
-                request.collection.cache.ttl = moduleObject.itemCache.config.ttl || 0;
-            }
-            this.LOG.debug('Model cache store for key: ', request.cacheKeyHash);
+        if (UTILS.isItemCashable(response.success.result, request.collection)) {
             SERVICE.DefaultCacheService.put({
-                cache: moduleObject.itemCache,
-                hashKey: request.cacheKeyHash,
+                moduleName: request.moduleName || request.collection.moduleName,
+                channelName: 'schema',
+                key: request.cacheKeyHash,
                 value: response.success.result,
-                options: request.collection.cache
+                ttl: request.collection.cache.ttl
             }).then(success => {
                 this.LOG.info('Item saved in item cache');
             }).catch(error => {

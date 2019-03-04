@@ -45,7 +45,7 @@ module.exports = {
             router: true,
             cache: {
                 enabled: true,
-                ttl: 100
+                ttl: 360
             },
             refSchema: {
                 contacts: {
@@ -151,7 +151,7 @@ module.exports = {
             event: false,
             cache: {
                 enabled: true,
-                ttl: 100
+                ttl: 360
             },
             router: true,
             tenants: ['default'], // if not null, only tenant will be used

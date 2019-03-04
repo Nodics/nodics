@@ -44,7 +44,7 @@ module.exports = {
                     ttl = options.ttl || options.channel.chennalOptions.ttl || options.channel.engineOptions.ttl || options.channel.engineOptions.options.ttl;
                 }
                 this.LOG.debug('Putting value in Local cache storage with key: ' + key + ' TTL: ' + ttl);
-                options.channel.client.set(key, options.value, ttl || 0);
+                options.channel.client.set(key, options.value, ttl);
                 resolve({
                     success: true,
                     code: 'SUC_CACHE_00000',
@@ -100,7 +100,6 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                _self.LOG.debug('Flushing value in local cache stored with prefix: ' + (options.prefix) ? options.prefix : 'All');
                 options.channel.client.keys(function (err, cacheKeys) {
                     if (err) {
                         reject({
@@ -111,6 +110,7 @@ module.exports = {
                     } else {
                         if (options.prefix) {
                             let prefix = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.prefix;
+                            _self.LOG.debug('Flushing value in local cache stored with prefix: ' + prefix);
                             let delKeys = [];
                             cacheKeys.forEach(key => {
                                 if (key.startsWith(prefix)) {
@@ -124,6 +124,7 @@ module.exports = {
                                 result: delKeys
                             });
                         } else {
+                            _self.LOG.debug('Flushing all values stored in local cache');
                             options.channel.client.flushAll();
                             resolve({
                                 success: true,

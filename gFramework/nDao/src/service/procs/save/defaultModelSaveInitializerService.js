@@ -446,10 +446,10 @@ module.exports = {
         try {
             let moduleObject = NODICS.getModules()[request.collection.moduleName];
             let collection = request.collection;
-            if (response.model &&
-                moduleObject.apiCache) {
-                SERVICE.DefaultCacheService.flushApiCache({
+            if (response.model) {
+                SERVICE.DefaultCacheService.flushCache({
                     moduleName: collection.moduleName,
+                    channelName: 'router',
                     prefix: collection.schemaName
                 }).then(success => {
                     this.LOG.debug('Cache for router: ' + collection.schemaName + ' has been flushed cuccessfully');
@@ -468,19 +468,16 @@ module.exports = {
     invalidateItemCache: function (request, response, process) {
         this.LOG.debug('Invalidating item cache for modified model');
         try {
-            let moduleObject = NODICS.getModules()[request.collection.moduleName];
             let collection = request.collection;
-            if (response.model &&
-                moduleObject.itemCache &&
-                collection.rawSchema.cache &&
-                collection.rawSchema.cache.enabled) {
-                SERVICE.DefaultCacheService.flushItemCache({
+            if (response.model && collection.cache && collection.cache.enabled) {
+                SERVICE.DefaultCacheService.flushCache({
                     moduleName: collection.moduleName,
+                    channelName: 'schema',
                     prefix: collection.schemaName
                 }).then(success => {
-                    this.LOG.debug('Cache for model: ' + collection.modelName + ' has been flushed cuccessfully');
+                    this.LOG.debug('Cache for schema: ' + collection.schemaName + ' has been flushed cuccessfully');
                 }).catch(error => {
-                    this.LOG.error('Cache for model: ' + collection.modelName + ' has not been flushed cuccessfully');
+                    this.LOG.error('Cache for schema: ' + collection.schemaName + ' has not been flushed cuccessfully');
                     this.LOG.error(error);
                 });
             }
