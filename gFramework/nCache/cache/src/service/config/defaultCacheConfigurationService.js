@@ -95,5 +95,33 @@ module.exports = {
                 reject(error);
             }
         });
-    }
+    },
+
+    createApiKey: function (request) {
+        let key = request.originalUrl;
+        let method = request.method;
+        if (method === 'POST' || method === 'post') {
+            if (request.body) {
+                key += '-' + JSON.stringify(request.body);
+            }
+        }
+        if (request.get('authToken')) {
+            key += '-' + request.get('authToken');
+        }
+        if (request.get('enterpriseCode')) {
+            key += '-' + request.get('enterpriseCode');
+        }
+        return method + '-' + key;
+    },
+
+    createItemKey: function (request) {
+        let options = _.merge({}, request.options);
+        if (request.options) {
+            options.recursive = request.options.recursive || false;
+        }
+        options.query = request.query;
+        return request.collection.schemaName + '_' +
+            request.tenant + '_' +
+            UTILS.generateHash(JSON.stringify(options));
+    },
 };

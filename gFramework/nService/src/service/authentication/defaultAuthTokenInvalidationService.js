@@ -33,7 +33,7 @@ module.exports = {
     },
 
     publishTokenExpiredEvent: function (key, value, options) {
-        this.LOG.debug('Auth token key has been expired: ' + key);
+        this.LOG.debug('======================Auth token key has been expired: ' + key);
         /*let _self = this;
         let event = {
             enterpriseCode: value.enterprise.code,
@@ -59,10 +59,10 @@ module.exports = {
     },
 
     publishTokenDeletedEvent: function (key, value, options) {
-        this.LOG.debug('Auth token key has been deleted: ' + key);
+        this.LOG.debug('======================1Auth token key has been deleted: ' + key);
     },
 
     publishTokenFlushedEvent: function (options) {
-        this.LOG.debug('Auth token keys has been flushed');
+        this.LOG.debug('======================2Auth token keys has been flushed');
     }
 };

@@ -179,6 +179,9 @@ module.exports = {
                                 });
                                 _self.createAuthToken(options).then(success => {
                                     let moduleObject = NODICS.getModule(options.request.moduleName);
+                                    if (!moduleObject.authCache) {
+                                        moduleObject.authCache = {};
+                                    }
                                     if (!moduleObject.authCache.tokens) {
                                         moduleObject.authCache.tokens = {};
                                     }

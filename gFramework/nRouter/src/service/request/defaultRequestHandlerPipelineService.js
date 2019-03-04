@@ -135,24 +135,36 @@ module.exports = {
     },
 
     lookupCache: function (request, response, process) {
+        let _self = this;
         this.LOG.debug('Looking up result in cache system  : ', request.originalUrl);
         try {
-            request.apiCacheKeyHash = UTILS.generateHash(SERVICE.DefaultCacheService.createApiKey(request.httpRequest));
-            SERVICE.DefaultCacheService.getApi(request.router, request.apiCacheKeyHash).then(value => {
-                process.stop(request, response, {
-                    success: true,
-                    code: 'SUC_SYS_00000',
-                    msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
-                    cache: 'api hit',
-                    result: value.result
+            request.apiCacheKeyHash = UTILS.generateHash(SERVICE.DefaultCacheConfigurationService.createApiKey(request.httpRequest));
+            if (request.router.cache && request.router.cache.enabled) {
+                SERVICE.DefaultCacheService.get({
+                    moduleName: request.moduleName,
+                    channelName: 'router',
+                    key: request.apiCacheKeyHash
+                }).then(value => {
+                    process.stop(request, response, {
+                        success: true,
+                        code: 'SUC_SYS_00000',
+                        msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+                        cache: 'api hit',
+                        result: value.result
+                    });
+                }).catch(error => {
+                    if (error.code === 'ERR_CACHE_00010') {
+                        _self.LOG.warn(error.msg);
+                        process.nextSuccess(request, response);
+                    } else if (error.code === 'ERR_CACHE_00001') {
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, error);
+                    }
                 });
-            }).catch(error => {
-                if (error.code === 'ERR_CACHE_00001') {
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, error);
-                }
-            });
+            } else {
+                process.nextSuccess(request, response);
+            }
         } catch (error) {
             process.error(request, response, error);
         }
@@ -167,20 +179,22 @@ module.exports = {
                     process.error(request, response, error);
                 } else {
                     response.success = success;
-                    let moduleObject = NODICS.getModule(request.moduleName);
-                    if (UTILS.isApiCashable(response.success.result, request.router) && moduleObject.apiCache) {
-                        SERVICE.DefaultCacheService.putApi(request.router, request.apiCacheKeyHash, response.success.result).then(cuccess => {
+                    if (UTILS.isApiCashable(response.success.result, request.router)) {
+                        SERVICE.DefaultCacheService.put({
+                            moduleName: request.moduleName,
+                            channelName: 'router',
+                            key: request.apiCacheKeyHash,
+                            value: response.success.result
+                        }).then(cuccess => {
                             _self.LOG.debug('Data pushed into cache successfully');
                         }).catch(error => {
-                            _self.LOG.error('While pushing data into Item cache : ', error);
+                            _self.LOG.warn(error.msg);
                         });
-
                     }
                     process.nextSuccess(request, response);
                 }
             });
         } catch (error) {
-            _self.LOG.error('Got error while service request : ', error);
             process.error(request, response, error);
         }
     },
@@ -218,6 +232,11 @@ module.exports = {
             error.code = error.code || 'ERR_SYS_00000';
             if (!error.msg) {
                 error.msg = SERVICE.DefaultStatusService.get(error.code) ? SERVICE.DefaultStatusService.get(error.code).message : 'Process failed with errors';
+            }
+            if (error.error) {
+                error.msg = error.error.message;
+                error.stack = error.error.stack;
+
             }
             this.LOG.error(error);
             process.reject(error);

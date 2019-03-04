@@ -30,7 +30,8 @@ module.exports = {
             },
             engines: {
                 local: {
-                    handler: 'DefaultLocalCacheEngineService',
+                    connectionHandler: 'DefaultLocalCacheEngineService',
+                    cacheHandler: 'DefaultLocalCacheService',
                     ttl: 100,
                     options: {
                         stdTTL: 100,
@@ -40,7 +41,8 @@ module.exports = {
                     }
                 },
                 redis: {
-                    handler: 'DefaultRedisCacheEngineService',
+                    connectionHandler: 'DefaultRedisCacheEngineService',
+                    cacheHandler: 'DefaultRedisCacheService',
                     ttl: 100,
                     options: {
                         host: 'localhost',
@@ -48,7 +50,8 @@ module.exports = {
                     }
                 },
                 hazelcast: {
-                    handler: 'defaultHazelcastCacheEngineService',
+                    connectionHandler: 'DefaultHazelcastCacheEngineService',
+                    cacheHandler: 'DefaultHazelcastCacheService',
                     ttl: 100,
                     dbIndex: 0,
                     options: {
@@ -57,40 +60,6 @@ module.exports = {
                     }
                 }
             }
-        },
-        profile: {
-            channels: {
-                auth: {
-                    defaultTTL: 60 * 60,
-                    enabled: true,
-                    fallback: true,
-                    engine: 'local',
-                    events: {
-                        expired: 'DefaultAuthTokenInvalidationService.publishTokenExpiredEvent',
-                        del: 'DefaultAuthTokenInvalidationService.publishTokenDeletedEvent',
-                        flushed: 'DefaultAuthTokenInvalidationService.publishTokenFlushedEvent'
-                    }
-                },
-            }
-        },
-        schemaLevelCache: {
-            enterprise: {
-                enabled: true,
-                ttl: 100
-            }
-        },
-        routerLevelCache: {
-            address: {
-                get: {
-                    enabled: true,
-                    ttl: 50
-                },
-                post: {
-                    enabled: true,
-                    ttl: 70
-                }
-            }
         }
-
     }
 };

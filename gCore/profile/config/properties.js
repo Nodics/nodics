@@ -21,5 +21,41 @@ module.exports = {
             tenant: 'default',
             loginId: 'apiAdmin'
         }
+    },
+
+    cache: {
+        profile: {
+            channels: {
+                auth: {
+                    ttl: 60 * 60,
+                    enabled: true,
+                    fallback: true,
+                    engine: 'local',
+                    events: {
+                        expired: 'DefaultAuthTokenInvalidationService.publishTokenExpiredEvent',
+                        del: 'DefaultAuthTokenInvalidationService.publishTokenDeletedEvent',
+                        flushed: 'DefaultAuthTokenInvalidationService.publishTokenFlushedEvent'
+                    }
+                },
+            }
+        },
+        schemaLevelCache: {
+            enterprise: {
+                enabled: true,
+                ttl: 100
+            }
+        },
+        routerLevelCache: {
+            address: {
+                get: {
+                    enabled: true,
+                    ttl: 50
+                },
+                post: {
+                    enabled: true,
+                    ttl: 70
+                }
+            }
+        }
     }
 };

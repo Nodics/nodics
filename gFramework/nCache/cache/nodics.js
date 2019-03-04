@@ -30,7 +30,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultCacheConfigurationService.loadCacheConfiguration().then(success => {
                 SERVICE.DefaultCacheEngineService.buildCacheEngines().then(success => {
-                    console.log(SERVICE.DefaultCacheEngineService.cacheClients);
+                    //console.log(SERVICE.DefaultCacheEngineService.getCacheEngine('profile', 'auth'));
                     resolve(true);
                 }).catch(error => {
                     reject(error);

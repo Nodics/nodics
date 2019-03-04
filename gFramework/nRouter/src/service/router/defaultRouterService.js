@@ -111,31 +111,8 @@ module.exports = {
                     if (!UTILS.isBlank(app)) {
                         try {
                             routers.operations.registerWeb(app, moduleObject);
-                            try {
-                                let cachePromises = [
-                                    SERVICE.DefaultCacheService.initApiCache(moduleObject, moduleName),
-                                    SERVICE.DefaultCacheService.initItemCache(moduleObject, moduleName)
-                                ];
-                                if (moduleName === CONFIG.get('profileModuleName')) {
-                                    cachePromises.push(SERVICE.DefaultCacheService.initAuthCache(moduleObject, moduleName));
-                                }
-                                if (cachePromises.length > 0) {
-                                    Promise.all(cachePromises).then(success => {
-                                        _self.activateRouters(app, moduleObject, moduleName, routers);
-                                        resolve(true);
-                                    }).catch(error => {
-                                        _self.LOG.error('got error while initializing cache for module : ', moduleName);
-                                        _self.activateRouters(app, moduleObject, moduleName, routers);
-                                        resolve(true);
-                                    });
-                                } else {
-                                    _self.activateRouters(app, moduleObject, moduleName, routers);
-                                    resolve(true);
-                                }
-                            } catch (error) {
-                                _self.LOG.error('While initializing cache or router registration process for module : ', moduleName);
-                                reject(error);
-                            }
+                            _self.activateRouters(app, moduleObject, moduleName, routers);
+                            resolve(true);
                         } catch (error) {
                             _self.LOG.error('While registration process of web path for module : ', moduleName);
                             reject(error);

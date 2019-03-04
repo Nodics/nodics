@@ -93,8 +93,6 @@ module.exports = {
                                 this.cacheClients[moduleName] = {};
                             }
                             this.cacheClients[moduleName][channelName] = success.result;
-                        } else {
-                            this.LOG.warn(success.msg);
                         }
                         _self.buildModuleCacheEngine(moduleName, channels).then(success => {
                             resolve(true);
@@ -124,24 +122,24 @@ module.exports = {
                 let channelObj = SERVICE.DefaultCacheConfigurationService.getCacheChannels(moduleName)[channelName];
                 if (channelObj.enabled && channelObj.engine) {
                     let engineOptions = SERVICE.DefaultCacheConfigurationService.getCacheEngine(moduleName, channelObj.engine);
-                    engineOptions.options.prefix = moduleName + '_';
+                    engineOptions.options.prefix = moduleName;
                     let operationName = 'initCache';
-                    if (SERVICE[engineOptions.handler][channelName] && typeof SERVICE[engineOptions.handler][channelName] === 'function') {
+                    if (SERVICE[engineOptions.connectionHandler][channelName] && typeof SERVICE[engineOptions.connectionHandler][channelName] === 'function') {
                         operationName = channelName;
                     }
-                    SERVICE[engineOptions.handler][operationName](engineOptions, moduleName).then(value => {
+                    SERVICE[engineOptions.connectionHandler][operationName](engineOptions, moduleName).then(value => {
                         if (value.code === 'SUC_CACHE_00000') {
+                            _self.registerEvents(engineOptions, moduleName, value.result, channelObj);
                             resolve({
                                 success: true,
                                 code: 'SUC_CACHE_00000',
                                 result: {
-                                    type: channelObj.engine,
+                                    chennalOptions: channelObj,
+                                    engineOptions: engineOptions,
                                     client: value.result,
-                                    config: engineOptions,
-                                    cacheMap: channelName
+                                    channelName: channelName
                                 }
                             });
-                            _self.registerEvents(engineOptions, moduleName, value.result, channelObj);
                         } else {
                             resolve(value);
                         }
@@ -151,24 +149,24 @@ module.exports = {
                             _self.LOG.debug('Initializing local API cache');
                             channelObj.engine = 'local';
                             let engineOptions = SERVICE.DefaultCacheConfigurationService.getCacheEngine(moduleName, channelObj.engine);
-                            engineOptions.options.prefix = moduleName + '_';
+                            engineOptions.options.prefix = moduleName;
                             let operationName = 'initCache';
-                            if (SERVICE[engineOptions.handler][channelName] && typeof SERVICE[engineOptions.handler][channelName] === 'function') {
+                            if (SERVICE[engineOptions.connectionHandler][channelName] && typeof SERVICE[engineOptions.connectionHandler][channelName] === 'function') {
                                 operationName = channelName;
                             }
-                            SERVICE[engineOptions.handler][operationName](engineOptions, moduleName).then(value => {
+                            SERVICE[engineOptions.connectionHandler][operationName](engineOptions, moduleName).then(value => {
                                 if (value.code === 'SUC_CACHE_00000') {
+                                    _self.registerEvents(engineOptions, moduleName, value.result, channelObj);
                                     resolve({
                                         success: true,
                                         code: 'SUC_CACHE_00000',
                                         result: {
-                                            type: channelObj.engine,
+                                            chennalOptions: channelObj,
+                                            engineOptions: engineOptions,
                                             client: value.result,
-                                            config: engineOptions,
-                                            cacheMap: channelName
+                                            channelName: channelName
                                         }
                                     });
-                                    _self.registerEvents(engineOptions, moduleName, value.result, channelObj);
                                 } else {
                                     resolve(value);
                                 }
@@ -202,7 +200,7 @@ module.exports = {
 
     registerEvents: function (engineOptions, moduleName, client, options) {
         if (!UTILS.isBlank(options.events)) {
-            SERVICE[engineOptions.handler].registerEvents({
+            SERVICE[engineOptions.connectionHandler].registerEvents({
                 moduleName: moduleName,
                 cacheOptions: engineOptions.options,
                 options: options,
