@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
     /**
@@ -281,5 +282,9 @@ module.exports = {
                 reject(response);
             });
         });
+    },
+
+    toObjectId: function (id) {
+        return ObjectId(id);
     }
 };

@@ -54,10 +54,6 @@ module.exports = {
         try {
             if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {
                 request.query = this.resolveQuery(_.merge({}, request.originalQuery || {}), request.model);
-            } else if (request.model._id) {
-                request.query = {
-                    _id: request.model._id
-                };
             } else if (request.model.code) {
                 request.query = {
                     code: request.model.code

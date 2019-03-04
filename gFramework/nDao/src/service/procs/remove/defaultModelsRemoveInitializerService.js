@@ -40,6 +40,13 @@ module.exports = {
 
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query options');
+        let modelHandlerName = request.collection.dataBase.getOptions().modelHandler;
+        if (request.ids) {
+            let tmpIds = [];
+            request.ids.forEach(id => {
+                tmpIds.push((SERVICE[modelHandlerName] && SERVICE[modelHandlerName].toObjectId) ? SERVICE[modelHandlerName].toObjectId(id) : id);
+            });
+        }
         let inputOptions = request.options || {};
         inputOptions.explain = inputOptions.explain || false;
         inputOptions.explain = inputOptions.explain || false;
