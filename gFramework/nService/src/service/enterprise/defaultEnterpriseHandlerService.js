@@ -168,7 +168,6 @@ module.exports = {
                             });
                         }
                         SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection(enterprise.tenant.code).then(success => {
-
                             SERVICE.DefaultDatabaseModelHandlerService.buildModelsForTenant(enterprise.tenant.code).then(success => {
                                 if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                                     SERVICE.DefaultEmployeeService.get({
@@ -182,29 +181,39 @@ module.exports = {
                                                 tenant: enterprise.tenant.code,
                                                 modules: NODICS.getActiveModules()
                                             }).then(success => {
-                                                SERVICE.DefaultEmployeeService.get({
+                                                SERVICE.DefaultImportService.processImportData({
                                                     tenant: enterprise.tenant.code,
-                                                    query: {
-                                                        code: 'apiAdmin'
+                                                    inputPath: {
+                                                        rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
+                                                        dataType: 'init'
                                                     }
                                                 }).then(success => {
-                                                    if (success.success && success.result.length > 0) {
-                                                        let apiKeyValue = {
-                                                            enterpriseCode: enterprise.code,
-                                                            tenant: enterprise.tenant.code,
-                                                            loginId: success.result[0].loginId
-                                                        };
-                                                        NODICS.addAPIKey(enterprise.tenant.code, success.result[0].apiKey, apiKeyValue);
-                                                        _self.buildEnterprise(enterprises).then(success => {
-                                                            resolve(true);
-                                                        }).catch(error => {
-                                                            reject(error);
-                                                        });
-                                                    } else {
-                                                        reject('Could not load default API key for tenant: ' + enterprise.tenant.code);
-                                                    }
+                                                    SERVICE.DefaultEmployeeService.get({
+                                                        tenant: enterprise.tenant.code,
+                                                        query: {
+                                                            code: 'apiAdmin'
+                                                        }
+                                                    }).then(success => {
+                                                        if (success.success && success.result.length > 0) {
+                                                            let apiKeyValue = {
+                                                                enterpriseCode: enterprise.code,
+                                                                tenant: enterprise.tenant.code,
+                                                                loginId: success.result[0].loginId
+                                                            };
+                                                            NODICS.addAPIKey(enterprise.tenant.code, success.result[0].apiKey, apiKeyValue);
+                                                            _self.buildEnterprise(enterprises).then(success => {
+                                                                resolve(true);
+                                                            }).catch(error => {
+                                                                reject(error);
+                                                            });
+                                                        } else {
+                                                            reject('Could not load default API key for tenant: ' + enterprise.tenant.code);
+                                                        }
+                                                    }).catch(error => {
+                                                        reject(error);
+                                                    });
                                                 }).catch(error => {
-                                                    reject(error);
+                                                    NODICS.LOG.error('Initial data import failed : ', error);
                                                 });
                                             }).catch(error => {
                                                 reject(error);

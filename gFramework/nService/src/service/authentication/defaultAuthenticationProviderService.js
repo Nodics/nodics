@@ -42,7 +42,7 @@ module.exports = {
                     value: value
                 };
                 if (source) {
-                    input.ttl = 0;
+                    options.ttl = 0;
                 }
                 SERVICE.DefaultCacheService.put(options).then(success => {
                     resolve(true);

@@ -14,23 +14,23 @@ module.exports = {
     // Enterprise Save Events
     enterprisePreSave: function (request, responce) {
         return new Promise((resolve, reject) => {
-            request.returnModified = request.returnModified || true;
-            request.recursive = request.recursive || true;
+            request.options.returnModified = request.options.returnModified || true;
+            request.options.recursive = request.options.recursive || true;
             resolve(true);
         });
     },
 
     enterprisePreUpdate: function (request, responce) {
         return new Promise((resolve, reject) => {
-            request.returnModified = request.returnModified || true;
-            request.recursive = request.recursive || true;
+            request.options.returnModified = request.options.returnModified || true;
+            request.options.recursive = request.options.recursive || true;
             resolve(true);
         });
     },
     enterprisePreRemove: function (request, responce) {
         return new Promise((resolve, reject) => {
-            request.returnModified = request.returnModified || true;
-            request.recursive = request.recursive || true;
+            request.options.returnModified = request.options.returnModified || true;
+            request.options.recursive = request.options.recursive || true;
             resolve(true);
         });
     },
@@ -134,9 +134,9 @@ module.exports = {
                 tenant: 'default',
                 source: 'profile',
                 target: 'profile',
-                excludeModules: ['profile'],
                 state: "NEW",
                 type: "SYNC",
+                active: true,
                 targetType: ENUMS.TargetType.EACH_NODE.key,
                 data: {
                     enterprise: enterprise

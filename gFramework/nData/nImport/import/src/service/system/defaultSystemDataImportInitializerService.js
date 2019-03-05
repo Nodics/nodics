@@ -131,7 +131,6 @@ module.exports = {
                 });
             });
         }
-        console.log(util.inspect(request.data.headers, true, 6));
         process.nextSuccess(request, response);
     },
 
@@ -149,7 +148,6 @@ module.exports = {
         }
         delete request.data.headerFiles;
         delete request.data.dataFiles;
-        //console.log(util.inspect(request.data.headers, true, 6));
         process.nextSuccess(request, response);
     },
 

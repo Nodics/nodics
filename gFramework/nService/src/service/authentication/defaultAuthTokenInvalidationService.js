@@ -59,6 +59,7 @@ module.exports = {
     },
 
     publishTokenDeletedEvent: function (key, value, options) {
+        key = key.substring(key.lastIndexOf('_'), key.length);
         this.LOG.debug('======================1Auth token key has been deleted: ' + key);
     },
 

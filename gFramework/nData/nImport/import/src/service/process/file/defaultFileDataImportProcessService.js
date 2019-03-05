@@ -58,17 +58,9 @@ module.exports = {
         this.LOG.debug('Processing models from file: ' + request.fileName);
         if (request.fileData.models && Object.keys(request.fileData.models).length > 0) {
             let header = request.fileData.header;
-            let tenants = [];
-            if (request.tenant && (!header.options.tenants || header.options.tenants.includes(request.tenant))) {
+            let tenants = header.options.tenants || NODICS.getTenants();
+            if (request.tenant) {
                 tenants = [request.tenant];
-            } else if (!header.options.tenants) {
-                tenants = NODICS.getTenants();
-            } else {
-                header.options.tenants.forEach(tenantName => {
-                    if (NODICS.getTenants().includes(tenantName)) {
-                        tenants.push(tenantName);
-                    }
-                });
             }
             this.processTenantModel(request, response, {
                 tenants: tenants,
@@ -81,7 +73,6 @@ module.exports = {
         } else {
             process.nextSuccess(request, response);
         }
-
     },
 
     processTenantModel: function (request, response, options) {
@@ -89,18 +80,28 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (options.tenants && options.tenants.length > 0) {
                 let tenant = options.tenants.shift();
-                this.processModel(request, response, {
-                    tenant: tenant,
-                    pendingModels: Object.keys(request.fileData.models)
-                }).then(success => {
+                let activeTenants = request.fileData.header.options.tenants || NODICS.getTenants();
+                if (activeTenants.includes(tenant) && NODICS.getTenants().includes(tenant)) {
+                    this.processModel(request, response, {
+                        tenant: tenant,
+                        pendingModels: Object.keys(request.fileData.models)
+                    }).then(success => {
+                        _self.processTenantModel(request, response, options).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    _self.LOG.warn('Tenant: ' + tenant + ' is no more active');
                     _self.processTenantModel(request, response, options).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
-                }).catch(error => {
-                    reject(error);
-                });
+                }
             } else {
                 resolve(true);
             }

@@ -168,7 +168,6 @@ module.exports = {
     },
 
     fetchModel: function (request, response, options) {
-        let header = request.fileData.header;
         return new Promise((resolve, reject) => {
             let values = options.value.split(':');
             let query = {};
