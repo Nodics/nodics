@@ -169,14 +169,14 @@ module.exports = {
                 let query = {};
                 if (propertyObject.type === 'one') {
                     if (propertyObject.propertyName === '_id') {
-                        query[propertyObject.propertyName] = UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property]);
+                        query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property]);
                     } else {
                         query[propertyObject.propertyName] = model[property];
                     }
                 } else {
                     if (propertyObject.propertyName === '_id') {
                         query[propertyObject.propertyName] = {
-                            '$in': UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property])
+                            '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property])
                         };
                     } else {
                         query[propertyObject.propertyName] = {

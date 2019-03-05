@@ -34,7 +34,6 @@ module.exports = {
 
         defineDefaultSave: function (collection, rawSchema) {
             collection.saveItems = function (input) {
-                //console.log('==========: ', util.inspect(input.model, true, 6));
                 return new Promise((resolve, reject) => {
                     if (!input.model) {
                         reject('Invalid model value to save');

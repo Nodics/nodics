@@ -55,9 +55,11 @@ module.exports = {
             if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {
                 request.query = this.resolveQuery(_.merge({}, request.originalQuery || {}), request.model);
             } else if (request.model._id) {
+                let objectId = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, request.model._id);
                 request.query = {
-                    _id: request.model._id
+                    _id: objectId
                 };
+                request.model._id = objectId;
             } else if (request.model.code) {
                 request.query = {
                     code: request.model.code
@@ -351,14 +353,14 @@ module.exports = {
                 let query = {};
                 if (propertyObject.type === 'one') {
                     if (propertyObject.propertyName === '_id') {
-                        query[propertyObject.propertyName] = UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property]);
+                        query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property]);
                     } else {
                         query[propertyObject.propertyName] = model[property];
                     }
                 } else {
                     if (propertyObject.propertyName === '_id') {
                         query[propertyObject.propertyName] = {
-                            '$in': UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property])
+                            '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property])
                         };
                     } else {
                         query[propertyObject.propertyName] = {

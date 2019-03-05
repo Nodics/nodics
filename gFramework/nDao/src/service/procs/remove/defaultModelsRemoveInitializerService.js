@@ -40,12 +40,23 @@ module.exports = {
 
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query options');
-        let modelHandlerName = request.collection.dataBase.getOptions().modelHandler;
-        if (request.ids) {
+        if (request.ids && request.ids.length > 0) {
             let tmpIds = [];
             request.ids.forEach(id => {
-                tmpIds.push((SERVICE[modelHandlerName] && SERVICE[modelHandlerName].toObjectId) ? SERVICE[modelHandlerName].toObjectId(id) : id);
+                tmpIds.push(SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, id));
             });
+            request.query = {
+                _id: {
+                    $in: tmpIds
+                }
+            };
+        }
+        if (request.codes && request.codes.length > 0) {
+            request.query = {
+                code: {
+                    $in: request.codes
+                }
+            };
         }
         let inputOptions = request.options || {};
         inputOptions.explain = inputOptions.explain || false;
@@ -164,14 +175,14 @@ module.exports = {
                 let query = {};
                 if (propertyObject.type === 'one') {
                     if (propertyObject.propertyName === '_id') {
-                        query[propertyObject.propertyName] = UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property]);
+                        query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property]);
                     } else {
                         query[propertyObject.propertyName] = model[property];
                     }
                 } else {
                     if (propertyObject.propertyName === '_id') {
                         query[propertyObject.propertyName] = {
-                            '$in': UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property])
+                            '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property])
                         };
                     } else {
                         query[propertyObject.propertyName] = {

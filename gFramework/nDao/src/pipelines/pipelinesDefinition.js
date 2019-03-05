@@ -20,6 +20,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.validateRequest',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultModelsGetInitializerService.buildQuery',
                 success: 'buildOptions'
             },
             buildOptions: {

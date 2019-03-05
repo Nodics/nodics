@@ -8,7 +8,6 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
     /**
@@ -43,7 +42,7 @@ module.exports = {
         return this.get({
             tenant: tenant,
             query: {
-                _id: ObjectId(id)
+                _id: id
             }
         });
     },
@@ -72,22 +71,14 @@ module.exports = {
     removeById: function (ids, tenant) {
         return this.remove({
             tenant: tenant,
-            query: {
-                _id: {
-                    $in: ids
-                }
-            }
+            ids: ids
         });
     },
 
     removeByCode: function (codes, tenant) {
         return this.remove({
             tenant: tenant,
-            query: {
-                code: {
-                    $in: codes
-                }
-            }
+            codes: codes
         });
     },
 

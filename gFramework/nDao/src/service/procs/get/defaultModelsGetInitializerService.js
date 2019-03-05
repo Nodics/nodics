@@ -9,8 +9,6 @@
 
  */
 
-const ObjectId = require('mongodb').ObjectId;
-
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -62,9 +60,16 @@ module.exports = {
         }
     },
 
+    buildQuery: function (request, response, process) {
+        this.LOG.debug('Building query');
+        if (request.query && request.query._id) {
+            request.query._id = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, request.query._id);
+        }
+        process.nextSuccess(request, response);
+    },
+
     buildOptions: function (request, response, process) {
         this.LOG.debug('Building query options');
-        let modelHandlerName = request.collection.dataBase.getOptions().modelHandler;
         let inputOptions = request.options || {};
         request.query = request.query || {};
         let pageSize = inputOptions.pageSize || CONFIG.get('defaultPageSize');
@@ -73,7 +78,6 @@ module.exports = {
         inputOptions.skip = pageSize * pageNumber;
         inputOptions.explain = inputOptions.explain || false;
         inputOptions.snapshot = inputOptions.snapshot || false;
-
         if (inputOptions.timeout === true) {
             inputOptions.timeout = true;
             inputOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS');
@@ -265,14 +269,14 @@ module.exports = {
                 let query = {};
                 if (propertyObject.type === 'one') {
                     if (propertyObject.propertyName === '_id') {
-                        query[propertyObject.propertyName] = UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property]);
+                        query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property]);
                     } else {
                         query[propertyObject.propertyName] = model[property];
                     }
                 } else {
                     if (propertyObject.propertyName === '_id') {
                         query[propertyObject.propertyName] = {
-                            '$in': UTILS.isObjectId(model[property]) ? model[property] : ObjectId(model[property])
+                            '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property])
                         };
                     } else {
                         query[propertyObject.propertyName] = {
