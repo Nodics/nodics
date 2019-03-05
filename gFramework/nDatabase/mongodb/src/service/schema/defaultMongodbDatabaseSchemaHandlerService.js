@@ -34,10 +34,10 @@ module.exports = {
         });
     },
 
-    buildDatabaseSchema: function () {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    }
+    // buildDatabaseSchema: function () {
+    //     return new Promise((resolve, reject) => {
+    //         resolve(true);
+    //     });
+    // }
 
 };

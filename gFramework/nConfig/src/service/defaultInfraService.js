@@ -9,7 +9,6 @@
 
  */
 const path = require('path');
-const util = require('../utils/utils');
 
 module.exports = {
     /**
@@ -81,7 +80,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Cleaning all DAO entities');
             try {
-                util.removeDir(path.join(module.path + '/src/dao/gen'));
+                UTILS.removeDir(path.join(module.path + '/src/dao/gen'));
                 resolve(true);
             } catch (error) {
                 reject(error);
@@ -93,7 +92,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Cleaning all SERVICE entities');
             try {
-                util.removeDir(path.join(module.path + '/src/service/gen'));
+                UTILS.removeDir(path.join(module.path + '/src/service/gen'));
                 resolve(true);
             } catch (error) {
                 reject(error);
@@ -105,7 +104,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Cleaning all facade entities');
             try {
-                util.removeDir(path.join(module.path + '/src/facade/gen'));
+                UTILS.removeDir(path.join(module.path + '/src/facade/gen'));
                 resolve(true);
             } catch (error) {
                 reject(error);
@@ -117,7 +116,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Cleaning all controller entities');
             try {
-                util.removeDir(path.join(module.path + '/src/controller/gen'));
+                UTILS.removeDir(path.join(module.path + '/src/controller/gen'));
                 resolve(true);
             } catch (error) {
                 reject(error);
@@ -129,7 +128,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Cleaning all dist entities');
             try {
-                util.removeDir(path.join(module.path + '/src/dist'));
+                UTILS.removeDir(path.join(module.path + '/src/dist'));
                 resolve(true);
             } catch (error) {
                 reject(error);
@@ -175,6 +174,140 @@ module.exports = {
                 resolve(true);
             }
         });
-    }
+    },
+
+
+    buildEntities: function () {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            _self.buildDao().then(() => {
+                return _self.buildServices();
+            }).then(() => {
+                return _self.buildFacades();
+            }).then(() => {
+                return _self.buildControllers();
+            }).then(() => {
+                resolve(true);
+            }).catch((error) => {
+                reject(error);
+            });
+        });
+    },
+
+    buildDao: function () {
+        return new Promise((resolve, reject) => {
+            let gVar = SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/dao/common.js');
+            let daoCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/dao/common.js');
+            let genDir = path.join(NODICS.getModule('nDao').modulePath + '/src/dao/gen');
+            UTILS.schemaWalkThrough({
+                commonDefinition: daoCommon,
+                type: 'model',
+                currentDir: genDir,
+                postFix: 'Dao',
+                gVar: gVar
+            }).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildServices: function () {
+        return new Promise((resolve, reject) => {
+            let gVar = SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/service/common.js');
+            let daoCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/service/common.js');
+            let genDir = path.join(NODICS.getModule('nService').modulePath + '/src/service/gen');
+            UTILS.schemaWalkThrough({
+                commonDefinition: daoCommon,
+                type: 'service',
+                currentDir: genDir,
+                postFix: 'Service',
+                gVar: gVar
+            }).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildFacades: function () {
+        return new Promise((resolve, reject) => {
+            let gVar = SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/facade/common.js');
+            let daoCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/facade/common.js');
+            let genDir = path.join(NODICS.getModule('nFacade').modulePath + '/src/facade/gen');
+            UTILS.schemaWalkThrough({
+                commonDefinition: daoCommon,
+                type: 'service',
+                currentDir: genDir,
+                postFix: 'Facade',
+                gVar: gVar
+            }).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildControllers: function () {
+        return new Promise((resolve, reject) => {
+            let gVar = SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/controller/common.js');
+            let daoCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/controller/common.js');
+            let genDir = path.join(NODICS.getModule('nController').modulePath + '/src/controller/gen');
+            UTILS.schemaWalkThrough({
+                commonDefinition: daoCommon,
+                type: 'router',
+                currentDir: genDir,
+                postFix: 'Controller',
+                gVar: gVar
+            }).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildModules: function (modules = Array.from(NODICS.getIndexedModules().keys())) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (modules && modules.length > 0) {
+                let moduleIndex = modules.shift();
+                let moduleName = NODICS.getIndexedModules().get(moduleIndex).name;
+                _self.buildModule(moduleName).then(success => {
+                    _self.buildModules(modules).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    buildModule: function (moduleName) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            _self.LOG.debug('Starting process to build module : ', moduleName);
+            let moduleObject = NODICS.getRawModule(moduleName);
+            let moduleFile = require(moduleObject.path + '/nodics.js');
+            if (moduleFile.build && typeof moduleFile.build === 'function') {
+                moduleFile.build(moduleObject).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
 
 };

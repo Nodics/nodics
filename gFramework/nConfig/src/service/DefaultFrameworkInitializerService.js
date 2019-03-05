@@ -468,6 +468,7 @@ module.exports = {
     },
 
     initDaos: function () {
+        let _self = this;
         return new Promise((resolve, reject) => {
             let allPromise = [];
             _.each(DAO, (daoClass, daoName) => {

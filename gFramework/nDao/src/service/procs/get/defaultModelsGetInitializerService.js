@@ -67,11 +67,6 @@ module.exports = {
         let modelHandlerName = request.collection.dataBase.getOptions().modelHandler;
         let inputOptions = request.options || {};
         request.query = request.query || {};
-        if (request.query._id) {
-            request.query._id = (SERVICE[modelHandlerName] && SERVICE[modelHandlerName].toObjectId) ?
-                SERVICE[modelHandlerName].toObjectId(request.query._id) :
-                request.query._id;
-        }
         let pageSize = inputOptions.pageSize || CONFIG.get('defaultPageSize');
         let pageNumber = inputOptions.pageNumber || CONFIG.get('defaultPageNumber');
         inputOptions.limit = pageSize;

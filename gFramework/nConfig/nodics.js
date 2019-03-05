@@ -156,4 +156,18 @@ module.exports = {
             });
         });
     },
+
+    buildModules: function () {
+        return new Promise((resolve, reject) => {
+            infra.buildEntities().then(success => {
+                infra.buildModules().then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
 };

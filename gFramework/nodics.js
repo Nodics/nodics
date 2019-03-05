@@ -207,4 +207,18 @@ module.exports = {
             NODICS.LOG.error(error);
         });
     },
+
+    buildAll: function (options) {
+        config.prepareBuild(options).then(() => {
+            return config.initUtilities(options);
+        }).then(() => {
+            return config.loadModules();
+        }).then(() => {
+            return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema();
+        }).then(() => {
+            return config.buildModules();
+        }).catch(error => {
+            SERVICE.DefaultInfraService.LOG.error(error);
+        });
+    },
 };
