@@ -150,7 +150,7 @@ module.exports = {
     invalidateAuthToken: function (options) {
         return new Promise((resolve, reject) => {
             let moduleObject = NODICS.getModule(CONFIG.get('profileModuleName'));
-            if (moduleObject && moduleObject.authCache && moduleObject.authCache && moduleObject.authCache.tokens) {
+            if (moduleObject && moduleObject.authCache && moduleObject.authCache.tokens) {
                 let authTokens = [];
                 _.each(moduleObject.authCache.tokens, (authObj, authToken) => {
                     if (options.isEnterprise) {
@@ -169,7 +169,12 @@ module.exports = {
                     }
                 });
                 if (authTokens.length > 0) {
-                    SERVICE.DefaultCacheService.flushKeys(moduleObject.authCache, authTokens).then(success => {
+                    console.log('====== >>>> ', authTokens);
+                    SERVICE.DefaultCacheService.flushCacheKeys({
+                        moduleName: CONFIG.get('profileModuleName'),
+                        channelName: 'auth',
+                        keys: authTokens
+                    }).then(success => {
                         resolve(authTokens);
                     }).catch(error => {
                         reject(error);
@@ -204,6 +209,7 @@ module.exports = {
                         excludeModules: ['profile'],
                         state: "NEW",
                         type: "SYNC",
+                        active: true,
                         targetType: ENUMS.TargetType.EACH_NODE.key,
                         data: {
                             tenant: data.tenant,

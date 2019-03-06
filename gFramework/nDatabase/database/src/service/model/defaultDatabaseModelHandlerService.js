@@ -36,12 +36,16 @@ module.exports = {
 
     removeModelsForTenant: function (moduleName, tntCode) {
         return new Promise((resolve, reject) => {
-            let moduleObject = NODICS.getModule(moduleName);
-            if (moduleObject.models && moduleObject.models[tntCode]) {
-                this.LOG.debug('Deleting all models for tenant: ' + tenant + ' from module: ' + moduleName);
-                delete moduleObject.models[tntCode];
+            try {
+                let moduleObject = NODICS.getModule(moduleName);
+                if (moduleObject.models && moduleObject.models[tntCode]) {
+                    this.LOG.debug('Deleting all models for tenant: ' + tntCode + ' from module: ' + moduleName);
+                    delete moduleObject.models[tntCode];
+                }
+                resolve(true);
+            } catch (error) {
+                reject(error);
             }
-            resolve(true);
         });
     },
 

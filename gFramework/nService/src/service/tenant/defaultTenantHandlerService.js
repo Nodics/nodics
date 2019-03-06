@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -40,16 +42,10 @@ module.exports = {
                     tenants.forEach(tenant => {
                         NODICS.removeTenant(tenant);
                         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                            if (SERVICE.DefaultSearchConfigurationService && SERVICE.DefaultSearchConfigurationService.removeTenantSearchEngine) {
-                                _self.removeTenantSearchEngine(moduleName, tenant);
-                            }
-                            if (SERVICE.DefaultSearchConfigurationService && SERVICE.DefaultSearchConfigurationService.removeTenantRawSearchSchema) {
-                                _self.removeTenantRawSearchSchema(moduleName, tenant);
-                            }
                             SERVICE.DefaultDatabaseConnectionHandlerService.removeTenantDatabase(moduleName, tenant).then(success => {
-                                _self.LOG.debug('Successfully removed database connections for tenant: ' + tenant);
                                 SERVICE.DefaultDatabaseModelHandlerService.removeModelsForTenant(moduleName, tenant).then(success => {
-                                    _self.LOG.debug('Successfully removed models for tenant: ' + tenant);
+                                    // SERVICE.DefaultSearchConfigurationService.removeTenantSearchEngine(moduleName, tenant);
+                                    // SERVICE.DefaultSearchConfigurationService.removeTenantRawSearchSchema(moduleName, tenant);
                                     resolve({
                                         success: true,
                                         code: 'SUC_SYS_00000',

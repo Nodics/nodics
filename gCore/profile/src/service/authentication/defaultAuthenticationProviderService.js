@@ -57,7 +57,10 @@ module.exports = {
                             type: 'apiKey'
                         }).then(success => {
                             let moduleObject = NODICS.getModule(request.moduleName);
-                            if (moduleObject && moduleObject.authCache) {
+                            if (moduleObject) {
+                                if (!moduleObject.authCache) {
+                                    moduleObject.authCache = {};
+                                }
                                 if (!moduleObject.authCache.tokens) {
                                     moduleObject.authCache.tokens = {};
                                 }

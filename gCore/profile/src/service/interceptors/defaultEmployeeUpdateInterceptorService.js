@@ -12,13 +12,13 @@
 module.exports = {
     employeePreUpdate: function (request, responce) {
         return new Promise((resolve, reject) => {
-            request.returnModified = request.returnModified || true;
+            request.options.returnModified = request.options.returnModified || true;
             resolve(true);
         });
     },
     employeePreRemove: function (request, responce) {
         return new Promise((resolve, reject) => {
-            request.returnModified = request.returnModified || true;
+            request.options.returnModified = request.options.returnModified || true;
             resolve(true);
         });
     },

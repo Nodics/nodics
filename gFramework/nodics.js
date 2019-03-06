@@ -107,7 +107,6 @@ module.exports = {
                 // }).catch(error => {
                 //     NODICS.LOG.error('Nodics Import error : ', error);
                 // });
-                // console.log('===========================================================================================================');
                 // SERVICE.DefaultImportService.importLocalData({
                 //     dataPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data/data',
                 //     headerPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data/headers',

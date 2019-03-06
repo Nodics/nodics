@@ -148,11 +148,13 @@ module.exports = {
             try {
                 let _self = this;
                 let tmpKeys = [];
+                console.log('  ====== >>>> ', options.keys);
                 if (options.keys && options.keys.length > 0) {
                     for (var i = 0; i < options.keys.length; i++) {
                         tmpKeys[i] = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.keys[i];
                     }
                 }
+                console.log('    ====== >>>> ', tmpKeys);
                 _self.LOG.debug('Flushing value in local cache stored with keys: ' + tmpKeys);
                 options.channel.client.del(tmpKeys);
                 resolve({

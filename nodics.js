@@ -58,15 +58,11 @@ module.exports = {
         FRAMEWORK.genVueModule({});
     },
 
-    // =======================================================
-
-
     cleanAll: function () {
         FRAMEWORK.cleanAll({});
     },
 
     buildAll: function () {
         FRAMEWORK.buildAll({});
-    },
-
+    }
 };
