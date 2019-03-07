@@ -33,27 +33,19 @@ module.exports = {
         });
     },
 
-    updateApiCacheConfiguration: function (request) {
-        return SERVICE.DefaultCacheService.updateApiCacheConfiguration(request);
-    },
-
-    updateItemCacheConfiguration: function (request) {
-        return SERVICE.DefaultCacheService.updateItemCacheConfiguration(request);
-    },
-
     /**
      * Facade layer function to flush API level cache
      * @param {*} request 
      */
-    flushApiCache: function (request) {
-        return SERVICE.DefaultCacheService.flushApiCache(request);
+    flushCache: function (request) {
+        return SERVICE.DefaultCacheService.flushCache(request);
     },
 
-    /**
-     * Facade layer function to flush Item level cache
-     * @param {*} request 
-     */
-    flushItemCache: function (request) {
-        return SERVICE.DefaultCacheService.flushItemCache(request);
+    updateRouterCacheConfiguration: function (request) {
+        return SERVICE.DefaultCacheService.updateRouterCacheConfiguration(request);
+    },
+
+    updateSchemaCacheConfiguration: function (request) {
+        return SERVICE.DefaultCacheService.updateSchemaCacheConfiguration(request);
     }
 };

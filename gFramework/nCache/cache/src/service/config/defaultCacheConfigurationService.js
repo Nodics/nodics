@@ -14,8 +14,6 @@ const _ = require('lodash');
 module.exports = {
     channels: {},
     engines: {},
-    schemaLevelCache: {},
-    routerLevelCache: {},
 
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -37,19 +35,6 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
-    },
-
-    getSchemaCacheOptions: function (schemaName) {
-        return this.schemaLevelCache[schemaName];
-    },
-
-    getRouterCacheOptions: function (schemaName, routerName) {
-        let schemaOptions = this.routerLevelCache[schemaName];
-        if (schemaOptions) {
-            return schemaOptions[routerName];
-        } else {
-            return null;
-        }
     },
 
     getCacheChannels: function (moduleName) {
@@ -88,8 +73,6 @@ module.exports = {
                     this.channels[moduleName] = _.merge(_.merge({}, defaultChannels), moduleChannels || {});
                     this.engines[moduleName] = _.merge(_.merge({}, defaultEngines), moduleEngines || {});
                 }
-                this.schemaLevelCache = CONFIG.get('cache').schemaLevelCache || {};
-                this.routerLevelCache = CONFIG.get('cache').routerLevelCache || {};
                 resolve(true);
             } catch (error) {
                 reject(error);

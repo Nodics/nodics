@@ -11,19 +11,4 @@
 
 module.exports = {
 
-    /*
-    authorize: function (request) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultAuthenticationProviderService.findToken(request).then(success => {
-                resolve(success);
-            }).catch(error => {
-                SERVICE.DefaultAuthenticationProviderService.reAuthenticate(request).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            });
-        });
-    }
-    */
 };

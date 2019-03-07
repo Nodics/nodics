@@ -12,6 +12,15 @@
 module.exports = {
 
     cache: {
+        schemaCacheChannelNameMapping: {
+            //enterprise: 'cacheChannelName'
+        },
+        routerCacheChannelNameMapping: {
+            //routerName: 'cacheChannelName'
+        },
+        authCacheChannelNameMapping: {
+            //tenantName: 'cacheChannelName'
+        },
         default: {
             options: {
 

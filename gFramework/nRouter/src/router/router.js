@@ -312,49 +312,49 @@ module.exports = {
             }
         },
 
-        flushAPICache: {
-            flushAPIKey: {
+        flushCache: {
+            flushKey: {
                 secured: true,
-                key: '/cache/api/flush/key/:key',
+                key: '/cache/:channelName/flush/key/:key',
                 method: 'GET',
                 controller: 'DefaultCacheController',
-                operation: 'flushApiCache',
+                operation: 'flushCache',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/cache/api/flush/:key'
+                    url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush/key/:key'
                 }
             },
-            flushAPIPrefix: {
+            flushPrefix: {
                 secured: true,
-                key: '/cache/api/flush/prefix/:prefix',
+                key: '/cache/:channelName/flush/prefix/:prefix',
                 method: 'GET',
                 controller: 'DefaultCacheController',
-                operation: 'flushApiCache',
+                operation: 'flushCache',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/cache/api/flush/:prefix'
+                    url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush/prefix/:prefix'
                 }
             },
             flushAPIAll: {
                 secured: true,
-                key: '/cache/api/flush',
+                key: '/cache/:channelName/flush',
                 method: 'GET',
                 controller: 'DefaultCacheController',
-                operation: 'flushApiCache',
+                operation: 'flushCache',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/cache/api/flush'
+                    url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush'
                 }
             },
             flushAPIKeys: {
                 secured: true,
-                key: '/cache/api/flush',
+                key: '/cache/:channelName/flush',
                 method: 'POST',
                 controller: 'DefaultCacheController',
                 operation: 'flushApiCache',
@@ -362,73 +362,18 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/cache/api/flush'
+                    url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush'
                 }
             }
         },
 
-        flushItemCache: {
-            flushItemKey: {
-                secured: true,
-                key: '/cache/item/flush/key/:key',
-                method: 'GET',
-                controller: 'DefaultCacheController',
-                operation: 'flushItemCache',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/cache/item/flush/:key'
-                }
-            },
-            flushItemPrefix: {
-                secured: true,
-                key: '/cache/item/flush/prefix/:prefix',
-                method: 'GET',
-                controller: 'DefaultCacheController',
-                operation: 'flushItemCache',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/cache/item/flush/:prefix'
-                }
-            },
-            flushItemAll: {
-                secured: true,
-                key: '/cache/item/flush',
-                method: 'GET',
-                controller: 'DefaultCacheController',
-                operation: 'flushItemCache',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/cache/item/flush'
-                }
-            },
-            flushItemKeys: {
-                secured: true,
-                key: '/cache/item/flush',
-                method: 'POST',
-                controller: 'DefaultCacheController',
-                operation: 'flushItemCache',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/cache/item/flush'
-                }
-            }
-        },
-
-        updateAPICacheConfig: {
+        updateRouterCacheConfig: {
             apiConfig: {
                 secured: true,
                 key: '/cache/api',
                 method: 'POST',
                 controller: 'DefaultCacheController',
-                operation: 'updateApiCacheConfiguration',
+                operation: 'updateRouterCacheConfiguration',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -446,13 +391,13 @@ module.exports = {
             },
         },
 
-        updateItemCacheConfig: {
+        updateSchemaCacheConfig: {
             itemConfig: {
                 secured: true,
                 key: '/cache/item',
                 method: 'POST',
                 controller: 'DefaultCacheController',
-                operation: 'updateItemCacheConfiguration',
+                operation: 'updateSchemaCacheConfiguration',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',

@@ -459,6 +459,7 @@ module.exports = function () {
     };
 
     this.addRouter = function (prefix, router, moduleName) {
+        //profile_enterprise_get - router name  - profile_iamlive
         let moduleObject = this.getModule(moduleName);
         if (UTILS.isBlank(moduleObject)) {
             throw new Error('Invalid module name: ' + moduleName);

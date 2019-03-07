@@ -138,7 +138,7 @@ module.exports = {
                 if (schema.model === true && (!schema.tenants || schema.tenants.includes(options.tntCode))) {
                     conOptions = options.dataBase.master.getOptions();
                     SERVICE[conOptions.modelHandler].prepareDatabaseOptions(options).then(success => {
-                        options.cache = _.merge(_.merge({}, schema.cache || {}), SERVICE.DefaultCacheConfigurationService.getSchemaCacheOptions(options.schemaName) || {});
+                        options.cache = _.merge({}, schema.cache || {});
                         options.channel = 'master';
                         SERVICE[conOptions.modelHandler].retrieveModel(options, options.dataBase.master).then(collection => {
                             _self.registerModelMiddleWare(options, collection, schema);

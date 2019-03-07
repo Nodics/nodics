@@ -93,7 +93,7 @@ module.exports = {
             this.LOG.debug('Model cache lookup for key: ', request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
                 moduleName: request.moduleName || request.collection.moduleName,
-                channelName: 'schema',
+                channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.collection.schemaName),
                 key: request.cacheKeyHash
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
@@ -226,7 +226,7 @@ module.exports = {
         if (UTILS.isItemCashable(response.success.result, request.collection)) {
             SERVICE.DefaultCacheService.put({
                 moduleName: request.moduleName || request.collection.moduleName,
-                channelName: 'schema',
+                channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.collection.schemaName),
                 key: request.cacheKeyHash,
                 value: response.success.result,
                 ttl: request.collection.cache.ttl

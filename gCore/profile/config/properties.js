@@ -38,24 +38,6 @@ module.exports = {
                     }
                 },
             }
-        },
-        schemaLevelCache: {
-            enterprise: {
-                enabled: true,
-                ttl: 10
-            }
-        },
-        routerLevelCache: {
-            address: {
-                get: {
-                    enabled: true,
-                    ttl: 10
-                },
-                post: {
-                    enabled: true,
-                    ttl: 10
-                }
-            }
         }
     }
 };

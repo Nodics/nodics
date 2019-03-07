@@ -143,7 +143,7 @@ module.exports = {
             if (request.router.cache && request.router.cache.enabled) {
                 SERVICE.DefaultCacheService.get({
                     moduleName: request.moduleName,
-                    channelName: 'router',
+                    channelName: SERVICE.DefaultCacheService.getRouterCacheChannel(request.router.routerName),
                     key: request.apiCacheKeyHash,
                     ttl: request.router.cache.ttl
                 }).then(value => {
@@ -184,7 +184,7 @@ module.exports = {
                     if (UTILS.isApiCashable(response.success.result, request.router)) {
                         SERVICE.DefaultCacheService.put({
                             moduleName: request.moduleName,
-                            channelName: 'router',
+                            channelName: SERVICE.DefaultCacheService.getRouterCacheChannel(request.router.routerName),
                             key: request.apiCacheKeyHash,
                             value: response.success.result,
                             ttl: request.router.cache ? request.router.cache.ttl : undefined

@@ -140,7 +140,7 @@ module.exports = {
                                 definition.prefix = schemaName + '_' + routerName;
                                 definition.routerName = moduleName + '_' + schemaName + '_' + routerName;
                                 definition.routerName = definition.routerName.toLowerCase();
-                                definition.cache = definition.cache || {};
+                                definition.cache = _.merge({}, definition.cache || {});
                                 let routerLevelCache = CONFIG.get('cache').routerLevelCache;
                                 if (routerLevelCache &&
                                     routerLevelCache[schemaName] &&

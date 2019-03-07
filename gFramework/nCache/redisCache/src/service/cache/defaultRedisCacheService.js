@@ -101,7 +101,7 @@ module.exports = {
         });
     },
 
-    flushCache: function (options) {
+    flushByPrefix: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -153,7 +153,7 @@ module.exports = {
         });
     },
 
-    flushCacheKeys: function (options) {
+    flushByKeys: function (options) {
         return new Promise((resolve, reject) => {
             try {
                 let _self = this;
