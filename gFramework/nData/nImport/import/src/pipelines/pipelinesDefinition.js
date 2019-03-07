@@ -311,6 +311,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultModelImportProcessService.validateRequest',
+                success: 'resolveEnterpriseCode'
+            },
+            resolveEnterpriseCode: {
+                type: 'function',
+                handler: 'DefaultModelImportProcessService.resolveEnterpriseCode',
                 success: 'populateSchemaDependancies'
             },
             populateSchemaDependancies: {

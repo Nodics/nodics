@@ -81,6 +81,35 @@ module.exports = {
                     httpsPort: 3001
                 }
             }
+        },
+
+        nems: {
+            options: {
+                contextRoot: 'nodics'
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3004,
+
+                httpsHost: 'localhost',
+                httpsPort: 3005
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3004,
+
+                httpsHost: 'localhost',
+                httpsPort: 3005
+            },//Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3004,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3005
+                }
+            }
         }
     }
 };

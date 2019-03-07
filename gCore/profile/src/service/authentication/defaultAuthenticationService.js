@@ -169,7 +169,6 @@ module.exports = {
                     }
                 });
                 if (authTokens.length > 0) {
-                    console.log('====== >>>> ', authTokens);
                     SERVICE.DefaultCacheService.flushCacheKeys({
                         moduleName: CONFIG.get('profileModuleName'),
                         channelName: 'auth',

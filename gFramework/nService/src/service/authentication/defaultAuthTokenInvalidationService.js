@@ -33,6 +33,7 @@ module.exports = {
     },
 
     publishTokenExpiredEvent: function (key, value, options) {
+        key = key.substring(key.lastIndexOf('_') + 1, key.length);
         this.LOG.debug('======================Auth token key has been expired: ' + key);
         /*let _self = this;
         let event = {
@@ -59,7 +60,7 @@ module.exports = {
     },
 
     publishTokenDeletedEvent: function (key, value, options) {
-        key = key.substring(key.lastIndexOf('_'), key.length);
+        key = key.substring(key.lastIndexOf('_') + 1, key.length);
         this.LOG.debug('======================1Auth token key has been deleted: ' + key);
     },
 

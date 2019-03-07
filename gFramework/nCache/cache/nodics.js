@@ -28,16 +28,17 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultCacheConfigurationService.loadCacheConfiguration().then(success => {
-                SERVICE.DefaultCacheEngineService.buildCacheEngines().then(success => {
-                    //console.log(SERVICE.DefaultCacheEngineService.getCacheEngine('profile', 'auth'));
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
+            SERVICE.DefaultCacheEngineService.buildCacheEngines().then(success => {
+                //console.log(SERVICE.DefaultCacheEngineService.getCacheEngine('profile', 'auth'));
+                resolve(true);
             }).catch(error => {
                 reject(error);
             });
+            // SERVICE.DefaultCacheConfigurationService.loadCacheConfiguration().then(success => {
+
+            // }).catch(error => {
+            //     reject(error);
+            // });
         });
     },
 };

@@ -32,6 +32,8 @@ module.exports = {
             SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection().then(() => {
                 return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema();
             }).then(() => {
+                return SERVICE.DefaultCacheConfigurationService.loadCacheConfiguration();
+            }).then(() => {
                 NODICS.addTenant('default');
                 return SERVICE.DefaultDatabaseModelHandlerService.buildModelsForTenant();
             }).then(() => {

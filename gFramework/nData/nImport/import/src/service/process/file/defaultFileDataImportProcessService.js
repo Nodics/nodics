@@ -119,6 +119,7 @@ module.exports = {
                     if (!fileObj.processed.includes(modelHash)) {
                         SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
                             tenant: options.tenant,
+                            enterpriseCode: request.enterpriseCode,
                             dataFiles: request.dataFiles,
                             fileName: request.fileName,
                             fileData: request.fileData,

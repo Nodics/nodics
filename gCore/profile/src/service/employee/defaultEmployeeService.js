@@ -42,13 +42,14 @@ module.exports = {
             this.get({
                 tenant: request.tenant,
                 query: {
-                    apiKey: request.apiKey
+                    apiKey: request.apiKey,
                 }
             }).then(employees => {
                 if (employees.result.length !== 1) {
                     reject({
                         success: false,
-                        code: 'ERR_LIN_00000'
+                        code: 'ERR_LIN_00000',
+                        msg: 'Multiple employees can not hold same apiKey'
                     });
                 } else {
                     resolve(employees.result[0]);

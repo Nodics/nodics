@@ -52,6 +52,7 @@ module.exports = {
                 }
             }
         },
+
         profile: {
             options: {
                 contextRoot: 'nodics'
@@ -79,36 +80,35 @@ module.exports = {
                     httpsPort: 3001
                 }
             }
-        }
+        },
 
-        /*storefront: {
+        nems: {
             options: {
                 contextRoot: 'nodics'
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3022,
+                httpPort: 3004,
 
                 httpsHost: 'localhost',
-                httpsPort: 3023
+                httpsPort: 3005
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3022,
+                httpPort: 3004,
 
                 httpsHost: 'localhost',
-                httpsPort: 3023
-            },
-            //Clusters information is optional and will be managed for Backoffice application
+                httpsPort: 3005
+            },//Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',
-                httpPort: 3022,
+                    httpPort: 3004,
 
-                httpsHost: 'localhost',
-                httpsPort: 3023
+                    httpsHost: 'localhost',
+                    httpsPort: 3005
                 }
             }
-        }*/
+        }
     }
 };

@@ -47,6 +47,13 @@ module.exports = {
         }
     },
 
+    resolveEnterpriseCode: function (request, response, process) {
+        if (request.dataModel.enterpriseCode && request.enterpriseCode && request.dataModel.enterpriseCode !== request.enterpriseCode) {
+            request.dataModel.enterpriseCode = request.enterpriseCode;
+        }
+        process.nextSuccess(request, response);
+    },
+
     populateSchemaDependancies: function (request, response, process) {
         this.LOG.debug('Populating all schema dependancies');
         let header = request.fileData.header;

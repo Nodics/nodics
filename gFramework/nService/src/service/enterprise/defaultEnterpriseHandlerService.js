@@ -183,6 +183,7 @@ module.exports = {
                                             }).then(success => {
                                                 SERVICE.DefaultImportService.processImportData({
                                                     tenant: enterprise.tenant.code,
+                                                    enterpriseCode: enterprise.code,
                                                     inputPath: {
                                                         rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
                                                         dataType: 'init'
@@ -237,7 +238,7 @@ module.exports = {
                                         reject(error);
                                     });
                                 } else {
-                                    _self.fetchAPIKey(enterprise.tenant.code).then(success => {
+                                    SERVICE.DefaultAPIKeyService.fetchAPIKey(enterprise.tenant.code).then(success => {
                                         NODICS.addAPIKey(enterprise.tenant.code, success.result, {});
                                         _self.buildEnterprise(enterprises).then(success => {
                                             resolve(true);

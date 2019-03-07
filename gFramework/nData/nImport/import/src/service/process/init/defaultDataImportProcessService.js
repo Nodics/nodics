@@ -10,6 +10,7 @@
  */
 
 const util = require('util');
+const clearRequire = require('clear-require');
 
 module.exports = {
     /**
@@ -118,8 +119,10 @@ module.exports = {
                         if (!fileObj.done || fileObj.done === false) {
                             _self.LOG.debug('Processing file: ' + fileObj.file.replace(NODICS.getNodicsHome(), '.') + ' on phase: ' + options.phase + 1);
                             let fileData = require(fileObj.file);
+                            clearRequire(fileObj.file);
                             SERVICE.DefaultPipelineService.start('processFileDataImportPipeline', {
                                 tenant: request.tenant,
+                                enterpriseCode: request.enterpriseCode,
                                 dataFiles: request.dataFiles,
                                 phase: options.phase,
                                 phaseLimit: options.phaseLimit,

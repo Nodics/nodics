@@ -88,8 +88,8 @@ module.exports = {
                     this.channels[moduleName] = _.merge(_.merge({}, defaultChannels), moduleChannels || {});
                     this.engines[moduleName] = _.merge(_.merge({}, defaultEngines), moduleEngines || {});
                 }
-                this.schemaLevelCache = CONFIG.get('cache').schemaLevelCache;
-                this.routerLevelCache = CONFIG.get('cache').routerLevelCache;
+                this.schemaLevelCache = CONFIG.get('cache').schemaLevelCache || {};
+                this.routerLevelCache = CONFIG.get('cache').routerLevelCache || {};
                 resolve(true);
             } catch (error) {
                 reject(error);
