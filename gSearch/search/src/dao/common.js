@@ -34,9 +34,9 @@ module.exports = {
 
     getSearchModel: function (request) {
         request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        let moduleName = collection ? collection.moduleName : request.moduleName;
-        let tenant = collection ? collection.tenant : request.tenant;
-        let typeName = collection ? collection.typeName : request.typeName;
+        let moduleName = request.collection ? request.collection.moduleName : request.moduleName;
+        let tenant = request.collection ? request.collection.tenant : request.tenant;
+        let typeName = request.collection ? request.collection.typeName : request.typeName;
         if (!moduleName || !tenant || !typeName) {
             throw new Error('Invalid request or search is not active for this type');
         } else {
@@ -324,12 +324,12 @@ module.exports = {
         });
     },
 
-    doRemoveType: function (request) {
+    doRemoveIndex: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 request.searchModel = _self.getSearchModel(request);
-                request.searchModel.doRemoveType(request).then(success => {
+                request.searchModel.doRemoveIndex(request).then(success => {
                     resolve({
                         success: true,
                         code: '',
@@ -350,61 +350,5 @@ module.exports = {
                 });
             }
         });
-    },
-    /*
-        fullIndex: function (request) {
-            let _self = this;
-            return new Promise((resolve, reject) => {
-                try {
-                    request.searchModel = _self.getSearchModel(request);
-                    request.searchModel.removeType(request).then(success => {
-                        resolve({
-                            success: true,
-                            code: '',
-                            result: success
-                        });
-                    }).catch(error => {
-                        reject({
-                            success: false,
-                            code: '',
-                            error: error
-                        });
-                    });
-                } catch (error) {
-                    reject({
-                        success: false,
-                        code: '',
-                        error: error
-                    });
-                }
-            });
-        },
-    
-        incrementalIndex: function (request) {
-            let _self = this;
-            return new Promise((resolve, reject) => {
-                try {
-                    request.searchModel = _self.getSearchModel(request);
-                    request.searchModel.removeType(request).then(success => {
-                        resolve({
-                            success: true,
-                            code: '',
-                            result: success
-                        });
-                    }).catch(error => {
-                        reject({
-                            success: false,
-                            code: '',
-                            error: error
-                        });
-                    });
-                } catch (error) {
-                    reject({
-                        success: false,
-                        code: '',
-                        error: error
-                    });
-                }
-            });
-        }*/
+    }
 };

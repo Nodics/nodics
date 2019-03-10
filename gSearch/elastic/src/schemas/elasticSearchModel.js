@@ -334,13 +334,13 @@ module.exports = {
         },
 
         defineDefaultRemoveType: function (searchModel) { //Required pipeline to process this request
-            searchModel.doRemoveType = function (input) {
+            searchModel.doRemoveIndex = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
                         let deleteQuery = _.merge(_self.searchEngine.getOptions().removeTypeOptions || {},
                             _.merge(input.options || {}, {
-                                type: _self.typeDef.typeName,
+                                index: _self.typeDef.indexName
                             })
                         );
                         _self.searchEngine.getConnection().indices.delete(deleteQuery, function (error, response) {

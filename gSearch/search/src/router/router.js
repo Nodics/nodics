@@ -329,15 +329,15 @@ module.exports = {
 
             doGetRemoveType: {
                 secured: true,
-                key: '/schemaName/search/type',
+                key: '/schemaName/search/index',
                 method: 'DELETE',
                 controller: 'DefaultctrlName',
-                operation: 'doRemoveType',
+                operation: 'doRemoveIndex',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'DELETE',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/type',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/index',
                     body: {
                         options: '{ object of options required for this option }'
                     }

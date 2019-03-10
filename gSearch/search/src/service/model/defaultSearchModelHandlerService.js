@@ -123,7 +123,8 @@ module.exports = {
                                 searchEngine: searchEngine,
                                 indexName: typeDef.indexName,
                                 typeName: typeName,
-                                typeDef: typeDef
+                                typeDef: typeDef,
+                                LOG: SERVICE.DefaultLoggerService.createLogger(searchModelName)
                             };
                             _self.registerSearchModels(rawSearchModelDef.default, searchModel);
                             _self.registerSearchModels(rawSearchModelDef[moduleName], searchModel);

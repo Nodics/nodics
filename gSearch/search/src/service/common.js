@@ -72,7 +72,7 @@ module.exports = {
         return DAO.DaoName.doUpdateMapping(request);
     },
 
-    doRemoveType: function (request) {
-        return DAO.DaoName.doRemoveType(request);
+    doRemoveIndex: function (request) {
+        return DAO.DaoName.doRemoveIndex(request);
     }
 };

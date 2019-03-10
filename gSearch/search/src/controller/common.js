@@ -297,18 +297,18 @@ module.exports = {
      * @param {request} request is used to carry request parameters sent by consumer
      * @param {callback} callback is a function, called after fullfilling business requirement 
      */
-    doRemoveType: function (request, callback) {
+    doRemoveIndex: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
-            FACADE.dsdName.doRemoveType(request).then(success => {
+            FACADE.dsdName.doRemoveIndex(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.doRemoveType(request);
+            return FACADE.dsdName.doRemoveIndex(request);
         }
     }
 };

@@ -72,7 +72,7 @@ module.exports = {
         return SERVICE.srvcName.doUpdateMapping(request);
     },
 
-    doRemoveType: function (request) {
-        return SERVICE.srvcName.doRemoveType(request);
+    doRemoveIndex: function (request) {
+        return SERVICE.srvcName.doRemoveIndex(request);
     }
 };
