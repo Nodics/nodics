@@ -115,29 +115,30 @@ module.exports = {
                         let indexTypes = Object.keys(moduleTenantSearchRawSchema);
                         for (let count = 0; count < indexTypes.length; count++) {
                             let typeName = indexTypes[count];
-                            let indexDef = moduleTenantSearchRawSchema[typeName];
+                            let typeDef = moduleTenantSearchRawSchema[typeName];
                             let searchModelName = typeName.toUpperCaseFirstChar() + 'SearchModel';
                             let searchModel = {
                                 moduleName: moduleName,
                                 tntCode: tntCode,
                                 searchEngine: searchEngine,
+                                indexName: typeDef.indexName,
                                 typeName: typeName,
-                                indexDef: indexDef
+                                typeDef: typeDef
                             };
                             _self.registerSearchModels(rawSearchModelDef.default, searchModel);
                             _self.registerSearchModels(rawSearchModelDef[moduleName], searchModel);
                             _self.registerSearchModels(rawSearchModelDef[typeName], searchModel);
                             moduleObject.searchModels[tntCode][searchModelName] = searchModel;
-                            if (indexDef.schemaName) {
-                                let collection = NODICS.getModels(moduleName, tntCode)[indexDef.schemaName.toUpperCaseFirstChar() + 'Model'];
+                            if (typeDef.schemaName) {
+                                let collection = NODICS.getModels(moduleName, tntCode)[typeDef.schemaName.toUpperCaseFirstChar() + 'Model'];
                                 if (collection) {
                                     collection.searchModelName = searchModelName;
                                     collection.typeName = typeName;
                                 }
                             }
 
-                            if (!indexList.includes(indexDef.indexName) && !searchEngine.isActiveIndex(indexDef.indexName)) {
-                                indexList.push(_self.createIndex(searchEngine, indexDef.indexName));
+                            if (!indexList.includes(typeDef.indexName) && !searchEngine.isActiveIndex(typeDef.indexName)) {
+                                indexList.push(_self.createIndex(searchEngine, typeDef.indexName));
                             }
                         }
                         if (indexList.length > 0) {
@@ -234,10 +235,10 @@ module.exports = {
                     }
                     let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(moduleName, tntCode);
                     if (searchEngine && searchEngine.getOptions() && searchEngine.getOptions().enabled) {
-                        let moduleTenantSearchRawSchema = SERVICE.DefaultSearchConfigurationService.getRawSearchSchema(moduleName, tntCode);
-                        if (moduleTenantSearchRawSchema && !UTILS.isBlank(moduleTenantSearchRawSchema)) {
+                        let searchModels = NODICS.getSearchModels(moduleName, tntCode);
+                        if (searchModels && !UTILS.isBlank(searchModels)) {
                             _self.updateIndexTypeMapping({
-                                typeNames: Object.keys(moduleTenantSearchRawSchema),
+                                searchModelsName: Object.keys(searchModels),
                                 moduleName: moduleName,
                                 tntCode: tntCode,
                                 searchEngine: searchEngine
@@ -254,7 +255,7 @@ module.exports = {
                             resolve(true);
                         }
                     } else {
-                        //_self.LOG.warn('Search is not enabled for module: ' + moduleName + ', tenant: ' + tntCode);
+                        _self.LOG.warn('Search is not enabled for module: ' + moduleName + ', tenant: ' + tntCode);
                         resolve(true);
                     }
                 } else {
@@ -272,29 +273,42 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                if (options.typeNames && options.typeNames.length > 0) {
-                    let typeName = options.typeNames.shift();
-                    let searchModelName = typeName.toUpperCaseFirstChar() + 'SearchModel';
-                    searchModel = NODICS.getSearchModels(options.moduleName, options.tntCode)[searchModelName];
-                    let moduleTenantSearchRawSchema = SERVICE.DefaultSearchConfigurationService.getRawSearchSchema(options.moduleName, options.tntCode);
+                if (options.searchModelsName && options.searchModelsName.length > 0) {
+                    let searchModelName = options.searchModelsName.shift();
+                    let searchModel = NODICS.getSearchModels(options.moduleName, options.tntCode)[searchModelName];
                     if (searchModel) {
+                        let typeDef = searchModel.typeDef;
+                        let indexName = searchModel.indexName;
+                        let typeName = searchModel.typeName;
                         if (SERVICE[options.searchEngine.getOptions().schemaHandler].prepareTypeSchema) {
-                            SERVICE[options.searchEngine.getOptions().schemaHandler].prepareTypeSchema(typeName, moduleTenantSearchRawSchema[typeName]).then(schemaDef => {
+                            SERVICE[options.searchEngine.getOptions().schemaHandler].prepareTypeSchema({
+                                typeName: typeName,
+                                typeDef: typeDef
+                            }).then(schemaDef => {
                                 if (schemaDef && !UTILS.isBlank(schemaDef)) {
-                                    searchModel.updateMapping({
-                                        query: {
-                                            indexName: '',
-                                            typeName: '',
-                                            body: schemaDef
-                                        }
+                                    searchModel.doUpdateMapping({
+                                        searchSchema: schemaDef
                                     }).then(success => {
-                                        resolve(true);
+                                        // searchModel.doGetMapping({}).then(success => {
+                                        //     console.log('Got Mapping: ', success);
+                                        // }).catch(error => {
+                                        //     console.log(error);
+                                        // });
+                                        _self.updateIndexTypeMapping(options).then(success => {
+                                            resolve(true);
+                                        }).catch(error => {
+                                            reject(error);
+                                        });
                                     }).catch(error => {
                                         reject(error);
                                     });
                                 } else {
                                     _self.LOG.warn('Got blank schema definition to update mapping for typeName: ' + typeName);
-                                    resolve(true);
+                                    _self.updateIndexTypeMapping(options).then(success => {
+                                        resolve(true);
+                                    }).catch(error => {
+                                        reject(error);
+                                    });
                                 }
                             }).catch(error => {
                                 reject(error);

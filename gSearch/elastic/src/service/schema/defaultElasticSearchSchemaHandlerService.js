@@ -59,7 +59,7 @@ module.exports = {
                             let propName = options.searchOptions.name || name;
                             searchSchema.properties[propName] = options.searchOptions;
                             searchSchema.properties[propName].name = searchSchema.properties[propName].name || name;
-                            searchSchema.properties[propName].type = searchSchema.properties[propName].type || 'string';
+                            searchSchema.properties[propName].type = searchSchema.properties[propName].type || 'text';
                             searchSchema.properties[propName].index = searchSchema.properties[propName].index || 'not_analyzed';
                             searchSchema.properties[propName].weight = searchSchema.properties[propName].weight || searchConfig.defaultPropertyWeight;
                             searchSchema.properties[propName].sequence = searchSchema.properties[propName].sequence || searchConfig.defaultPropertySequence;
@@ -118,7 +118,7 @@ module.exports = {
             Object.keys(source.properties).forEach(propName => {
                 source.properties[propName].enabled = source.properties[propName].enabled || false;
                 source.properties[propName].name = source.properties[propName].name || propName;
-                source.properties[propName].type = source.properties[propName].type || 'string';
+                source.properties[propName].type = source.properties[propName].type || 'text';
                 source.properties[propName].index = source.properties[propName].index || 'not_analyzed';
                 source.properties[propName].weight = source.properties[propName].weight || searchConfig.defaultPropertyWeight;;
                 source.properties[propName].sequence = source.properties[propName].sequence || searchConfig.defaultPropertySequence;;
@@ -129,7 +129,20 @@ module.exports = {
 
     prepareTypeSchema: function (options) {
         return new Promise((resolve, reject) => {
-            resolve({});
+            let schemaDef = {
+                properties: {}
+            };
+            let properties = Object.keys(options.typeDef.properties);
+            if (options.typeDef.properties && properties.length > 0) {
+                for (let count = 0; count < properties.length; count++) {
+                    let propName = properties[count];
+                    let propObj = options.typeDef.properties[propName];
+                    schemaDef.properties[propName] = {
+                        type: propObj.type || 'text'
+                    };
+                }
+            }
+            resolve(schemaDef);
         });
     }
 };

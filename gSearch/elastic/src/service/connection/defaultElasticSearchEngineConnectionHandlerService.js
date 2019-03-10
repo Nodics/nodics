@@ -32,7 +32,7 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            //_self.loadRawSearchModelDefinition();
+            this.loadRawSearchModelDefinition();
             resolve(true);
         });
     },

@@ -18,7 +18,7 @@ module.exports = {
         - tntCode: tntCode,
         - searchEngine: searchEngine,
         - typeName: typeName,
-        - indexDef: indexDef
+        - typeDef: typeDef
     */
     default: {
 
@@ -29,7 +29,7 @@ module.exports = {
                     try {
                         try {
                             let indexQuery = _.merge(_self.searchEngine.getOptions().refreshOptions || {}, {
-                                index: _self.indexDef.indexName,
+                                index: _self.typeDef.indexName,
                                 body: input.refreshOptions || {}
                             });
                             _self.LOG.debug('Executing refresh command with options: ');
@@ -59,8 +59,8 @@ module.exports = {
                     try {
                         //Get configured options, merge input options on top of that
                         let indexQuery = _.merge(_self.searchEngine.getOptions().existsOptions || {}, _.merge(input.options || {}, {
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
+                            index: _self.typeDef.indexName,
+                            type: _self.typeDef.typeName,
                             id: input.query.id
                         }));
                         _self.LOG.debug('Executing health command with options');
@@ -87,7 +87,7 @@ module.exports = {
                     try {
                         //Get configured options, merge input options on top of that
                         let indexQuery = _.merge(_self.searchEngine.getOptions().healthOptions || {}, _.merge(input.options || {}, {
-                            index: _self.indexDef.indexName
+                            index: _self.typeDef.indexName
                         }));
                         _self.LOG.debug('Executing health command with options');
                         _self.LOG.debug(indexQuery);
@@ -112,9 +112,9 @@ module.exports = {
                     try {
                         try {
                             let putQuery = _.merge(_self.searchEngine.getOptions().saveOptions || {}, _.merge(input.options || {}, {
-                                index: _self.indexDef.indexName,
-                                type: _self.indexDef.typeName,
-                                id: input.model[_self.indexDef.idPropertyName],
+                                index: _self.typeDef.indexName,
+                                type: _self.typeDef.typeName,
+                                id: input.model[_self.typeDef.idPropertyName],
                                 body: input.model
                             }));
                             _self.LOG.debug('Executing save command with options');
@@ -173,8 +173,8 @@ module.exports = {
                     try {
                         let searchQuery = _.merge(_self.searchEngine.getOptions().getOptions || {},
                             _.merge(input.query || {}, {
-                                index: _self.indexDef.indexName,
-                                type: _self.indexDef.typeName,
+                                index: _self.typeDef.indexName,
+                                type: _self.typeDef.typeName,
                                 id: input.query.id
                             })
                         );
@@ -200,10 +200,10 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchQuery = _.merge(_self.searchEngine.searchOptions().searchOptions || {},
+                        let searchQuery = _.merge(_self.searchEngine.getOptions().searchOptions || {},
                             _.merge(input.options || {}, {
-                                index: _self.indexDef.indexName,
-                                type: _self.indexDef.typeName
+                                index: _self.typeDef.indexName,
+                                type: _self.typeDef.typeName
                             })
                         );
                         searchQuery.body = input.query || {};
@@ -229,10 +229,10 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let removeQuery = _.merge(_self.searchEngine.searchOptions().removeOptions || {},
+                        let removeQuery = _.merge(_self.searchEngine.getOptions().removeOptions || {},
                             _.merge(input.options || {}, {
-                                index: _self.indexDef.indexName,
-                                type: _self.indexDef.typeName,
+                                index: _self.typeDef.indexName,
+                                type: _self.typeDef.typeName,
                                 id: input.query.id
                             })
                         );
@@ -257,10 +257,10 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let removeQuery = _.merge(_self.searchEngine.searchOptions().removeOptions || {},
+                        let removeQuery = _.merge(_self.searchEngine.getOptions().removeOptions || {},
                             _.merge(input.options || {}, {
-                                index: _self.indexDef.indexName,
-                                type: _self.indexDef.typeName,
+                                index: _self.typeDef.indexName,
+                                type: _self.typeDef.typeName,
                                 body: {
                                     query: input.query
                                 }
@@ -287,10 +287,10 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let mappingQuery = _.merge(_self.searchEngine.searchOptions().mappingGetOptions || {},
+                        let mappingQuery = _.merge(_self.searchEngine.getOptions().mappingGetOptions || {},
                             _.merge(input.options || {}, {
-                                index: _self.indexDef.indexName,
-                                type: _self.indexDef.typeName,
+                                index: _self.typeDef.indexName,
+                                type: _self.typeDef.typeName,
                             })
                         );
                         _self.searchEngine.getConnection().indices.getMapping(mappingQuery, function (error, response) {
@@ -312,10 +312,10 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let mappingQuery = _.merge(_self.searchEngine.searchOptions().mappingPutOptions || {},
+                        let mappingQuery = _.merge(_self.searchEngine.getOptions().mappingPutOptions || {},
                             _.merge(input.options || {}, {
-                                index: _self.indexDef.indexName,
-                                type: _self.indexDef.typeName,
+                                index: _self.typeDef.indexName,
+                                type: _self.typeDef.typeName,
                                 body: input.searchSchema
                             })
                         );
@@ -338,9 +338,9 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let deleteQuery = _.merge(_self.searchEngine.searchOptions().removeTypeOptions || {},
+                        let deleteQuery = _.merge(_self.searchEngine.getOptions().removeTypeOptions || {},
                             _.merge(input.options || {}, {
-                                type: _self.indexDef.typeName,
+                                type: _self.typeDef.typeName,
                             })
                         );
                         _self.searchEngine.getConnection().indices.delete(deleteQuery, function (error, response) {
