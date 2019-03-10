@@ -70,12 +70,12 @@ module.exports = {
                 handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
             },
 
-            /*updateAPIKey: {
+            updateAPIKey: {
                 type: 'preUpdate',
                 active: 'true',
                 index: 0,
                 handler: 'DefaultAPIKeyInterceptorService.generateAPIKey'
-            },*/
+            },
 
             employeePreUpdate: {
                 type: 'preUpdate',

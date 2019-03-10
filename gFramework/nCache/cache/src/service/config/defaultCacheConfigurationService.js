@@ -80,6 +80,21 @@ module.exports = {
         });
     },
 
+    updateModels: function () {
+        return new Promise((resolve, reject) => {
+            try {
+                let modules = Object.keys(NODICS.getModules());
+                for (var count = 0; count < modules.length; count++) {
+                    let moduleName = modules[count];
+                    let moduleObject = NODICS.getModule(moduleName);
+                }
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
     createApiKey: function (request) {
         let key = request.originalUrl;
         let method = request.method;

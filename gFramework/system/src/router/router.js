@@ -104,9 +104,6 @@ module.exports = {
             },
         },
 
-
-        /* ------------------------------- */
-
         updateAPIKey: {
             apiKey: {
                 secured: true,
@@ -125,6 +122,8 @@ module.exports = {
                 }
             }
         },
+
+        /* ------------------------------- */
         testRunner: {
             runAllUTest: {
                 secured: true,
