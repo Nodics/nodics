@@ -40,9 +40,38 @@ module.exports = {
         if (!moduleName || !tenant || !typeName) {
             throw new Error('Invalid request or search is not active for this type');
         } else {
-            return NODICS.getSearchModel(moduleName, tenant)[typeName];
+            return NODICS.getSearchModel(moduleName, tenant, typeName);
         }
     },
+
+    doRefresh: function (request) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                request.searchModel = _self.getSearchModel(request);
+                request.searchModel.doRefresh(request).then(success => {
+                    resolve({
+                        success: true,
+                        code: 'SUC_SRCH_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject({
+                        success: false,
+                        code: 'ERR_SRCH_00000',
+                        error: error
+                    });
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error
+                });
+            }
+        });
+    },
+
 
     doExists: function (request) {
         let _self = this;
@@ -52,20 +81,20 @@ module.exports = {
                 request.searchModel.doExists(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
             } catch (error) {
                 reject({
                     success: false,
-                    code: '',
+                    code: 'ERR_SRCH_00000',
                     error: error
                 });
             }
@@ -80,20 +109,20 @@ module.exports = {
                 request.searchModel.doCheckHealth(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
             } catch (error) {
                 reject({
                     success: false,
-                    code: '',
+                    code: 'ERR_SRCH_00000',
                     error: error
                 });
             }
@@ -108,13 +137,13 @@ module.exports = {
                 request.searchModel.doIndex(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
@@ -136,20 +165,20 @@ module.exports = {
                 request.searchModel.doGet(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
             } catch (error) {
                 reject({
                     success: false,
-                    code: '',
+                    code: 'ERR_SRCH_00000',
                     error: error
                 });
             }
@@ -164,20 +193,20 @@ module.exports = {
                 request.searchModel.doSearch(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
             } catch (error) {
                 reject({
                     success: false,
-                    code: '',
+                    code: 'ERR_SRCH_00000',
                     error: error
                 });
             }
@@ -192,20 +221,20 @@ module.exports = {
                 request.searchModel.doSave(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
             } catch (error) {
                 reject({
                     success: false,
-                    code: '',
+                    code: 'ERR_SRCH_00000',
                     error: error
                 });
             }
@@ -220,20 +249,20 @@ module.exports = {
                 request.searchModel.doRemove(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
             } catch (error) {
                 reject({
                     success: false,
-                    code: '',
+                    code: 'ERR_SRCH_00000',
                     error: error
                 });
             }
@@ -248,20 +277,20 @@ module.exports = {
                 request.searchModel.doRemoveByQuery(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
             } catch (error) {
                 reject({
                     success: false,
-                    code: '',
+                    code: 'ERR_SRCH_00000',
                     error: error
                 });
             }
@@ -276,20 +305,20 @@ module.exports = {
                 request.searchModel.doGetMapping(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
             } catch (error) {
                 reject({
                     success: false,
-                    code: '',
+                    code: 'ERR_SRCH_00000',
                     error: error
                 });
             }
@@ -304,20 +333,20 @@ module.exports = {
                 request.searchModel.doUpdateMapping(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
             } catch (error) {
                 reject({
                     success: false,
-                    code: '',
+                    code: 'ERR_SRCH_00000',
                     error: error
                 });
             }
@@ -332,20 +361,20 @@ module.exports = {
                 request.searchModel.doRemoveIndex(request).then(success => {
                     resolve({
                         success: true,
-                        code: '',
+                        code: 'SUC_SRCH_00000',
                         result: success
                     });
                 }).catch(error => {
                     reject({
                         success: false,
-                        code: '',
+                        code: 'ERR_SRCH_00000',
                         error: error
                     });
                 });
             } catch (error) {
                 reject({
                     success: false,
-                    code: '',
+                    code: 'ERR_SRCH_00000',
                     error: error
                 });
             }

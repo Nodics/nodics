@@ -157,8 +157,8 @@ module.exports = {
             tenants: ['default'], // if not null, only tenant will be used
             search: {
                 enabled: true,
-                indexName: 'enterprise', // if null, moduleName will be taken
-                typeName: 'enterprise', // if null, schemaName will be taken
+                //indexName: 'enterprise', // if null, moduleName will be taken
+                //typeName: 'enterprise', // if null, schemaName will be taken
                 idPropertyName: 'code', // if null, code will be taken
             },
             refSchema: {

@@ -54,7 +54,7 @@ module.exports = {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.doCheckHealth(request);
+            return FACADE.dsdName.doRefresh(request);
         }
     },
 
@@ -110,21 +110,15 @@ module.exports = {
     doSave: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;
-        request = _.merge(request, request.httpRequest.body || {});
-        if (request.httpRequest.body &&
-            request.httpRequest.body.models &&
-            request.httpRequest.body.models.length > 1) {
-            if (callback) {
-                FACADE.dsdName.doSave(request).then(success => {
-                    callback(null, success);
-                }).catch(error => {
-                    callback(error);
-                });
-            } else {
-                return FACADE.dsdName.doSave(request);
-            }
+        request.model = request.httpRequest.body;
+        if (callback) {
+            FACADE.dsdName.doSave(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
         } else {
-
+            return FACADE.dsdName.doSave(request);
         }
     },
 
@@ -192,7 +186,7 @@ module.exports = {
         if (request.httpRequest.params.id) {
             request.query = {
                 match: {
-                    id: request.httpRequest.params.id
+                    _id: request.httpRequest.params.id
                 }
             };
         }

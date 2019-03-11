@@ -32,6 +32,10 @@ module.exports = {
         });
     },
 
+    doRefresh: function (request) {
+        return SERVICE.srvcName.doRefresh(request);
+    },
+
     doExists: function (request) {
         return SERVICE.srvcName.doExists(request);
     },

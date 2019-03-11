@@ -32,6 +32,10 @@ module.exports = {
         });
     },
 
+    doRefresh: function (request) {
+        return DAO.DaoName.doRefresh(request);
+    },
+
     doExists: function (request) {
         return DAO.DaoName.doExists(request);
     },

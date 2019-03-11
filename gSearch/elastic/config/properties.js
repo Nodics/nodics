@@ -20,7 +20,7 @@ module.exports = {
                     incrementalIndexDataQuery: {},
 
                     existsOptions: {
-                        level: 'indices'
+                        //level: 'indices'
                     },
 
                     healthOptions: {

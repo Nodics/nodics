@@ -28,13 +28,13 @@ module.exports = {
                 return new Promise((resolve, reject) => {
                     try {
                         try {
-                            let indexQuery = _.merge(_self.searchEngine.getOptions().refreshOptions || {}, {
+                            let refreshQuery = _.merge(_.merge({}, _self.searchEngine.getOptions().refreshOptions || {}), {
                                 index: _self.typeDef.indexName,
                                 body: input.refreshOptions || {}
                             });
                             _self.LOG.debug('Executing refresh command with options: ');
-                            _self.LOG.debug(indexDetail);
-                            _self.searchEngine.getConnection().indices.refresh(indexQuery, function (error, response) {
+                            _self.LOG.debug(refreshQuery);
+                            _self.searchEngine.getConnection().indices.refresh(refreshQuery, function (error, response) {
                                 if (error) {
                                     reject(error);
                                 }
@@ -57,8 +57,7 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        //Get configured options, merge input options on top of that
-                        let indexQuery = _.merge(_self.searchEngine.getOptions().existsOptions || {}, _.merge(input.options || {}, {
+                        let indexQuery = _.merge(_.merge({}, _self.searchEngine.getOptions().existsOptions || {}), _.merge(_.merge({}, input.options || {}), {
                             index: _self.typeDef.indexName,
                             type: _self.typeDef.typeName,
                             id: input.query.id
@@ -111,7 +110,7 @@ module.exports = {
                 return new Promise((resolve, reject) => {
                     try {
                         try {
-                            let putQuery = _.merge(_self.searchEngine.getOptions().saveOptions || {}, _.merge(input.options || {}, {
+                            let putQuery = _.merge(_.merge({}, _self.searchEngine.getOptions().saveOptions || {}), _.merge(_.merge({}, input.options || {}), {
                                 index: _self.typeDef.indexName,
                                 type: _self.typeDef.typeName,
                                 id: input.model[_self.typeDef.idPropertyName],
@@ -171,8 +170,8 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchQuery = _.merge(_self.searchEngine.getOptions().getOptions || {},
-                            _.merge(input.query || {}, {
+                        let searchQuery = _.merge(_.merge({}, _self.searchEngine.getOptions().getOptions || {}),
+                            _.merge(_.merge({}, input.query || {}), {
                                 index: _self.typeDef.indexName,
                                 type: _self.typeDef.typeName,
                                 id: input.query.id
@@ -200,13 +199,19 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let searchQuery = _.merge(_self.searchEngine.getOptions().searchOptions || {},
-                            _.merge(input.options || {}, {
+                        let searchQuery = _.merge(_.merge({}, _self.searchEngine.getOptions().searchOptions || {}),
+                            _.merge(_.merge({}, input.options || {}), {
                                 index: _self.typeDef.indexName,
                                 type: _self.typeDef.typeName
                             })
                         );
-                        searchQuery.body = input.query || {};
+                        if (input.q) {
+                            searchQuery.q = input.q;
+                        } else {
+                            searchQuery.body = {
+                                query: input.query || {}
+                            };
+                        }
                         _self.LOG.debug('Executing search command with options');
                         _self.LOG.debug(searchQuery);
                         _self.searchEngine.getConnection().search(searchQuery, function (error, response) {

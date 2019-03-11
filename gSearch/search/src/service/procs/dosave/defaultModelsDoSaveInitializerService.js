@@ -38,7 +38,11 @@ module.exports = {
             let moduleName = request.collection.moduleName;
             let tntCode = request.collection.tenant;
             let searchEngine = NODICS.getTenantSearchEngine(moduleName, tntCode);
-            if (searchEngine) {
+            if (!request.model && !UTILS.isBlank(request.model)) {
+                throw new Error('Model object can not be null or blank');
+            } else if (!searchEngine) {
+                throw new Error('Search engine not available for module: ' + moduleName + ' and tenant: ' + tntCode);
+            } else {
                 let indexTypeName = request.collection.schemaName;
                 if (request.collection.rawSchema.search && request.collection.rawSchema.search.typeName) {
                     indexTypeName = request.collection.rawSchema.search.typeName;
@@ -54,8 +58,6 @@ module.exports = {
                 } else {
                     throw new Error('Search schema not available for module: ' + moduleName + ', tenant: ' + tntCode + ', index type: ' + indexTypeName);
                 }
-            } else {
-                throw new Error('Search engine not available for module: ' + moduleName + ' and tenant: ' + tntCode);
             }
         } catch (error) {
             process.error(request, response, {
@@ -85,15 +87,14 @@ module.exports = {
         request.collection.doSave(request).then(result => {
             response.success = {
                 success: true,
-                code: 'SUC_FIND_00000',
-                cache: 'item mis',
+                code: 'SUC_SRCH_00000',
                 result: result
             };
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, {
                 success: false,
-                code: 'ERR_FIND_00000',
+                code: 'ERR_SRCH_00000',
                 error: error
             });
         });
