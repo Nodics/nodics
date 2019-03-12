@@ -63,6 +63,30 @@ module.exports = {
      * @param {request} request is used to carry request parameters sent by consumer
      * @param {callback} callback is a function, called after fullfilling business requirement 
      */
+    doExistItem: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.typeName = request.httpRequest.params.typeName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
+        if (request.httpRequest.params.id) {
+            request.query = request.query || {};
+            request.query.id = request.httpRequest.params.id;
+        }
+        if (callback) {
+            FACADE.dsdName.doExistItem(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doExistItem(request);
+        }
+    },
+
+    /**
+     * This function is used to check if requested document is available withing current index and its type
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
     doExists: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request.typeName = request.httpRequest.params.typeName || undefined;

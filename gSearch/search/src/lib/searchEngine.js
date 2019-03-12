@@ -14,7 +14,7 @@ module.exports = function () {
     let _options = {};
     let _connOptions = {};
     let _connection = {};
-    let _indexesList = [];
+    let _indexesList = {};
 
     this.setActive = function (active) {
         _active = active;
@@ -47,17 +47,26 @@ module.exports = function () {
         return _connection;
     };
 
-    this.addIndexName = function (indexName) {
-        _indexesList.push(indexName);
+    this.setIndexes = function (indexesList) {
+        _indexesList = indexesList;
     };
 
-    this.removeIndexName = function (indexName) {
-        if (_indexesList.indexOf(indexName) > -1) {
-            _indexesList.splice(_indexesList.indexOf(indexName), 1);
+    this.addIndex = function (indexName, metaData) {
+        _indexesList[indexName] = metaData;
+    };
+
+    this.getIndex = function (indexName) {
+        return _indexesList[indexName];
+    };
+
+    this.removeIndex = function (indexName) {
+        if (_indexesList[indexName]) {
+            delete _indexesList[indexName];
         }
+        return true;
     };
 
     this.isActiveIndex = function (indexName) {
-        return _indexesList.includes(indexName);
+        return _indexesList[indexName] ? true : false;
     };
 };

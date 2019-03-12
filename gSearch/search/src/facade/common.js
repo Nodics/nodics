@@ -36,6 +36,10 @@ module.exports = {
         return SERVICE.srvcName.doRefresh(request);
     },
 
+    doExistItem: function (request) {
+        return SERVICE.srvcName.doExistItem(request);
+    },
+
     doExists: function (request) {
         return SERVICE.srvcName.doExists(request);
     },

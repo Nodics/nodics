@@ -85,7 +85,7 @@ module.exports = {
                                 if (searchSchema && !UTILS.isBlank(searchSchema)) {
                                     let collection = NODICS.getModels(moduleName, tntCode)[schemaName.toUpperCaseFirstChar() + 'Model'];
                                     if (collection) {
-                                        collection.typeName = searchSchema.typeName;
+                                        collection.indexName = searchSchema.indexName;
                                     }
                                     SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(moduleName, tntCode, searchSchema);
                                 }
@@ -119,10 +119,10 @@ module.exports = {
                                 SERVICE[searchOptions.schemaHandler].prepareFromDefinitions &&
                                 typeof SERVICE[searchOptions.schemaHandler].prepareFromDefinitions === 'function') {
                                 let moduleIndexSchemas = searchSchemas[moduleName];
-                                Object.keys(moduleIndexSchemas).forEach(typeName => {
-                                    let source = moduleIndexSchemas[typeName];
-                                    let target = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(moduleName, tntCode, source.typeName || typeName);
-                                    let mergedTypeSchema = SERVICE[searchOptions.schemaHandler].prepareFromDefinitions(moduleName, tntCode, source, target, typeName);
+                                Object.keys(moduleIndexSchemas).forEach(indexName => {
+                                    let source = moduleIndexSchemas[indexName];
+                                    let target = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(moduleName, tntCode, source.indexName || indexName);
+                                    let mergedTypeSchema = SERVICE[searchOptions.schemaHandler].prepareFromDefinitions(moduleName, tntCode, source, target, indexName);
                                     if (mergedTypeSchema && !UTILS.isBlank(mergedTypeSchema)) {
                                         SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(moduleName, tntCode, mergedTypeSchema);
                                     }
@@ -159,8 +159,8 @@ module.exports = {
                                         SERVICE[searchOptions.schemaHandler] &&
                                         SERVICE[searchOptions.schemaHandler].prepareFromDefinitions &&
                                         typeof SERVICE[searchOptions.schemaHandler].prepareFromDefinitions === 'function') {
-                                        let target = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(definition.moduleName, tntCode, definition.typeName) || {};
-                                        let mergedTypeSchema = SERVICE[searchOptions.schemaHandler].loadSearchSchemaFromDatabase(definition.moduleName, tntCode, source, target, definition.typeName);
+                                        let target = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(definition.moduleName, tntCode, definition.indexName) || {};
+                                        let mergedTypeSchema = SERVICE[searchOptions.schemaHandler].loadSearchSchemaFromDatabase(definition.moduleName, tntCode, source, target, definition.indexName);
                                         if (mergedTypeSchema && !UTILS.isBlank(mergedTypeSchema)) {
                                             SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(moduleName, tntCode, mergedTypeSchema);
                                         }

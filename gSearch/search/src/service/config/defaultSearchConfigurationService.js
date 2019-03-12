@@ -135,7 +135,7 @@ module.exports = {
             if (!this.indexesList.includes(definition.indexName)) {
                 this.indexesList.push(definition.indexName);
             }
-            this.searchSchema[moduleName][tenant][definition.typeName] = definition;
+            this.searchSchema[moduleName][tenant][definition.indexName] = definition;
         }
     },
 
@@ -151,13 +151,13 @@ module.exports = {
         }
     },
 
-    getTenantRawSearchSchema: function (moduleName, tenant, typeName) {
+    getTenantRawSearchSchema: function (moduleName, tenant, indexName) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
-            return this.searchSchema[moduleName][tenant][typeName];
+            return this.searchSchema[moduleName][tenant][indexName];
         } else {
             return null;
         }

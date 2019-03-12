@@ -47,6 +47,11 @@ module.exports = {
                 enabled: true,
                 ttl: 360
             },
+            search: {
+                enabled: true,
+                //indexName: 'enterprise', // if null, moduleName will be taken
+                idPropertyName: 'code', // if null, code will be taken
+            },
             refSchema: {
                 contacts: {
                     schemaName: "contact",
@@ -158,7 +163,6 @@ module.exports = {
             search: {
                 enabled: true,
                 //indexName: 'enterprise', // if null, moduleName will be taken
-                //typeName: 'enterprise', // if null, schemaName will be taken
                 idPropertyName: 'code', // if null, code will be taken
             },
             refSchema: {

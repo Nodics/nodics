@@ -47,8 +47,8 @@ module.exports = {
                 if (isSubSchema || (rawSchema.search && rawSchema.search.enabled && !UTILS.isBlank(rawSchema.definition))) {
                     _self.LOG.debug('  Collecting data from schema: ' + schemaName);
                     searchSchema = _.merge({}, rawSchema.search || {});
-                    searchSchema.indexName = searchSchema.indexName || moduleName;
-                    searchSchema.typeName = searchSchema.typeName || schemaName;
+                    searchSchema.indexName = searchSchema.indexName || schemaName;
+                    searchSchema.typeName = CONFIG.get('search').defaultTypeName || 'typeName';
                     searchSchema.idPropertyName = searchSchema.idPropertyName || 'code';
                     searchSchema.moduleName = moduleName;
                     searchSchema.schemaName = schemaName;
@@ -84,10 +84,10 @@ module.exports = {
         return searchSchema;
     },
 
-    prepareFromDefinitions: function (moduleName, tntCode, source, target, typeName) {
+    prepareFromDefinitions: function (moduleName, tntCode, source, target, indexName) {
         let _self = this;
         try {
-            return _self.mergeIndexMetaData(moduleName, tntCode, source, target, typeName);
+            return _self.mergeIndexMetaData(moduleName, tntCode, source, target, indexName);
         } catch (error) {
             _self.LOG.error('Failed while loading search schema from schema definitions');
             _self.LOG.error(error);
@@ -95,10 +95,10 @@ module.exports = {
         }
     },
 
-    loadSearchSchemaFromDatabase: function (moduleName, tntCode, source, target, typeName) {
+    loadSearchSchemaFromDatabase: function (moduleName, tntCode, source, target, indexName) {
         let _self = this;
         try {
-            return _self.mergeIndexMetaData(moduleName, tntCode, source, target, typeName);
+            return _self.mergeIndexMetaData(moduleName, tntCode, source, target, indexName);
         } catch (error) {
             _self.LOG.error('Failed while loading search schema from schema definitions');
             _self.LOG.error(error);
@@ -106,10 +106,10 @@ module.exports = {
         }
     },
 
-    mergeIndexMetaData: function (moduleName, tntCode, source, target, typeName) {
+    mergeIndexMetaData: function (moduleName, tntCode, source, target, indexName) {
         let searchConfig = CONFIG.get('search', tntCode);
-        source.indexName = source.indexName || moduleName;
-        source.typeName = source.typeName || typeName;
+        source.indexName = source.indexName || indexName;
+        source.typeName = CONFIG.get('search').defaultTypeName || 'typeName';
         source.idPropertyName = source.idPropertyName || 'code';
         if (moduleName || source.moduleName) {
             source.moduleName = source.moduleName || moduleName;
@@ -132,11 +132,11 @@ module.exports = {
             let schemaDef = {
                 properties: {}
             };
-            let properties = Object.keys(options.typeDef.properties);
-            if (options.typeDef.properties && properties.length > 0) {
+            let properties = Object.keys(options.indexDef.properties);
+            if (options.indexDef.properties && properties.length > 0) {
                 for (let count = 0; count < properties.length; count++) {
                     let propName = properties[count];
-                    let propObj = options.typeDef.properties[propName];
+                    let propObj = options.indexDef.properties[propName];
                     schemaDef.properties[propName] = {
                         type: propObj.type || 'text'
                     };

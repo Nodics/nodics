@@ -28,7 +28,7 @@ module.exports = {
                 },
                 typeName: {
                     type: 'string',
-                    required: true,
+                    required: false,
                     description: 'Required type name, One index could have multiple types'
                 },
                 lastState: {
@@ -65,7 +65,7 @@ module.exports = {
                 },
                 typeName: {
                     type: 'string',
-                    required: true,
+                    required: false,
                     description: 'Required type name, One index could have multiple types'
                 },
                 idPropertyName: {

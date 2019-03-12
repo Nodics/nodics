@@ -73,6 +73,34 @@ module.exports = {
     },
 
 
+    doExistItem: function (request) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                request.searchModel = _self.getSearchModel(request);
+                request.searchModel.doExistItem(request).then(success => {
+                    resolve({
+                        success: true,
+                        code: 'SUC_SRCH_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject({
+                        success: false,
+                        code: 'ERR_SRCH_00000',
+                        error: error
+                    });
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error
+                });
+            }
+        });
+    },
+
     doExists: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {

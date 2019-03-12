@@ -112,34 +112,33 @@ module.exports = {
                     let moduleObject = NODICS.getModule(moduleName);
                     if (moduleObject && moduleTenantSearchRawSchema && !UTILS.isBlank(moduleTenantSearchRawSchema)) {
                         let indexList = [];
-                        let indexTypes = Object.keys(moduleTenantSearchRawSchema);
-                        for (let count = 0; count < indexTypes.length; count++) {
-                            let typeName = indexTypes[count];
-                            let typeDef = moduleTenantSearchRawSchema[typeName];
-                            let searchModelName = typeName.toUpperCaseFirstChar() + 'SearchModel';
+                        let indexNames = Object.keys(moduleTenantSearchRawSchema);
+                        for (let count = 0; count < indexNames.length; count++) {
+                            let indexName = indexNames[count];
+                            let indexDef = moduleTenantSearchRawSchema[indexName];
+                            let searchModelName = indexName.toUpperCaseFirstChar() + 'SearchModel';
                             let searchModel = {
                                 moduleName: moduleName,
                                 tntCode: tntCode,
                                 searchEngine: searchEngine,
-                                indexName: typeDef.indexName,
-                                typeName: typeName,
-                                typeDef: typeDef,
+                                indexName: indexDef.indexName || indexName,
+                                indexDef: indexDef,
                                 LOG: SERVICE.DefaultLoggerService.createLogger(searchModelName)
                             };
                             _self.registerSearchModels(rawSearchModelDef.default, searchModel);
                             _self.registerSearchModels(rawSearchModelDef[moduleName], searchModel);
-                            _self.registerSearchModels(rawSearchModelDef[typeName], searchModel);
+                            _self.registerSearchModels(rawSearchModelDef[indexName], searchModel);
                             moduleObject.searchModels[tntCode][searchModelName] = searchModel;
-                            if (typeDef.schemaName) {
-                                let collection = NODICS.getModels(moduleName, tntCode)[typeDef.schemaName.toUpperCaseFirstChar() + 'Model'];
+                            if (indexDef.schemaName) {
+                                let collection = NODICS.getModels(moduleName, tntCode)[indexDef.schemaName.toUpperCaseFirstChar() + 'Model'];
                                 if (collection) {
                                     collection.searchModelName = searchModelName;
-                                    collection.typeName = typeName;
+                                    collection.indexName = indexName;
                                 }
                             }
-
-                            if (!indexList.includes(typeDef.indexName) && !searchEngine.isActiveIndex(typeDef.indexName)) {
-                                indexList.push(_self.createIndex(searchEngine, typeDef.indexName));
+                            console.log('=================================================');
+                            if (!searchEngine.isActiveIndex(indexDef.indexName)) {
+                                indexList.push(_self.createIndex(searchEngine, indexDef.indexName));
                             }
                         }
                         if (indexList.length > 0) {
@@ -179,12 +178,14 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 _self.LOG.debug('Creating index for indexName: ' + indexName);
+                console.log('========> Creating index for indexName: ' + indexName);
                 searchEngine.getConnection().indices.create({
                     index: indexName
                 }, function (error, response) {
                     if (error) {
                         reject(error);
                     } else {
+                        searchEngine.addIndex(indexName, {});
                         resolve(response);
                     }
                 });
@@ -278,48 +279,58 @@ module.exports = {
                     let searchModelName = options.searchModelsName.shift();
                     let searchModel = NODICS.getSearchModels(options.moduleName, options.tntCode)[searchModelName];
                     if (searchModel) {
-                        let typeDef = searchModel.typeDef;
+                        let indexDef = searchModel.indexDef;
                         let indexName = searchModel.indexName;
                         let typeName = searchModel.typeName;
-                        if (SERVICE[options.searchEngine.getOptions().schemaHandler].prepareTypeSchema) {
-                            SERVICE[options.searchEngine.getOptions().schemaHandler].prepareTypeSchema({
-                                typeName: typeName,
-                                typeDef: typeDef
-                            }).then(schemaDef => {
-                                if (schemaDef && !UTILS.isBlank(schemaDef)) {
-                                    searchModel.doUpdateMapping({
-                                        searchSchema: schemaDef
-                                    }).then(success => {
-                                        // searchModel.doGetMapping({}).then(success => {
-                                        //     console.log('Got Mapping: ', success);
-                                        // }).catch(error => {
-                                        //     console.log(error);
-                                        // });
+                        let indexObj = options.searchEngine.getIndex(indexName);
+                        console.log('1--------------------------------------------------');
+                        if (indexObj && !indexObj.mappings) {
+                            if (SERVICE[options.searchEngine.getOptions().schemaHandler].prepareTypeSchema) {
+                                SERVICE[options.searchEngine.getOptions().schemaHandler].prepareTypeSchema({
+                                    indexName: indexName,
+                                    indexDef: indexDef
+                                }).then(schemaDef => {
+                                    if (schemaDef && !UTILS.isBlank(schemaDef)) {
+                                        console.log('  ----------------- updating index mapping: ', indexName, ' : ', typeName);
+                                        console.log(schemaDef);
+                                        console.log('--------------------------------------------------');
+                                        searchModel.doUpdateMapping({
+                                            searchSchema: schemaDef
+                                        }).then(success => {
+                                            _self.updateIndexTypeMapping(options).then(success => {
+                                                resolve(true);
+                                            }).catch(error => {
+                                                reject(error);
+                                            });
+                                        }).catch(error => {
+                                            reject(error);
+                                        });
+                                    } else {
+                                        _self.LOG.warn('Got blank schema definition to update mapping for indexName: ' + indexName);
                                         _self.updateIndexTypeMapping(options).then(success => {
                                             resolve(true);
                                         }).catch(error => {
                                             reject(error);
                                         });
-                                    }).catch(error => {
-                                        reject(error);
-                                    });
-                                } else {
-                                    _self.LOG.warn('Got blank schema definition to update mapping for typeName: ' + typeName);
-                                    _self.updateIndexTypeMapping(options).then(success => {
-                                        resolve(true);
-                                    }).catch(error => {
-                                        reject(error);
-                                    });
-                                }
+                                    }
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            } else {
+                                reject('Please validate your schema handler, looks definitions is not fine: could not found prepareTypeSchema function');
+                            }
+                        } else {
+                            console.log('============================== Mapping already available for indexName: ' + indexName);
+                            _self.LOG.debug('Mapping already available for indexName: ' + indexName);
+                            _self.updateIndexTypeMapping(options).then(success => {
+                                resolve(true);
                             }).catch(error => {
                                 reject(error);
                             });
-                        } else {
-                            reject('Please validate your schema handler, looks definitions is not fine: could not found prepareTypeSchema function');
                         }
                     } else {
-                        _self.LOG.error('Invalid search model definition for typeName: ' + typeName + ', module: ' + options.moduleName + ', tenant: ' + options.tntCode);
-                        reject('Invalid search model definition for typeName: ' + typeName + ', module: ' + options.moduleName + ', tenant: ' + options.tntCode);
+                        _self.LOG.error('Invalid search model definition for indexName: ' + indexName + ', module: ' + options.moduleName + ', tenant: ' + options.tntCode);
+                        reject('Invalid search model definition for indexName: ' + indexName + ', module: ' + options.moduleName + ', tenant: ' + options.tntCode);
                     }
                 } else {
                     resolve(true);

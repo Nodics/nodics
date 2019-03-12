@@ -13,8 +13,7 @@ module.exports = {
     profile: {
         enterprise: {
             enabled: false,
-            indexName: 'enterprise',
-            typeName: 'enterprise',
+            //indexName: 'enterprise',
             idPropertyName: 'code',
             preProcessor: 'DefaultEnterpriseIndexProcessorService.preEnterpriseIndexProcessor', // Will get executed just after data fetch from DB
             postProcessor: 'DefaultEnterpriseIndexProcessorService.postEnterpriseIndexProcessor', // will get executed once every data got collected and processed

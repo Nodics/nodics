@@ -44,6 +44,7 @@ module.exports = {
     },
 
     createSearchConnection: function (searchOptions) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 let defaultSearchConfig = CONFIG.get('search', searchOptions.tntCode);
@@ -63,7 +64,16 @@ module.exports = {
                     } else {
                         searchEngine.setConnection(client);
                         searchEngine.setActive(true);
-                        resolve(searchEngine);
+                        _self.getIndexes(searchEngine).then(success => {
+                            searchEngine.setIndexes(success);
+                            resolve(searchEngine);
+                        }).catch(error => {
+                            reject({
+                                success: false,
+                                code: 'ERR_SRCH_00002',
+                                error: error
+                            });
+                        });
                     }
                 });
             } catch (err) {
@@ -74,5 +84,23 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+
+    getIndexes: function (searchEngine, indexName) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                _self.LOG.debug('Retrieving list of available indexes for : ' + searchEngine.getConnectionOptions());
+                searchEngine.getConnection().cluster.state({}, function (error, response) {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(response.metadata.indices || {});
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
 };

@@ -27,5 +27,11 @@ module.exports = {
         code: '150001',
         description: 'Search cluster is down or please check configuration',
         message: 'Search cluster is down or please check configuration'
+    },
+
+    ERR_SRCH_00002: {
+        code: '150002',
+        description: 'Could not retrieve list of available indexes',
+        message: 'Could not retrieve list of available indexes'
     }
 };

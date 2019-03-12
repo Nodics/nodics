@@ -43,12 +43,12 @@ module.exports = {
                 }
             },
 
-            doGetExists: {
+            doGetExistItem: {
                 secured: true,
                 key: '/schemaName/search/exists/id/:id',
                 method: 'GET',
                 controller: 'DefaultctrlName',
-                operation: 'doExists',
+                operation: 'doExistItem',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -57,12 +57,12 @@ module.exports = {
                 }
             },
 
-            doPostExists: {
+            doPostExistItem: {
                 secured: true,
                 key: '/schemaName/search/exists',
                 method: 'POST',
                 controller: 'DefaultctrlName',
-                operation: 'doExists',
+                operation: 'doExistItem',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -378,12 +378,12 @@ module.exports = {
                 }
             },
 
-            doGetExists: {
+            doGetExistItem: {
                 secured: true,
                 key: '/:indexName/:typeName/search/exists/id/:id',
                 method: 'GET',
                 controller: 'DefaultSearchController',
-                operation: 'doExists',
+                operation: 'doExistItem',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -392,12 +392,12 @@ module.exports = {
                 }
             },
 
-            doPostExists: {
+            doPostExistItem: {
                 secured: true,
                 key: '/:indexName/:typeName/search/exists',
                 method: 'POST',
                 controller: 'DefaultSearchController',
-                operation: 'doExists',
+                operation: 'doExistItem',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',

@@ -36,6 +36,11 @@ module.exports = {
         return DAO.DaoName.doRefresh(request);
     },
 
+    doExistItem: function (request) {
+        return DAO.DaoName.doExistItem(request);
+    },
+
+
     doExists: function (request) {
         return DAO.DaoName.doExists(request);
     },
