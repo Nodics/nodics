@@ -48,7 +48,7 @@ module.exports = {
                     _self.LOG.debug('  Collecting data from schema: ' + schemaName);
                     searchSchema = _.merge({}, rawSchema.search || {});
                     searchSchema.indexName = searchSchema.indexName || schemaName;
-                    searchSchema.typeName = CONFIG.get('search').defaultTypeName || 'typeName';
+                    searchSchema.typeName = searchSchema.typeName || searchSchema.indexName;
                     searchSchema.idPropertyName = searchSchema.idPropertyName || 'code';
                     searchSchema.moduleName = moduleName;
                     searchSchema.schemaName = schemaName;
@@ -84,10 +84,10 @@ module.exports = {
         return searchSchema;
     },
 
-    prepareFromDefinitions: function (moduleName, tntCode, source, target, indexName) {
+    prepareFromDefinitions: function (moduleName, tntCode, source, target, typeName) {
         let _self = this;
         try {
-            return _self.mergeIndexMetaData(moduleName, tntCode, source, target, indexName);
+            return _self.mergeIndexMetaData(moduleName, tntCode, source, target, typeName);
         } catch (error) {
             _self.LOG.error('Failed while loading search schema from schema definitions');
             _self.LOG.error(error);
@@ -95,10 +95,10 @@ module.exports = {
         }
     },
 
-    loadSearchSchemaFromDatabase: function (moduleName, tntCode, source, target, indexName) {
+    loadSearchSchemaFromDatabase: function (moduleName, tntCode, source, target, typeName) {
         let _self = this;
         try {
-            return _self.mergeIndexMetaData(moduleName, tntCode, source, target, indexName);
+            return _self.mergeIndexMetaData(moduleName, tntCode, source, target, typeName);
         } catch (error) {
             _self.LOG.error('Failed while loading search schema from schema definitions');
             _self.LOG.error(error);
@@ -106,10 +106,10 @@ module.exports = {
         }
     },
 
-    mergeIndexMetaData: function (moduleName, tntCode, source, target, indexName) {
+    mergeIndexMetaData: function (moduleName, tntCode, source, target, typeName) {
         let searchConfig = CONFIG.get('search', tntCode);
-        source.indexName = source.indexName || indexName;
-        source.typeName = CONFIG.get('search').defaultTypeName || 'typeName';
+        source.indexName = source.indexName || typeName;
+        source.typeName = source.typeName || typeName || source.indexName;
         source.idPropertyName = source.idPropertyName || 'code';
         if (moduleName || source.moduleName) {
             source.moduleName = source.moduleName || moduleName;
@@ -124,7 +124,7 @@ module.exports = {
                 source.properties[propName].sequence = source.properties[propName].sequence || searchConfig.defaultPropertySequence;;
             });
         }
-        return _.merge(target, source);
+        return _.merge(_.merge({}, target), source);
     },
 
     prepareTypeSchema: function (options) {

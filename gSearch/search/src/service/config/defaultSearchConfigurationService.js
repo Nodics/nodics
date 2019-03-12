@@ -16,7 +16,6 @@ module.exports = {
     searchEngines: {},
     searchSchema: {},
     rawSearchModel: {},
-    indexesList: [],
     interceptors: {},
 
     /**
@@ -83,10 +82,6 @@ module.exports = {
         }
     },
 
-    getIndexesList: function () {
-        return this.indexesList;
-    },
-
     addTenantSearchEngine: function (moduleName, tenant, searchEngine) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
@@ -132,10 +127,7 @@ module.exports = {
             if (!this.searchSchema[moduleName][tenant]) {
                 this.searchSchema[moduleName][tenant] = {};
             }
-            if (!this.indexesList.includes(definition.indexName)) {
-                this.indexesList.push(definition.indexName);
-            }
-            this.searchSchema[moduleName][tenant][definition.indexName] = definition;
+            this.searchSchema[moduleName][tenant][definition.typeName] = definition;
         }
     },
 
@@ -151,13 +143,13 @@ module.exports = {
         }
     },
 
-    getTenantRawSearchSchema: function (moduleName, tenant, indexName) {
+    getTenantRawSearchSchema: function (moduleName, tenant, typeName) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
-            return this.searchSchema[moduleName][tenant][indexName];
+            return this.searchSchema[moduleName][tenant][typeName];
         } else {
             return null;
         }
