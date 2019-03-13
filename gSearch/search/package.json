@@ -1,7 +1,7 @@
 {
     "name": "search",
     "index": "15.0",
-    "publish": false,
+    "publish": true,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to search",
     "homepage": "http://www.nodics.com/",
     "keywords": [

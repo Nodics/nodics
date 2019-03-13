@@ -324,17 +324,17 @@ module.exports = function () {
         }
     };
 
-    this.getSearchModel = function (moduleName, tenant, typeName) {
+    this.getSearchModel = function (moduleName, tenant, indexName) {
         let searchModels = NODICS.getSearchModels(moduleName, tenant);
         if (searchModels) {
-            let searchModel = searchModels[typeName.toUpperCaseFirstChar() + 'SearchModel'];
+            let searchModel = searchModels[indexName.toUpperCaseFirstChar() + 'SearchModel'];
             if (searchModel) {
                 return searchModel;
             } else {
-                throw new Error('Search is not enable for model: ' + typeName);
+                throw new Error('Search is not enable for model: ' + indexName);
             }
         } else {
-            throw new Error('Invalid search configuration, none search model found for ' + typeName);
+            throw new Error('Invalid search configuration, none search model found for ' + indexName);
         }
     };
 

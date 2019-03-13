@@ -34,13 +34,12 @@ module.exports = {
 
     getSearchModel: function (request) {
         request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        let moduleName = request.collection ? request.collection.moduleName : request.moduleName;
-        let tenant = request.collection ? request.collection.tenant : request.tenant;
-        let typeName = request.collection ? request.collection.typeName : request.typeName;
-        if (!moduleName || !tenant || !typeName) {
+        let indexName = request.indexName ? request.indexName : request.collection.indexName;
+        //let indexName = (request.collection && request.collection.indexName) ? request.collection.indexName : ;
+        if (!request.moduleName || !request.tenant || !indexName) {
             throw new Error('Invalid request or search is not active for this type');
         } else {
-            return NODICS.getSearchModel(moduleName, tenant, typeName);
+            return NODICS.getSearchModel(request.moduleName, request.tenant, indexName);
         }
     },
 

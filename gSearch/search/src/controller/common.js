@@ -41,7 +41,6 @@ module.exports = {
      */
     doRefresh: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (request.httpRequest.params.id) {
             request.query = request.query || {};
@@ -65,7 +64,6 @@ module.exports = {
      */
     doExistItem: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (request.httpRequest.params.id) {
             request.query = request.query || {};
@@ -89,7 +87,6 @@ module.exports = {
      */
     doExists: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (request.httpRequest.params.id) {
             request.query = request.query || {};
@@ -113,7 +110,6 @@ module.exports = {
      */
     doCheckHealth: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
             FACADE.dsdName.doCheckHealth(request).then(success => {
@@ -133,7 +129,6 @@ module.exports = {
      */
     doSave: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request.model = request.httpRequest.body;
         if (callback) {
             FACADE.dsdName.doSave(request).then(success => {
@@ -153,7 +148,6 @@ module.exports = {
      */
     doBulk: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (request.httpRequest.body &&
             request.httpRequest.body.models &&
@@ -179,7 +173,6 @@ module.exports = {
      */
     doGet: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         if (request.httpRequest.params.id) {
             request.query = {
                 id: request.httpRequest.params.id
@@ -205,7 +198,6 @@ module.exports = {
      */
     doSearch: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (request.httpRequest.params.id) {
             request.query = {
@@ -232,7 +224,6 @@ module.exports = {
      */
     doRemove: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (request.httpRequest.params.id) {
             request.query = {
@@ -257,7 +248,6 @@ module.exports = {
      */
     doRemoveByQuery: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
             FACADE.dsdName.doRemoveByQuery(request).then(success => {
@@ -277,7 +267,6 @@ module.exports = {
      */
     doGetMapping: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
             FACADE.dsdName.doGetMapping(request).then(success => {
@@ -297,7 +286,6 @@ module.exports = {
      */
     doUpdateMapping: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
             FACADE.dsdName.doUpdateMapping(request).then(success => {
@@ -317,7 +305,6 @@ module.exports = {
      */
     doRemoveIndex: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.typeName = request.httpRequest.params.typeName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
             FACADE.dsdName.doRemoveIndex(request).then(success => {

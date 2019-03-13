@@ -77,7 +77,6 @@ module.exports = {
                 }
             },
 
-            // This operation belongs to conection level, which needs to be module level - need to re-validate it
             doGetCheckHealth: {
                 secured: true,
                 key: '/schemaName/search/check/health',
@@ -349,7 +348,7 @@ module.exports = {
         defaultDoSearch: {
             doGetRefresh: {
                 secured: true,
-                key: '/:indexName/:typeName/search/refresh',
+                key: '/:indexName/search/refresh',
                 method: 'GET',
                 controller: 'DefaultSearchController',
                 operation: 'doRefresh',
@@ -357,13 +356,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/refresh',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/refresh',
                 }
             },
 
             doPostRefresh: {
                 secured: true,
-                key: '/:indexName/:typeName/search/refresh',
+                key: '/:indexName/search/refresh',
                 method: 'POST',
                 controller: 'DefaultSearchController',
                 operation: 'doRefresh',
@@ -371,7 +370,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/refresh',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/refresh',
                     body: {
                         options: '{ object of options required for this option }'
                     }
@@ -380,7 +379,7 @@ module.exports = {
 
             doGetExistItem: {
                 secured: true,
-                key: '/:indexName/:typeName/search/exists/id/:id',
+                key: '/:indexName/search/exists/id/:id',
                 method: 'GET',
                 controller: 'DefaultSearchController',
                 operation: 'doExistItem',
@@ -388,13 +387,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/exists/id/:id',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/exists/id/:id',
                 }
             },
 
             doPostExistItem: {
                 secured: true,
-                key: '/:indexName/:typeName/search/exists',
+                key: '/:indexName/search/exists',
                 method: 'POST',
                 controller: 'DefaultSearchController',
                 operation: 'doExistItem',
@@ -402,7 +401,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/exists',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/exists',
                     body: {
                         options: '{ object of options required for this option }',
                         query: {
@@ -415,7 +414,7 @@ module.exports = {
             // This operation belongs to conection level, which needs to be module level - need to re-validate it
             doGetCheckHealth: {
                 secured: true,
-                key: '/:indexName/:typeName/search/check/health',
+                key: '/:indexName/search/check/health',
                 method: 'GET',
                 controller: 'DefaultSearchController',
                 operation: 'doCheckHealth',
@@ -423,13 +422,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/check/health',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/check/health',
                 }
             },
 
             doPostCheckHealth: {
                 secured: true,
-                key: '/:indexName/:typeName/search/check/health',
+                key: '/:indexName/search/check/health',
                 method: 'POST',
                 controller: 'DefaultSearchController',
                 operation: 'doCheckHealth',
@@ -437,7 +436,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/check/health',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/check/health',
                     body: {
                         options: '{ object of options required for this option }'
                     }
@@ -446,7 +445,7 @@ module.exports = {
 
             doPutSave: {
                 secured: true,
-                key: '/:indexName/:typeName/search',
+                key: '/:indexName/search',
                 method: 'PUT',
                 controller: 'DefaultSearchController',
                 operation: 'doSave',
@@ -454,7 +453,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'PUT',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search',
                     body: {
                         options: '{ options to pass to save these items }',
                         models: '[ array of models to save ]'
@@ -464,7 +463,7 @@ module.exports = {
 
             doPostBulk: {
                 secured: true,
-                key: '/:indexName/:typeName/search/all',
+                key: '/:indexName/search/all',
                 method: 'PUT',
                 controller: 'DefaultSearchController',
                 operation: 'doBulk',
@@ -472,7 +471,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'PUT',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search',
                     body: {
                         options: '{ options to pass to save these items }',
                         data: [{ // action description
@@ -504,7 +503,7 @@ module.exports = {
 
             doGetGet: {
                 secured: true,
-                key: '/:indexName/:typeName/search/get/id/:id',
+                key: '/:indexName/search/get/id/:id',
                 method: 'GET',
                 controller: 'DefaultSearchController',
                 operation: 'doGet',
@@ -512,13 +511,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/get/id/:id',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/get/id/:id',
                 }
             },
 
             doPostGet: {
                 secured: true,
-                key: '/:indexName/:typeName/search/get',
+                key: '/:indexName/search/get',
                 method: 'POST',
                 controller: 'DefaultSearchController',
                 operation: 'doGet',
@@ -526,7 +525,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/get',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/get',
                     body: {
                         options: '{ object of options required for this option }',
                         query: {
@@ -538,7 +537,7 @@ module.exports = {
 
             doGetSearch: {
                 secured: true,
-                key: '/:indexName/:typeName/search/id/:id',
+                key: '/:indexName/search/id/:id',
                 method: 'GET',
                 controller: 'DefaultSearchController',
                 operation: 'doSearch',
@@ -546,13 +545,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'doSearch',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/:id',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/:id',
                 }
             },
 
             doPostSearch: {
                 secured: true,
-                key: '/:indexName/:typeName/search',
+                key: '/:indexName/search',
                 method: 'POST',
                 controller: 'DefaultSearchController',
                 operation: 'doSearch',
@@ -560,7 +559,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search',
                     body: {
                         options: '{ object of options required for this option }',
                         query: '{ object of elastic search query }'
@@ -570,7 +569,7 @@ module.exports = {
 
             doGetRemove: {
                 secured: true,
-                key: '/:indexName/:typeName/search/id/:id',
+                key: '/:indexName/search/id/:id',
                 method: 'DELETE',
                 controller: 'DefaultSearchController',
                 operation: 'doRemove',
@@ -578,13 +577,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'DELETE',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/id/:id',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/id/:id',
                 }
             },
 
             doPostRemove: {
                 secured: true,
-                key: '/:indexName/:typeName/search',
+                key: '/:indexName/search',
                 method: 'DELETE',
                 controller: 'DefaultSearchController',
                 operation: 'doRemoveByQuery',
@@ -592,7 +591,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'DELETE',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search',
                     body: {
                         options: '{ object of options required for this option }',
                         query: '{ object of elastic search query }'
@@ -602,7 +601,7 @@ module.exports = {
 
             doGetMapping: {
                 secured: true,
-                key: '/:indexName/:typeName/search/schema',
+                key: '/:indexName/search/schema',
                 method: 'GET',
                 controller: 'DefaultSearchController',
                 operation: 'doGetMapping',
@@ -610,13 +609,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/schema',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/schema',
                 }
             },
 
             doPostMapping: {
                 secured: true,
-                key: '/:indexName/:typeName/search/schema',
+                key: '/:indexName/search/schema',
                 method: 'POST',
                 controller: 'DefaultSearchController',
                 operation: 'doGetMapping',
@@ -624,7 +623,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/schema',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/schema',
                     body: {
                         options: '{ object of options required for this option }'
                     }
@@ -633,7 +632,7 @@ module.exports = {
 
             doGetUpdateMapping: {
                 secured: true,
-                key: '/:indexName/:typeName/search/schema/update',
+                key: '/:indexName/search/schema/update',
                 method: 'GET',
                 controller: 'DefaultSearchController',
                 operation: 'doUpdateMapping',
@@ -641,13 +640,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/schema/update',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/schema/update',
                 }
             },
 
             doPostUpdateMapping: {
                 secured: true,
-                key: '/:indexName/:typeName/search/schema/update',
+                key: '/:indexName/search/schema/update',
                 method: 'POST',
                 controller: 'DefaultSearchController',
                 operation: 'doUpdateMapping',
@@ -655,7 +654,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/schema/update',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/schema/update',
                     body: {
                         options: '{ object of options required for this option }'
                     }
@@ -664,7 +663,7 @@ module.exports = {
 
             doGetRemoveType: {
                 secured: true,
-                key: '/:indexName/:typeName/search/type',
+                key: '/:indexName/search/type',
                 method: 'DELETE',
                 controller: 'DefaultSearchController',
                 operation: 'removeType',
@@ -672,7 +671,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'DELETE',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/:typeName/search/type',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/type',
                     body: {
                         options: '{ object of options required for this option }'
                     }

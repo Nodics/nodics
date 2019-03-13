@@ -117,7 +117,7 @@ module.exports = {
                             moduleName: moduleName,
                             tntCode: tntCode,
                             searchEngine: searchEngine,
-                            typeNames: Object.keys(moduleTenantSearchRawSchema)
+                            indexNames: Object.keys(moduleTenantSearchRawSchema)
                         }).then(success => {
                             resolve(true);
                         }).catch(error => {
@@ -141,16 +141,16 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                if (options.typeNames && options.typeNames.length > 0) {
-                    let typeName = options.typeNames.shift();
-                    let indexDef = options.moduleTenantSearchRawSchema[typeName];
-                    let searchModelName = typeName.toUpperCaseFirstChar() + 'SearchModel';
+                if (options.indexNames && options.indexNames.length > 0) {
+                    let indexName = options.indexNames.shift();
+                    let indexDef = options.moduleTenantSearchRawSchema[indexName];
+                    let searchModelName = indexName.toUpperCaseFirstChar() + 'SearchModel';
                     let searchModel = {
                         moduleName: options.moduleName,
                         tntCode: options.tntCode,
                         searchEngine: options.searchEngine,
-                        indexName: indexDef.indexName,
-                        typeName: indexDef.typeName || typeName,
+                        indexName: indexDef.indexName || indexName,
+                        typeName: indexDef.typeName || indexDef.indexName || indexName,
                         indexDef: indexDef,
                         LOG: SERVICE.DefaultLoggerService.createLogger(searchModelName)
                     };
@@ -163,10 +163,9 @@ module.exports = {
                         if (collection) {
                             collection.searchModelName = searchModelName;
                             collection.indexName = indexDef.indexName;
-                            collection.typeName = typeName;
+                            collection.typeName = indexDef.typeName;
                         }
                     }
-                    console.log('=================================================');
                     if (!options.searchEngine.isActiveIndex(indexDef.indexName)) {
                         _self.createIndex(options.searchEngine, indexDef.indexName).then(success => {
                             _self.prepareTypeSearchModels(options).then(success => {
@@ -207,8 +206,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                // _self.LOG.debug('Creating index for indexName: ' + indexName);
-                console.log('========> Creating index for indexName: ' + indexName);
+                _self.LOG.debug('Creating index for indexName: ' + indexName);
                 searchEngine.getConnection().indices.create({
                     index: indexName
                 }, function (error, response) {
@@ -313,9 +311,7 @@ module.exports = {
                         let indexName = searchModel.indexName;
                         let typeName = searchModel.typeName;
                         let indexObj = options.searchEngine.getIndex(indexName);
-                        console.log(indexName, ' : ', typeName, ' : ', indexDef);
                         if (indexObj && indexObj.mappings && indexObj.mappings[typeName]) {
-                            console.log('============================== Mapping already available for indexName: ' + indexName);
                             _self.LOG.debug('Mapping already available for indexName: ' + indexName);
                             _self.updateIndexTypeMapping(options).then(success => {
                                 resolve(true);
@@ -329,9 +325,6 @@ module.exports = {
                                     indexDef: indexDef
                                 }).then(schemaDef => {
                                     if (schemaDef && !UTILS.isBlank(schemaDef)) {
-                                        console.log('  ----------------- updating index mapping: ', indexName, ' : ', typeName);
-                                        console.log(schemaDef);
-                                        console.log('--------------------------------------------------');
                                         searchModel.doUpdateMapping({
                                             searchSchema: schemaDef
                                         }).then(success => {

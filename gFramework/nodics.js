@@ -99,6 +99,7 @@ module.exports = {
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');
                 NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
+                //console.log(NODICS.getSearchModels('profile', 'default'));
                 // SERVICE.DefaultImportService.importInitData({
                 //     tenant: 'default',
                 //     modules: NODICS.getActiveModules()
