@@ -123,8 +123,8 @@ module.exports = {
         }
     },
 
-    toObjectId: function (collection, value) {
-        let modelHandlerName = collection.dataBase.getOptions().modelHandler;
+    toObjectId: function (schemaModel, value) {
+        let modelHandlerName = schemaModel.dataBase.getOptions().modelHandler;
         if (!UTILS.isObjectId(value) && SERVICE[modelHandlerName] && SERVICE[modelHandlerName].toObjectId) {
             return SERVICE[modelHandlerName].toObjectId(value);
         } else {

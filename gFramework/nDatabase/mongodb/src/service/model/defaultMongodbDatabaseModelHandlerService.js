@@ -110,16 +110,16 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let schema = options.moduleObject.rawSchema[options.schemaName];
             if (dataBase.getCollectionList().includes(options.modelName)) {
-                let collection = dataBase.getConnection().collection(options.modelName);
-                collection.moduleName = options.moduleName;
-                collection.rawSchema = schema;
-                collection.modelName = options.modelName;
-                collection.schemaName = options.schemaName;
-                collection.cache = options.cache;
-                collection.dataBase = dataBase;
-                collection.tenant = options.tntCode;
-                collection.channel = options.channel;
-                resolve(collection);
+                let schemaModel = dataBase.getConnection().collection(options.modelName);
+                schemaModel.moduleName = options.moduleName;
+                schemaModel.rawSchema = schema;
+                schemaModel.modelName = options.modelName;
+                schemaModel.schemaName = options.schemaName;
+                schemaModel.cache = options.cache;
+                schemaModel.dataBase = dataBase;
+                schemaModel.tenant = options.tntCode;
+                schemaModel.channel = options.channel;
+                resolve(schemaModel);
             } else {
                 _self.createModel(options, dataBase).then(success => {
                     resolve(success);
@@ -139,20 +139,20 @@ module.exports = {
             if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
                 tmpOptions = _.merge(tmpOptions, schemaOptions.options);
             }
-            dataBase.getConnection().createCollection(options.modelName, tmpOptions).then(collection => {
-                collection.moduleName = options.moduleName;
-                collection.rawSchema = schema;
-                collection.modelName = options.modelName;
-                collection.schemaName = options.schemaName;
-                collection.cache = options.cache;
-                collection.dataBase = dataBase;
-                collection.tenant = options.tntCode;
-                collection.channel = options.channel;
-                _self.createIndexes(collection).then(success => {
-                    _self.LOG.debug('Indexes created for: ' + collection.schemaName);
-                    resolve(collection);
+            dataBase.getConnection().createCollection(options.modelName, tmpOptions).then(schemaModel => {
+                schemaModel.moduleName = options.moduleName;
+                schemaModel.rawSchema = schema;
+                schemaModel.modelName = options.modelName;
+                schemaModel.schemaName = options.schemaName;
+                schemaModel.cache = options.cache;
+                schemaModel.dataBase = dataBase;
+                schemaModel.tenant = options.tntCode;
+                schemaModel.channel = options.channel;
+                _self.createIndexes(schemaModel).then(success => {
+                    _self.LOG.debug('Indexes created for: ' + schemaModel.schemaName);
+                    resolve(schemaModel);
                 }).catch(error => {
-                    _self.LOG.error('Indexes failed for: ' + collection.schemaName + ' : ' + error);
+                    _self.LOG.error('Indexes failed for: ' + schemaModel.schemaName + ' : ' + error);
                     reject(error);
                 });
             }).catch(error => {

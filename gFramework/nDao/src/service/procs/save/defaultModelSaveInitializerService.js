@@ -55,7 +55,7 @@ module.exports = {
             if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {
                 request.query = this.resolveQuery(_.merge({}, request.originalQuery || {}), request.model);
             } else if (request.model._id) {
-                let objectId = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, request.model._id);
+                let objectId = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, request.model._id);
                 request.query = {
                     _id: objectId
                 };
@@ -108,7 +108,7 @@ module.exports = {
 
     applyDefaultValues: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
-        let defaultValues = request.collection.rawSchema.schemaOptions[request.tenant].defaultValues;
+        let defaultValues = request.schemaModel.rawSchema.schemaOptions[request.tenant].defaultValues;
         if (defaultValues && !UTILS.isBlank(defaultValues)) {
             _.each(defaultValues, (value, property) => {
                 if (!request.model[property]) {
@@ -127,7 +127,7 @@ module.exports = {
 
     removeVirtualProperties: function (request, response, process) {
         this.LOG.debug('Removing virtual properties from model');
-        let rawSchema = request.collection.rawSchema;
+        let rawSchema = request.schemaModel.rawSchema;
         if (!UTILS.isBlank(rawSchema.virtualProperties)) {
             this.excludeProperty(request.model, rawSchema.virtualProperties);
         }
@@ -156,7 +156,7 @@ module.exports = {
 
     handleNestedModelsSave: function (request, response, process) {
         this.LOG.debug('Saving nexted models');
-        let rawSchema = request.collection.rawSchema;
+        let rawSchema = request.schemaModel.rawSchema;
         if (!UTILS.isBlank(rawSchema.refSchema)) {
             this.handleNestedProperties(request, response, Object.keys(rawSchema.refSchema)).then(success => {
                 process.nextSuccess(request, response);
@@ -202,7 +202,7 @@ module.exports = {
             try {
                 let model = request.model;
                 let models = model[property];
-                let rawSchema = request.collection.rawSchema;
+                let rawSchema = request.schemaModel.rawSchema;
                 let propDef = rawSchema.refSchema[property];
                 if (propDef.type === 'one') {
                     models = [models];
@@ -253,12 +253,12 @@ module.exports = {
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre save model interceptors');
-        let moduleName = request.moduleName || request.collection.moduleName;
-        let schemaName = request.collection.schemaName;
+        let moduleName = request.moduleName || request.schemaModel.moduleName;
+        let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.preSave) {
             let interceptorRequest = {
-                collection: request.collection,
+                schemaModel: request.schemaModel,
                 tenant: request.tenant,
                 options: request.options,
                 query: request.query,
@@ -282,7 +282,7 @@ module.exports = {
 
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model ');
-        request.collection.saveItems(request).then(success => {
+        request.schemaModel.saveItems(request).then(success => {
             let model = {
                 success: true,
                 code: 'SUC_SAVE_00000'
@@ -306,7 +306,7 @@ module.exports = {
 
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
-        let rawSchema = request.collection.rawSchema;
+        let rawSchema = request.schemaModel.rawSchema;
         let inputOptions = request.options || {};
         if (response.model.result && inputOptions.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
             this.populateModels(request, response, [response.model.result], 0).then(success => {
@@ -328,7 +328,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let model = models[index];
             if (model) {
-                _self.populateProperties(request, response, model, Object.keys(request.collection.rawSchema.refSchema)).then(success => {
+                _self.populateProperties(request, response, model, Object.keys(request.schemaModel.rawSchema.refSchema)).then(success => {
                     _self.populateModels(request, response, models, index + 1).then(success => {
                         resolve(success);
                     }).catch(error => {
@@ -348,19 +348,19 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let property = propertiesList.shift();
             if (model[property]) {
-                let refSchema = request.collection.rawSchema.refSchema;
+                let refSchema = request.schemaModel.rawSchema.refSchema;
                 let propertyObject = refSchema[property];
                 let query = {};
                 if (propertyObject.type === 'one') {
                     if (propertyObject.propertyName === '_id') {
-                        query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property]);
+                        query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property]);
                     } else {
                         query[propertyObject.propertyName] = model[property];
                     }
                 } else {
                     if (propertyObject.propertyName === '_id') {
                         query[propertyObject.propertyName] = {
-                            '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property])
+                            '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property])
                         };
                     } else {
                         query[propertyObject.propertyName] = {
@@ -411,18 +411,18 @@ module.exports = {
 
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
-        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.collection.rawSchema, response.model.result);
+        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.schemaModel.rawSchema, response.model.result);
         process.nextSuccess(request, response);
     },
 
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post save model interceptors');
-        let moduleName = request.moduleName || request.collection.moduleName;
-        let schemaName = request.collection.schemaName;
+        let moduleName = request.moduleName || request.schemaModel.moduleName;
+        let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.postSave) {
             let interceptorRequest = {
-                collection: request.collection,
+                schemaModel: request.schemaModel,
                 tenant: request.tenant,
                 query: request.query,
                 originalModel: request.model,
@@ -446,17 +446,16 @@ module.exports = {
     invalidateRouterCache: function (request, response, process) {
         this.LOG.debug('Invalidating router cache for modified model');
         try {
-            let moduleObject = NODICS.getModules()[request.collection.moduleName];
-            let collection = request.collection;
+            let schemaModel = request.schemaModel;
             if (response.model) {
                 SERVICE.DefaultCacheService.flushCache({
-                    moduleName: collection.moduleName,
+                    moduleName: schemaModel.moduleName,
                     channelName: 'router',
-                    prefix: collection.schemaName
+                    prefix: schemaModel.schemaName
                 }).then(success => {
-                    this.LOG.debug('Cache for router: ' + collection.schemaName + ' has been flushed cuccessfully');
+                    this.LOG.debug('Cache for router: ' + schemaModel.schemaName + ' has been flushed cuccessfully');
                 }).catch(error => {
-                    this.LOG.error('Cache for router: ' + collection.schemaName + ' has not been flushed cuccessfully');
+                    this.LOG.error('Cache for router: ' + schemaModel.schemaName + ' has not been flushed cuccessfully');
                     this.LOG.error(error);
                 });
             }
@@ -470,16 +469,16 @@ module.exports = {
     invalidateItemCache: function (request, response, process) {
         this.LOG.debug('Invalidating item cache for modified model');
         try {
-            let collection = request.collection;
-            if (response.model && collection.cache && collection.cache.enabled) {
+            let schemaModel = request.schemaModel;
+            if (response.model && schemaModel.cache && schemaModel.cache.enabled) {
                 SERVICE.DefaultCacheService.flushCache({
-                    moduleName: collection.moduleName,
+                    moduleName: schemaModel.moduleName,
                     channelName: 'schema',
-                    prefix: collection.schemaName
+                    prefix: schemaModel.schemaName
                 }).then(success => {
-                    this.LOG.debug('Cache for schema: ' + collection.schemaName + ' has been flushed cuccessfully');
+                    this.LOG.debug('Cache for schema: ' + schemaModel.schemaName + ' has been flushed cuccessfully');
                 }).catch(error => {
-                    this.LOG.error('Cache for schema: ' + collection.schemaName + ' has not been flushed cuccessfully');
+                    this.LOG.error('Cache for schema: ' + schemaModel.schemaName + ' has not been flushed cuccessfully');
                     this.LOG.error(error);
                 });
             }
@@ -493,29 +492,29 @@ module.exports = {
     triggerModelChangeEvent: function (request, response, process) {
         this.LOG.debug('Triggering event for modified model');
         try {
-            let collection = request.collection;
-            if (response.model.result && collection.rawSchema.event) {
+            let schemaModel = request.schemaModel;
+            if (response.model.result && schemaModel.rawSchema.event) {
                 let event = {
                     enterpriseCode: response.model.result.enterpriseCode || request.enterpriseCode,
                     tenant: request.tenant,
                     event: 'save',
-                    source: collection.moduleName,
-                    target: collection.moduleName,
+                    source: schemaModel.moduleName,
+                    target: schemaModel.moduleName,
                     state: "NEW",
                     type: "ASYNC",
                     targetType: ENUMS.TargetType.EACH_NODE.key,
                     params: [{
                         key: 'schemaName',
-                        value: collection.schemaName
+                        value: schemaModel.schemaName
                     }, {
                         key: 'modelName',
-                        value: collection.modelName
+                        value: schemaModel.modelName
                     }, {
                         key: 'data',
                         value: response.model.result
                     }]
                 };
-                this.LOG.debug('Pushing event for item created : ', collection.schemaName);
+                this.LOG.debug('Pushing event for item created : ', schemaModel.schemaName);
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {

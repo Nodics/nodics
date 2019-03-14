@@ -35,17 +35,17 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do save request');
         try {
-            let moduleName = request.collection.moduleName;
-            let tntCode = request.collection.tenant;
+            let moduleName = request.schemaModel.moduleName;
+            let tntCode = request.schemaModel.tenant;
             let searchEngine = NODICS.getTenantSearchEngine(moduleName, tntCode);
             if (!request.model && !UTILS.isBlank(request.model)) {
                 throw new Error('Model object can not be null or blank');
             } else if (!searchEngine) {
                 throw new Error('Search engine not available for module: ' + moduleName + ' and tenant: ' + tntCode);
             } else {
-                let indexTypeName = request.collection.schemaName;
-                if (request.collection.rawSchema.search && request.collection.rawSchema.search.typeName) {
-                    indexTypeName = request.collection.rawSchema.search.typeName;
+                let indexTypeName = request.schemaModel.schemaName;
+                if (request.schemaModel.rawSchema.search && request.schemaModel.rawSchema.search.typeName) {
+                    indexTypeName = request.schemaModel.rawSchema.search.typeName;
                 }
                 let indexDef = NODICS.getTenantRawSearchSchema(moduleName, tntCode, indexTypeName);
                 if (indexDef) {
@@ -84,7 +84,7 @@ module.exports = {
 
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
-        request.collection.doSave(request).then(result => {
+        request.schemaModel.doSave(request).then(result => {
             response.success = {
                 success: true,
                 code: 'SUC_SRCH_00000',

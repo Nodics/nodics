@@ -14,8 +14,8 @@ const util = require('util');
 
 module.exports = {
     default: {
-        defineDefaultGet: function (collection, rawSchema) {
-            collection.getItems = function (input) {
+        defineDefaultGet: function (schemaModel, rawSchema) {
+            schemaModel.getItems = function (input) {
                 return new Promise((resolve, reject) => {
                     try {
                         this.find(input.query, input.options).toArray((error, result) => {
@@ -32,8 +32,8 @@ module.exports = {
             };
         },
 
-        defineDefaultSave: function (collection, rawSchema) {
-            collection.saveItems = function (input) {
+        defineDefaultSave: function (schemaModel, rawSchema) {
+            schemaModel.saveItems = function (input) {
                 return new Promise((resolve, reject) => {
                     if (!input.model) {
                         reject('Invalid model value to save');
@@ -77,8 +77,8 @@ module.exports = {
             };
         },
 
-        defineDefaultSaveByQuery: function (collection, rawSchema) {
-            collection.updateItems = function (input) {
+        defineDefaultSaveByQuery: function (schemaModel, rawSchema) {
+            schemaModel.updateItems = function (input) {
                 return new Promise((resolve, reject) => {
                     if (!input.model) {
                         reject('Invalid model value to save');
@@ -127,8 +127,8 @@ module.exports = {
             };
         },
 
-        defineDefaultRemove: function (collection, rawSchema) {
-            collection.removeItems = function (input) {
+        defineDefaultRemove: function (schemaModel, rawSchema) {
+            schemaModel.removeItems = function (input) {
                 return new Promise((resolve, reject) => {
                     if (input.query && !UTILS.isBlank(input.query)) {
                         if (input.options && input.options.returnModified) {

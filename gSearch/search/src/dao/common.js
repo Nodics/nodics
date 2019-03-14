@@ -33,9 +33,8 @@ module.exports = {
     },
 
     getSearchModel: function (request) {
-        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        let indexName = request.indexName ? request.indexName : request.collection.indexName;
-        //let indexName = (request.collection && request.collection.indexName) ? request.collection.indexName : ;
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        let indexName = request.indexName ? request.indexName : request.schemaModel.indexName;
         if (!request.moduleName || !request.tenant || !indexName) {
             throw new Error('Invalid request or search is not active for this type');
         } else {

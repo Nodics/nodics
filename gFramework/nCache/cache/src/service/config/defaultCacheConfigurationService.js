@@ -118,7 +118,7 @@ module.exports = {
             options.recursive = request.options.recursive || false;
         }
         options.query = request.query;
-        return request.collection.schemaName + '_' +
+        return request.schemaModel.schemaName + '_' +
             request.tenant + '_' +
             UTILS.generateHash(JSON.stringify(options));
     },

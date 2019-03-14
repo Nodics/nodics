@@ -33,8 +33,8 @@ module.exports = {
     },
 
     get: function (request) {
-        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        request.moduleName = request.moduleName || request.collection.moduleName;
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.schemaModel.moduleName;
         return SERVICE.DefaultPipelineService.start('modelsGetInitializerPipeline', request, {});
     },
 
@@ -57,14 +57,14 @@ module.exports = {
     },
 
     save: function (request) {
-        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        request.moduleName = request.moduleName || request.collection.moduleName;
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.schemaModel.moduleName;
         return SERVICE.DefaultPipelineService.start('modelsSaveInitializerPipeline', request, {});
     },
 
     remove: function (request) {
-        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        request.moduleName = request.moduleName || request.collection.moduleName;
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.schemaModel.moduleName;
         return SERVICE.DefaultPipelineService.start('modelsRemoveInitializerPipeline', request, {});
     },
 
@@ -83,8 +83,8 @@ module.exports = {
     },
 
     update: function (request) {
-        request.collection = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        request.moduleName = request.moduleName || request.collection.moduleName;
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.schemaModel.moduleName;
         return SERVICE.DefaultPipelineService.start('modelsUpdateInitializerPipeline', request, {});
     }
 };

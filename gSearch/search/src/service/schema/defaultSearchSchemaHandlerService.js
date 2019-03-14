@@ -83,9 +83,9 @@ module.exports = {
                                 typeof SERVICE[searchOptions.schemaHandler].prepareFromSchema === 'function') {
                                 let searchSchema = SERVICE[searchOptions.schemaHandler].prepareFromSchema(moduleName, schemaName);
                                 if (searchSchema && !UTILS.isBlank(searchSchema)) {
-                                    let collection = NODICS.getModels(moduleName, tntCode)[schemaName.toUpperCaseFirstChar() + 'Model'];
-                                    if (collection) {
-                                        collection.typeName = searchSchema.typeName;
+                                    let schemaModel = NODICS.getModels(moduleName, tntCode)[schemaName.toUpperCaseFirstChar() + 'Model'];
+                                    if (schemaModel) {
+                                        schemaModel.typeName = searchSchema.typeName;
                                     }
                                     SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(moduleName, tntCode, searchSchema);
                                 }

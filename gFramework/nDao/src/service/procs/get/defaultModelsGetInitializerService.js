@@ -35,7 +35,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating get request: ');
         let options = request.options;
-        if (!request.collection) {
+        if (!request.schemaModel) {
             process.error(request, response, {
                 success: false,
                 code: 'ERR_FIND_00001',
@@ -63,7 +63,7 @@ module.exports = {
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query');
         if (request.query && request.query._id) {
-            request.query._id = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, request.query._id);
+            request.query._id = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, request.query._id);
         }
         process.nextSuccess(request, response);
     },
@@ -87,13 +87,13 @@ module.exports = {
     },
 
     lookupCache: function (request, response, process) {
-        if (request.collection.cache &&
-            request.collection.cache.enabled) {
+        if (request.schemaModel.cache &&
+            request.schemaModel.cache.enabled) {
             request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createItemKey(request);
             this.LOG.debug('Model cache lookup for key: ', request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
-                moduleName: request.moduleName || request.collection.moduleName,
-                channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.collection.schemaName),
+                moduleName: request.moduleName || request.schemaModel.moduleName,
+                channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.schemaModel.schemaName),
                 key: request.cacheKeyHash
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
@@ -120,12 +120,12 @@ module.exports = {
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre get model interceptors');
-        let moduleName = request.moduleName || request.collection.moduleName;
-        let schemaName = request.collection.schemaName;
+        let moduleName = request.moduleName || request.schemaModel.moduleName;
+        let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.preGet) {
             let interceptorRequest = {
-                collection: request.collection,
+                schemaModel: request.schemaModel,
                 tenant: request.tenant,
                 query: request.query,
                 options: request.options
@@ -147,7 +147,7 @@ module.exports = {
 
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
-        request.collection.getItems(request).then(result => {
+        request.schemaModel.getItems(request).then(result => {
             response.success = {
                 success: true,
                 code: 'SUC_FIND_00000',
@@ -166,7 +166,7 @@ module.exports = {
 
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
-        let rawSchema = request.collection.rawSchema;
+        let rawSchema = request.schemaModel.rawSchema;
         let inputOptions = request.options || {};
 
         if (response.success.result.length > 0 &&
@@ -188,18 +188,18 @@ module.exports = {
 
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
-        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.collection.rawSchema, response.success.result);
+        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.schemaModel.rawSchema, response.success.result);
         process.nextSuccess(request, response);
     },
 
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post model interceptors');
-        let moduleName = request.moduleName || request.collection.moduleName;
-        let schemaName = request.collection.schemaName;
+        let moduleName = request.moduleName || request.schemaModel.moduleName;
+        let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.postGet) {
             let interceptorRequest = {
-                collection: request.collection,
+                schemaModel: request.schemaModel,
                 tenant: request.tenant,
                 query: request.query,
                 options: request.options,
@@ -223,13 +223,13 @@ module.exports = {
 
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
-        if (UTILS.isItemCashable(response.success.result, request.collection)) {
+        if (UTILS.isItemCashable(response.success.result, request.schemaModel)) {
             SERVICE.DefaultCacheService.put({
-                moduleName: request.moduleName || request.collection.moduleName,
-                channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.collection.schemaName),
+                moduleName: request.moduleName || request.schemaModel.moduleName,
+                channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.schemaModel.schemaName),
                 key: request.cacheKeyHash,
                 value: response.success.result,
-                ttl: request.collection.cache.ttl
+                ttl: request.schemaModel.cache.ttl
             }).then(success => {
                 this.LOG.info('Item saved in item cache');
             }).catch(error => {
@@ -244,7 +244,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let model = models[index];
             if (model) {
-                _self.populateProperties(request, response, model, Object.keys(request.collection.rawSchema.refSchema)).then(success => {
+                _self.populateProperties(request, response, model, Object.keys(request.schemaModel.rawSchema.refSchema)).then(success => {
                     _self.populateModels(request, response, models, index + 1).then(success => {
                         resolve(success);
                     }).catch(error => {
@@ -264,19 +264,19 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let property = propertiesList.shift();
             if (model[property]) {
-                let refSchema = request.collection.rawSchema.refSchema;
+                let refSchema = request.schemaModel.rawSchema.refSchema;
                 let propertyObject = refSchema[property];
                 let query = {};
                 if (propertyObject.type === 'one') {
                     if (propertyObject.propertyName === '_id') {
-                        query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property]);
+                        query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property]);
                     } else {
                         query[propertyObject.propertyName] = model[property];
                     }
                 } else {
                     if (propertyObject.propertyName === '_id') {
                         query[propertyObject.propertyName] = {
-                            '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.collection, model[property])
+                            '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property])
                         };
                     } else {
                         query[propertyObject.propertyName] = {

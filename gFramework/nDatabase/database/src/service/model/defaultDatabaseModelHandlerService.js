@@ -140,20 +140,20 @@ module.exports = {
                     SERVICE[conOptions.modelHandler].prepareDatabaseOptions(options).then(success => {
                         options.cache = _.merge({}, schema.cache || {});
                         options.channel = 'master';
-                        SERVICE[conOptions.modelHandler].retrieveModel(options, options.dataBase.master).then(collection => {
-                            _self.registerModelMiddleWare(options, collection, schema);
+                        SERVICE[conOptions.modelHandler].retrieveModel(options, options.dataBase.master).then(schemaModel => {
+                            _self.registerModelMiddleWare(options, schemaModel, schema);
                             if (!options.moduleObject.models[options.tntCode].master) {
                                 options.moduleObject.models[options.tntCode].master = {};
                             }
-                            options.moduleObject.models[options.tntCode].master[options.modelName] = collection;
+                            options.moduleObject.models[options.tntCode].master[options.modelName] = schemaModel;
                             if (options.dataBase.test) {
                                 options.channel = 'test';
-                                SERVICE[conOptions.modelHandler].retrieveModel(options, options.dataBase.master).then(collection => {
-                                    _self.registerModelMiddleWare(options, collection, schema);
+                                SERVICE[conOptions.modelHandler].retrieveModel(options, options.dataBase.master).then(schemaModel => {
+                                    _self.registerModelMiddleWare(options, schemaModel, schema);
                                     if (!options.moduleObject.models[options.tntCode].test) {
                                         options.moduleObject.models[options.tntCode].test = {};
                                     }
-                                    options.moduleObject.models[options.tntCode].test[options.modelName] = collection;
+                                    options.moduleObject.models[options.tntCode].test[options.modelName] = schemaModel;
                                     resolve(true);
                                 }).catch(error => {
                                     reject(error);
@@ -178,21 +178,21 @@ module.exports = {
         });
     },
 
-    modelMiddleware: function (modelGroup, collection, schemaDef) {
+    modelMiddleware: function (modelGroup, schemaModel, schemaDef) {
         if (!UTILS.isBlank(modelGroup)) {
             let modelFunctions = UTILS.getAllMethods(modelGroup);
             modelFunctions.forEach(function (operationName) {
-                modelGroup[operationName](collection, schemaDef);
+                modelGroup[operationName](schemaModel, schemaDef);
             });
         }
     },
 
-    registerModelMiddleWare: function (options, collection, rawSchema) {
+    registerModelMiddleWare: function (options, schemaModel, rawSchema) {
         let rawModels = NODICS.getRawModels();
-        this.modelMiddleware(rawModels.default, collection, rawSchema);
+        this.modelMiddleware(rawModels.default, schemaModel, rawSchema);
         if (rawModels[options.moduleName]) {
-            this.modelMiddleware(rawModels[options.moduleName].default, collection, rawSchema);
-            this.modelMiddleware(rawModels[options.moduleName][options.schemaName], collection, rawSchema);
+            this.modelMiddleware(rawModels[options.moduleName].default, schemaModel, rawSchema);
+            this.modelMiddleware(rawModels[options.moduleName][options.schemaName], schemaModel, rawSchema);
         }
     },
 

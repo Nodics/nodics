@@ -159,11 +159,11 @@ module.exports = {
                     _self.registerSearchModels(options.rawSearchModelDef[indexDef.indexName], searchModel);
                     options.moduleObject.searchModels[options.tntCode][searchModelName] = searchModel;
                     if (indexDef.schemaName) {
-                        let collection = NODICS.getModels(options.moduleName, options.tntCode)[indexDef.schemaName.toUpperCaseFirstChar() + 'Model'];
-                        if (collection) {
-                            collection.searchModelName = searchModelName;
-                            collection.indexName = indexDef.indexName;
-                            collection.typeName = indexDef.typeName;
+                        let schemaModel = NODICS.getModels(options.moduleName, options.tntCode)[indexDef.schemaName.toUpperCaseFirstChar() + 'Model'];
+                        if (schemaModel) {
+                            schemaModel.searchModelName = searchModelName;
+                            schemaModel.indexName = indexDef.indexName;
+                            schemaModel.typeName = indexDef.typeName;
                         }
                     }
                     if (!options.searchEngine.isActiveIndex(indexDef.indexName)) {

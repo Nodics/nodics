@@ -56,8 +56,8 @@ module.exports = {
 
     preProcessor: function (request, response, process) {
         this.LOG.debug('Applying pre processors in models');
-        let moduleName = request.moduleName || request.collection.moduleName;
-        let schemaName = request.collection.schemaName;
+        let moduleName = request.moduleName || request.schemaModel.moduleName;
+        let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.preSaveProcessor && interceptors.preSaveProcessor.length > 0) {
             let interceptorRequest = {
@@ -139,8 +139,8 @@ module.exports = {
 
     postProcessor: function (request, response, process) {
         this.LOG.debug('Applying post processors in models');
-        let moduleName = request.moduleName || request.collection.moduleName;
-        let schemaName = request.collection.schemaName;
+        let moduleName = request.moduleName || request.schemaModel.moduleName;
+        let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.postSaveProcessor && interceptors.postSaveProcessor.length > 0) {
             let interceptorRequest = {
