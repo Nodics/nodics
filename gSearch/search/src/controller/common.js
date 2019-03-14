@@ -58,52 +58,6 @@ module.exports = {
     },
 
     /**
-     * This function is used to check if requested document is available withing current index and its type
-     * @param {request} request is used to carry request parameters sent by consumer
-     * @param {callback} callback is a function, called after fullfilling business requirement 
-     */
-    doExistItem: function (request, callback) {
-        request.indexName = request.httpRequest.params.indexName || undefined;
-        request = _.merge(request, request.httpRequest.body || {});
-        if (request.httpRequest.params.id) {
-            request.query = request.query || {};
-            request.query.id = request.httpRequest.params.id;
-        }
-        if (callback) {
-            FACADE.dsdName.doExistItem(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.dsdName.doExistItem(request);
-        }
-    },
-
-    /**
-     * This function is used to check if requested document is available withing current index and its type
-     * @param {request} request is used to carry request parameters sent by consumer
-     * @param {callback} callback is a function, called after fullfilling business requirement 
-     */
-    doExists: function (request, callback) {
-        request.indexName = request.httpRequest.params.indexName || undefined;
-        request = _.merge(request, request.httpRequest.body || {});
-        if (request.httpRequest.params.id) {
-            request.query = request.query || {};
-            request.query.id = request.httpRequest.params.id;
-        }
-        if (callback) {
-            FACADE.dsdName.doExists(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.dsdName.doExists(request);
-        }
-    },
-
-    /**
      * This function is used to check if search cluster is live and running fine
      * @param {request} request is used to carry request parameters sent by consumer
      * @param {callback} callback is a function, called after fullfilling business requirement 
@@ -123,54 +77,33 @@ module.exports = {
     },
 
     /**
-     * This function is used to put document within indeces
-     * @param {request} request is used to carry request parameters sent by consumer
-     * @param {callback} callback is a function, called after fullfilling business requirement 
-     */
-    doSave: function (request, callback) {
+    * This function is used to check if requested document is available withing current index and its type
+    * @param {request} request is used to carry request parameters sent by consumer
+    * @param {callback} callback is a function, called after fullfilling business requirement 
+    */
+    doExist: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.model = request.httpRequest.body;
+        request = _.merge(request, request.httpRequest.body || {});
+        if (request.httpRequest.params.id) {
+            request.query = request.query || {};
+            request.query.id = request.httpRequest.params.id;
+        }
         if (callback) {
-            FACADE.dsdName.doSave(request).then(success => {
+            FACADE.dsdName.doExist(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.doSave(request);
+            return FACADE.dsdName.doExist(request);
         }
     },
 
     /**
-     * This function is used to perform bulk operation within single or multiple indexes
-     * @param {request} request is used to carry request parameters sent by consumer
-     * @param {callback} callback is a function, called after fullfilling business requirement 
-     */
-    doBulk: function (request, callback) {
-        request.indexName = request.httpRequest.params.indexName || undefined;
-        request = _.merge(request, request.httpRequest.body || {});
-        if (request.httpRequest.body &&
-            request.httpRequest.body.models &&
-            request.httpRequest.body.models.length > 1) {
-            if (callback) {
-                FACADE.dsdName.doBulk(request).then(success => {
-                    callback(null, success);
-                }).catch(error => {
-                    callback(error);
-                });
-            } else {
-                return FACADE.dsdName.doBulk(request);
-            }
-        } else {
-
-        }
-    },
-
-    /**
-     * This function is used to fetch a single document from index
-     * @param {request} request is used to carry request parameters sent by consumer
-     * @param {callback} callback is a function, called after fullfilling business requirement 
-     */
+    * This function is used to fetch a single document from index
+    * @param {request} request is used to carry request parameters sent by consumer
+    * @param {callback} callback is a function, called after fullfilling business requirement 
+    */
     doGet: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         if (request.httpRequest.params.id) {
@@ -214,6 +147,63 @@ module.exports = {
             });
         } else {
             return FACADE.dsdName.doSearch(request);
+        }
+    },
+
+    /**
+     * This function is used to put document within indeces
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
+    doSave: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.model = request.httpRequest.body;
+        if (callback) {
+            FACADE.dsdName.doSave(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doSave(request);
+        }
+    },
+
+    /**
+     * This function is used to perform bulk operation within single or multiple indexes
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
+    doBulk: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
+        if (callback) {
+            FACADE.dsdName.doBulk(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doBulk(request);
+        }
+    },
+
+    /**
+     * This function is used to perform update operation
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
+    doUpdate: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
+        if (callback) {
+            FACADE.dsdName.doUpdate(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doUpdate(request);
         }
     },
 

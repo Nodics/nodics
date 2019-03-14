@@ -70,13 +70,12 @@ module.exports = {
         });
     },
 
-
-    doExistItem: function (request) {
+    doCheckHealth: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 request.searchModel = _self.getSearchModel(request);
-                request.searchModel.doExistItem(request).then(success => {
+                request.searchModel.doCheckHealth(request).then(success => {
                     resolve({
                         success: true,
                         code: 'SUC_SRCH_00000',
@@ -121,62 +120,6 @@ module.exports = {
                 reject({
                     success: false,
                     code: 'ERR_SRCH_00000',
-                    error: error
-                });
-            }
-        });
-    },
-
-    doCheckHealth: function (request) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                request.searchModel = _self.getSearchModel(request);
-                request.searchModel.doCheckHealth(request).then(success => {
-                    resolve({
-                        success: true,
-                        code: 'SUC_SRCH_00000',
-                        result: success
-                    });
-                }).catch(error => {
-                    reject({
-                        success: false,
-                        code: 'ERR_SRCH_00000',
-                        error: error
-                    });
-                });
-            } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error
-                });
-            }
-        });
-    },
-
-    doIndex: function (request) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                request.searchModel = _self.getSearchModel(request);
-                request.searchModel.doIndex(request).then(success => {
-                    resolve({
-                        success: true,
-                        code: 'SUC_SRCH_00000',
-                        result: success
-                    });
-                }).catch(error => {
-                    reject({
-                        success: false,
-                        code: 'ERR_SRCH_00000',
-                        error: error
-                    });
-                });
-            } catch (error) {
-                reject({
-                    success: false,
-                    code: '',
                     error: error
                 });
             }
@@ -261,6 +204,64 @@ module.exports = {
                 reject({
                     success: false,
                     code: 'ERR_SRCH_00000',
+                    error: error
+                });
+            }
+        });
+    },
+
+
+    doBulk: function (request) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                request.searchModel = _self.getSearchModel(request);
+                request.searchModel.doBulk(request).then(success => {
+                    resolve({
+                        success: true,
+                        code: 'SUC_SRCH_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject({
+                        success: false,
+                        code: 'ERR_SRCH_00000',
+                        error: error
+                    });
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: '',
+                    error: error
+                });
+            }
+        });
+    },
+
+
+    doUpdate: function (request) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                request.searchModel = _self.getSearchModel(request);
+                request.searchModel.doUpdate(request).then(success => {
+                    resolve({
+                        success: true,
+                        code: 'SUC_SRCH_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject({
+                        success: false,
+                        code: 'ERR_SRCH_00000',
+                        error: error
+                    });
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: '',
                     error: error
                 });
             }

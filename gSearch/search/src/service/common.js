@@ -36,21 +36,12 @@ module.exports = {
         return DAO.DaoName.doRefresh(request);
     },
 
-    doExistItem: function (request) {
-        return DAO.DaoName.doExistItem(request);
-    },
-
-
-    doExists: function (request) {
-        return DAO.DaoName.doExists(request);
-    },
-
     doCheckHealth: function (request) {
         return DAO.DaoName.doCheckHealth(request);
     },
 
-    doIndex: function (request) {
-        return DAO.DaoName.doIndex(request);
+    doExists: function (request) {
+        return DAO.DaoName.doExists(request);
     },
 
     doGet: function (request) {
@@ -63,6 +54,14 @@ module.exports = {
 
     doSave: function (request) {
         return DAO.DaoName.doSave(request);
+    },
+
+    doBulk: function (request) {
+        return DAO.DaoName.doBulk(request);
+    },
+
+    doUpdate: function (request) {
+        return DAO.DaoName.doUpdate(request);
     },
 
     doRemove: function (request) {

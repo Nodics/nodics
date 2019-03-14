@@ -43,40 +43,6 @@ module.exports = {
                 }
             },
 
-            doGetExistItem: {
-                secured: true,
-                key: '/schemaName/search/exists/id/:id',
-                method: 'GET',
-                controller: 'DefaultctrlName',
-                operation: 'doExistItem',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/exists/id/:id',
-                }
-            },
-
-            doPostExistItem: {
-                secured: true,
-                key: '/schemaName/search/exists',
-                method: 'POST',
-                controller: 'DefaultctrlName',
-                operation: 'doExistItem',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/exists',
-                    body: {
-                        options: '{ object of options required for this option }',
-                        query: {
-                            id: ' Id of document to check if exists'
-                        }
-                    }
-                }
-            },
-
             doGetCheckHealth: {
                 secured: true,
                 key: '/schemaName/search/check/health',
@@ -108,60 +74,36 @@ module.exports = {
                 }
             },
 
-            doPutSave: {
+            doGetExist: {
                 secured: true,
-                key: '/schemaName/search',
-                method: 'PUT',
+                key: '/schemaName/search/exists/id/:id',
+                method: 'GET',
                 controller: 'DefaultctrlName',
-                operation: 'doSave',
+                operation: 'doExist',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'PUT',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/search',
-                    body: {
-                        options: '{ options to pass to save these items }',
-                        models: '[ array of models to save ]'
-                    }
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/exists/id/:id',
                 }
             },
 
-            doPostBulk: {
+            doPostExist: {
                 secured: true,
-                key: '/schemaName/search/all',
-                method: 'PUT',
+                key: '/schemaName/search/exists',
+                method: 'POST',
                 controller: 'DefaultctrlName',
-                operation: 'doBulk',
+                operation: 'doExist',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'PUT',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/search',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/exists',
                     body: {
-                        options: '{ options to pass to save these items }',
-                        data: [{ // action description
-                            index: {
-                                _index: 'myindex',
-                                _type: 'mytype',
-                                _id: 1
-                            }
-                        }, { // the document to index
-                            title: 'foo'
-                        }, { // action description
-                            update: {
-                                _index: 'myindex',
-                                _type: 'mytype',
-                                _id: 2
-                            }
-                        }, { // the document to update
-                            doc: { title: 'foo' }
-                        }, { // action description
-                            delete: {
-                                _index: 'myindex',
-                                _type: 'mytype',
-                                _id: 3
-                            }
-                        }]
+                        options: '{ object of options required for this option }',
+                        query: {
+                            id: ' Id of document to check if exists'
+                        }
                     }
                 }
             },
@@ -230,6 +172,68 @@ module.exports = {
                         query: '{ object of elastic search query }'
                     }
                 }
+            },
+
+            doPutSave: {
+                secured: true,
+                key: '/schemaName/search',
+                method: 'PUT',
+                controller: 'DefaultctrlName',
+                operation: 'doSave',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search',
+                    body: {
+                        options: '{ options to pass to save these items }',
+                        models: '[ array of models to save ]'
+                    }
+                }
+            },
+
+            doPostBulk: {
+                secured: true,
+                key: '/schemaName/search/all',
+                method: 'PUT',
+                controller: 'DefaultctrlName',
+                operation: 'doBulk',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search',
+                    body: {
+                        options: '{ options to pass to save these items }',
+                        data: [{ // action description
+                            index: {
+                                _index: 'myindex',
+                                _type: 'mytype',
+                                _id: 1
+                            }
+                        }, { // the document to index
+                            title: 'foo'
+                        }, { // action description
+                            update: {
+                                _index: 'myindex',
+                                _type: 'mytype',
+                                _id: 2
+                            }
+                        }, { // the document to update
+                            doc: { title: 'foo' }
+                        }, { // action description
+                            delete: {
+                                _index: 'myindex',
+                                _type: 'mytype',
+                                _id: 3
+                            }
+                        }]
+                    }
+                }
+            },
+
+            doPatchUpdate: {
+
             },
 
             doGetRemove: {
@@ -326,7 +330,7 @@ module.exports = {
                 }
             },
 
-            doGetRemoveType: {
+            doGetRemoveIndex: {
                 secured: true,
                 key: '/schemaName/search/index',
                 method: 'DELETE',
@@ -377,41 +381,6 @@ module.exports = {
                 }
             },
 
-            doGetExistItem: {
-                secured: true,
-                key: '/:indexName/search/exists/id/:id',
-                method: 'GET',
-                controller: 'DefaultSearchController',
-                operation: 'doExistItem',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/exists/id/:id',
-                }
-            },
-
-            doPostExistItem: {
-                secured: true,
-                key: '/:indexName/search/exists',
-                method: 'POST',
-                controller: 'DefaultSearchController',
-                operation: 'doExistItem',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/exists',
-                    body: {
-                        options: '{ object of options required for this option }',
-                        query: {
-                            id: ' Id of document to check if exists'
-                        }
-                    }
-                }
-            },
-
-            // This operation belongs to conection level, which needs to be module level - need to re-validate it
             doGetCheckHealth: {
                 secured: true,
                 key: '/:indexName/search/check/health',
@@ -443,60 +412,36 @@ module.exports = {
                 }
             },
 
-            doPutSave: {
+            doGetExist: {
                 secured: true,
-                key: '/:indexName/search',
-                method: 'PUT',
+                key: '/:indexName/search/exists/id/:id',
+                method: 'GET',
                 controller: 'DefaultSearchController',
-                operation: 'doSave',
+                operation: 'doExist',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'PUT',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/search',
-                    body: {
-                        options: '{ options to pass to save these items }',
-                        models: '[ array of models to save ]'
-                    }
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/exists/id/:id',
                 }
             },
 
-            doPostBulk: {
+            doPostExist: {
                 secured: true,
-                key: '/:indexName/search/all',
-                method: 'PUT',
+                key: '/:indexName/search/exists',
+                method: 'POST',
                 controller: 'DefaultSearchController',
-                operation: 'doBulk',
+                operation: 'doExist',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'PUT',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/search',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/exists',
                     body: {
-                        options: '{ options to pass to save these items }',
-                        data: [{ // action description
-                            index: {
-                                _index: 'myindex',
-                                _type: 'mytype',
-                                _id: 1
-                            }
-                        }, { // the document to index
-                            title: 'foo'
-                        }, { // action description
-                            update: {
-                                _index: 'myindex',
-                                _type: 'mytype',
-                                _id: 2
-                            }
-                        }, { // the document to update
-                            doc: { title: 'foo' }
-                        }, { // action description
-                            delete: {
-                                _index: 'myindex',
-                                _type: 'mytype',
-                                _id: 3
-                            }
-                        }]
+                        options: '{ object of options required for this option }',
+                        query: {
+                            id: ' Id of document to check if exists'
+                        }
                     }
                 }
             },
@@ -565,6 +510,68 @@ module.exports = {
                         query: '{ object of elastic search query }'
                     }
                 }
+            },
+
+            doPutSave: {
+                secured: true,
+                key: '/:indexName/search',
+                method: 'PUT',
+                controller: 'DefaultSearchController',
+                operation: 'doSave',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search',
+                    body: {
+                        options: '{ options to pass to save these items }',
+                        models: '[ array of models to save ]'
+                    }
+                }
+            },
+
+            doPostBulk: {
+                secured: true,
+                key: '/:indexName/search/all',
+                method: 'PUT',
+                controller: 'DefaultSearchController',
+                operation: 'doBulk',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/{moduleName}/:indexName/search',
+                    body: {
+                        options: '{ options to pass to save these items }',
+                        data: [{ // action description
+                            index: {
+                                _index: 'myindex',
+                                _type: 'mytype',
+                                _id: 1
+                            }
+                        }, { // the document to index
+                            title: 'foo'
+                        }, { // action description
+                            update: {
+                                _index: 'myindex',
+                                _type: 'mytype',
+                                _id: 2
+                            }
+                        }, { // the document to update
+                            doc: { title: 'foo' }
+                        }, { // action description
+                            delete: {
+                                _index: 'myindex',
+                                _type: 'mytype',
+                                _id: 3
+                            }
+                        }]
+                    }
+                }
+            },
+
+            doPatchUpdate: {
+
             },
 
             doGetRemove: {
@@ -661,12 +668,12 @@ module.exports = {
                 }
             },
 
-            doGetRemoveType: {
+            doGetRemoveIndex: {
                 secured: true,
-                key: '/:indexName/search/type',
+                key: '/:indexName/search/index',
                 method: 'DELETE',
                 controller: 'DefaultSearchController',
-                operation: 'removeType',
+                operation: 'doRemoveIndex',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',

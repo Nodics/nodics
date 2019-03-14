@@ -52,61 +52,6 @@ module.exports = {
             };
         },
 
-        defineDefaultDoExistItem: function (searchModel) {
-            searchModel.doExistItem = function (input) {
-                let _self = this;
-                return new Promise((resolve, reject) => {
-                    try {
-                        let indexQuery = _.merge(_.merge({}, _self.searchEngine.getOptions().existsOptions || {}), _.merge(_.merge({}, input.options || {}), {
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
-                            id: input.query.id
-                        }));
-                        _self.LOG.debug('Executing health command with options');
-                        _self.LOG.debug(indexQuery);
-                        _self.searchEngine.getConnection().exists(indexQuery, function (error, response) {
-                            if (error) {
-                                reject(error);
-                            }
-                            else {
-                                resolve(response);
-                            }
-                        });
-                    } catch (error) {
-                        reject(error);
-                    }
-                });
-            };
-        },
-
-
-        defineDefaultDoExists: function (searchModel) {
-            searchModel.doExists = function (input) {
-                let _self = this;
-                return new Promise((resolve, reject) => {
-                    try {
-                        let indexQuery = _.merge(_.merge({}, _self.searchEngine.getOptions().existsOptions || {}), _.merge(_.merge({}, input.options || {}), {
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
-                            id: input.query.id
-                        }));
-                        _self.LOG.debug('Executing health command with options');
-                        _self.LOG.debug(indexQuery);
-                        _self.searchEngine.getConnection().exists(indexQuery, function (error, response) {
-                            if (error) {
-                                reject(error);
-                            }
-                            else {
-                                resolve(response);
-                            }
-                        });
-                    } catch (error) {
-                        reject(error);
-                    }
-                });
-            };
-        },
-
         defineDefaultDoCheckHealth: function (searchModel) {
             searchModel.doCheckHealth = function (input) {
                 let _self = this;
@@ -132,60 +77,26 @@ module.exports = {
             };
         },
 
-        defineDefaultDoSave: function (searchModel) { //Required pipeline to process this request
-            searchModel.doSave = function (input) {
+        defineDefaultDoExist: function (searchModel) {
+            searchModel.doExist = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        try {
-                            let putQuery = _.merge(_.merge({}, _self.searchEngine.getOptions().saveOptions || {}), _.merge(_.merge({}, input.options || {}), {
-                                index: _self.indexDef.indexName,
-                                type: _self.indexDef.typeName,
-                                id: input.model[_self.indexDef.idPropertyName],
-                                body: input.model
-                            }));
-                            _self.LOG.debug('Executing save command with options');
-                            _self.LOG.debug(putQuery);
-                            _self.searchEngine.getConnection().index(putQuery, function (error, response) {
-                                if (error) {
-                                    reject(error);
-                                }
-                                else {
-                                    resolve(response);
-                                }
-                            });
-                        } catch (error) {
-                            reject(error);
-                        }
-                    } catch (error) {
-                        reject(error);
-                    }
-                });
-            };
-        },
-
-        defineDefaultDoBulk: function (searchModel) { //Required pipeline to process this request
-            searchModel.doBulk = function (input) {
-                let _self = this;
-                return new Promise((resolve, reject) => {
-                    try {
-                        try {
-                            let bulkQuery = _.merge(_self.searchEngine.getOptions().bulkOptions || {}, _.merge(input.options || {}, {
-                                body: input.data
-                            }));
-                            _self.LOG.debug('Executing bulk command with options');
-                            _self.LOG.debug(bulkQuery);
-                            _self.searchEngine.getConnection().bulk(bulkQuery, function (error, response) {
-                                if (error) {
-                                    reject(error);
-                                }
-                                else {
-                                    resolve(response);
-                                }
-                            });
-                        } catch (error) {
-                            reject(error);
-                        }
+                        let indexQuery = _.merge(_.merge({}, _self.searchEngine.getOptions().existsOptions || {}), _.merge(_.merge({}, input.options || {}), {
+                            index: _self.indexDef.indexName,
+                            type: _self.indexDef.typeName,
+                            id: input.query.id
+                        }));
+                        _self.LOG.debug('Executing health command with options');
+                        _self.LOG.debug(indexQuery);
+                        _self.searchEngine.getConnection().exists(indexQuery, function (error, response) {
+                            if (error) {
+                                reject(error);
+                            }
+                            else {
+                                resolve(response);
+                            }
+                        });
                     } catch (error) {
                         reject(error);
                     }
@@ -250,6 +161,96 @@ module.exports = {
                                 resolve(response);
                             }
                         });
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
+        defineDefaultDoSave: function (searchModel) {
+            searchModel.doSave = function (input) {
+                let _self = this;
+                return new Promise((resolve, reject) => {
+                    try {
+                        try {
+                            let putQuery = _.merge(_.merge({}, _self.searchEngine.getOptions().saveOptions || {}), _.merge(_.merge({}, input.options || {}), {
+                                index: _self.indexDef.indexName,
+                                type: _self.indexDef.typeName,
+                                id: input.model[_self.indexDef.idPropertyName],
+                                body: input.model
+                            }));
+                            _self.LOG.debug('Executing save command with options');
+                            _self.LOG.debug(putQuery);
+                            _self.searchEngine.getConnection().index(putQuery, function (error, response) {
+                                if (error) {
+                                    reject(error);
+                                }
+                                else {
+                                    resolve(response);
+                                }
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
+        defineDefaultDoBulk: function (searchModel) { //Required pipeline to process this request
+            searchModel.doBulk = function (input) {
+                let _self = this;
+                return new Promise((resolve, reject) => {
+                    try {
+                        try {
+                            let bulkQuery = _.merge(_self.searchEngine.getOptions().bulkOptions || {}, _.merge(input.options || {}, {
+                                body: input.data
+                            }));
+                            _self.LOG.debug('Executing bulk command with options');
+                            _self.LOG.debug(bulkQuery);
+                            _self.searchEngine.getConnection().bulk(bulkQuery, function (error, response) {
+                                if (error) {
+                                    reject(error);
+                                }
+                                else {
+                                    resolve(response);
+                                }
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
+        defineDefaultDoUpdate: function (searchModel) {
+            searchModel.doUpdate = function (input) {
+                let _self = this;
+                return new Promise((resolve, reject) => {
+                    try {
+                        try {
+                            let bulkQuery = _.merge(_self.searchEngine.getOptions().bulkOptions || {}, _.merge(input.options || {}, {
+                                body: input.data
+                            }));
+                            _self.LOG.debug('Executing bulk command with options');
+                            _self.LOG.debug(bulkQuery);
+                            _self.searchEngine.getConnection().update(bulkQuery, function (error, response) {
+                                if (error) {
+                                    reject(error);
+                                }
+                                else {
+                                    resolve(response);
+                                }
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
                     } catch (error) {
                         reject(error);
                     }
@@ -366,7 +367,7 @@ module.exports = {
             };
         },
 
-        defineDefaultRemoveType: function (searchModel) { //Required pipeline to process this request
+        defineDefaultRemoveType: function (searchModel) {
             searchModel.doRemoveIndex = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {

@@ -36,20 +36,12 @@ module.exports = {
         return SERVICE.srvcName.doRefresh(request);
     },
 
-    doExistItem: function (request) {
-        return SERVICE.srvcName.doExistItem(request);
-    },
-
-    doExists: function (request) {
-        return SERVICE.srvcName.doExists(request);
-    },
-
     doCheckHealth: function (request) {
         return SERVICE.srvcName.doCheckHealth(request);
     },
 
-    doIndex: function (request) {
-        return SERVICE.srvcName.doIndex(request);
+    doExists: function (request) {
+        return SERVICE.srvcName.doExists(request);
     },
 
     doGet: function (request) {
@@ -62,6 +54,14 @@ module.exports = {
 
     doSave: function (request) {
         return SERVICE.srvcName.doSave(request);
+    },
+
+    doBulk: function (request) {
+        return SERVICE.srvcName.doBulk(request);
+    },
+
+    doUpdate: function (request) {
+        return SERVICE.srvcName.doUpdate(request);
     },
 
     doRemove: function (request) {
