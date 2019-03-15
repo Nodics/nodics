@@ -1,12 +1,12 @@
 {
-    "name": "admin",
+    "name": "powerTool",
     "index": "500.0",
     "publish": true,
     "web": true,
     "description": "Nodics applicaion module. It will hold all configuration and storefront point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "admin"
+        "powerTool"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

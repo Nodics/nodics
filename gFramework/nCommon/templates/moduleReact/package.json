@@ -7,7 +7,7 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customApplication",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "admin"
+        "customApplication"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

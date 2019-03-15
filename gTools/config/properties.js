@@ -11,9 +11,9 @@
 
 module.exports = {
     moduleGroups: {
-        admindesk: [
-            'gAdminDesk',
-            'admin'
+        tools: [
+            'gTools',
+            'powerTool'
         ]
     }
 };

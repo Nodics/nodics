@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    admin: {
+    powerTool: {
         initProperties: function (app) {
 
         },

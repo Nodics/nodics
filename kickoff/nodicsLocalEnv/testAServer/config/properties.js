@@ -17,7 +17,7 @@ module.exports = {
             'cronjob',
             'nems',
             'ems',
-            'admin',
+            'powerTool',
             'testAServer',
             'kickoff',
             'nodicsLocalEnv'

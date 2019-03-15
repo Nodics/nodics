@@ -17,7 +17,7 @@ module.exports = {
             'cronjob',
             'nems',
             'emsClient',
-            'admin',
+            'powerTool',
             'allAloneServer',
             'kickoff',
             'nodicsLocalEnv'
@@ -161,7 +161,7 @@ module.exports = {
                 }
             }
         },
-        admin: {
+        powerTool: {
             server: {
                 httpHost: 'localhost',
                 httpPort: 3008,

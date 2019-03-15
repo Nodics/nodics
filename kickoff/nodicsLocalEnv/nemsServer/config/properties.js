@@ -141,7 +141,7 @@ module.exports = {
             }
         },
 
-        admin: {
+        powerTool: {
             options: {
                 contextRoot: 'nodics'
             },

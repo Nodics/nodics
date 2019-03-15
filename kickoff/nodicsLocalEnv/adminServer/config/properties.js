@@ -12,7 +12,7 @@
 module.exports = {
     activeModules: {
         updateGroups: true,
-        groups: ['admindesk'], // Group 'framework' will be included automatically
+        groups: ['tools'], // Group 'framework' will be included automatically
         modules: [
             'adminServer',
             'kickoff',
