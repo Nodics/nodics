@@ -81,7 +81,7 @@ module.exports = {
     * @param {request} request is used to carry request parameters sent by consumer
     * @param {callback} callback is a function, called after fullfilling business requirement 
     */
-    doExist: function (request, callback) {
+    doExists: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (request.httpRequest.params.id) {
@@ -89,13 +89,13 @@ module.exports = {
             request.query.id = request.httpRequest.params.id;
         }
         if (callback) {
-            FACADE.dsdName.doExist(request).then(success => {
+            FACADE.dsdName.doExists(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.doExist(request);
+            return FACADE.dsdName.doExists(request);
         }
     },
 
@@ -157,7 +157,7 @@ module.exports = {
      */
     doSave: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.model = request.httpRequest.body;
+        request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
             FACADE.dsdName.doSave(request).then(success => {
                 callback(null, success);
@@ -185,25 +185,6 @@ module.exports = {
             });
         } else {
             return FACADE.dsdName.doBulk(request);
-        }
-    },
-
-    /**
-     * This function is used to perform update operation
-     * @param {request} request is used to carry request parameters sent by consumer
-     * @param {callback} callback is a function, called after fullfilling business requirement 
-     */
-    doUpdate: function (request, callback) {
-        request.indexName = request.httpRequest.params.indexName || undefined;
-        request = _.merge(request, request.httpRequest.body || {});
-        if (callback) {
-            FACADE.dsdName.doUpdate(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.dsdName.doUpdate(request);
         }
     },
 

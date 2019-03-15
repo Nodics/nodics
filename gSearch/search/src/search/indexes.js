@@ -11,6 +11,9 @@
 
 module.exports = {
     profile: {
+
+    },
+    search: {
         order: {
             enabled: false,
             idPropertyName: 'code',
@@ -23,14 +26,10 @@ module.exports = {
                 custom: {
                     enabled: true,
                     handler: 'DefaultEnterpriseIndexHandlerService.getEnterpriseCustom'
-                },
-                tempProp: {
-                    enabled: true
                 }
             }
         },
-    },
-    search: {
+
         catalog: {
             enabled: false,
             idPropertyName: 'code',

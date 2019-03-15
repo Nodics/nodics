@@ -28,6 +28,64 @@ module.exports = {
                     },
 
                     saveOptions: {
+                        opType: 'index'
+                    },
+
+                    bulkOptions: {
+                        opType: 'create'
+                    },
+
+                    searchOptions: {
+
+                    },
+
+                    removeOptions: {
+
+                    },
+
+                    removeTypeOptions: {
+
+                    },
+
+                    mappingGetOptions: {
+
+                    },
+
+                    mappingPutOptions: {
+
+                    },
+
+                    refreshOptions: {
+                        ignoreUnavailable: false,
+                        expandWildcards: 'all'
+                    }
+
+                },
+                connection: {
+                    hosts: ['http://localhost:9200'],
+                    log: 'info',
+                    deadTimeout: 1000
+                }
+            }
+        },
+
+        profile: {
+            elastic: {
+                options: {
+                    connectionHandler: 'DefaultElasticSearchEngineConnectionHandlerService',
+                    schemaHandler: 'DefaultElasticSearchSchemaHandlerService',
+                    fullIndexDataQuery: {},
+                    incrementalIndexDataQuery: {},
+
+                    existsOptions: {
+                        //level: 'indices'
+                    },
+
+                    healthOptions: {
+                        level: 'indices'
+                    },
+
+                    saveOptions: {
                         opType: 'create'
                     },
 

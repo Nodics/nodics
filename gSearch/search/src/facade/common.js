@@ -60,10 +60,6 @@ module.exports = {
         return SERVICE.srvcName.doBulk(request);
     },
 
-    doUpdate: function (request) {
-        return SERVICE.srvcName.doUpdate(request);
-    },
-
     doRemove: function (request) {
         return SERVICE.srvcName.doRemove(request);
     },

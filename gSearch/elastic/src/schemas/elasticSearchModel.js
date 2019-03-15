@@ -77,8 +77,8 @@ module.exports = {
             };
         },
 
-        defineDefaultDoExist: function (searchModel) {
-            searchModel.doExist = function (input) {
+        defineDefaultDoExists: function (searchModel) {
+            searchModel.doExists = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
@@ -94,7 +94,9 @@ module.exports = {
                                 reject(error);
                             }
                             else {
-                                resolve(response);
+                                resolve({
+                                    available: response
+                                });
                             }
                         });
                     } catch (error) {
@@ -207,7 +209,7 @@ module.exports = {
                     try {
                         try {
                             let bulkQuery = _.merge(_self.searchEngine.getOptions().bulkOptions || {}, _.merge(input.options || {}, {
-                                body: input.data
+                                body: input.models
                             }));
                             _self.LOG.debug('Executing bulk command with options');
                             _self.LOG.debug(bulkQuery);
@@ -238,7 +240,7 @@ module.exports = {
                             let bulkQuery = _.merge(_self.searchEngine.getOptions().bulkOptions || {}, _.merge(input.options || {}, {
                                 body: input.data
                             }));
-                            _self.LOG.debug('Executing bulk command with options');
+                            _self.LOG.debug('Executing update with options');
                             _self.LOG.debug(bulkQuery);
                             _self.searchEngine.getConnection().update(bulkQuery, function (error, response) {
                                 if (error) {

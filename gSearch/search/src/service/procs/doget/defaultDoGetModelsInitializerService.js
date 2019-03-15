@@ -34,36 +34,7 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do get request');
-        try {
-            let moduleName = request.schemaModel.moduleName;
-            let tntCode = request.schemaModel.tenant;
-            let searchEngine = NODICS.getTenantSearchEngine(moduleName, tntCode);
-            if (searchEngine) {
-                let indexTypeName = request.schemaModel.schemaName;
-                if (request.schemaModel.rawSchema.search && request.schemaModel.rawSchema.search.typeName) {
-                    indexTypeName = request.schemaModel.rawSchema.search.typeName;
-                }
-                let indexDef = NODICS.getTenantRawSearchSchema(moduleName, tntCode, indexTypeName);
-                if (indexDef) {
-                    if (indexDef.enabled) {
-                        request.rawSearchSchema = indexDef;
-                        process.nextSuccess(request, response);
-                    } else {
-                        throw new Error('Search not enabled for model: ' + modelName);
-                    }
-                } else {
-                    throw new Error('Search schema not available for module: ' + moduleName + ', tenant: ' + tntCode + ', index type: ' + indexTypeName);
-                }
-            } else {
-                throw new Error('Search engine not available for module: ' + moduleName + ' and tenant: ' + tntCode);
-            }
-        } catch (error) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_FIND_00000',
-                error: error
-            });
-        }
+        process.nextSuccess(request, response);
     },
 
     buildOptions: function (request, response, process) {
@@ -76,24 +47,23 @@ module.exports = {
     },
 
     applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post get model interceptors');
+        this.LOG.debug('Applying pre get model interceptors');
         process.nextSuccess(request, response);
     },
 
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
-        request.schemaModel.doGet(request).then(result => {
+        request.searchModel.doGet(request).then(result => {
             response.success = {
                 success: true,
-                code: 'SUC_FIND_00000',
-                cache: 'item mis',
+                code: 'SUC_SRCH_00000',
                 result: result
             };
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, {
                 success: false,
-                code: 'ERR_FIND_00000',
+                code: 'ERR_SRCH_00000',
                 error: error
             });
         });
@@ -122,7 +92,7 @@ module.exports = {
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response);
+        process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {

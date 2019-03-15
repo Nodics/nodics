@@ -90,7 +90,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                _self.LOG.debug('Retrieving list of available indexes for : ' + searchEngine.getConnectionOptions());
+                _self.LOG.debug('Retrieving list of available indexes for');
                 searchEngine.getConnection().cluster.state({}, function (error, response) {
                     if (error) {
                         reject(error);

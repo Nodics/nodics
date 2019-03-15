@@ -74,12 +74,12 @@ module.exports = {
                 }
             },
 
-            doGetExist: {
+            doGetExists: {
                 secured: true,
                 key: '/schemaName/search/exists/id/:id',
                 method: 'GET',
                 controller: 'DefaultctrlName',
-                operation: 'doExist',
+                operation: 'doExists',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -88,12 +88,12 @@ module.exports = {
                 }
             },
 
-            doPostExist: {
+            doPostExists: {
                 secured: true,
                 key: '/schemaName/search/exists',
                 method: 'POST',
                 controller: 'DefaultctrlName',
-                operation: 'doExist',
+                operation: 'doExists',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -232,9 +232,9 @@ module.exports = {
                 }
             },
 
-            doPatchUpdate: {
+            // doPatchUpdate: {
 
-            },
+            // },
 
             doGetRemove: {
                 secured: true,
@@ -412,12 +412,12 @@ module.exports = {
                 }
             },
 
-            doGetExist: {
+            doGetExists: {
                 secured: true,
                 key: '/:indexName/search/exists/id/:id',
                 method: 'GET',
                 controller: 'DefaultSearchController',
-                operation: 'doExist',
+                operation: 'doExists',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -426,12 +426,12 @@ module.exports = {
                 }
             },
 
-            doPostExist: {
+            doPostExists: {
                 secured: true,
                 key: '/:indexName/search/exists',
                 method: 'POST',
                 controller: 'DefaultSearchController',
-                operation: 'doExist',
+                operation: 'doExists',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -570,9 +570,9 @@ module.exports = {
                 }
             },
 
-            doPatchUpdate: {
+            // doPatchUpdate: {
 
-            },
+            // },
 
             doGetRemove: {
                 secured: true,

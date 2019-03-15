@@ -60,10 +60,6 @@ module.exports = {
         return DAO.DaoName.doBulk(request);
     },
 
-    doUpdate: function (request) {
-        return DAO.DaoName.doUpdate(request);
-    },
-
     doRemove: function (request) {
         return DAO.DaoName.doRemove(request);
     },
