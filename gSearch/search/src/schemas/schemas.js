@@ -11,6 +11,9 @@
 
 module.exports = {
     search: {
+        /**
+         * This is placeholder schema to generate service layer
+         */
         search: {
             super: 'super',
             model: true,
@@ -46,18 +49,17 @@ module.exports = {
             }
         },
 
-        indexer: {
+        /**
+         * This schema is used to update or create indexes definitions. 
+         * Value defined here will replace all value defined once schema definition
+         */
+        index: {
             super: 'base',
             model: true,
             service: true,
             event: false,
             router: true,
             definition: {
-                enabled: {
-                    type: 'bool',
-                    required: true,
-                    description: 'Required, If this index is enabled'
-                },
                 indexName: {
                     type: 'string',
                     required: true,
@@ -93,6 +95,114 @@ module.exports = {
                     required: false
                 }
             }
-        }
+        },
+
+        /**
+         * This is placeholder schema to generate service layer
+         */
+        indexer: {
+            super: 'base',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            definition: {
+                name: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required indexer name'
+                },
+                schmea: {
+                    type: 'object',
+                    required: false,
+                    description: 'Optional schema object, which contain name and module, source of data'
+                },
+                "schmea.name": {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional schemaName'
+                },
+                "schmea.moduleName": {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional schemaName'
+                },
+                path: {
+                    type: 'object',
+                    required: false,
+                    description: 'Optional object to index non-schema data'
+                },
+                "path.isFinalized": {
+                    type: 'bool',
+                    required: false,
+                    description: 'True, if data is compatable to index. False, if conversion required'
+                },
+                "path.headerPath": {
+                    type: 'string',
+                    required: false,
+                    description: 'Path to read header file'
+                },
+                "path.dataPath": {
+                    type: 'string',
+                    required: false,
+                    description: 'Path to read header file'
+                },
+                "path.tempPath": {
+                    type: 'string',
+                    required: false,
+                    description: 'True, if data is compatable to index. False, if conversion required'
+                },
+                target: {
+                    type: 'object',
+                    required: false,
+                    description: 'Target index detail, where all data will go'
+                },
+                "target.indexName": {
+                    type: 'string',
+                    required: false,
+                    description: 'Target index name, where all data will go'
+                },
+                "target.typeName": {
+                    type: 'string',
+                    required: false,
+                    description: 'Target type name, where all data will go'
+                },
+                "target.options": {
+                    type: 'string',
+                    required: false,
+                    description: 'Index options if required'
+                },
+                processPipeline: {
+                    type: 'string',
+                    required: true,
+                    default: 'NEW',
+                    description: 'State of last execution (SUCESS, ERROR, NEW)'
+                },
+                lastState: {
+                    type: 'string',
+                    required: true,
+                    default: 'NEW',
+                    description: 'State of last execution (SUCESS, ERROR, NEW)'
+                },
+                lastErrorLog: {
+                    type: 'object',
+                    required: true,
+                    default: 'none',
+                    description: 'State of last execution (SUCESS, ERROR, NEW)'
+                },
+                startTime: {
+                    type: 'date',
+                    required: true,
+                    default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp',
+                    description: 'Timestamp when this indexer started'
+                },
+                endTime: {
+                    type: 'date',
+                    required: true,
+                    default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp',
+                    description: 'Timestamp when this indexer finished'
+                }
+            }
+        },
     }
 };

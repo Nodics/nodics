@@ -147,7 +147,7 @@ module.exports = {
             let tenants = NODICS.getTenants();
             try {
                 tenants.forEach(tntCode => {
-                    SERVICE.DefaultIndexerService.get({
+                    SERVICE.DefaultIndexService.get({
                         tenant: tntCode,
                     }).then(indexers => {
                         if (indexers && indexers.success && indexers.result && indexers.result.length > 0) {

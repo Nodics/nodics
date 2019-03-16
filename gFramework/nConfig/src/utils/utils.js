@@ -130,7 +130,6 @@ module.exports = {
                     data = data + '\n';
                 }
                 data = data + 'module.exports = ' + UTILS.replacePlaceholders(options).replace(/\\n/gm, '\n').replaceAll("\"", "") + ';';
-                data = data.replaceAll('= {', '= { \n\t').replaceAll('\',', '\',\n\t').replaceAll('},', '},\n\t').replaceAll('}}', '}\n}');
                 fs.writeFile(fileName,
                     data,
                     'utf-8',
@@ -158,7 +157,7 @@ module.exports = {
             } else {
                 return value;
             }
-        });
+        }, 4);
         let contextRoot = CONFIG.get('server').options.contextRoot;
         commonDefinitionString = commonDefinitionString.replaceAll('mdulnm', options.moduleName)
             .replaceAll('mdlnm', options.modelName + 'Model')
