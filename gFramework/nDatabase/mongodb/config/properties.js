@@ -20,6 +20,7 @@ module.exports = {
                     schemaHandler: 'DefaultMongodbDatabaseSchemaHandlerService',
                     modelHandler: 'DefaultMongodbDatabaseModelHandlerService',
                     interceptorHandler: 'DefaultMongodbDatabaseInterceptorHandlerService',
+                    schemaProperties: ['enum', 'minimum', 'maximum', 'exclusiveMaximum', 'pattern'],
                     modelSaveOptions: {
                         upsert: true,
                         returnOriginal: false
@@ -39,7 +40,7 @@ module.exports = {
                         useNewUrlParser: true,
                         poolSize: 5,
                         ignoreUndefined: true,
-                        connectTimeoutMS:60000
+                        connectTimeoutMS: 60000
                     }
                 },
                 test: {
@@ -49,7 +50,7 @@ module.exports = {
                         useNewUrlParser: true,
                         poolSize: 5,
                         ignoreUndefined: true,
-                        connectTimeoutMS:60000
+                        connectTimeoutMS: 60000
                     }
                 }
             }

@@ -107,9 +107,18 @@ module.exports = {
             event: false,
             router: true,
             definition: {
+                enterpriseCode: {
+                    required: false
+                },
                 name: {
                     type: 'string',
                     required: true,
+                    description: 'Required indexer name'
+                },
+                type: {
+                    required: true,
+                    enum: [ENUMS.IndexerType.INTERNAL.key, ENUMS.IndexerType.EXTERNAL.key],
+                    default: ENUMS.IndexerType.INTERNAL.key,
                     description: 'Required indexer name'
                 },
                 schmea: {
@@ -147,11 +156,6 @@ module.exports = {
                     required: false,
                     description: 'Path to read header file'
                 },
-                "path.tempPath": {
-                    type: 'string',
-                    required: false,
-                    description: 'True, if data is compatable to index. False, if conversion required'
-                },
                 target: {
                     type: 'object',
                     required: false,
@@ -168,26 +172,29 @@ module.exports = {
                     description: 'Target type name, where all data will go'
                 },
                 "target.options": {
-                    type: 'string',
+                    type: 'object',
                     required: false,
                     description: 'Index options if required'
                 },
+                "target.tempPath": {
+                    type: 'string',
+                    required: false,
+                    description: 'True, if data is compatable to index. False, if conversion required'
+                },
                 processPipeline: {
                     type: 'string',
-                    required: true,
-                    default: 'NEW',
+                    required: false,
                     description: 'State of last execution (SUCESS, ERROR, NEW)'
                 },
                 lastState: {
-                    type: 'string',
                     required: true,
-                    default: 'NEW',
+                    enum: [ENUMS.IndexerState.NEW.key, ENUMS.IndexerState.SUCCESS.key, ENUMS.IndexerState.ERROR.key],
+                    default: ENUMS.IndexerState.NEW.key,
                     description: 'State of last execution (SUCESS, ERROR, NEW)'
                 },
                 lastErrorLog: {
                     type: 'object',
-                    required: true,
-                    default: 'none',
+                    required: false,
                     description: 'State of last execution (SUCESS, ERROR, NEW)'
                 },
                 startTime: {

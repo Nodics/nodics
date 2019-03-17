@@ -30,37 +30,5 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
-    },
-
-    common: function () {
-        if (!CONFIG || !SYSTEM || !NODICS) {
-            NODICS.LOG.error("System initialization error: configuration initializer failure.");
-            process.exit(1);
-        }
-
-        NODICS.LOG.info('Starting Utils loader process');
-        NODICS.loadFiles('/src/utils/utils.js', global.UTILS);
-
-        NODICS.LOG.info('Starting Enums loader process');
-        NODICS.loadEnums();
-
-    },
-
-    start: function () {
-        this.common();
-
-        NODICS.LOG.info('Starting Classes loader process');
-        NODICS.loadClasses();
-    },
-
-    cleanAll: function () {
-        this.common();
-        NODICS.cleanModules();
-    },
-
-    buildAll: function () {
-        this.common();
-    },
-
-
+    }
 };

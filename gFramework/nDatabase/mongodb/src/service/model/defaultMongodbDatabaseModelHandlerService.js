@@ -12,6 +12,8 @@
 const _ = require('lodash');
 const ObjectId = require('mongodb').ObjectId;
 
+const util = require('util');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -63,8 +65,13 @@ module.exports = {
                             defaultValues[propertyName] = property.default;
                             delete property.default;
                         }
-                        if (UTILS.isBlank(property)) {
-                            _.merge(jsonSchema.properties[propertyName], property);
+                        let schemaProperties = options.dataBase.master.getOptions().schemaProperties;
+                        if (!UTILS.isBlank(property) && schemaProperties && schemaProperties.length) {
+                            schemaProperties.forEach(prop => {
+                                if (property[prop] && !UTILS.isBlank(property[prop])) {
+                                    jsonSchema.properties[propertyName][prop] = property[prop];
+                                }
+                            });
                         }
                         if (!property.description) {
                             jsonSchema.properties[propertyName].description = 'must be a ' + jsonSchema.properties[propertyName].bsonType;
@@ -74,7 +81,6 @@ module.exports = {
                                 jsonSchema.properties[propertyName].description += ' and is not required';
                             }
                         }
-
                     });
                 }
                 if (schema.indexes) {
@@ -139,6 +145,7 @@ module.exports = {
             if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
                 tmpOptions = _.merge(tmpOptions, schemaOptions.options);
             }
+            console.log(options.schemaName, ' ======= ', util.inspect(tmpOptions.validator, true, 4));
             dataBase.getConnection().createCollection(options.modelName, tmpOptions).then(schemaModel => {
                 schemaModel.moduleName = options.moduleName;
                 schemaModel.rawSchema = schema;
@@ -272,6 +279,7 @@ module.exports = {
             if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
                 tmpOptions = _.merge(tmpOptions, schemaOptions.options);
             }
+            console.log(model.schemaName, ' ==========>>>: ', tmpOptions);
             model.dataBase.getConnection().command(tmpOptions).then(success => {
                 let response = {};
                 response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator updated';
