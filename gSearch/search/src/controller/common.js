@@ -286,5 +286,25 @@ module.exports = {
         } else {
             return FACADE.dsdName.doRemoveIndex(request);
         }
+    },
+
+    /**
+     * This function is used to perform indexing
+     * @param {request} request is used to carry request parameters sent by consumer
+     * @param {callback} callback is a function, called after fullfilling business requirement 
+     */
+    doIndexing: function (request, callback) {
+        request.indexName = request.httpRequest.params.indexName || undefined;
+        request.indexerName = request.httpRequest.params.indexerName || undefined;
+        request = _.merge(request, request.httpRequest.body || {});
+        if (callback) {
+            FACADE.dsdName.doIndexing(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.doIndexing(request);
+        }
     }
 };

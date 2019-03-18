@@ -232,10 +232,6 @@ module.exports = {
                 }
             },
 
-            // doPatchUpdate: {
-
-            // },
-
             doGetRemove: {
                 secured: true,
                 key: '/schemaName/search/id/:id',
@@ -343,6 +339,36 @@ module.exports = {
                     url: 'http://host:port/nodics/{moduleName}/schemaName/search/index',
                     body: {
                         options: '{ object of options required for this option }'
+                    }
+                }
+            },
+            doGetIndex: {
+                secured: true,
+                key: '/schemaName/search/index/:indexerName',
+                method: 'GET',
+                controller: 'DefaultctrlName',
+                operation: 'doIndexing',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/index/:indexerName',
+                }
+            },
+            doPostIndex: {
+                secured: true,
+                key: '/schemaName/search/index',
+                method: 'POST',
+                controller: 'DefaultctrlName',
+                operation: 'doIndexing',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/index',
+                    body: {
+                        options: '{ object of options required for this option }',
+                        indexerName: ''
                     }
                 }
             }
@@ -570,10 +596,6 @@ module.exports = {
                 }
             },
 
-            // doPatchUpdate: {
-
-            // },
-
             doGetRemove: {
                 secured: true,
                 key: '/:indexName/search/id/:id',
@@ -683,12 +705,40 @@ module.exports = {
                         options: '{ object of options required for this option }'
                     }
                 }
+            },
+            doGetIndex: {
+                secured: true,
+                key: '/:indexName/search/index/:indexerName',
+                method: 'GET',
+                controller: 'DefaultSearchController',
+                operation: 'doIndexing',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/search/index/:indexerName',
+                }
+            },
+            doPostIndex: {
+                secured: true,
+                key: '/:indexName/search/index',
+                method: 'POST',
+                controller: 'DefaultSearchController',
+                operation: 'doIndexing',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/{moduleName}/search/index',
+                    body: {
+                        options: '{ object of options required for this option }',
+                        indexerName: ''
+                    }
+                }
             }
         }
     },
     search: {
-        indexing: {
 
-        }
     }
 };

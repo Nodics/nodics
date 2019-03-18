@@ -11,10 +11,10 @@
 
 module.exports = {
     /**
-    * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
-    * defined it that with Promise way
-    * @param {*} options 
-    */
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
     init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
@@ -22,7 +22,7 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize module loading process. If there is any functionalities, required to be executed after module loading. 
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
      * defined it that with Promise way
      * @param {*} options 
      */
@@ -30,12 +30,5 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
-    },
-
-    // genDao: function () {
-    //     NODICS.LOG.info('Starting Dao generation process.');
-    //     return daoGenerator.gen().then(success => { }).catch(error => {
-    //         NODICS.LOG.error(error);
-    //     });
-    // }
+    }
 };

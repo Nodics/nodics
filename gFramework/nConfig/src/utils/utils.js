@@ -163,7 +163,6 @@ module.exports = {
             .replaceAll('mdlnm', options.modelName + 'Model')
             .replaceAll('schmanm', options.schemaName)
             .replaceAll('mdlVar', options.modelName)
-            .replaceAll('DaoName', 'Default' + options.modelName + 'Dao')
             .replaceAll('srvcName', 'Default' + options.modelName + 'Service')
             .replaceAll('dsdName', 'Default' + options.modelName + 'Facade')
             .replaceAll("ctxRoot", contextRoot)

@@ -11,6 +11,10 @@
 
 module.exports = {
 
+    defaultPageSize: 10,
+    defaultPageNumber: 0,
+    queryMaxTimeMS: 1000,
+
     database: {
         processInitialData: false,
         default: {

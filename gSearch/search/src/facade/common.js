@@ -78,5 +78,9 @@ module.exports = {
 
     doRemoveIndex: function (request) {
         return SERVICE.srvcName.doRemoveIndex(request);
+    },
+
+    doIndexing: function (request) {
+        return SERVICE.srvcName.doIndexing(request);
     }
 };

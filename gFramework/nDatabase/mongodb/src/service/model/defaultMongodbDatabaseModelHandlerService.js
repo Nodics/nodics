@@ -145,7 +145,6 @@ module.exports = {
             if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
                 tmpOptions = _.merge(tmpOptions, schemaOptions.options);
             }
-            console.log(options.schemaName, ' ======= ', util.inspect(tmpOptions.validator, true, 4));
             dataBase.getConnection().createCollection(options.modelName, tmpOptions).then(schemaModel => {
                 schemaModel.moduleName = options.moduleName;
                 schemaModel.rawSchema = schema;
@@ -279,7 +278,6 @@ module.exports = {
             if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
                 tmpOptions = _.merge(tmpOptions, schemaOptions.options);
             }
-            console.log(model.schemaName, ' ==========>>>: ', tmpOptions);
             model.dataBase.getConnection().command(tmpOptions).then(success => {
                 let response = {};
                 response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator updated';

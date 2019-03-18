@@ -188,5 +188,19 @@ module.exports = {
                 error: error
             });
         }
+    },
+
+    doIndexing: function (request) {
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return Promise.resolve('Successfully executed');
+            //return SERVICE.DefaultPipelineService.start('doRemoveIndexInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     }
 };

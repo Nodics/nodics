@@ -21,7 +21,6 @@ module.exports = {
             'mongodb',
             'elasticdb',
             'cassandradb',
-            'nDao',
             'nService',
             'nPipeline',
             'nEvent',

@@ -33,34 +33,58 @@ module.exports = {
     },
 
     get: function (request) {
-        return DAO.DaoName.get(request);
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.schemaModel.moduleName;
+        return SERVICE.DefaultPipelineService.start('modelsGetInitializerPipeline', request, {});
     },
 
     getById: function (id, tenant) {
-        return DAO.DaoName.getById(id, tenant);
+        return this.get({
+            tenant: tenant,
+            query: {
+                _id: id
+            }
+        });
     },
 
     getByCode: function (code, tenant) {
-        return DAO.DaoName.getByCode(code, tenant);
+        return this.get({
+            tenant: tenant,
+            query: {
+                code: code
+            }
+        });
     },
 
     save: function (request) {
-        return DAO.DaoName.save(request);
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.schemaModel.moduleName;
+        return SERVICE.DefaultPipelineService.start('modelsSaveInitializerPipeline', request, {});
     },
 
     remove: function (request) {
-        return DAO.DaoName.remove(request);
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.schemaModel.moduleName;
+        return SERVICE.DefaultPipelineService.start('modelsRemoveInitializerPipeline', request, {});
     },
 
     removeById: function (ids, tenant) {
-        return DAO.DaoName.removeById(ids, tenant);
+        return this.remove({
+            tenant: tenant,
+            ids: ids
+        });
     },
 
     removeByCode: function (codes, tenant) {
-        return DAO.DaoName.removeByCode(codes, tenant);
+        return this.remove({
+            tenant: tenant,
+            codes: codes
+        });
     },
 
     update: function (request) {
-        return DAO.DaoName.update(request);
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.schemaModel.moduleName;
+        return SERVICE.DefaultPipelineService.start('modelsUpdateInitializerPipeline', request, {});
     }
 };

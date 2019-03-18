@@ -81,7 +81,6 @@ module.exports = {
         global.CLASSES = {};
         global.ENUMS = {};
         global.UTILS = {};
-        global.DAO = {};
         global.SERVICE = {};
         global.PIPELINE = {};
         global.FACADE = {};
@@ -306,9 +305,7 @@ module.exports = {
             if (moduleFile.init) {
                 moduleFile.LOG = logger.createLogger("Module-" + moduleName);
                 moduleFile.init(moduleObject).then(success => {
-                    _self.loadDao(moduleObject).then(() => {
-                        return _self.loadServices(moduleObject);
-                    }).then(() => {
+                    _self.loadServices(moduleObject).then(() => {
                         return _self.loadPipelinesDefinition(moduleObject);
                     }).then(() => {
                         return _self.loadFacades(moduleObject);
@@ -323,9 +320,7 @@ module.exports = {
                     reject(error);
                 });
             } else {
-                _self.loadDao(moduleObject).then(() => {
-                    return _self.loadServices(moduleObject);
-                }).then(() => {
+                _self.loadServices(moduleObject).then(() => {
                     return _self.loadPipelinesDefinition(moduleObject);
                 }).then(() => {
                     return _self.loadFacades(moduleObject);
@@ -336,28 +331,6 @@ module.exports = {
                 }).catch((error) => {
                     reject(error);
                 });
-            }
-        });
-    },
-
-    loadDao: function (module) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            _self.LOG.debug('  Loading all module DAO');
-            let path = module.path + '/src/dao';
-            try {
-                fileLoader.processFiles(path, "Dao.js", (file) => {
-                    let daoName = UTILS.getFileNameWithoutExtension(file);
-                    if (DAO[daoName]) {
-                        DAO[daoName] = _.merge(DAO[daoName], require(file));
-                    } else {
-                        DAO[daoName] = require(file);
-                        DAO[daoName].LOG = logger.createLogger(daoName);
-                    }
-                });
-                resolve(true);
-            } catch (error) {
-                reject(error);
             }
         });
     },
@@ -453,9 +426,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             _self.LOG.debug('Initializing all entities');
-            _self.initDaos().then(() => {
-                return _self.initServices();
-            }).then(() => {
+            _self.initServices().then(() => {
                 return _self.initFacades();
             }).then(() => {
                 return _self.initControllers();
@@ -464,29 +435,6 @@ module.exports = {
             }).catch((error) => {
                 reject(error);
             });
-        });
-    },
-
-    initDaos: function () {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            let allPromise = [];
-            _.each(DAO, (daoClass, daoName) => {
-                if (daoClass.init &&
-                    typeof daoClass.init === 'function') {
-                    allPromise.push(daoClass.init());
-                }
-            });
-            if (allPromise.length > 0) {
-                _self.LOG.debug('  Initializing all DAOs');
-                Promise.all(allPromise).then(success => {
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(true);
-            }
         });
     },
 
@@ -563,9 +511,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             _self.LOG.debug('Finalizing all entities');
-            _self.finalizeDaos().then(() => {
-                return _self.finalizeServices();
-            }).then(() => {
+            _self.finalizeServices().then(() => {
                 return _self.finalizeFacades();
             }).then(() => {
                 return _self.finalizeControllers();
@@ -574,29 +520,6 @@ module.exports = {
             }).catch((error) => {
                 reject(error);
             });
-        });
-    },
-
-    finalizeDaos: function () {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            let allPromise = [];
-            _.each(DAO, (daoClass, daoName) => {
-                if (daoClass.postInit &&
-                    typeof daoClass.postInit === 'function') {
-                    allPromise.push(daoClass.postInit());
-                }
-            });
-            if (allPromise.length > 0) {
-                _self.LOG.debug('  Finalizing all DAOs');
-                Promise.all(allPromise).then(success => {
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(true);
-            }
         });
     },
 

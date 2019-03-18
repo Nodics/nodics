@@ -32,51 +32,175 @@ module.exports = {
         });
     },
 
+    getSearchModel: function (request) {
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        let indexName = request.indexName ? request.indexName : request.schemaModel.indexName;
+        if (!request.moduleName || !request.tenant || !indexName) {
+            throw new Error('Invalid request or search is not active for this type');
+        } else {
+            return NODICS.getSearchModel(request.moduleName, request.tenant, indexName);
+        }
+    },
+
     doRefresh: function (request) {
-        return DAO.DaoName.doRefresh(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doRefreshIndexInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
     doCheckHealth: function (request) {
-        return DAO.DaoName.doCheckHealth(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doHealthCheckClusterInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
     doExists: function (request) {
-        return DAO.DaoName.doExists(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doExistModelInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
     doGet: function (request) {
-        return DAO.DaoName.doGet(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doGetModelsInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
     doSearch: function (request) {
-        return DAO.DaoName.doSearch(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doSearchModelInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
     doSave: function (request) {
-        return DAO.DaoName.doSave(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doSaveModelsInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
+
     doBulk: function (request) {
-        return DAO.DaoName.doBulk(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doBulkModelInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
     doRemove: function (request) {
-        return DAO.DaoName.doRemove(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doRemoveModelsInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
     doRemoveByQuery: function (request) {
-        return DAO.DaoName.doRemoveByQuery(request);
+        return this.doRemove(request);
     },
 
     doGetMapping: function (request) {
-        return DAO.DaoName.doGetMapping(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doGetMappingModelInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
     doUpdateMapping: function (request) {
-        return DAO.DaoName.doUpdateMapping(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doUpdateMappingModelInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
     doRemoveIndex: function (request) {
-        return DAO.DaoName.doRemoveIndex(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doRemoveIndexInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
+    },
+
+    doIndexing: function (request) {
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return Promise.resolve('Successfully executed');
+            //return SERVICE.DefaultPipelineService.start('doRemoveIndexInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     }
 };

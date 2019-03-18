@@ -60,9 +60,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             _self.LOG.debug('Starting process for module : ', moduleName);
             let moduleObject = NODICS.getRawModule(moduleName);
-            _self.cleanDao(moduleObject).then(() => {
-                return _self.cleanServices(moduleObject);
-            }).then(() => {
+            _self.cleanServices(moduleObject).then(() => {
                 return _self.cleanFacades(moduleObject);
             }).then(() => {
                 return _self.cleanControllers(moduleObject);
@@ -73,18 +71,6 @@ module.exports = {
             }).catch((error) => {
                 reject(error);
             });
-        });
-    },
-
-    cleanDao: function (module) {
-        return new Promise((resolve, reject) => {
-            this.LOG.debug('Cleaning all DAO entities');
-            try {
-                UTILS.removeDir(path.join(module.path + '/src/dao/gen'));
-                resolve(true);
-            } catch (error) {
-                reject(error);
-            }
         });
     },
 
@@ -180,9 +166,7 @@ module.exports = {
     buildEntities: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.buildDao().then(() => {
-                return _self.buildServices();
-            }).then(() => {
+            _self.buildServices().then(() => {
                 return _self.buildFacades();
             }).then(() => {
                 return _self.buildControllers();
@@ -194,32 +178,13 @@ module.exports = {
         });
     },
 
-    buildDao: function () {
-        return new Promise((resolve, reject) => {
-            let gVar = SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/dao/common.js');
-            let daoCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/dao/common.js');
-            let genDir = path.join(NODICS.getModule('nDao').modulePath + '/src/dao/gen');
-            UTILS.schemaWalkThrough({
-                commonDefinition: daoCommon,
-                type: 'model',
-                currentDir: genDir,
-                postFix: 'Dao',
-                gVar: gVar
-            }).then(success => {
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
-
     buildServices: function () {
         return new Promise((resolve, reject) => {
             let gVar = SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/service/common.js');
-            let daoCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/service/common.js');
+            let serviceCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/service/common.js');
             let genDir = path.join(NODICS.getModule('nService').modulePath + '/src/service/gen');
             UTILS.schemaWalkThrough({
-                commonDefinition: daoCommon,
+                commonDefinition: serviceCommon,
                 type: 'service',
                 currentDir: genDir,
                 postFix: 'Service',
@@ -235,10 +200,10 @@ module.exports = {
     buildFacades: function () {
         return new Promise((resolve, reject) => {
             let gVar = SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/facade/common.js');
-            let daoCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/facade/common.js');
+            let facadeCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/facade/common.js');
             let genDir = path.join(NODICS.getModule('nFacade').modulePath + '/src/facade/gen');
             UTILS.schemaWalkThrough({
-                commonDefinition: daoCommon,
+                commonDefinition: facadeCommon,
                 type: 'service',
                 currentDir: genDir,
                 postFix: 'Facade',
@@ -254,10 +219,10 @@ module.exports = {
     buildControllers: function () {
         return new Promise((resolve, reject) => {
             let gVar = SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/controller/common.js');
-            let daoCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/controller/common.js');
+            let controllerCommon = SERVICE.DefaultFilesLoaderService.loadFiles('/src/controller/common.js');
             let genDir = path.join(NODICS.getModule('nController').modulePath + '/src/controller/gen');
             UTILS.schemaWalkThrough({
-                commonDefinition: daoCommon,
+                commonDefinition: controllerCommon,
                 type: 'router',
                 currentDir: genDir,
                 postFix: 'Controller',
