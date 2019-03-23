@@ -181,7 +181,7 @@ module.exports = {
                     process.error(request, response, error);
                 } else {
                     response.success = success;
-                    if (UTILS.isApiCashable(response.success.result, request.router)) {
+                    if (response.success && response.success.result && UTILS.isApiCashable(response.success.result, request.router)) {
                         SERVICE.DefaultCacheService.put({
                             moduleName: request.moduleName,
                             channelName: SERVICE.DefaultCacheService.getRouterCacheChannel(request.router.routerName),

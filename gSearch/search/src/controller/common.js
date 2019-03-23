@@ -295,7 +295,7 @@ module.exports = {
      */
     doIndexing: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
-        request.indexerName = request.httpRequest.params.indexerName || undefined;
+        request.indexerCode = request.httpRequest.params.indexerCode || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
             FACADE.dsdName.doIndexing(request).then(success => {

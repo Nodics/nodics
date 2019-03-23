@@ -225,9 +225,6 @@ module.exports = {
         }
     },
 
-
-
-
     processDataImportPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -306,7 +303,6 @@ module.exports = {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
-
         nodes: {
             validateRequest: {
                 type: 'function',
@@ -326,11 +322,16 @@ module.exports = {
             populateSearchDependancies: {
                 type: 'function',
                 handler: 'DefaultModelImportProcessService.populateSearchDependancies',
-                success: 'insertData'
+                success: 'insertSchemaModel'
             },
-            insertData: {
+            insertSchemaModel: {
                 type: 'function',
-                handler: 'DefaultModelImportProcessService.insertData',
+                handler: 'DefaultModelImportProcessService.insertSchemaModel',
+                success: 'insertSearchModel'
+            },
+            insertSearchModel: {
+                type: 'function',
+                handler: 'DefaultModelImportProcessService.insertSearchModel',
                 success: 'successEnd'
             },
             successEnd: {

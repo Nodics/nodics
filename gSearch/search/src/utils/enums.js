@@ -34,6 +34,7 @@ module.exports = {
         },
         definition: [
             'NEW',
+            'RUNNING',
             'SUCCESS',
             'ERROR'
         ]

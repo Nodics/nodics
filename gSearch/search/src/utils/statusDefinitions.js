@@ -33,5 +33,28 @@ module.exports = {
         code: '150002',
         description: 'Could not retrieve list of available indexes',
         message: 'Could not retrieve list of available indexes'
+    },
+
+    ERR_SRCH_00003: {
+        code: '150003',
+        description: 'Could not found indexer configuration',
+        message: 'Could not found indexer configuration'
+    },
+
+    ERR_SRCH_00004: {
+        code: '150004',
+        description: 'Facing issue while fetching indexer configuration',
+        message: 'Facing issue while fetching indexer configuration'
+    },
+
+    ERR_SRCH_00005: {
+        code: '150005',
+        description: 'Invalid indexName, mismatch with indexer configuration',
+        message: 'Invalid indexName, mismatch with indexer configuration'
+    },
+    ERR_SRCH_00006: {
+        code: '150006',
+        description: 'While changing indexer state to RUNNING',
+        message: 'While changing indexer state to RUNNING'
     }
 };

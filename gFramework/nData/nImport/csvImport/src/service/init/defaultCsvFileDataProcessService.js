@@ -70,7 +70,7 @@ module.exports = {
                     let strData = JSON.parse(data.toString(CONFIG.get('data').importDataConvertEncoding || 'utf8'));
                     converter.pause();
                     readBytes = readBytes + sizeof(data);
-                    if (readBytes > CONFIG.get('data').readBufferSize) {
+                    if (readBytes > CONFIG.get('data').readBufferSize && dataChunk.length > 0) {
                         request.dataObjects = [].concat(dataChunk);
                         request.outputPath.version = index + '_' + version;
                         SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {

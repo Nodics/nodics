@@ -572,4 +572,224 @@ module.exports = {
             }
         }
     },
+
+
+    // Indexer pipelines 
+
+    internalIndexerInitializerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.validateRequest',
+                success: 'changeIndexerState'
+            },
+            changeIndexerState: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.changeIndexerState',
+                success: 'buildOptions'
+            },
+            buildOptions: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.buildOptions',
+                success: 'triggerIndex'
+            },
+            triggerIndex: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.triggerIndex',
+                success: {
+                    handleSuccess: 'successHandler',
+                    handleError: 'errorHandler'
+                }
+            },
+            successHandler: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.successHandler',
+                success: 'successEnd'
+            },
+            errorHandler: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.errorHandler',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.handleErrorEnd'
+            }
+        }
+    },
+
+    internalIndexerProcessPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerProcessService.validateRequest',
+                success: 'prepareHeader'
+            },
+            prepareHeader: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerProcessService.prepareHeader',
+                success: 'prepareOutputPath'
+            },
+            prepareOutputPath: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerProcessService.prepareOutputPath',
+                success: 'flushOutputFolder'
+            },
+            flushOutputFolder: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerProcessService.flushOutputFolder',
+                success: 'initFatchData'
+            },
+            initFatchData: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerProcessService.initFatchData',
+                success: 'importDumpData'
+            },
+            importDumpData: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerProcessService.importDumpData',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerProcessService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerProcessService.handleErrorEnd'
+            }
+        }
+    },
+
+    finalizeIndexerDataPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.validateRequest',
+                success: 'applyProcessors'
+            },
+            applyProcessors: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.applyProcessors',
+                success: 'applyInterceptors'
+            },
+            applyInterceptors: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.applyInterceptors',
+                success: 'processData'
+            },
+            processData: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.processData',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.handleErrorEnd'
+            }
+        }
+    },
+
+    externalIndexerInitializerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.validateRequest',
+                success: 'changeIndexerState'
+            },
+            changeIndexerState: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.changeIndexerState',
+                success: 'buildOptions'
+            },
+            buildOptions: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.buildOptions',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.buildQuery',
+                success: 'triggerIndex'
+            },
+            triggerIndex: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.triggerIndex',
+                success: {
+                    handleSuccess: 'successHandler',
+                    handleError: 'errorHandler'
+                }
+            },
+            successHandler: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.successHandler',
+                success: 'successEnd'
+            },
+            errorHandler: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.errorHandler',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.handleErrorEnd'
+            }
+        }
+    },
+
+    // indexerSuccessInitializerPipeline: {
+    //     startNode: "validateRequest",
+    //     hardStop: true, //default value is false
+    //     handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+    //     nodes: {
+    //         changeIndexerState: {
+    //             type: 'function',
+    //             handler: 'DefaultExternalIndexerInitializerService.changeIndexerState',
+    //             success: 'successEnd'
+    //         }
+    //     }
+    // },
+
+    // indexerFailureInitializerPipeline: {
+    //     startNode: "validateRequest",
+    //     hardStop: true, //default value is false
+    //     handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+    //     nodes: {
+    //         changeIndexerState: {
+    //             type: 'function',
+    //             handler: 'DefaultExternalIndexerInitializerService.changeIndexerState',
+    //             success: 'successEnd'
+    //         }
+    //     }
+    // }
 };

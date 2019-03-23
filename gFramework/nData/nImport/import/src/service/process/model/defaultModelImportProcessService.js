@@ -34,14 +34,12 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
-        if (!request.fileName) {
-            process.error(request, response, 'Please validate request. Mandate property fileName not have valid value');
-        } else if (!request.fileData) {
-            process.error(request, response, 'Please validate request. Mandate property fileName not have valid value');
-        } else if (!request.dataFiles) {
-            process.error(request, response, 'Please validate request. Mandate property dataFiles not have valid value');
+        if (!request.header) {
+            process.error(request, response, 'Please validate request. Mandate property header not have valid value');
         } else if (!request.dataModel) {
             process.error(request, response, 'Please validate request. Mandate property dataModel not have valid value');
+        } else if (!request.header.options.schemaName && !request.header.options.indexName) {
+            process.error(request, response, 'Please validate request. Both schemaName and indexName can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }
@@ -56,7 +54,7 @@ module.exports = {
 
     populateSchemaDependancies: function (request, response, process) {
         this.LOG.debug('Populating all schema dependancies');
-        let header = request.fileData.header;
+        let header = request.header;
         if (header.macros) {
             if (header.rawSchema.refSchema) {
                 this.resolveRelation(request, response, {
@@ -221,45 +219,93 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    insertData: function (request, response, process) {
-        this.LOG.debug('Initiating data model import process');
-        let header = request.fileData.header;
-        let model = request.dataModel;
-        let models = [];
-        if (UTILS.isArray(model)) {
-            _.each(model, (modelObject, name) => {
-                models.push(modelObject);
+    insertSchemaModel: function (request, response, process) {
+        let header = request.header;
+        if (header.options.schemaName) {
+            this.LOG.debug('Initiating data model import process');
+            let model = request.dataModel;
+            let models = [];
+            if (UTILS.isArray(model)) {
+                _.each(model, (modelObject, name) => {
+                    models.push(modelObject);
+                });
+            } else {
+                models.push(model);
+            }
+            SERVICE['Default' + header.options.schemaName.toUpperCaseFirstChar() + 'Service'][header.options.operation]({
+                tenant: request.tenant,
+                query: header.query,
+                models: models
+            }).then(result => {
+                if (!result) {
+                    process.error(request, response, {
+                        success: false,
+                        code: 'ERR_IMP_00001',
+                        msg: 'Could not found any response from data access layer'
+                    });
+                } else if (result.success) {
+                    if (UTILS.isArray(result.result)) {
+                        result.result.forEach(element => {
+                            response.success.push(element);
+                        });
+                    } else {
+                        response.success.push(result.result);
+                    }
+                    //response.targetNode = 'insertSuccess';
+                    process.nextSuccess(request, response);
+                } else {
+                    process.error(request, response, result);
+                }
+            }).catch(error => {
+                process.error(request, response, error);
             });
         } else {
-            models.push(model);
+            process.nextSuccess(request, response);
         }
-        SERVICE['Default' + header.options.schemaName.toUpperCaseFirstChar() + 'Service'][header.options.operation]({
-            tenant: request.tenant,
-            query: header.query,
-            models: models
-        }).then(result => {
-            if (!result) {
+    },
+
+    insertSearchModel: function (request, response, process) {
+        this.LOG.debug('Initiating data model import process');
+        let header = request.header;
+        if (header.options.indexName) {
+            let searchModel = NODICS.getSearchModel(header.options.moduleName, request.tenant, header.options.indexName);
+            if (searchModel) {
+                searchModel[header.options.operation]({
+                    options: request.options || {},
+                    model: request.dataModel
+                }).then(result => {
+                    if (!result) {
+                        process.error(request, response, {
+                            success: false,
+                            code: 'ERR_IMP_00001',
+                            msg: 'Could not found any response from data access layer'
+                        });
+                    } else if (result.success) {
+                        if (UTILS.isArray(result.result)) {
+                            result.result.forEach(element => {
+                                response.success.push(element);
+                            });
+                        } else {
+                            response.success.push(result.result);
+                        }
+                        //response.targetNode = 'insertSuccess';
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, result);
+                    }
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            } else {
                 process.error(request, response, {
                     success: false,
-                    code: 'ERR_IMP_00001',
-                    msg: 'Could not found any response from data access layer'
+                    code: 'ERR_IMP_00000',
+                    msg: 'Could not found a valid search model for index: ' + header.options.indexName
                 });
-            } else if (result.success) {
-                if (UTILS.isArray(result.result)) {
-                    result.result.forEach(element => {
-                        response.success.push(element);
-                    });
-                } else {
-                    response.success.push(result.result);
-                }
-                response.targetNode = 'insertSuccess';
-                process.nextSuccess(request, response);
-            } else {
-                process.error(request, response, result);
             }
-        }).catch(error => {
-            process.error(request, response, error);
-        });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     handleSucessEnd: function (request, response, process) {

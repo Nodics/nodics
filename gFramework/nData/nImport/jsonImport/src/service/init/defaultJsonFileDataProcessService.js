@@ -68,7 +68,7 @@ module.exports = {
                 jsonStream.on("data", function (data) {
                     jsonStream.pause();
                     readBytes = readBytes + sizeof(data.value);
-                    if (readBytes > CONFIG.get('data').readBufferSize) {
+                    if (readBytes > CONFIG.get('data').readBufferSize && dataChunk.length > 0) {
                         request.dataObjects = [].concat(dataChunk);
                         request.outputPath.version = index + '_' + version;
                         SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {

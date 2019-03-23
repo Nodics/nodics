@@ -58,7 +58,6 @@ module.exports = {
         }).catch(error => {
             process.error(request, response, error);
         });
-
     },
 
     handleSucessEnd: function (request, response, process) {

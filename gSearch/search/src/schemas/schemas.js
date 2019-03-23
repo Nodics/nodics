@@ -121,20 +121,35 @@ module.exports = {
                     default: ENUMS.IndexerType.INTERNAL.key,
                     description: 'Required indexer name'
                 },
-                schmea: {
+                dumpData: {
+                    type: 'bool',
+                    required: true,
+                    description: 'If true, temp files will be create, else will be imported directly'
+                },
+                schema: {
                     type: 'object',
                     required: false,
                     description: 'Optional schema object, which contain name and module, source of data'
                 },
-                "schmea.name": {
+                "schema.name": {
                     type: 'string',
                     required: false,
                     description: 'Optional schemaName'
                 },
-                "schmea.moduleName": {
+                "schema.moduleName": {
                     type: 'string',
                     required: false,
                     description: 'Optional schemaName'
+                },
+                "schema.queryOptions": {
+                    type: 'object',
+                    required: false,
+                    description: 'Optional queryOptions to fatch data from schema'
+                },
+                "schema.query": {
+                    type: 'object',
+                    required: false,
+                    description: 'Optional query to fatch data from schema'
                 },
                 path: {
                     type: 'object',
@@ -186,9 +201,9 @@ module.exports = {
                     required: false,
                     description: 'State of last execution (SUCESS, ERROR, NEW)'
                 },
-                lastState: {
+                state: {
                     required: true,
-                    enum: [ENUMS.IndexerState.NEW.key, ENUMS.IndexerState.SUCCESS.key, ENUMS.IndexerState.ERROR.key],
+                    enum: [ENUMS.IndexerState.NEW.key, ENUMS.IndexerState.RUNNING.key, ENUMS.IndexerState.SUCCESS.key, ENUMS.IndexerState.ERROR.key],
                     default: ENUMS.IndexerState.NEW.key,
                     description: 'State of last execution (SUCESS, ERROR, NEW)'
                 },

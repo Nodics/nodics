@@ -344,7 +344,7 @@ module.exports = {
             },
             doGetIndex: {
                 secured: true,
-                key: '/schemaName/search/index/:indexerName',
+                key: '/schemaName/search/index/:indexerCode',
                 method: 'GET',
                 controller: 'DefaultctrlName',
                 operation: 'doIndexing',
@@ -352,7 +352,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/index/:indexerName',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/index/:indexerCode',
                 }
             },
             doPostIndex: {
@@ -368,7 +368,7 @@ module.exports = {
                     url: 'http://host:port/nodics/{moduleName}/schemaName/search/index',
                     body: {
                         options: '{ object of options required for this option }',
-                        indexerName: ''
+                        indexerCode: ''
                     }
                 }
             }
@@ -708,7 +708,7 @@ module.exports = {
             },
             doGetIndex: {
                 secured: true,
-                key: '/:indexName/search/index/:indexerName',
+                key: '/:indexName/search/index/:indexerCode',
                 method: 'GET',
                 controller: 'DefaultSearchController',
                 operation: 'doIndexing',
@@ -716,7 +716,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/search/index/:indexerName',
+                    url: 'http://host:port/nodics/{moduleName}/search/index/:indexerCode',
                 }
             },
             doPostIndex: {
@@ -732,7 +732,7 @@ module.exports = {
                     url: 'http://host:port/nodics/{moduleName}/search/index',
                     body: {
                         options: '{ object of options required for this option }',
-                        indexerName: ''
+                        indexerCode: ''
                     }
                 }
             }

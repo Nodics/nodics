@@ -55,9 +55,6 @@ module.exports = {
         return SERVICE.DefaultPipelineService.start('remoteDataImportInitializerPipeline', request, {});
     },
 
-
-
-
     processImportData: function (request) {
         return SERVICE.DefaultPipelineService.start('processDataImportPipeline', request, {});
     }

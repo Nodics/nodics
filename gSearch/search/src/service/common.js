@@ -34,11 +34,11 @@ module.exports = {
 
     getSearchModel: function (request) {
         request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        let indexName = request.indexName ? request.indexName : request.schemaModel.indexName;
-        if (!request.moduleName || !request.tenant || !indexName) {
+        request.indexName = request.indexName ? request.indexName : request.schemaModel.indexName;
+        if (!request.moduleName || !request.tenant || !request.indexName) {
             throw new Error('Invalid request or search is not active for this type');
         } else {
-            return NODICS.getSearchModel(request.moduleName, request.tenant, indexName);
+            return NODICS.getSearchModel(request.moduleName, request.tenant, request.indexName);
         }
     },
 
@@ -191,16 +191,22 @@ module.exports = {
     },
 
     doIndexing: function (request) {
-        try {
-            request.searchModel = this.getSearchModel(request);
-            return Promise.resolve('Successfully executed');
-            //return SERVICE.DefaultPipelineService.start('doRemoveIndexInitializerPipeline', request, {});
-        } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_SRCH_00000',
-                error: error
-            });
-        }
+        return new Promise((resolve, reject) => {
+            try {
+                request.searchModel = this.getSearchModel(request);
+                request.indexService = this;
+                SERVICE.DefaultIndexerService.prepareIndexer(request).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error
+                });
+            }
+        });
     }
 };

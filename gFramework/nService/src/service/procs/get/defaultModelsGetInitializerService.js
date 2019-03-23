@@ -33,7 +33,7 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating get request: ');
+        this.LOG.debug('Validating get request ');
         let options = request.options;
         if (!request.schemaModel) {
             process.error(request, response, {
@@ -47,6 +47,8 @@ module.exports = {
                     success: false,
                     code: 'ERR_FIND_00001'
                 });
+            } else {
+                process.nextSuccess(request, response);
             }
         } else if (options && options.sort) {
             if (!UTILS.isObject(options.sort)) {
@@ -54,6 +56,8 @@ module.exports = {
                     success: false,
                     code: 'ERR_FIND_00002'
                 });
+            } else {
+                process.nextSuccess(request, response);
             }
         } else {
             process.nextSuccess(request, response);
@@ -74,6 +78,7 @@ module.exports = {
         request.query = request.query || {};
         let pageSize = inputOptions.pageSize || CONFIG.get('defaultPageSize');
         let pageNumber = inputOptions.pageNumber || CONFIG.get('defaultPageNumber');
+        pageNumber = pageNumber ? (pageNumber <= 0) ? 0 : pageNumber - 1 : 0;
         inputOptions.limit = pageSize;
         inputOptions.skip = pageSize * pageNumber;
         inputOptions.explain = inputOptions.explain || false;
@@ -267,6 +272,10 @@ module.exports = {
                 let refSchema = request.schemaModel.rawSchema.refSchema;
                 let propertyObject = refSchema[property];
                 let query = {};
+                let options = {};
+                if (request.options && request.options.projection) {
+                    options.projection = request.options.projection;
+                }
                 if (propertyObject.type === 'one') {
                     if (propertyObject.propertyName === '_id') {
                         query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property]);
@@ -286,6 +295,7 @@ module.exports = {
                 }
                 let input = {
                     tenant: request.tenant,
+                    options: options,
                     query: query
                 };
                 SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {

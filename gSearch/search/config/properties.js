@@ -16,6 +16,7 @@ module.exports = {
         defaultPropertyWeight: 0,
         defaultPropertySequence: 0,
         reloadSearchSchema: true,
+        defaultDoSaveOperation: 'doSave',
         default: {
             options: {
                 enabled: true, //if false, system will not configure any search related functionalities
