@@ -114,7 +114,6 @@ module.exports = {
                     query: query
                 }).then(data => {
                     if (data.success && data.result && data.result.length > 0) {
-                        console.log(data.result);
                         options.readBytes = options.readBytes + sizeof(data.result);
                         if (options.readBytes > options.readBufferSize && options.finalData.length > 0) {
                             if (request.outputPath) {

@@ -52,9 +52,28 @@ module.exports = {
         description: 'Invalid indexName, mismatch with indexer configuration',
         message: 'Invalid indexName, mismatch with indexer configuration'
     },
+
     ERR_SRCH_00006: {
         code: '150006',
         description: 'While changing indexer state to RUNNING',
         message: 'While changing indexer state to RUNNING'
+    },
+
+    ERR_SRCH_00007: {
+        code: '150007',
+        description: 'While applying indexer processors',
+        message: 'While applying indexer processors'
+    },
+
+    ERR_SRCH_00008: {
+        code: '150008',
+        description: 'While applying indexer interceptors',
+        message: 'While applying indexer interceptors'
+    },
+
+    ERR_SRCH_00009: {
+        code: '1500089',
+        description: 'While applying indexer pipeline',
+        message: 'While applying indexer pipeline'
     }
 };

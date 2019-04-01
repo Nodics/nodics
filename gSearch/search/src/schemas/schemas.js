@@ -80,16 +80,6 @@ module.exports = {
                     required: true,
                     description: 'Required moduleNane name'
                 },
-                preProcessor: {
-                    type: 'string',
-                    required: false,
-                    description: 'Optional indexer pre processor'
-                },
-                postProcessor: {
-                    type: 'string',
-                    required: false,
-                    description: 'Optional indexer post processor'
-                },
                 properties: {
                     type: 'object',
                     required: false
@@ -125,6 +115,11 @@ module.exports = {
                     type: 'bool',
                     required: true,
                     description: 'If true, temp files will be create, else will be imported directly'
+                },
+                logResult: {
+                    type: 'bool',
+                    required: true,
+                    description: 'If true, error or sucess result will be logged'
                 },
                 schema: {
                     type: 'object',
@@ -196,10 +191,15 @@ module.exports = {
                     required: false,
                     description: 'True, if data is compatable to index. False, if conversion required'
                 },
+                processors: {
+                    type: 'array',
+                    required: false,
+                    description: 'Array of processors to manipulate fatched data'
+                },
                 processPipeline: {
                     type: 'string',
                     required: false,
-                    description: 'State of last execution (SUCESS, ERROR, NEW)'
+                    description: 'Optional, pipeline if required for this indexer'
                 },
                 state: {
                     required: true,
@@ -210,7 +210,7 @@ module.exports = {
                 lastErrorLog: {
                     type: 'object',
                     required: false,
-                    description: 'State of last execution (SUCESS, ERROR, NEW)'
+                    description: 'Last error log'
                 },
                 startTime: {
                     type: 'date',
@@ -224,6 +224,36 @@ module.exports = {
                     default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp',
                     description: 'Timestamp when this indexer finished'
                 }
+            }
+        },
+
+        indexerLog: {
+            super: 'super',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            refSchema: {
+                tenant: {
+                    schemaName: "indexer",
+                    type: 'one',
+                    propertyName: 'code'
+
+                },
+            },
+            definition: {
+                enterpriseCode: {
+                    required: false
+                },
+                indexerCode: {
+                    type: 'string',
+                    required: true
+                },
+                indexer: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required Code of associated indexer',
+                },
             }
         },
     }

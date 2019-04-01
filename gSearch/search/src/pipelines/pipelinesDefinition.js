@@ -613,7 +613,7 @@ module.exports = {
             errorHandler: {
                 type: 'function',
                 handler: 'DefaultInternalIndexerInitializerService.errorHandler',
-                success: 'successEnd'
+                success: 'handleError'
             },
             successEnd: {
                 type: 'function',
@@ -692,6 +692,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultIndexerDataFinalizerService.applyInterceptors',
+                success: 'executeProcess'
+            },
+            executeProcess: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.executeProcess',
                 success: 'processData'
             },
             processData: {
@@ -729,11 +734,6 @@ module.exports = {
             buildOptions: {
                 type: 'function',
                 handler: 'DefaultExternalIndexerInitializerService.buildOptions',
-                success: 'buildQuery'
-            },
-            buildQuery: {
-                type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.buildQuery',
                 success: 'triggerIndex'
             },
             triggerIndex: {
@@ -752,7 +752,7 @@ module.exports = {
             errorHandler: {
                 type: 'function',
                 handler: 'DefaultExternalIndexerInitializerService.errorHandler',
-                success: 'successEnd'
+                success: 'handleError'
             },
             successEnd: {
                 type: 'function',
@@ -763,33 +763,5 @@ module.exports = {
                 handler: 'DefaultExternalIndexerInitializerService.handleErrorEnd'
             }
         }
-    },
-
-    // indexerSuccessInitializerPipeline: {
-    //     startNode: "validateRequest",
-    //     hardStop: true, //default value is false
-    //     handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-    //     nodes: {
-    //         changeIndexerState: {
-    //             type: 'function',
-    //             handler: 'DefaultExternalIndexerInitializerService.changeIndexerState',
-    //             success: 'successEnd'
-    //         }
-    //     }
-    // },
-
-    // indexerFailureInitializerPipeline: {
-    //     startNode: "validateRequest",
-    //     hardStop: true, //default value is false
-    //     handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-    //     nodes: {
-    //         changeIndexerState: {
-    //             type: 'function',
-    //             handler: 'DefaultExternalIndexerInitializerService.changeIndexerState',
-    //             success: 'successEnd'
-    //         }
-    //     }
-    // }
+    }
 };

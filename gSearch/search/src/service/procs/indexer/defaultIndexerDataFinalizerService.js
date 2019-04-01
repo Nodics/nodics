@@ -38,37 +38,96 @@ module.exports = {
     },
 
     applyProcessors: function (request, response, process) {
-        this.LOG.debug('Building options for internal indexer');
-        process.nextSuccess(request, response);
+        this.LOG.debug('Applying indexer processors');
+        let indexerConfig = request.indexerConfig;
+        if (indexerConfig.processors) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(indexerConfig.processors), {
+                tenant: request.tenant,
+                moduleName: request.moduleName,
+                indexerConfig: request.indexerConfig,
+                dataHeader: request.dataHeader,
+                models: options.finalData,
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexService: request.indexService,
+                outputPath: request.outputPath
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00007',
+                    error: error
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     applyInterceptors: function (request, response, process) {
-        process.nextSuccess(request, response);
+        this.LOG.debug('Applying indexer interceptors');
+        let moduleName = request.moduleName;
+        let indexName = request.indexerConfig.target.indexName;
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        if (interceptors && interceptors.preIndex) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preGet), {
+                tenant: request.tenant,
+                moduleName: request.moduleName,
+                indexerConfig: request.indexerConfig,
+                dataHeader: request.dataHeader,
+                models: options.finalData,
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexService: request.indexService,
+                outputPath: request.outputPath
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00008',
+                    error: error
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
-    applyModelInterceptor: function (request, options) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            if (options.pendingModels && options.pendingModels.length > 0) {
-                let model = options.pendingModels.shift();
-                SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
+    executeProcess: function (request, response, process) {
+        let indexerConfig = request.indexerConfig;
+        if (indexerConfig.processPipeline) {
+            try {
+                SERVICE.DefaultPipelineService.start(indexerConfig.processPipeline, {
                     tenant: request.tenant,
                     moduleName: request.moduleName,
-                    header: request.dataHeader,
-                    dataModel: model
+                    indexerConfig: request.indexerConfig,
+                    dataHeader: request.dataHeader,
+                    models: options.finalData,
+                    schemaModel: request.schemaModel,
+                    searchModel: request.searchModel,
+                    indexService: request.indexService,
+                    outputPath: request.outputPath
                 }, {}).then(success => {
-                    _self.processModels(request, options).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    process.nextSuccess(request, response);
                 }).catch(error => {
-                    reject(error);
+                    process.error(request, response, {
+                        success: false,
+                        code: 'ERR_SRCH_00008',
+                        error: error
+                    });
                 });
-            } else {
-                resolve(true);
+            } catch (error) {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00008',
+                    error: error
+                });
             }
-        });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     processData: function (request, response, process) {

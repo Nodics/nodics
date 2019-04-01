@@ -106,6 +106,7 @@ module.exports = {
         let indexerConfig = request.indexerConfig;
         indexerConfig.state = ENUMS.IndexerState.SUCCESS.key;
         indexerConfig.endTime = new Date();
+        indexerConfig.lastErrorLog = [];
         SERVICE.DefaultIndexerService.save({
             tenant: request.tenant,
             model: indexerConfig
@@ -125,6 +126,11 @@ module.exports = {
         let indexerConfig = request.indexerConfig;
         indexerConfig.state = ENUMS.IndexerState.ERROR.key;
         indexerConfig.endTime = new Date();
+        if (response.errors && response.errors.length > 0) {
+            indexerConfig.lastErrorLog = response.errors;
+        } else {
+            indexerConfig.lastErrorLog = [response.error];
+        }
         SERVICE.DefaultIndexerService.save({
             tenant: request.tenant,
             model: indexerConfig
