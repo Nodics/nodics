@@ -33,12 +33,13 @@ module.exports = {
     },
 
     getSearchModel: function (request) {
-        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        let moduleName = request.moduleName || 'mdulnm';
+        request.schemaModel = NODICS.getModels(moduleName, request.tenant).mdlnm;
         request.indexName = request.indexName ? request.indexName : request.schemaModel.indexName;
-        if (!request.moduleName || !request.tenant || !request.indexName) {
+        if (!request.tenant || !request.indexName) {
             throw new Error('Invalid request or search is not active for this type');
         } else {
-            return NODICS.getSearchModel(request.moduleName, request.tenant, request.indexName);
+            return NODICS.getSearchModel(moduleName, request.tenant, request.indexName);
         }
     },
 

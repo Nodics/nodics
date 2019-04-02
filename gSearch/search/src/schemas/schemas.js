@@ -208,7 +208,7 @@ module.exports = {
                     description: 'State of last execution (SUCESS, ERROR, NEW)'
                 },
                 lastErrorLog: {
-                    type: 'object',
+                    type: 'array',
                     required: false,
                     description: 'Last error log'
                 },

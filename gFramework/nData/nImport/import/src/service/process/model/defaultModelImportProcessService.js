@@ -268,9 +268,12 @@ module.exports = {
         this.LOG.debug('Initiating data model import process');
         let header = request.header;
         if (header.options.indexName) {
-            let searchModel = NODICS.getSearchModel(header.options.moduleName, request.tenant, header.options.indexName);
-            if (searchModel) {
-                searchModel[header.options.operation]({
+            let indexService = request.indexService;
+            //let searchModel = request.indexService || NODICS.getSearchModel(header.options.moduleName, request.tenant, header.options.indexName);
+            if (indexService) {
+                indexService[header.options.operation]({
+                    tenant: request.tenant,
+                    indexName: request.indexName,
                     options: request.options || {},
                     model: request.dataModel
                 }).then(result => {
@@ -288,7 +291,6 @@ module.exports = {
                         } else {
                             response.success.push(result.result);
                         }
-                        //response.targetNode = 'insertSuccess';
                         process.nextSuccess(request, response);
                     } else {
                         process.error(request, response, result);

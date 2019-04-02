@@ -48,8 +48,7 @@ module.exports = {
                 ttl: 360
             },
             search: {
-                enabled: true,
-                //indexName: 'enterprise', // if null, moduleName will be taken
+                enabled: false,
                 idPropertyName: 'code', // if null, code will be taken
             },
             refSchema: {
@@ -210,7 +209,6 @@ module.exports = {
                     description: 'Name of enterprise',
                     searchOptions: {
                         enabled: true, // default is false
-                        type: 'text'
                     }
                 },
                 tenant: {
@@ -219,7 +217,6 @@ module.exports = {
                     description: 'Required Code of associated tenant',
                     searchOptions: {
                         enabled: true, // default is false
-                        type: 'text'
                     }
                 },
                 superEnterprise: {
@@ -228,7 +225,6 @@ module.exports = {
                     description: 'Parent enterprise code if any',
                     searchOptions: {
                         enabled: true, // default is false
-                        type: 'text'
                     }
                 },
                 subEnterprises: {
@@ -242,7 +238,6 @@ module.exports = {
                     description: 'All associated addresses with this enterprise',
                     searchOptions: {
                         enabled: true, // default is false
-                        type: 'text'
                     }
                 },
                 contacts: {
@@ -251,7 +246,6 @@ module.exports = {
                     description: 'All associated contacts with this enterprise',
                     searchOptions: {
                         enabled: true, // default is false
-                        type: 'text'
                     }
                 }
             }

@@ -11,6 +11,12 @@
 
 module.exports = {
     search: {
+        dataTypeMap: {
+            default: 'text',
+            objectId: 'nested',
+            array: 'nested',
+            string: 'text'
+        },
         default: {
             elastic: {
                 options: {
@@ -86,7 +92,7 @@ module.exports = {
                     },
 
                     saveOptions: {
-                        opType: 'create'
+                        opType: 'index'
                     },
 
                     bulkOptions: {

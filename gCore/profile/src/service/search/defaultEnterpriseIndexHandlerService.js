@@ -12,12 +12,14 @@
 module.exports = {
     getEnterpriseDescription: function (enterprise) {
         return new Promise((resolve, reject) => {
+            console.log('---------- Setting enterprice dexription: ', enterprise.description);
             resolve(enterprise.description);
         });
     },
 
     getEnterpriseCustom: function (enterprise) {
         return new Promise((resolve, reject) => {
+            console.log('---------- Setting enterprice dexription: ', enterprise.description + ' Nodics framework');
             resolve(enterprise.description + ' Nodics framework');
         });
     },

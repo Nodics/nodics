@@ -54,22 +54,23 @@ module.exports = {
                     searchSchema.schemaName = schemaName;
                     searchSchema.properties = {};
                     Object.keys(rawSchema.definition).forEach(name => {
-                        let options = rawSchema.definition[name];
-                        if (options.searchOptions && !UTILS.isBlank(options.searchOptions) && options.searchOptions.enabled) {
-                            let propName = options.searchOptions.name || name;
-                            searchSchema.properties[propName] = options.searchOptions;
+                        let propDef = rawSchema.definition[name];
+                        if (propDef.searchOptions && !UTILS.isBlank(propDef.searchOptions) && propDef.searchOptions.enabled) {
+                            let propName = propDef.searchOptions.name || name;
+                            searchSchema.properties[propName] = propDef.searchOptions;
                             searchSchema.properties[propName].name = searchSchema.properties[propName].name || name;
-                            searchSchema.properties[propName].type = searchSchema.properties[propName].type || 'text';
                             searchSchema.properties[propName].index = searchSchema.properties[propName].index || 'not_analyzed';
                             searchSchema.properties[propName].weight = searchSchema.properties[propName].weight || searchConfig.defaultPropertyWeight;
                             searchSchema.properties[propName].sequence = searchSchema.properties[propName].sequence || searchConfig.defaultPropertySequence;
-                            if (rawSchema.refSchema && rawSchema.refSchema[name] &&
-                                rawSchema.refSchema[name].searchEnabled &&
-                                !processed.includes(rawSchema.refSchema[name].schemaName)) {
+                            if (rawSchema.refSchema && rawSchema.refSchema[name] && rawSchema.refSchema[name].searchEnabled && !processed.includes(rawSchema.refSchema[name].schemaName)) {
                                 let subSchema = _self.prepareFromSchema(moduleName, rawSchema.refSchema[name].schemaName, true, processed);
                                 if (subSchema && !UTILS.isBlank(subSchema)) {
+                                    searchSchema.properties[propName].type = 'nested';//searchSchema.properties[propName].type || 'text';
                                     searchSchema.properties[propName].properties = subSchema.properties;
                                 }
+                            } else {
+                                searchSchema.properties[propName].type = searchSchema.properties[propName].type || CONFIG.get('search').dataTypeMap[propDef.type] || CONFIG.get('search').dataTypeMap.default;
+                                //searchSchema.properties[propName].type || 'text';
                             }
                         }
                     });
@@ -82,6 +83,10 @@ module.exports = {
             throw error;
         }
         return searchSchema;
+    },
+
+    getPropertyDataType: function (rawSchema, name) {
+
     },
 
     prepareFromDefinitions: function (moduleName, tntCode, source, target, typeName) {

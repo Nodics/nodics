@@ -37,6 +37,33 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    handleValueProviders: function (request, response, process) {
+        this.LOG.debug('Applying search schema Handllers');
+        if (request.models && request.models.length > 0) {
+            SERVICE.DefaultSearchPropertiesValueHandlerService.processValueProviders({
+                tenant: request.tenant,
+                moduleName: request.moduleName,
+                indexerConfig: request.indexerConfig,
+                dataHeader: request.dataHeader,
+                models: request.models,
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexService: request.indexService,
+                outputPath: request.outputPath
+            }).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00010',
+                    error: error
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyProcessors: function (request, response, process) {
         this.LOG.debug('Applying indexer processors');
         let indexerConfig = request.indexerConfig;
@@ -46,7 +73,7 @@ module.exports = {
                 moduleName: request.moduleName,
                 indexerConfig: request.indexerConfig,
                 dataHeader: request.dataHeader,
-                models: options.finalData,
+                models: request.models,
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexService: request.indexService,
@@ -76,7 +103,7 @@ module.exports = {
                 moduleName: request.moduleName,
                 indexerConfig: request.indexerConfig,
                 dataHeader: request.dataHeader,
-                models: options.finalData,
+                models: request.models,
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexService: request.indexService,
@@ -104,7 +131,7 @@ module.exports = {
                     moduleName: request.moduleName,
                     indexerConfig: request.indexerConfig,
                     dataHeader: request.dataHeader,
-                    models: options.finalData,
+                    models: request.models,
                     schemaModel: request.schemaModel,
                     searchModel: request.searchModel,
                     indexService: request.indexService,
@@ -156,11 +183,7 @@ module.exports = {
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, {
-                        success: false,
-                        code: 'ERR_SRCH_00000',
-                        error: error
-                    });
+                    process.error(request, response, error);
                 });
             }
         } catch (error) {
@@ -178,6 +201,8 @@ module.exports = {
             if (options.pendingModels && options.pendingModels.length > 0) {
                 let model = options.pendingModels.shift();
                 SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
+                    indexService: request.indexService,
+                    indexName: request.indexerConfig.target.indexName,
                     tenant: request.tenant,
                     moduleName: request.moduleName,
                     header: request.dataHeader,

@@ -72,8 +72,14 @@ module.exports = {
     },
 
     ERR_SRCH_00009: {
-        code: '1500089',
+        code: '150009',
         description: 'While applying indexer pipeline',
         message: 'While applying indexer pipeline'
+    },
+
+    ERR_SRCH_00010: {
+        code: '150010',
+        description: 'While executing value providers',
+        message: 'While executing value providers'
     }
 };

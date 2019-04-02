@@ -682,6 +682,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultIndexerDataFinalizerService.validateRequest',
+                success: 'handleValueProviders'
+            },
+            handleValueProviders: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.handleValueProviders',
                 success: 'applyProcessors'
             },
             applyProcessors: {
