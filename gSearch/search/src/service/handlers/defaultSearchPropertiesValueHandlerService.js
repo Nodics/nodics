@@ -35,7 +35,7 @@ module.exports = {
     processValueProviders: function (request, count = 0) {
         return new Promise((resolve, reject) => {
             let indexDef = request.searchModel.indexDef;
-            if (count < request.models.length && UTILS.isBlank(indexDef.properties)) {
+            if (count < request.models.length && !UTILS.isBlank(indexDef.properties)) {
                 this.processPropertiesValueProvider({
                     model: request.models[count],
                     indexDef: indexDef,
@@ -59,7 +59,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (request.properties && request.properties.length > 0) {
                 let propName = request.properties.shift();
-                let propDef = request.indexDef[propName];
+                let propDef = request.indexDef.properties[propName];
                 this.processValueProvider(request.model, propName, propDef).then(success => {
                     this.processPropertiesValueProvider(request).then(success => {
                         resolve(true);
@@ -77,9 +77,9 @@ module.exports = {
 
     processValueProvider: function (model, propName, propDef) {
         return new Promise((resolve, reject) => {
-            if (propDef.provider) {
-                let valueProviderServiceName = propDef.provider;
-                let valueProviderOperationName = propDef.provider;
+            if (propDef.valueProvider) {
+                let valueProviderServiceName = propDef.valueProvider.substring(0, propDef.valueProvider.indexOf('.'));
+                let valueProviderOperationName = propDef.valueProvider.substring(propDef.valueProvider.indexOf('.') + 1, propDef.valueProvider.length);
                 SERVICE[valueProviderServiceName][valueProviderOperationName](model).then(value => {
                     model[propName] = value;
                     resolve(true);

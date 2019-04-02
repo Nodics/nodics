@@ -9,16 +9,15 @@
 
 */
 
+const _ = require('lodash');
 module.exports = {
 
-    preEnterpriseIndexProcessor: function (enterprises) {
+    enterpriseIndexProcessor: function (request) {
         return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    },
-
-    postEnterpriseIndexProcessor: function (enterprises) {
-        return new Promise((resolve, reject) => {
+            this.LOG.debug('DefaultEnterpriseIndexProcessorService.enterpriseIndexProcessor');
+            //let newModel = _.merge({}, request.models[0]);
+            //newModel.code = 'NewDefault';
+            //request.models.push(newModel);
             resolve(true);
         });
     }

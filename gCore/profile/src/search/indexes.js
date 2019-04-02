@@ -16,12 +16,12 @@ module.exports = {
             //indexName: 'enterprise',
             idPropertyName: 'code',
             properties: {
-                description: {
-                    handler: 'DefaultEnterpriseIndexHandlerService.getEnterpriseDescription'
+                desc: {
+                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseDescription'
                 },
                 custom: {
                     enabled: true,
-                    handler: 'DefaultEnterpriseIndexHandlerService.getEnterpriseCustom'
+                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseCustom'
                 }
             }
         }

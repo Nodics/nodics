@@ -38,7 +38,7 @@ module.exports = {
     },
 
     handleValueProviders: function (request, response, process) {
-        this.LOG.debug('Applying search schema Handllers');
+        this.LOG.debug('Applying search schema value providers');
         if (request.models && request.models.length > 0) {
             SERVICE.DefaultSearchPropertiesValueHandlerService.processValueProviders({
                 tenant: request.tenant,
@@ -68,7 +68,7 @@ module.exports = {
         this.LOG.debug('Applying indexer processors');
         let indexerConfig = request.indexerConfig;
         if (indexerConfig.processors) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(indexerConfig.processors), {
+            SERVICE.DefaultProcessorHandlerService.executeSearchProcessors([].concat(indexerConfig.processors), {
                 tenant: request.tenant,
                 moduleName: request.moduleName,
                 indexerConfig: request.indexerConfig,
@@ -97,8 +97,8 @@ module.exports = {
         let moduleName = request.moduleName;
         let indexName = request.indexerConfig.target.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
-        if (interceptors && interceptors.preIndex) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preGet), {
+        if (interceptors && interceptors.index) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.index), {
                 tenant: request.tenant,
                 moduleName: request.moduleName,
                 indexerConfig: request.indexerConfig,
@@ -122,7 +122,7 @@ module.exports = {
         }
     },
 
-    executeProcess: function (request, response, process) {
+    executeIndexerPipeline: function (request, response, process) {
         let indexerConfig = request.indexerConfig;
         if (indexerConfig.processPipeline) {
             try {
@@ -139,11 +139,7 @@ module.exports = {
                 }, {}).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, {
-                        success: false,
-                        code: 'ERR_SRCH_00008',
-                        error: error
-                    });
+                    process.error(request, response, error);
                 });
             } catch (error) {
                 process.error(request, response, {

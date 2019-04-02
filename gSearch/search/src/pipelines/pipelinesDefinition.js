@@ -697,11 +697,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultIndexerDataFinalizerService.applyInterceptors',
-                success: 'executeProcess'
+                success: 'executeIndexerPipeline'
             },
-            executeProcess: {
+            executeIndexerPipeline: {
                 type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.executeProcess',
+                handler: 'DefaultIndexerDataFinalizerService.executeIndexerPipeline',
                 success: 'processData'
             },
             processData: {

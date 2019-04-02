@@ -89,31 +89,5 @@ module.exports = {
                 reject(error);
             }
         });
-    },
-
-    executeProcessorInterceptors: function (interceptorList, request, responce) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                if (interceptorList && interceptorList.length > 0) {
-                    let interceptor = interceptorList.shift();
-                    let serviceName = interceptor.handler.substring(0, interceptor.handler.indexOf('.'));
-                    let functionName = interceptor.handler.substring(interceptor.handler.indexOf('.') + 1, interceptor.handler.length);
-                    SERVICE[serviceName][functionName](request, responce).then(success => {
-                        _self.executeProcessorInterceptors(interceptorList, request, responce).then(success => {
-                            resolve(success);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    resolve(true);
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    },
+    }
 };

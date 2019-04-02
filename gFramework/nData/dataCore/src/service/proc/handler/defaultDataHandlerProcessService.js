@@ -51,7 +51,7 @@ module.exports = {
                 dataObjects: request.dataObjects
             };
             let interceptorResponse = {};
-            SERVICE.DefaultInterceptorHandlerService.executeProcessorInterceptors(
+            SERVICE.DefaultProcessorHandlerService.executeProcessors(
                 [].concat(interceptors.importProcessor),
                 interceptorRequest,
                 interceptorResponse).then(success => {

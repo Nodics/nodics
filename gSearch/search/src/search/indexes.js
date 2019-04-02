@@ -20,12 +20,12 @@ module.exports = {
             preProcessor: 'DefaultEnterpriseIndexProcessorService.preEnterpriseIndexProcessor', // Will get executed just after data fetch from DB
             postProcessor: 'DefaultEnterpriseIndexProcessorService.postEnterpriseIndexProcessor', // will get executed once every data got collected and processed
             properties: {
-                description: {
-                    handler: 'DefaultEnterpriseIndexHandlerService.getEnterpriseDescription'
+                desc: {
+                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseDescription'
                 },
                 custom: {
                     enabled: true,
-                    handler: 'DefaultEnterpriseIndexHandlerService.getEnterpriseCustom'
+                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseCustom'
                 }
             }
         },
@@ -36,12 +36,12 @@ module.exports = {
             preProcessor: 'DefaultEnterpriseIndexProcessorService.preEnterpriseIndexProcessor', // Will get executed just after data fetch from DB
             postProcessor: 'DefaultEnterpriseIndexProcessorService.postEnterpriseIndexProcessor', // will get executed once every data got collected and processed
             properties: {
-                description: {
-                    handler: 'DefaultEnterpriseIndexHandlerService.getEnterpriseDescription'
+                desc: {
+                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseDescription'
                 },
                 custom: {
                     enabled: true,
-                    handler: 'DefaultEnterpriseIndexHandlerService.getEnterpriseCustom'
+                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseCustom'
                 }
             }
         }
