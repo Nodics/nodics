@@ -38,7 +38,6 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
-        console.log(util.inspect(request.data.headers, { showHidden: false, depth: 6 }));
         if (!request.data.headers) {
             process.error(request, response, 'Please validate request. Mandate property headers not have valid value');
         } else if (!request.outputPath) {

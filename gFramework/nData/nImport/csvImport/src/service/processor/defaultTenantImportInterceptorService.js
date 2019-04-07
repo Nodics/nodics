@@ -39,8 +39,8 @@ module.exports = {
 
     convertActiveValueToBoolean: function (options) {
         return new Promise((resolve, reject) => {
-            if (options.dataObjects && options.dataObjects.length > 0) {
-                options.dataObjects.forEach(element => {
+            if (options.models && options.models.length > 0) {
+                options.models.forEach(element => {
                     if (element.active !== undefined && typeof element.active !== 'boolean') {
                         element.active = element.active.toLowerCase() == 'true' ? true : false;
                     }

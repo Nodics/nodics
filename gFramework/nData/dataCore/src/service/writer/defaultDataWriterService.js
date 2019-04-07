@@ -47,6 +47,9 @@ module.exports = {
                         fileName = fileName + '_' + options.outputPath.version;
                     }
                     fileName = options.outputPath.destDir + '/' + fileName + '.js';
+                    if (options.header.local) {
+                        delete options.header.local;
+                    }
                     let finalObject = {
                         header: options.header,
                         models: options.finalData

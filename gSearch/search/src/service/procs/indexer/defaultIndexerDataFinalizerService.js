@@ -43,15 +43,8 @@ module.exports = {
             SERVICE.DefaultSearchPropertiesValueHandlerService.processValueProviders({
                 tenant: request.tenant,
                 moduleName: request.moduleName,
-                indexerConfig: request.indexerConfig,
-                dataHeader: request.dataHeader,
+                header: request.header,
                 models: request.models,
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexService: request.indexService,
-                schemaService: request.schemaService,
-                searchService: request.searchService,
-                outputPath: request.outputPath
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -68,20 +61,13 @@ module.exports = {
 
     applyProcessors: function (request, response, process) {
         this.LOG.debug('Applying indexer processors');
-        let indexerConfig = request.indexerConfig;
+        let indexerConfig = request.header.local.indexerConfig;
         if (indexerConfig.processors) {
             SERVICE.DefaultProcessorHandlerService.executeSearchProcessors([].concat(indexerConfig.processors), {
                 tenant: request.tenant,
                 moduleName: request.moduleName,
-                indexerConfig: request.indexerConfig,
-                dataHeader: request.dataHeader,
+                header: request.header,
                 models: request.models,
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexService: request.indexService,
-                schemaService: request.schemaService,
-                searchService: request.searchService,
-                outputPath: request.outputPath
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -99,21 +85,14 @@ module.exports = {
     applyInterceptors: function (request, response, process) {
         this.LOG.debug('Applying indexer interceptors');
         let moduleName = request.moduleName;
-        let indexName = request.indexerConfig.target.indexName;
+        let indexName = request.header.local.indexerConfig.target.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
         if (interceptors && interceptors.index) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.index), {
                 tenant: request.tenant,
                 moduleName: request.moduleName,
-                indexerConfig: request.indexerConfig,
-                dataHeader: request.dataHeader,
+                header: request.header,
                 models: request.models,
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexService: request.indexService,
-                schemaService: request.schemaService,
-                searchService: request.searchService,
-                outputPath: request.outputPath
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -129,21 +108,14 @@ module.exports = {
     },
 
     executeIndexerPipeline: function (request, response, process) {
-        let indexerConfig = request.indexerConfig;
+        let indexerConfig = request.header.local.indexerConfig;
         if (indexerConfig.processPipeline) {
             try {
                 SERVICE.DefaultPipelineService.start(indexerConfig.processPipeline, {
                     tenant: request.tenant,
                     moduleName: request.moduleName,
-                    indexerConfig: request.indexerConfig,
-                    dataHeader: request.dataHeader,
+                    header: request.header,
                     models: request.models,
-                    schemaModel: request.schemaModel,
-                    searchModel: request.searchModel,
-                    indexService: request.indexService,
-                    schemaService: request.schemaService,
-                    searchService: request.searchService,
-                    outputPath: request.outputPath
                 }, {}).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
@@ -164,14 +136,14 @@ module.exports = {
     processData: function (request, response, process) {
         let _self = this;
         try {
-            let indexerConfig = request.indexerConfig;
+            let indexerConfig = request.header.local.indexerConfig;
             if (indexerConfig.dumpData) {
                 SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
                     tenant: request.tenant,
                     moduleName: request.moduleName,
-                    header: request.dataHeader,
-                    dataObjects: request.models,
-                    outputPath: request.outputPath
+                    header: request.header,
+                    models: request.models,
+                    outputPath: request.header.local.outputPath
                 }, {}).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
@@ -207,7 +179,7 @@ module.exports = {
                 SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
                     tenant: request.tenant,
                     moduleName: request.moduleName,
-                    header: request.dataHeader,
+                    header: request.header,
                     dataModel: model
                 }, {}).then(success => {
                     _self.processModels(request, options).then(success => {

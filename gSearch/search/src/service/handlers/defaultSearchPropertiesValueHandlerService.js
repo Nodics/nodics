@@ -34,7 +34,8 @@ module.exports = {
 
     processValueProviders: function (request, count = 0) {
         return new Promise((resolve, reject) => {
-            let indexDef = request.searchModel.indexDef;
+            let searchModel = request.header.local.searchModel;
+            let indexDef = searchModel.indexDef;
             if (count < request.models.length && !UTILS.isBlank(indexDef.properties)) {
                 this.processPropertiesValueProvider({
                     model: request.models[count],

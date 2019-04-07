@@ -65,7 +65,8 @@ module.exports = {
                     typeName: request.target.typeName,
                     operation: request.indexerConfig.target.operation || CONFIG.get('search').defaultDoSaveOperation || 'doSave',
                     tenants: [request.tenant],
-                    moduleName: request.moduleName
+                    moduleName: request.moduleName,
+                    dataHandler: 'finalizeIndexerDataPipeline'
                 }
             },
             dataFiles: {}

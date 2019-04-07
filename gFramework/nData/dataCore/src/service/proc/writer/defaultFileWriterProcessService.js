@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -41,16 +43,16 @@ module.exports = {
         this.LOG.debug('Generating unique hash key');
         request.finalData = {};
         do {
-            let data = request.dataObjects.shift();
+            let data = request.models.shift();
             request.finalData[UTILS.generateHash(JSON.stringify(data))] = data;
-        } while (request.dataObjects.length > 0);
+        } while (request.models.length > 0);
         process.nextSuccess(request, response);
     },
 
     writeIntoFile: function (request, response, process) {
         this.LOG.debug('Writing data object into file');
         SERVICE.DefaultDataWriterService.writeToFile({
-            header: request.header,
+            header: _.merge({}, request.header),
             finalData: request.finalData,
             outputPath: request.outputPath
         }).then(success => {

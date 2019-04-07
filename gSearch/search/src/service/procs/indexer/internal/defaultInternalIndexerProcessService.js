@@ -42,27 +42,34 @@ module.exports = {
 
     prepareHeader: function (request, response, process) {
         this.LOG.debug('Building options for internal indexer');
-        request.dataHeader = {
+        request.header = {
             options: {
                 indexName: request.target.indexName,
                 typeName: request.target.typeName,
                 operation: request.indexerConfig.target.operation || CONFIG.get('search').defaultDoSaveOperation || 'doSave',
                 tenants: [request.tenant],
                 moduleName: request.moduleName
+            },
+            local: {
+                indexerConfig: request.indexerConfig,
+                schemaModel: request.schemaModel,
+                schemaService: request.schemaService,
+                source: request.source,
+                target: request.target,
+                searchModel: request.searchModel,
+                searchService: request.searchService
             }
         };
         process.nextSuccess(request, response);
     },
 
     prepareOutputPath: function (request, response, process) {
-        let indexerConfig = request.indexerConfig;
+        let indexerConfig = request.header.local.indexerConfig;
         if (indexerConfig.dumpData) {
             this.LOG.debug('Preparing output file path');
             let tempPath = (indexerConfig.target.tempPath) ? indexerConfig.target.tempPath + '/search/' + indexerConfig.target.indexName : NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/search/' + indexerConfig.target.indexName;
-            request.outputPath = {
-                destDir: tempPath + '/data',
-                successPath: tempPath + '/success',
-                errorPath: tempPath + '/error',
+            request.header.local.outputPath = {
+                destDir: tempPath,
                 fileName: indexerConfig.target.indexName,
                 version: 0
             };
@@ -71,10 +78,10 @@ module.exports = {
     },
 
     flushOutputFolder: function (request, response, process) {
-        let indexerConfig = request.indexerConfig;
+        let indexerConfig = request.header.local.indexerConfig;
         if (indexerConfig.dumpData) {
-            this.LOG.debug('Cleaning output directory : ' + request.outputPath.destDir);
-            fse.remove(request.outputPath.destDir).then(() => {
+            this.LOG.debug('Cleaning output directory : ' + request.header.local.outputPath.destDir);
+            fse.remove(request.header.local.outputPath.destDir).then(() => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -85,9 +92,9 @@ module.exports = {
     },
 
     initFatchData: function (request, response, process) {
-        this.LOG.debug('Changing state of current indexer: ' + request.indexerConfig.code);
-        let query = _.merge({}, request.indexerConfig.schema.query || {});
-        let queryOptions = _.merge({}, request.indexerConfig.schema.options || {});
+        this.LOG.debug('Changing state of current indexer: ' + request.header.local.indexerConfig.code);
+        let query = _.merge({}, request.header.local.indexerConfig.schema.query || {});
+        let queryOptions = _.merge({}, request.header.local.indexerConfig.schema.options || {});
         queryOptions.projection = _.merge({ _id: 0 }, queryOptions.projection || {});
         this.fatchData(request, {
             queryOptions: queryOptions,
@@ -109,8 +116,8 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 options.queryOptions.pageNumber = options.pageNumber;
-                if (NODICS.isModuleActive(request.source.moduleName)) {
-                    request.schemaService.get({
+                if (NODICS.isModuleActive(request.header.local.source.moduleName)) {
+                    request.header.local.schemaService.get({
                         tenant: request.tenant,
                         options: options.queryOptions,
                         query: options.query
@@ -121,9 +128,9 @@ module.exports = {
                     });
                 } else {
                     SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
-                        moduleName: request.source.moduleName,
+                        moduleName: request.header.local.source.moduleName,
                         methodName: 'POST',
-                        apiName: '/' + request.source.schemaName,
+                        apiName: '/' + request.header.local.source.schemaName,
                         requestBody: {
                             options: options.queryOptions,
                             query: options.query
@@ -151,22 +158,24 @@ module.exports = {
             if (data.success && data.result && data.result.length > 0) {
                 options.readBytes = options.readBytes + sizeof(data.result);
                 if (options.readBytes > options.readBufferSize && options.finalData.length > 0) {
-                    if (request.outputPath) {
-                        request.outputPath.version = request.outputPath.version + 1;
+                    if (request.header.local.outputPath) {
+                        request.header.local.outputPath.version = request.header.local.outputPath.version + 1;
                     }
+
+                    // source: request.source,
+                    // target: request.target,
+                    // indexerConfig: request.indexerConfig,
+                    // dataHeader: request.dataHeader,
+                    // schemaModel: request.schemaModel,
+                    // searchModel: request.searchModel,
+                    // schemaService: request.schemaService,
+                    // searchService: request.searchService,
+                    // outputPath: request.outputPath
                     SERVICE.DefaultPipelineService.start('finalizeIndexerDataPipeline', {
                         tenant: request.tenant,
                         moduleName: request.moduleName,
-                        source: request.source,
-                        target: request.target,
-                        indexerConfig: request.indexerConfig,
-                        dataHeader: request.dataHeader,
+                        header: request.header,
                         models: options.finalData,
-                        schemaModel: request.schemaModel,
-                        searchModel: request.searchModel,
-                        schemaService: request.schemaService,
-                        searchService: request.searchService,
-                        outputPath: request.outputPath
                     }, {}).then(success => {
                         options.finalData = data.result;
                         options.pageNumber = options.pageNumber + 1;
@@ -196,16 +205,8 @@ module.exports = {
                     SERVICE.DefaultPipelineService.start('finalizeIndexerDataPipeline', {
                         tenant: request.tenant,
                         moduleName: request.moduleName,
-                        source: request.source,
-                        target: request.target,
-                        indexerConfig: request.indexerConfig,
-                        dataHeader: request.dataHeader,
+                        header: request.header,
                         models: options.finalData,
-                        schemaModel: request.schemaModel,
-                        searchModel: request.searchModel,
-                        schemaService: request.schemaService,
-                        searchService: request.searchService,
-                        outputPath: request.outputPath
                     }, {}).then(success => {
                         resolve(success);
                     }).catch(error => {
@@ -223,7 +224,7 @@ module.exports = {
     },
     importDumpData: function (request, response, process) {
         try {
-            let indexerConfig = request.indexerConfig;
+            let indexerConfig = request.header.local.indexerConfig;
             if (indexerConfig.dumpData) {
                 SERVICE.DefaultImportService.processImportData({
                     tenant: request.tenant,

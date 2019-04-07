@@ -70,7 +70,7 @@ module.exports = {
                     jsonStream.pause();
                     readBytes = readBytes + sizeof(data.value);
                     if (readBytes > CONFIG.get('data').readBufferSize && dataChunk.length > 0) {
-                        request.dataObjects = [].concat(dataChunk);
+                        request.models = [].concat(dataChunk);
                         request.outputPath.version = index + '_' + version;
                         SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
                             dataChunk = [data];
@@ -87,7 +87,7 @@ module.exports = {
                 });
                 jsonStream.on('end', () => {
                     if (dataChunk.length > 0) {
-                        request.dataObjects = [].concat(dataChunk);
+                        request.models = [].concat(dataChunk);
                         request.outputPath.version = index + '_' + version;
                         SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
                             _self.handleFiles(request, response, files, ++index).then(success => {
