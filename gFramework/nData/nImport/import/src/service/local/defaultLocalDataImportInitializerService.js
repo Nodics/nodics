@@ -96,11 +96,9 @@ module.exports = {
                                 headerObj.options.filePath = element;
                                 headerObj.options.done = false;
                                 headerObj.options.dataHandler = CONFIG.get('data').dataHandlerPipeline || 'dataHandlerPipeline';
+                                headerObj.dataFiles = {};
                                 if (!request.data.headers[headerName]) {
-                                    request.data.headers[headerName] = {
-                                        header: headerObj,
-                                        dataFiles: {}
-                                    };
+                                    request.data.headers[headerName] = headerObj;
                                 } else {
                                     throw new Error('Same header: ' + headerName + 'can not be in two different header files');
                                 }
@@ -122,7 +120,7 @@ module.exports = {
         if (request.data.headers && Object.keys(request.data.headers).length > 0) {
             Object.keys(request.data.headers).forEach(headerName => {
                 let headerData = request.data.headers[headerName];
-                let filePrefix = headerData.header.options.dataFilePrefix || headerName;
+                let filePrefix = headerData.options.dataFilePrefix || headerName;
                 let fileList = {};
                 SERVICE.DefaultImportUtilityService.getAllFrefixFiles(request.dataPath, fileList, filePrefix);
                 _.each(fileList, (dataFile, name) => {

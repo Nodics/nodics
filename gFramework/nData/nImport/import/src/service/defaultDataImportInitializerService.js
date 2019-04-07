@@ -76,27 +76,29 @@ module.exports = {
                 let header = headers[headerName];
                 _self.LOG.debug('Starting process for header: ', headerName);
                 SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
+                    tenant: request.tenant,
+                    moduleName: request.moduleName,
                     header: header,
                     headerName: headerName,
                     outputPath: _.merge({}, request.outputPath)
                 }, {}).then(success => {
                     if (request.outputPath.importType && request.outputPath.importType !== 'system') {
-                        header.header.options.done = true;
-                        let fileName = header.header.options.fileName;
+                        header.options.done = true;
+                        let fileName = header.options.fileName;
                         let headers = Object.keys(request.data.headers);
                         let done = true;
                         for (let count = 0; count < headers.length; count++) {
                             let headerName = headers[count];
-                            let headerObj = request.data.headers[headerName].header;
+                            let headerObj = request.data.headers[headerName];
                             if (fileName === headerObj.options.fileName && !headerObj.options.done) {
                                 done = false;
                             }
                         }
                         if (done) {
-                            SERVICE.DefaultFileHandlerService.moveFile([header.header.options.filePath], request.outputPath.successPath + '/headers').then(success => {
-                                _self.LOG.debug('File has been moved to error folder : ' + header.header.options.filePath.replace(NODICS.getNodicsHome(), '.'));
+                            SERVICE.DefaultFileHandlerService.moveFile([header.options.filePath], request.outputPath.successPath + '/headers').then(success => {
+                                _self.LOG.debug('File has been moved to error folder : ' + header.options.filePath.replace(NODICS.getNodicsHome(), '.'));
                             }).catch(error => {
-                                _self.LOG.error('Facing issue while moving file to error folder : ' + header.header.options.filePath.replace(NODICS.getNodicsHome(), '.'));
+                                _self.LOG.error('Facing issue while moving file to error folder : ' + header.options.filePath.replace(NODICS.getNodicsHome(), '.'));
                                 _self.LOG.error(error);
                             });
                         }
@@ -128,8 +130,8 @@ module.exports = {
             for (let count = 0; count < headers.length; count++) {
                 let headerName = headers[count];
                 let headerObj = request.data.headers[headerName];
-                if (!headerObj.header.options.done && !errorFiles.includes(headerObj.header.options.filePath)) {
-                    errorFiles.push(headerObj.header.options.filePath);
+                if (!headerObj.options.done && !errorFiles.includes(headerObj.options.filePath)) {
+                    errorFiles.push(headerObj.options.filePath);
                 }
             }
         }

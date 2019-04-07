@@ -119,14 +119,12 @@ module.exports = {
                                 request.data.headers = {};
                             }
                             if (!request.data.headers[headerName]) {
-                                request.data.headers[headerName] = {
-                                    header: {},
-                                    dataFiles: {}
-                                };
+                                request.data.headers[headerName] = {};
                             }
-                            request.data.headers[headerName].header = _.merge(request.data.headers[headerName].header, header);
-                            request.data.headers[headerName].header.options.moduleName = moduleName;
-                            request.data.headers[headerName].header.options.dataHandler = CONFIG.get('data').dataHandlerPipeline || 'dataHandlerPipeline';
+                            request.data.headers[headerName] = _.merge(request.data.headers[headerName], header);
+                            request.data.headers[headerName].options.moduleName = moduleName;
+                            request.data.headers[headerName].dataFiles = {};
+                            request.data.headers[headerName].options.dataHandler = CONFIG.get('data').dataHandlerPipeline || 'dataHandlerPipeline';
                         });
                     }
                 });
@@ -139,7 +137,7 @@ module.exports = {
         this.LOG.debug('Associating data files with corresponding headers');
         if (request.data && request.data.headers) {
             _.each(request.data.headers, (headerObject, headerName) => {
-                let dataPreFix = headerObject.header.options.dataFilePrefix || headerName;
+                let dataPreFix = headerObject.options.dataFilePrefix || headerName;
                 _.each(request.data.dataFiles, (object, fileName) => {
                     if (fileName.startsWith(dataPreFix)) {
                         headerObject.dataFiles[fileName] = object;

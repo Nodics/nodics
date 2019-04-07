@@ -106,11 +106,8 @@ module.exports = {
                     request.outputPath.fileName = fileName;
                     request.outputPath.fileType = fileName.split('_').pop();
                     if (request.outputPath.fileType) {
-                        SERVICE.DefaultPipelineService.start('dataFinalizerInitPipeline', {
-                            files: fileObj.list,
-                            outputPath: request.outputPath,
-                            header: header.header
-                        }, {}).then(success => {
+                        request.files = fileObj.list;
+                        SERVICE.DefaultPipelineService.start('dataFinalizerInitPipeline', request, {}).then(success => {
                             _self.processFiles(request, response, options).then(success => {
                                 resolve(success);
                             }).catch(error => {

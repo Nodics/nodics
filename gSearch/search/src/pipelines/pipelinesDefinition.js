@@ -720,11 +720,16 @@ module.exports = {
             resolveFileType: {
                 type: 'function',
                 handler: 'DefaultExternalIndexerInitializerService.resolveFileType',
-                success: 'initDataImport'
+                success: 'triggerProcess'
             },
-            initDataImport: {
-                type: 'process',
-                handler: 'dataImportInitializerPipeline',
+            triggerProcess: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.triggerProcess',
+                success: 'successEnd'
+            },
+            importDumpData: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.importDumpData',
                 success: 'successEnd'
             },
             successEnd: {

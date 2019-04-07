@@ -84,7 +84,7 @@ module.exports = {
 
     applyInterceptors: function (request, response, process) {
         this.LOG.debug('Applying indexer interceptors');
-        let moduleName = request.moduleName;
+        let moduleName = request.moduleName || request.header.options.moduleName;
         let indexName = request.header.local.indexerConfig.target.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
         if (interceptors && interceptors.index) {
