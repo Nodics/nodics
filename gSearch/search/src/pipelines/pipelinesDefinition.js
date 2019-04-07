@@ -648,11 +648,31 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultInternalIndexerInitializerService.validateRequest',
-                success: 'triggerIndex'
+                success: 'prepareHeader'
             },
-            triggerIndex: {
+            prepareHeader: {
                 type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.triggerIndex',
+                handler: 'DefaultInternalIndexerInitializerService.prepareHeader',
+                success: 'prepareOutputPath'
+            },
+            prepareOutputPath: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.prepareOutputPath',
+                success: 'flushOutputFolder'
+            },
+            flushOutputFolder: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.flushOutputFolder',
+                success: 'initFatchData'
+            },
+            initFatchData: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.initFatchData',
+                success: 'importDumpData'
+            },
+            importDumpData: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.importDumpData',
                 success: 'successEnd'
             },
             successEnd: {
@@ -662,100 +682,6 @@ module.exports = {
             handleError: {
                 type: 'function',
                 handler: 'DefaultInternalIndexerInitializerService.handleErrorEnd'
-            }
-        }
-    },
-
-    internalIndexerProcessPipeline: {
-        startNode: "validateRequest",
-        hardStop: true, //default value is false
-        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerProcessService.validateRequest',
-                success: 'prepareHeader'
-            },
-            prepareHeader: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerProcessService.prepareHeader',
-                success: 'prepareOutputPath'
-            },
-            prepareOutputPath: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerProcessService.prepareOutputPath',
-                success: 'flushOutputFolder'
-            },
-            flushOutputFolder: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerProcessService.flushOutputFolder',
-                success: 'initFatchData'
-            },
-            initFatchData: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerProcessService.initFatchData',
-                success: 'importDumpData'
-            },
-            importDumpData: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerProcessService.importDumpData',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerProcessService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerProcessService.handleErrorEnd'
-            }
-        }
-    },
-
-    finalizeIndexerDataPipeline: {
-        startNode: "validateRequest",
-        hardStop: true, //default value is false
-        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.validateRequest',
-                success: 'handleValueProviders'
-            },
-            handleValueProviders: {
-                type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.handleValueProviders',
-                success: 'applyProcessors'
-            },
-            applyProcessors: {
-                type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.applyProcessors',
-                success: 'applyInterceptors'
-            },
-            applyInterceptors: {
-                type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.applyInterceptors',
-                success: 'executeIndexerPipeline'
-            },
-            executeIndexerPipeline: {
-                type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.executeIndexerPipeline',
-                success: 'processData'
-            },
-            processData: {
-                type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.processData',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.handleErrorEnd'
             }
         }
     },
@@ -808,6 +734,53 @@ module.exports = {
             handleError: {
                 type: 'function',
                 handler: 'DefaultExternalIndexerInitializerService.handleErrorEnd'
+            }
+        }
+    },
+
+    finalizeIndexerDataPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.validateRequest',
+                success: 'handleValueProviders'
+            },
+            handleValueProviders: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.handleValueProviders',
+                success: 'applyProcessors'
+            },
+            applyProcessors: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.applyProcessors',
+                success: 'applyInterceptors'
+            },
+            applyInterceptors: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.applyInterceptors',
+                success: 'executeIndexerPipeline'
+            },
+            executeIndexerPipeline: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.executeIndexerPipeline',
+                success: 'processData'
+            },
+            processData: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.processData',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultIndexerDataFinalizerService.handleErrorEnd'
             }
         }
     }
