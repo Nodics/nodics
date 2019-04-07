@@ -58,6 +58,7 @@ module.exports = {
 
     handleFiles: function (request, response, files, index) {
         let _self = this;
+        let dataHandler = request.header.options.dataHandler;
         return new Promise((resolve, reject) => {
             if (files.length > 0) {
                 let file = files.shift();
@@ -71,7 +72,7 @@ module.exports = {
                     if (readBytes > CONFIG.get('data').readBufferSize && dataChunk.length > 0) {
                         request.dataObjects = [].concat(dataChunk);
                         request.outputPath.version = index + '_' + version;
-                        SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
+                        SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
                             dataChunk = [data];
                             readBytes = 0;
                             version = version + 1;
@@ -88,7 +89,7 @@ module.exports = {
                     if (dataChunk.length > 0) {
                         request.dataObjects = [].concat(dataChunk);
                         request.outputPath.version = index + '_' + version;
-                        SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
+                        SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
                             _self.handleFiles(request, response, files, ++index).then(success => {
                                 resolve(true);
                             }).catch(error => {

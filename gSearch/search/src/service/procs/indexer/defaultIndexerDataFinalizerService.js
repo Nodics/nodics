@@ -205,9 +205,6 @@ module.exports = {
             if (options.pendingModels && options.pendingModels.length > 0) {
                 let model = options.pendingModels.shift();
                 SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
-                    // indexName: request.target.indexName,
-                    // schemaService: request.schemaService,
-                    // searchService: request.searchService,
                     tenant: request.tenant,
                     moduleName: request.moduleName,
                     header: request.dataHeader,

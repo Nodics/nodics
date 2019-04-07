@@ -97,8 +97,6 @@ module.exports = {
                 }
             } else if (indexerConfig.path && !UTILS.isBlank(indexerConfig.path)) {
                 request.source = {
-                    isFinalized: indexerConfig.path.isFinalized,
-                    headerPath: indexerConfig.path.headerPath,
                     dataPath: indexerConfig.path.dataPath
                 };
             }
@@ -106,7 +104,8 @@ module.exports = {
                 request.target = {
                     indexName: indexerConfig.target.indexName || request.indexName,
                     typeName: indexerConfig.target.typeName || indexerConfig.target.indexName || request.indexName,
-                    tempPath: indexerConfig.target.tempPath
+                    tempPath: indexerConfig.target.tempPath,
+                    moduleName: indexerConfig.target.moduleName || request.moduleName
                 };
                 request.searchModel = NODICS.getSearchModel(request.moduleName, request.tenant, request.target.indexName);
                 if (!request.searchModel) {

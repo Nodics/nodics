@@ -769,35 +769,37 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultExternalIndexerInitializerService.validateRequest',
-                success: 'changeIndexerState'
+                success: 'prepareHeader'
             },
-            changeIndexerState: {
+            prepareHeader: {
                 type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.changeIndexerState',
-                success: 'buildOptions'
+                handler: 'DefaultExternalIndexerInitializerService.prepareHeader',
+                success: 'prepareOutputPath'
             },
-            buildOptions: {
+            prepareOutputPath: {
                 type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.buildOptions',
-                success: 'triggerIndex'
+                handler: 'DefaultExternalIndexerInitializerService.prepareOutputPath',
+                success: 'flushOutputFolder'
             },
-            triggerIndex: {
+            flushOutputFolder: {
                 type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.triggerIndex',
-                success: {
-                    handleSuccess: 'successHandler',
-                    handleError: 'errorHandler'
-                }
+                handler: 'DefaultExternalIndexerInitializerService.flushOutputFolder',
+                success: 'loadDataFileList'
             },
-            successHandler: {
+            loadDataFileList: {
                 type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.successHandler',
+                handler: 'DefaultExternalIndexerInitializerService.loadDataFileList',
+                success: 'resolveFileType'
+            },
+            resolveFileType: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.resolveFileType',
+                success: 'initDataImport'
+            },
+            initDataImport: {
+                type: 'process',
+                handler: 'dataImportInitializerPipeline',
                 success: 'successEnd'
-            },
-            errorHandler: {
-                type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.errorHandler',
-                success: 'handleError'
             },
             successEnd: {
                 type: 'function',

@@ -95,6 +95,7 @@ module.exports = {
                                 headerObj.options.fileName = name;
                                 headerObj.options.filePath = element;
                                 headerObj.options.done = false;
+                                headerObj.options.dataHandler = CONFIG.get('data').dataHandlerPipeline || 'dataHandlerPipeline';
                                 if (!request.data.headers[headerName]) {
                                     request.data.headers[headerName] = {
                                         header: headerObj,
@@ -132,7 +133,6 @@ module.exports = {
                     }
                 });
             });
-            //console.log(util.inspect(request.data.headers, true, 6));
             process.nextSuccess(request, response);
         } else {
             this.LOG.debug('Could not found any header to import local data');

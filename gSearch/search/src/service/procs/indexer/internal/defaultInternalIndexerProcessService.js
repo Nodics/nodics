@@ -60,7 +60,7 @@ module.exports = {
             this.LOG.debug('Preparing output file path');
             let tempPath = (indexerConfig.target.tempPath) ? indexerConfig.target.tempPath + '/search/' + indexerConfig.target.indexName : NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/search/' + indexerConfig.target.indexName;
             request.outputPath = {
-                destDir: tempPath,
+                destDir: tempPath + '/data',
                 successPath: tempPath + '/success',
                 errorPath: tempPath + '/error',
                 fileName: indexerConfig.target.indexName,

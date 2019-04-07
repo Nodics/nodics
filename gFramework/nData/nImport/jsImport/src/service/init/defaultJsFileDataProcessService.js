@@ -47,13 +47,14 @@ module.exports = {
     processDataChunk: function (request, response, process) {
         this.LOG.debug('Starting processing data chunks');
         this.handleFiles(request, response, [].concat(request.files)).then(dataObjects => {
+            let dataHandler = request.header.options.dataHandler;
             if (dataObjects && Object.keys(dataObjects).length > 0) {
                 request.dataObjects = [];
                 Object.keys(dataObjects).forEach(key => {
                     request.dataObjects.push(dataObjects[key]);
                 });
                 request.outputPath.version = '0_0';
-                SERVICE.DefaultPipelineService.start('dataHandlerPipeline', request, {}).then(success => {
+                SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);

@@ -99,36 +99,6 @@ module.exports = {
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');
                 NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
-                //console.log(NODICS.getSearchModels('profile', 'default'));
-                // SERVICE.DefaultImportService.importInitData({
-                //     tenant: 'default',
-                //     modules: NODICS.getActiveModules()
-                // }).then(success => {
-                //     NODICS.LOG.info('Nodics Import Success');
-                // }).catch(error => {
-                //     NODICS.LOG.error('Nodics Import error : ', error);
-                // });
-                // SERVICE.DefaultImportService.importLocalData({
-                //     dataPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data/data',
-                //     headerPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data/headers',
-                //     successPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data',
-                //     errorPath: '/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data'
-                // }).then(success => {
-                //     // SERVICE.DefaultImportService.processImportData({
-                //     //     tenant: 'default',
-                //     //     inputPath: {
-                //     //         path: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import/local'
-                //     //     }
-                //     // }).then(success => {
-                //     //     NODICS.LOG.info('Nodics Import Success');
-                //     // }).catch(error => {
-                //     //     NODICS.LOG.error('Nodics Import error : ', error);
-                //     // });
-                //     NODICS.LOG.info('Nodics Import Success');
-                // }).catch(error => {
-                //     NODICS.LOG.error('Nodics Import error : ', error);
-                // });
-                // NODICS.LOG.info('Nodics Import Success');
                 //this.initTestRuner();
             }).catch(error => {
                 NODICS.LOG.error('Nodics server error : ', error);

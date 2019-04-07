@@ -11,6 +11,7 @@
 
 const _ = require('lodash');
 const fse = require('fs-extra');
+const util = require('util');
 
 module.exports = {
     /**
@@ -37,6 +38,7 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
+        console.log(util.inspect(request.data.headers, { showHidden: false, depth: 6 }));
         if (!request.data.headers) {
             process.error(request, response, 'Please validate request. Mandate property headers not have valid value');
         } else if (!request.outputPath) {
@@ -57,36 +59,6 @@ module.exports = {
                 }).catch(error => {
                     process.error(request, response, error);
                 });
-                // if (CONFIG.get('data').finalizeImportDataAsync) {
-                //     let allHeaders = [];
-                //     Object.keys(request.data.headers).forEach(headerName => {
-                //         allHeaders.push(SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
-                //             header: request.data.headers[headerName],
-                //             headerName: headerName,
-                //             outputPath: _.merge({}, request.outputPath)
-                //         }, {}));
-                //     });
-                //     Promise.all(allHeaders).then(success => {
-                //         process.nextSuccess(request, response);
-                //     }).catch(errors => {
-                //         if (errors instanceof Array) {
-                //             errors.forEach(err => {
-                //                 response.errors.push(err);
-                //             });
-                //             process.error(request, response);
-                //         } else {
-                //             process.error(request, response, errors);
-                //         }
-                //     });
-                // } else {
-                //     this.processHeaders(request, response, {
-                //         pendingHeaders: Object.keys(request.data.headers)
-                //     }).then(success => {
-                //         process.nextSuccess(request, response);
-                //     }).catch(error => {
-                //         process.error(request, response, error);
-                //     });
-                // }
             } else {
                 this.LOG.debug('No data found to import');
                 process.nextSuccess(request, response);

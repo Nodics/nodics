@@ -111,7 +111,6 @@ module.exports = {
                             outputPath: request.outputPath,
                             header: header.header
                         }, {}).then(success => {
-
                             _self.processFiles(request, response, options).then(success => {
                                 resolve(success);
                             }).catch(error => {

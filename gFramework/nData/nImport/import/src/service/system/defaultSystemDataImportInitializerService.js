@@ -126,6 +126,7 @@ module.exports = {
                             }
                             request.data.headers[headerName].header = _.merge(request.data.headers[headerName].header, header);
                             request.data.headers[headerName].header.options.moduleName = moduleName;
+                            request.data.headers[headerName].header.options.dataHandler = CONFIG.get('data').dataHandlerPipeline || 'dataHandlerPipeline';
                         });
                     }
                 });

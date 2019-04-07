@@ -9,6 +9,8 @@
 
  */
 const _ = require('lodash');
+const fse = require('fs-extra');
+const util = require('util');
 
 module.exports = {
     /**
@@ -35,112 +37,118 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating external indexer request');
-        if (!request.indexerConfig) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00003'
-            });
-        } else if (!request.indexerConfig.target || !request.indexerConfig.target.indexName) {
+        if (!request.source && !request.source.dataPath) {
             process.error(request, response, {
                 success: false,
                 code: 'ERR_SRCH_00000',
-                msg: 'Target configuration within indexer configuration is not valid. Please add indexName'
+                msg: 'Invalid data file to locate data'
             });
-        } else if (!request.indexerConfig.path || !request.indexerConfig.path.headerPath || !request.indexerConfig.path.dataPath) {
+        } else if (!request.target) {
             process.error(request, response, {
                 success: false,
                 code: 'ERR_SRCH_00000',
-                msg: 'Schema configuration within indexer configuration is not valid. Please add schema headerPath and dataPath'
-            });
-        } else if (request.indexerConfig.state === ENUMS.IndexerState.RUNNING.key) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                msg: 'Currently indexer: ' + request.indexerConfig.code + ' is on RUNNING state'
+                msg: 'Invalid index definition information'
             });
         } else {
             process.nextSuccess(request, response);
         }
     },
-
-    changeIndexerState: function (request, response, process) {
-        this.LOG.debug('Changing state of current indexer: ' + request.indexerConfig.code);
-        let indexerConfig = request.indexerConfig;
-        indexerConfig.state = ENUMS.IndexerState.RUNNING.key;
-        indexerConfig.startTime = new Date();
-        SERVICE.DefaultIndexerService.save({
-            tenant: request.tenant,
-            model: indexerConfig
-        }).then(success => {
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00006',
-                error: error
-            });
-        });
-    },
-
-    buildOptions: function (request, response, process) {
+    prepareHeader: function (request, response, process) {
         this.LOG.debug('Building options for internal indexer');
-        //request.options = _.merge({}, request.indexerConfig.schema.queryOptions || {});
+        request.data = {
+            headers: {}
+        };
+        request.data.headers[request.target.indexName + 'DataHeader'] = {
+            header: {
+                options: {
+                    indexName: request.target.indexName,
+                    typeName: request.target.typeName,
+                    operation: request.indexerConfig.target.operation || CONFIG.get('search').defaultDoSaveOperation || 'doSave',
+                    tenants: [request.tenant],
+                    moduleName: request.moduleName
+                }
+            },
+            dataFiles: {}
+        };
         process.nextSuccess(request, response);
     },
 
-    triggerIndex: function (request, response, process) {
-        this.LOG.debug('Triggering index process');
-        //response.targetNode = 'handleSuccess';
-        //response.targetNode = 'handleError';
-        process.nextSuccess(request, response);
-    },
-
-    successHandler: function (request, response, process) {
-        this.LOG.debug('Updating indexer successfully completed state');
+    prepareOutputPath: function (request, response, process) {
         let indexerConfig = request.indexerConfig;
-        indexerConfig.state = ENUMS.IndexerState.SUCCESS.key;
-        indexerConfig.endTime = new Date();
-        indexerConfig.lastErrorLog = [];
-        SERVICE.DefaultIndexerService.save({
-            tenant: request.tenant,
-            model: indexerConfig
-        }).then(success => {
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00006',
-                error: error
-            });
-        });
-    },
-
-    errorHandler: function (request, response, process) {
-        this.LOG.debug('Updating indexer completed with error state');
-        let indexerConfig = request.indexerConfig;
-        indexerConfig.state = ENUMS.IndexerState.ERROR.key;
-        indexerConfig.endTime = new Date();
-        if (response.errors && response.errors.length > 0) {
-            indexerConfig.lastErrorLog = response.errors;
-        } else {
-            indexerConfig.lastErrorLog = [response.error];
+        if (indexerConfig.dumpData) {
+            this.LOG.debug('Preparing output file path');
+            let tempPath = (indexerConfig.target.tempPath) ? indexerConfig.target.tempPath + '/search/' + indexerConfig.target.indexName : NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/search/' + indexerConfig.target.indexName;
+            request.outputPath = {
+                destDir: tempPath + '/data',
+                successPath: tempPath + '/success',
+                errorPath: tempPath + '/error',
+                fileName: indexerConfig.target.indexName,
+                version: 0
+            };
         }
-        SERVICE.DefaultIndexerService.save({
-            tenant: request.tenant,
-            model: indexerConfig
-        }).then(success => {
-            process.error(request, response);
-        }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00006',
-                error: error
+        process.nextSuccess(request, response);
+    },
+
+    flushOutputFolder: function (request, response, process) {
+        let indexerConfig = request.indexerConfig;
+        if (indexerConfig.dumpData) {
+            this.LOG.debug('Cleaning output directory : ' + request.outputPath.destDir);
+            fse.remove(request.outputPath.destDir).then(() => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
             });
-        });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    loadDataFileList: function (request, response, process) {
+        this.LOG.debug('Loading list of files from Path to be imported');
+        if (request.data.headers && Object.keys(request.data.headers).length > 0) {
+            Object.keys(request.data.headers).forEach(headerName => {
+                let headerData = request.data.headers[headerName];
+                let filePrefix = headerData.header.options.dataFilePrefix;
+                let fileList = {};
+                SERVICE.DefaultImportUtilityService.getAllFrefixFiles(request.source.dataPath, fileList, filePrefix);
+                _.each(fileList, (dataFile, name) => {
+                    if (headerData.dataFiles[name]) {
+                        headerData.dataFiles[name].push(dataFile);
+                    } else {
+                        headerData.dataFiles[name] = [dataFile];
+                    }
+                });
+            });
+            process.nextSuccess(request, response);
+        } else {
+            this.LOG.debug('Could not found any header to import local data');
+            process.nextSuccess(request, response);
+        }
+    },
+
+    resolveFileType: function (request, response, process) {
+        this.LOG.debug('Resolving file type');
+        if (request.data.headers && Object.keys(request.data.headers).length > 0) {
+            Object.keys(request.data.headers).forEach(headerName => {
+                let headerData = request.data.headers[headerName];
+                let dataFiles = {};
+                _.each(headerData.dataFiles, (list, name) => {
+                    let fileType = list[0].substring(list[0].lastIndexOf('.') + 1, list[0].length);
+                    dataFiles[name] = {
+                        type: fileType,
+                        list: list,
+                        processedRecords: []
+                    };
+                });
+                headerData.dataFiles = dataFiles;
+            });
+        }
+        process.nextSuccess(request, response);
     },
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
+        console.log(util.inspect(request.data.headers, false, 6));
         response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
         process.resolve(response.success);
     },
