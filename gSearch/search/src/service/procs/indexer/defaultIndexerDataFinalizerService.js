@@ -49,6 +49,8 @@ module.exports = {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexService: request.indexService,
+                schemaService: request.schemaService,
+                searchService: request.searchService,
                 outputPath: request.outputPath
             }).then(success => {
                 process.nextSuccess(request, response);
@@ -77,6 +79,8 @@ module.exports = {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexService: request.indexService,
+                schemaService: request.schemaService,
+                searchService: request.searchService,
                 outputPath: request.outputPath
             }, {}).then(success => {
                 process.nextSuccess(request, response);
@@ -107,6 +111,8 @@ module.exports = {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexService: request.indexService,
+                schemaService: request.schemaService,
+                searchService: request.searchService,
                 outputPath: request.outputPath
             }, {}).then(success => {
                 process.nextSuccess(request, response);
@@ -135,6 +141,8 @@ module.exports = {
                     schemaModel: request.schemaModel,
                     searchModel: request.searchModel,
                     indexService: request.indexService,
+                    schemaService: request.schemaService,
+                    searchService: request.searchService,
                     outputPath: request.outputPath
                 }, {}).then(success => {
                     process.nextSuccess(request, response);
@@ -197,8 +205,9 @@ module.exports = {
             if (options.pendingModels && options.pendingModels.length > 0) {
                 let model = options.pendingModels.shift();
                 SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
-                    indexService: request.indexService,
-                    indexName: request.indexerConfig.target.indexName,
+                    // indexName: request.target.indexName,
+                    // schemaService: request.schemaService,
+                    // searchService: request.searchService,
                     tenant: request.tenant,
                     moduleName: request.moduleName,
                     header: request.dataHeader,

@@ -15,6 +15,7 @@ module.exports = function (name, pipelineNode) {
     let _type = pipelineNode.type || 'function';
     let _handler = pipelineNode.handler;
     let _success = pipelineNode.success;
+    let _error = pipelineNode.error;
     let _targetNodes = pipelineNode.target;
 
     if (!_handler) {
@@ -35,6 +36,10 @@ module.exports = function (name, pipelineNode) {
 
     this.getSuccess = function () {
         return _success;
+    };
+
+    this.getError = function () {
+        return _error;
     };
 
     this.getTargetNodes = function () {

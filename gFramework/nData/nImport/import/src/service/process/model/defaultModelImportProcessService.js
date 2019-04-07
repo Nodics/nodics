@@ -268,43 +268,35 @@ module.exports = {
         this.LOG.debug('Initiating data model import process');
         let header = request.header;
         if (header.options.indexName) {
-            let indexService = request.indexService;
-            //let searchModel = request.indexService || NODICS.getSearchModel(header.options.moduleName, request.tenant, header.options.indexName);
-            if (indexService) {
-                indexService[header.options.operation]({
-                    tenant: request.tenant,
-                    indexName: request.indexName,
-                    options: request.options || {},
-                    model: request.dataModel
-                }).then(result => {
-                    if (!result) {
-                        process.error(request, response, {
-                            success: false,
-                            code: 'ERR_IMP_00001',
-                            msg: 'Could not found any response from data access layer'
+            let searchService = SERVICE['Default' + header.options.indexName.toUpperCaseFirstChar() + 'Service'] || SERVICE.DefaultSearchService;
+            searchService[header.options.operation]({
+                tenant: request.tenant,
+                indexName: request.indexName,
+                moduleName: request.moduleName,
+                options: request.options || {},
+                model: request.dataModel
+            }).then(result => {
+                if (!result) {
+                    process.error(request, response, {
+                        success: false,
+                        code: 'ERR_IMP_00001',
+                        msg: 'Could not found any response from data access layer'
+                    });
+                } else if (result.success) {
+                    if (UTILS.isArray(result.result)) {
+                        result.result.forEach(element => {
+                            response.success.push(element);
                         });
-                    } else if (result.success) {
-                        if (UTILS.isArray(result.result)) {
-                            result.result.forEach(element => {
-                                response.success.push(element);
-                            });
-                        } else {
-                            response.success.push(result.result);
-                        }
-                        process.nextSuccess(request, response);
                     } else {
-                        process.error(request, response, result);
+                        response.success.push(result.result);
                     }
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
-            } else {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_IMP_00000',
-                    msg: 'Could not found a valid search model for index: ' + header.options.indexName
-                });
-            }
+                    process.nextSuccess(request, response);
+                } else {
+                    process.error(request, response, result);
+                }
+            }).catch(error => {
+                process.error(request, response, error);
+            });
         } else {
             process.nextSuccess(request, response);
         }

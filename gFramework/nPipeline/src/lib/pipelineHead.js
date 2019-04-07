@@ -132,7 +132,12 @@ module.exports = function (name, pipelineDefinition) {
             }
         }
         _preNode = _currentNode;
-        _currentNode = _handleError;
+        if (_currentNode.getError() && _nodeList[_currentNode.getError()]) {
+            _currentNode = _nodeList[_currentNode.getError()];
+        } else {
+            _currentNode = _handleError;
+        }
+
         this.next(request, response);
     };
 

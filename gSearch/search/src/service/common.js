@@ -195,7 +195,6 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 request.searchModel = this.getSearchModel(request);
-                request.indexService = this;
                 SERVICE.DefaultIndexerService.prepareIndexer(request).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -209,5 +208,5 @@ module.exports = {
                 });
             }
         });
-    }
+    },
 };

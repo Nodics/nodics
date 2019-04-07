@@ -10,7 +10,6 @@
  */
 const _ = require('lodash');
 const fse = require('fs-extra');
-
 const Nodics = require('./bin/nodics');
 const Config = require('./bin/config');
 const utils = require('./src/utils/utils');

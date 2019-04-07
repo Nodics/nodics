@@ -576,6 +576,69 @@ module.exports = {
 
     // Indexer pipelines 
 
+    indexerInitializerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultIndexerInitializerService.validateRequest',
+                success: 'changeIndexerState'
+            },
+            changeIndexerState: {
+                type: 'function',
+                handler: 'DefaultIndexerInitializerService.changeIndexerState',
+                success: 'buildOptions'
+            },
+            buildOptions: {
+                type: 'function',
+                handler: 'DefaultIndexerInitializerService.buildOptions',
+                success: 'triggerIndex'
+            },
+            triggerIndex: {
+                type: 'function',
+                handler: 'DefaultIndexerInitializerService.triggerIndex',
+                success: {
+                    internalIndexerInitializer: 'internalIndexerInitializerPipeline',
+                    externalIndexerInitializer: 'externalIndexerInitializerPipeline'
+                }
+            },
+            internalIndexerInitializerPipeline: {
+                type: 'process',
+                handler: 'internalIndexerInitializerPipeline',
+                success: 'successHandler',
+                error: 'errorHandler'
+
+            },
+            externalIndexerInitializerPipeline: {
+                type: 'process',
+                handler: 'externalIndexerInitializerPipeline',
+                success: 'successHandler',
+                error: 'errorHandler'
+            },
+            successHandler: {
+                type: 'function',
+                handler: 'DefaultIndexerInitializerService.successHandler',
+                success: 'successEnd'
+            },
+            errorHandler: {
+                type: 'function',
+                handler: 'DefaultIndexerInitializerService.errorHandler',
+                success: 'handleError'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultIndexerInitializerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultIndexerInitializerService.handleErrorEnd'
+            }
+        }
+    },
+
     internalIndexerInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -585,35 +648,12 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultInternalIndexerInitializerService.validateRequest',
-                success: 'changeIndexerState'
-            },
-            changeIndexerState: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.changeIndexerState',
-                success: 'buildOptions'
-            },
-            buildOptions: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.buildOptions',
                 success: 'triggerIndex'
             },
             triggerIndex: {
                 type: 'function',
                 handler: 'DefaultInternalIndexerInitializerService.triggerIndex',
-                success: {
-                    handleSuccess: 'successHandler',
-                    handleError: 'errorHandler'
-                }
-            },
-            successHandler: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.successHandler',
                 success: 'successEnd'
-            },
-            errorHandler: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.errorHandler',
-                success: 'handleError'
             },
             successEnd: {
                 type: 'function',
