@@ -38,9 +38,7 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
-        if (!request.headerPath) {
-            process.error(request, response, 'Please validate request. Mandate property modules not have valid value');
-        } if (!request.dataPath) {
+        if (!request.inputPath.rootPath) {
             process.error(request, response, 'Please validate request. Mandate property modules not have valid value');
         } else {
             request.data = {};
@@ -48,20 +46,37 @@ module.exports = {
         }
     },
 
-    prepareOutputURL: function (request, response, process) {
-        this.LOG.debug('Preparing output file path');
-        request.outputPath = {
-            destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/import/local',
-            importType: 'local',
-            successPath: request.successPath + '/success',
-            errorPath: request.errorPath + '/error'
+    prepareInputPath: function (request, response, process) {
+        this.LOG.debug('Preparing input data path');
+        let path = {
+            rootPath: request.inputPath.rootPath,
+            dataPath: request.inputPath.dataPath || request.inputPath.rootPath + '/data',
+            headerPath: request.inputPath.headerPath || request.inputPath.rootPath + '/headers',
+            successPath: request.inputPath.successPath || request.inputPath.rootPath + '/success',
+            errorPath: request.inputPath.errorPath || request.inputPath.rootPath + '/error',
+            importType: 'local'
         };
+        request.inputPath = path;
+        process.nextSuccess(request, response);
+    },
+
+    prepareOutputPath: function (request, response, process) {
+        this.LOG.debug('Preparing output data path');
+        request.outputPath = request.outputPath || {};
+        request.outputPath.rootPath = request.outputPath.rootPath || NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/import/local';
+        let path = {
+            rootPath: request.outputPath.rootPath,
+            dataPath: request.outputPath.rootPath + '/data',
+            successPath: request.outputPath.successPath || request.outputPath.rootPath + '/success',
+            errorPath: request.outputPath.errorPath || request.outputPath.rootPath + '/error'
+        };
+        request.outputPath = path;
         process.nextSuccess(request, response);
     },
 
     flushOutputFolder: function (request, response, process) {
-        this.LOG.debug('Cleaning output directory : ' + request.outputPath.destDir);
-        fse.remove(request.outputPath.destDir).then(() => {
+        this.LOG.debug('Cleaning output directory : ' + request.outputPath.dataPath);
+        fse.remove(request.outputPath.dataPath).then(() => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -70,8 +85,8 @@ module.exports = {
 
 
     loadHeaderFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of headers from Path to be imported: ', request.path);
-        SERVICE.DefaultImportUtilityService.getLocalHeaderFiles(request.headerPath).then(success => {
+        this.LOG.debug('Loading list of headers from Path to be imported: ', request.inputPath.headerPath);
+        SERVICE.DefaultImportUtilityService.getLocalHeaderFiles(request.inputPath.headerPath).then(success => {
             request.data.headerFiles = success;
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -122,7 +137,7 @@ module.exports = {
                 let headerData = request.data.headers[headerName];
                 let filePrefix = headerData.options.dataFilePrefix || headerName;
                 let fileList = {};
-                SERVICE.DefaultImportUtilityService.getAllFrefixFiles(request.dataPath, fileList, filePrefix);
+                SERVICE.DefaultImportUtilityService.getAllFrefixFiles(request.inputPath.dataPath, fileList, filePrefix);
                 _.each(fileList, (dataFile, name) => {
                     if (headerData.dataFiles[name]) {
                         headerData.dataFiles[name].push(dataFile);

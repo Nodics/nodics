@@ -45,21 +45,30 @@ module.exports = {
         }
     },
 
-    prepareOutputURL: function (request, response, process) {
-        this.LOG.debug('Preparing output file path');
-        request.outputPath = {
-            destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/import/' + request.dataType,
-            dataType: request.dataType,
+    prepareInputPath: function (request, response, process) {
+        this.LOG.debug('Preparing input data path');
+        request.inputPath = {
             importType: 'system',
-            successPath: request.successPath,
-            errorPath: request.errorPath
+            dataType: request.dataType,
+        };
+        process.nextSuccess(request, response);
+    },
+
+    prepareOutputPath: function (request, response, process) {
+        this.LOG.debug('Preparing output data path');
+        let rootPath = NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/import/' + request.dataType;
+        request.outputPath = {
+            rootPath: rootPath,
+            dataPath: rootPath + '/data',
+            successPath: rootPath + '/success',
+            errorPath: rootPath + '/error'
         };
         process.nextSuccess(request, response);
     },
 
     flushOutputFolder: function (request, response, process) {
-        this.LOG.debug('Cleaning output directory : ' + request.outputPath.destDir);
-        fse.remove(request.outputPath.destDir).then(() => {
+        this.LOG.debug('Cleaning output directory : ' + request.outputPath.dataPath);
+        fse.remove(request.outputPath.dataPath).then(() => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -68,7 +77,7 @@ module.exports = {
 
     loadHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of header files from modules to be imported');
-        SERVICE.DefaultImportUtilityService.getSystemDataHeaders(request.modules, request.dataType).then(success => {
+        SERVICE.DefaultImportUtilityService.getSystemDataHeaders(request.modules, request.inputPath.dataType).then(success => {
             request.data.headerFiles = success;
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -79,7 +88,7 @@ module.exports = {
 
     loadDataFileList: function (request, response, process) {
         this.LOG.debug('Loading list of data files from modules to be imported');
-        SERVICE.DefaultImportUtilityService.getSystemDataFiles(request.modules, request.dataType).then(success => {
+        SERVICE.DefaultImportUtilityService.getSystemDataFiles(request.modules, request.inputPath.dataType).then(success => {
             request.data.dataFiles = success;
             process.nextSuccess(request, response);
         }).catch(error => {

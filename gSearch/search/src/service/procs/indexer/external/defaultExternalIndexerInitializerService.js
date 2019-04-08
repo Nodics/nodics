@@ -80,10 +80,12 @@ module.exports = {
     prepareOutputPath: function (request, response, process) {
         let indexerConfig = request.header.local.indexerConfig;
         this.LOG.debug('Preparing output file path');
-        let tempPath = (indexerConfig.target.tempPath) ? indexerConfig.target.tempPath + '/search/' + indexerConfig.target.indexName : NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/search/' + indexerConfig.target.indexName;
+        let tempPath = (indexerConfig.target.tempPath) ? indexerConfig.target.tempPath + '/search/' + indexerConfig.target.indexName : NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/search';
         request.header.local.outputPath = {
-            destDir: tempPath,
+            destDir: tempPath + '/data',
             fileName: indexerConfig.target.indexName,
+            successPath: tempPath + '/success',
+            errorPath: tempPath + '/error',
             version: 0
         };
         process.nextSuccess(request, response);
@@ -139,8 +141,8 @@ module.exports = {
             });
             request.header.dataFiles = dataFiles;
         }
-        console.log(util.inspect(request.header, false, 6));
-        console.log(util.inspect(request.dataFiles, false, 6));
+        // console.log(util.inspect(request.header, false, 6));
+        // console.log(util.inspect(request.dataFiles, false, 6));
         process.nextSuccess(request, response);
     },
 

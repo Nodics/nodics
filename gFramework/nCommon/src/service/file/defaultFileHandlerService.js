@@ -78,7 +78,10 @@ module.exports = {
                             fileNameWithoutExt = fileNameWithoutExt.replace('_processing', '');
                         }
                         fse.ensureDir(destPath).then(() => {
-                            fse.move(file, destPath + '/' + fileNameWithoutExt + '_' + Date.now() + fileExt).then(() => {
+                            let destFile = destPath + '/' + fileNameWithoutExt + '_' + Date.now() + fileExt;
+                            _self.LOG.debug('Moving file from: ' + file);
+                            _self.LOG.debug('   -> : ' + destFile);
+                            fse.move(file, destFile).then(() => {
                                 _self.moveFile(files, destPath).then(success => {
                                     resolve(true);
                                 }).catch(error => {

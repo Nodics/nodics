@@ -42,22 +42,22 @@ module.exports = {
 
     redirectToFileTypeProcess: function (request, response, process) {
         let fileTypeProcess = CONFIG.get('data').fileTypeProcess;
-        if (fileTypeProcess && fileTypeProcess[request.outputPath.fileType]) {
-            this.LOG.debug('Processing data for file type: ', request.outputPath.fileType, ' with pipeline: ', fileTypeProcess[request.outputPath.fileType]);
-            SERVICE.DefaultPipelineService.start(fileTypeProcess[request.outputPath.fileType], request, {}).then(success => {
+        if (fileTypeProcess && fileTypeProcess[request.inputPath.fileType]) {
+            this.LOG.debug('Processing data for file type: ', request.inputPath.fileType, ' with pipeline: ', fileTypeProcess[request.inputPath.fileType]);
+            SERVICE.DefaultPipelineService.start(fileTypeProcess[request.inputPath.fileType], request, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
             });
         } else {
-            process.error(request, response, 'Could not find file type process for type: ' + request.outputPath.fileType);
+            process.error(request, response, 'Could not find file type process for type: ' + request.inputPath.fileType);
         }
     },
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        if (request.outputPath.importType !== 'system') {
-            SERVICE.DefaultFileHandlerService.moveFile(request.files, request.outputPath.successPath + '/data').then(success => {
+        if (request.inputPath.importType !== 'system') {
+            SERVICE.DefaultFileHandlerService.moveFile(request.files, request.inputPath.successPath + '/data').then(success => {
                 this.LOG.debug('File moved to success bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(request.files);
@@ -69,8 +69,8 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
-        if (request.outputPath.importType !== 'system') {
-            SERVICE.DefaultFileHandlerService.moveFile(request.files, request.outputPath.errorPath + '/data').then(success => {
+        if (request.inputPath.importType !== 'system') {
+            SERVICE.DefaultFileHandlerService.moveFile(request.files, request.inputPath.errorPath + '/data').then(success => {
                 this.LOG.debug('File moved to success bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(request.files);

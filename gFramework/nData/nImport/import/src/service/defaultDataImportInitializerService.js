@@ -10,8 +10,6 @@
  */
 
 const _ = require('lodash');
-const fse = require('fs-extra');
-const util = require('util');
 
 module.exports = {
     /**
@@ -40,6 +38,8 @@ module.exports = {
         this.LOG.debug('Validating request');
         if (!request.data.headers) {
             process.error(request, response, 'Please validate request. Mandate property headers not have valid value');
+        } else if (!request.inputPath) {
+            process.error(request, response, 'Please validate request. Mandate property inputPath not have valid value');
         } else if (!request.outputPath) {
             process.error(request, response, 'Please validate request. Mandate property outputPath not have valid value');
         } else {
@@ -80,9 +80,10 @@ module.exports = {
                     moduleName: request.moduleName,
                     header: header,
                     headerName: headerName,
-                    outputPath: _.merge({}, request.outputPath)
+                    outputPath: _.merge({}, request.outputPath),
+                    inputPath: _.merge({}, request.inputPath)
                 }, {}).then(success => {
-                    if (request.outputPath.importType && request.outputPath.importType !== 'system') {
+                    if (request.inputPath.importType && request.inputPath.importType !== 'system') {
                         header.options.done = true;
                         let fileName = header.options.fileName;
                         let headers = Object.keys(request.data.headers);
@@ -94,8 +95,8 @@ module.exports = {
                                 done = false;
                             }
                         }
-                        if (done) {
-                            SERVICE.DefaultFileHandlerService.moveFile([header.options.filePath], request.outputPath.successPath + '/headers').then(success => {
+                        if (done && header.options.filePath) {
+                            SERVICE.DefaultFileHandlerService.moveFile([header.options.filePath], request.inputPath.successPath + '/headers').then(success => {
                                 _self.LOG.debug('File has been moved to error folder : ' + header.options.filePath.replace(NODICS.getNodicsHome(), '.'));
                             }).catch(error => {
                                 _self.LOG.error('Facing issue while moving file to error folder : ' + header.options.filePath.replace(NODICS.getNodicsHome(), '.'));
@@ -125,7 +126,7 @@ module.exports = {
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
         let errorFiles = [];
-        if (request.outputPath.importType && request.outputPath.importType !== 'system') {
+        if (request.inputPath.importType && request.inputPath.importType !== 'system') {
             let headers = Object.keys(request.data.headers);
             for (let count = 0; count < headers.length; count++) {
                 let headerName = headers[count];
@@ -136,7 +137,7 @@ module.exports = {
             }
         }
         if (errorFiles.length > 0) {
-            SERVICE.DefaultFileHandlerService.moveFile(errorFiles, request.outputPath.errorPath + '/headers').then(success => {
+            SERVICE.DefaultFileHandlerService.moveFile(errorFiles, request.inputPath.errorPath + '/headers').then(success => {
                 this.LOG.debug('File moved to error bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(errorFiles);

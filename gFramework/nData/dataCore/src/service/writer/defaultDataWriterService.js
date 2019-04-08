@@ -38,7 +38,7 @@ module.exports = {
     writeToFile: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                fse.ensureDir(options.outputPath.destDir).then(success => {
+                fse.ensureDir(options.outputPath.dataPath).then(success => {
                     let fileName = options.outputPath.fileName;
                     if (fileName.indexOf('.') > 0) {
                         fileName = fileName.substring(0, fileName.lastIndexOf('.') - 1);
@@ -46,7 +46,7 @@ module.exports = {
                     if (options.outputPath.version) {
                         fileName = fileName + '_' + options.outputPath.version;
                     }
-                    fileName = options.outputPath.destDir + '/' + fileName + '.js';
+                    fileName = options.outputPath.dataPath + '/' + fileName + '.js';
                     if (options.header.local) {
                         delete options.header.local;
                     }

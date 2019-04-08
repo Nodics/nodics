@@ -19,11 +19,16 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultSystemDataImportInitializerService.validateRequest',
-                success: 'prepareOutputURL'
+                success: 'prepareInputPath'
             },
-            prepareOutputURL: {
+            prepareInputPath: {
                 type: 'function',
-                handler: 'DefaultSystemDataImportInitializerService.prepareOutputURL',
+                handler: 'DefaultSystemDataImportInitializerService.prepareInputPath',
+                success: 'prepareOutputPath'
+            },
+            prepareOutputPath: {
+                type: 'function',
+                handler: 'DefaultSystemDataImportInitializerService.prepareOutputPath',
                 success: 'flushOutputFolder'
             },
             flushOutputFolder: {
@@ -81,11 +86,16 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultLocalDataImportInitializerService.validateRequest',
-                success: 'prepareOutputURL'
+                success: 'prepareInputPath'
             },
-            prepareOutputURL: {
+            prepareInputPath: {
                 type: 'function',
-                handler: 'DefaultLocalDataImportInitializerService.prepareOutputURL',
+                handler: 'DefaultLocalDataImportInitializerService.prepareInputPath',
+                success: 'prepareOutputPath'
+            },
+            prepareOutputPath: {
+                type: 'function',
+                handler: 'DefaultLocalDataImportInitializerService.prepareOutputPath',
                 success: 'flushOutputFolder'
             },
             flushOutputFolder: {
@@ -239,11 +249,6 @@ module.exports = {
             prepareInputPath: {
                 type: 'function',
                 handler: 'DefaultDataImportProcessService.prepareInputPath',
-                success: 'prepareOutputPath'
-            },
-            prepareOutputPath: {
-                type: 'function',
-                handler: 'DefaultDataImportProcessService.prepareOutputPath',
                 success: 'loadDataFiles'
             },
             loadDataFiles: {

@@ -48,7 +48,7 @@ module.exports = {
     prepareOutputURL: function (request, response, process) {
         this.LOG.debug('Preparing output file path');
         request.outputPath = {
-            destDir: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp'),
+            dataPath: NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp'),
             dataType: request.dataType,
             importType: 'import'
         };
