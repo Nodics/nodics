@@ -52,7 +52,7 @@ module.exports = {
         }
         let path = {
             rootPath: rootPath,
-            dataPath: rootPath + (request.inputPath.postFix ? '/' + request.inputPath.postFix : ''),
+            dataPath: request.inputPath.dataPath || rootPath + (request.inputPath.postFix ? '/' + request.inputPath.postFix : ''),
             successPath: request.inputPath.successPath || rootPath + '/success',
             errorPath: request.inputPath.errorPath || rootPath + '/error'
         };

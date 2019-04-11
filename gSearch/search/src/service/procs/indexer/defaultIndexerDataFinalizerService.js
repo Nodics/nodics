@@ -143,7 +143,7 @@ module.exports = {
                     moduleName: request.moduleName,
                     header: request.header,
                     models: request.models,
-                    outputPath: request.header.local.outputPath
+                    outputPath: request.outputPath
                 }, {}).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {

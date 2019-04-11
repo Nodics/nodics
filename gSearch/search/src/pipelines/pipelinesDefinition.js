@@ -653,6 +653,11 @@ module.exports = {
             prepareHeader: {
                 type: 'function',
                 handler: 'DefaultInternalIndexerInitializerService.prepareHeader',
+                success: 'prepareInputPath'
+            },
+            prepareInputPath: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.prepareInputPath',
                 success: 'prepareOutputPath'
             },
             prepareOutputPath: {
@@ -700,6 +705,11 @@ module.exports = {
             prepareHeader: {
                 type: 'function',
                 handler: 'DefaultExternalIndexerInitializerService.prepareHeader',
+                success: 'prepareInputPath'
+            },
+            prepareInputPath: {
+                type: 'function',
+                handler: 'DefaultExternalIndexerInitializerService.prepareInputPath',
                 success: 'prepareOutputPath'
             },
             prepareOutputPath: {

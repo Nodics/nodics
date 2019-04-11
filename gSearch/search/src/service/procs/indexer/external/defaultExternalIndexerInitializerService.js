@@ -77,16 +77,20 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    prepareInputPath: function (request, response, process) {
+        this.LOG.debug('Preparing input data path');
+        request.inputPath = request.source;
+        request.inputPath.dataPath = request.inputPath.rootPath + '/' + request.target.indexName;
+        process.nextSuccess(request, response);
+    },
+
     prepareOutputPath: function (request, response, process) {
-        let indexerConfig = request.header.local.indexerConfig;
         this.LOG.debug('Preparing output file path');
-        let tempPath = (indexerConfig.target.tempPath) ? indexerConfig.target.tempPath + '/search/' + indexerConfig.target.indexName : NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/search';
         request.header.local.outputPath = {
-            destDir: tempPath + '/data',
-            fileName: indexerConfig.target.indexName,
-            successPath: tempPath + '/success',
-            errorPath: tempPath + '/error',
-            version: 0
+            rootPath: request.target.rootPath,
+            dataPath: request.target.dataPath,
+            successPath: request.target.successPath,
+            errorPath: request.target.errorPath
         };
         process.nextSuccess(request, response);
     },
@@ -94,8 +98,8 @@ module.exports = {
     flushOutputFolder: function (request, response, process) {
         let indexerConfig = request.header.local.indexerConfig;
         if (indexerConfig.dumpData) {
-            this.LOG.debug('Cleaning output directory : ' + request.header.local.outputPath.destDir);
-            fse.remove(request.header.local.outputPath.destDir).then(() => {
+            this.LOG.debug('Cleaning output directory : ' + request.header.local.outputPath.dataPath);
+            fse.remove(request.header.local.outputPath.dataPath).then(() => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -154,6 +158,7 @@ module.exports = {
         };
         request.data.headers[indexerConfig.target.indexName + 'DataHeader'] = request.header;
         request.outputPath = request.header.local.outputPath;
+        request.inputPath = request.header.local.inputPath;
         delete request.header;
         delete request.dataFiles;
         SERVICE.DefaultPipelineService.start('dataImportInitializerPipeline', request, {}).then(success => {

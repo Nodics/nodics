@@ -97,16 +97,25 @@ module.exports = {
                 }
             } else if (indexerConfig.path && !UTILS.isBlank(indexerConfig.path)) {
                 request.source = {
-                    dataPath: indexerConfig.path.dataPath
+                    rootPath: indexerConfig.path.rootPath,
+                    successPath: indexerConfig.path.successPath,
+                    errorPath: indexerConfig.path.errorPath
                 };
             }
             if (indexerConfig.target) {
                 request.target = {
                     indexName: indexerConfig.target.indexName || request.indexName,
                     typeName: indexerConfig.target.typeName || indexerConfig.target.indexName || request.indexName,
-                    tempPath: indexerConfig.target.tempPath,
                     moduleName: indexerConfig.target.moduleName || request.moduleName
                 };
+                let tempRootPath = NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import/search';
+                if (indexerConfig.target.tempRootPath) {
+                    tempRootPath = indexerConfig.target.tempRootPath;
+                }
+                request.target.rootPath = tempRootPath;
+                request.target.dataPath = tempRootPath + '/' + request.target.indexName;
+                request.target.successPath = indexerConfig.target.successPath || tempRootPath + '/success';
+                request.target.errorPath = indexerConfig.target.errorPath || tempRootPath + '/error';
                 request.searchModel = NODICS.getSearchModel(request.moduleName, request.tenant, request.target.indexName);
                 if (!request.searchModel) {
                     throw new Error('Invalid index name: ' + request.target.indexName + ' within indexer configuration');
@@ -116,6 +125,8 @@ module.exports = {
                 } else {
                     request.searchService = SERVICE.DefaultSearchService;
                 }
+            } else {
+                throw new Error('Target object within indexer can not be null or empty');
             }
         } catch (error) {
             process.error(request, response, {

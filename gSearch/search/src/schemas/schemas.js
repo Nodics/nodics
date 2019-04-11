@@ -156,15 +156,20 @@ module.exports = {
                     required: false,
                     description: 'True, if data is compatable to index. False, if conversion required'
                 },
-                "path.headerPath": {
+                "path.rootPath": {
                     type: 'string',
                     required: false,
-                    description: 'Path to read header file'
+                    description: 'root folder where data exist'
                 },
-                "path.dataPath": {
+                "path.successPath": {
                     type: 'string',
                     required: false,
-                    description: 'Path to read header file'
+                    description: 'Success path to move imported files'
+                },
+                "path.errorPath": {
+                    type: 'string',
+                    required: false,
+                    description: 'Error path to move imported files'
                 },
                 target: {
                     type: 'object',
@@ -186,10 +191,20 @@ module.exports = {
                     required: false,
                     description: 'Index options if required'
                 },
-                "target.tempPath": {
+                "target.tempRootPath": {
                     type: 'string',
                     required: false,
                     description: 'True, if data is compatable to index. False, if conversion required'
+                },
+                "target.successPath": {
+                    type: 'string',
+                    required: false,
+                    description: 'Success path to move imported files'
+                },
+                "target.errorPath": {
+                    type: 'string',
+                    required: false,
+                    description: 'Error path to move imported files'
                 },
                 processors: {
                     type: 'array',

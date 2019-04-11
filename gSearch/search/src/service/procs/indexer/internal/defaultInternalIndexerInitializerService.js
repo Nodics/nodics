@@ -63,25 +63,29 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    prepareInputPath: function (request, response, process) {
+        this.LOG.debug('Preparing input data path');
+        request.inputPath = {};
+        process.nextSuccess(request, response);
+    },
+
     prepareOutputPath: function (request, response, process) {
-        let indexerConfig = request.header.local.indexerConfig;
-        if (indexerConfig.dumpData) {
-            this.LOG.debug('Preparing output file path');
-            let tempPath = (indexerConfig.target.tempPath) ? indexerConfig.target.tempPath + '/search/' + indexerConfig.target.indexName : NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/search/' + indexerConfig.target.indexName;
-            request.header.local.outputPath = {
-                destDir: tempPath,
-                fileName: indexerConfig.target.indexName,
-                version: 0
-            };
-        }
+        this.LOG.debug('Preparing output file path');
+        request.outputPath = {
+            rootPath: request.target.rootPath,
+            dataPath: request.target.dataPath,
+            successPath: request.target.successPath,
+            errorPath: request.target.errorPath,
+            fileName: request.target.indexName + 'IndexData'
+        };
         process.nextSuccess(request, response);
     },
 
     flushOutputFolder: function (request, response, process) {
         let indexerConfig = request.header.local.indexerConfig;
         if (indexerConfig.dumpData) {
-            this.LOG.debug('Cleaning output directory : ' + request.header.local.outputPath.destDir);
-            fse.remove(request.header.local.outputPath.destDir).then(() => {
+            this.LOG.debug('Cleaning output directory : ' + request.outputPath.dataPath);
+            fse.remove(request.outputPath.dataPath).then(() => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -158,24 +162,16 @@ module.exports = {
             if (data.success && data.result && data.result.length > 0) {
                 options.readBytes = options.readBytes + sizeof(data.result);
                 if (options.readBytes > options.readBufferSize && options.finalData.length > 0) {
-                    if (request.header.local.outputPath) {
-                        request.header.local.outputPath.version = request.header.local.outputPath.version + 1;
+                    if (request.outputPath) {
+                        request.outputPath.version = request.outputPath.version + 1;
                     }
-
-                    // source: request.source,
-                    // target: request.target,
-                    // indexerConfig: request.indexerConfig,
-                    // dataHeader: request.dataHeader,
-                    // schemaModel: request.schemaModel,
-                    // searchModel: request.searchModel,
-                    // schemaService: request.schemaService,
-                    // searchService: request.searchService,
-                    // outputPath: request.outputPath
                     SERVICE.DefaultPipelineService.start('finalizeIndexerDataPipeline', {
                         tenant: request.tenant,
                         moduleName: request.moduleName,
                         header: request.header,
                         models: options.finalData,
+                        inputPath: request.inputPath,
+                        outputPath: request.outputPath
                     }, {}).then(success => {
                         options.finalData = data.result;
                         options.pageNumber = options.pageNumber + 1;
@@ -207,6 +203,8 @@ module.exports = {
                         moduleName: request.moduleName,
                         header: request.header,
                         models: options.finalData,
+                        inputPath: request.inputPath,
+                        outputPath: request.outputPath
                     }, {}).then(success => {
                         resolve(success);
                     }).catch(error => {
@@ -229,14 +227,17 @@ module.exports = {
                 SERVICE.DefaultImportService.processImportData({
                     tenant: request.tenant,
                     inputPath: {
-                        rootPath: (indexerConfig.target.tempPath) ? indexerConfig.target.tempPath + '/search' : NODICS.getServerPath() + '/' + (CONFIG.get('data').dataDirName || 'temp') + '/search',
-                        dataType: indexerConfig.target.indexName
+                        rootPath: request.outputPath.rootPath,
+                        dataPath: request.outputPath.dataPath,
+                        successPath: request.outputPath.successPath,
+                        errorPath: request.outputPath.errorPath
                     }
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);
                 });
+                process.nextSuccess(request, response);
             } else {
                 process.nextSuccess(request, response);
             }
