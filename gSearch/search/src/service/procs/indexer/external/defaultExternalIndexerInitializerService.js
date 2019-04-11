@@ -79,14 +79,18 @@ module.exports = {
 
     prepareInputPath: function (request, response, process) {
         this.LOG.debug('Preparing input data path');
-        request.inputPath = request.source;
-        request.inputPath.dataPath = request.inputPath.rootPath + '/' + request.target.indexName;
+        request.inputPath = {
+            rootPath: request.source.rootPath,
+            dataPath: request.source.dataPath || request.source.rootPath + '/' + request.target.indexName,
+            successPath: request.source.successPath || request.source.rootPath + '/success',
+            errorPath: request.source.errorPath || request.source.rootPath + '/error'
+        };
         process.nextSuccess(request, response);
     },
 
     prepareOutputPath: function (request, response, process) {
         this.LOG.debug('Preparing output file path');
-        request.header.local.outputPath = {
+        request.outputPath = {
             rootPath: request.target.rootPath,
             dataPath: request.target.dataPath,
             successPath: request.target.successPath,
@@ -98,8 +102,8 @@ module.exports = {
     flushOutputFolder: function (request, response, process) {
         let indexerConfig = request.header.local.indexerConfig;
         if (indexerConfig.dumpData) {
-            this.LOG.debug('Cleaning output directory : ' + request.header.local.outputPath.dataPath);
-            fse.remove(request.header.local.outputPath.dataPath).then(() => {
+            this.LOG.debug('Cleaning output directory : ' + request.outputPath.dataPath);
+            fse.remove(request.outputPath.dataPath).then(() => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -110,12 +114,12 @@ module.exports = {
     },
 
     loadDataFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of files from Path to be imported');
+        this.LOG.debug('Loading list of files from Path to be imported: ', request.inputPath.dataPath);
         if (request.header) {
             let dataFiles = {};
             let fileList = {};
             let filePrefix = request.header.options.dataFilePrefix;
-            SERVICE.DefaultImportUtilityService.getAllFrefixFiles(request.header.local.source.dataPath, fileList, filePrefix);
+            SERVICE.DefaultImportUtilityService.getAllFrefixFiles(request.inputPath.dataPath, fileList, filePrefix);
             _.each(fileList, (dataFile, name) => {
                 if (dataFiles[name]) {
                     dataFiles[name].push(dataFile);
@@ -133,7 +137,7 @@ module.exports = {
 
     resolveFileType: function (request, response, process) {
         this.LOG.debug('Resolving file type');
-        if (request.header && request.header.dataFiles) {
+        if (request.header && request.header.dataFiles && !UTILS.isBlank(request.header.dataFiles)) {
             let dataFiles = {};
             _.each(request.header.dataFiles, (list, name) => {
                 let fileType = list[0].substring(list[0].lastIndexOf('.') + 1, list[0].length);
@@ -144,6 +148,8 @@ module.exports = {
                 };
             });
             request.header.dataFiles = dataFiles;
+        } else {
+            this.LOG.warn('Cound not found any data to index');
         }
         // console.log(util.inspect(request.header, false, 6));
         // console.log(util.inspect(request.dataFiles, false, 6));
@@ -157,8 +163,6 @@ module.exports = {
             headers: {}
         };
         request.data.headers[indexerConfig.target.indexName + 'DataHeader'] = request.header;
-        request.outputPath = request.header.local.outputPath;
-        request.inputPath = request.header.local.inputPath;
         delete request.header;
         delete request.dataFiles;
         SERVICE.DefaultPipelineService.start('dataImportInitializerPipeline', request, {}).then(success => {
@@ -170,13 +174,15 @@ module.exports = {
 
     importDumpData: function (request, response, process) {
         try {
-            let indexerConfig = request.header.local.indexerConfig;
+            let indexerConfig = request.indexerConfig;
             if (indexerConfig.dumpData) {
                 SERVICE.DefaultImportService.processImportData({
                     tenant: request.tenant,
                     inputPath: {
-                        rootPath: request.header.local.outputPath.destDir,
-                        dataType: indexerConfig.target.indexName
+                        rootPath: request.outputPath.rootPath,
+                        dataPath: request.outputPath.dataPath,
+                        successPath: request.outputPath.successPath,
+                        errorPath: request.outputPath.errorPath
                     }
                 }).then(success => {
                     process.nextSuccess(request, response);

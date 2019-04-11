@@ -735,11 +735,11 @@ module.exports = {
             triggerProcess: {
                 type: 'function',
                 handler: 'DefaultExternalIndexerInitializerService.triggerProcess',
-                success: 'successEnd'
+                success: 'importDumpData'
             },
             importDumpData: {
                 type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.importDumpData',
+                handler: 'DefaultExternalIndexerInitializerService.importDumpData',
                 success: 'successEnd'
             },
             successEnd: {
