@@ -57,12 +57,4 @@ module.exports = { core: [ 'gCore', 'cronjob', 'nems', 'profile' ],
   nImport: [],
   database: [ 'nDatabase', 'database', 'mongodb', 'elasticdb', 'cassandradb' ],
   search: [ 'search', 'elastic', 'gSearch' ],
-  tools: [ 'gTools', 'powerTool' ],
-  extdatarecords: [],
-  environments: [],
-  dev: [],
-  local: [],
-  prod: [],
-  sit: [],
-  uat: [],
-  interfacemessages: [ 'interfacemessages', 'orderdata' ] };
+  tools: [ 'gTools', 'powerTool' ] };

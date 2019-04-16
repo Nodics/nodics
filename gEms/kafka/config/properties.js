@@ -11,49 +11,58 @@
 
 module.exports = {
     emsClient: {
-        kafka: {
-            handler: 'DefaultKafkaClientService',
-            publisherType: 1, // 0 for normal, 1 for HighLevel Producer
-            consumerType: 0, // 0 for normal, 1 for HighLevel Producer
-            options: {
-                source: 'emsClient',
-                target: 'emsClient',
-                nodeId: '0'
-            },
-            publisherOptions: {
-                requireAcks: 1,
-                ackTimeoutMs: 100,
-                partitionerType: 0
-            },
-            consumerOptions: {
-                autoCommit: true,
-                fetchMaxWaitMs: 1000,
-                fetchMaxBytes: 1024 * 1024,
-                encoding: 'buffer',
-                keyEncoding: 'utf8'
-            },
-            connectionOptions: {
-                kafkaHost: 'localhost:9092',
-                connectTimeout: 10,
-                requestTimeout: 30000,
-                autoConnect: true,
-                idleConnection: 5000,
-                maxAsyncRequests: 10,
-                connectRetryOptions: {
-                    retries: 5,
-                    factor: 3,
-                    minTimeout: 1 * 10,
-                    maxTimeout: 60 * 10,
-                    randomize: true,
-                }
-            },
-            queues: [{
-                type: 'publisher',
-                name: 'testPublisherQueue'
-            }, {
-                type: 'consumer',
-                name: 'testConsumerQueue'
-            }]
+        clients: {
+            kafka: {
+                enabled: true,
+                handler: 'DefaultKafkaClientService',
+                publisherType: 1, // 0 for normal, 1 for HighLevel Producer
+                consumerType: 0, // 0 for normal, 1 for HighLevel Producer
+                eventOptions: {
+                    source: 'emsClient',
+                    target: 'emsClient',
+                    nodeId: '0',
+                    eventType: 'ASYNC'
+                },
+                publisherOptions: {
+                    requireAcks: 1,
+                    ackTimeoutMs: 100,
+                    partitionerType: 0
+                },
+                consumerOptions: {
+                    autoCommit: true,
+                    fetchMaxWaitMs: 1000,
+                    fetchMaxBytes: 1024 * 1024,
+                    encoding: 'buffer',
+                    keyEncoding: 'utf8'
+                },
+                connectionOptions: {
+                    kafkaHost: 'localhost:9092',
+                    connectTimeout: 10,
+                    requestTimeout: 30000,
+                    autoConnect: true,
+                    idleConnection: 5000,
+                    maxAsyncRequests: 10,
+                    connectRetryOptions: {
+                        retries: 5,
+                        factor: 3,
+                        minTimeout: 1 * 10,
+                        maxTimeout: 60 * 10,
+                        randomize: true,
+                    }
+                },
+            }
+        },
+        consumers: {
+            kafkaTestConsumerQueue: {
+                enabled: true,
+                client: 'kafka'
+            }
+        },
+        publishers: {
+            kafkaTestPublisherQueue: {
+                enabled: true,
+                client: 'kafka'
+            }
         }
     }
 };

@@ -11,46 +11,56 @@
 
 module.exports = {
     emsClient: {
-        activemq: {
-            handler: 'DefaultActivemqClientService',
-            options: {
-                encodingType: 'UTF-8',
-                acknowledgeType: 'client-individual',
-                ackRequired: true,
-                source: 'emsClient',
-                target: 'emsClient',
-                nodeId: '0'
-            },
-            connectionOptions: [{
-                host: 'localhost',
-                port: 61613,
-                'connectHeaders': {
-                    'host': '/',
-                    'login': 'admin',
-                    'passcode': 'admin',
-                    'heart-beat': '5000,5000'
-                }
-            }],
-            reconnectOptions: {
-                "initialReconnectDelay": 10,    // milliseconds delay of the first reconnect
-                "maxReconnectDelay": 5000,     // maximum milliseconds delay of any reconnect
-                "useExponentialBackOff": true,  // exponential increase in reconnect delay
-                "maxReconnects": 30,            // maximum number of failed reconnects consecutively
-                "randomize": false              // randomly choose a server to use when reconnecting
-            },
-            queues: [{
-                type: 'publisher',
-                name: 'testPublisherQueue'
-            }, {
-                type: 'consumer',
-                name: 'testConsumerQueue',
-                options: {
+        clients: {
+            activemq: {
+                enabled: true,
+                handler: 'DefaultActivemqClientService',
+                eventOptions: {
+                    source: 'emsClient',
+                    target: 'emsClient',
+                    nodeId: '0',
+                    eventType: 'ASYNC'
+                },
+                publisherOptions: {
+                    requireAcks: 1,
+                    ackTimeoutMs: 100,
+                    partitionerType: 0
+                },
+                consumerOptions: {
                     encodingType: 'UTF-8',
                     acknowledgeType: 'client-individual',
-                    targetModule: 'emsClient',
-                    nodeId: '0'
-                }
-            }]
+                    ackRequired: true
+                },
+                connectionOptions: [{
+                    host: 'localhost',
+                    port: 61613,
+                    'connectHeaders': {
+                        'host': '/',
+                        'login': 'admin',
+                        'passcode': 'admin',
+                        'heart-beat': '5000,5000'
+                    }
+                }],
+                reconnectOptions: {
+                    "initialReconnectDelay": 10,    // milliseconds delay of the first reconnect
+                    "maxReconnectDelay": 5000,     // maximum milliseconds delay of any reconnect
+                    "useExponentialBackOff": true,  // exponential increase in reconnect delay
+                    "maxReconnects": 30,            // maximum number of failed reconnects consecutively
+                    "randomize": false              // randomly choose a server to use when reconnecting
+                },
+            }
+        },
+        consumers: {
+            activeMQTestConsumerQueue: {
+                enabled: true,
+                client: 'activemq'
+            }
+        },
+        publishers: {
+            activeMQTestPublisherQueue: {
+                enabled: true,
+                client: 'activemq'
+            }
         }
     }
 };

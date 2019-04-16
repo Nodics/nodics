@@ -12,7 +12,6 @@ const _ = require('lodash');
 const kafka = require('kafka-node');
 
 module.exports = {
-    admin: {},
     publisher: {},
     consumerPool: {},
 
@@ -38,84 +37,47 @@ module.exports = {
         });
     },
 
-    configureClent: function (config) {
+    configureClient: function (config) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.options) {
                 reject('Kafka configuration is not valid');
             }
             try {
-                const client = new kafka.KafkaClient(config.connectionOptions);
-                if (client) {
-                    _self.createPublisher(client, config).then(producer => {
-                        _self.publisher = producer;
-                        client.loadMetadataForTopics([], function (error, results) {
-                            if (error) {
-                                return error;
-                            } else {
-                                let topics = _.get(results, '1.metadata');
-                                _self.verifyAllTopics(client, config, topics).then(success => {
-                                    _self.registerConsumers(client, config);
-                                    resolve(true);
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            }
-                        });
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
+                const connection = new kafka.KafkaClient(config.connectionOptions);
+                if (connection) {
+                    connection.loadMetadataForTopics([], function (error, results) {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            let queues = _.get(results, '1.metadata');
+                            resolve({
+                                connection: connection,
+                                queues: queues
+                            });
+                        }
                     });
                 } else {
-                    reject('While creating Kafka client');
+                    reject('Got null connection while connecting with kafka');
                 }
             } catch (error) {
                 reject(error);
             }
         });
     },
-
-    verifyAllTopics: function (client, config, topics) {
+    configurePublisher: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                let allTopics = [];
-                config.queues.forEach(queue => {
-                    queue.options = _.merge(queue.options || {}, config.options);
-                    if (queue.type && queue.type === 'consumer' && !topics[queue.name]) {
-                        allTopics.push(queue.name);
-                    }
-                });
-                if (allTopics.length > 0) {
-                    client.createTopics(allTopics, (error, result) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(true);
-                        }
-                    });
-                } else {
-                    resolve(true);
-                }
-            } catch (error) {
-                _self.LOG.error(error);
-                reject('while creating topics');
-            }
-        });
-    },
-
-    createPublisher: function (client, config) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
+                let clientConfig = options.client.config;
                 let producer;
-                if (config.publisherType === 0) {
-                    producer = new kafka.Producer(client, config.publisherOptions);
-                } else if (config.publisherType === 1) {
-                    producer = new kafka.HighLevelProducer(client, config.publisherOptions);
+                if (clientConfig.publisherType === 0) {
+                    producer = new kafka.Producer(options.client.connection, options.publisher.publisherOptions);
+                } else if (clientConfig.publisherType === 1) {
+                    producer = new kafka.HighLevelProducer(options.client.connection, options.publisher.publisherOptions);
                 } else {
-                    _self.LOG.debug('Invalid publisher type : ' + config.publisherType);
-                    reject('Invalid publisher type : ' + config.publisherType);
+                    _self.LOG.debug('Invalid publisher type : ' + clientConfig.publisherType);
+                    reject('Invalid publisher type : ' + clientConfig.publisherType);
                 }
                 if (producer) {
                     producer.on("ready", function () {
@@ -131,76 +93,68 @@ module.exports = {
                     reject('Not able to create kafka publisher');
                 }
             } catch (error) {
-                _self.LOG.error(error);
-                reject('while creating consumer for queue : ' + queue.name);
+                reject(error);
             }
         });
     },
 
-    registerConsumers: function (client, config, _self) {
-        _self = _self || this;
-        if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
-            !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
-            let consumers = [];
-            config.queues.forEach(queue => {
-                if (queue.type && queue.type === 'consumer') {
-                    consumers.push(_self.createConsumer(client, config, queue));
+    checkQueue: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                let queueName = options.consumerName;
+                if (options.client.queues && options.client.queues.length > 0 && options.client.queues.includes(queueName)) {
+                    resolve(true);
+                } else {
+                    options.client.connection.createTopics([queueName], (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(true);
+                        }
+                    });
                 }
-            });
-            if (consumers.length > 0) {
-                Promise.all(consumers).then(success => {
-                    _self.LOG.debug('Kafka consumers have been registered successfully');
-                }).catch(error => {
-                    _self.LOG.error('Failed to register all consumers');
-                    _self.LOG.error(error);
-                });
-            } else {
-                _self.LOG.debug('Could not found consumers to register');
+            } catch (error) {
+                reject(error);
             }
-        } else {
-            _self.LOG.info('Server is not started yet, hence waiting to register Kafka consumers');
-            setTimeout(() => {
-                _self.registerConsumers(client, config, _self);
-            }, CONFIG.get('processRetrySleepTime') || 2000);
-        }
+        });
     },
 
-    createConsumer: function (client, config, queue) {
+    registerConsumer: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                const topics = [{
-                    topic: queue.name
-                }];
-                queue.consumerOptions = _.merge(queue.consumerOptions || {}, config.consumerOptions);
-                let consumer;
-                if (config.consumerType === 0) {
-                    consumer = new kafka.Consumer(client, topics, queue.consumerOptions);
-                } else if (config.consumerType === 1) {
-                    consumer = new kafka.HighLevelConsumer(client, topics, queue.consumerOptions);
-                } else {
-                    _self.LOG.error('Invalid publisher type : ' + config.publisherType);
-                    reject('Invalid publisher type : ' + config.publisherType);
-                }
-                if (consumer) {
-                    consumer.on("message", function (response) {
-                        _self.onConsume(queue, response);
-                    });
-                    consumer.on("error", function (message) {
-                        _self.LOG.error(message);
-                    });
-                    _self.LOG.debug('Registered consumer for queue : ', queue.name);
-                    _self.consumerPool[queue.name] = {
-                        topic: queue.name,
-                        consumer: consumer
-                    };
-                    resolve(true);
-                } else {
-                    reject('While creating consumer for queue : ' + queue.name);
-                }
+                _self.checkQueue(options).then(success => {
+                    let clientConfig = options.client.config;
+                    let queueName = options.consumerName;
+                    const topics = [{
+                        topic: queueName
+                    }];
+                    let consumer;
+                    if (clientConfig.consumerType === 0) {
+                        consumer = new kafka.Consumer(options.client.connection, topics, options.consumer.consumerOptions);
+                    } else if (config.consumerType === 1) {
+                        consumer = new kafka.HighLevelConsumer(options.client.connection, topics, options.consumer.consumerOptions);
+                    } else {
+                        _self.LOG.error('Invalid consumer type : ' + clientConfig.consumerType);
+                        reject('Invalid consumer type : ' + clientConfig.consumerType);
+                    }
+                    if (consumer) {
+                        options.consumer.name = queueName;
+                        consumer.on("message", function (response) {
+                            _self.onConsume(options.consumer, response);
+                        });
+                        consumer.on("error", function (message) {
+                            _self.LOG.error(message);
+                        });
+                        resolve(consumer);
+                    } else {
+                        reject('While creating consumer for queue : ' + queueName);
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
             } catch (error) {
-                _self.LOG.error(error);
-                reject('While creating consumer for queue : ' + queue.name);
+                reject(error);
             }
         });
     },
@@ -225,7 +179,7 @@ module.exports = {
                     target: queue.options.target,
                     nodeId: queue.options.nodeId,
                     state: "NEW",
-                    type: "ASYNC",
+                    type: queue.options.eventType,
                     params: [{
                         key: 'key',
                         value: response.key
@@ -263,20 +217,14 @@ module.exports = {
      */
     publish: function (payload) {
         return new Promise((resolve, reject) => {
-            if (UTILS.isBlank(this.publisher)) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00000',
-                    msg: 'Could not found a valid publisher instance'
-                });
-            } else {
-                try {
-                    let message = [{
+            try {
+                let client = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
+                if (client) {
+                    client.connection.send([{
                         topic: payload.queue,
                         messages: payload.message || payload.messages,
                         partition: payload.partition || 0
-                    }];
-                    this.publisher.send(message, function (err, data) {
+                    }], function (err, data) {
                         if (err) {
                             reject({
                                 success: false,
@@ -291,14 +239,19 @@ module.exports = {
                             });
                         }
                     });
-                } catch (error) {
-                    this.LOG.error(error);
+                } else {
                     reject({
                         success: false,
                         code: 'ERR_EMS_00000',
                         msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
                     });
                 }
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_EMS_00000',
+                    msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
+                });
             }
         });
     }

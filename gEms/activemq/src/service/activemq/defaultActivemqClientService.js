@@ -36,7 +36,7 @@ module.exports = {
         });
     },
 
-    configureClent: function (config) {
+    configureClient: function (config) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.connectionOptions || !config.reconnectOptions) {
@@ -47,7 +47,7 @@ module.exports = {
             }
             try {
                 let connectionManager = new stompit.ConnectFailover(config.connectionOptions, config.reconnectOptions);
-                connectionManager.connect(function (error, client, reconnect) {
+                connectionManager.connect(function (error, connection, reconnect) {
                     if (error) {
                         _self.LOG.error('Connection failed to ActiveMQ server');
                         _self.LOG.error(error);
@@ -58,18 +58,14 @@ module.exports = {
                             error: error
                         });
                     } else {
-                        _self.client = client;
-                        _self.LOG.debug('Connection established to ActiveMQ server');
-                        client.on("error", function (error) {
+                        connection.on("error", function (error) {
                             _self.LOG.error("ActiveMQ Connection lost. Reconnecting...");
                             _self.LOG.error(error);
                             reconnect();
                         });
-                        _self.registerConsumers(client, config);
                         resolve({
-                            success: true,
-                            code: 'SUC_EMS_00000',
-                            message: 'Connected with ActiveMQ server'
+                            connection: connection,
+                            queues: []
                         });
                     }
                 });
@@ -83,49 +79,49 @@ module.exports = {
         });
     },
 
-    registerConsumers: function (client, config, _self) {
-        _self = _self || this;
-        if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
-            !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
-            config.queues.forEach(queue => {
-                if (queue.type && queue.type === 'consumer') {
-                    queue.options = _.merge(queue.options || {}, config.options);
-                    client.subscribe({
-                        destination: queue.name,
-                        ack: queue.options.acknowledgeType
-                    }, (err, msg) => {
-                        if (err) {
-                            _self.LOG.error('While subscribing to queue : ' + queue.name);
-                            _self.LOG.error(err);
-                        } else {
-                            msg.readString(queue.options.encodingType, (err, body) => {
-                                if (!queue.options.ackRequired) {
-                                    client.ack(msg);
-                                }
-                                if (err) {
-                                    _self.LOG.error('While consuming message from queue : ' + queue.name);
-                                    _self.LOG.error(err);
-                                } else {
-                                    _self.onConsume(queue, body).then(success => {
-                                        if (queue.options.ackRequired) {
-                                            client.ack(msg);
-                                        }
-                                    }).catch(error => {
-                                        _self.LOG.error('While processing comsumed message: ', body);
-                                        _self.LOG.error(error);
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        } else {
-            _self.LOG.info('Server is not started yet, hence waiting to register ActiveMQ consumers');
-            setTimeout(() => {
-                _self.registerConsumers(client, config, _self);
-            }, CONFIG.get('processRetrySleepTime') || 2000);
-        }
+    configurePublisher: function (options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                resolve({});
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    registerConsumers: function (options) {
+        _self = this;
+        let queueName = options.consumerName;
+        options.client.connection.subscribe({
+            destination: queueName,
+            ack: options.consumer.options.acknowledgeType
+        }, (err, msg) => {
+            if (err) {
+                _self.LOG.error('While subscribing to queue : ' + queue.name);
+                _self.LOG.error(err);
+            } else {
+                msg.readString(options.consumer.consumerOptions.encodingType, (err, body) => {
+                    if (!options.consumer.consumerOptions.ackRequired) {
+                        client.ack(msg);
+                    }
+                    if (err) {
+                        _self.LOG.error('While consuming message from queue : ' + queueName);
+                        _self.LOG.error(err);
+                    } else {
+                        options.consumer.name = queueName;
+                        _self.onConsume(options.consumer, body).then(success => {
+                            if (options.consumer.consumerOptions.ackRequired) {
+                                client.ack(msg);
+                            }
+                        }).catch(error => {
+                            _self.LOG.error('While processing comsumed message: ', body);
+                            _self.LOG.error(error);
+                        });
+                    }
+                });
+            }
+        });
     },
 
     onConsume: function (queue, body) {
@@ -140,7 +136,7 @@ module.exports = {
                     target: queue.options.target,
                     nodeId: queue.options.nodeId,
                     state: "NEW",
-                    type: "ASYNC",
+                    type: queue.options.eventType,
                     params: [{
                         key: 'message',
                         value: message
@@ -177,15 +173,10 @@ module.exports = {
     publish: function (payload) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (UTILS.isBlank(_self.client)) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00000',
-                    msg: 'Could not found a valid publisher instance'
-                });
-            } else {
-                try {
-                    var frame = _self.client.send({
+            try {
+                let client = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
+                if (client) {
+                    var frame = client.connection.send({
                         'destination': payload.queue,
                         'content-type': 'application/json'
                     });
@@ -200,14 +191,19 @@ module.exports = {
                         code: 'SUC_EMS_00000',
                         msg: 'Message published to queue: ' + payload.queue
                     });
-                } catch (error) {
-                    this.LOG.error(error);
+                } else {
                     reject({
                         success: false,
                         code: 'ERR_EMS_00000',
                         msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
                     });
                 }
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_EMS_00000',
+                    msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
+                });
             }
         });
     }
