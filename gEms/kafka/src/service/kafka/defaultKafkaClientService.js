@@ -170,30 +170,13 @@ module.exports = {
                     let buf = new Buffer(response.value, "binary");
                     response.value = buf.toString();
                 }
-                let message = JSON.parse(response.value);
-                let event = {
-                    enterpriseCode: message.enterpriseCode || 'default',
-                    tenant: message.tenant || 'default',
-                    event: queue.name,
-                    source: queue.options.source,
-                    target: queue.options.target,
-                    nodeId: queue.options.nodeId,
-                    state: "NEW",
-                    type: queue.options.eventType,
-                    params: [{
-                        key: 'key',
-                        value: response.key
-                    }, {
-                        key: 'message',
-                        value: message
-                    }]
-                };
-                this.LOG.debug('Pushing event recieved message from  : ', queue.name);
-                SERVICE.DefaultEventService.publish(event).then(success => {
-                    this.LOG.debug('Message published successfully');
+                SERVICE.DefaultPipelineService.start('processConsumedMessagePipeline', {
+                    queue: queue,
+                    message: JSON.parse(response.value)
+                }, {}).then(success => {
                     resolve(true);
                 }).catch(error => {
-                    this.LOG.error('Message publishing failed: ', error);
+                    this.LOG.error('Failed to publish message : ', queue.name, ' : ERROR is ', error);
                     reject(error);
                 });
             } catch (error) {

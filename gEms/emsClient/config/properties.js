@@ -12,6 +12,9 @@
 module.exports = {
 
     emsClient: {
-        // Just a placeholder
+        messageHandlers: {
+            xmlMessageHandler: 'xmlMessageHandlerPipeline',
+            textMessageHandler: 'textMessageHandlerPipeline',
+        }
     }
 };

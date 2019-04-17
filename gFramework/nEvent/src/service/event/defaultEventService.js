@@ -134,7 +134,7 @@ module.exports = {
             requestBody: eventDef,
             isJsonResponse: true,
             header: {
-                apiKey: NODICS.getAPIKey('default').key
+                apiKey: NODICS.getAPIKey(eventDef.tenant).key
             }
         });
     },

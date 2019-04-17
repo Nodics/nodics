@@ -152,15 +152,16 @@ module.exports = {
                 }).catch(error => {
                     _self.LOG.debug('Facing issue while updating event success log');
                 });
-
-                SERVICE.DefaultEventLogService.save({
-                    tenant: event.tenant,
-                    models: [event]
-                }).then(success => {
-                    _self.LOG.debug('Event has been moved to success log');
-                }).catch(error => {
-                    _self.LOG.debug('Facing issue while moved to success log');
-                });
+                if (event.logEvent === undefined || event.logEvent === true) {
+                    SERVICE.DefaultEventLogService.save({
+                        tenant: event.tenant,
+                        models: [event]
+                    }).then(success => {
+                        _self.LOG.debug('Event has been moved to success log');
+                    }).catch(error => {
+                        _self.LOG.debug('Facing issue while moving to success log');
+                    });
+                }
             } else {
                 SERVICE.DefaultEventService.update({
                     tenant: event.tenant,
