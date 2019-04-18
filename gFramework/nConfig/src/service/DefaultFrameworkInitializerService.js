@@ -17,6 +17,7 @@ const logger = require('./DefaultLoggerService');
 const enumService = require('./defaultEnumService');
 const fileLoader = require('./defaultFilesLoaderService');
 const classesLoader = require('./defaultClassesHandlerService');
+const utils = require('../utils/utils');
 
 module.exports = {
     /**
@@ -111,39 +112,16 @@ module.exports = {
             let appHome = NODICS.getApplicationPath();
             let envHome = NODICS.getEnvironmentPath();
             let serverHome = NODICS.getServerPath();
-
-            let moduleGroupsFilePath = serverHome + '/config/modules.js';
             let serverProperties = {};
             serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
             serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
             serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
             let prop = _.merge(props, serverProperties);
             this.LOG = logger.createLogger('DefaultModuleInitializerService', prop.log);
-            if (!fs.existsSync(moduleGroupsFilePath) || serverProperties.activeModules.updateGroups) {
-                let mergedFile = {};
-                _.each(NODICS.getRawModules(), (moduleObject, moduleName) => {
-                    if (fs.existsSync(moduleObject.path + '/config/properties.js')) {
-                        mergedFile = _.merge(mergedFile, require(moduleObject.path + '/config/properties.js'));
-                    }
-                });
-                if (!_.isEmpty(mergedFile.moduleGroups)) {
-                    if (fs.existsSync(moduleGroupsFilePath)) {
-                        fs.unlinkSync(moduleGroupsFilePath);
-                    }
-                    fs.writeFileSync(moduleGroupsFilePath, 'module.exports = ' + util.inspect(mergedFile.moduleGroups) + ';', 'utf8');
-                }
-            }
-            let moduleData = require(moduleGroupsFilePath);
-            modules = moduleData.framework;
-            if (serverProperties.activeModules.groups) {
-                serverProperties.activeModules.groups.forEach((groupName) => {
-                    if (!moduleData[groupName]) {
-                        console.error('Invalid module group : ', groupName);
-                        process.exit(1);
-                    }
-                    modules = modules.concat(moduleData[groupName]);
-                });
-            }
+            let moduleGroups = ['gFramework'].concat(serverProperties.activeModules ? serverProperties.activeModules.groups || [] : []);
+            moduleGroups.forEach((groupName) => {
+                utils.prepareActiveModuleList(groupName, modules);
+            });
             modules = modules.concat(serverProperties.activeModules.modules);
             return modules;
         } catch (error) {

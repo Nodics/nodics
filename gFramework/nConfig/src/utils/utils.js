@@ -32,6 +32,47 @@ module.exports = {
         return moduleIndex;
     },
 
+    prepareActiveModuleList: function (groupName, modulesList) {
+        if (!groupName) {
+            return;
+        } else {
+            let moduleName = groupName;
+            groupName = null;
+            if (moduleName.indexOf(':') > 0) {
+                groupName = moduleName.substring(moduleName.indexOf(':') + 1, moduleName.length);
+                moduleName = moduleName.substring(0, moduleName.indexOf(':'));
+                console.log(moduleName, ' : ', groupName);
+            }
+            if (!modulesList.includes(moduleName)) {
+                let moduleObject = NODICS.getRawModule(moduleName);
+                if (!moduleObject) {
+                    console.error('Invalid initialization, could not load module: ', moduleName);
+                    process.exit(1);
+                }
+                modulesList.push(moduleName);
+                if (groupName) {
+                    if (moduleObject.metaData[groupName] && moduleObject.metaData[groupName].length > 0) {
+                        moduleObject.metaData[groupName].forEach(element => {
+                            modulesList.push(element);
+                        });
+                    }
+                } else if (moduleObject.modules && moduleObject.modules.length > 0) {
+                    for (let count = 0; count < moduleObject.modules.length; count++) {
+                        this.prepareActiveModuleList(moduleObject.modules[count], modulesList);
+                    }
+                }
+            }
+        }
+    },
+
+    loadRawModuleList: function (homePath) {
+        let modulesList = {};
+        this.collectModulesList(homePath, modulesList);
+        if (modulesList && !this.isBlank(modulesList)) {
+            NODICS.addRawModules(modulesList);
+        }
+    },
+
     subFolders: function (folder) {
         return fs.readdirSync(folder)
             .filter(subFolder => fs.statSync(path.join(folder, subFolder)).isDirectory())
@@ -39,16 +80,32 @@ module.exports = {
             .map(subFolder => path.join(folder, subFolder));
     },
 
-    collectModulesList: function (folder, parent) {
+    collectModulesList: function (folder, modulesList, parent) {
+        let moduleName = null;
         let metaDataPath = path.join(folder, 'package.json');
         if (fs.existsSync(metaDataPath)) {
             let metaData = require(metaDataPath);
-            NODICS.addRawModule(metaData, folder, parent);
+            modulesList[metaData.name] = {
+                name: metaData.name,
+                path: folder,
+                index: metaData.index,
+                parent: parent,
+                metaData: metaData
+            };
+            moduleName = metaData.name;
             parent = metaData.name;
         }
+        let modules = [];
         for (let subFolder of this.subFolders(folder)) {
-            this.collectModulesList(subFolder, parent);
+            let moduleName = this.collectModulesList(subFolder, modulesList, parent);
+            if (moduleName) {
+                modules.push(moduleName);
+            }
         }
+        if (moduleName && modules.length > 0) {
+            modulesList[moduleName].modules = modules;
+        }
+        return moduleName ? moduleName : null;
     },
 
     getAllMethods: function (envScripts) {

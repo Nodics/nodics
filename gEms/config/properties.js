@@ -10,12 +10,5 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        ems: [
-            'gEms',
-            'emsClient',
-            'activemq',
-            'kafka'
-        ]
-    }
+
 };

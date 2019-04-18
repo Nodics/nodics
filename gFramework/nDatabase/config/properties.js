@@ -10,13 +10,5 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        database: [
-            'nDatabase',
-            'database',
-            'mongodb',
-            'elasticdb',
-            'cassandradb'
-        ]
-    }
+
 };

@@ -10,44 +10,5 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        framework: [
-            'gFramework',
-            'default',
-            'nConfig',
-            'nCommon',
-            'nDatabase',
-            'database',
-            'mongodb',
-            'elasticdb',
-            'cassandradb',
-            'nService',
-            'nPipeline',
-            'nEvent',
-            'nFacade',
-            'nController',
-            'cache',
-            'nodeCache',
-            'redisCache',
-            'hazelcastCache',
-            'nCache',
-            'nRouter',
-            'nData',
-            'dataCore',
-            'import',
-            'jsImport',
-            'jsonImport',
-            'csvImport',
-            'excelImport',
-            'nImport',
-            'export',
-            'jsExport',
-            'jsonExport',
-            'csvExport',
-            'excelExport',
-            'nExport',
-            'nTest',
-            'system'
-        ]
-    }
+
 };

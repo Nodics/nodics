@@ -10,11 +10,5 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        search: [
-            'search',
-            'elastic',
-            'gSearch'
-        ]
-    }
+
 };

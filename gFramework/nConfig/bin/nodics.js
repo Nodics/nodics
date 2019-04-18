@@ -82,18 +82,23 @@ module.exports = function () {
         };
     };
 
-    this.setRawModels = function (rawModels) {
-        _rawModels = rawModels;
+    this.addRawModules = function (rawModules) {
+        _rawModules = rawModules;
     };
-    this.getRawModels = function () {
-        return _rawModels;
-    };
+
     this.getRawModule = function (moduleName) {
         return _rawModules[moduleName];
     };
 
     this.getRawModules = function () {
         return _rawModules;
+    };
+
+    this.setRawModels = function (rawModels) {
+        _rawModels = rawModels;
+    };
+    this.getRawModels = function () {
+        return _rawModels;
     };
 
     this.addAPIKey = function (tenant, apiKey, value) {

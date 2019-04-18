@@ -10,10 +10,5 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        tools: [
-            'gTools',
-            'powerTool'
-        ]
-    }
+
 };

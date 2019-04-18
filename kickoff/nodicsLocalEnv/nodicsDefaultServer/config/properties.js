@@ -12,7 +12,7 @@
 module.exports = {
     activeModules: {
         updateGroups: true,
-        groups: ['core', 'ems', 'search', 'tools'], // Group 'framework' will be included automatically
+        groups: ['gCore', 'gEms', 'gSearch', 'gTools', 'gDeap'], // Group 'framework' will be included automatically
         modules: [
             'nodicsDefaultServer',
             'kickoff',

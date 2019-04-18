@@ -10,13 +10,5 @@
  */
 
 module.exports = {
-    moduleGroups: {
-        nCache: [
-            'cache',
-            'nCache',
-            'nodeCache',
-            'redisCache',
-            'hazelcastCache'
-        ]
-    }
+
 };
