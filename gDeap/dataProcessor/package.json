@@ -1,6 +1,6 @@
 {
     "name": "dataProcessor",
-    "index": "400.1.99",
+    "index": "400.10.99",
     "publish": false,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataProcessor",
     "homepage": "http://www.nodics.com/",

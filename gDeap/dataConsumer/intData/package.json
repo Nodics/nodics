@@ -1,13 +1,11 @@
 {
-    "name": "dataConsumer",
-    "index": "400.1.99",
+    "name": "intData",
+    "index": "400.1.0",
     "publish": false,
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataConsumer",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to intData",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "server",
-        "environment",
-        "dataConsumer"
+        "intData"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",
