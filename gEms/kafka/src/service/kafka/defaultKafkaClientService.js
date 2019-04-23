@@ -172,7 +172,7 @@ module.exports = {
                 }
                 SERVICE.DefaultPipelineService.start('processConsumedMessagePipeline', {
                     queue: queue,
-                    message: JSON.parse(response.value)
+                    message: response.value
                 }, {}).then(success => {
                     resolve(true);
                 }).catch(error => {

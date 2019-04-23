@@ -13,6 +13,7 @@ module.exports = {
 
     emsClient: {
         messageHandlers: {
+            jsonMessageHandler: 'jsonMessageHandlerPipeline',
             xmlMessageHandler: 'xmlMessageHandlerPipeline',
             textMessageHandler: 'textMessageHandlerPipeline',
         }

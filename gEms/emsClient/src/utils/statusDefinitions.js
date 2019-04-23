@@ -40,4 +40,10 @@ module.exports = {
         message: 'Invalid configuration',
     },
 
+    ERR_EMS_00004: {
+        code: '130004',
+        description: 'Failed converting message from XML to JSON',
+        message: 'Failed converting message from XML to JSON'
+    },
+
 };

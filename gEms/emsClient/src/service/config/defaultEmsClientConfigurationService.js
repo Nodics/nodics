@@ -95,7 +95,6 @@ module.exports = {
             let publishers = CONFIG.get('emsClient').publishers;
             if (publishers && !UTILS.isBlank(publishers)) {
                 _self.configurePublisher(Object.keys(publishers), publishers).then(success => {
-                    process.exit(1);
                     resolve(true);
                 }).catch(error => {
                     reject(error);
@@ -152,69 +151,69 @@ module.exports = {
 
     registerConsumers: function () {
         let _self = this;
-        return new Promise((resolve, reject) => {
-            if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
-                !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
-                let consumers = CONFIG.get('emsClient').consumers;
-                if (consumers && !UTILS.isBlank(consumers)) {
-                    _self.registerConsumer(Object.keys(consumers), consumers).then(success => {
-                        process.exit(1);
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    _self.LOG.warn('There is none client configuration provided');
-                    resolve(true);
-                }
+        if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
+            !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
+            let consumers = CONFIG.get('emsClient').consumers;
+            if (consumers && !UTILS.isBlank(consumers)) {
+                _self.registerConsumer(Object.keys(consumers), consumers).then(success => {
+                    //_self.LOG.debug('Consumers has been registered successfully');
+                }).catch(error => {
+                    //_self.LOG.error('Failed on consumer registration ', error);
+                });
             } else {
-                _self.LOG.info('Server is not started yet, hence waiting to register consumers');
-                setTimeout(() => {
-                    _self.registerConsumers(client, config, _self);
-                }, CONFIG.get('processRetrySleepTime') || 2000);
+                _self.LOG.warn('There is none client configuration provided');
             }
-        });
+        } else {
+            _self.LOG.info('Server is not started yet, hence waiting to register consumers');
+            setTimeout(() => {
+                _self.registerConsumers();
+            }, CONFIG.get('processRetrySleepTime') || 2000);
+        }
     },
 
     registerConsumer: function (consumerList, consumers) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (consumerList && consumerList.length > 0) {
-                let consumerName = consumerList.shift();
-                let consumer = consumers[consumerName];
-                if (consumer.enabled && consumer.client && _self.emsClients[consumer.client]) {
-                    let client = _self.emsClients[consumer.client];
-                    consumer.consumerOptions = _.merge(_.merge({}, client.config.consumerOptions || {}), consumer.consumerOptions || {});
-                    consumer.options = _.merge(_.merge({}, client.config.eventOptions || {}), consumer.options || {});
-                    SERVICE[client.config.handler].registerConsumer({
-                        consumerName: consumerName,
-                        consumer: consumer,
-                        client: client
-                    }).then(success => {
-                        _self.LOG.debug('Successfully registered consumer for queue : ', consumerName);
-                        _self.emsConsumers[consumerName] = {
-                            consumer: success,
-                            config: consumer,
+            try {
+                if (consumerList && consumerList.length > 0) {
+                    let consumerName = consumerList.shift();
+                    let consumer = consumers[consumerName];
+                    if (consumer.enabled && consumer.client && _self.emsClients[consumer.client]) {
+                        let client = _self.emsClients[consumer.client];
+                        consumer.consumerOptions = _.merge(_.merge({}, client.config.consumerOptions || {}), consumer.consumerOptions || {});
+                        consumer.options = _.merge(_.merge({}, client.config.eventOptions || {}), consumer.options || {});
+                        SERVICE[client.config.handler].registerConsumer({
+                            consumerName: consumerName,
+                            consumer: consumer,
                             client: client
-                        };
+                        }).then(success => {
+                            _self.LOG.debug('Successfully registered consumer for queue : ', consumerName);
+                            _self.emsConsumers[consumerName] = {
+                                consumer: success,
+                                config: consumer,
+                                client: client
+                            };
+                            _self.registerConsumer(consumerList, consumers).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        _self.LOG.warn('Consumer: ' + consumerName + ' is not enabled or has invalid client configuration');
                         _self.registerConsumer(consumerList, consumers).then(success => {
                             resolve(true);
                         }).catch(error => {
                             reject(error);
                         });
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    }
                 } else {
-                    _self.LOG.warn('Consumer: ' + consumerName + ' is not enabled or has invalid client configuration');
-                    _self.registerConsumer(consumerList, consumers).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    resolve(true);
                 }
-            } else {
-                resolve(true);
+            } catch (error) {
+                reject(error);
             }
         });
     }

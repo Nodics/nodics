@@ -9,7 +9,7 @@
 
  */
 
-const _ = require('lodash');
+const parser = require('xml2json');
 
 module.exports = {
     /**
@@ -35,11 +35,11 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating message handler request');
+        this.LOG.debug('Validating JSON message handler request');
         if (!request.queue) {
             process.error(request, response, 'Invalid queue detail');
         } else if (!request.message) {
-            process.error(request, response, 'Invalid queue detail');
+            process.error(request, response, 'Invalid message');
         } else {
             process.nextSuccess(request, response);
         }
@@ -47,53 +47,19 @@ module.exports = {
 
     processMessage: function (request, response, process) {
         this.LOG.debug('Applying message translator');
-        let queue = request.queue;
-        let messageHandlerPipeline = CONFIG.get('emsClient').messageHandlers[queue.options.messageHandler] || 'jsonMessageHandler';
-        if (messageHandlerPipeline) {
-            SERVICE.DefaultPipelineService.start(messageHandlerPipeline, {
-                queue: queue,
-                message: request.message
-            }, {}).then(success => {
-                if (success.success) {
-                    request.message = success.result;
-                    process.nextSuccess(request, response);
-                } else {
-                    this.LOG.error('Faild on converting message to JSON format');
-                    process.error(request, response, 'Faild on converting message to JSON format : ' + queue.name);
-                }
-            }).catch(error => {
-                this.LOG.error('Failed to publish message : ' + queue.name + ' : ERROR is ', error);
-                process.error(request, response, 'Failed to convert message for queue : ' + queue.name);
-            });
-        } else {
-            process.error(request, response, 'Invalid message handller: ' + queue.options.messageHandler);
-        }
-    },
-
-    publishEvent: function (request, response, process) {
-        let queue = request.queue;
-        let message = request.message;
-        message.enterpriseCode = message.enterpriseCode || 'default';
-        message.tenant = message.tenant || 'default';
-        this.LOG.debug('Pushing event recieved message from  : ', queue.name);
-        SERVICE.DefaultEventService.publish({
-            enterpriseCode: message.enterpriseCode,
-            tenant: message.tenant,
-            event: queue.options.eventName || queue.name,
-            source: queue.options.source,
-            target: queue.options.target,
-            nodeId: queue.options.nodeId,
-            state: "NEW",
-            type: queue.options.eventType,
-            active: true,
-            message: message
-        }).then(success => {
-            this.LOG.debug('Message published successfully');
+        try {
+            response.success = {
+                success: true,
+                code: 'SUC_EMS_00000',
+                result: JSON.parse(request.message)
+            };
             process.nextSuccess(request, response);
-        }).catch(error => {
-            this.LOG.error('Message publishing failed: ', error);
-            process.error(request, response, error);
-        });
+        } catch (error) {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_EMS_00004'
+            });
+        }
     },
 
     handleSucessEnd: function (request, response, process) {

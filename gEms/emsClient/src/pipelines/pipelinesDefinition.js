@@ -43,6 +43,33 @@ module.exports = {
         }
     },
 
+    jsonMessageHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultJSONMessageHandlerService.validateRequest',
+                success: 'processMessage'
+            },
+            processMessage: {
+                type: 'function',
+                handler: 'DefaultJSONMessageHandlerService.processMessage',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultJSONMessageHandlerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultJSONMessageHandlerService.handleErrorEnd'
+            }
+        }
+    },
+
     xmlMessageHandlerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -51,21 +78,21 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'defaultXMLMessageHandlerService.validateRequest',
+                handler: 'DefaultXMLMessageHandlerService.validateRequest',
                 success: 'processMessage'
             },
             processMessage: {
                 type: 'function',
-                handler: 'defaultXMLMessageHandlerService.processMessage',
+                handler: 'DefaultXMLMessageHandlerService.processMessage',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'defaultXMLMessageHandlerService.handleSucessEnd'
+                handler: 'DefaultXMLMessageHandlerService.handleSucessEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'defaultXMLMessageHandlerService.handleErrorEnd'
+                handler: 'DefaultXMLMessageHandlerService.handleErrorEnd'
             }
         }
     },

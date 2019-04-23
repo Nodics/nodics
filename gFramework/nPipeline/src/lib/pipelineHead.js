@@ -170,7 +170,7 @@ module.exports = function (name, pipelineDefinition) {
                 try {
                     let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
                     let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
-                    SERVICE[serviceName][operation](request, response, this);
+                    SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response, this);
                 } catch (error) {
                     _self.LOG.error(_currentNode.getHandler());
                     _self.LOG.error(error);

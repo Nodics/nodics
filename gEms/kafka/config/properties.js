@@ -13,7 +13,7 @@ module.exports = {
     emsClient: {
         clients: {
             kafka: {
-                enabled: true,
+                enabled: false,
                 handler: 'DefaultKafkaClientService',
                 publisherType: 1, // 0 for normal, 1 for HighLevel Producer
                 consumerType: 0, // 0 for normal, 1 for HighLevel Producer
@@ -53,15 +53,35 @@ module.exports = {
             }
         },
         consumers: {
-            kafkaTestConsumerQueue: {
+            kafkaJSONTestConsumerQueue: {
                 enabled: true,
-                client: 'kafka'
+                client: 'kafka',
+                options: {
+                    messageHandler: 'jsonMessageHandler'
+                }
+            },
+            kafkaXMLTestConsumerQueue: {
+                enabled: true,
+                client: 'kafka',
+                options: {
+                    messageHandler: 'xmlMessageHandler'
+                }
             }
         },
         publishers: {
-            kafkaTestPublisherQueue: {
+            kafkaJSONTestPublisherQueue: {
                 enabled: true,
-                client: 'kafka'
+                client: 'kafka',
+                options: {
+                    messageHandler: 'jsonMessageHandler'
+                }
+            },
+            kafkaXMLTestPublisherQueue: {
+                enabled: true,
+                client: 'kafka',
+                options: {
+                    messageHandler: 'xmlMessageHandler'
+                }
             }
         }
     }

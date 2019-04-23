@@ -51,15 +51,35 @@ module.exports = {
             }
         },
         consumers: {
-            activeMQTestConsumerQueue: {
+            activeMQJSONTestConsumerQueue: {
                 enabled: true,
-                client: 'activemq'
+                client: 'activemq',
+                options: {
+                    messageHandler: 'jsonMessageHandler'
+                }
+            },
+            activeMQXMLTestConsumerQueue: {
+                enabled: true,
+                client: 'activemq',
+                options: {
+                    messageHandler: 'xmlMessageHandler'
+                }
             }
         },
         publishers: {
-            activeMQTestPublisherQueue: {
+            activeMQJSONTestPublisherQueue: {
                 enabled: true,
-                client: 'activemq'
+                client: 'activemq',
+                options: {
+                    messageHandler: 'jsonMessageHandler'
+                }
+            },
+            activeMQXMLTestPublisherQueue: {
+                enabled: true,
+                client: 'activemq',
+                options: {
+                    messageHandler: 'xmlMessageHandler'
+                }
             }
         }
     }

@@ -90,7 +90,7 @@ module.exports = {
         });
     },
 
-    registerConsumers: function (options) {
+    registerConsumer: function (options) {
         _self = this;
         let queueName = options.consumerName;
         options.client.connection.subscribe({
@@ -98,7 +98,7 @@ module.exports = {
             ack: options.consumer.options.acknowledgeType
         }, (err, msg) => {
             if (err) {
-                _self.LOG.error('While subscribing to queue : ' + queue.name);
+                _self.LOG.error('While subscribing to queue : ' + queueName);
                 _self.LOG.error(err);
             } else {
                 msg.readString(options.consumer.consumerOptions.encodingType, (err, body) => {
@@ -129,7 +129,7 @@ module.exports = {
             try {
                 SERVICE.DefaultPipelineService.start('processConsumedMessagePipeline', {
                     queue: queue,
-                    message: JSON.parse(body)
+                    message: body
                 }, {}).then(success => {
                     resolve(true);
                 }).catch(error => {
