@@ -52,37 +52,41 @@ module.exports = {
                 },
             }
         },
-        consumers: {
-            kafkaJSONTestConsumerQueue: {
-                enabled: true,
-                client: 'kafka',
-                options: {
-                    messageHandler: 'jsonMessageHandler'
-                }
-            },
-            kafkaXMLTestConsumerQueue: {
-                enabled: true,
-                client: 'kafka',
-                options: {
-                    messageHandler: 'xmlMessageHandler'
-                }
-            }
-        },
-        publishers: {
-            kafkaJSONTestPublisherQueue: {
-                enabled: true,
-                client: 'kafka',
-                options: {
-                    messageHandler: 'jsonMessageHandler'
-                }
-            },
-            kafkaXMLTestPublisherQueue: {
-                enabled: true,
-                client: 'kafka',
-                options: {
-                    messageHandler: 'xmlMessageHandler'
-                }
-            }
-        }
+        // consumers: {
+        //     kafkaJSONTestConsumerQueue: {
+        //         enabled: true,
+        //         client: 'kafka',
+        //         options: {
+        //             messageHandler: 'jsonMessageHandler',
+        //             target: 'intData',
+        //             eventName: 'handleInternalTestData'
+        //         }
+        //     },
+        //     kafkaXMLTestConsumerQueue: {
+        //         enabled: true,
+        //         client: 'kafka',
+        //         options: {
+        //             messageHandler: 'xmlMessageHandler',
+        //             target: 'intData',
+        //             eventName: 'handleInternalTestData'
+        //         }
+        //     }
+        // },
+        // publishers: {
+        //     kafkaJSONTestPublisherQueue: {
+        //         enabled: true,
+        //         client: 'kafka',
+        //         options: {
+        //             messageHandler: 'jsonMessageHandler'
+        //         }
+        //     },
+        //     kafkaXMLTestPublisherQueue: {
+        //         enabled: true,
+        //         client: 'kafka',
+        //         options: {
+        //             messageHandler: 'xmlMessageHandler'
+        //         }
+        //     }
+        // }
     }
 };

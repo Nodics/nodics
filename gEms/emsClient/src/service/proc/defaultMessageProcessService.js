@@ -86,7 +86,8 @@ module.exports = {
             state: "NEW",
             type: queue.options.eventType,
             active: true,
-            message: message
+            header: queue.options.header,
+            data: message
         }).then(success => {
             this.LOG.debug('Message published successfully');
             process.nextSuccess(request, response);

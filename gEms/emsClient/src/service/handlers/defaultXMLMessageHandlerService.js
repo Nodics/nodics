@@ -48,10 +48,12 @@ module.exports = {
     processMessage: function (request, response, process) {
         this.LOG.debug('Applying message translator');
         try {
+            let jsonData = JSON.parse(parser.toJson(request.message));
+            jsonData = jsonData[Object.keys(jsonData)[0]];
             response.success = {
                 success: true,
                 code: 'SUC_EMS_00000',
-                result: parser.toJson(request.message)
+                result: jsonData
             };
             process.nextSuccess(request, response);
         } catch (error) {

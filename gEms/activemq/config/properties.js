@@ -50,37 +50,41 @@ module.exports = {
                 },
             }
         },
-        consumers: {
-            activeMQJSONTestConsumerQueue: {
-                enabled: true,
-                client: 'activemq',
-                options: {
-                    messageHandler: 'jsonMessageHandler'
-                }
-            },
-            activeMQXMLTestConsumerQueue: {
-                enabled: true,
-                client: 'activemq',
-                options: {
-                    messageHandler: 'xmlMessageHandler'
-                }
-            }
-        },
-        publishers: {
-            activeMQJSONTestPublisherQueue: {
-                enabled: true,
-                client: 'activemq',
-                options: {
-                    messageHandler: 'jsonMessageHandler'
-                }
-            },
-            activeMQXMLTestPublisherQueue: {
-                enabled: true,
-                client: 'activemq',
-                options: {
-                    messageHandler: 'xmlMessageHandler'
-                }
-            }
-        }
+        // consumers: {
+        //     activeMQJSONTestConsumerQueue: {
+        //         enabled: true,
+        //         client: 'activemq',
+        //         options: {
+        //             messageHandler: 'jsonMessageHandler',
+        //             target: 'intData',
+        //             eventName: 'handleInternalTestData'
+        //         }
+        //     },
+        //     activeMQXMLTestConsumerQueue: {
+        //         enabled: true,
+        //         client: 'activemq',
+        //         options: {
+        //             messageHandler: 'xmlMessageHandler',
+        //             target: 'intData',
+        //             eventName: 'handleInternalTestData'
+        //         }
+        //     }
+        // },
+        // publishers: {
+        //     activeMQJSONTestPublisherQueue: {
+        //         enabled: true,
+        //         client: 'activemq',
+        //         options: {
+        //             messageHandler: 'jsonMessageHandler'
+        //         }
+        //     },
+        //     activeMQXMLTestPublisherQueue: {
+        //         enabled: true,
+        //         client: 'activemq',
+        //         options: {
+        //             messageHandler: 'xmlMessageHandler'
+        //         }
+        //     }
+        // }
     }
 };

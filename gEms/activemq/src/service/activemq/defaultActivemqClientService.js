@@ -92,34 +92,42 @@ module.exports = {
 
     registerConsumer: function (options) {
         _self = this;
-        let queueName = options.consumerName;
-        options.client.connection.subscribe({
-            destination: queueName,
-            ack: options.consumer.options.acknowledgeType
-        }, (err, msg) => {
-            if (err) {
-                _self.LOG.error('While subscribing to queue : ' + queueName);
-                _self.LOG.error(err);
-            } else {
-                msg.readString(options.consumer.consumerOptions.encodingType, (err, body) => {
-                    if (!options.consumer.consumerOptions.ackRequired) {
-                        client.ack(msg);
-                    }
+        return new Promise((resolve, reject) => {
+            let queueName = options.consumerName;
+            console.log('             ', queueName);
+            try {
+                options.client.connection.subscribe({
+                    destination: queueName,
+                    ack: options.consumer.options.acknowledgeType
+                }, (err, msg) => {
                     if (err) {
-                        _self.LOG.error('While consuming message from queue : ' + queueName);
+                        _self.LOG.error('While subscribing to queue : ' + queueName);
                         _self.LOG.error(err);
                     } else {
-                        options.consumer.name = queueName;
-                        _self.onConsume(options.consumer, body).then(success => {
-                            if (options.consumer.consumerOptions.ackRequired) {
-                                client.ack(msg);
+                        msg.readString(options.consumer.consumerOptions.encodingType, (err, body) => {
+                            if (!options.consumer.consumerOptions.ackRequired) {
+                                msg.ack(msg);
                             }
-                        }).catch(error => {
-                            _self.LOG.error('While processing comsumed message: ', body);
-                            _self.LOG.error(error);
+                            if (err) {
+                                _self.LOG.error('While consuming message from queue : ' + queueName);
+                                _self.LOG.error(err);
+                            } else {
+                                options.consumer.name = queueName;
+                                _self.onConsume(options.consumer, body).then(success => {
+                                    if (options.consumer.consumerOptions.ackRequired) {
+                                        msg.ack();
+                                    }
+                                }).catch(error => {
+                                    _self.LOG.error('While processing comsumed message: ', body);
+                                    _self.LOG.error(error);
+                                });
+                            }
                         });
                     }
                 });
+                resolve(true);
+            } catch (error) {
+                reject(error);
             }
         });
     },

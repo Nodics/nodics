@@ -186,6 +186,7 @@ module.exports = {
             try {
                 if (event.targets && event.targets.length > 0) {
                     event.state = ENUMS.EventState.FINISHED.key;
+                    event.logs = event.logs || [];
                     _self.broadcastEventToTarget(event, event.targets).then(success => {
                         resolve(true);
                     }).catch(error => {
@@ -235,6 +236,7 @@ module.exports = {
                             });
                         }).catch(error => {
                             target.state = ENUMS.EventState.ERROR.key;
+                            event.state = ENUMS.EventState.ERROR.key;
                             target.logs.push(error.toString());
                             _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
                                 resolve(success);
@@ -253,6 +255,8 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
+                event.state = ENUMS.EventState.ERROR.key;
+                event.logs.push(error.toString());
                 reject(error);
             }
         });

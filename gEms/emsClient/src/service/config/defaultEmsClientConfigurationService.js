@@ -13,6 +13,7 @@ const _ = require('lodash');
 module.exports = {
     emsClients: {},
     emsPublishers: {},
+    emsConsumers: {},
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -155,7 +156,9 @@ module.exports = {
             !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
             let consumers = CONFIG.get('emsClient').consumers;
             if (consumers && !UTILS.isBlank(consumers)) {
-                _self.registerConsumer(Object.keys(consumers), consumers).then(success => {
+                let comsumerList = Object.keys(consumers);
+                console.log(comsumerList);
+                _self.registerConsumer(comsumerList, consumers).then(success => {
                     //_self.LOG.debug('Consumers has been registered successfully');
                 }).catch(error => {
                     //_self.LOG.error('Failed on consumer registration ', error);
@@ -179,6 +182,7 @@ module.exports = {
                     let consumerName = consumerList.shift();
                     let consumer = consumers[consumerName];
                     if (consumer.enabled && consumer.client && _self.emsClients[consumer.client]) {
+                        console.log('   ---: ', consumerName);
                         let client = _self.emsClients[consumer.client];
                         consumer.consumerOptions = _.merge(_.merge({}, client.config.consumerOptions || {}), consumer.consumerOptions || {});
                         consumer.options = _.merge(_.merge({}, client.config.eventOptions || {}), consumer.options || {});

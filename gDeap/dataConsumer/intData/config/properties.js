@@ -10,5 +10,60 @@
  */
 
 module.exports = {
-
+    emsClient: {
+        consumers: {
+            kafkaInternalJsonTestDataConsumerQueue: {
+                enabled: true,
+                client: 'kafka',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'intData',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        schemaName: 'address',
+                        operation: 'save'
+                    }
+                }
+            },
+            kafkaInternalXMLTestDataConsumerQueue: {
+                enabled: true,
+                client: 'kafka',
+                options: {
+                    messageHandler: 'xmlMessageHandler',
+                    target: 'intData',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        schemaName: 'address',
+                        operation: 'save'
+                    }
+                }
+            },
+            activeMQInternalJsonTestDataConsumerQueue: {
+                enabled: true,
+                client: 'activemq',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'intData',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        schemaName: 'address',
+                        operation: 'save'
+                    }
+                }
+            },
+            activeMQInternalXMLTestDataConsumerQueue: {
+                enabled: true,
+                client: 'activemq',
+                options: {
+                    messageHandler: 'xmlMessageHandler',
+                    target: 'intData',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        schemaName: 'address',
+                        operation: 'save'
+                    }
+                }
+            }
+        }
+    }
 };
