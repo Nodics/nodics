@@ -96,7 +96,7 @@ module.exports = {
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed and got errors');
+        this.LOG.error('Request has been processed and got errors');
         if (response.errors && response.errors.length === 1) {
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {
