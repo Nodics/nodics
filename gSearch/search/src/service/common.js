@@ -161,10 +161,10 @@ module.exports = {
         }
     },
 
-    doGetMapping: function (request) {
+    doGetSchema: function (request) {
         try {
             request.searchModel = this.getSearchModel(request);
-            return SERVICE.DefaultPipelineService.start('doGetMappingModelInitializerPipeline', request, {});
+            return SERVICE.DefaultPipelineService.start('doGetSchemaModelInitializerPipeline', request, {});
         } catch (error) {
             return Promise.reject({
                 success: false,
@@ -174,10 +174,10 @@ module.exports = {
         }
     },
 
-    doUpdateMapping: function (request) {
+    doUpdateSchema: function (request) {
         try {
             request.searchModel = this.getSearchModel(request);
-            return SERVICE.DefaultPipelineService.start('doUpdateMappingModelInitializerPipeline', request, {});
+            return SERVICE.DefaultPipelineService.start('doUpdateSchemaModelInitializerPipeline', request, {});
         } catch (error) {
             return Promise.reject({
                 success: false,

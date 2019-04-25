@@ -323,18 +323,18 @@ module.exports = {
             };
         },
 
-        defineDefaultGetMapping: function (searchModel) {  //Required pipeline to process this request
-            searchModel.doGetMapping = function (input) {
+        defineDefaultGetSchema: function (searchModel) {  //Required pipeline to process this request
+            searchModel.doGetSchema = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let mappingQuery = _.merge({}, _self.searchEngine.getOptions().mappingGetOptions || {});
-                        mappingQuery = _.merge(mappingQuery, input.options || {});
-                        mappingQuery = _.merge(mappingQuery, {
+                        let schemaQuery = _.merge({}, _self.searchEngine.getOptions().schemaGetOptions || {});
+                        schemaQuery = _.merge(schemaQuery, input.options || {});
+                        schemaQuery = _.merge(schemaQuery, {
                             index: _self.indexDef.indexName,
                             type: _self.indexDef.typeName,
                         });
-                        _self.searchEngine.getConnection().indices.getMapping(mappingQuery, function (error, response) {
+                        _self.searchEngine.getConnection().indices.getMapping(schemaQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -348,19 +348,19 @@ module.exports = {
             };
         },
 
-        defineDefaultUpdateMapping: function (searchModel) { //Required pipeline to process this request
-            searchModel.doUpdateMapping = function (input) {
+        defineDefaultUpdateSchema: function (searchModel) { //Required pipeline to process this request
+            searchModel.doUpdateSchema = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let mappingQuery = _.merge({}, _self.searchEngine.getOptions().mappingGetOptions || {});
-                        mappingQuery = _.merge(mappingQuery, input.options || {});
-                        mappingQuery = _.merge(mappingQuery, {
+                        let schemaQuery = _.merge({}, _self.searchEngine.getOptions().schemaGetOptions || {});
+                        schemaQuery = _.merge(schemaQuery, input.options || {});
+                        schemaQuery = _.merge(schemaQuery, {
                             index: _self.indexDef.indexName,
                             type: _self.indexDef.typeName,
                             body: input.searchSchema
                         });
-                        _self.searchEngine.getConnection().indices.putMapping(mappingQuery, function (error, response) {
+                        _self.searchEngine.getConnection().indices.putMapping(schemaQuery, function (error, response) {
                             if (error) {
                                 reject(error);
                             } else {
@@ -379,7 +379,7 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let deleteQuery = _.merge({}, _self.searchEngine.getOptions().mappingGetOptions || {});
+                        let deleteQuery = _.merge({}, _self.searchEngine.getOptions().removeTypeGetOptions || {});
                         deleteQuery = _.merge(deleteQuery, input.options || {});
                         deleteQuery = _.merge(deleteQuery, {
                             index: _self.indexDef.indexName

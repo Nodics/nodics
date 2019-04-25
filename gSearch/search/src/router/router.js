@@ -264,12 +264,12 @@ module.exports = {
                 }
             },
 
-            doGetMapping: {
+            doGetSchema: {
                 secured: true,
                 key: '/schemaName/search/schema',
                 method: 'GET',
                 controller: 'DefaultctrlName',
-                operation: 'doGetMapping',
+                operation: 'doGetSchema',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -278,12 +278,12 @@ module.exports = {
                 }
             },
 
-            doPostMapping: {
+            doPostSchema: {
                 secured: true,
                 key: '/schemaName/search/schema',
                 method: 'POST',
                 controller: 'DefaultctrlName',
-                operation: 'doGetMapping',
+                operation: 'doGetSchema',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -295,12 +295,12 @@ module.exports = {
                 }
             },
 
-            doGetUpdateMapping: {
+            doGetUpdateSchema: {
                 secured: true,
                 key: '/schemaName/search/schema/update',
                 method: 'GET',
                 controller: 'DefaultctrlName',
-                operation: 'doUpdateMapping',
+                operation: 'doUpdateSchema',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -309,12 +309,12 @@ module.exports = {
                 }
             },
 
-            doPOSTUpdateMapping: {
+            doPOSTUpdateSchema: {
                 secured: true,
                 key: '/schemaName/search/schema/update',
                 method: 'POST',
                 controller: 'DefaultctrlName',
-                operation: 'doUpdateMapping',
+                operation: 'doUpdateSchema',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -628,12 +628,12 @@ module.exports = {
                 }
             },
 
-            doGetMapping: {
+            doGetSchema: {
                 secured: true,
                 key: '/:indexName/search/schema',
                 method: 'GET',
                 controller: 'DefaultSearchController',
-                operation: 'doGetMapping',
+                operation: 'doGetSchema',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -642,12 +642,12 @@ module.exports = {
                 }
             },
 
-            doPostMapping: {
+            doPostSchema: {
                 secured: true,
                 key: '/:indexName/search/schema',
                 method: 'POST',
                 controller: 'DefaultSearchController',
-                operation: 'doGetMapping',
+                operation: 'doGetSchema',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -659,12 +659,12 @@ module.exports = {
                 }
             },
 
-            doGetUpdateMapping: {
+            doGetUpdateSchema: {
                 secured: true,
                 key: '/:indexName/search/schema/update',
                 method: 'GET',
                 controller: 'DefaultSearchController',
-                operation: 'doUpdateMapping',
+                operation: 'doUpdateSchema',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
@@ -673,12 +673,12 @@ module.exports = {
                 }
             },
 
-            doPostUpdateMapping: {
+            doPostUpdateSchema: {
                 secured: true,
                 key: '/:indexName/search/schema/update',
                 method: 'POST',
                 controller: 'DefaultSearchController',
-                operation: 'doUpdateMapping',
+                operation: 'doUpdateSchema',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',

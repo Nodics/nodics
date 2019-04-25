@@ -53,11 +53,11 @@ module.exports = {
 
                     },
 
-                    mappingGetOptions: {
+                    schemaGetOptions: {
 
                     },
 
-                    mappingPutOptions: {
+                    schemaPutOptions: {
 
                     },
 
@@ -111,11 +111,11 @@ module.exports = {
 
                     },
 
-                    mappingGetOptions: {
+                    schemaGetOptions: {
 
                     },
 
-                    mappingPutOptions: {
+                    schemaPutOptions: {
 
                     },
 

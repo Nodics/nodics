@@ -157,7 +157,6 @@ module.exports = {
             let consumers = CONFIG.get('emsClient').consumers;
             if (consumers && !UTILS.isBlank(consumers)) {
                 let comsumerList = Object.keys(consumers);
-                console.log(comsumerList);
                 _self.registerConsumer(comsumerList, consumers).then(success => {
                     //_self.LOG.debug('Consumers has been registered successfully');
                 }).catch(error => {
@@ -182,7 +181,6 @@ module.exports = {
                     let consumerName = consumerList.shift();
                     let consumer = consumers[consumerName];
                     if (consumer.enabled && consumer.client && _self.emsClients[consumer.client]) {
-                        console.log('   ---: ', consumerName);
                         let client = _self.emsClients[consumer.client];
                         consumer.consumerOptions = _.merge(_.merge({}, client.config.consumerOptions || {}), consumer.consumerOptions || {});
                         consumer.options = _.merge(_.merge({}, client.config.eventOptions || {}), consumer.options || {});

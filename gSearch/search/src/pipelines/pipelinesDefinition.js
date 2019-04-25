@@ -297,6 +297,11 @@ module.exports = {
             buildQuery: {
                 type: 'function',
                 handler: 'DefaultDoSaveModelInitializerService.buildQuery',
+                success: 'applyValueProviders'
+            },
+            applyValueProviders: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.applyValueProviders',
                 success: 'applyDefaultValues'
             },
             applyDefaultValues: {
@@ -541,7 +546,7 @@ module.exports = {
         }
     },
 
-    doGetMappingModelInitializerPipeline: {
+    doGetSchemaModelInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -549,41 +554,36 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultDoGetMappingInitializerService.validateRequest',
-                success: 'buildOptions'
-            },
-            buildOptions: {
-                type: 'function',
-                handler: 'DefaultDoGetMappingInitializerService.buildOptions',
+                handler: 'DefaultDoGetSchemaInitializerService.validateRequest',
                 success: 'applyPreInterceptors'
             },
             applyPreInterceptors: {
                 type: 'function',
-                handler: 'DefaultDoGetMappingInitializerService.applyPreInterceptors',
+                handler: 'DefaultDoGetSchemaInitializerService.applyPreInterceptors',
                 success: 'executeQuery'
             },
             executeQuery: {
                 type: 'function',
-                handler: 'DefaultDoGetMappingInitializerService.executeQuery',
+                handler: 'DefaultDoGetSchemaInitializerService.executeQuery',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
                 type: 'function',
-                handler: 'DefaultDoGetMappingInitializerService.applyPostInterceptors',
+                handler: 'DefaultDoGetSchemaInitializerService.applyPostInterceptors',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultDoGetMappingInitializerService.handleSucessEnd'
+                handler: 'DefaultDoGetSchemaInitializerService.handleSucessEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultDoGetMappingInitializerService.handleErrorEnd'
+                handler: 'DefaultDoGetSchemaInitializerService.handleErrorEnd'
             }
         }
     },
 
-    doUpdateMappingModelInitializerPipeline: {
+    doUpdateSchemaModelInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -591,36 +591,31 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultDoUpdateMappingInitializerService.validateRequest',
-                success: 'buildOptions'
-            },
-            buildOptions: {
-                type: 'function',
-                handler: 'DefaultDoUpdateMappingInitializerService.buildOptions',
+                handler: 'DefaultDoUpdateSchemaInitializerService.validateRequest',
                 success: 'applyPreInterceptors'
             },
             applyPreInterceptors: {
                 type: 'function',
-                handler: 'DefaultDoUpdateMappingInitializerService.applyPreInterceptors',
+                handler: 'DefaultDoUpdateSchemaInitializerService.applyPreInterceptors',
                 success: 'executeQuery'
             },
             executeQuery: {
                 type: 'function',
-                handler: 'DefaultDoUpdateMappingInitializerService.executeQuery',
+                handler: 'DefaultDoUpdateSchemaInitializerService.executeQuery',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
                 type: 'function',
-                handler: 'DefaultDoUpdateMappingInitializerService.applyPostInterceptors',
+                handler: 'DefaultDoUpdateSchemaInitializerService.applyPostInterceptors',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultDoUpdateMappingInitializerService.handleSucessEnd'
+                handler: 'DefaultDoUpdateSchemaInitializerService.handleSucessEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultDoUpdateMappingInitializerService.handleErrorEnd'
+                handler: 'DefaultDoUpdateSchemaInitializerService.handleErrorEnd'
             }
         }
     },

@@ -68,12 +68,12 @@ module.exports = {
         return SERVICE.srvcName.doRemoveByQuery(request);
     },
 
-    doGetMapping: function (request) {
-        return SERVICE.srvcName.doGetMapping(request);
+    doGetSchema: function (request) {
+        return SERVICE.srvcName.doGetSchema(request);
     },
 
-    doUpdateMapping: function (request) {
-        return SERVICE.srvcName.doUpdateMapping(request);
+    doUpdateSchema: function (request) {
+        return SERVICE.srvcName.doUpdateSchema(request);
     },
 
     doRemoveIndex: function (request) {

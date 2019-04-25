@@ -52,6 +52,24 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    applyValueProviders: function (request, response, process) {
+        this.LOG.debug('Applying default values to the model');
+        let valueProviders = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(request.moduleName, request.tenant, request.indexName).valueProviders;
+        if (valueProviders && !UTILS.isBlank(valueProviders)) {
+            SERVICE.DefaultSearchValueProviderHandlerService.handleValueProviders(valueProviders, request.model).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyDefaultValues: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
         let defaultValues = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(request.moduleName, request.tenant, request.indexName).defaultValues;
@@ -99,6 +117,7 @@ module.exports = {
             }
         });
     },
+
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre doSave model interceptors');
         let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
@@ -217,6 +236,7 @@ module.exports = {
     invalidateSearchCache: function (request, response, process) {
         this.LOG.debug('Invalidating item cache for modified model');
         try {
+            let searchModel = request.searchModel;
             let cache = searchModel.indexDef.cache;
             if (response.success.success && cache && cache.enabled) {
                 SERVICE.DefaultCacheService.flushCache({

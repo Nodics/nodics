@@ -232,40 +232,40 @@ module.exports = {
     },
 
     /**
-     * This function is used to get defined mapping for the type
+     * This function is used to get defined schema for the type
      * @param {request} request is used to carry request parameters sent by consumer
      * @param {callback} callback is a function, called after fullfilling business requirement 
      */
-    doGetMapping: function (request, callback) {
+    doGetSchema: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
-            FACADE.dsdName.doGetMapping(request).then(success => {
+            FACADE.dsdName.doGetSchema(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.doGetMapping(request);
+            return FACADE.dsdName.doGetSchema(request);
         }
     },
 
     /**
-     * This function is used to update mapping for the type
+     * This function is used to update schema for the type
      * @param {request} request is used to carry request parameters sent by consumer
      * @param {callback} callback is a function, called after fullfilling business requirement 
      */
-    doUpdateMapping: function (request, callback) {
+    doUpdateSchema: function (request, callback) {
         request.indexName = request.httpRequest.params.indexName || undefined;
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
-            FACADE.dsdName.doUpdateMapping(request).then(success => {
+            FACADE.dsdName.doUpdateSchema(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.doUpdateMapping(request);
+            return FACADE.dsdName.doUpdateSchema(request);
         }
     },
 

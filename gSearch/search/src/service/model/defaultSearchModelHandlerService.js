@@ -223,7 +223,7 @@ module.exports = {
         });
     },
 
-    updateIndexesMapping: function (modules = Object.keys(NODICS.getModules())) {
+    updateIndexesSchema: function (modules = Object.keys(NODICS.getModules())) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -233,8 +233,8 @@ module.exports = {
                     if (!moduleObject.searchModels) {
                         moduleObject.searchModels = {};
                     }
-                    _self.updateModuleIndexesMapping(moduleName).then(success => {
-                        _self.updateIndexesMapping(modules).then(success => {
+                    _self.updateModuleIndexesSchema(moduleName).then(success => {
+                        _self.updateIndexesSchema(modules).then(success => {
                             resolve(true);
                         }).catch(error => {
                             reject(error);
@@ -253,7 +253,7 @@ module.exports = {
         });
     },
 
-    updateModuleIndexesMapping: function (moduleName, tenants = NODICS.getTenants()) {
+    updateModuleIndexesSchema: function (moduleName, tenants = NODICS.getTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -267,13 +267,13 @@ module.exports = {
                     if (searchEngine && searchEngine.getOptions() && searchEngine.getOptions().enabled) {
                         let searchModels = NODICS.getSearchModels(moduleName, tntCode);
                         if (searchModels && !UTILS.isBlank(searchModels)) {
-                            _self.updateIndexTypeMapping({
+                            _self.updateIndexTypeSchema({
                                 searchModelsName: Object.keys(searchModels),
                                 moduleName: moduleName,
                                 tntCode: tntCode,
                                 searchEngine: searchEngine
                             }).then(success => {
-                                _self.updateModuleIndexesMapping(moduleName, tenants).then(success => {
+                                _self.updateModuleIndexesSchema(moduleName, tenants).then(success => {
                                     resolve(true);
                                 }).catch(error => {
                                     reject(error);
@@ -299,7 +299,7 @@ module.exports = {
         });
     },
 
-    updateIndexTypeMapping: function (options) {
+    updateIndexTypeSchema: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -311,9 +311,9 @@ module.exports = {
                         let indexName = searchModel.indexName;
                         let typeName = searchModel.typeName;
                         let indexObj = options.searchEngine.getIndex(indexName);
-                        if (indexObj && indexObj.mappings && indexObj.mappings[typeName]) {
-                            _self.LOG.debug('Mapping already available for indexName: ' + indexName);
-                            _self.updateIndexTypeMapping(options).then(success => {
+                        if (indexObj && indexObj.schemas && indexObj.schemas[typeName]) {
+                            _self.LOG.debug('Schema already available for indexName: ' + indexName);
+                            _self.updateIndexTypeSchema(options).then(success => {
                                 resolve(true);
                             }).catch(error => {
                                 reject(error);
@@ -325,10 +325,10 @@ module.exports = {
                                     indexDef: indexDef
                                 }).then(schemaDef => {
                                     if (schemaDef && !UTILS.isBlank(schemaDef)) {
-                                        searchModel.doUpdateMapping({
+                                        searchModel.doUpdateSchema({
                                             searchSchema: schemaDef
                                         }).then(success => {
-                                            _self.updateIndexTypeMapping(options).then(success => {
+                                            _self.updateIndexTypeSchema(options).then(success => {
                                                 resolve(true);
                                             }).catch(error => {
                                                 reject(error);
@@ -337,8 +337,8 @@ module.exports = {
                                             reject(error);
                                         });
                                     } else {
-                                        _self.LOG.warn('Got blank schema definition to update mapping for indexName: ' + indexName);
-                                        _self.updateIndexTypeMapping(options).then(success => {
+                                        _self.LOG.warn('Got blank schema definition to update Schema for indexName: ' + indexName);
+                                        _self.updateIndexTypeSchema(options).then(success => {
                                             resolve(true);
                                         }).catch(error => {
                                             reject(error);

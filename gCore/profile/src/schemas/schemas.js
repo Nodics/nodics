@@ -163,12 +163,6 @@ module.exports = {
                 enabled: true,
                 //indexName: 'enterprise', // if null, moduleName will be taken
                 idPropertyName: 'code', // if null, code will be taken
-                virtualProperties: {
-                    fullname: 'DefaultEnterpriseVirtualService.getFullName',
-                    tenant: {
-                        fullname: 'DefaultEnterpriseVirtualService.getFullName'
-                    }
-                },
             },
             refSchema: {
                 tenant: {

@@ -33,7 +33,7 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating do health check request');
+        this.LOG.debug('Validating do get schema request');
         if (!request.searchModel) {
             process.error(request, response, 'Invalid search model or search is not active for this schema');
         } else {
@@ -42,12 +42,12 @@ module.exports = {
     },
 
     applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying pre do exist interceptors');
+        this.LOG.debug('Applying post do get schema interceptors');
         let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
-        if (interceptors && interceptors.preDoHealthCheck) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoHealthCheck), {
+        if (interceptors && interceptors.preDoGetSchema) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoGetSchema), {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexName: request.searchModel.indexName,
@@ -70,8 +70,8 @@ module.exports = {
     },
 
     executeQuery: function (request, response, process) {
-        this.LOG.debug('Executing do health check query');
-        request.searchModel.doCheckHealth(request).then(result => {
+        this.LOG.debug('Executing do get schema query');
+        request.searchModel.doGetSchema(request).then(result => {
             response.success = {
                 success: true,
                 code: 'SUC_SRCH_00000',
@@ -88,12 +88,12 @@ module.exports = {
     },
 
     applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post do Health Check interceptors');
+        this.LOG.debug('Applying post do get schema interceptors');
         let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
-        if (interceptors && interceptors.postDoHealthCheck) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoHealthCheck), {
+        if (interceptors && interceptors.postDoGetSchema) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoGetSchema), {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexName: request.searchModel.indexName,

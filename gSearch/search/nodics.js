@@ -41,7 +41,7 @@ module.exports = {
             }).then(() => {
                 return SERVICE.DefaultSearchModelHandlerService.prepareSearchModels();
             }).then(() => {
-                return SERVICE.DefaultSearchModelHandlerService.updateIndexesMapping();
+                return SERVICE.DefaultSearchModelHandlerService.updateIndexesSchema();
             }).then(() => {
                 resolve(true);
             }).catch(error => {

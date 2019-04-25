@@ -184,6 +184,7 @@ module.exports = {
             }
         });
     },
+
     extractDefaultValues: function () {
         let searchSchemas = SERVICE.DefaultSearchConfigurationService.getAllRawSearchSchema();
         if (searchSchemas && !UTILS.isBlank(searchSchemas)) {
@@ -191,6 +192,7 @@ module.exports = {
                 _.each(moduleObject, (tenantObject, tenantName) => {
                     _.each(tenantObject, (schemaObject, indexName) => {
                         let defaultProps = {};
+                        let valueProviders = {};
                         let properties = Object.keys(schemaObject.properties);
                         for (let count = 0; count < properties.length; count++) {
                             let propertyName = properties[count];
@@ -198,13 +200,19 @@ module.exports = {
                             if (propertyObject.default && !UTILS.isBlank(propertyObject.default)) {
                                 defaultProps[propertyName] = propertyObject.default;
                             }
+                            if (propertyObject.valueProvider && !UTILS.isBlank(propertyObject.valueProvider)) {
+                                valueProviders[propertyName] = propertyObject.valueProvider;
+                            }
                         }
                         if (!UTILS.isBlank(defaultProps)) {
                             schemaObject.defaultValues = defaultProps;
+                        }
+                        if (!UTILS.isBlank(valueProviders)) {
+                            schemaObject.valueProviders = valueProviders;
                         }
                     });
                 });
             });
         }
-    }
+    },
 };
