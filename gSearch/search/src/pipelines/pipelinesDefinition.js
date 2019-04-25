@@ -62,26 +62,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultDoCheckClusterHealthInitializerService.validateRequest',
-                success: 'buildOptions'
-            },
-            buildOptions: {
-                type: 'function',
-                handler: 'DefaultDoCheckClusterHealthInitializerService.buildOptions',
-                success: 'applyPreInterceptors'
-            },
-            applyPreInterceptors: {
-                type: 'function',
-                handler: 'DefaultDoCheckClusterHealthInitializerService.applyPreInterceptors',
                 success: 'executeQuery'
             },
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultDoCheckClusterHealthInitializerService.executeQuery',
-                success: 'applyPostInterceptors'
-            },
-            applyPostInterceptors: {
-                type: 'function',
-                handler: 'DefaultDoCheckClusterHealthInitializerService.applyPostInterceptors',
                 success: 'successEnd'
             },
             successEnd: {
@@ -104,26 +89,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultDoExistModelInitializerService.validateRequest',
-                success: 'buildOptions'
-            },
-            buildOptions: {
-                type: 'function',
-                handler: 'DefaultDoExistModelInitializerService.buildOptions',
-                success: 'applyPreInterceptors'
-            },
-            applyPreInterceptors: {
-                type: 'function',
-                handler: 'DefaultDoExistModelInitializerService.applyPreInterceptors',
                 success: 'executeQuery'
             },
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultDoExistModelInitializerService.executeQuery',
-                success: 'applyPostInterceptors'
-            },
-            applyPostInterceptors: {
-                type: 'function',
-                handler: 'DefaultDoExistModelInitializerService.applyPostInterceptors',
                 success: 'successEnd'
             },
             successEnd: {
@@ -223,11 +193,6 @@ module.exports = {
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultDoSearchModelsInitializerService.executeQuery',
-                success: 'populateSubModels'
-            },
-            populateSubModels: {
-                type: 'function',
-                handler: 'DefaultDoSearchModelsInitializerService.populateSubModels',
                 success: 'populateVirtualProperties'
             },
             populateVirtualProperties: {

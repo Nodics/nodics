@@ -34,7 +34,11 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do get request');
-        process.nextSuccess(request, response);
+        if (!request.searchModel) {
+            process.error(request, response, 'Invalid search model or search is not active for this schema');
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     buildOptions: function (request, response, process) {
@@ -43,12 +47,66 @@ module.exports = {
     },
 
     lookupCache: function (request, response, process) {
-        process.nextSuccess(request, response);
+        let searchModel = request.searchModel;
+        let indexDef = searchModel.indexDef;
+        if (indexDef.cache && indexDef.cache.enabled) {
+            request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createSearchKey(request);
+            this.LOG.debug('Model cache lookup for key: ', request.cacheKeyHash);
+            SERVICE.DefaultCacheService.get({
+                moduleName: request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName,
+                channelName: SERVICE.DefaultCacheService.getSearchCacheChannel(request.searchModel.indexName),
+                key: request.cacheKeyHash
+            }).then(value => {
+                this.LOG.debug('Fulfilled from model cache');
+                process.stop(request, response, {
+                    success: true,
+                    code: 'SUC_SRCH_00000',
+                    cache: 'item hit',
+                    result: value.result
+                });
+            }).catch(error => {
+                if (error.code === 'ERR_CACHE_00001') {
+                    process.nextSuccess(request, response);
+                } else if (error.code === 'ERR_CACHE_00010') {
+                    this.LOG.warn(error.msg);
+                    process.nextSuccess(request, response);
+                } else {
+                    process.error(request, response, error);
+                }
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying pre get model interceptors');
-        process.nextSuccess(request, response);
+        this.LOG.debug('Applying pre do get model interceptors');
+        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
+        let indexName = request.indexName || request.searchModel.indexName;
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        if (interceptors && interceptors.preDoGet) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoGet), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                model: request.model
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     executeQuery: function (request, response, process) {
@@ -69,23 +127,65 @@ module.exports = {
         });
     },
 
-    populateSubModels: function (request, response, process) {
-        this.LOG.debug('Populating sub models');
-        process.nextSuccess(request, response);
-    },
-
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
-        process.nextSuccess(request, response);
+        let virtualProperties = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(request.moduleName, request.tenant, request.indexName).virtualProperties;
+        if (response.success.result && virtualProperties && !UTILS.isBlank(virtualProperties)) {
+            SERVICE.DefaultSearchVirtualPropertiesHandlerService.populateVirtualProperties(virtualProperties, response.success.result);
+            process.nextSuccess(request, response);
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post model interceptors');
-        process.nextSuccess(request, response);
+        this.LOG.debug('Applying post do get interceptors');
+        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
+        let indexName = request.indexName || request.searchModel.indexName;
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        if (interceptors && interceptors.postDoGet) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoGet), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                model: response.success.result
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
+        let searchModel = request.searchModel;
+        let indexDef = searchModel.indexDef;
+        if (indexDef.cache && indexDef.cache.enabled && response.success.success && response.success.result) {
+            let cache = request.searchModel.indexDef.cache;
+            SERVICE.DefaultCacheService.put({
+                moduleName: request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName,
+                channelName: SERVICE.DefaultCacheService.getSearchCacheChannel(request.searchModel.indexName),
+                key: request.cacheKeyHash,
+                value: response.success.result,
+                ttl: cache.ttl
+            }).then(success => {
+                this.LOG.info('Item saved in item cache');
+            }).catch(error => {
+                this.LOG.error('While saving item in item cache : ', error);
+            });
+        }
         process.nextSuccess(request, response);
     },
 
@@ -110,3 +210,23 @@ module.exports = {
         }
     }
 };
+
+
+
+// executeQuery: function (request, response, process) {
+//     this.LOG.debug('Executing get query');
+//     request.searchModel.doSearch(request).then(result => {
+//         response.success = {
+//             success: true,
+//             code: 'SUC_SRCH_00000',
+//             result: result
+//         };
+//         process.nextSuccess(request, response);
+//     }).catch(error => {
+//         process.error(request, response, {
+//             success: false,
+//             code: 'ERR_SRCH_00000',
+//             error: error
+//         });
+//     });
+// },

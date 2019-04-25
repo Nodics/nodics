@@ -34,17 +34,13 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do exist model request');
-        process.nextSuccess(request, response);
-    },
-
-    buildOptions: function (request, response, process) {
-        this.LOG.debug('Building query options');
-        process.nextSuccess(request, response);
-    },
-
-    applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying pre do exist model interceptors');
-        process.nextSuccess(request, response);
+        if (!request.searchModel) {
+            process.error(request, response, 'Invalid search model or search is not active for this schema');
+        } else if (!request.query || !request.query.id) {
+            process.error(request, response, 'Invalid search request, query can not be null or conatian invalid property');
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     executeQuery: function (request, response, process) {
@@ -63,11 +59,6 @@ module.exports = {
                 error: error
             });
         });
-    },
-
-    applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post do exist model interceptors');
-        process.nextSuccess(request, response);
     },
 
     handleSucessEnd: function (request, response, process) {

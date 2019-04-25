@@ -37,16 +37,6 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    buildOptions: function (request, response, process) {
-        this.LOG.debug('Building query options');
-        process.nextSuccess(request, response);
-    },
-
-    applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post do health check interceptors');
-        process.nextSuccess(request, response);
-    },
-
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing do health check query');
         request.searchModel.doCheckHealth(request).then(result => {
@@ -63,11 +53,6 @@ module.exports = {
                 error: error
             });
         });
-    },
-
-    applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post do health check interceptors');
-        process.nextSuccess(request, response);
     },
 
     handleSucessEnd: function (request, response, process) {
