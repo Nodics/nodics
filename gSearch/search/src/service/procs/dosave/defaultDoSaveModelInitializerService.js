@@ -214,11 +214,11 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    invalidateItemCache: function (request, response, process) {
+    invalidateSearchCache: function (request, response, process) {
         this.LOG.debug('Invalidating item cache for modified model');
         try {
-            let searchModel = request.searchModel;
-            if (response.success.success && searchModel.cache && searchModel.cache.enabled) {
+            let cache = searchModel.indexDef.cache;
+            if (response.success.success && cache && cache.enabled) {
                 SERVICE.DefaultCacheService.flushCache({
                     moduleName: searchModel.moduleName,
                     channelName: 'search',

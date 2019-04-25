@@ -37,6 +37,34 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    applyPreInterceptors: function (request, response, process) {
+        this.LOG.debug('Applying pre do exist interceptors');
+        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
+        let indexName = request.indexName || request.searchModel.indexName;
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        if (interceptors && interceptors.preDoHealthCheck) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoHealthCheck), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing do health check query');
         request.searchModel.doCheckHealth(request).then(result => {
@@ -53,6 +81,33 @@ module.exports = {
                 error: error
             });
         });
+    },
+
+    applyPostInterceptors: function (request, response, process) {
+        this.LOG.debug('Applying post do Health Check interceptors');
+        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
+        let indexName = request.indexName || request.searchModel.indexName;
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        if (interceptors && interceptors.postDoHealthCheck) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoHealthCheck), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                query: request.query
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00005',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     handleSucessEnd: function (request, response, process) {

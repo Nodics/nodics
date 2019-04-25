@@ -238,8 +238,9 @@ module.exports = {
             }
             if (error.error) {
                 error.msg = error.error.message;
-                error.stack = error.error.stack;
-
+                if (CONFIG.get('returnErrorStack')) {
+                    error.stack = error.error.stack;
+                }
             }
             this.LOG.error(error);
             process.reject(error);

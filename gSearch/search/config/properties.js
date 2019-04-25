@@ -27,6 +27,7 @@ module.exports = {
         defaultPropertySequence: 0,
         reloadSearchSchema: true,
         defaultDoSaveOperation: 'doSave',
+        eventOnRefresh: true,
         default: {
             options: {
                 enabled: true, //if false, system will not configure any search related functionalities

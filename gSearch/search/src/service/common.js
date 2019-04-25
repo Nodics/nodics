@@ -149,7 +149,16 @@ module.exports = {
     },
 
     doRemoveByQuery: function (request) {
-        return this.doRemove(request);
+        try {
+            request.searchModel = this.getSearchModel(request);
+            return SERVICE.DefaultPipelineService.start('doRemoveModelsByQueryInitializerPipeline', request, {});
+        } catch (error) {
+            return Promise.reject({
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
     },
 
     doGetMapping: function (request) {
