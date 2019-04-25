@@ -41,6 +41,32 @@ module.exports = {
         }
     },
 
+    prepareSchema: function (request, response, process) {
+        this.LOG.debug('Validating do update schema request');
+        let searchModel = request.searchModel;
+        SERVICE[searchModel.searchEngine.getOptions().schemaHandler].prepareTypeSchema({
+            indexName: searchModel.indexName,
+            indexDef: searchModel.indexDef
+        }).then(schemaDef => {
+            if (schemaDef && !UTILS.isBlank(schemaDef)) {
+                request.searchSchema = schemaDef;
+                process.nextSuccess(request, response);
+            } else {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: 'No definition found to update'
+                });
+            }
+        }).catch(error => {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error.toString()
+            });
+        });
+    },
+
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do update schema interceptors');
         let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
@@ -71,6 +97,7 @@ module.exports = {
 
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing do update schema query');
+
         request.searchModel.doUpdateSchema(request).then(result => {
             response.success = {
                 success: true,

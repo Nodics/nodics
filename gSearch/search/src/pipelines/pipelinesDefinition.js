@@ -592,6 +592,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultDoUpdateSchemaInitializerService.validateRequest',
+                success: 'prepareSchema'
+            },
+            prepareSchema: {
+                type: 'function',
+                handler: 'DefaultDoUpdateSchemaInitializerService.prepareSchema',
                 success: 'applyPreInterceptors'
             },
             applyPreInterceptors: {
