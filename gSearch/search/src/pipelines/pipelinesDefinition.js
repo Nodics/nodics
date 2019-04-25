@@ -649,6 +649,21 @@ module.exports = {
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoRemoveIndexInitializerService.applyPostInterceptors',
+                success: 'invalidateRouterCache'
+            },
+            invalidateRouterCache: {
+                type: 'function',
+                handler: 'DefaultDoRemoveIndexInitializerService.invalidateRouterCache',
+                success: 'invalidateSearchCache'
+            },
+            invalidateSearchCache: {
+                type: 'function',
+                handler: 'DefaultDoRemoveIndexInitializerService.invalidateSearchCache',
+                success: 'successEnd'
+            },
+            triggerModelChangeEvent: {
+                type: 'function',
+                handler: 'DefaultDoRemoveIndexInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
             },
             successEnd: {

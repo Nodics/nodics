@@ -374,12 +374,12 @@ module.exports = {
             };
         },
 
-        defineDefaultRemoveType: function (searchModel) {
+        defineDefaultRemoveIndex: function (searchModel) {
             searchModel.doRemoveIndex = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let deleteQuery = _.merge({}, _self.searchEngine.getOptions().removeTypeGetOptions || {});
+                        let deleteQuery = _.merge({}, _self.searchEngine.getOptions().removeIndexOptions || {});
                         deleteQuery = _.merge(deleteQuery, input.options || {});
                         deleteQuery = _.merge(deleteQuery, {
                             index: _self.indexDef.indexName

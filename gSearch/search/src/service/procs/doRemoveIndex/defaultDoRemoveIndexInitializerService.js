@@ -34,7 +34,11 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do remove index request');
-        process.nextSuccess(request, response);
+        if (!request.searchModel) {
+            process.error(request, response, 'Invalid search model or search is not active for this schema');
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     buildOptions: function (request, response, process) {
@@ -44,7 +48,29 @@ module.exports = {
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do remove index interceptors');
-        process.nextSuccess(request, response);
+        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
+        let indexName = request.indexName || request.searchModel.indexName;
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        if (interceptors && interceptors.preDoRemoveIndex) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoRemoveIndex), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     executeQuery: function (request, response, process) {
@@ -67,6 +93,113 @@ module.exports = {
 
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do remove index interceptors');
+        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
+        let indexName = request.indexName || request.searchModel.indexName;
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        if (interceptors && interceptors.postDoRemoveIndex) {
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoRemoveIndex), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                query: request.query,
+                model: response.success.result
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    invalidateRouterCache: function (request, response, process) {
+        this.LOG.debug('Invalidating router cache for removed index');
+        try {
+            let searchModel = request.searchModel;
+            let prefix = searchModel.indexName;
+            if (request.schemaModel) {
+                prefix = request.schemaModel.schemaName;
+            }
+            if (response.success.success) {
+                SERVICE.DefaultCacheService.flushCache({
+                    moduleName: searchModel.moduleName,
+                    channelName: 'router',
+                    prefix: prefix
+                }).then(success => {
+                    this.LOG.debug('Cache for router: ' + searchModel.indexName + ' has been flushed cuccessfully');
+                }).catch(error => {
+                    this.LOG.error('Cache for router: ' + searchModel.indexName + ' has not been flushed cuccessfully');
+                    this.LOG.error(error);
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while invalidating router cache ');
+            this.LOG.error(error);
+        }
+        process.nextSuccess(request, response);
+    },
+
+    invalidateSearchCache: function (request, response, process) {
+        this.LOG.debug('Invalidating item cache for removed index');
+        try {
+            let searchModel = request.searchModel;
+            let cache = searchModel.indexDef.cache;
+            if (response.success.success && cache && cache.enabled) {
+                SERVICE.DefaultCacheService.flushCache({
+                    moduleName: searchModel.moduleName,
+                    channelName: 'search',
+                    prefix: searchModel.indexName
+                }).then(success => {
+                    this.LOG.debug('Cache for index: ' + searchModel.indexName + ' has been flushed cuccessfully');
+                }).catch(error => {
+                    this.LOG.error('Cache for index: ' + searchModel.indexName + ' has not been flushed cuccessfully');
+                    this.LOG.error(error);
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while invalidating item cache ');
+            this.LOG.error(error);
+        }
+        process.nextSuccess(request, response);
+    },
+
+    triggerModelChangeEvent: function (request, response, process) {
+        this.LOG.debug('Triggering event for modified model');
+        try {
+            let searchModel = request.searchModel;
+            if (response.success.success && searchModel.indexDef.event) {
+                let event = {
+                    enterpriseCode: request.enterpriseCode || request.model.enterpriseCode || 'default',
+                    tenant: request.tenant || 'default',
+                    event: 'indexRemoved',
+                    source: searchModel.moduleName,
+                    target: searchModel.moduleName,
+                    state: "NEW",
+                    type: "ASYNC",
+                    targetType: ENUMS.TargetType.EACH_NODE.key,
+                    active: true,
+                    data: {
+                        indexName: searchModel.indexName,
+                        result: response.success.result
+                    }
+                };
+                this.LOG.debug('Pushing event for item created : ', searchModel.indexName);
+                SERVICE.DefaultEventService.publish(event).then(success => {
+                    this.LOG.debug('Event successfully posted');
+                }).catch(error => {
+                    this.LOG.error('While posting model change event : ', error);
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while pushing save event : ', error);
+        }
         process.nextSuccess(request, response);
     },
 

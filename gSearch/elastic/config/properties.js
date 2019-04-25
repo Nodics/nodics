@@ -49,7 +49,7 @@ module.exports = {
 
                     },
 
-                    removeTypeOptions: {
+                    removeIndexOptions: {
 
                     },
 
@@ -107,7 +107,7 @@ module.exports = {
 
                     },
 
-                    removeTypeOptions: {
+                    removeIndexOptions: {
 
                     },
 

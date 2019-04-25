@@ -192,7 +192,7 @@ module.exports = {
                 let event = {
                     enterpriseCode: request.enterpriseCode || request.model.enterpriseCode || 'default',
                     tenant: request.tenant || 'default',
-                    event: 'save',
+                    event: 'searchItemRemoved',
                     source: searchModel.moduleName,
                     target: searchModel.moduleName,
                     state: "NEW",
