@@ -166,11 +166,6 @@ module.exports = {
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultDoGetModelsInitializerService.executeQuery',
-                success: 'populateSubModels'
-            },
-            populateSubModels: {
-                type: 'function',
-                handler: 'DefaultDoGetModelsInitializerService.populateSubModels',
                 success: 'populateVirtualProperties'
             },
             populateVirtualProperties: {

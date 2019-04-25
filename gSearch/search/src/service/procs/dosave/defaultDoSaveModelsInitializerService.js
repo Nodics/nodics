@@ -42,6 +42,8 @@ module.exports = {
             process.error(request, response, 'Invalid index name to process');
         } else if (!request.tenant) {
             process.error(request, response, 'Invalid tenant to process');
+        } else if (!request.searchModel) {
+            process.error(request, response, 'Invalid search model or search is not active for this schema');
         } else {
             let models = [];
             if (request.models) {
@@ -60,8 +62,8 @@ module.exports = {
 
     preProcessor: function (request, response, process) {
         this.LOG.debug('Applying pre processors in models');
-        let moduleName = request.moduleName || request.schemaModel.moduleName;
-        let indexName = request.indexName;
+        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
+        let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
         if (interceptors && interceptors.preSaveProcessor && interceptors.preSaveProcessor.length > 0) {
             let interceptorRequest = {
@@ -143,8 +145,8 @@ module.exports = {
 
     postProcessor: function (request, response, process) {
         this.LOG.debug('Applying post processors in models');
-        let moduleName = request.moduleName || request.schemaModel.moduleName;
-        let indexName = request.indexName;
+        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
+        let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
         if (interceptors && interceptors.postSaveProcessor && interceptors.postSaveProcessor.length > 0) {
             let interceptorRequest = {

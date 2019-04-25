@@ -154,6 +154,14 @@ module.exports = {
         }
     },
 
+    getSearchCacheChannel: function (schemaName) {
+        let channelName = 'search';
+        if (CONFIG.get('cache').schemaCacheChannelNameMapping && CONFIG.get('cache').schemaCacheChannelNameMapping[schemaName]) {
+            channelName = CONFIG.get('cache').schemaCacheChannelNameMapping[schemaName];
+        }
+        return channelName;
+    },
+
     getSchemaCacheChannel: function (schemaName) {
         let channelName = 'schema';
         if (CONFIG.get('cache').schemaCacheChannelNameMapping && CONFIG.get('cache').schemaCacheChannelNameMapping[schemaName]) {

@@ -122,4 +122,12 @@ module.exports = {
             request.tenant + '_' +
             UTILS.generateHash(JSON.stringify(options));
     },
+
+    createSearchKey: function (request) {
+        let options = _.merge({}, request.options || {});
+        options.query = request.query;
+        return request.searchModel.indexName + '_' +
+            request.tenant + '_' +
+            UTILS.generateHash(JSON.stringify(options));
+    },
 };
