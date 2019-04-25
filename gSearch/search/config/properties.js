@@ -10,7 +10,17 @@
  */
 
 module.exports = {
-
+    cache: {
+        default: {
+            channels: {
+                search: {
+                    enabled: true,
+                    fallback: true,
+                    engine: 'local'
+                }
+            }
+        }
+    },
     search: {
         requestTimeout: 1000,
         defaultPropertyWeight: 0,

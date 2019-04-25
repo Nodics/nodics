@@ -131,6 +131,10 @@ module.exports = {
         }
     },
 
+    getAllRawSearchSchema: function (moduleName, tenant) {
+        return this.searchSchema;
+    },
+
     getRawSearchSchema: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);

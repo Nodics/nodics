@@ -262,54 +262,29 @@ module.exports = {
     },
 
     doSaveModelsInitializerPipeline: {
-        startNode: "validateRequest",
+        startNode: "validateInput",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
 
         nodes: {
-            validateRequest: {
+            validateInput: {
                 type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.validateRequest',
-                success: 'buildOptions'
+                handler: 'DefaultDoSaveModelsInitializerService.validateInput',
+                success: 'preProcessor'
             },
-            buildOptions: {
+            preProcessor: {
                 type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.buildOptions',
-                success: 'lookupCache'
+                handler: 'DefaultDoSaveModelsInitializerService.preProcessor',
+                success: 'processModels'
             },
-            lookupCache: {
+            processModels: {
                 type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.lookupCache',
-                success: 'applyPreInterceptors'
+                handler: 'DefaultDoSaveModelsInitializerService.processModels',
+                success: 'postProcessor'
             },
-            applyPreInterceptors: {
+            postProcessor: {
                 type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.applyPreInterceptors',
-                success: 'executeQuery'
-            },
-            executeQuery: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.executeQuery',
-                success: 'populateSubModels'
-            },
-            populateSubModels: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.populateSubModels',
-                success: 'populateVirtualProperties'
-            },
-            populateVirtualProperties: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.populateVirtualProperties',
-                success: 'applyPostInterceptors'
-            },
-            applyPostInterceptors: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.applyPostInterceptors',
-                success: 'updateCache'
-            },
-            updateCache: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.updateCache',
+                handler: 'DefaultDoSaveModelsInitializerService.postProcessor',
                 success: 'successEnd'
             },
             successEnd: {
@@ -319,6 +294,78 @@ module.exports = {
             handleError: {
                 type: 'function',
                 handler: 'DefaultDoSaveModelsInitializerService.handleErrorEnd'
+            }
+        }
+    },
+
+    doSaveModelInitializerPipeline: {
+        startNode: "validateModel",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateModel: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.validateModel',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.buildQuery',
+                success: 'applyDefaultValues'
+            },
+            applyDefaultValues: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.applyDefaultValues',
+                success: 'removeVirtualProperties'
+            },
+            removeVirtualProperties: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.removeVirtualProperties',
+                success: 'applyPreInterceptors'
+            },
+            applyPreInterceptors: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.applyPreInterceptors',
+                success: 'doSaveModel'
+            },
+            doSaveModel: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.doSaveModel',
+                success: 'populateVirtualProperties'
+            },
+            populateVirtualProperties: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.populateVirtualProperties',
+                success: 'applyPostInterceptors'
+            },
+            applyPostInterceptors: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.applyPostInterceptors',
+                success: 'invalidateRouterCache'
+            },
+            invalidateRouterCache: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.invalidateRouterCache',
+                success: 'invalidateItemCache'
+            },
+            invalidateItemCache: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.invalidateItemCache',
+                success: 'triggerModelChangeEvent'
+            },
+            triggerModelChangeEvent: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.triggerModelChangeEvent',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.handleErrorEnd'
             }
         }
     },

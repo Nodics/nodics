@@ -13,20 +13,18 @@ const _ = require('lodash');
 
 module.exports = {
 
-    populateVirtualProperties: function (rawSchema, documents) {
-        if (!UTILS.isBlank(rawSchema.virtualProperties)) {
-            if (documents instanceof Array) {
-                documents.forEach(document => {
-                    this.populateProperties(rawSchema, document);
-                });
-            } else {
-                this.populateProperties(rawSchema, documents);
-            }
+    populateVirtualProperties: function (virtualProperties, documents) {
+        if (documents instanceof Array) {
+            documents.forEach(document => {
+                this.populateProperties(virtualProperties, document);
+            });
+        } else {
+            this.populateProperties(virtualProperties, documents);
         }
     },
-    populateProperties: function (rawSchema, document) {
+    populateProperties: function (virtualProperties, document) {
         let _self = this;
-        _.each(rawSchema.virtualProperties, (method, property) => {
+        _.each(virtualProperties, (method, property) => {
             _self.populateProperty(property, method, document);
         });
     },

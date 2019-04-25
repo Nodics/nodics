@@ -41,6 +41,7 @@ module.exports = {
                 _self.loadSearchSchemaFromSchema();
                 _self.loadSearchSchema();
                 _self.loadSearchSchemaFromDatabase().then(success => {
+                    _self.extractDefaultValues();
                     resolve(true);
                 }).catch(error => {
                     reject(error);
@@ -83,6 +84,10 @@ module.exports = {
                                 typeof SERVICE[searchOptions.schemaHandler].prepareFromSchema === 'function') {
                                 let searchSchema = SERVICE[searchOptions.schemaHandler].prepareFromSchema(moduleName, schemaName);
                                 if (searchSchema && !UTILS.isBlank(searchSchema)) {
+                                    if (rawSchema.cache) {
+                                        searchSchema.cache = _.merge(_.merge({}, rawSchema.cache), rawSchema.search.cache || {});
+                                    }
+                                    searchSchema.event = rawSchema.search.event || rawSchema.event || false;
                                     let schemaModel = NODICS.getModels(moduleName, tntCode)[schemaName.toUpperCaseFirstChar() + 'Model'];
                                     if (schemaModel) {
                                         schemaModel.typeName = searchSchema.typeName;
@@ -178,5 +183,28 @@ module.exports = {
                 reject(error);
             }
         });
+    },
+    extractDefaultValues: function () {
+        let searchSchemas = SERVICE.DefaultSearchConfigurationService.getAllRawSearchSchema();
+        if (searchSchemas && !UTILS.isBlank(searchSchemas)) {
+            _.each(searchSchemas, (moduleObject, ModuleName) => {
+                _.each(moduleObject, (tenantObject, tenantName) => {
+                    _.each(tenantObject, (schemaObject, indexName) => {
+                        let defaultProps = {};
+                        let properties = Object.keys(schemaObject.properties);
+                        for (let count = 0; count < properties.length; count++) {
+                            let propertyName = properties[count];
+                            let propertyObject = schemaObject.properties[propertyName];
+                            if (propertyObject.default && !UTILS.isBlank(propertyObject.default)) {
+                                defaultProps[propertyName] = propertyObject.default;
+                            }
+                        }
+                        if (!UTILS.isBlank(defaultProps)) {
+                            schemaObject.defaultValues = defaultProps;
+                        }
+                    });
+                });
+            });
+        }
     }
 };

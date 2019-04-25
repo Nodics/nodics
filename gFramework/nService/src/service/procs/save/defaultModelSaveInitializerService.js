@@ -412,8 +412,13 @@ module.exports = {
 
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
-        SERVICE.DefaultVirtualPropertiesHandlerService.populateVirtualProperties(request.schemaModel.rawSchema, response.model.result);
-        process.nextSuccess(request, response);
+        let virtualProperties = request.schemaModel.rawSchema.virtualProperties;
+        if (response.model.result && virtualProperties && !UTILS.isBlank(virtualProperties)) {
+            SERVICE.DefaultSchemaVirtualPropertiesHandlerService.populateVirtualProperties(virtualProperties, response.model.result);
+            process.nextSuccess(request, response);
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     applyPostInterceptors: function (request, response, process) {

@@ -14,6 +14,7 @@ module.exports = {
         clients: {
             kafka: {
                 enabled: false,
+                runOnCluster: 0,
                 handler: 'DefaultKafkaClientService',
                 publisherType: 1, // 0 for normal, 1 for HighLevel Producer
                 consumerType: 0, // 0 for normal, 1 for HighLevel Producer

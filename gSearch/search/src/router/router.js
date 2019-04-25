@@ -375,7 +375,7 @@ module.exports = {
         }
     },
     common: {
-        defaultDoSearch: {
+        commonDoSearch: {
             doGetRefresh: {
                 secured: true,
                 key: '/:indexName/search/refresh',

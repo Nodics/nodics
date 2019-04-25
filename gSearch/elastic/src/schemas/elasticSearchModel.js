@@ -237,12 +237,12 @@ module.exports = {
                 return new Promise((resolve, reject) => {
                     try {
                         try {
-                            let bulkQuery = _.merge(_self.searchEngine.getOptions().bulkOptions || {}, _.merge(input.options || {}, {
+                            let updateQuery = _.merge(_self.searchEngine.getOptions().updateOptions || {}, _.merge(input.options || {}, {
                                 body: input.data
                             }));
                             _self.LOG.debug('Executing update with options');
-                            _self.LOG.debug(bulkQuery);
-                            _self.searchEngine.getConnection().update(bulkQuery, function (error, response) {
+                            _self.LOG.debug(updateQuery);
+                            _self.searchEngine.getConnection().update(updateQuery, function (error, response) {
                                 if (error) {
                                     reject(error);
                                 }
