@@ -37,32 +37,16 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    handleValueProviders: function (request, response, process) {
-        this.LOG.debug('Applying search schema value providers');
-        if (request.models && request.models.length > 0) {
-            SERVICE.DefaultSearchPropertiesValueHandlerService.processValueProviders({
-                tenant: request.tenant,
-                moduleName: request.moduleName,
-                header: request.header,
-                models: request.models,
-            }).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00010',
-                    error: error
-                });
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-
+    /**
+     * This function is used to execute processors those are configured at indexer level
+     * @param {*} request 
+     * @param {*} response 
+     * @param {*} process 
+     */
     applyProcessors: function (request, response, process) {
         this.LOG.debug('Applying indexer processors');
-        let indexerConfig = request.header.local.indexerConfig;
-        if (indexerConfig.processors) {
+        if (request.header && request.header.local && request.header.local.indexerConfig && request.header.local.indexerConfig.processors) {
+            let indexerConfig = request.header.local.indexerConfig;
             SERVICE.DefaultProcessorHandlerService.executeSearchProcessors([].concat(indexerConfig.processors), {
                 tenant: request.tenant,
                 moduleName: request.moduleName,
@@ -85,12 +69,12 @@ module.exports = {
     applyInterceptors: function (request, response, process) {
         this.LOG.debug('Applying indexer interceptors');
         let moduleName = request.moduleName || request.header.options.moduleName;
-        let indexName = request.header.local.indexerConfig.target.indexName;
+        let indexName = request.indexName || request.header.options.indexName || request.header.local.indexerConfig.target.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
         if (interceptors && interceptors.index) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.index), {
                 tenant: request.tenant,
-                moduleName: request.moduleName,
+                moduleName: moduleName,
                 header: request.header,
                 models: request.models,
             }, {}).then(success => {
@@ -108,9 +92,9 @@ module.exports = {
     },
 
     executeIndexerPipeline: function (request, response, process) {
-        let indexerConfig = request.header.local.indexerConfig;
-        if (indexerConfig.processPipeline) {
+        if (request.header && request.header.local && request.header.local.indexerConfig && request.header.local.indexerConfig.processPipeline) {
             try {
+                let indexerConfig = request.header.local.indexerConfig;
                 SERVICE.DefaultPipelineService.start(indexerConfig.processPipeline, {
                     tenant: request.tenant,
                     moduleName: request.moduleName,

@@ -94,7 +94,6 @@ module.exports = {
         _self = this;
         return new Promise((resolve, reject) => {
             let queueName = options.consumerName;
-            console.log('             ', queueName);
             try {
                 options.client.connection.subscribe({
                     destination: queueName,

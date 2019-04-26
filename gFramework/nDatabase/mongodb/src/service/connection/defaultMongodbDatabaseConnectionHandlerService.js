@@ -49,7 +49,6 @@ module.exports = {
                         _self.LOG.error('While fetching list of collections: ' + error);
                         reject('While fetching list of collections: ' + error);
                     } else {
-                        //console.log(collections);
                         resolve({
                             connection: db,
                             collections: collections

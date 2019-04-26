@@ -25,7 +25,6 @@ module.exports = {
         requestTimeout: 1000,
         defaultPropertyWeight: 0,
         defaultPropertySequence: 0,
-        reloadSearchSchema: true,
         defaultDoSaveOperation: 'doSave',
         eventOnRefresh: true,
         default: {

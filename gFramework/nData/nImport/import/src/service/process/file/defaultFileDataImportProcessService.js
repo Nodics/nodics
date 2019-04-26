@@ -47,13 +47,6 @@ module.exports = {
         }
     },
 
-    loadRawSchema: function (request, response, process) {
-        this.LOG.debug('Loading raw schema for header');
-        let header = request.fileData.header;
-        header.rawSchema = NODICS.getModule(header.options.moduleName).rawSchema[header.options.schemaName];
-        process.nextSuccess(request, response);
-    },
-
     processModels: function (request, response, process) {
         this.LOG.debug('Processing models from file: ' + request.fileName);
         if (request.fileData.models && Object.keys(request.fileData.models).length > 0) {

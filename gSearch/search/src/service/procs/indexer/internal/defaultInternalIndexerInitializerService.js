@@ -48,7 +48,8 @@ module.exports = {
                 typeName: request.target.typeName,
                 operation: request.indexerConfig.target.operation || CONFIG.get('search').defaultDoSaveOperation || 'doSave',
                 tenants: [request.tenant],
-                moduleName: request.moduleName
+                moduleName: request.moduleName,
+                dataHandler: 'indexerDataHandlerPipeline'
             },
             local: {
                 indexerConfig: request.indexerConfig,
@@ -165,7 +166,7 @@ module.exports = {
                     if (request.outputPath) {
                         request.outputPath.version = request.outputPath.version + 1;
                     }
-                    SERVICE.DefaultPipelineService.start('finalizeIndexerDataPipeline', {
+                    SERVICE.DefaultPipelineService.start('indexerDataHandlerPipeline', {
                         tenant: request.tenant,
                         moduleName: request.moduleName,
                         header: request.header,
@@ -198,7 +199,7 @@ module.exports = {
                     if (request.outputPath) {
                         request.outputPath.version = request.outputPath.version + 1;
                     }
-                    SERVICE.DefaultPipelineService.start('finalizeIndexerDataPipeline', {
+                    SERVICE.DefaultPipelineService.start('indexerDataHandlerPipeline', {
                         tenant: request.tenant,
                         moduleName: request.moduleName,
                         header: request.header,

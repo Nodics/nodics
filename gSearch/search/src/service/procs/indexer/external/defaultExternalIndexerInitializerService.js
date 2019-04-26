@@ -62,7 +62,7 @@ module.exports = {
                 operation: request.indexerConfig.target.operation || CONFIG.get('search').defaultDoSaveOperation || 'doSave',
                 tenants: [request.tenant],
                 moduleName: request.moduleName,
-                dataHandler: 'finalizeIndexerDataPipeline'
+                dataHandler: 'indexerDataHandlerPipeline'
             },
             local: {
                 indexerConfig: request.indexerConfig,
@@ -151,8 +151,6 @@ module.exports = {
         } else {
             this.LOG.warn('Cound not found any data to index');
         }
-        // console.log(util.inspect(request.header, false, 6));
-        // console.log(util.inspect(request.dataFiles, false, 6));
         process.nextSuccess(request, response);
     },
 

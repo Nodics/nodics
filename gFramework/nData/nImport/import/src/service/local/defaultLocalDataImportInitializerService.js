@@ -109,7 +109,14 @@ module.exports = {
                                 headerObj.options.fileName = name;
                                 headerObj.options.filePath = element;
                                 headerObj.options.done = false;
-                                headerObj.options.dataHandler = CONFIG.get('data').dataHandlerPipeline || 'dataHandlerPipeline';
+                                headerObj.options.dataHandler = (headerObj.options.indexName) ? 'indexerDataHandlerPipeline' : 'schemaDataHandlerPipeline';
+                                if (headerObj.options.indexName) {
+                                    headerObj.local = _.merge(headerObj.local || {}, {
+                                        indexerConfig: {
+                                            dumpData: true
+                                        }
+                                    });
+                                }
                                 headerObj.dataFiles = {};
                                 if (!request.data.headers[headerName]) {
                                     request.data.headers[headerName] = headerObj;

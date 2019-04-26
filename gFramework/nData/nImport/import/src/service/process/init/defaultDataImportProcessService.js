@@ -115,7 +115,7 @@ module.exports = {
                         let fileName = options.pendingFiles.shift();
                         let fileObj = request.dataFiles[fileName];
                         if (!fileObj.done || fileObj.done === false) {
-                            _self.LOG.debug('Processing file: ' + fileObj.file.replace(NODICS.getNodicsHome(), '.') + ' on phase: ' + options.phase + 1);
+                            _self.LOG.debug('Processing file: ' + fileObj.file.replace(NODICS.getNodicsHome(), '.') + ' on phase: ' + (options.phase + 1));
                             let fileData = require(fileObj.file);
                             clearRequire(fileObj.file);
                             SERVICE.DefaultPipelineService.start('processFileDataImportPipeline', {

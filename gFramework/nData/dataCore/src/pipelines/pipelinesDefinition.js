@@ -43,7 +43,7 @@ module.exports = {
         }
     },
 
-    dataHandlerPipeline: {
+    schemaDataHandlerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -51,31 +51,36 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultDataHandlerProcessService.validateRequest',
-                success: 'executeDataProcessor'
+                handler: 'DefaultSchemaDataHandlerService.validateRequest',
+                success: 'applyProcessors'
             },
-            executeDataProcessor: {
+            applyProcessors: {
                 type: 'function',
-                handler: 'DefaultDataHandlerProcessService.executeDataProcessor',
-                success: 'processData'
+                handler: 'DefaultSchemaDataHandlerService.applyProcessors',
+                success: 'applyInterceptors'
             },
-            processData: {
+            applyInterceptors: {
                 type: 'function',
-                handler: 'DefaultDataHandlerProcessService.processData',
+                handler: 'DefaultSchemaDataHandlerService.applyInterceptors',
+                success: 'executeIndexerPipeline'
+            },
+            executeIndexerPipeline: {
+                type: 'function',
+                handler: 'DefaultSchemaDataHandlerService.executeIndexerPipeline',
                 success: 'writeDataFile'
             },
             writeDataFile: {
                 type: 'function',
-                handler: 'DefaultDataHandlerProcessService.writeDataFile',
+                handler: 'DefaultSchemaDataHandlerService.writeDataFile',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultDataHandlerProcessService.handleSucessEnd'
+                handler: 'DefaultSchemaDataHandlerService.handleSucessEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultDataHandlerProcessService.handleErrorEnd'
+                handler: 'DefaultSchemaDataHandlerService.handleErrorEnd'
             }
         }
     },

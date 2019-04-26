@@ -862,7 +862,7 @@ module.exports = {
         }
     },
 
-    finalizeIndexerDataPipeline: {
+    indexerDataHandlerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -870,41 +870,36 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.validateRequest',
-                success: 'handleValueProviders'
-            },
-            handleValueProviders: {
-                type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.handleValueProviders',
+                handler: 'DefaultIndexerDataHandlerService.validateRequest',
                 success: 'applyProcessors'
             },
             applyProcessors: {
                 type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.applyProcessors',
+                handler: 'DefaultIndexerDataHandlerService.applyProcessors',
                 success: 'applyInterceptors'
             },
             applyInterceptors: {
                 type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.applyInterceptors',
+                handler: 'DefaultIndexerDataHandlerService.applyInterceptors',
                 success: 'executeIndexerPipeline'
             },
             executeIndexerPipeline: {
                 type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.executeIndexerPipeline',
+                handler: 'DefaultIndexerDataHandlerService.executeIndexerPipeline',
                 success: 'processData'
             },
             processData: {
                 type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.processData',
+                handler: 'DefaultIndexerDataHandlerService.processData',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.handleSucessEnd'
+                handler: 'DefaultIndexerDataHandlerService.handleSucessEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultIndexerDataFinalizerService.handleErrorEnd'
+                handler: 'DefaultIndexerDataHandlerService.handleErrorEnd'
             }
         }
     }

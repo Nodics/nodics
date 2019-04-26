@@ -41,14 +41,36 @@ module.exports = {
         }
     },
 
-    executeDataProcessor: function (request, response, process) {
+    applyProcessors: function (request, response, process) {
+        this.LOG.debug('Applying schema processors in models');
+        if (request.header && request.header.options && request.header.options.processors) {
+            SERVICE.DefaultProcessorHandlerService.executeSearchProcessors([].concat(request.header.options.processors), {
+                tenant: request.tenant,
+                moduleName: request.moduleName,
+                header: request.header,
+                models: request.models,
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00007',
+                    error: error
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre processors in models');
         let moduleName = request.header.options.moduleName;
         let schemaName = request.header.options.schemaName;
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(moduleName, schemaName);
-        if (interceptors && interceptors.importProcessor && interceptors.importProcessor.length > 0) {
+        if (interceptors && interceptors.import && interceptors.import.length > 0) {
             SERVICE.DefaultProcessorHandlerService.executeProcessors(
-                [].concat(interceptors.importProcessor), {
+                [].concat(interceptors.import), {
                     models: request.models
                 }, {}).then(success => {
                     process.nextSuccess(request, response);
@@ -60,7 +82,7 @@ module.exports = {
         }
     },
 
-    processData: function (request, response, process) {
+    executeIndexerPipeline: function (request, response, process) {
         this.LOG.debug('Checking target process to handle request');
         let processPipeline = 'defaultImportDataFilterPipeline';
         if (request.header.options && request.header.options.processPipeline) {

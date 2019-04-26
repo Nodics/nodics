@@ -360,7 +360,6 @@ module.exports = {
                             type: _self.indexDef.typeName,
                             body: input.searchSchema
                         });
-                        console.log(input.searchSchema);
                         _self.searchEngine.getConnection().indices.putMapping(schemaQuery, function (error, response) {
                             if (error) {
                                 reject(error);

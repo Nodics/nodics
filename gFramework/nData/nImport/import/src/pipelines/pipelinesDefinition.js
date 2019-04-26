@@ -14,7 +14,6 @@ module.exports = {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
         nodes: {
             validateRequest: {
                 type: 'function',
@@ -81,7 +80,6 @@ module.exports = {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
         nodes: {
             validateRequest: {
                 type: 'function',
@@ -142,7 +140,6 @@ module.exports = {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
         nodes: {
             validateRequest: {
                 type: 'function',
@@ -184,7 +181,6 @@ module.exports = {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
-
         nodes: {
             validateRequest: {
                 type: 'function',
@@ -211,7 +207,6 @@ module.exports = {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
-
         nodes: {
             validateRequest: {
                 type: 'function',
@@ -227,7 +222,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.handleSucessEnd'
             },
-
             handleError: {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.handleErrorEnd'
@@ -239,7 +233,6 @@ module.exports = {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
-
         nodes: {
             validateRequest: {
                 type: 'function',
@@ -276,16 +269,10 @@ module.exports = {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
-
         nodes: {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultFileDataImportProcessService.validateRequest',
-                success: 'loadRawSchema'
-            },
-            loadRawSchema: {
-                type: 'function',
-                handler: 'DefaultFileDataImportProcessService.loadRawSchema',
                 success: 'processModels'
             },
             processModels: {
@@ -317,6 +304,11 @@ module.exports = {
             resolveEnterpriseCode: {
                 type: 'function',
                 handler: 'DefaultModelImportProcessService.resolveEnterpriseCode',
+                success: 'loadRawSchema'
+            },
+            loadRawSchema: {
+                type: 'function',
+                handler: 'DefaultModelImportProcessService.loadRawSchema',
                 success: 'populateSchemaDependancies'
             },
             populateSchemaDependancies: {
@@ -343,7 +335,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultModelImportProcessService.handleSucessEnd'
             },
-
             handleError: {
                 type: 'function',
                 handler: 'DefaultModelImportProcessService.handleErrorEnd'

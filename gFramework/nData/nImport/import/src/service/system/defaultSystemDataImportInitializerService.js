@@ -133,7 +133,14 @@ module.exports = {
                             request.data.headers[headerName] = _.merge(request.data.headers[headerName], header);
                             request.data.headers[headerName].options.moduleName = moduleName;
                             request.data.headers[headerName].dataFiles = {};
-                            request.data.headers[headerName].options.dataHandler = CONFIG.get('data').dataHandlerPipeline || 'dataHandlerPipeline';
+                            request.data.headers[headerName].options.dataHandler = (request.data.headers[headerName].options.indexName) ? 'indexerDataHandlerPipeline' : 'schemaDataHandlerPipeline';
+                            if (request.data.headers[headerName].options.indexName) {
+                                request.data.headers[headerName].local = _.merge(request.data.headers[headerName].local || {}, {
+                                    indexerConfig: {
+                                        dumpData: true
+                                    }
+                                });
+                            }
                         });
                     }
                 });

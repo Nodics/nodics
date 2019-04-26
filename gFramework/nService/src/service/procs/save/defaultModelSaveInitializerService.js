@@ -295,7 +295,6 @@ module.exports = {
             response.model = model;
             process.nextSuccess(request, response);
         }).catch(error => {
-            console.log(request.model);
             this.LOG.error(error);
             process.error(request, response, {
                 success: false,

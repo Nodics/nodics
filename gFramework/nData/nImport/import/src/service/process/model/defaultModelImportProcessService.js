@@ -52,10 +52,19 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    loadRawSchema: function (request, response, process) {
+        this.LOG.debug('Loading raw schema for header');
+        let header = request.header;
+        if (header.options.schemaName) {
+            header.rawSchema = NODICS.getModule(header.options.moduleName).rawSchema[header.options.schemaName];
+        }
+        process.nextSuccess(request, response);
+    },
+
     populateSchemaDependancies: function (request, response, process) {
         this.LOG.debug('Populating all schema dependancies');
         let header = request.header;
-        if (header.macros) {
+        if (header.macros && header.rawSchema) {
             if (header.rawSchema.refSchema) {
                 this.resolveRelation(request, response, {
                     header: header,
@@ -251,7 +260,6 @@ module.exports = {
                     } else {
                         response.success.push(result.result);
                     }
-                    //response.targetNode = 'insertSuccess';
                     process.nextSuccess(request, response);
                 } else {
                     process.error(request, response, result);
@@ -271,8 +279,8 @@ module.exports = {
             let searchService = SERVICE['Default' + header.options.indexName.toUpperCaseFirstChar() + 'Service'] || SERVICE.DefaultSearchService;
             searchService[header.options.operation]({
                 tenant: request.tenant,
-                indexName: request.indexName,
-                moduleName: request.moduleName,
+                indexName: request.indexName || header.options.indexName,
+                moduleName: request.moduleName || header.options.moduleName,
                 options: request.options || {},
                 model: request.dataModel
             }).then(result => {

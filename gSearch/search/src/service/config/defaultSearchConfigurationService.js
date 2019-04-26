@@ -172,7 +172,6 @@ module.exports = {
 
     setInterceptors: function (interceptors) {
         this.interceptors = interceptors;
-
     },
 
     getInterceptors: function (moduleName, modelName) {
