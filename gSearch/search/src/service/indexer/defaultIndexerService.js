@@ -86,38 +86,5 @@ module.exports = {
                 });
             }
         });
-    },
-
-    // triggerIndexer: function (request) {
-    //     return new Promise((resolve, reject) => {
-    //         try {
-    //             if (request.indexerConfig.type === ENUMS.IndexerType.INTERNAL.key) {
-    //                 SERVICE.DefaultPipelineService.start('internalIndexerInitializerPipeline', request, {}).then(success => {
-    //                     resolve(success);
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             } else if (request.indexerConfig.type === ENUMS.IndexerType.EXTERNAL.key) {
-    //                 SERVICE.DefaultPipelineService.start('externalIndexerInitializerPipeline', request, {}).then(success => {
-    //                     resolve(success);
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             } else {
-    //                 reject({
-    //                     success: false,
-    //                     code: 'ERR_SRCH_00000',
-    //                     msg: 'Invalid type value in indexer: ' + request.indexerConfig.type
-    //                 });
-    //             }
-    //         } catch (error) {
-    //             reject({
-    //                 success: false,
-    //                 code: 'ERR_SRCH_00000',
-    //                 error: error
-    //             });
-    //         }
-    //     });
-    // },
-
+    }
 };

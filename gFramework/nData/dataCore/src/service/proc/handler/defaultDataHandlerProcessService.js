@@ -47,14 +47,10 @@ module.exports = {
         let schemaName = request.header.options.schemaName;
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(moduleName, schemaName);
         if (interceptors && interceptors.importProcessor && interceptors.importProcessor.length > 0) {
-            let interceptorRequest = {
-                models: request.models
-            };
-            let interceptorResponse = {};
             SERVICE.DefaultProcessorHandlerService.executeProcessors(
-                [].concat(interceptors.importProcessor),
-                interceptorRequest,
-                interceptorResponse).then(success => {
+                [].concat(interceptors.importProcessor), {
+                    models: request.models
+                }, {}).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);
