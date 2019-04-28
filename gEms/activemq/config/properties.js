@@ -13,7 +13,7 @@ module.exports = {
     emsClient: {
         clients: {
             activemq: {
-                enabled: false,
+                enabled: true,
                 runOnCluster: 0,
                 handler: 'DefaultActivemqClientService',
                 eventOptions: {

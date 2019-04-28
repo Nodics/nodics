@@ -1,1 +1,0 @@
-This is a sample readme file for your intData module

@@ -1,12 +1,10 @@
 {
     "name": "dataConsumer",
-    "index": "400.1.99",
-    "publish": false,
+    "index": "400.10",
+    "publish": true,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataConsumer",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "server",
-        "environment",
         "dataConsumer"
     ],
     "author": "Himkar Dwivedi",

@@ -113,6 +113,7 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response, process) {
+        this.LOG.debug('Request has been processed successfully');
         process.resolve(response.success);
     },
 

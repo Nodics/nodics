@@ -10,10 +10,14 @@
  */
 
 module.exports = {
-    intData: {
-        handleInternalTestData: {
+    dataConsumer: {
+        handleInternalDataPush: {
             event: 'internalDataPushEvent',
-            listener: 'DefaultInternalTestDataEventHandlerService.handleInternalDataPushEvent'
+            listener: 'DefaultInternalDataEventHandlerService.handleInternalDataPushEvent'
+        },
+        handleExternalDataPush: {
+            event: 'externalDataPushEvent',
+            listener: 'DefaultExternalDataEventHandlerService.handleExternalDataPushEvent'
         }
     }
 };
