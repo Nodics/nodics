@@ -11,19 +11,19 @@
 
 module.exports = {
     profile: {
-        enterprise: {
-            enabled: false,
-            //indexName: 'enterprise',
-            idPropertyName: 'code',
-            properties: {
-                desc: {
-                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseDescription'
-                },
-                custom: {
-                    enabled: true,
-                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseCustom'
-                }
-            }
-        }
+        // enterprise: {
+        //     enabled: false,
+        //     //indexName: 'enterprise',
+        //     idPropertyName: 'code',
+        //     properties: {
+        //         desc: {
+        //             valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseDescription'
+        //         },
+        //         custom: {
+        //             enabled: true,
+        //             valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseCustom'
+        //         }
+        //     }
+        // }
     }
 };

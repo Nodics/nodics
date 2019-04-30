@@ -11,23 +11,25 @@
 
 module.exports = {
     record0: {
-        code: 'publishEvents',
-        enterpriseCode: 'default',
-        tenant: 'default',
+        code: "publishEvents",
+        enterpriseCode: "default",
+        tenant: "default",
+        active: true,
+        logResult: false,
         targetNodeId: 0,
         jobDetail: {
-            startNode: 'DefaultEventHandlerJobService.runJob'
+            startNode: "DefaultEventHandlerJobService.runJob"
         },
         triggers: [{
             isActive: true,
-            expression: '*/2 * * * * *'
+            expression: "10 * * * * *"
         }],
         emails: [{
-            email: 'nodics.framework@nodics.com'
+            email: "nodics.framework@nodics.com"
         }],
-        start: new Date(),
+        start: "2018-11-15T02:30:20.430Z",
         priority: 1000,
-        lastResult: 'NEW',
-        state: 'NEW'
+        lastResult: "NEW",
+        state: "NEW"
     }
 };

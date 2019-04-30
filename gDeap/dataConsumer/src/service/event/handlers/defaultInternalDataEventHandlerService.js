@@ -53,14 +53,7 @@ module.exports = {
                     }
                 });
             }).catch(error => {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    error: error,
-                    result: {
-                        event: event.event
-                    }
-                });
+                callback(error);
             });
         } else {
             callback({

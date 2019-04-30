@@ -22,30 +22,52 @@ module.exports = {
     */
     default: {
 
+        defineDefaultDoCreateIndex: function (searchModel) { //Required pipeline to process this request
+            searchModel.doCreateIndex = function (input) {
+                let _self = this;
+                return new Promise((resolve, reject) => {
+                    try {
+                        let indexQuery = _.merge({}, _self.searchEngine.getOptions().createIndexOptions || {});
+                        indexQuery = _.merge(indexQuery, input.options || {});
+                        indexQuery = _.merge(indexQuery, {
+                            index: _self.indexDef.indexName.toLowerCase()
+                        });
+                        _self.LOG.debug('Creating index for indexName: ' + _self.indexDef.indexName.toLowerCase());
+                        _self.searchEngine.getConnection().indices.create(indexQuery, function (error, response) {
+                            if (error) {
+                                reject(error);
+                            }
+                            else {
+                                resolve(response);
+                            }
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+        },
+
         defineDefaultDoRefresh: function (searchModel) { //Required pipeline to process this request
             searchModel.doRefresh = function (input) {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        try {
-                            let refreshQuery = _.merge({}, _self.searchEngine.getOptions().refreshOptions || {});
-                            refreshQuery = _.merge(refreshQuery, input.options || {});
-                            refreshQuery = _.merge(refreshQuery, {
-                                index: _self.indexDef.indexName
-                            });
-                            _self.LOG.debug('Executing refresh command with options:');
-                            _self.LOG.debug(refreshQuery);
-                            _self.searchEngine.getConnection().indices.refresh(refreshQuery, function (error, response) {
-                                if (error) {
-                                    reject(error);
-                                }
-                                else {
-                                    resolve(response);
-                                }
-                            });
-                        } catch (error) {
-                            reject(error);
-                        }
+                        let refreshQuery = _.merge({}, _self.searchEngine.getOptions().refreshOptions || {});
+                        refreshQuery = _.merge(refreshQuery, input.options || {});
+                        refreshQuery = _.merge(refreshQuery, {
+                            index: _self.indexDef.indexName.toLowerCase()
+                        });
+                        _self.LOG.debug('Executing refresh command with options:');
+                        _self.LOG.debug(refreshQuery);
+                        _self.searchEngine.getConnection().indices.refresh(refreshQuery, function (error, response) {
+                            if (error) {
+                                reject(error);
+                            }
+                            else {
+                                resolve(response);
+                            }
+                        });
                     } catch (error) {
                         reject(error);
                     }
@@ -61,7 +83,7 @@ module.exports = {
                         let healthCheckQuery = _.merge({}, _self.searchEngine.getOptions().healthOptions || {});
                         healthCheckQuery = _.merge(healthCheckQuery, input.options || {});
                         healthCheckQuery = _.merge(healthCheckQuery, {
-                            index: _self.indexDef.indexName
+                            index: _self.indexDef.indexName.toLowerCase()
                         });
                         _self.LOG.debug('Executing health command with options');
                         _self.LOG.debug(healthCheckQuery);
@@ -87,8 +109,8 @@ module.exports = {
                         let existQuery = _.merge({}, _self.searchEngine.getOptions().existsOptions || {});
                         existQuery = _.merge(existQuery, input.options || {});
                         existQuery = _.merge(existQuery, {
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
+                            index: _self.indexDef.indexName.toLowerCase(),
+                            type: _self.indexDef.typeName.toLowerCase(),
                             id: input.query.id
                         });
                         _self.LOG.debug('Executing health command with options');
@@ -117,8 +139,8 @@ module.exports = {
                         let getQuery = _.merge({}, _self.searchEngine.getOptions().getOptions || {});
                         getQuery = _.merge(getQuery, input.options || {});
                         getQuery = _.merge(getQuery, {
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
+                            index: _self.indexDef.indexName.toLowerCase(),
+                            type: _self.indexDef.typeName.toLowerCase(),
                             id: input.query.id
                         });
                         _self.LOG.debug('Executing get command with options');
@@ -146,8 +168,8 @@ module.exports = {
                         let searchQuery = _.merge({}, _self.searchEngine.getOptions().searchOptions || {});
                         searchQuery = _.merge(searchQuery, input.options || {});
                         searchQuery = _.merge(searchQuery, {
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName
+                            index: _self.indexDef.indexName.toLowerCase(),
+                            type: _self.indexDef.typeName.toLowerCase()
                         });
                         if (input.q) {
                             searchQuery.q = input.q;
@@ -178,28 +200,26 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        try {
-                            let putQuery = _.merge({}, _self.searchEngine.getOptions().saveOptions || {});
-                            putQuery = _.merge(putQuery, input.options || {});
-                            putQuery = _.merge(putQuery, {
-                                index: _self.indexDef.indexName,
-                                type: _self.indexDef.typeName,
-                                id: input.model[_self.indexDef.idPropertyName],
-                                body: input.model
-                            });
-                            _self.LOG.debug('Executing save command with options');
-                            _self.LOG.debug(putQuery);
-                            _self.searchEngine.getConnection().index(putQuery, function (error, response) {
-                                if (error) {
-                                    reject(error);
-                                }
-                                else {
-                                    resolve(response);
-                                }
-                            });
-                        } catch (error) {
-                            reject(error);
+                        let putQuery = _.merge({}, _self.searchEngine.getOptions().saveOptions || {});
+                        putQuery = _.merge(putQuery, input.options || {});
+                        putQuery = _.merge(putQuery, {
+                            index: _self.indexDef.indexName.toLowerCase(),
+                            type: _self.indexDef.typeName.toLowerCase(),
+                            body: input.model
+                        });
+                        if (input.model[_self.indexDef.idPropertyName]) {
+                            putQuery.id = input.model[_self.indexDef.idPropertyName];
                         }
+                        _self.LOG.debug('Executing save command with options');
+                        _self.LOG.debug(putQuery);
+                        _self.searchEngine.getConnection().index(putQuery, function (error, response) {
+                            if (error) {
+                                reject(error);
+                            }
+                            else {
+                                resolve(response);
+                            }
+                        });
                     } catch (error) {
                         reject(error);
                     }
@@ -212,23 +232,19 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        try {
-                            let bulkQuery = _.merge(_self.searchEngine.getOptions().bulkOptions || {}, _.merge(input.options || {}, {
-                                body: input.models
-                            }));
-                            _self.LOG.debug('Executing bulk command with options');
-                            _self.LOG.debug(bulkQuery);
-                            _self.searchEngine.getConnection().bulk(bulkQuery, function (error, response) {
-                                if (error) {
-                                    reject(error);
-                                }
-                                else {
-                                    resolve(response);
-                                }
-                            });
-                        } catch (error) {
-                            reject(error);
-                        }
+                        let bulkQuery = _.merge(_self.searchEngine.getOptions().bulkOptions || {}, _.merge(input.options || {}, {
+                            body: input.models
+                        }));
+                        _self.LOG.debug('Executing bulk command with options');
+                        _self.LOG.debug(bulkQuery);
+                        _self.searchEngine.getConnection().bulk(bulkQuery, function (error, response) {
+                            if (error) {
+                                reject(error);
+                            }
+                            else {
+                                resolve(response);
+                            }
+                        });
                     } catch (error) {
                         reject(error);
                     }
@@ -241,23 +257,19 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        try {
-                            let updateQuery = _.merge(_self.searchEngine.getOptions().updateOptions || {}, _.merge(input.options || {}, {
-                                body: input.data
-                            }));
-                            _self.LOG.debug('Executing update with options');
-                            _self.LOG.debug(updateQuery);
-                            _self.searchEngine.getConnection().update(updateQuery, function (error, response) {
-                                if (error) {
-                                    reject(error);
-                                }
-                                else {
-                                    resolve(response);
-                                }
-                            });
-                        } catch (error) {
-                            reject(error);
-                        }
+                        let updateQuery = _.merge(_self.searchEngine.getOptions().updateOptions || {}, _.merge(input.options || {}, {
+                            body: input.data
+                        }));
+                        _self.LOG.debug('Executing update with options');
+                        _self.LOG.debug(updateQuery);
+                        _self.searchEngine.getConnection().update(updateQuery, function (error, response) {
+                            if (error) {
+                                reject(error);
+                            }
+                            else {
+                                resolve(response);
+                            }
+                        });
                     } catch (error) {
                         reject(error);
                     }
@@ -273,8 +285,8 @@ module.exports = {
                         let removeQuery = _.merge({}, _self.searchEngine.getOptions().removeOptions || {});
                         removeQuery = _.merge(removeQuery, input.options || {});
                         removeQuery = _.merge(removeQuery, {
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
+                            index: _self.indexDef.indexName.toLowerCase(),
+                            type: _self.indexDef.typeName.toLowerCase(),
                             id: input.query.id
                         });
                         _self.LOG.debug('Executing remove command with options');
@@ -301,8 +313,8 @@ module.exports = {
                         let removeQuery = _.merge({}, _self.searchEngine.getOptions().removeOptions || {});
                         removeQuery = _.merge(removeQuery, input.options || {});
                         removeQuery = _.merge(removeQuery, {
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
+                            index: _self.indexDef.indexName.toLowerCase(),
+                            type: _self.indexDef.typeName.toLowerCase(),
                             body: {
                                 query: input.query
                             }
@@ -331,8 +343,8 @@ module.exports = {
                         let schemaQuery = _.merge({}, _self.searchEngine.getOptions().schemaGetOptions || {});
                         schemaQuery = _.merge(schemaQuery, input.options || {});
                         schemaQuery = _.merge(schemaQuery, {
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
+                            index: _self.indexDef.indexName.toLowerCase(),
+                            type: _self.indexDef.typeName.toLowerCase()
                         });
                         _self.searchEngine.getConnection().indices.getMapping(schemaQuery, function (error, response) {
                             if (error) {
@@ -356,8 +368,8 @@ module.exports = {
                         let schemaQuery = _.merge({}, _self.searchEngine.getOptions().schemaGetOptions || {});
                         schemaQuery = _.merge(schemaQuery, input.options || {});
                         schemaQuery = _.merge(schemaQuery, {
-                            index: _self.indexDef.indexName,
-                            type: _self.indexDef.typeName,
+                            index: _self.indexDef.indexName.toLowerCase(),
+                            type: _self.indexDef.typeName.toLowerCase(),
                             body: input.searchSchema
                         });
                         _self.searchEngine.getConnection().indices.putMapping(schemaQuery, function (error, response) {
@@ -382,7 +394,7 @@ module.exports = {
                         let deleteQuery = _.merge({}, _self.searchEngine.getOptions().removeIndexOptions || {});
                         deleteQuery = _.merge(deleteQuery, input.options || {});
                         deleteQuery = _.merge(deleteQuery, {
-                            index: _self.indexDef.indexName
+                            index: _self.indexDef.indexName.toLowerCase()
                         });
                         _self.searchEngine.getConnection().indices.delete(deleteQuery, function (error, response) {
                             if (error) {

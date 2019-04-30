@@ -67,11 +67,11 @@ module.exports = {
             executeIndexerPipeline: {
                 type: 'function',
                 handler: 'DefaultSchemaDataHandlerService.executeIndexerPipeline',
-                success: 'writeDataFile'
+                success: 'processData'
             },
-            writeDataFile: {
+            processData: {
                 type: 'function',
-                handler: 'DefaultSchemaDataHandlerService.writeDataFile',
+                handler: 'DefaultSchemaDataHandlerService.processData',
                 success: 'successEnd'
             },
             successEnd: {

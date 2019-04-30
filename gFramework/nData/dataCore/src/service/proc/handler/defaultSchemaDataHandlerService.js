@@ -33,10 +33,14 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to process JSON file');
+        this.LOG.debug('Validating request to process schema data handler');
         if (!request.models) {
             process.error(request, response, 'Invalid data object to process');
         } else {
+            request.header.local.indexerConfig = (request.header.local.indexerConfig) ? request.header.local.indexerConfig : {};
+            if (request.header.local.indexerConfig.dumpData === undefined) {
+                request.header.local.indexerConfig.dumpData = true;
+            }
             process.nextSuccess(request, response);
         }
     },
@@ -99,16 +103,66 @@ module.exports = {
         });
     },
 
-    writeDataFile: function (request, response, process) {
-        this.LOG.debug('Starting file write process for local data import');
-        SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
-            header: request.header,
-            models: request.models,
-            outputPath: request.outputPath
-        }, {}).then(success => {
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
+    processData: function (request, response, process) {
+        let _self = this;
+        try {
+            let indexerConfig = request.header.local.indexerConfig;
+            if (indexerConfig.dumpData) {
+                SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
+                    tenant: request.tenant,
+                    moduleName: request.moduleName,
+                    header: request.header,
+                    models: request.models,
+                    outputPath: request.outputPath
+                }, {}).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, {
+                        success: false,
+                        code: 'ERR_SRCH_00000',
+                        error: error
+                    });
+                });
+            } else {
+                _self.processModels(request, {
+                    pendingModels: request.models
+                }).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            }
+        } catch (error) {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_SRCH_00000',
+                error: error
+            });
+        }
+    },
+
+    processModels: function (request, options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (options.pendingModels && options.pendingModels.length > 0) {
+                let model = options.pendingModels.shift();
+                SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
+                    tenant: request.tenant,
+                    moduleName: request.moduleName,
+                    header: request.header,
+                    dataModel: model
+                }, {}).then(success => {
+                    _self.processModels(request, options).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
         });
     },
 

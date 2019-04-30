@@ -33,8 +33,16 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating internal indexer request');
-        process.nextSuccess(request, response);
+        this.LOG.debug('Validating request to process Indexer data handler');
+        if (!request.models) {
+            process.error(request, response, 'Invalid data object to process');
+        } else {
+            request.header.local.indexerConfig = (request.header.local.indexerConfig) ? request.header.local.indexerConfig : {};
+            if (request.header.local.indexerConfig.dumpData === undefined) {
+                request.header.local.indexerConfig.dumpData = true;
+            }
+            process.nextSuccess(request, response);
+        }
     },
 
     /**

@@ -10,5 +10,62 @@
  */
 
 module.exports = {
-
+    dataConsumer: {
+        inetrnalData: {
+            super: 'super',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            cache: {
+                enabled: true,
+                ttl: 10
+            },
+            search: {
+                enabled: true,
+                idPropertyName: 'code',
+            },
+            definition: {
+                active: {
+                    required: false,
+                },
+                tenant: {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate tenant code',
+                    searchOptions: {
+                        enabled: true,
+                    }
+                }
+            }
+        },
+        externalData: {
+            super: 'super',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            cache: {
+                enabled: true,
+                ttl: 10
+            },
+            search: {
+                enabled: true,
+                idPropertyName: 'code',
+            },
+            definition: {
+                active: {
+                    required: false,
+                },
+                tenant: {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate tenant code',
+                    searchOptions: {
+                        enabled: true,
+                    }
+                }
+            }
+        }
+    }
 };

@@ -105,11 +105,7 @@ module.exports = function () {
                     }
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_JOB_00000',
-                    error: error
-                });
+                reject(error);
             }
         });
     };

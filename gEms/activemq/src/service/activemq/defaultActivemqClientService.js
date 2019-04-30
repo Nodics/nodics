@@ -47,6 +47,17 @@ module.exports = {
             }
             try {
                 let connectionManager = new stompit.ConnectFailover(config.connectionOptions, config.reconnectOptions);
+                connectionManager.on('error', function (error) {
+                    var connectArgs = error.connectArgs;
+                    var address = connectArgs.host + ':' + connectArgs.port;
+                    _self.LOG.error('Could not connect to ' + address + ' : ' + error.message);
+                });
+
+                connectionManager.on('connecting', function (connector) {
+                    var address = connector.serverProperties.remoteAddress.transportPath;
+                    _self.LOG.debug('Connecting to ' + address);
+                });
+
                 connectionManager.connect(function (error, connection, reconnect) {
                     if (error) {
                         _self.LOG.error('Connection failed to ActiveMQ server');

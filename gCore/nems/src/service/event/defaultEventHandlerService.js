@@ -211,23 +211,26 @@ module.exports = {
                     let target = targets[counter];
                     target.logs = target.logs || [];
                     if (!target.state || target.state === ENUMS.EventState.ERROR.key) {
-                        SERVICE.DefaultModuleService.fetch(_self.prepareURL({
-                            enterpriseCode: event.enterpriseCode,
-                            tenant: event.tenant,
-                            event: event.event,
-                            source: event.source,
-                            target: target.target,
-                            type: event.type,
-                            params: event.params,
-                            data: event.data
-                        }, target)).then(success => {
+                        let finalEvent = _.merge({}, event);
+                        finalEvent.target = target.target;
+                        SERVICE.DefaultModuleService.fetch(_self.prepareURL(finalEvent, target)).then(success => {
+                            console.log(success);
                             if (success.success) {
                                 target.state = ENUMS.EventState.FINISHED.key;
                                 target.logs.push(success.msg);
                             } else {
                                 event.state = ENUMS.EventState.ERROR.key;
                                 target.state = ENUMS.EventState.ERROR.key;
-                                target.logs.push(success.msg);
+                                try {
+                                    if (success.msg) {
+                                        target.logs.push(success.msg);
+                                    } else {
+                                        target.logs.push(JSON.stringify(success.error));
+                                    }
+                                } catch (err) {
+                                    target.logs.push(success.error.toString());
+                                }
+
                             }
                             _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
                                 resolve(success);
@@ -235,9 +238,14 @@ module.exports = {
                                 reject(error);
                             });
                         }).catch(error => {
+                            console.log(error);
                             target.state = ENUMS.EventState.ERROR.key;
                             event.state = ENUMS.EventState.ERROR.key;
-                            target.logs.push(error.toString());
+                            try {
+                                target.logs.push(JSON.stringify(error));
+                            } catch (err) {
+                                target.logs.push(error.toString());
+                            }
                             _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
                                 resolve(success);
                             }).catch(error => {
@@ -256,7 +264,11 @@ module.exports = {
                 }
             } catch (error) {
                 event.state = ENUMS.EventState.ERROR.key;
-                event.logs.push(error.toString());
+                try {
+                    event.logs.push(JSON.stringify(error));
+                } catch (err) {
+                    event.logs.push(error.toString());
+                }
                 reject(error);
             }
         });

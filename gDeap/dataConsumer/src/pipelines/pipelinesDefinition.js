@@ -19,31 +19,36 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultInternalDataConsumeProcessService.validateRequest',
-                success: 'handleValueProviders'
+                success: 'prepareHeader'
             },
-            handleValueProviders: {
+            prepareHeader: {
                 type: 'function',
-                handler: 'DefaultInternalDataConsumeProcessService.handleValueProviders',
-                success: 'applyProcessors'
+                handler: 'DefaultInternalDataConsumeProcessService.prepareHeader',
+                success: 'prepareInputPath'
             },
-            applyProcessors: {
+            prepareInputPath: {
                 type: 'function',
-                handler: 'DefaultInternalDataConsumeProcessService.applyProcessors',
-                success: 'applyInterceptors'
+                handler: 'DefaultInternalDataConsumeProcessService.prepareInputPath',
+                success: 'prepareOutputPath'
             },
-            applyInterceptors: {
+            prepareOutputPath: {
                 type: 'function',
-                handler: 'DefaultInternalDataConsumeProcessService.applyInterceptors',
-                success: 'executeIndexerPipeline'
+                handler: 'DefaultInternalDataConsumeProcessService.prepareOutputPath',
+                success: 'flushOutputFolder'
             },
-            executeIndexerPipeline: {
+            flushOutputFolder: {
                 type: 'function',
-                handler: 'DefaultInternalDataConsumeProcessService.executeIndexerPipeline',
+                handler: 'DefaultInternalDataConsumeProcessService.flushOutputFolder',
                 success: 'processData'
             },
             processData: {
                 type: 'function',
                 handler: 'DefaultInternalDataConsumeProcessService.processData',
+                success: 'importDumpData'
+            },
+            importDumpData: {
+                type: 'function',
+                handler: 'DefaultInternalDataConsumeProcessService.importDumpData',
                 success: 'successEnd'
             },
             successEnd: {

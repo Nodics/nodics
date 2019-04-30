@@ -36,7 +36,7 @@ module.exports = {
             requestBody: {},
             isJsonResponse: true,
             header: {
-                apiKey: NODICS.getAPIKey(definition.tenant || 'default').key
+                apiKey: NODICS.getAPIKey(definition.tenant).key
             }
         });
     },
@@ -78,17 +78,19 @@ module.exports = {
 
     updateJobLog: function (definition, log) {
         let _self = this;
-        SERVICE.DefaultCronJobLogService.save({
-            tenant: definition.tenant,
-            models: [{
-                jobCode: definition.code,
-                log: log
-            }]
-        }).then(models => {
-            _self.LOG.debug('Log for job: ' + definition.code + ' saved');
-        }).catch(error => {
-            _self.LOG.error('While saving log for job: ' + definition.code + ' error: ' + error.toString());
-        });
+        if (definition.logResult) {
+            SERVICE.DefaultCronJobLogService.save({
+                tenant: definition.tenant,
+                models: [{
+                    jobCode: definition.code,
+                    log: log
+                }]
+            }).then(models => {
+                _self.LOG.debug('Log for job: ' + definition.code + ' saved');
+            }).catch(error => {
+                _self.LOG.error('While saving log for job: ' + definition.code + ' error: ' + error.toString());
+            });
+        }
     },
 
     updateJob: function (definition) {

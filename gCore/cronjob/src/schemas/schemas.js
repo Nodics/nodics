@@ -18,6 +18,9 @@ module.exports = {
             event: false,
             router: true,
             definition: {
+                active: {
+                    required: false
+                },
                 enterpriseCode: {
                     required: false
                 },
@@ -33,7 +36,7 @@ module.exports = {
             model: true,
             service: true,
             cache: {
-                enabled: true,
+                enabled: false,
                 ttl: 100
             },
             event: false,

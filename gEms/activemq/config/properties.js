@@ -46,7 +46,7 @@ module.exports = {
                     "initialReconnectDelay": 10,    // milliseconds delay of the first reconnect
                     "maxReconnectDelay": 5000,     // maximum milliseconds delay of any reconnect
                     "useExponentialBackOff": true,  // exponential increase in reconnect delay
-                    "maxReconnects": 30,            // maximum number of failed reconnects consecutively
+                    "maxReconnects": 10,            // maximum number of failed reconnects consecutively
                     "randomize": false              // randomly choose a server to use when reconnecting
                 },
             }

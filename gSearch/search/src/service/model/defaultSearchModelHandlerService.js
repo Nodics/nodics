@@ -166,8 +166,9 @@ module.exports = {
                             schemaModel.typeName = indexDef.typeName;
                         }
                     }
-                    if (!options.searchEngine.isActiveIndex(indexDef.indexName)) {
-                        _self.createIndex(options.searchEngine, indexDef.indexName).then(success => {
+                    if (!options.searchEngine.isActiveIndex(indexDef.indexName.toLowerCase())) {
+                        searchModel.doCreateIndex({}).then(success => {
+                            options.searchEngine.addIndex(indexName, {});
                             _self.prepareTypeSearchModels(options).then(success => {
                                 resolve(true);
                             }).catch(error => {
@@ -177,6 +178,7 @@ module.exports = {
                             reject(error);
                         });
                     } else {
+                        options.searchEngine.addIndex(indexName, {});
                         _self.prepareTypeSearchModels(options).then(success => {
                             resolve(true);
                         }).catch(error => {
@@ -200,27 +202,6 @@ module.exports = {
                 defaultSearchModelDef[element](modelSchema);
             });
         }
-    },
-
-    createIndex: function (searchEngine, indexName) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                _self.LOG.debug('Creating index for indexName: ' + indexName);
-                searchEngine.getConnection().indices.create({
-                    index: indexName
-                }, function (error, response) {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        searchEngine.addIndex(indexName, {});
-                        resolve(response);
-                    }
-                });
-            } catch (error) {
-                reject(error);
-            }
-        });
     },
 
     updateIndexesSchema: function (modules = Object.keys(NODICS.getModules())) {

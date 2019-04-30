@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    dataConsumer: {
+    common: {
         handleInternalDataPush: {
             event: 'internalDataPushEvent',
             listener: 'DefaultInternalDataEventHandlerService.handleInternalDataPushEvent'

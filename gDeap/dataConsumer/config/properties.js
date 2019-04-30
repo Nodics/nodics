@@ -12,7 +12,8 @@
 module.exports = {
     emsClient: {
         consumers: {
-            kafkaInternalJsonTestDataConsumerQueue: {
+            // Kafka queues for putting data into InternalSchema model
+            kafkaInternalJsonSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'kafka',
                 options: {
@@ -20,25 +21,111 @@ module.exports = {
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        schemaName: 'address',
+                        schemaName: 'inetrnalData',
                         operation: 'save'
                     }
                 }
             },
-            kafkaInternalXMLTestDataConsumerQueue: {
+            kafkaInternalXMLSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'kafka',
                 options: {
-                    messageHandler: 'xmlMessageHandler',
+                    messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        schemaName: 'address',
+                        schemaName: 'inetrnalData',
                         operation: 'save'
                     }
                 }
             },
-            activeMQInternalJsonTestDataConsumerQueue: {
+
+            // Kafka queues for putting data into ExternalSchema model
+            kafkaExternalJsonSchemaDataConsumerQueue: {
+                enabled: true,
+                client: 'kafka',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        schemaName: 'externalData',
+                        operation: 'save'
+                    }
+                }
+            },
+            kafkaExternalXMLSchemaDataConsumerQueue: {
+                enabled: true,
+                client: 'kafka',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        schemaName: 'externalData',
+                        operation: 'save'
+                    }
+                }
+            },
+
+            // Kafka queues for putting data into InternalSearch model
+            kafkaInternalJsonSearchDataConsumerQueue: {
+                enabled: true,
+                client: 'kafka',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        indexName: 'inetrnalData',
+                        operation: 'doSave'
+                    }
+                }
+            },
+            kafkaInternalXMLSearchDataConsumerQueue: {
+                enabled: true,
+                client: 'kafka',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        indexName: 'inetrnalData',
+                        operation: 'doSave'
+                    }
+                }
+            },
+
+            // Kafka queues for putting data into ExternalSearch model
+            kafkaExternalJsonSearchDataConsumerQueue: {
+                enabled: true,
+                client: 'kafka',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        indexName: 'externalData',
+                        operation: 'doSave'
+                    }
+                }
+            },
+            kafkaExternalXMLSearchDataConsumerQueue: {
+                enabled: true,
+                client: 'kafka',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        indexName: 'externalData',
+                        operation: 'doSave'
+                    }
+                }
+            },
+
+            // Active MQ queues for putting data into InternalSchema model
+            activeMQInternalJsonSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'activemq',
                 options: {
@@ -46,20 +133,104 @@ module.exports = {
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        schemaName: 'address',
+                        schemaName: 'inetrnalData',
                         operation: 'save'
                     }
                 }
             },
-            activeMQInternalXMLTestDataConsumerQueue: {
+            activeMQInternalXMLSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'activemq',
                 options: {
-                    messageHandler: 'xmlMessageHandler',
+                    messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        indexName: 'address',
+                        schemaName: 'inetrnalData',
+                        operation: 'save'
+                    }
+                }
+            },
+
+            // Active MQ queues for putting data into ExternalSchema model
+            activeMQExternalJsonSchemaDataConsumerQueue: {
+                enabled: true,
+                client: 'activemq',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        schemaName: 'externalData',
+                        operation: 'save'
+                    }
+                }
+            },
+            activeMQExternalXMLSchemaDataConsumerQueue: {
+                enabled: true,
+                client: 'activemq',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        schemaName: 'externalData',
+                        operation: 'save'
+                    }
+                }
+            },
+
+            // Active MQ queues for putting data into InternalSearch model
+            activeMQInternalJsonSearchDataConsumerQueue: {
+                enabled: true,
+                client: 'activemq',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        indexName: 'inetrnalData',
+                        operation: 'doSave'
+                    }
+                }
+            },
+            activeMQInternalXMLSearchDataConsumerQueue: {
+                enabled: true,
+                client: 'activemq',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        indexName: 'inetrnalData',
+                        operation: 'doSave'
+                    }
+                }
+            },
+
+            // Active MQ queues for putting data into ExternalSearch model
+            activeMQExternalJsonSearchDataConsumerQueue: {
+                enabled: true,
+                client: 'activemq',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        indexName: 'externalData',
+                        operation: 'doSave'
+                    }
+                }
+            },
+            activeMQExternalXMLSearchDataConsumerQueue: {
+                enabled: true,
+                client: 'activemq',
+                options: {
+                    messageHandler: 'jsonMessageHandler',
+                    target: 'dataConsumer',
+                    eventName: 'internalDataPushEvent',
+                    header: {
+                        indexName: 'externalData',
                         operation: 'doSave'
                     }
                 }

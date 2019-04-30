@@ -121,7 +121,7 @@ module.exports = {
                     tenant: request.tenant,
                     moduleName: request.moduleName,
                     header: request.header,
-                    models: options.finalData,
+                    models: [request.event.data],
                     inputPath: request.inputPath,
                     outputPath: request.outputPath
                 }, {}).then(success => {

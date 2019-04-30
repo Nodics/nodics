@@ -14,36 +14,36 @@ module.exports = {
 
     },
     search: {
-        order: {
-            enabled: false,
-            idPropertyName: 'code',
-            preProcessor: 'DefaultEnterpriseIndexProcessorService.preEnterpriseIndexProcessor', // Will get executed just after data fetch from DB
-            postProcessor: 'DefaultEnterpriseIndexProcessorService.postEnterpriseIndexProcessor', // will get executed once every data got collected and processed
-            properties: {
-                desc: {
-                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseDescription'
-                },
-                custom: {
-                    enabled: true,
-                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseCustom'
-                }
-            }
-        },
+        // order: {
+        //     enabled: false,
+        //     idPropertyName: 'code',
+        //     preProcessor: 'DefaultEnterpriseIndexProcessorService.preEnterpriseIndexProcessor', // Will get executed just after data fetch from DB
+        //     postProcessor: 'DefaultEnterpriseIndexProcessorService.postEnterpriseIndexProcessor', // will get executed once every data got collected and processed
+        //     properties: {
+        //         desc: {
+        //             valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseDescription'
+        //         },
+        //         custom: {
+        //             enabled: true,
+        //             valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseCustom'
+        //         }
+        //     }
+        // },
 
-        catalog: {
-            enabled: false,
-            idPropertyName: 'code',
-            preProcessor: 'DefaultEnterpriseIndexProcessorService.preEnterpriseIndexProcessor', // Will get executed just after data fetch from DB
-            postProcessor: 'DefaultEnterpriseIndexProcessorService.postEnterpriseIndexProcessor', // will get executed once every data got collected and processed
-            properties: {
-                desc: {
-                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseDescription'
-                },
-                custom: {
-                    enabled: true,
-                    valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseCustom'
-                }
-            }
-        }
+        // catalog: {
+        //     enabled: false,
+        //     idPropertyName: 'code',
+        //     preProcessor: 'DefaultEnterpriseIndexProcessorService.preEnterpriseIndexProcessor', // Will get executed just after data fetch from DB
+        //     postProcessor: 'DefaultEnterpriseIndexProcessorService.postEnterpriseIndexProcessor', // will get executed once every data got collected and processed
+        //     properties: {
+        //         desc: {
+        //             valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseDescription'
+        //         },
+        //         custom: {
+        //             enabled: true,
+        //             valueProvider: 'DefaultEnterpriseDescProviderService.getEnterpriseCustom'
+        //         }
+        //     }
+        // }
     }
 };
