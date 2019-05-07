@@ -10,50 +10,48 @@
  */
 
 const _ = require('lodash');
+
 module.exports = function () {
     let _jobPool = {};
-
     this.LOG = SERVICE.DefaultLoggerService.createLogger('CronJobContainer');
 
-    this.createCronJobs = function (definitions) {
+    this.createJobs = function (definitions, result = [], failed = []) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            let _self = this;
-            let moduleObject = NODICS.getModule('cronjob');
             if (!UTILS.isBlank(definitions)) {
-                let allJob = [];
-                definitions.forEach((definition) => {
-                    allJob.push(_self.createCronJob(moduleObject.metaData.authToken, definition));
-                });
-                if (allJob.length > 0) {
-                    Promise.all(allJob).then(success => {
-                        resolve({
-                            success: true,
-                            code: 'SUC_JOB_00000',
-                            result: success
-                        });
-                    }).catch(error => {
-                        reject({
-                            success: false,
-                            code: 'ERR_JOB_00000',
-                            error: error
-                        });
-                    });
-                } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00001'
-                    });
+                let definition = definitions.shift();
+                let apiKeyContainer = NODICS.getAPIKey(definition.tenant);
+                if (!apiKeyContainer) {
+                    this.LOG.warn('API key for tenant: ' + definition.tenant + ' not found, hence falling back to default');
+                    apiKeyContainer = NODICS.getAPIKey('default');
                 }
+                _self.createJob(apiKeyContainer.key, definition).then(success => {
+                    result.push(success);
+                    _self.createJobs(definitions, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    failed.push(error);
+                    _self.createJobs(definitions, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
             } else {
-                reject({
-                    success: false,
-                    code: 'ERR_JOB_00001'
+                resolve({
+                    success: true,
+                    code: 'SUC_JOB_00000',
+                    result: result,
+                    failed: failed
                 });
             }
         });
     };
 
-    this.createCronJob = function (authToken, definition) {
+    this.createJob = function (authToken, definition) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -63,7 +61,7 @@ module.exports = function () {
                         success: false,
                         code: 'ERR_JOB_00002'
                     });
-                } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
+                } else if (UTILS.isBlank(definition.trigger)) {
                     reject({
                         success: false,
                         code: 'ERR_JOB_00003'
@@ -80,25 +78,37 @@ module.exports = function () {
                     });
                 } else {
                     if (!_jobPool[definition.code]) {
-                        let cronJobs = [];
-                        if (!definition.nodeId) {
-                            definition.nodeId = CONFIG.get('nodeId');
+                        if (!definition.runOnNode) {
+                            definition.runOnNode = CONFIG.get('nodeId');
                         }
-                        definition.triggers.forEach(function (value) {
-                            if (value.isActive && CONFIG.get('nodeId') === definition.nodeId) {
-                                let tmpCronJob = new CLASSES.CronJob(definition, value); //TODO: need to add context and timeZone
-                                tmpCronJob.LOG = SERVICE.DefaultLoggerService.createLogger('CronJob');
-                                tmpCronJob.validate();
-                                tmpCronJob.init();
-                                tmpCronJob.setAuthToken(authToken);
-                                tmpCronJob.setJobPool(_jobPool);
-                                cronJobs.push(tmpCronJob);
-
-                            }
-                        });
-                        _jobPool[definition.code] = cronJobs;
-                        _self.LOG.debug('Job: ' + definition.code + ' has been successfully added in ready to run pool');
-                        resolve('Job: ' + definition.code + ' has been successfully added in ready to run pool');
+                        if (CONFIG.get('nodeId') === definition.runOnNode) {
+                            let tmpCronJob = new CLASSES.CronJob(definition, definition.trigger);
+                            tmpCronJob.LOG = SERVICE.DefaultLoggerService.createLogger('CronJob-' + definition.code);
+                            tmpCronJob.validate();
+                            tmpCronJob.init();
+                            tmpCronJob.setAuthToken(authToken);
+                            tmpCronJob.setJobPool(_jobPool);
+                            _jobPool[definition.code] = tmpCronJob;
+                            SERVICE.DefaultCronJobService.update({
+                                tenant: definition.tenant,
+                                query: {
+                                    code: definition.code
+                                },
+                                model: {
+                                    state: ENUMS.CronJobState.CREATED.key
+                                }
+                            }).then(success => {
+                                _self.LOG.debug('Job: ' + definition.code + ' has been successfully added in ready to run pool');
+                            }).catch(error => {
+                                delete _jobPool[definition.code];
+                                _self.LOG.error('Job: ' + definition.code + ' failed on updating state');
+                                _self.LOG.error(error);
+                            });
+                            resolve('Job: ' + definition.code + ' has been successfully added in ready to run pool');
+                        } else {
+                            _self.LOG.debug('Job: ' + definition.code + ' not set to run on this node');
+                            resolve('Job: ' + definition.code + ' not set to run on this node');
+                        }
                     } else {
                         _self.LOG.warn('Job: ', definition.code, ' is already available.');
                         resolve('Job: ' + definition.code + ' is already available in ready to run pool');
@@ -110,45 +120,43 @@ module.exports = function () {
         });
     };
 
-    this.updateCronJobs = function (definitions) {
+    this.updateJobs = function (definitions, result = [], failed = []) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            let _self = this;
-            let moduleObject = NODICS.getModule('cronjob');
             if (!UTILS.isBlank(definitions)) {
-                let allJob = [];
-                definitions.forEach((definition) => {
-                    allJob.push(_self.updateCronJob(moduleObject.metaData.authToken, definition));
-                });
-                if (allJob.length > 0) {
-                    Promise.all(allJob).then(success => {
-                        resolve({
-                            success: true,
-                            code: 'SUC_JOB_00000',
-                            result: success
-                        });
-                    }).catch(error => {
-                        reject({
-                            success: false,
-                            code: 'ERR_JOB_00000',
-                            error: error
-                        });
-                    });
-                } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00001'
-                    });
+                let definition = definitions.shift();
+                let apiKeyContainer = NODICS.getAPIKey(definition.tenant);
+                if (!apiKeyContainer) {
+                    this.LOG.warn('API key for tenant: ' + definition.tenant + ' not found, hence falling back to default');
+                    apiKeyContainer = NODICS.getAPIKey('default');
                 }
+                _self.updateJob(apiKeyContainer.key, definition).then(success => {
+                    result.push(success);
+                    _self.updateJobs(definitions, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    failed.push(error);
+                    _self.updateJobs(definitions, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
             } else {
-                reject({
-                    success: false,
-                    code: 'ERR_JOB_00001'
+                resolve({
+                    success: true,
+                    code: 'SUC_JOB_00000',
+                    result: result,
+                    failed: failed
                 });
             }
         });
     };
 
-    this.updateCronJob = function (authToken, definition) {
+    this.updateJob = function (authToken, definition) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(definition)) {
@@ -156,78 +164,81 @@ module.exports = function () {
                     success: false,
                     code: 'ERR_JOB_00002'
                 });
-            } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
+            } else if (UTILS.isBlank(definition.trigger)) {
                 reject({
                     success: false,
                     code: 'ERR_JOB_00003'
                 });
             } else if (!_jobPool[definition.code]) {
                 _self.LOG.debug('Could not found job, so creating new : ', definition.code);
-                this.createCronJob(authToken, definition).then(success => {
+                this.createJob(authToken, definition).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
                 });
             } else {
-                let tmpCronJob = _jobPool[definition.code];
-                let _running = tmpCronJob[0].isRunning();
-                tmpCronJob.forEach((job) => {
-                    job.stopCronJob();
-                });
-                delete _jobPool[definition.code];
-                this.createCronJob(authToken, definition).then(success => {
-                    if (_running) {
-                        _jobPool[definition.code].forEach((job) => {
-                            job.startCronJob();
-                        });
-                    }
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            }
-        });
-    };
-
-    this.runCronJobs = function (definitions) {
-        return new Promise((resolve, reject) => {
-            let _self = this;
-            if (!UTILS.isBlank(definitions)) {
-                let allJob = [];
-                let moduleObject = NODICS.getModule('cronjob');
-                definitions.forEach((definition) => {
-                    allJob.push(_self.runCronJob(moduleObject.metaData.authToken, definition));
-                });
-                if (allJob.length > 0) {
-                    Promise.all(allJob).then(success => {
-                        resolve({
-                            success: true,
-                            code: 'SUC_JOB_00000',
-                            result: success
-                        });
+                let cronJob = _jobPool[definition.code];
+                let active = cronJob.isActive();
+                cronJob.stopJob().then(success => {
+                    delete _jobPool[definition.code];
+                    this.createJob(authToken, definition).then(success => {
+                        if (active) {
+                            _jobPool[definition.code].startJob().then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
+                            resolve(success);
+                        }
                     }).catch(error => {
-                        reject({
-                            success: false,
-                            code: 'ERR_JOB_00000',
-                            error: error
-                        });
+                        reject(error);
                     });
-                } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00001'
-                    });
-                }
-            } else {
-                reject({
-                    success: false,
-                    code: 'ERR_JOB_00001'
+                }).catch(error => {
+                    _self.LOG.error(error);
+                    reject('Job: ' + definition.code + ' failed to stop it to update');
                 });
             }
         });
     };
 
-    this.runCronJob = function (authToken, definition) {
+    this.runJobs = function (definitions, result = [], failed = []) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (!UTILS.isBlank(definitions)) {
+                let definition = definitions.shift();
+                let apiKeyContainer = NODICS.getAPIKey(definition.tenant);
+                if (!apiKeyContainer) {
+                    this.LOG.warn('API key for tenant: ' + definition.tenant + ' not found, hence falling back to default');
+                    apiKeyContainer = NODICS.getAPIKey('default');
+                }
+                _self.runJob(apiKeyContainer.key, definition).then(success => {
+                    result.push(success);
+                    _self.runJobs(definitions, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    failed.push(error);
+                    _self.runJobs(definitions, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
+            } else {
+                resolve({
+                    success: true,
+                    code: 'SUC_JOB_00000',
+                    result: result,
+                    failed: failed
+                });
+            }
+        });
+    };
+
+    this.runJob = function (authToken, definition) {
         return new Promise((resolve, reject) => {
             try {
                 let currentDate = new Date();
@@ -236,7 +247,7 @@ module.exports = function () {
                         success: false,
                         code: 'ERR_JOB_00002'
                     });
-                } else if (!definition.triggers || Object.keys(definition.triggers).length <= 0) {
+                } else if (UTILS.isBlank(definition.trigger)) {
                     reject({
                         success: false,
                         code: 'ERR_JOB_00003'
@@ -251,28 +262,29 @@ module.exports = function () {
                         success: false,
                         code: 'ERR_JOB_00005'
                     });
+                } else if (_jobPool[definition.code] && _jobPool[definition.code].isRunning()) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00006'
+                    });
                 } else {
-                    let _running = false;
-                    if (_jobPool[definition.code] && _jobPool[definition.code][0].isRunning()) {
-                        _running = _jobPool[definition.code][0].isRunning();
-                        _jobPool[definition.code].forEach(function (job) {
-                            job.pauseCronJob();
-                        });
+                    let _active = false;
+                    if (_jobPool[definition.code] && _jobPool[definition.code].isActive()) {
+                        _active = _jobPool[definition.code].isActive();
+                        _jobPool[definition.code].pauseJob(true);
                     }
-                    if (!definition.nodeId || CONFIG.get('nodeId') === definition.nodeId) {
-                        let tmpCronJob = new CLASSES.CronJob(definition, definition.triggers[0]); //TODO: need to add context and timeZone
-                        tmpCronJob.LOG = _jobLOG;
+                    if (!definition.runOnNode || CONFIG.get('nodeId') === definition.runOnNode) {
+                        let tmpCronJob = new CLASSES.CronJob(definition, definition.trigger);
+                        tmpCronJob.LOG = SERVICE.DefaultLoggerService.createLogger('CronJob-' + definition.code);
                         tmpCronJob.validate();
                         tmpCronJob.setAuthToken(authToken);
-                        tmpCronJob.init(true);
                         tmpCronJob.setJobPool(_jobPool);
-                        if (_jobPool[definition.code] && _running) {
-                            _jobPool[definition.code].forEach(function (job) {
-                                job.resumeCronJob();
-                            });
+                        tmpCronJob.init(true);
+                        if (_jobPool[definition.code] && _active) {
+                            _jobPool[definition.code].resumeJob(true);
                         }
                     }
-                    resolve('Job: ' + definition.code + ' executed successfully');
+                    resolve('Job: ' + definition.code + ' run successfully');
                 }
             } catch (error) {
                 reject({
@@ -284,164 +296,238 @@ module.exports = function () {
         });
     };
 
-    this.startCronJobs = function (jobCodes) {
+    this.startJobs = function (jobCodes, result = [], failed = []) {
         let _self = this;
-        let _success = {};
-        let _failed = {};
-        jobCodes.forEach((value) => {
-            try {
-                _self.startCronJob(value);
-                _success[value] = {
-                    message: 'Job: ' + value + ' started successfully'
-                };
-            } catch (error) {
-                _failed[value] = error.toString();
+        return new Promise((resolve, reject) => {
+            if (jobCodes && jobCodes.length > 0) {
+                let code = jobCodes.shift();
+                _self.startJob(code).then(success => {
+                    result.push(success);
+                    _self.startJobs(jobCodes, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    failed.push(error.message || error.msg || error.stack || error);
+                    _self.startJobs(jobCodes, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
+            } else {
+                resolve({
+                    success: true,
+                    code: 'SUC_JOB_00000',
+                    result: result,
+                    failed: failed
+                });
             }
         });
-        return {
-            success: true,
-            code: '',
-            result: _success,
-            error: _failed
-        };
     };
 
-    this.startCronJob = function (jobCode) {
-        if (jobCode && _jobPool[jobCode]) {
-            _jobPool[jobCode].forEach(function (cronJob) {
-                cronJob.startCronJob();
-            });
-        } else {
-            throw new Error('Either jobCode' + jobCode + ' is not valid or job already removed.');
-        }
-    };
-
-    this.stopCronJobs = function (jobCodes) {
-        let _self = this;
-        let _success = {};
-        let _failed = {};
-        jobCodes.forEach((value) => {
-            try {
-                _self.stopCronJob(value);
-                _success[value] = {
-                    message: 'Job: ' + value + ' stoped successfully'
-                };
-            } catch (error) {
-                _failed[value] = error.toString();
+    this.startJob = function (jobCode) {
+        return new Promise((resolve, reject) => {
+            if (!_jobPool[jobCode]) {
+                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job');
+            } else {
+                _jobPool[jobCode].startJob().then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
             }
         });
-        return {
-            success: true,
-            code: '',
-            result: _success,
-            error: _failed
-        };
     };
 
-    this.stopCronJob = function (jobCode) {
-        if (jobCode && _jobPool[jobCode]) {
-            _jobPool[jobCode].forEach(function (cronJob) {
-                cronJob.stopCronJob();
-            });
-        } else {
-            throw new Error('Either jobCode' + jobCode + ' is not valid or job already removed.');
-        }
-    };
-
-    this.removeCronJobs = function (jobCodes) {
+    this.stopJobs = function (jobCodes, result = [], failed = []) {
         let _self = this;
-        let _success = {};
-        let _failed = {};
-        jobCodes.forEach((value) => {
-            try {
-                _self.removeCronJob(value);
-                _success[value] = {
-                    message: 'Job: ' + value + ' removed successfully'
-                };
-            } catch (error) {
-                _failed[value] = error.toString();
+        return new Promise((resolve, reject) => {
+            if (jobCodes && jobCodes.length > 0) {
+                let code = jobCodes.shift();
+                _self.stopJob(code).then(success => {
+                    result.push(success);
+                    _self.stopJobs(jobCodes, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    failed.push(error.message || error.msg || error.stack || error);
+                    _self.stopJobs(jobCodes, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
+            } else {
+                resolve({
+                    success: true,
+                    code: 'SUC_JOB_00000',
+                    result: result,
+                    failed: failed
+                });
             }
         });
-        return {
-            success: true,
-            code: '',
-            result: _success,
-            error: _failed
-        };
     };
 
-    this.removeCronJob = function (jobCode) {
-        if (jobCode && _jobPool[jobCode]) {
-            _jobPool[jobCode].forEach(function (cronJob) {
-                cronJob.stopCronJob();
-            });
-            delete _jobPool[jobCode];
-        } else {
-            throw new Error('Either jobCode' + jobCode + ' is not valid or job already removed.');
-        }
-    };
-
-    this.pauseCronJobs = function (jobCodes) {
-        let _self = this;
-        let _success = {};
-        let _failed = {};
-        jobCodes.forEach((value) => {
-            try {
-                _self.pauseCronJob(value);
-                _success[value] = {
-                    message: 'Job: ' + value + ' paused successfully'
-                };
-            } catch (error) {
-                _failed[value] = error.toString();
+    this.stopJob = function (jobCode) {
+        return new Promise((resolve, reject) => {
+            if (!_jobPool[jobCode]) {
+                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job');
+            } else {
+                _jobPool[jobCode].stopJob().then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
             }
         });
-        return {
-            success: true,
-            code: '',
-            result: _success,
-            error: _failed
-        };
     };
 
-    this.pauseCronJob = function (jobCode) {
-        if (jobCode && _jobPool[jobCode]) {
-            _jobPool[jobCode].forEach(function (cronJob) {
-                cronJob.pauseCronJob();
-            });
-        } else {
-            throw new Error('Either jobCode' + jobCode + ' is not valid or job already removed.');
-        }
-    };
-
-    this.resumeCronJobs = function (jobCodes) {
+    this.removeJobs = function (jobCodes, result = [], failed = []) {
         let _self = this;
-        let _success = {};
-        let _failed = {};
-        jobCodes.forEach((value) => {
-            try {
-                _self.resumeCronJob(value);
-                _success[value] = {
-                    message: 'Job: ' + value + ' resumed successfully'
-                };
-            } catch (error) {
-                _failed[value] = error.toString();
+        return new Promise((resolve, reject) => {
+            if (jobCodes && jobCodes.length > 0) {
+                let code = jobCodes.shift();
+                _self.removeJob(code).then(success => {
+                    result.push(success);
+                    _self.removeJobs(jobCodes, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    failed.push(error.message || error.msg || error.stack || error);
+                    _self.removeJobs(jobCodes, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
+            } else {
+                resolve({
+                    success: true,
+                    code: 'SUC_JOB_00000',
+                    result: result,
+                    failed: failed
+                });
             }
         });
-        return {
-            success: true,
-            code: '',
-            result: _success,
-            error: _failed
-        };
     };
 
-    this.resumeCronJob = function (jobCode) {
-        if (jobCode && _jobPool[jobCode]) {
-            _jobPool[jobCode].forEach(function (cronJob) {
-                cronJob.resumeCronJob();
-            });
-        } else {
-            throw new Error('Either jobCode' + jobCode + ' is not valid or job already removed.');
-        }
+    this.removeJob = function (jobCode) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (!_jobPool[jobCode]) {
+                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job');
+            } else {
+                _jobPool[jobCode].stopJob().then(success => {
+                    let definition = _jobPool[jobCode].getDefinition();
+                    SERVICE.DefaultPipelineService.start('defaultCronJobRemovedHandlerPipeline', {
+                        job: _jobPool[jobCode],
+                        definition: definition
+                    }, {}).then(success => {
+                        delete _jobPool[jobCode];
+                        resolve('Job: ' + definition.code + ' removed successfully');
+                    }).catch(error => {
+                        reject('Job: ' + definition.code + ' has issue while removing: ' + error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            }
+        });
+    };
+
+    this.pauseJobs = function (jobCodes, result = [], failed = []) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (jobCodes && jobCodes.length > 0) {
+                let code = jobCodes.shift();
+                _self.pauseJob(code).then(success => {
+                    result.push(success);
+                    _self.pauseJobs(jobCodes, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    failed.push(error.message || error.msg || error.stack || error);
+                    _self.pauseJobs(jobCodes, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
+            } else {
+                resolve({
+                    success: true,
+                    code: 'SUC_JOB_00000',
+                    result: result,
+                    failed: failed
+                });
+            }
+        });
+    };
+
+    this.pauseJob = function (jobCode) {
+        return new Promise((resolve, reject) => {
+            if (!_jobPool[jobCode]) {
+                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job');
+            } else {
+                _jobPool[jobCode].pauseJob().then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            }
+        });
+    };
+
+    this.resumeJobs = function (jobCodes, result = [], failed = []) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (jobCodes && jobCodes.length > 0) {
+                let code = jobCodes.shift();
+                _self.resumeJob(code).then(success => {
+                    result.push(success);
+                    _self.resumeJobs(jobCodes, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    failed.push(error.message || error.msg || error.stack || error);
+                    _self.resumeJobs(jobCodes, result, failed).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
+            } else {
+                resolve({
+                    success: true,
+                    code: 'SUC_JOB_00000',
+                    result: result,
+                    failed: failed
+                });
+            }
+        });
+    };
+
+    this.resumeJob = function (jobCode) {
+        return new Promise((resolve, reject) => {
+            if (!_jobPool[jobCode]) {
+                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job');
+            } else {
+                _jobPool[jobCode].resumeJob().then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            }
+        });
     };
 };

@@ -18,14 +18,12 @@ module.exports = {
             handler: 'DefaultSampleImportInterceptorService.handleDefaultImportProcessor'
         },
     },
-    profile: {
-        enterprise: {
-            importEnterpriseDataProcessor: {
-                type: 'importProcessor',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultSampleImportInterceptorService.handleEnterpriseImportProcessor'
-            },
-        }
+    enterprise: {
+        importEnterpriseDataProcessor: {
+            type: 'importProcessor',
+            active: 'true',
+            index: 0,
+            handler: 'DefaultSampleImportInterceptorService.handleEnterpriseImportProcessor'
+        },
     }
 };

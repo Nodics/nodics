@@ -14,22 +14,26 @@ module.exports = {
         code: "publishEvents",
         enterpriseCode: "default",
         tenant: "default",
+        runOnNode: 0,
         active: true,
         logResult: false,
-        targetNodeId: 0,
         jobDetail: {
-            startNode: "DefaultEventHandlerJobService.runJob"
+            //startNode: "DefaultEventHandlerJobService.runJob"
+            nodeId: 0,
+            module: 'nems',
+            method: 'GET',
+            uri: '/event/process',
+            // payload: {}
         },
-        triggers: [{
-            isActive: true,
+        trigger: {
             expression: "10 * * * * *"
-        }],
+        },
         emails: [{
             email: "nodics.framework@nodics.com"
         }],
         start: "2018-11-15T02:30:20.430Z",
         priority: 1000,
-        lastResult: "NEW",
+        status: "NEW",
         state: "NEW"
     }
 };

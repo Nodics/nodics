@@ -78,7 +78,7 @@ module.exports = {
         this.LOG.debug('Applying indexer interceptors');
         let moduleName = request.moduleName || request.header.options.moduleName;
         let indexName = request.indexName || request.header.options.indexName || request.header.local.indexerConfig.target.indexName;
-        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(indexName);
         if (interceptors && interceptors.index) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.index), {
                 tenant: request.tenant,

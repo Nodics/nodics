@@ -16,7 +16,7 @@ module.exports = {
         waitTime: 1000,
         activeJobsQuery: {
             $and: [{
-                "triggers.isActive": true
+                active: true
             },
             {
                 start: {

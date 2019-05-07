@@ -113,13 +113,11 @@ module.exports = {
 
     },
 
-    getInterceptors: function (moduleName, schmeaName) {
-        if (!this.interceptors[moduleName]) {
-            throw new Error('Invalid module name: ' + moduleName);
-        } else if (!this.interceptors[moduleName][schmeaName]) {
-            throw new Error('Invalid model name: ' + schmeaName);
+    getInterceptors: function (schmeaName) {
+        if (this.interceptors[schmeaName]) {
+            return this.interceptors[schmeaName];
         } else {
-            return this.interceptors[moduleName][schmeaName];
+            return null;
         }
     },
 

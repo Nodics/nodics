@@ -253,9 +253,8 @@ module.exports = {
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre save model interceptors');
-        let moduleName = request.moduleName || request.schemaModel.moduleName;
         let schemaName = request.schemaModel.schemaName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(schemaName);
         if (interceptors && interceptors.preSave) {
             let interceptorRequest = {
                 schemaModel: request.schemaModel,
@@ -422,9 +421,8 @@ module.exports = {
 
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post save model interceptors');
-        let moduleName = request.moduleName || request.schemaModel.moduleName;
         let schemaName = request.schemaModel.schemaName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(moduleName, schemaName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(schemaName);
         if (interceptors && interceptors.postSave) {
             let interceptorRequest = {
                 schemaModel: request.schemaModel,

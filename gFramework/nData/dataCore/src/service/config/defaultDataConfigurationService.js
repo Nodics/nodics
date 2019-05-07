@@ -58,13 +58,11 @@ module.exports = {
 
     },
 
-    getExportInterceptors: function (moduleName, modelName) {
-        if (!this.exportInterceptors[moduleName]) {
-            throw new Error('Invalid module name: ' + moduleName);
-        } else if (!this.exportInterceptors[moduleName][modelName]) {
-            throw new Error('Invalid model name: ' + modelName);
+    getExportInterceptors: function (entityName) {
+        if (this.exportInterceptors[entityName]) {
+            return this.exportInterceptors[entityName]
         } else {
-            return this.exportInterceptors[moduleName][modelName];
+            return null;
         }
     }
 };

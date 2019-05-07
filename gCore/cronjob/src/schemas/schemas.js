@@ -45,15 +45,10 @@ module.exports = {
                 fullname: 'DefaultCronJobVirtualService.getFullName',
             },
             definition: {
-                nodeId: {
+                runOnNode: {
                     type: 'int',
                     required: false,
                     description: 'Execution node or cluster id, where job will run. this to avoid running job in multiple nodes'
-                },
-                targetNodeId: {
-                    type: 'int',
-                    required: false,
-                    description: 'Required if this job is going to hit external module, if not job will hit to load balancer if any'
                 },
                 runOnInit: {
                     type: 'bool',
@@ -66,12 +61,8 @@ module.exports = {
                     required: true,
                     description: 'Required to give job handler startNode, endNode and errorNode service funtions'
                 },
-                'jobDetail.startNode': {
-                    type: 'string',
-                    required: true,
-                },
-                triggers: {
-                    type: 'array',
+                trigger: {
+                    type: 'object',
                     required: true,
                     description: 'Number of trigger expression'
                 },
@@ -91,7 +82,7 @@ module.exports = {
                     default: 0,
                     description: 'define priority to get preference when there are multiple job'
                 },
-                lastResult: {
+                status: {
                     type: 'string',
                     required: true,
                     default: 'NEW',
@@ -104,7 +95,7 @@ module.exports = {
                     description: 'Current state of JOB'
                 },
                 log: {
-                    type: 'object',
+                    type: 'array',
                     required: false,
                     description: 'Last result of job execution'
                 },

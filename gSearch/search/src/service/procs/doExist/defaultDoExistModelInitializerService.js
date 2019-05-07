@@ -45,9 +45,8 @@ module.exports = {
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre do exist interceptors');
-        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
         let indexName = request.indexName || request.searchModel.indexName;
-        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(indexName);
         if (interceptors && interceptors.preDoExist) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoExist), {
                 schemaModel: request.schemaModel,
@@ -91,9 +90,8 @@ module.exports = {
 
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do exist interceptors');
-        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
         let indexName = request.indexName || request.searchModel.indexName;
-        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(indexName);
         if (interceptors && interceptors.postDoExist) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoExist), {
                 schemaModel: request.schemaModel,

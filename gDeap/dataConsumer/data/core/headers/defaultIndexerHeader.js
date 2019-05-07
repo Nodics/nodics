@@ -10,12 +10,17 @@
  */
 
 module.exports = {
-    tenant: {
-        tenantActiveDataProcessor: {
-            type: 'import',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultTenantImportInterceptorService.convertActiveValueToBoolean'
-        },
+    dataConsumer: {
+        defaultIndexerData: {
+            options: {
+                modelName: 'indexer',
+                operation: 'save', //save, update and saveOrUpdate
+                //tenant: 'default',
+                dataFilePrefix: 'defaultIndexerData'
+            },
+            query: {
+                code: 'code'
+            }
+        }
     }
 };

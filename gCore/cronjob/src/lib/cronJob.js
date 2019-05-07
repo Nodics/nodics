@@ -10,7 +10,6 @@
  */
 
 const CronJob = require('cron').CronJob;
-const async = require('async');
 
 module.exports = function (definition, trigger, context, timeZone) {
     let _definition = definition;
@@ -18,10 +17,19 @@ module.exports = function (definition, trigger, context, timeZone) {
     let _context = context;
     let _timeZone = timeZone;
     let _cronJob = '';
+    let _active = false;
     let _running = false;
     let _paused = false;
     let _authToken = '';
     let _jobPool = [];
+
+    this.getDefinition = function () {
+        return _definition;
+    };
+
+    this.getTrigger = function () {
+        return _trigger;
+    };
 
     this.setJobPool = function (jobPool) {
         _jobPool = jobPool;
@@ -42,117 +50,176 @@ module.exports = function (definition, trigger, context, timeZone) {
         if (!_definition.jobDetail) {
             throw new Error('Invalid job detail within cronJob definition');
         }
-        if (!_definition.jobDetail.startNode) {
-            throw new Error('Invalid service job node to start');
-        }
-        if (!_definition.jobDetail.endNode) {
-            _definition.jobDetail.endNode = 'DefaultJobHandlerService.handleSuccess';
-        }
-        if (!_definition.jobDetail.errorNode) {
-            _definition.jobDetail.errorNode = 'DefaultJobHandlerService.handleError';
-        }
     };
 
     this.init = function (oneTime) {
         let _self = this;
         let cronTime = this.getCronTime(oneTime);
-        _self.LOG.info('    Creating job with time schedule : ', cronTime);
+        _self.LOG.info('###### Creating job with time schedule : ', cronTime);
         _cronJob = new CronJob({
             cronTime: cronTime,
             onTick: function () {
                 try {
-                    if (!_paused) {
-                        _running = true;
+                    if (_active && !_paused && !_running) {
                         if (_definition.end && _definition.end < new Date()) {
                             _self.LOG.warn('   WARN: Job : ', _definition.code, ' got expired. hence has been stopped');
-                            _self.stopCronJob();
-                            delete _jobPool[_definition.code];
+                            _self.stopJob(true);
                         }
-                        SERVICE.DefaultJobHandlerService.handleJobTriggered(_definition, _self);
-                        try {
-                            if (NODICS.getServerState() === 'started' &&
-                                (!_definition.nodeId || CONFIG.get('nodeId') === _definition.nodeId)) {
-                                let startNode = _definition.jobDetail.startNode;
-                                let serviceName = startNode.substring(0, startNode.indexOf('.'));
-                                let functionName = startNode.substring(startNode.indexOf('.') + 1, startNode.length);
-                                SERVICE[serviceName][functionName](_definition, _self);
-                            }
-                        } catch (error) {
-                            let errorNode = _definition.jobDetail.errorNode;
-                            let serviceName = errorNode.substring(0, errorNode.indexOf('.'));
-                            let functionName = errorNode.substring(errorNode.indexOf('.') + 1, errorNode.length);
-                            SERVICE[serviceName][functionName](_definition, _self, error);
-                        }
-                        SERVICE.DefaultJobHandlerService.handleJobCompleted(_definition, _self);
-                        if (oneTime) {
-                            _self.stopCronJob();
+                        if (NODICS.getServerState() === 'started' && (!_definition.runOnNode || CONFIG.get('nodeId') === _definition.runOnNode)) {
+                            _running = true;
+                            SERVICE.DefaultPipelineService.start('defaultCronJobTriggerHandlerPipeline', {
+                                job: _self,
+                                definition: _definition
+                            }, {}).then(success => {
+                                _running = false;
+                                _self.LOG.warn('Job : ', _definition.code, ' completed its execution successfully');
+                                if (oneTime) _self.stopJob(true);
+                            }).catch(error => {
+                                _running = false;
+                                _self.LOG.error('Job: ' + _definition.code + ' has issue while execution: ' + error);
+                                if (oneTime) _self.stopJob(true);
+                            });
                         }
                     }
                 } catch (error) {
-                    _self.LOG.error('Job: ' + _definition.code + ' has issue while running: ' + error.toString());
+                    _self.handleError(error);
                 }
             },
             onComplete: function () {
-                if (!_paused) {
-                    try {
-                        if (_running && NODICS.getServerState() === 'started' && CONFIG.get('nodeId') === _definition.nodeId) {
-                            let endNode = _definition.jobDetail.endNode;
-                            let serviceName = endNode.substring(0, endNode.indexOf('.'));
-                            let functionName = endNode.substring(endNode.indexOf('.') + 1, endNode.length);
-                            SERVICE[serviceName][functionName](_definition, _self);
-                        }
-                    } catch (error) {
-                        let errorNode = _definition.jobDetail.errorNode;
-                        let serviceName = errorNode.substring(0, errorNode.indexOf('.'));
-                        let functionName = errorNode.substring(errorNode.indexOf('.') + 1, errorNode.length);
-                        SERVICE[serviceName][functionName](_definition, _self, error);
+                try {
+                    if (NODICS.getServerState() === 'started' && CONFIG.get('nodeId') === _definition.runOnNode) {
+                        SERVICE.DefaultPipelineService.start('defaultCronJobCompleteHandlerPipeline', {
+                            job: _self,
+                            definition: _definition
+                        }, {}).then(success => {
+                            _self.LOG.warn('Job : ', _definition.code, ' completes successfully');
+                        }).catch(error => {
+                            _self.LOG.error('Job: ' + _definition.code + ' has issue while onComplete: ' + error);
+                        });
                     }
-                    SERVICE.DefaultJobHandlerService.handleCronJobEnd(_definition, _self);
-                    _running = false;
+                } catch (error) {
+                    _self.handleError(error);
                 }
+                _active = false;
             },
             start: _definition.runOnInit,
             context: _context,
             timeZone: _timeZone
         });
-
+        _active = false;
         if (oneTime) {
-            _self.startCronJob();
+            _self.startJob(true);
         }
     };
 
-    this.startCronJob = function () {
-        if (!_running) {
-            _paused = false;
-            async.parallel([
-                function () {
-                    SERVICE.DefaultJobHandlerService.handleCronJobStart(_definition, _cronJob);
-                },
-                function () {
-                    _cronJob.start();
+    this.startJob = function (disablePipeline) {
+        let _self = this;
+        if (disablePipeline) {
+            if (!_active) {
+                _active = true;
+                _paused = false;
+                _cronJob.start();
+            }
+        } else {
+            return new Promise((resolve, reject) => {
+                if (!_active) {
+                    _active = true;
+                    _paused = false;
+                    SERVICE.DefaultPipelineService.start('defaultCronJobStartHandlerPipeline', {
+                        job: _self,
+                        definition: _definition
+                    }, {}).then(success => {
+                        _cronJob.start();
+                        resolve('Job: ' + _definition.code + ' started successfully');
+                    }).catch(error => {
+                        reject('Job: ' + _definition.code + ' has issue while starting: ' + error);
+                    });
+                } else {
+                    resolve('Job: ' + _definition.code + ' is already running');
                 }
-            ]);
+            });
         }
     };
 
-    this.stopCronJob = function () {
-        if (_running) {
-            _cronJob.stop();
+    this.stopJob = function (disablePipeline) {
+        let _self = this;
+        if (disablePipeline) {
+            if (_active) {
+                _active = false;
+                _cronJob.stop();
+            }
+        } else {
+            return new Promise((resolve, reject) => {
+                if (_active) {
+                    _active = false;
+                    _cronJob.stop();
+                    SERVICE.DefaultPipelineService.start('defaultCronJobStopHandlerPipeline', {
+                        job: _self,
+                        definition: _definition
+                    }, {}).then(success => {
+                        resolve('Job: ' + _definition.code + ' stoped successfully');
+                    }).catch(error => {
+                        reject('Job: ' + _definition.code + ' has issue while stoping: ' + error);
+                    });
+                } else {
+                    resolve('Job: ' + _definition.code + ' is already stoped');
+                }
+            });
         }
     };
 
-    this.pauseCronJob = function () {
-        if (_running) {
-            _paused = true;
-            SERVICE.DefaultJobHandlerService.handleCronJobPaused(_definition, _cronJob);
+    this.pauseJob = function (disablePipeline) {
+        let _self = this;
+        if (disablePipeline) {
+            if (_active && !_paused) {
+                _paused = true;
+            }
+        } else {
+            return new Promise((resolve, reject) => {
+                if (_active && !_paused) {
+                    _paused = true;
+                    SERVICE.DefaultPipelineService.start('defaultCronJobPauseHandlerPipeline', {
+                        job: _self,
+                        definition: _definition
+                    }, {}).then(success => {
+                        resolve('Job: ' + _definition.code + ' paused successfully');
+                    }).catch(error => {
+                        reject('Job: ' + _definition.code + ' has issue while stoping: ' + error);
+                    });
+                } else {
+                    resolve('Job: ' + _definition.code + ' is already paused');
+                }
+            });
         }
     };
 
-    this.resumeCronJob = function () {
-        if (_running) {
-            _paused = false;
-            SERVICE.DefaultJobHandlerService.handleCronJobResumed(_definition, _cronJob);
+    this.resumeJob = function (disablePipeline) {
+        let _self = this;
+        if (disablePipeline) {
+            if (_active && _paused) {
+                _paused = false;
+            }
+        } else {
+            return new Promise((resolve, reject) => {
+                if (_active && _paused) {
+                    _paused = false;
+                    SERVICE.DefaultPipelineService.start('defaultCronJobResumedHandlerPipeline', {
+                        job: _self,
+                        definition: _definition
+                    }, {}).then(success => {
+                        resolve('Job: ' + _definition.code + ' resumed successfully');
+                    }).catch(error => {
+                        reject('Job: ' + _definition.code + ' has issue while resuming: ' + error);
+                    });
+                } else {
+                    resolve('Job: ' + _definition.code + ' is already resumed');
+                }
+            });
         }
+    };
+
+    this.isActive = function () {
+        return _active;
     };
 
     this.isRunning = function () {
@@ -176,5 +243,19 @@ module.exports = function (definition, trigger, context, timeZone) {
             _trigger.month || '*' +
             ' ' +
             _trigger.day || '*';
+    };
+
+    this.handleError = function (error) {
+        _self.LOG.error('Job: ' + _definition.code + ' has issue while running: ' + error);
+        SERVICE.DefaultPipelineService.start('defaultCronJobErrorHandlerPipeline', {
+            job: _self,
+            definition: _definition,
+            error: error
+        }, {}).then(success => {
+            _self.LOG.warn('Error for Job: ' + _definition.code + ' has been handled successfully');
+        }).catch(error => {
+            _self.LOG.warn('Failed to handle rror for Job: ' + _definition.code);
+            _self.LOG.error(error);
+        });
     };
 };

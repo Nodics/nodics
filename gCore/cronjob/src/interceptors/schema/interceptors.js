@@ -10,20 +10,18 @@
  */
 
 module.exports = {
-    cronjob: {
-        cronJob: {
-            preSaveCheckActiveValue: {
-                type: 'preSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultActiveValuesCheckService.convertToDate'
-            },
-            preUpdateCheckActiveValue: {
-                type: 'preUpdate',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultActiveValuesCheckService.convertToDate'
-            }
+    cronJob: {
+        preSaveCheckActiveValue: {
+            type: 'preSave',
+            active: 'true',
+            index: 0,
+            handler: 'DefaultActiveValuesCheckService.convertToDate'
+        },
+        preUpdateCheckActiveValue: {
+            type: 'preUpdate',
+            active: 'true',
+            index: 0,
+            handler: 'DefaultActiveValuesCheckService.convertToDate'
         }
     }
 };

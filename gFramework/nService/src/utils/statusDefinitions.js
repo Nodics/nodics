@@ -284,6 +284,11 @@ module.exports = {
         description: 'Job already expired',
         message: 'Job already expired'
     },
+    ERR_JOB_00006: {
+        code: '900006',
+        description: 'Job already running',
+        message: 'Job already running'
+    },
 
     //Success CronJob 
     SUC_EVNT_00000: {

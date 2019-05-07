@@ -21,7 +21,11 @@ module.exports = {
         definition: [
             'NEW',
             'RUNNING',
-            'FINISHED'
+            'ACTIVE',
+            'PAUSED',
+            'STOPED',
+            'CREATED',
+            'REMOVED'
         ]
     },
     CronJobStatus: {
@@ -35,7 +39,6 @@ module.exports = {
         definition: [
             'NEW',
             'SUCCESS',
-            'FAILURE',
             'ERROR'
         ]
     },

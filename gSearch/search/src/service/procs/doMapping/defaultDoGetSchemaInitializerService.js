@@ -43,9 +43,8 @@ module.exports = {
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do get schema interceptors');
-        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
         let indexName = request.indexName || request.searchModel.indexName;
-        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(indexName);
         if (interceptors && interceptors.preDoGetSchema) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoGetSchema), {
                 schemaModel: request.schemaModel,
@@ -89,9 +88,8 @@ module.exports = {
 
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do get schema interceptors');
-        let moduleName = request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName;
         let indexName = request.indexName || request.searchModel.indexName;
-        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(moduleName, indexName);
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(indexName);
         if (interceptors && interceptors.postDoGetSchema) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoGetSchema), {
                 schemaModel: request.schemaModel,

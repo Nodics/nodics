@@ -10,26 +10,24 @@
  */
 
 module.exports = {
-    nems: {
-        event: {
-            eventSplitPreSave: {
-                type: 'preSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEventSplitInterceptorService.eventSplitPreSave'
-            },
-            eventSplitPostSave: {
-                type: 'postSave',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEventSplitInterceptorService.eventSplitPostSave'
-            },
-            eventSplitPostProcessor: {
-                type: 'postSaveProcessor',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultEventSplitInterceptorService.handleSyncEvents'
-            }
+    event: {
+        eventSplitPreSave: {
+            type: 'preSave',
+            active: 'true',
+            index: 0,
+            handler: 'DefaultEventSplitInterceptorService.eventSplitPreSave'
+        },
+        eventSplitPostSave: {
+            type: 'postSave',
+            active: 'true',
+            index: 0,
+            handler: 'DefaultEventSplitInterceptorService.eventSplitPostSave'
+        },
+        eventSplitPostProcessor: {
+            type: 'postSaveProcessor',
+            active: 'true',
+            index: 0,
+            handler: 'DefaultEventSplitInterceptorService.handleSyncEvents'
         }
     }
 };
