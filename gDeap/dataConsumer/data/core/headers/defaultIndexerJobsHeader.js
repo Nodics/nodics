@@ -11,12 +11,12 @@
 
 module.exports = {
     cronjob: {
-        eventPublishJob: {
+        indexerJob: {
             options: {
-                modelName: 'cronJob',
+                schemaName: 'cronJob',
                 operation: 'save', //save, update and saveOrUpdate
-                tenant: 'default',
-                dataFilePrefix: 'eventPublishJob'
+                tenants: ['default'],
+                dataFilePrefix: 'defaultIndexerJobsData'
             },
             query: {
                 code: 'code'

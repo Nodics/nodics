@@ -100,7 +100,7 @@ module.exports = {
                 process.error(request, response, error);
             });
         } else {
-            SERVICE.DefaultModuleService.fetch(this.prepareURL(definition)).then(success => {
+            SERVICE.DefaultModuleService.fetch(this.prepareURL(request.definition)).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);

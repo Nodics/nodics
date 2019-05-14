@@ -228,86 +228,131 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    insertSchemaModel: function (request, response, process) {
+    insertModel: function (request, response, process) {
         let header = request.header;
-        if (header.options.schemaName) {
-            this.LOG.debug('Initiating data model import process');
-            let model = request.dataModel;
-            let models = [];
-            if (UTILS.isArray(model)) {
-                _.each(model, (modelObject, name) => {
-                    models.push(modelObject);
+        let models = [];
+        if (UTILS.isArray(request.dataModel)) {
+            _.each(request.dataModel, (modelObject, name) => {
+                models.push(modelObject);
+            });
+        } else {
+            models.push(request.dataModel);
+        }
+        if (NODICS.isModuleActive(header.options.moduleName)) {
+            if (header.options.schemaName) {
+                this.insertLocalSchemaModel(request, models).then(success => {
+                    response.success = success;
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            } else if (header.options.indexName) {
+                this.insertLocalSearchModel(request, models).then(success => {
+                    response.success = success;
+                }).catch(error => {
+                    process.error(request, response, error);
                 });
             } else {
-                models.push(model);
+                process.error(request, response, 'Invalid header options, should contain either schemaName or indexName');
             }
+        } else {
+            this.insertRemoteModel(request, models).then(success => {
+                response.success = success;
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        }
+    },
+    insertLocalSchemaModel: function (request, models) {
+        let header = request.header;
+        return new Promise((resolve, reject) => {
             SERVICE['Default' + header.options.schemaName.toUpperCaseFirstChar() + 'Service'][header.options.operation]({
                 tenant: request.tenant,
                 query: header.query,
                 models: models
             }).then(result => {
                 if (!result) {
-                    process.error(request, response, {
+                    reject({
                         success: false,
                         code: 'ERR_IMP_00001',
                         msg: 'Could not found any response from data access layer'
                     });
                 } else if (result.success) {
+                    let success = [];
                     if (UTILS.isArray(result.result)) {
-                        result.result.forEach(element => {
-                            response.success.push(element);
-                        });
+                        success = success.concat(result.result);
                     } else {
-                        response.success.push(result.result);
+                        success.push(result.result);
                     }
-                    process.nextSuccess(request, response);
+                    resolve(success);
                 } else {
-                    process.error(request, response, result);
+                    reject(reject);
                 }
             }).catch(error => {
-                process.error(request, response, error);
+                reject(error);
             });
-        } else {
-            process.nextSuccess(request, response);
-        }
+        });
     },
 
-    insertSearchModel: function (request, response, process) {
-        this.LOG.debug('Initiating data model import process');
+    insertLocalSearchModel: function (request, models) {
         let header = request.header;
-        if (header.options.indexName) {
+        return new Promise((resolve, reject) => {
             let searchService = SERVICE['Default' + header.options.indexName.toUpperCaseFirstChar() + 'Service'] || SERVICE.DefaultSearchService;
             searchService[header.options.operation]({
                 tenant: request.tenant,
                 indexName: request.indexName || header.options.indexName,
                 moduleName: request.moduleName || header.options.moduleName,
                 options: request.options || {},
-                model: request.dataModel
+                model: request.models[0]
             }).then(result => {
                 if (!result) {
-                    process.error(request, response, {
+                    reject({
                         success: false,
                         code: 'ERR_IMP_00001',
                         msg: 'Could not found any response from data access layer'
                     });
                 } else if (result.success) {
+                    let success = [];
                     if (UTILS.isArray(result.result)) {
-                        result.result.forEach(element => {
-                            response.success.push(element);
-                        });
+                        success = success.concat(result.result);
                     } else {
-                        response.success.push(result.result);
+                        success.push(result.result);
                     }
-                    process.nextSuccess(request, response);
+                    resolve(success);
                 } else {
-                    process.error(request, response, result);
+                    reject(reject);
                 }
             }).catch(error => {
-                process.error(request, response, error);
+                reject(reject);
             });
-        } else {
-            process.nextSuccess(request, response);
-        }
+        });
+    },
+
+    prepareURL: function (request, models) {
+        let header = request.header;
+        return SERVICE.DefaultModuleService.buildRequest({
+            connectionType: 'abstract',
+            nodeId: '0',
+            moduleName: header.options.moduleName,
+            methodName: 'POST',
+            apiName: '/' + header.options.schemaName ? header.options.schemaName : header.options.indexName + header.options.indexName ? '/search' : '',
+            requestBody: models,
+            isJsonResponse: true,
+            header: {
+                apiKey: NODICS.getAPIKey(request.tenant).key
+            }
+        });
+    },
+
+    insertRemoteModel: function (request, models) {
+        let header = request.header;
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultModuleService.fetch(this.prepareURL(request, header.options.schemaName ? models : models[0])).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
+
+        });
     },
 
     handleSucessEnd: function (request, response, process) {

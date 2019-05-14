@@ -319,16 +319,11 @@ module.exports = {
             populateSearchDependancies: {
                 type: 'function',
                 handler: 'DefaultModelImportProcessService.populateSearchDependancies',
-                success: 'insertSchemaModel'
+                success: 'insertModel'
             },
-            insertSchemaModel: {
+            insertModel: {
                 type: 'function',
-                handler: 'DefaultModelImportProcessService.insertSchemaModel',
-                success: 'insertSearchModel'
-            },
-            insertSearchModel: {
-                type: 'function',
-                handler: 'DefaultModelImportProcessService.insertSearchModel',
+                handler: 'DefaultModelImportProcessService.insertModel',
                 success: 'successEnd'
             },
             successEnd: {

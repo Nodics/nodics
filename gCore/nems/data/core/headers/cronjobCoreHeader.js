@@ -10,12 +10,13 @@
  */
 
 module.exports = {
-    dataConsumer: {
-        defaultIndexerData: {
+    cronjob: {
+        eventPublishJob: {
             options: {
-                schemaName: 'indexer',
+                schemaName: 'cronJob',
                 operation: 'save', //save, update and saveOrUpdate
-                dataFilePrefix: 'defaultIndexerData'
+                tenants: ['default'],
+                dataFilePrefix: 'eventPublishJob'
             },
             query: {
                 code: 'code'

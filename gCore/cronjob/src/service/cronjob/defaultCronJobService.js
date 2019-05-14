@@ -129,7 +129,7 @@ module.exports = {
             _self.LOG.debug('Starting all active jobs on server start-up: ' + NODICS.getServerState());
             if (NODICS.getServerState() === 'started') {
                 _self.createJob({ tenant: 'default' }).then(response => {
-                    _self.startJob({ jobCodes: response }).then(success => {
+                    _self.cronJobContainer.startAllJobs().then(success => {
                         _self.LOG.debug('triggered cronjob start process : ', response);
                     }).catch(error => {
                         _self.LOG.error('Something went wrong while starting CronJobs : ', error);

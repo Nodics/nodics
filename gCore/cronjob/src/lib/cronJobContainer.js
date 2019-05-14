@@ -296,6 +296,10 @@ module.exports = function () {
         });
     };
 
+    this.startAllJobs = function () {
+        return this.startJobs(Object.keys(_jobPool));
+    };
+
     this.startJobs = function (jobCodes, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {
