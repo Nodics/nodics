@@ -19,7 +19,9 @@ module.exports = {
                 resolve({
                     success: true,
                     code: 'SUC_SYS_00000',
-                    result: apiKey
+                    result: {
+                        apiKey: apiKey.key
+                    }
                 });
             } catch (error) {
                 reject({

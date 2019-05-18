@@ -110,6 +110,7 @@ module.exports = {
                                 headerObj.options.filePath = element;
                                 headerObj.options.done = false;
                                 headerObj.options.dataHandler = (headerObj.options.indexName) ? 'indexerDataHandlerPipeline' : 'schemaDataHandlerPipeline';
+                                headerObj.local = headerObj.local || {};
                                 if (headerObj.options.indexName) {
                                     headerObj.local = _.merge(headerObj.local || {}, {
                                         indexerConfig: {

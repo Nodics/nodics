@@ -16,10 +16,12 @@ module.exports = {
     forceAPIKeyGenerate: false,
 
     profile: {
-        defaultAuthDetail: {
-            enterpriseCode: 'default',
-            tenant: 'default',
-            loginId: 'apiAdmin'
+        jwtSignOptions: {
+            expiresIn: "5m",
+            algorithm: "HS256"   // RSASSA [ "RS256", "RS384", "RS512" ]
+        },
+        jwtVerifyOptions: {
+            algorithm: ["HS256"]
         }
     },
 

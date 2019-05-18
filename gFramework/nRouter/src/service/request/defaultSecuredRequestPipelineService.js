@@ -43,27 +43,11 @@ module.exports = {
         if (request.apiKey) {
             this.LOG.debug('Authorizing api key : ', request.apiKey);
             SERVICE.DefaultAuthorizationProviderService.authorizeAPIKey(request).then(success => {
-                try {
-                    if (success.success && success.result) {
-                        request.enterprise = success.result.enterprise;
-                        request.enterpriseCode = success.result.enterprise.code;
-                        request.person = success.result.person;
-                        request.tenant = success.result.enterprise.tenant.code;
-                        process.nextSuccess(request, response);
-                    } else {
-                        process.error(request, response, {
-                            success: false,
-                            code: 'ERR_AUTH_00001',
-                            error: err
-                        });
-                    }
-                } catch (err) {
-                    process.error(request, response, {
-                        success: false,
-                        code: 'ERR_AUTH_00001',
-                        error: err
-                    });
-                }
+                request.enterprise = success.enterprise;
+                request.enterpriseCode = success.enterprise.code;
+                request.person = success.person;
+                request.tenant = success.enterprise.tenant.code;
+                process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
             });
@@ -78,16 +62,16 @@ module.exports = {
             SERVICE.DefaultAuthorizationProviderService.authorizeToken(request).then(success => {
                 try {
                     if (success.success && success.result) {
-                        request.enterprise = success.result.enterprise;
-                        request.enterpriseCode = success.result.enterprise.code;
-                        request.person = success.result.person;
-                        request.tenant = success.result.enterprise.tenant.code;
+                        request.enterpriseCode = success.result.enterpriseCode;
+                        request.tenant = success.result.tenant;
+                        request.loginId = success.result.loginId;
+                        request.refreshToken = success.result.refreshToken;
                         process.nextSuccess(request, response);
                     } else {
                         process.error(request, response, {
                             success: false,
                             code: 'ERR_AUTH_00001',
-                            error: err
+                            error: 'Invalid authToken'
                         });
                     }
                 } catch (err) {
@@ -106,13 +90,7 @@ module.exports = {
     },
 
     validateRequestData: function (request, response, process) {
-        if (!request.enterprise) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_AUTH_00002',
-                msg: 'Invalid secured request'
-            });
-        } else if (!request.person) {
+        if (!request.enterpriseCode) {
             process.error(request, response, {
                 success: false,
                 code: 'ERR_AUTH_00002',

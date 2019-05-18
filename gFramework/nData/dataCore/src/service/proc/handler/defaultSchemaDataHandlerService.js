@@ -69,9 +69,8 @@ module.exports = {
 
     applyInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre processors in models');
-        let moduleName = request.header.options.moduleName;
         let schemaName = request.header.options.schemaName;
-        let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(moduleName, schemaName);
+        let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(schemaName);
         if (interceptors && interceptors.import && interceptors.import.length > 0) {
             SERVICE.DefaultProcessorHandlerService.executeProcessors(
                 [].concat(interceptors.import), {

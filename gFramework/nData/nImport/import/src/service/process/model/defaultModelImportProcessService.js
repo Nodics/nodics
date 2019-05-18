@@ -242,12 +242,14 @@ module.exports = {
             if (header.options.schemaName) {
                 this.insertLocalSchemaModel(request, models).then(success => {
                     response.success = success;
+                    process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);
                 });
             } else if (header.options.indexName) {
                 this.insertLocalSearchModel(request, models).then(success => {
                     response.success = success;
+                    process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);
                 });
@@ -257,6 +259,7 @@ module.exports = {
         } else {
             this.insertRemoteModel(request, models).then(success => {
                 response.success = success;
+                process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
             });
@@ -338,7 +341,7 @@ module.exports = {
             requestBody: models,
             isJsonResponse: true,
             header: {
-                apiKey: NODICS.getAPIKey(request.tenant).key
+                authToken: NODICS.getAPIKey(request.tenant).key
             }
         });
     },

@@ -59,12 +59,10 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(schemaName);
         if (interceptors && interceptors.preSaveProcessor && interceptors.preSaveProcessor.length > 0) {
-            let interceptorRequest = {
+            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.preSaveProcessor), {
                 request: request,
                 response: response
-            };
-            let interceptorResponse = {};
-            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.preSaveProcessor), interceptorRequest, interceptorResponse).then(success => {
+            }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -141,12 +139,10 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(schemaName);
         if (interceptors && interceptors.postSaveProcessor && interceptors.postSaveProcessor.length > 0) {
-            let interceptorRequest = {
+            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.postSaveProcessor), {
                 request: request,
                 response: response
-            };
-            let interceptorResponse = {};
-            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.postSaveProcessor), interceptorRequest, interceptorResponse).then(success => {
+            }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {

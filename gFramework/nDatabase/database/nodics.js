@@ -44,9 +44,28 @@ module.exports = {
                     resolve(true);
                 });
             }).then(() => {
-                NODICS.addAPIKey('default', CONFIG.get('defaultAPIKey'),
-                    CONFIG.get('profile') ? CONFIG.get('profile').defaultAuthDetail : {});
-                return Promise.resolve(true);
+                return new Promise((resolve, reject) => {
+                    if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+                        let defaultAuthDetail = CONFIG.get('profile').defaultAuthDetail || {};
+                        let payload = {
+                            enterpriseCode: defaultAuthDetail.enterpriseCode,
+                            tenant: defaultAuthDetail.tenant,
+                            loginId: defaultAuthDetail.loginId,
+                            apiKey: CONFIG.get('defaultAuthDetail').apiKey,
+                            type: 'Employee',
+                            requiredRefreshToken: false,
+                            lifetime: true
+                        };
+                        SERVICE.DefaultAuthenticationProviderService.generateAuthToken(payload).then(success => {
+                            NODICS.addAPIKey('default', success.authToken, payload);
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        resolve(true);
+                    }
+                });
             }).then(() => {
                 resolve(true);
             }).catch(error => {

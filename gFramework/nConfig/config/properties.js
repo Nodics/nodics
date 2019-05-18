@@ -52,7 +52,11 @@ module.exports = {
     defaultContentType: 'application/json',
     profileModuleName: 'profile',
     processRetrySleepTime: 2000,
-    defaultAPIKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
+    defaultAuthDetail: {
+        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
+        enterpriseCode: 'default'
+    },
+
     log: {
         enabled: true,
         level: 'debug',
@@ -84,5 +88,6 @@ module.exports = {
         elasticConfig: {
 
         }
-    }
+    },
+    jwtSecretKey: 'nodics'
 };

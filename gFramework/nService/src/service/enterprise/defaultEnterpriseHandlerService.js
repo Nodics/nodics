@@ -70,7 +70,7 @@ module.exports = {
                         requestBody: {},
                         isJsonResponse: true,
                         header: {
-                            apiKey: NODICS.getAPIKey('default').key,
+                            authToken: NODICS.getAPIKey('default').key,
                             recursive: true
                         }
                     });
@@ -186,7 +186,8 @@ module.exports = {
                                                     enterpriseCode: enterprise.code,
                                                     inputPath: {
                                                         rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
-                                                        dataType: 'init'
+                                                        dataType: 'init',
+                                                        postFix: 'data'
                                                     }
                                                 }).then(success => {
                                                     SERVICE.DefaultEmployeeService.get({
@@ -196,15 +197,25 @@ module.exports = {
                                                         }
                                                     }).then(success => {
                                                         if (success.success && success.result.length > 0) {
-                                                            let apiKeyValue = {
+                                                            let payload = {
                                                                 enterpriseCode: enterprise.code,
                                                                 tenant: enterprise.tenant.code,
-                                                                loginId: success.result[0].loginId
+                                                                loginId: success.result[0].loginId,
+                                                                apiKey: success.result[0].apiKey,
+                                                                type: 'Employee',
+                                                                requiredRefreshToken: false,
+                                                                lifetime: true
                                                             };
-                                                            NODICS.addAPIKey(enterprise.tenant.code, success.result[0].apiKey, apiKeyValue);
-                                                            _self.buildEnterprise(enterprises).then(success => {
-                                                                resolve(true);
+                                                            SERVICE.DefaultAuthenticationProviderService.generateAuthToken(payload).then(success => {
+                                                                NODICS.addAPIKey(enterprise.tenant.code, success.authToken, payload);
+                                                                _self.buildEnterprise(enterprises).then(success => {
+                                                                    resolve(true);
+                                                                }).catch(error => {
+                                                                    reject(error);
+                                                                });
                                                             }).catch(error => {
+                                                                _self.LOG.error('Failed generating authToken for : ' + enterprise.tenant.code);
+                                                                _self.LOG.error(error);
                                                                 reject(error);
                                                             });
                                                         } else {
@@ -220,15 +231,25 @@ module.exports = {
                                                 reject(error);
                                             });
                                         } else {
-                                            let apiKeyValue = {
+                                            let payload = {
                                                 enterpriseCode: enterprise.code,
                                                 tenant: enterprise.tenant.code,
-                                                loginId: success.result[0].loginId
+                                                loginId: success.result[0].loginId,
+                                                apiKey: success.result[0].apiKey,
+                                                type: 'Employee',
+                                                requiredRefreshToken: false,
+                                                lifetime: true
                                             };
-                                            NODICS.addAPIKey(enterprise.tenant.code, success.result[0].apiKey, apiKeyValue);
-                                            _self.buildEnterprise(enterprises).then(success => {
-                                                resolve(true);
+                                            SERVICE.DefaultAuthenticationProviderService.generateAuthToken(payload).then(success => {
+                                                NODICS.addAPIKey(enterprise.tenant.code, success.authToken, payload);
+                                                _self.buildEnterprise(enterprises).then(success => {
+                                                    resolve(true);
+                                                }).catch(error => {
+                                                    reject(error);
+                                                });
                                             }).catch(error => {
+                                                _self.LOG.error('Failed generating authToken for : ' + enterprise.tenant.code);
+                                                _self.LOG.error(error);
                                                 reject(error);
                                             });
                                         }
@@ -239,7 +260,7 @@ module.exports = {
                                     });
                                 } else {
                                     SERVICE.DefaultAPIKeyService.fetchAPIKey(enterprise.tenant.code).then(success => {
-                                        NODICS.addAPIKey(enterprise.tenant.code, success.result, {});
+                                        NODICS.addAPIKey(enterprise.tenant.code, success.apiKey, {});
                                         _self.buildEnterprise(enterprises).then(success => {
                                             resolve(true);
                                         }).catch(error => {

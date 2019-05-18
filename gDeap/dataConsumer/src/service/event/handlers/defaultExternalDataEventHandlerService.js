@@ -34,7 +34,6 @@ module.exports = {
 
     handleExternalDataPushEvent: function (event, callback) {
         this.LOG.debug('----------------------------- External Event has been Handled ');
-        console.log(event);
         if (event && !UTILS.isBlank(event)) {
             SERVICE.DefaultPipelineService.start('processExternalDataPushEventPipeline', {
                 tenant: request.tenant || event.tenant,

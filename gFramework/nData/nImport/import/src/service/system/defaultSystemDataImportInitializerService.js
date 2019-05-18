@@ -134,6 +134,7 @@ module.exports = {
                             request.data.headers[headerName].options.moduleName = moduleName;
                             request.data.headers[headerName].dataFiles = {};
                             request.data.headers[headerName].options.dataHandler = (request.data.headers[headerName].options.indexName) ? 'indexerDataHandlerPipeline' : 'schemaDataHandlerPipeline';
+                            request.data.headers[headerName].local = request.data.headers[headerName].local || {};
                             if (request.data.headers[headerName].options.indexName) {
                                 request.data.headers[headerName].local = _.merge(request.data.headers[headerName].local || {}, {
                                     indexerConfig: {

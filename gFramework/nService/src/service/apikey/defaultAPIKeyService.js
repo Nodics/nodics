@@ -43,7 +43,8 @@ module.exports = {
                 requestBody: {},
                 isJsonResponse: true,
                 header: {
-                    apiKey: NODICS.getAPIKey('default').key
+                    apiKey: CONFIG.get('defaultAuthDetail').apiKey,
+                    enterpriseCode: CONFIG.get('defaultAuthDetail').enterpriseCode
                 }
             });
             try {
@@ -62,69 +63,69 @@ module.exports = {
         });
     },
 
-    handleApiKeyUpdate: function (event, callback, request) {
-        try {
-            if (event.data && event.data.apiKey && event.data.tenant) {
-                if (!NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                    NODICS.addAPIKey(event.data.tenant, event.data.apiKey, {});
-                    callback(null, {
-                        success: true,
-                        code: 'SUC_SYS_00000',
-                        msg: 'Successfully updated API Key for all running tenants'
-                    });
-                } else {
-                    callback(null, {
-                        success: true,
-                        code: 'SUC_SYS_00000',
-                        msg: 'API key is already updated'
-                    });
-                }
-            } else {
-                callback({
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    msg: 'Invalid event, apiKey can not be null or empty'
-                });
-            }
-        } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: error.toString()
-            });
-        }
-    },
+    // handleApiKeyUpdate: function (event, callback, request) {
+    //     try {
+    //         if (event.data && event.data.apiKey && event.data.tenant) {
+    //             if (!NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+    //                 NODICS.addAPIKey(event.data.tenant, event.data.apiKey, {});
+    //                 callback(null, {
+    //                     success: true,
+    //                     code: 'SUC_SYS_00000',
+    //                     msg: 'Successfully updated API Key for all running tenants'
+    //                 });
+    //             } else {
+    //                 callback(null, {
+    //                     success: true,
+    //                     code: 'SUC_SYS_00000',
+    //                     msg: 'API key is already updated'
+    //                 });
+    //             }
+    //         } else {
+    //             callback({
+    //                 success: false,
+    //                 code: 'ERR_SYS_00000',
+    //                 msg: 'Invalid event, apiKey can not be null or empty'
+    //             });
+    //         }
+    //     } catch (error) {
+    //         callback({
+    //             success: false,
+    //             code: 'ERR_SYS_00000',
+    //             error: error.toString()
+    //         });
+    //     }
+    // },
 
-    handleApiKeyRemove: function (event, callback, request) {
-        try {
-            if (event.data && event.data.tenant) {
-                if (!NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                    NODICS.removeAPIKey(event.data.tenant);
-                    callback(null, {
-                        success: true,
-                        code: 'SUC_SYS_00000',
-                        msg: 'Successfully updated API Key for all running tenants'
-                    });
-                } else {
-                    callback(null, {
-                        success: true,
-                        code: 'SUC_SYS_00000',
-                        msg: 'API key is already updated'
-                    });
-                }
-            } else {
-                callback({
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    msg: 'Invalid event, apiKey can not be null or empty'
-                });
-            }
-        } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: error.toString()
-            });
-        }
-    }
+    // handleApiKeyRemove: function (event, callback, request) {
+    //     try {
+    //         if (event.data && event.data.tenant) {
+    //             if (!NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+    //                 NODICS.removeAPIKey(event.data.tenant);
+    //                 callback(null, {
+    //                     success: true,
+    //                     code: 'SUC_SYS_00000',
+    //                     msg: 'Successfully updated API Key for all running tenants'
+    //                 });
+    //             } else {
+    //                 callback(null, {
+    //                     success: true,
+    //                     code: 'SUC_SYS_00000',
+    //                     msg: 'API key is already updated'
+    //                 });
+    //             }
+    //         } else {
+    //             callback({
+    //                 success: false,
+    //                 code: 'ERR_SYS_00000',
+    //                 msg: 'Invalid event, apiKey can not be null or empty'
+    //             });
+    //         }
+    //     } catch (error) {
+    //         callback({
+    //             success: false,
+    //             code: 'ERR_SYS_00000',
+    //             error: error.toString()
+    //         });
+    //     }
+    // }
 };

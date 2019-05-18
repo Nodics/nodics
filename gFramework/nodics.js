@@ -52,6 +52,19 @@ module.exports = {
                 return SERVICE.DefaultScriptsHandlerService.executePostScripts();
             }).then(() => {
                 return new Promise((resolve, reject) => {
+                    if (!NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+                        SERVICE.DefaultAPIKeyService.fetchAPIKey('default').then(success => {
+                            NODICS.addAPIKey('default', success.apiKey, {});
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        resolve(true);
+                    }
+                });
+            }).then(() => {
+                return new Promise((resolve, reject) => {
                     if (NODICS.isInitRequired()) {
                         SERVICE.DefaultImportService.importInitData({
                             tenant: 'default',

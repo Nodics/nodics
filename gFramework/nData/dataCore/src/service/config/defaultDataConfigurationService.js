@@ -43,13 +43,11 @@ module.exports = {
         this.importInterceptors = interceptors;
     },
 
-    getImportInterceptors: function (moduleName, modelName) {
-        if (!this.importInterceptors[moduleName]) {
-            throw new Error('Invalid module name: ' + moduleName);
-        } else if (!this.importInterceptors[moduleName][modelName]) {
-            throw new Error('Invalid model name: ' + modelName);
+    getImportInterceptors: function (entityName) {
+        if (this.importInterceptors[entityName]) {
+            return this.importInterceptors[entityName];
         } else {
-            return this.importInterceptors[moduleName][modelName];
+            return null;
         }
     },
 
@@ -60,7 +58,7 @@ module.exports = {
 
     getExportInterceptors: function (entityName) {
         if (this.exportInterceptors[entityName]) {
-            return this.exportInterceptors[entityName]
+            return this.exportInterceptors[entityName];
         } else {
             return null;
         }

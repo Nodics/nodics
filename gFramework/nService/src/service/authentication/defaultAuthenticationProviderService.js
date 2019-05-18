@@ -32,7 +32,7 @@ module.exports = {
         });
     },
 
-    addToken: function (moduleName, source, hash, value) {
+    addToken: function (moduleName, isExpirable, hash, value) {
         return new Promise((resolve, reject) => {
             try {
                 let options = {
@@ -41,7 +41,7 @@ module.exports = {
                     key: hash,
                     value: value
                 };
-                if (source) {
+                if (!isExpirable) {
                     options.ttl = 0;
                 }
                 SERVICE.DefaultCacheService.put(options).then(success => {

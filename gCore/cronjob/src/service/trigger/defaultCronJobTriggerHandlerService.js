@@ -125,7 +125,7 @@ module.exports = {
             requestBody: jobDetail.body || {},
             isJsonResponse: true,
             header: {
-                apiKey: NODICS.getAPIKey(definition.tenant).key
+                authToken: NODICS.getAPIKey(definition.tenant).key
             }
         });
     },

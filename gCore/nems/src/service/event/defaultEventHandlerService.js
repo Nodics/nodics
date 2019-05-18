@@ -214,7 +214,6 @@ module.exports = {
                         let finalEvent = _.merge({}, event);
                         finalEvent.target = target.target;
                         SERVICE.DefaultModuleService.fetch(_self.prepareURL(finalEvent, target)).then(success => {
-                            console.log(success);
                             if (success.success) {
                                 target.state = ENUMS.EventState.FINISHED.key;
                                 target.logs.push(success.msg);
@@ -238,7 +237,6 @@ module.exports = {
                                 reject(error);
                             });
                         }).catch(error => {
-                            console.log(error);
                             target.state = ENUMS.EventState.ERROR.key;
                             event.state = ENUMS.EventState.ERROR.key;
                             try {

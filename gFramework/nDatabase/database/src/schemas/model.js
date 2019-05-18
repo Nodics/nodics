@@ -38,7 +38,6 @@ module.exports = {
                     if (!input.model) {
                         reject('Invalid model value to save');
                     } else if (input.query && !UTILS.isBlank(input.query)) {
-                        console.log(input.model);
                         try {
                             this.findOneAndUpdate(input.query,
                                 {

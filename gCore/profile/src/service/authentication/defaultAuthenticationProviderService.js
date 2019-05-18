@@ -36,59 +36,23 @@ module.exports = {
 
     authenticateAPIKey: function (request) {
         return new Promise((resolve, reject) => {
-            let _self = this;
-            let apiKeyValue = NODICS.findAPIKey(request.apiKey);
-            if (!apiKeyValue) {
-                reject({
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    msg: 'Invalid API Key'
-                });
-            } else {
-                SERVICE.DefaultEnterpriseService.retrieveEnterprise(apiKeyValue.enterpriseCode).then(enterprise => {
-                    SERVICE.DefaultEmployeeService.findByAPIKey({
-                        tenant: enterprise.tenant.code,
-                        apiKey: request.apiKey,
-                        enterpriseCode: enterprise.code
-                    }).then(employee => {
-                        _self.addToken(request.moduleName, 'profile', request.apiKey, {
-                            person: employee,
-                            enterprise: enterprise,
-                            type: 'apiKey'
-                        }).then(success => {
-                            let moduleObject = NODICS.getModule(request.moduleName);
-                            if (moduleObject) {
-                                if (!moduleObject.authCache) {
-                                    moduleObject.authCache = {};
-                                }
-                                if (!moduleObject.authCache.tokens) {
-                                    moduleObject.authCache.tokens = {};
-                                }
-                                moduleObject.authCache.tokens[request.apiKey] = {
-                                    enterpriseCode: enterprise.code,
-                                    loginId: employee.loginId,
-                                    tenant: enterprise.tenant.code,
-                                    type: 'Employee'
-                                };
-                            }
-                            resolve({
-                                success: true,
-                                code: 'SUC_AUTH_00000',
-                                result: {
-                                    person: employee,
-                                    enterprise: enterprise
-                                }
-                            });
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        reject(error);
+            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.enterpriseCode).then(enterprise => {
+                SERVICE.DefaultEmployeeService.findByAPIKey({
+                    enterpriseCode: enterprise.code,
+                    tenant: enterprise.tenant.code,
+                    apiKey: request.apiKey
+                }).then(employee => {
+                    resolve({
+                        enterprise: enterprise,
+                        person: employee,
+                        tenant: enterprise.tenant.code
                     });
                 }).catch(error => {
                     reject(error);
                 });
-            }
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 
@@ -180,21 +144,15 @@ module.exports = {
                                     state: state,
                                     tenant: options.enterprise.tenant.code
                                 });
-                                _self.createAuthToken(options).then(success => {
-                                    let moduleObject = NODICS.getModule(options.request.moduleName);
-                                    if (!moduleObject.authCache) {
-                                        moduleObject.authCache = {};
-                                    }
-                                    if (!moduleObject.authCache.tokens) {
-                                        moduleObject.authCache.tokens = {};
-                                    }
-                                    moduleObject.authCache.tokens[success.authToken] = {
-                                        enterpriseCode: options.enterprise.code,
-                                        tenant: options.enterprise.tenant.code,
-                                        loginId: options.person.loginId,
-                                        password: options.request.password,
-                                        type: options.type
-                                    };
+                                _self.generateAuthToken({
+                                    enterpriseCode: options.enterprise.code,
+                                    tenant: options.enterprise.tenant.code,
+                                    loginId: options.person.loginId,
+                                    password: options.request.password,
+                                    type: options.type,
+                                    tokenLife: options.person.tokenLife,
+                                    requiredRefreshToken: true
+                                }).then(success => {
                                     resolve(success);
                                 }).catch(error => {
                                     reject(error);
@@ -234,25 +192,18 @@ module.exports = {
         });
     },
 
-    createAuthToken: function (options) {
-        let _self = this;
+    createRefreshToken: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                let hash = null;
-                if (options.request.authToken !== undefined) {
-                    hash = options.request.authToken;
-                } else {
-                    let key = options.enterprise._id + options.person._id + (new Date()).getTime();
-                    hash = UTILS.generateHash(key);
-                }
-                _self.addToken(options.request.moduleName, options.request.source, hash, {
-                    person: options.person,
-                    enterprise: options.enterprise,
+                let refreshToken = UTILS.generateHash(options.enterpriseCode + options.loginId + (new Date()).getTime());
+                this.addToken('profile', false, refreshToken, {
+                    enterpriseCode: options.enterpriseCode,
+                    tenant: options.tenant,
+                    loginId: options.loginId,
+                    password: options.password,
                     type: options.type
                 }).then(success => {
-                    resolve({
-                        authToken: hash
-                    });
+                    resolve(refreshToken);
                 }).catch(error => {
                     reject(error);
                 });
@@ -261,52 +212,6 @@ module.exports = {
                     success: false,
                     code: 'ERR_AUTH_00000',
                     error: error
-                });
-            }
-        });
-    },
-
-    reAuthenticate: function (request) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            let moduleObject = NODICS.getModule(request.moduleName);
-            if (moduleObject && moduleObject.authCache && moduleObject.authCache.tokens) {
-                let authValues = moduleObject.authCache.tokens[request.authToken];
-                if (authValues !== undefined) {
-                    request.enterpriseCode = authValues.enterpriseCode;
-                    request.loginId = authValues.loginId;
-                    request.password = authValues.password;
-                    if (authValues.type === 'Employee') {
-                        this.authenticateEmployee(request).then(success => {
-                            _self.findToken(request.moduleName, request.authToken).then(success => {
-                                resolve(success);
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        this.authenticateCustomer(request).then(success => {
-                            _self.findToken(request.moduleName, request.authToken).then(success => {
-                                resolve(success);
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }
-                } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_AUTH_00001'
-                    });
-                }
-            } else {
-                reject({
-                    success: false,
-                    code: 'ERR_AUTH_00001',
                 });
             }
         });

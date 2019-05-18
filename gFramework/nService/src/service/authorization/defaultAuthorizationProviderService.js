@@ -9,6 +9,8 @@
 
  */
 
+const jwt = require('jsonwebtoken');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,43 +34,16 @@ module.exports = {
         });
     },
 
-    prepareAuthorizeTokenURL: function (input) {
-        return SERVICE.DefaultModuleService.buildRequest({
-            moduleName: 'profile',
-            methodName: 'POST',
-            apiName: '/token/authorize',
-            requestBody: {},
-            isJsonResponse: true,
-            header: {
-                authToken: input.authToken
-            }
-        });
-    },
-
     authorizeToken: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultAuthenticationProviderService.findToken(request.moduleName, request.authToken).then(success => {
-                resolve(success);
-            }).catch(error => {
-                if (request.moduleName === CONFIG.get('profileModuleName')) {
-                    SERVICE.DefaultAuthenticationProviderService.reAuthenticate(request).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
+            jwt.verify(request.authToken, CONFIG.get('jwtSecretKey') || 'nodics', (error, payload) => {
+                if (error) {
+                    reject(error);
                 } else {
-                    this.LOG.debug('Authorizing request for token :', request.authToken);
-                    SERVICE.DefaultModuleService.fetch(this.prepareAuthorizeTokenURL(request), (error, response) => {
-                        if (error) {
-                            reject(error);
-                        } else if (!response.success) {
-                            reject({
-                                success: false,
-                                code: 'ERR_AUTH_00001'
-                            });
-                        } else {
-                            resolve(response);
-                        }
+                    resolve({
+                        success: true,
+                        code: '',
+                        result: payload
                     });
                 }
             });
@@ -90,31 +65,37 @@ module.exports = {
 
     authorizeAPIKey: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultAuthenticationProviderService.findToken(request.moduleName, request.apiKey).then(success => {
+            SERVICE.DefaultAuthenticationProviderService.authenticateAPIKey(request).then(success => {
                 resolve(success);
             }).catch(error => {
-                if (request.moduleName === CONFIG.get('profileModuleName')) {
-                    SERVICE.DefaultAuthenticationProviderService.authenticateAPIKey(request).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    this.LOG.debug('Authorizing request for apiKey :', request.apiKey);
-                    SERVICE.DefaultModuleService.fetch(this.prepareAuthorizeAPIKeyURL(request), (error, response) => {
-                        if (error) {
-                            reject(error);
-                        } else if (!response.success) {
-                            reject({
-                                success: false,
-                                code: 'ERR_AUTH_00001'
-                            });
-                        } else {
-                            resolve(response);
-                        }
-                    });
-                }
+                reject(error);
             });
+
+            // SERVICE.DefaultAuthenticationProviderService.findToken(request.moduleName, request.apiKey).then(success => {
+            //     resolve(success);
+            // }).catch(error => {
+            //     if (request.moduleName === CONFIG.get('profileModuleName')) {
+            //         SERVICE.DefaultAuthenticationProviderService.authenticateAPIKey(request).then(success => {
+            //             resolve(success);
+            //         }).catch(error => {
+            //             reject(error);
+            //         });
+            //     } else {
+            //         this.LOG.debug('Authorizing request for apiKey :', request.apiKey);
+            //         SERVICE.DefaultModuleService.fetch(this.prepareAuthorizeAPIKeyURL(request), (error, response) => {
+            //             if (error) {
+            //                 reject(error);
+            //             } else if (!response.success) {
+            //                 reject({
+            //                     success: false,
+            //                     code: 'ERR_AUTH_00001'
+            //                 });
+            //             } else {
+            //                 resolve(response);
+            //             }
+            //         });
+            //     }
+            // });
         });
     }
 };
