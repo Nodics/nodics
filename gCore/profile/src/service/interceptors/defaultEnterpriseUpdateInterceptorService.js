@@ -35,53 +35,6 @@ module.exports = {
         });
     },
 
-    enterpriseInvalidateAuthToken: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-            if (request.model) {
-                request.model.tenant = request.model.tenant || request.tenant;
-                SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(request.model).then(success => {
-                    this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', request.model.code);
-                }).catch(error => {
-                    this.LOG.error('Failed invalidating authToken for enterprise: ', request.model.code);
-                    this.LOG.error(error);
-                });
-            }
-        });
-    },
-
-    enterpriseUpdateInvalidateAuthToken: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-            if (request.result && request.result.models && request.result.models.length > 0) {
-                request.result.models.forEach(model => {
-                    SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model).then(success => {
-                        this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', model.code);
-                    }).catch(error => {
-                        this.LOG.error('Failed invalidating authToken for enterprise: ', model.code);
-                        this.LOG.error(error);
-                    });
-                });
-            }
-        });
-    },
-
-    enterpriseRemoveInvalidateAuthToken: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-            if (request.result && request.result.models && request.result.models.length > 0) {
-                request.result.models.forEach(model => {
-                    SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model, true).then(success => {
-                        this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', model.code);
-                    }).catch(error => {
-                        this.LOG.error('Failed invalidating authToken for enterprise: ', model.code);
-                        this.LOG.error(error);
-                    });
-                });
-            }
-        });
-    },
-
     enterpriseSaveEvent: function (request, responce) {
         return new Promise((resolve, reject) => {
             resolve(true);
@@ -151,6 +104,7 @@ module.exports = {
                 }).then(success => {
                     if (success.success && (!success.result || success.result.length <= 0)) {
                         SERVICE.DefaultTenantHandlerService.removeTenants([enterprise.tenant.code]).then(success => {
+                            NODICS.removeInternalAuthToken(enterprise.tenant.code);
                             this.LOG.debug('Tenant: ' + enterprise.tenant.code + ' has been successfully deactivated from profile module');
                             event.event = 'removeEnterprise';
                             this.LOG.debug('Pushing event for enterprise removed or deactivated');

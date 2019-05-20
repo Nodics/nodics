@@ -21,55 +21,5 @@ module.exports = {
             request.options.returnModified = request.options.returnModified || true;
             resolve(true);
         });
-    },
-
-    employeeInvalidateAuthToken: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-            if (request.model && request.model.loginId) {
-                request.model.tenant = request.model.tenant || request.tenant;
-                SERVICE.DefaultAuthenticationService.invalidateEmployeeAuthToken(request.model).then(success => {
-                    this.LOG.debug('Authentication token has been invalidated successfully for Employee: ', request.model.loginId);
-                }).catch(error => {
-                    this.LOG.error('Failed invalidating authToken for Employee: ', request.model.loginId);
-                    this.LOG.error(error);
-                });
-            }
-        });
-    },
-
-    employeeUpdateInvalidateAuthToken: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-            if (request.result && request.result.models && request.result.models.length > 0) {
-                request.result.models.forEach(model => {
-                    model.tenant = model.tenant || request.tenant;
-                    SERVICE.DefaultAuthenticationService.invalidateEmployeeAuthToken(model).then(success => {
-                        this.LOG.debug('Authentication token has been invalidated successfully for Employee: ', model.loginId);
-                    }).catch(error => {
-                        this.LOG.error('Failed invalidating authToken for Employee: ', model.loginId);
-                        this.LOG.error(error);
-                    });
-                });
-            }
-        });
-    },
-
-    employeeRemoveInvalidateAuthToken: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-            if (request.result && request.result.models && request.result.models.length > 0) {
-                request.result.models.forEach(model => {
-                    model.tenant = model.tenant || request.tenant;
-                    SERVICE.DefaultAuthenticationService.invalidateEmployeeAuthToken(model, true).then(success => {
-                        this.LOG.debug('Authentication token has been invalidated successfully for Employee: ', model.loginId);
-                    }).catch(error => {
-                        this.LOG.error('Failed invalidating authToken for Employee: ', model.loginId);
-                        this.LOG.error(error);
-                    });
-                });
-            }
-        });
-    },
-
+    }
 };

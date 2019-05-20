@@ -21,37 +21,5 @@ module.exports = {
             request.options.returnModified = request.options.returnModified || true;
             resolve(true);
         });
-    },
-
-    customerInvalidateAuthToken: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-            if (request.model && request.model.loginId) {
-                request.model.tenant = request.model.tenant || request.tenant;
-                SERVICE.DefaultAuthenticationService.invalidateCustomerAuthToken(request.model).then(success => {
-                    this.LOG.debug('Authentication token has been invalidated successfully for Customer: ', request.model.loginId);
-                }).catch(error => {
-                    this.LOG.error('Failed invalidating authToken for Customer: ', request.model.loginId);
-                    this.LOG.error(error);
-                });
-            }
-        });
-    },
-    customerUpdateInvalidateAuthToken: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-            if (request.result && request.result.models && request.result.models.length > 0) {
-                request.result.models.forEach(model => {
-                    model.tenant = model.tenant || request.tenant;
-                    SERVICE.DefaultAuthenticationService.invalidateCustomerAuthToken(model).then(success => {
-                        this.LOG.debug('Authentication token has been invalidated successfully for Customer: ', model.loginId);
-                    }).catch(error => {
-                        this.LOG.error('Failed invalidating authToken for Customer: ', model.loginId);
-                        this.LOG.error(error);
-                    });
-                });
-            }
-        });
-    },
-
+    }
 };

@@ -112,6 +112,10 @@ module.exports = function () {
         return _internalAuthTokens;
     };
 
+    this.removeInternalAuthToken = function (tenant) {
+        delete _internalAuthTokens[tenant];
+    };
+
     this.setStartTime = function (time) {
         _startTime = time;
     };

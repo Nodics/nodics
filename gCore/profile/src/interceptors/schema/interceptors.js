@@ -37,27 +37,6 @@ module.exports = {
             active: 'true',
             index: 0,
             handler: 'DefaultCustomerUpdateInterceptorService.customerPreRemove'
-        },
-
-        customerInvalidateAuthToken: {
-            type: 'postSave',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultCustomerUpdateInterceptorService.customerInvalidateAuthToken'
-        },
-
-        customerUpdateInvalidateAuthToken: {
-            type: 'postUpdate',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultCustomerUpdateInterceptorService.customerUpdateInvalidateAuthToken'
-        },
-
-        customerRemoveInvalidateAuthToken: {
-            type: 'postRemove',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultCustomerUpdateInterceptorService.customerUpdateInvalidateAuthToken'
         }
     },
 
@@ -88,28 +67,7 @@ module.exports = {
             active: 'true',
             index: 0,
             handler: 'DefaultEmployeeUpdateInterceptorService.employeePreRemove'
-        },
-
-        // employeeSaveInvalidateAuthToken: {
-        //     type: 'postSave',
-        //     active: 'true',
-        //     index: 0,
-        //     handler: 'DefaultEmployeeUpdateInterceptorService.employeeInvalidateAuthToken'
-        // },
-
-        // employeeUpdateInvalidateAuthToken: {
-        //     type: 'postUpdate',
-        //     active: 'true',
-        //     index: 0,
-        //     handler: 'DefaultEmployeeUpdateInterceptorService.employeeUpdateInvalidateAuthToken'
-        // },
-
-        // employeeRemoveInvalidateAuthToken: {
-        //     type: 'postRemove',
-        //     active: 'true',
-        //     index: 0,
-        //     handler: 'DefaultEmployeeUpdateInterceptorService.employeeRemoveInvalidateAuthToken'
-        // }
+        }
     },
 
     enterprise: {
@@ -131,24 +89,6 @@ module.exports = {
             index: 0,
             handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreRemove'
         },
-        // enterpriseSaveInvalidateAuthToken: {
-        //     type: 'postSave',
-        //     active: 'true',
-        //     index: 0,
-        //     handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseInvalidateAuthToken'
-        // },
-        // enterpriseUpdateInvalidateAuthToken: {
-        //     type: 'postUpdate',
-        //     active: 'true',
-        //     index: 0,
-        //     handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateInvalidateAuthToken'
-        // },
-        // enterpriseRemoveInvalidateAuthToken: {
-        //     type: 'postRemove',
-        //     active: 'true',
-        //     index: 0,
-        //     handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseRemoveInvalidateAuthToken'
-        // },
         enterpriseSaveEvent: {
             type: 'postSave',
             active: 'true',
