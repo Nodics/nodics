@@ -47,7 +47,7 @@ module.exports = {
             },
             isJsonResponse: true,
             header: {
-                authToken: NODICS.getAPIKey('default').key
+                authToken: NODICS.getInternalAuthToken('default')
             }
         });
     },

@@ -20,12 +20,7 @@ module.exports = function () {
         return new Promise((resolve, reject) => {
             if (!UTILS.isBlank(definitions)) {
                 let definition = definitions.shift();
-                let apiKeyContainer = NODICS.getAPIKey(definition.tenant);
-                if (!apiKeyContainer) {
-                    this.LOG.warn('API key for tenant: ' + definition.tenant + ' not found, hence falling back to default');
-                    apiKeyContainer = NODICS.getAPIKey('default');
-                }
-                _self.createJob(apiKeyContainer.key, definition).then(success => {
+                _self.createJob(NODICS.getInternalAuthToken(definition.tenant), definition).then(success => {
                     result.push(success);
                     _self.createJobs(definitions, result, failed).then(success => {
                         resolve(success);
@@ -125,12 +120,7 @@ module.exports = function () {
         return new Promise((resolve, reject) => {
             if (!UTILS.isBlank(definitions)) {
                 let definition = definitions.shift();
-                let apiKeyContainer = NODICS.getAPIKey(definition.tenant);
-                if (!apiKeyContainer) {
-                    this.LOG.warn('API key for tenant: ' + definition.tenant + ' not found, hence falling back to default');
-                    apiKeyContainer = NODICS.getAPIKey('default');
-                }
-                _self.updateJob(apiKeyContainer.key, definition).then(success => {
+                _self.updateJob(NODICS.getInternalAuthToken(definition.tenant), definition).then(success => {
                     result.push(success);
                     _self.updateJobs(definitions, result, failed).then(success => {
                         resolve(success);
@@ -207,12 +197,7 @@ module.exports = function () {
         return new Promise((resolve, reject) => {
             if (!UTILS.isBlank(definitions)) {
                 let definition = definitions.shift();
-                let apiKeyContainer = NODICS.getAPIKey(definition.tenant);
-                if (!apiKeyContainer) {
-                    this.LOG.warn('API key for tenant: ' + definition.tenant + ' not found, hence falling back to default');
-                    apiKeyContainer = NODICS.getAPIKey('default');
-                }
-                _self.runJob(apiKeyContainer.key, definition).then(success => {
+                _self.runJob(NODICS.getInternalAuthToken(definition.tenant), definition).then(success => {
                     result.push(success);
                     _self.runJobs(definitions, result, failed).then(success => {
                         resolve(success);

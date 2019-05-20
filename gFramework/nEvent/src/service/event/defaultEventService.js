@@ -127,11 +127,6 @@ module.exports = {
         });
     },
     prepareURL: function (eventDef) {
-        let apiKeyContainer = NODICS.getAPIKey(eventDef.tenant);
-        if (!apiKeyContainer) {
-            this.LOG.warn('API key for tenant: ' + eventDef.tenant + ' not found, hence falling back to default');
-            apiKeyContainer = NODICS.getAPIKey('default');
-        }
         return SERVICE.DefaultModuleService.buildRequest({
             moduleName: 'nems',
             methodName: 'put',
@@ -139,7 +134,7 @@ module.exports = {
             requestBody: eventDef,
             isJsonResponse: true,
             header: {
-                apiKey: apiKeyContainer.key
+                authToken: NODICS.getInternalAuthToken(eventDef.tenant)
             }
         });
     },

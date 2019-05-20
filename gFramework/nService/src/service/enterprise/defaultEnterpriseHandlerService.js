@@ -70,7 +70,7 @@ module.exports = {
                         requestBody: {},
                         isJsonResponse: true,
                         header: {
-                            authToken: NODICS.getAPIKey('default').key,
+                            authToken: NODICS.getInternalAuthToken('default'),
                             recursive: true
                         }
                     });
@@ -197,25 +197,16 @@ module.exports = {
                                                         }
                                                     }).then(success => {
                                                         if (success.success && success.result.length > 0) {
-                                                            let payload = {
+                                                            let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
                                                                 enterpriseCode: enterprise.code,
                                                                 tenant: enterprise.tenant.code,
-                                                                loginId: success.result[0].loginId,
                                                                 apiKey: success.result[0].apiKey,
-                                                                type: 'Employee',
-                                                                requiredRefreshToken: false,
                                                                 lifetime: true
-                                                            };
-                                                            SERVICE.DefaultAuthenticationProviderService.generateAuthToken(payload).then(success => {
-                                                                NODICS.addAPIKey(enterprise.tenant.code, success.authToken, payload);
-                                                                _self.buildEnterprise(enterprises).then(success => {
-                                                                    resolve(true);
-                                                                }).catch(error => {
-                                                                    reject(error);
-                                                                });
+                                                            });
+                                                            NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
+                                                            _self.buildEnterprise(enterprises).then(success => {
+                                                                resolve(true);
                                                             }).catch(error => {
-                                                                _self.LOG.error('Failed generating authToken for : ' + enterprise.tenant.code);
-                                                                _self.LOG.error(error);
                                                                 reject(error);
                                                             });
                                                         } else {
@@ -231,25 +222,16 @@ module.exports = {
                                                 reject(error);
                                             });
                                         } else {
-                                            let payload = {
+                                            let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
                                                 enterpriseCode: enterprise.code,
                                                 tenant: enterprise.tenant.code,
-                                                loginId: success.result[0].loginId,
                                                 apiKey: success.result[0].apiKey,
-                                                type: 'Employee',
-                                                requiredRefreshToken: false,
                                                 lifetime: true
-                                            };
-                                            SERVICE.DefaultAuthenticationProviderService.generateAuthToken(payload).then(success => {
-                                                NODICS.addAPIKey(enterprise.tenant.code, success.authToken, payload);
-                                                _self.buildEnterprise(enterprises).then(success => {
-                                                    resolve(true);
-                                                }).catch(error => {
-                                                    reject(error);
-                                                });
+                                            });
+                                            NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
+                                            _self.buildEnterprise(enterprises).then(success => {
+                                                resolve(true);
                                             }).catch(error => {
-                                                _self.LOG.error('Failed generating authToken for : ' + enterprise.tenant.code);
-                                                _self.LOG.error(error);
                                                 reject(error);
                                             });
                                         }
@@ -259,8 +241,8 @@ module.exports = {
                                         reject(error);
                                     });
                                 } else {
-                                    SERVICE.DefaultAPIKeyService.fetchAPIKey(enterprise.tenant.code).then(success => {
-                                        NODICS.addAPIKey(enterprise.tenant.code, success.apiKey, {});
+                                    SERVICE.DefaultInternalAuthenticationProviderService.fetchInternalAuthToken(enterprise.tenant.code).then(success => {
+                                        NODICS.addInternalAuthToken(enterprise.tenant.code, success.authToken);
                                         _self.buildEnterprise(enterprises).then(success => {
                                             resolve(true);
                                         }).catch(error => {

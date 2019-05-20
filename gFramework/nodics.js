@@ -53,8 +53,8 @@ module.exports = {
             }).then(() => {
                 return new Promise((resolve, reject) => {
                     if (!NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                        SERVICE.DefaultAPIKeyService.fetchAPIKey('default').then(success => {
-                            NODICS.addAPIKey('default', success.apiKey, {});
+                        SERVICE.DefaultInternalAuthenticationProviderService.fetchInternalAuthToken('default').then(success => {
+                            NODICS.addInternalAuthToken('default', success.authToken);
                             resolve(true);
                         }).catch(error => {
                             reject(error);

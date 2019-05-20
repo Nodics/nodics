@@ -279,11 +279,6 @@ module.exports = {
             connectionType = 'node';
             nodeId = target.targetNodeId;
         }
-        let apiKeyContainer = NODICS.getAPIKey(event.tenant);
-        if (!apiKeyContainer) {
-            this.LOG.warn('API key for tenant: ' + event.tenant + ' not found, hence falling back to default');
-            apiKeyContainer = NODICS.getAPIKey('default');
-        }
         return SERVICE.DefaultModuleService.buildRequest({
             connectionType: connectionType,
             nodeId: nodeId,
@@ -293,7 +288,7 @@ module.exports = {
             requestBody: event,
             isJsonResponse: true,
             header: {
-                apiKey: apiKeyContainer.key
+                authToken: NODICS.getInternalAuthToken(event.tenant)
             }
         });
     }

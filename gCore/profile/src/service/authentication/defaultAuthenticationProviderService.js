@@ -144,16 +144,23 @@ module.exports = {
                                     state: state,
                                     tenant: options.enterprise.tenant.code
                                 });
-                                _self.generateAuthToken({
+                                _self.createRefreshToken({
                                     enterpriseCode: options.enterprise.code,
                                     tenant: options.enterprise.tenant.code,
                                     loginId: options.person.loginId,
                                     password: options.request.password,
-                                    type: options.type,
-                                    tokenLife: options.person.tokenLife,
-                                    requiredRefreshToken: true
-                                }).then(success => {
-                                    resolve(success);
+                                    type: options.type
+                                }).then(refreshToken => {
+                                    let authToken = _self.generateAuthToken({
+                                        enterpriseCode: options.enterprise.code,
+                                        tenant: options.enterprise.tenant.code,
+                                        loginId: options.person.loginId,
+                                        tokenLife: options.person.tokenLife,
+                                        refreshToken: refreshToken
+                                    });
+                                    resolve({
+                                        authToken: authToken
+                                    });
                                 }).catch(error => {
                                     reject(error);
                                 });
@@ -192,7 +199,7 @@ module.exports = {
         });
     },
 
-    createRefreshToken: function (options) {
+    createRefreshToken: function (options, callback) {
         return new Promise((resolve, reject) => {
             try {
                 let refreshToken = UTILS.generateHash(options.enterpriseCode + options.loginId + (new Date()).getTime());

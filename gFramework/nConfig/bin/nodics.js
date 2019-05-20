@@ -23,12 +23,11 @@ module.exports = function () {
     let _loggers = {};
     let _preScripts = {};
     let _tenants = [];
-    let _apiKeys = {};
+    let _internalAuthTokens = {};
 
     let _nodics = {
         modules: {},
         dbs: {},
-        //validators: {},
         interceptors: {}
     };
 
@@ -101,38 +100,16 @@ module.exports = function () {
         return _rawModels;
     };
 
-    this.addAPIKey = function (tenant, apiKey, value) {
-        value.key = apiKey;
-        _apiKeys[tenant] = value;
+    this.addInternalAuthToken = function (tenant, authToken) {
+        _internalAuthTokens[tenant] = authToken;
     };
 
-    this.getAPIKey = function (tenant = 'default') {
-        return _apiKeys[tenant];
+    this.getInternalAuthToken = function (tenant) {
+        return _internalAuthTokens[tenant];
     };
 
-    this.getAPIKeys = function () {
-        return _apiKeys;
-    };
-
-    this.findAPIKey = function (apiKey) {
-        let tenants = NODICS.getTenants();
-        let value;
-        for (var index = 0; index < tenants.length; index++) {
-            if (_apiKeys[tenants[index]].key === apiKey) {
-                value = _apiKeys[tenants[index]];
-                break;
-            }
-        }
-        return value;
-    };
-
-    this.removeAPIKey = function (tenant) {
-        if (!tenant) {
-            throw new Error('Invalid tenant id');
-        }
-        if (_apiKeys[tenant] && _apiKeys[tenant]) {
-            delete _apiKeys[tenant];
-        }
+    this.getInternalAuthTokens = function (tenant) {
+        return _internalAuthTokens;
     };
 
     this.setStartTime = function (time) {
@@ -242,12 +219,6 @@ module.exports = function () {
 
     this.setIndexedModules = function (indexedModules) {
         _indexedModules = indexedModules;
-        // Object.keys(indexedModules).forEach((index) => {
-        //     let indexValues = indexedModules[index];
-        //     if (indexValues && indexValues.length > 0) {
-        //         _indexedModules[index] = indexValues[0];
-        //     }
-        // });
     };
 
     this.getIndexedModules = function () {

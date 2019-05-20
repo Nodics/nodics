@@ -104,25 +104,6 @@ module.exports = {
             },
         },
 
-        updateAPIKey: {
-            apiKey: {
-                secured: true,
-                key: '/apikey',
-                method: 'POST',
-                controller: 'DefaultAPIKeyController',
-                operation: 'updateAPIKey',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/system/apikey',
-                    body: {
-                        apiKey: 'xxxxxx--xxxx---xxxx---xxxxx'
-                    }
-                }
-            }
-        },
-
         /* ------------------------------- */
         testRunner: {
             runAllUTest: {

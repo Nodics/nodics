@@ -38,7 +38,7 @@ module.exports = {
     enterpriseInvalidateAuthToken: function (request, responce) {
         return new Promise((resolve, reject) => {
             resolve(true);
-            if (request.model.code) {
+            if (request.model) {
                 request.model.tenant = request.model.tenant || request.tenant;
                 SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(request.model).then(success => {
                     this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', request.model.code);
@@ -55,8 +55,7 @@ module.exports = {
             resolve(true);
             if (request.result && request.result.models && request.result.models.length > 0) {
                 request.result.models.forEach(model => {
-                    request.model.tenant = request.model.tenant || request.tenant;
-                    SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model.code).then(success => {
+                    SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model).then(success => {
                         this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', model.code);
                     }).catch(error => {
                         this.LOG.error('Failed invalidating authToken for enterprise: ', model.code);
@@ -72,7 +71,7 @@ module.exports = {
             resolve(true);
             if (request.result && request.result.models && request.result.models.length > 0) {
                 request.result.models.forEach(model => {
-                    SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model.code, true).then(success => {
+                    SERVICE.DefaultAuthenticationService.invalidateEnterpriseAuthToken(model, true).then(success => {
                         this.LOG.debug('Authentication token has been invalidated successfully for Enterprise: ', model.code);
                     }).catch(error => {
                         this.LOG.error('Failed invalidating authToken for enterprise: ', model.code);
@@ -100,7 +99,7 @@ module.exports = {
             resolve(true);
             if (request.result && request.result.models && request.result.models.length > 0) {
                 request.result.models.forEach(model => {
-                    this.triggerEnterpriseUpdateEvent(request.model).then(success => {
+                    this.triggerEnterpriseUpdateEvent(model).then(success => {
                         this.LOG.debug('All modules have been informed about Enterprise model changes: ', model.code);
                     }).catch(error => {
                         this.LOG.error('Failed to update modules about Enterprise model changes: ', model.code);
@@ -116,7 +115,7 @@ module.exports = {
             resolve(true);
             if (request.result && request.result.models && request.result.models.length > 0) {
                 request.result.models.forEach(model => {
-                    this.triggerEnterpriseUpdateEvent(request.model, true).then(success => {
+                    this.triggerEnterpriseUpdateEvent(model, true).then(success => {
                         this.LOG.debug('All modules have been informed about Enterprise model changes: ', model.code);
                     }).catch(error => {
                         this.LOG.error('Failed to update modules about Enterprise model changes: ', model.code);

@@ -9,18 +9,18 @@
 
  */
 module.exports = {
-    getAPIKey: function (request, callback) {
+    getInternalAuthToken: function (request, callback) {
         if (request.httpRequest.params.tntCode) {
             request.tenant = request.httpRequest.params.tntCode;
         }
         if (callback) {
-            FACADE.DefaultAPIKeyFacade.getAPIKey(request).then(success => {
+            FACADE.DefaultInternalAuthenticationProviderFacade.getInternalAuthToken(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultAPIKeyFacade.getAPIKey(request);
+            return FACADE.DefaultInternalAuthenticationProviderFacade.getInternalAuthToken(request);
         }
     }
 };

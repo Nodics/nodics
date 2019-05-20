@@ -12,17 +12,17 @@
 module.exports = {
     profile: {
         loadDefaults: {
-            getAPIKey: {
+            getInternalAuthToken: {
                 secured: true,
-                key: '/apikey/:tntCode',
+                key: '/auth/token/:tntCode',
                 method: 'GET',
-                controller: 'DefaultAPIKeyController',
-                operation: 'getAPIKey',
+                controller: 'DefaultInternalAuthenticationProviderController',
+                operation: 'getInternalAuthToken',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/profileapikey/:tntCode',
+                    url: 'http://host:port/nodics/profile/auth/token/:tntCode',
                     body: {
                         apiKey: 'xxxxxx--xxxx---xxxx---xxxxx'
                     }
@@ -36,7 +36,7 @@ module.exports = {
                 },
                 key: '/enterprise/get',
                 method: 'GET',
-                handler: 'DefaultEnterpriseController',
+                controller: 'DefaultEnterpriseController',
                 operation: 'getEnterprise',
                 help: {
                     requestType: 'secured',
@@ -53,7 +53,7 @@ module.exports = {
                 },
                 key: '/tenant/get',
                 method: 'GET',
-                handler: 'DefaultTenantController',
+                controller: 'DefaultTenantController',
                 operation: 'getTenants',
                 help: {
                     requestType: 'secured',
@@ -99,19 +99,6 @@ module.exports = {
                 method: 'POST',
                 handler: 'DefaultAuthorizationProviderController',
                 operation: 'authorizeToken',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/profile/authorize',
-                }
-            },
-            authorizeAPIKey: {
-                secured: true,
-                key: '/apikey/authorize',
-                method: 'POST',
-                handler: 'DefaultAuthorizationProviderController',
-                operation: 'authorizeAPIKey',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',

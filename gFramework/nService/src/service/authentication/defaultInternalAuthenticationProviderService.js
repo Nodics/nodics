@@ -8,8 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-
-const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 
 module.exports = {
     /**
@@ -34,36 +33,33 @@ module.exports = {
         });
     },
 
-    authorizeToken: function (request) {
+    fetchInternalAuthToken: function (tntCode) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-            jwt.verify(request.authToken, CONFIG.get('jwtSecretKey') || 'nodics', (error, payload) => {
-                if (error) {
-                    let msg = {
-                        success: false,
-                        code: 'ERR_SYS_00000',
-                    };
-                    if (error.message) msg.msg = error.message;
-                    if (error.expiredAt) msg.msg = msg.msg + ' at ' + error.expiredAt;
-                    if (error.name) msg.name = error.name;
-                    reject(msg);
-                } else {
-                    resolve({
-                        success: true,
-                        code: 'SUC_SYS_00000',
-                        result: payload
-                    });
+            let requestUrl = SERVICE.DefaultModuleService.buildRequest({
+                moduleName: 'profile',
+                methodName: 'GET',
+                apiName: '/auth/token/' + tntCode,
+                requestBody: {},
+                isJsonResponse: true,
+                header: {
+                    apiKey: CONFIG.get('defaultAuthDetail').apiKey,
+                    enterpriseCode: CONFIG.get('defaultAuthDetail').enterpriseCode
                 }
             });
-        });
-    },
-
-    authorizeAPIKey: function (request) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultAuthenticationProviderService.authenticateAPIKey(request).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+            try {
+                SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
+                    if (error) {
+                        _self.LOG.error('While connecting profile server to fetch API Key', error);
+                        resolve([]);
+                    } else {
+                        resolve(response.result || []);
+                    }
+                });
+            } catch (error) {
+                _self.LOG.error('While connecting profile server to fetch API Key', error);
+                resolve([]);
+            }
         });
     }
 };

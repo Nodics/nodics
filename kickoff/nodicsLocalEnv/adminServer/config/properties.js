@@ -12,7 +12,7 @@
 module.exports = {
     activeModules: {
         updateGroups: true,
-        groups: ['tools'], // Group 'framework' will be included automatically
+        groups: ['gTools'], // Group 'framework' will be included automatically
         modules: [
             'adminServer',
             'kickoff',

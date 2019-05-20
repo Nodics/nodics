@@ -11,8 +11,8 @@
 
 module.exports = {
 
-    getAPIKey: function (request) {
-        return SERVICE.DefaultAPIKeyService.getAPIKey(request);
+    getInternalAuthToken: function (request) {
+        return SERVICE.DefaultInternalAuthenticationProviderService.getInternalAuthToken(request);
     }
 
 };

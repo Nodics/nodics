@@ -90,26 +90,26 @@ module.exports = {
             handler: 'DefaultEmployeeUpdateInterceptorService.employeePreRemove'
         },
 
-        employeeSaveInvalidateAuthToken: {
-            type: 'postSave',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultEmployeeUpdateInterceptorService.employeeInvalidateAuthToken'
-        },
+        // employeeSaveInvalidateAuthToken: {
+        //     type: 'postSave',
+        //     active: 'true',
+        //     index: 0,
+        //     handler: 'DefaultEmployeeUpdateInterceptorService.employeeInvalidateAuthToken'
+        // },
 
-        employeeUpdateInvalidateAuthToken: {
-            type: 'postUpdate',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultEmployeeUpdateInterceptorService.employeeUpdateInvalidateAuthToken'
-        },
+        // employeeUpdateInvalidateAuthToken: {
+        //     type: 'postUpdate',
+        //     active: 'true',
+        //     index: 0,
+        //     handler: 'DefaultEmployeeUpdateInterceptorService.employeeUpdateInvalidateAuthToken'
+        // },
 
-        employeeRemoveInvalidateAuthToken: {
-            type: 'postRemove',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultEmployeeUpdateInterceptorService.employeeRemoveInvalidateAuthToken'
-        }
+        // employeeRemoveInvalidateAuthToken: {
+        //     type: 'postRemove',
+        //     active: 'true',
+        //     index: 0,
+        //     handler: 'DefaultEmployeeUpdateInterceptorService.employeeRemoveInvalidateAuthToken'
+        // }
     },
 
     enterprise: {
@@ -131,24 +131,24 @@ module.exports = {
             index: 0,
             handler: 'DefaultEnterpriseUpdateInterceptorService.enterprisePreRemove'
         },
-        enterpriseSaveInvalidateAuthToken: {
-            type: 'postSave',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseInvalidateAuthToken'
-        },
-        enterpriseUpdateInvalidateAuthToken: {
-            type: 'postUpdate',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateInvalidateAuthToken'
-        },
-        enterpriseRemoveInvalidateAuthToken: {
-            type: 'postRemove',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseRemoveInvalidateAuthToken'
-        },
+        // enterpriseSaveInvalidateAuthToken: {
+        //     type: 'postSave',
+        //     active: 'true',
+        //     index: 0,
+        //     handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseInvalidateAuthToken'
+        // },
+        // enterpriseUpdateInvalidateAuthToken: {
+        //     type: 'postUpdate',
+        //     active: 'true',
+        //     index: 0,
+        //     handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseUpdateInvalidateAuthToken'
+        // },
+        // enterpriseRemoveInvalidateAuthToken: {
+        //     type: 'postRemove',
+        //     active: 'true',
+        //     index: 0,
+        //     handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseRemoveInvalidateAuthToken'
+        // },
         enterpriseSaveEvent: {
             type: 'postSave',
             active: 'true',
