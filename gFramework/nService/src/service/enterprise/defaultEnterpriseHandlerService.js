@@ -159,16 +159,19 @@ module.exports = {
                         let tntConfig = _.merge({}, CONFIG.getProperties());
                         tntConfig = _.merge(tntConfig, enterprise.tenant.properties);
                         CONFIG.setProperties(tntConfig, enterprise.tenant.code);
-                        if (SERVICE.DefaultSearchEngineConnectionHandlerService) {
-                            SERVICE.DefaultSearchEngineConnectionHandlerService.createTenantsSearchEngines([enterprise.tenant.code]).then(success => {
-                                this.LOG.debug('Search connections has been established successfully');
-                            }).catch(error => {
-                                this.LOG.error('Failed establishing connections with search engine');
-                                this.LOG.error(error);
-                            });
-                        }
                         SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection(enterprise.tenant.code).then(success => {
                             SERVICE.DefaultDatabaseModelHandlerService.buildModelsForTenant(enterprise.tenant.code).then(success => {
+                                if (SERVICE.DefaultSearchEngineConnectionHandlerService) {
+                                    SERVICE.DefaultSearchEngineConnectionHandlerService.createTenantsSearchEngines([enterprise.tenant.code]).then(success => {
+                                        SERVICE.DefaultSearchSchemaHandlerService.prepareSearchSchema([enterprise.tenant.code]);
+                                        SERVICE.DefaultSearchModelHandlerService.prepareSearchModels(Object.keys(NODICS.getModules()), [enterprise.tenant.code]);
+                                        SERVICE.DefaultSearchModelHandlerService.updateIndexesSchema();
+                                        this.LOG.debug('Search connections has been established successfully');
+                                    }).catch(error => {
+                                        this.LOG.error('Failed establishing connections with search engine');
+                                        this.LOG.error(error);
+                                    });
+                                }
                                 if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                                     SERVICE.DefaultEmployeeService.get({
                                         tenant: enterprise.tenant.code,

@@ -38,8 +38,8 @@ module.exports = {
             process.error(request, response, 'Invalid data object to process');
         } else {
             request.header.local.indexerConfig = (request.header.local.indexerConfig) ? request.header.local.indexerConfig : {};
-            if (request.header.local.indexerConfig.dumpData === undefined) {
-                request.header.local.indexerConfig.dumpData = true;
+            if (request.header.local.indexerConfig.finalizeData === undefined) {
+                request.header.options.finalizeData = true;
             }
             process.nextSuccess(request, response);
         }
@@ -105,8 +105,7 @@ module.exports = {
     processData: function (request, response, process) {
         let _self = this;
         try {
-            let indexerConfig = request.header.local.indexerConfig;
-            if (indexerConfig.dumpData) {
+            if (request.header.options.finalizeData) {
                 SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
                     tenant: request.tenant,
                     moduleName: request.moduleName,

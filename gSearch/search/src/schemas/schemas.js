@@ -111,7 +111,7 @@ module.exports = {
                     default: ENUMS.IndexerType.INTERNAL.key,
                     description: 'Required indexer name'
                 },
-                dumpData: {
+                finalizeData: {
                     type: 'bool',
                     required: true,
                     description: 'If true, temp files will be create, else will be imported directly'

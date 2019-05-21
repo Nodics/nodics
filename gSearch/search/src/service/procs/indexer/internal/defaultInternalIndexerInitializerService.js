@@ -83,8 +83,7 @@ module.exports = {
     },
 
     flushOutputFolder: function (request, response, process) {
-        let indexerConfig = request.header.local.indexerConfig;
-        if (indexerConfig.dumpData) {
+        if (request.header.options.finalizeData) {
             this.LOG.debug('Cleaning output directory : ' + request.outputPath.dataPath);
             fse.remove(request.outputPath.dataPath).then(() => {
                 process.nextSuccess(request, response);
@@ -221,10 +220,9 @@ module.exports = {
             reject(error);
         }
     },
-    importDumpData: function (request, response, process) {
+    importFinalizeData: function (request, response, process) {
         try {
-            let indexerConfig = request.header.local.indexerConfig;
-            if (indexerConfig.dumpData) {
+            if (request.header.options.finalizeData) {
                 SERVICE.DefaultImportService.processImportData({
                     tenant: request.tenant,
                     inputPath: {

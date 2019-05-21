@@ -44,11 +44,11 @@ module.exports = {
             processData: {
                 type: 'function',
                 handler: 'DefaultInternalDataConsumeProcessService.processData',
-                success: 'importDumpData'
+                success: 'importFinalizeData'
             },
-            importDumpData: {
+            importFinalizeData: {
                 type: 'function',
-                handler: 'DefaultInternalDataConsumeProcessService.importDumpData',
+                handler: 'DefaultInternalDataConsumeProcessService.importFinalizeData',
                 success: 'successEnd'
             },
             successEnd: {

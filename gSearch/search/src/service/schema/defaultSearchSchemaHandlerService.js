@@ -34,13 +34,13 @@ module.exports = {
         });
     },
 
-    prepareSearchSchema: function () {
+    prepareSearchSchema: function (tenants = NODICS.getTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                _self.loadSearchSchemaFromSchema();
-                _self.loadSearchSchema();
-                _self.loadSearchSchemaFromDatabase().then(success => {
+                _self.loadSearchSchemaFromSchema(tenants);
+                _self.loadSearchSchema(tenants);
+                _self.loadSearchSchemaFromDatabase(tenants).then(success => {
                     _self.extractDefaultValues();
                     resolve(true);
                 }).catch(error => {
@@ -52,11 +52,13 @@ module.exports = {
         });
     },
 
-    loadSearchSchemaFromSchema: function () {
+    loadSearchSchemaFromSchema: function (tenants = NODICS.getTenants()) {
         let _self = this;
         try {
-            Object.keys(NODICS.getModules()).forEach(moduleName => {
-                _self.loadSearchSchemaForModule(moduleName);
+            tenants.forEach(tntCode => {
+                Object.keys(NODICS.getModules()).forEach(moduleName => {
+                    _self.loadSearchSchemaForModule(moduleName, tntCode);
+                });
             });
         } catch (error) {
             _self.LOG.error('Failed while loading search schema from schema definitions');
@@ -65,7 +67,7 @@ module.exports = {
         }
     },
 
-    loadSearchSchemaForModule: function (moduleName) {
+    loadSearchSchemaForModule: function (moduleName, tntCode) {
         let _self = this;
         try {
             let moduleObject = NODICS.getModule(moduleName);
@@ -73,8 +75,7 @@ module.exports = {
                 _self.LOG.debug('Collecting data from module: ' + moduleName);
                 Object.keys(moduleObject.rawSchema).forEach(schemaName => {
                     let rawSchema = moduleObject.rawSchema[schemaName];
-                    let tenants = rawSchema.tenants || NODICS.getTenants();
-                    tenants.forEach(tntCode => {
+                    if (!rawSchema.tenants || rawSchema.tenants.includes(tntCode)) {
                         let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(moduleName, tntCode);
                         if (searchEngine) {
                             let searchOptions = searchEngine.getOptions();
@@ -98,7 +99,7 @@ module.exports = {
                                 _self.LOG.error('Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode);
                             }
                         }
-                    });
+                    }
                 });
             }
         } catch (error) {
@@ -107,12 +108,11 @@ module.exports = {
         }
     },
 
-    loadSearchSchema: function () {
+    loadSearchSchema: function (tenants = NODICS.getTenants()) {
         let _self = this;
         try {
             let searchSchemas = {};
             SERVICE.DefaultFilesLoaderService.loadFiles('/src/search/indexes.js', searchSchemas);
-            let tenants = NODICS.getTenants();
             if (!UTILS.isBlank(searchSchemas) && tenants && tenants.length > 0) {
                 tenants.forEach(tntCode => {
                     Object.keys(searchSchemas).forEach(moduleName => {
@@ -146,10 +146,9 @@ module.exports = {
         }
     },
 
-    loadSearchSchemaFromDatabase: function () {
+    loadSearchSchemaFromDatabase: function (tenants = NODICS.getTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            let tenants = NODICS.getTenants();
             try {
                 tenants.forEach(tntCode => {
                     SERVICE.DefaultIndexService.get({

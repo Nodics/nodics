@@ -782,11 +782,11 @@ module.exports = {
             initFatchData: {
                 type: 'function',
                 handler: 'DefaultInternalIndexerInitializerService.initFatchData',
-                success: 'importDumpData'
+                success: 'importFinalizeData'
             },
-            importDumpData: {
+            importFinalizeData: {
                 type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.importDumpData',
+                handler: 'DefaultInternalIndexerInitializerService.importFinalizeData',
                 success: 'successEnd'
             },
             successEnd: {
@@ -844,11 +844,11 @@ module.exports = {
             triggerProcess: {
                 type: 'function',
                 handler: 'DefaultExternalIndexerInitializerService.triggerProcess',
-                success: 'importDumpData'
+                success: 'importFinalizeData'
             },
-            importDumpData: {
+            importFinalizeData: {
                 type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.importDumpData',
+                handler: 'DefaultExternalIndexerInitializerService.importFinalizeData',
                 success: 'successEnd'
             },
             successEnd: {

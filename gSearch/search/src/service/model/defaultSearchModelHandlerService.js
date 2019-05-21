@@ -35,7 +35,7 @@ module.exports = {
         });
     },
 
-    prepareSearchModels: function (modules = Object.keys(NODICS.getModules())) {
+    prepareSearchModels: function (modules = Object.keys(NODICS.getModules()), tenants = NODICS.getTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -45,8 +45,8 @@ module.exports = {
                     if (!moduleObject.searchModels) {
                         moduleObject.searchModels = {};
                     }
-                    _self.prepareModuleSearchModels(moduleName).then(success => {
-                        _self.prepareSearchModels(modules).then(success => {
+                    _self.prepareModuleSearchModels(moduleName, [].concat(tenants)).then(success => {
+                        _self.prepareSearchModels(modules, tenants).then(success => {
                             resolve(true);
                         }).catch(error => {
                             reject(error);
@@ -204,7 +204,7 @@ module.exports = {
         }
     },
 
-    updateIndexesSchema: function (modules = Object.keys(NODICS.getModules())) {
+    updateIndexesSchema: function (modules = Object.keys(NODICS.getModules()), tenants = NODICS.getTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -214,8 +214,8 @@ module.exports = {
                     if (!moduleObject.searchModels) {
                         moduleObject.searchModels = {};
                     }
-                    _self.updateModuleIndexesSchema(moduleName).then(success => {
-                        _self.updateIndexesSchema(modules).then(success => {
+                    _self.updateModuleIndexesSchema(moduleName, [].concat(tenants)).then(success => {
+                        _self.updateIndexesSchema(modules, tenants).then(success => {
                             resolve(true);
                         }).catch(error => {
                             reject(error);

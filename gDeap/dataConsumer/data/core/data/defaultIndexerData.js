@@ -14,7 +14,7 @@ module.exports = {
         code: "InternalDataIndexer",
         name: "InternalDataIndexer",
         active: true,
-        dumpData: false,
+        finalizeData: false,
         logResult: false,
         schema: {
             name: "internalData",
@@ -32,7 +32,7 @@ module.exports = {
         code: "ExternalDataIndexer",
         name: "ExternalDataIndexer",
         active: true,
-        dumpData: false,
+        finalizeData: false,
         logResult: false,
         schema: {
             name: "externalData",

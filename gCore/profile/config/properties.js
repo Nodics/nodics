@@ -17,7 +17,7 @@ module.exports = {
 
     profile: {
         jwtSignOptions: {
-            expiresIn: "5m",
+            expiresIn: "3h",
             algorithm: "HS256"   // RSASSA [ "RS256", "RS384", "RS512" ]
         },
         jwtVerifyOptions: {

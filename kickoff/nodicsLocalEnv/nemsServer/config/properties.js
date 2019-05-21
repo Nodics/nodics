@@ -112,34 +112,34 @@ module.exports = {
             }
         },
 
-        emsClient: {
-            options: {
-                contextRoot: 'nodics'
-            },
-            server: {
-                httpHost: 'localhost',
-                httpPort: 3006,
+        // emsClient: {
+        //     options: {
+        //         contextRoot: 'nodics'
+        //     },
+        //     server: {
+        //         httpHost: 'localhost',
+        //         httpPort: 3006,
 
-                httpsHost: 'localhost',
-                httpsPort: 3007
-            },
-            abstract: {
-                httpHost: 'localhost',
-                httpPort: 3006,
+        //         httpsHost: 'localhost',
+        //         httpsPort: 3007
+        //     },
+        //     abstract: {
+        //         httpHost: 'localhost',
+        //         httpPort: 3006,
 
-                httpsHost: 'localhost',
-                httpsPort: 3007
-            }, //Clusters information is optional and will be managed for Backoffice application
-            nodes: {
-                0: {
-                    httpHost: 'localhost',
-                    httpPort: 3006,
+        //         httpsHost: 'localhost',
+        //         httpsPort: 3007
+        //     }, //Clusters information is optional and will be managed for Backoffice application
+        //     nodes: {
+        //         0: {
+        //             httpHost: 'localhost',
+        //             httpPort: 3006,
 
-                    httpsHost: 'localhost',
-                    httpsPort: 3007
-                }
-            }
-        },
+        //             httpsHost: 'localhost',
+        //             httpsPort: 3007
+        //         }
+        //     }
+        // },
 
         powerTool: {
             options: {
@@ -166,6 +166,35 @@ module.exports = {
 
                     httpsHost: 'localhost',
                     httpsPort: 3009
+                }
+            }
+        },
+
+        dataConsumer: {
+            options: {
+                contextRoot: 'nodics'
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3010,
+
+                httpsHost: 'localhost',
+                httpsPort: 3011
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3010,
+
+                httpsHost: 'localhost',
+                httpsPort: 3011
+            }, //Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3010,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3011
                 }
             }
         }

@@ -12,20 +12,57 @@
 module.exports = {
     activeModules: {
         updateGroups: true,
-        //groups: ['gSearch'], // Group 'framework' will be included automatically
+        groups: ['gEms', 'gDeap', 'gSearch'], // Group 'framework' will be included automatically
         modules: [
-            'profile',
-            'profileServer',
+            'deapServer',
             'kickoff',
             'nodicsLocalEnv'
         ]
     },
+
     log: {
         level: 'debug'
     },
 
+    emsClient: {
+        clients: {
+            activemq: {
+                enabled: true
+            }
+        }
+    },
+
     server: {
         default: {
+            options: {
+                contextRoot: 'nodics'
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3010,
+
+                httpsHost: 'localhost',
+                httpsPort: 3011
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3010,
+
+                httpsHost: 'localhost',
+                httpsPort: 3011
+            },//Clusters information is optional and will be managed for Backoffice application
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3010,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3011
+                }
+            }
+        },
+
+        profile: {
             options: {
                 contextRoot: 'nodics'
             },
@@ -42,7 +79,7 @@ module.exports = {
 
                 httpsHost: 'localhost',
                 httpsPort: 3001
-            },
+            },//Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',
@@ -71,7 +108,7 @@ module.exports = {
 
                 httpsHost: 'localhost',
                 httpsPort: 3005
-            },
+            },//Clusters information is optional and will be managed for Backoffice application
             nodes: {
                 0: {
                     httpHost: 'localhost',

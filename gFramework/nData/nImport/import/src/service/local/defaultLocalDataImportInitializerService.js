@@ -112,11 +112,9 @@ module.exports = {
                                 headerObj.options.dataHandler = (headerObj.options.indexName) ? 'indexerDataHandlerPipeline' : 'schemaDataHandlerPipeline';
                                 headerObj.local = headerObj.local || {};
                                 if (headerObj.options.indexName) {
-                                    headerObj.local = _.merge(headerObj.local || {}, {
-                                        indexerConfig: {
-                                            dumpData: true
-                                        }
-                                    });
+                                    headerObj.options.finalizeData = true;
+                                } else {
+                                    headerObj.options.finalizeData = headerObj.options.finalizeData || false;
                                 }
                                 headerObj.dataFiles = {};
                                 if (!request.data.headers[headerName]) {

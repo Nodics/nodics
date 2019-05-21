@@ -58,15 +58,11 @@ module.exports = {
                 indexName: header.indexName,
                 typeName: header.typeName || header.indexName,
                 operation: header.operation || 'doSave',
-                moduleName: request.moduleName
+                moduleName: request.moduleName,
+                finalizeData: header.finalizeData || false
             };
         }
         if (!UTILS.isBlank(tmpHeader)) {
-            tmpHeader.local = {
-                indexerConfig: {
-                    dumpData: header.dumpData || false
-                }
-            };
             request.header = tmpHeader;
             process.nextSuccess(request, response);
         } else {
@@ -76,7 +72,6 @@ module.exports = {
                 error: 'Event contain invalid header'
             });
         }
-
     },
 
     prepareInputPath: function (request, response, process) {
@@ -100,8 +95,7 @@ module.exports = {
     },
 
     flushOutputFolder: function (request, response, process) {
-        let indexerConfig = request.header.local.indexerConfig;
-        if (indexerConfig.dumpData) {
+        if (request.header.options.finalizeData) {
             this.LOG.debug('Cleaning output directory : ' + request.outputPath.dataPath);
             fse.remove(request.outputPath.dataPath).then(() => {
                 process.nextSuccess(request, response);
@@ -148,10 +142,9 @@ module.exports = {
         }
     },
 
-    importDumpData: function (request, response, process) {
+    importFinalizeData: function (request, response, process) {
         try {
-            let indexerConfig = request.header.local.indexerConfig;
-            if (indexerConfig.dumpData) {
+            if (request.header.options.finalizeData) {
                 SERVICE.DefaultImportService.processImportData({
                     tenant: request.tenant,
                     inputPath: {

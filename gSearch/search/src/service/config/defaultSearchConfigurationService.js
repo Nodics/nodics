@@ -82,6 +82,9 @@ module.exports = {
         }
     },
 
+    getSearchEngines: function () {
+        return this.searchEngines;
+    },
     addTenantSearchEngine: function (moduleName, tenant, searchEngine) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
@@ -94,11 +97,7 @@ module.exports = {
     },
 
     removeTenantSearchEngine: function (moduleName, tenant) {
-        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
-        } else if (this.searchEngines[moduleName] && this.searchEngines[moduleName][tenant]) {
+        if (this.searchEngines[moduleName] && this.searchEngines[moduleName][tenant]) {
             delete this.searchEngines[moduleName][tenant];
         }
         return true;
@@ -160,11 +159,7 @@ module.exports = {
     },
 
     removeTenantRawSearchSchema: function (moduleName, tenant) {
-        if (!moduleName && !NODICS.isModuleActive(moduleName) || !this.searchSchema[moduleName]) {
-            throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant) || !this.searchSchema[moduleName][tenant]) {
-            throw new Error('Invalid tenant name: ' + tenant);
-        } else {
+        if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
             delete this.searchSchema[moduleName][tenant];
         }
         return true;

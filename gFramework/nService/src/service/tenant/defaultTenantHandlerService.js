@@ -44,8 +44,11 @@ module.exports = {
                         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
                             SERVICE.DefaultDatabaseConnectionHandlerService.removeTenantDatabase(moduleName, tenant).then(success => {
                                 SERVICE.DefaultDatabaseModelHandlerService.removeModelsForTenant(moduleName, tenant).then(success => {
-                                    // SERVICE.DefaultSearchConfigurationService.removeTenantSearchEngine(moduleName, tenant);
-                                    // SERVICE.DefaultSearchConfigurationService.removeTenantRawSearchSchema(moduleName, tenant);
+                                    if (NODICS.isModuleActive('search')) {
+                                        SERVICE.DefaultSearchConfigurationService.removeTenantSearchEngine(moduleName, tenant);
+                                        SERVICE.DefaultSearchConfigurationService.removeTenantRawSearchSchema(moduleName, tenant);
+                                        if (moduleObject.searchModels[tenant]) delete moduleObject.searchModels[tenant];
+                                    }
                                     resolve({
                                         success: true,
                                         code: 'SUC_SYS_00000',
