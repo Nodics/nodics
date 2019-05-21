@@ -70,19 +70,9 @@ module.exports = {
                             tenant: 'default',
                             modules: NODICS.getActiveModules()
                         }).then(success => {
-                            SERVICE.DefaultImportService.processImportData({
-                                tenant: 'default',
-                                inputPath: {
-                                    rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
-                                    dataType: 'init',
-                                    postFix: 'data'
-                                }
-                            }).then(success => {
-                                resolve(true);
-                            }).catch(error => {
-                                NODICS.LOG.error('Initial data import failed : ', error);
-                            });
+                            resolve(success);
                         }).catch(error => {
+                            NODICS.LOG.error('Initial data import failed : ', error);
                             reject(error);
                         });
                     } else {

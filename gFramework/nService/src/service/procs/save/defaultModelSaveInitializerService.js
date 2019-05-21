@@ -78,7 +78,7 @@ module.exports = {
     resolveQuery: function (query, model) {
         let queryStr = {};
         _.each(query, (propertyValue, propertyName) => {
-            if (propertyName.indexOf(".") && propertyValue.startsWith('$')) {
+            if (propertyName.indexOf(".") > 0 && propertyValue.startsWith('$')) {
                 let properties = propertyName.split('.');
                 let value = model;
                 for (let element of properties) {

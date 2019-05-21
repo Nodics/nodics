@@ -10,17 +10,10 @@
  */
 
 module.exports = {
-    cronjob: {
-        eventPublishJob: {
-            options: {
-                schemaName: 'cronJob',
-                operation: 'save', //save, update and saveOrUpdate
-                tenants: ['default'],
-                dataFilePrefix: 'eventPublishJob'
-            },
-            query: {
-                code: '$code'
-            }
+    common: {
+        importExternalModels: {
+            event: 'saveModels',
+            listener: 'DefaultExternalModelsImportEventHandlerService.handleModelsImportEvent'
         }
     }
 };

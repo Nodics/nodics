@@ -16,6 +16,8 @@ module.exports = {
         tenant: "default",
         description: 'This job is to trigger process events process, which will push all ASYNC events to target system',
         runOnNode: 0,
+        nodeId: 0,
+        runOnInit: false,
         active: true,
         logResult: false,
         jobDetail: {
@@ -30,6 +32,9 @@ module.exports = {
         emails: [{
             email: "nodics.framework@nodics.com"
         }],
+        event: {
+            completed: true
+        },
         priority: 1000,
         status: "NEW",
         state: "NEW"

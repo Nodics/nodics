@@ -131,15 +131,10 @@ module.exports = {
                         }
                         request.data.headers[headerName] = _.merge(request.data.headers[headerName], header);
                         request.data.headers[headerName].options.moduleName = moduleName;
+                        request.data.headers[headerName].options.finalizeData = true;
                         request.data.headers[headerName].dataFiles = {};
                         request.data.headers[headerName].options.dataHandler = (request.data.headers[headerName].options.indexName) ? 'indexerDataHandlerPipeline' : 'schemaDataHandlerPipeline';
                         request.data.headers[headerName].local = request.data.headers[headerName].local || {};
-
-                        if (request.data.headers[headerName].options.indexName) {
-                            request.data.headers[headerName].options.finalizeData = true;
-                        } else {
-                            request.data.headers[headerName].options.finalizeData = request.data.headers[headerName].options.finalizeData || false;
-                        }
                     });
                 });
             });

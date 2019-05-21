@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -55,7 +57,7 @@ module.exports = {
     loadRawSchema: function (request, response, process) {
         this.LOG.debug('Loading raw schema for header');
         let header = request.header;
-        if (header.options.schemaName) {
+        if (header.options.schemaName && NODICS.getModule(header.options.moduleName)) {
             header.rawSchema = NODICS.getModule(header.options.moduleName).rawSchema[header.options.schemaName];
         }
         process.nextSuccess(request, response);
@@ -330,31 +332,31 @@ module.exports = {
         });
     },
 
-    prepareURL: function (request, models) {
-        let header = request.header;
-        return SERVICE.DefaultModuleService.buildRequest({
-            connectionType: 'abstract',
-            nodeId: '0',
-            moduleName: header.options.moduleName,
-            methodName: 'POST',
-            apiName: '/' + header.options.schemaName ? header.options.schemaName : header.options.indexName + header.options.indexName ? '/search' : '',
-            requestBody: models,
-            isJsonResponse: true,
-            header: {
-                authToken: NODICS.getAPIKey(request.tenant).key
-            }
-        });
-    },
-
     insertRemoteModel: function (request, models) {
         let header = request.header;
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultModuleService.fetch(this.prepareURL(request, header.options.schemaName ? models : models[0])).then(success => {
+            let event = {
+                enterpriseCode: models[0].enterpriseCode || request.enterpriseCode || 'default',
+                tenant: request.tenant,
+                active: true,
+                event: 'saveModels',
+                source: header.options.moduleName,
+                target: header.options.moduleName,
+                state: "NEW",
+                type: 'SYNC',
+                targetType: ENUMS.TargetType.MODULE.key,
+                targetNodeId: 0,
+                data: {
+                    header: header,
+                    models: models
+                }
+            };
+            this.LOG.debug('Pushing event for item created : ', event.event);
+            SERVICE.DefaultEventService.publish(event).then(success => {
                 resolve(success);
             }).catch(error => {
                 reject(error);
             });
-
         });
     },
 

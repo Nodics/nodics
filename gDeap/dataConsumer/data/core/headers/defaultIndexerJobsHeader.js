@@ -14,12 +14,12 @@ module.exports = {
         indexerJob: {
             options: {
                 schemaName: 'cronJob',
-                operation: 'save', //save, update and saveOrUpdate
+                operation: 'saveOrUpdate', //save, update and saveOrUpdate
                 tenants: ['default'],
                 dataFilePrefix: 'defaultIndexerJobsData'
             },
             query: {
-                code: 'code'
+                code: '$code'
             }
         }
     }

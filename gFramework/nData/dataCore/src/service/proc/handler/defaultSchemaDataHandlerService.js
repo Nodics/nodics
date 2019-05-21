@@ -37,10 +37,10 @@ module.exports = {
         if (!request.models) {
             process.error(request, response, 'Invalid data object to process');
         } else {
-            request.header.local.indexerConfig = (request.header.local.indexerConfig) ? request.header.local.indexerConfig : {};
-            if (request.header.local.indexerConfig.finalizeData === undefined) {
-                request.header.options.finalizeData = true;
-            }
+            // request.header.local.indexerConfig = (request.header.local.indexerConfig) ? request.header.local.indexerConfig : {};
+            // if (request.header.local.indexerConfig.finalizeData === undefined) {
+            //     request.header.options.finalizeData = true;
+            // }
             process.nextSuccess(request, response);
         }
     },

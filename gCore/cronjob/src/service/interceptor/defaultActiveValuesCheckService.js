@@ -13,7 +13,9 @@ module.exports = {
     convertToDate: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
-                if (request.model.start && !(request.model.start instanceof Date)) {
+                if (!request.model.start) {
+                    request.model.start = new Date();
+                } else if (!(request.model.start instanceof Date)) {
                     request.model.start = new Date(request.model.start);
                 }
                 if (request.model.end && !(request.model.end instanceof Date)) {

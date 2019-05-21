@@ -184,44 +184,33 @@ module.exports = {
                                                 tenant: enterprise.tenant.code,
                                                 modules: NODICS.getActiveModules()
                                             }).then(success => {
-                                                SERVICE.DefaultImportService.processImportData({
+                                                SERVICE.DefaultEmployeeService.get({
                                                     tenant: enterprise.tenant.code,
-                                                    enterpriseCode: enterprise.code,
-                                                    inputPath: {
-                                                        rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
-                                                        dataType: 'init',
-                                                        postFix: 'data'
+                                                    query: {
+                                                        code: 'apiAdmin'
                                                     }
                                                 }).then(success => {
-                                                    SERVICE.DefaultEmployeeService.get({
-                                                        tenant: enterprise.tenant.code,
-                                                        query: {
-                                                            code: 'apiAdmin'
-                                                        }
-                                                    }).then(success => {
-                                                        if (success.success && success.result.length > 0) {
-                                                            let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
-                                                                enterpriseCode: enterprise.code,
-                                                                tenant: enterprise.tenant.code,
-                                                                apiKey: success.result[0].apiKey,
-                                                                lifetime: true
-                                                            });
-                                                            NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
-                                                            _self.buildEnterprise(enterprises).then(success => {
-                                                                resolve(true);
-                                                            }).catch(error => {
-                                                                reject(error);
-                                                            });
-                                                        } else {
-                                                            reject('Could not load default API key for tenant: ' + enterprise.tenant.code);
-                                                        }
-                                                    }).catch(error => {
-                                                        reject(error);
-                                                    });
+                                                    if (success.success && success.result.length > 0) {
+                                                        let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
+                                                            enterpriseCode: enterprise.code,
+                                                            tenant: enterprise.tenant.code,
+                                                            apiKey: success.result[0].apiKey,
+                                                            lifetime: true
+                                                        });
+                                                        NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
+                                                        _self.buildEnterprise(enterprises).then(success => {
+                                                            resolve(true);
+                                                        }).catch(error => {
+                                                            reject(error);
+                                                        });
+                                                    } else {
+                                                        reject('Could not load default API key for tenant: ' + enterprise.tenant.code);
+                                                    }
                                                 }).catch(error => {
-                                                    NODICS.LOG.error('Initial data import failed : ', error);
+                                                    reject(error);
                                                 });
                                             }).catch(error => {
+                                                NODICS.LOG.error('Initial data import failed : ', error);
                                                 reject(error);
                                             });
                                         } else {

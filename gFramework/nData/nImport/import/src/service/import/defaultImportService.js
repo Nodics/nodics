@@ -34,17 +34,68 @@ module.exports = {
 
     importInitData: function (request) {
         request.dataType = 'init';
-        return SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {});
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
+                this.processImportData({
+                    tenant: request.tenant || 'default',
+                    inputPath: {
+                        rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
+                        dataType: request.dataType,
+                        postFix: 'data'
+                    }
+                }).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    NODICS.LOG.error('Initial data import failed : ', error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
 
     importCoreData: function (request) {
         request.dataType = 'core';
-        return SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {});
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
+                this.processImportData({
+                    tenant: request.tenant || 'default',
+                    inputPath: {
+                        rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
+                        dataType: request.dataType,
+                        postFix: 'data'
+                    }
+                }).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    NODICS.LOG.error('Initial data import failed : ', error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
 
     importSampleData: function (request) {
         request.dataType = 'sample';
-        return SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {});
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
+                this.processImportData({
+                    tenant: request.tenant || 'default',
+                    inputPath: {
+                        rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
+                        dataType: request.dataType,
+                        postFix: 'data'
+                    }
+                }).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    NODICS.LOG.error('Initial data import failed : ', error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
 
     importLocalData: function (request) {
