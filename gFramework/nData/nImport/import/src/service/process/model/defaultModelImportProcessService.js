@@ -302,8 +302,6 @@ module.exports = {
         let header = request.header;
         return new Promise((resolve, reject) => {
             let searchService = SERVICE['Default' + header.options.indexName.toUpperCaseFirstChar() + 'Service'] || SERVICE.DefaultSearchService;
-            console.log('-------------------------------------------------------');
-            console.log(models[0]);
             searchService[header.options.operation]({
                 tenant: request.tenant,
                 indexName: request.indexName || header.options.indexName,

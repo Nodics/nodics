@@ -106,13 +106,15 @@ module.exports = {
                         _.each(fileObj, (moduleObject, moduleName) => {
                             _.each(moduleObject, (headerObj, headerName) => {
                                 headerObj.options.moduleName = headerObj.options.moduleName || moduleName;
-                                headerObj.options.finalizeData = true;
                                 headerObj.options.fileName = name;
                                 headerObj.options.filePath = element;
                                 headerObj.options.done = false;
                                 headerObj.options.dataHandler = (headerObj.options.indexName) ? 'indexerDataHandlerPipeline' : 'schemaDataHandlerPipeline';
                                 headerObj.local = headerObj.local || {};
                                 headerObj.dataFiles = {};
+                                if (headerObj.options.finalizeData === undefined) {
+                                    headerObj.options.finalizeData = true;
+                                }
                                 if (!request.data.headers[headerName]) {
                                     request.data.headers[headerName] = headerObj;
                                 } else {

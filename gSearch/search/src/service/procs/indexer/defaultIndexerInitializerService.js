@@ -61,6 +61,7 @@ module.exports = {
     changeIndexerState: function (request, response, process) {
         this.LOG.debug('Changing state of current indexer: ' + request.indexerConfig.code);
         let indexerConfig = request.indexerConfig;
+        indexerConfig.lastSuccessTime = indexerConfig.lastSuccessTime;
         indexerConfig.state = ENUMS.IndexerState.RUNNING.key;
         indexerConfig.startTime = new Date();
         SERVICE.DefaultIndexerService.save({
@@ -160,6 +161,7 @@ module.exports = {
         let indexerConfig = request.indexerConfig;
         indexerConfig.state = ENUMS.IndexerState.SUCCESS.key;
         indexerConfig.endTime = new Date();
+        indexerConfig.lastSuccessTime = indexerConfig.startTime;
         indexerConfig.lastErrorLog = [];
         SERVICE.DefaultIndexerService.save({
             tenant: request.tenant,

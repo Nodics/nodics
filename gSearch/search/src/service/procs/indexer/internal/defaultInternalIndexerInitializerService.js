@@ -61,7 +61,11 @@ module.exports = {
                 searchService: request.searchService
             }
         };
-        request.header.options.finalizeData = request.header.local.indexerConfig.finalizeData || true;
+        if (request.header.local.indexerConfig.finalizeData === undefined) {
+            request.header.options.finalizeData = true;
+        } else {
+            request.header.options.finalizeData = request.header.local.indexerConfig.finalizeData;
+        }
         process.nextSuccess(request, response);
     },
 
@@ -97,10 +101,18 @@ module.exports = {
         }
     },
     buildQuery: function (request, response, process) {
-        let query = _.merge({}, request.header.local.indexerConfig.schema.query || {});
-        let queryOptions = _.merge({}, request.header.local.indexerConfig.schema.options || {});
-        queryOptions.projection = _.merge({ _id: 0 }, queryOptions.projection || {});
+        let indexerConfig = request.header.local.indexerConfig;
 
+        let query = _.merge({}, indexerConfig.schema.query || {});
+        let queryOptions = _.merge({}, indexerConfig.schema.options || {});
+        queryOptions.projection = _.merge({ _id: 0 }, queryOptions.projection || {});
+        if (indexerConfig.incremental && indexerConfig.lastSuccessTime) {
+            query = _.merge(query, {
+                updated: {
+                    $gte: indexerConfig.lastSuccessTime
+                }
+            });
+        }
         request.query = query;
         request.queryOptions = queryOptions;
         process.nextSuccess(request, response);

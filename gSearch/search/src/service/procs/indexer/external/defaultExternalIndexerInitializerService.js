@@ -74,7 +74,11 @@ module.exports = {
                 searchService: request.searchService
             }
         };
-        request.header.options.finalizeData = request.header.local.indexerConfig.finalizeData || true;
+        if (request.header.local.indexerConfig.finalizeData === undefined) {
+            request.header.options.finalizeData = true;
+        } else {
+            request.header.options.finalizeData = request.header.local.indexerConfig.finalizeData;
+        }
         process.nextSuccess(request, response);
     },
 
