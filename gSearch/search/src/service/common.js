@@ -207,7 +207,11 @@ module.exports = {
                 SERVICE.DefaultIndexerService.prepareIndexer(request).then(success => {
                     resolve(success);
                 }).catch(error => {
-                    reject(error);
+                    reject({
+                        success: false,
+                        code: 'ERR_SRCH_00000',
+                        error: error
+                    });
                 });
             } catch (error) {
                 reject({

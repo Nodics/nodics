@@ -62,8 +62,7 @@ module.exports = {
                 operation: request.indexerConfig.target.operation || CONFIG.get('search').defaultDoSaveOperation || 'doSave',
                 tenants: [request.tenant],
                 moduleName: request.moduleName,
-                dataHandler: 'indexerDataHandlerPipeline',
-                finalizeData: request.indexerConfig.finalizeData || true
+                dataHandler: 'indexerDataHandlerPipeline'
             },
             local: {
                 indexerConfig: request.indexerConfig,
@@ -75,7 +74,7 @@ module.exports = {
                 searchService: request.searchService
             }
         };
-        request.header.local.indexerConfig.finalizeData = request.header.local.indexerConfig.finalizeData || true;
+        request.header.options.finalizeData = request.header.local.indexerConfig.finalizeData || true;
         process.nextSuccess(request, response);
     },
 

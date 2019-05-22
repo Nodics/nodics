@@ -777,6 +777,11 @@ module.exports = {
             flushOutputFolder: {
                 type: 'function',
                 handler: 'DefaultInternalIndexerInitializerService.flushOutputFolder',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultInternalIndexerInitializerService.buildQuery',
                 success: 'initFatchData'
             },
             initFatchData: {

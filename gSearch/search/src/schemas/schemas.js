@@ -105,6 +105,11 @@ module.exports = {
                     required: true,
                     description: 'Required indexer name'
                 },
+                incremental: {
+                    type: 'bool',
+                    required: true,
+                    description: 'Mandate, if true, will be partial else full'
+                },
                 type: {
                     required: true,
                     enum: [ENUMS.IndexerType.INTERNAL.key, ENUMS.IndexerType.EXTERNAL.key],
@@ -113,7 +118,7 @@ module.exports = {
                 },
                 finalizeData: {
                     type: 'bool',
-                    required: true,
+                    required: false,
                     description: 'If true, temp files will be create, else will be imported directly'
                 },
                 logResult: {
@@ -226,18 +231,6 @@ module.exports = {
                     type: 'array',
                     required: false,
                     description: 'Last error log'
-                },
-                startTime: {
-                    type: 'date',
-                    required: true,
-                    default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp',
-                    description: 'Timestamp when this indexer started'
-                },
-                endTime: {
-                    type: 'date',
-                    required: true,
-                    default: 'DefaultPropertyInitialValueProviderService.getCurrentTimestamp',
-                    description: 'Timestamp when this indexer finished'
                 }
             }
         },

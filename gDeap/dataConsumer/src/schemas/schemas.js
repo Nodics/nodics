@@ -11,7 +11,7 @@
 
 module.exports = {
     dataConsumer: {
-        inetrnalData: {
+        internalData: {
             super: 'super',
             model: true,
             service: true,

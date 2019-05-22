@@ -61,6 +61,7 @@ module.exports = {
                 searchService: request.searchService
             }
         };
+        request.header.options.finalizeData = request.header.local.indexerConfig.finalizeData || true;
         process.nextSuccess(request, response);
     },
 
@@ -77,7 +78,8 @@ module.exports = {
             dataPath: request.target.dataPath,
             successPath: request.target.successPath,
             errorPath: request.target.errorPath,
-            fileName: request.target.indexName + 'IndexData'
+            fileName: request.target.indexName + 'IndexData',
+            version: 0
         };
         process.nextSuccess(request, response);
     },
@@ -94,15 +96,21 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
-    initFatchData: function (request, response, process) {
-        this.LOG.debug('Changing state of current indexer: ' + request.header.local.indexerConfig.code);
+    buildQuery: function (request, response, process) {
         let query = _.merge({}, request.header.local.indexerConfig.schema.query || {});
         let queryOptions = _.merge({}, request.header.local.indexerConfig.schema.options || {});
         queryOptions.projection = _.merge({ _id: 0 }, queryOptions.projection || {});
+
+        request.query = query;
+        request.queryOptions = queryOptions;
+        process.nextSuccess(request, response);
+    },
+
+    initFatchData: function (request, response, process) {
+        this.LOG.debug('Changing state of current indexer: ' + request.header.local.indexerConfig.code);
         this.fatchData(request, {
-            queryOptions: queryOptions,
-            query: query,
+            queryOptions: request.queryOptions,
+            query: request.query,
             readBytes: 0,
             readBufferSize: (request.options && request.options.readBufferSize && request.options.readBufferSize > 0) ? request.options.readBufferSize : CONFIG.get('data').readBufferSize,
             pageNumber: 1,
@@ -236,7 +244,6 @@ module.exports = {
                 }).catch(error => {
                     process.error(request, response, error);
                 });
-                process.nextSuccess(request, response);
             } else {
                 process.nextSuccess(request, response);
             }
