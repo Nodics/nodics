@@ -19,10 +19,12 @@ module.exports = {
         active: true,
         logResult: false,
         jobDetail: {
-            nodeId: 0,
-            module: 'dataConsumer',
-            method: 'GET',
-            uri: '/inetrnalData/search/index/internalDataFullIndexer'
+            internal: {
+                nodeId: 0,
+                module: 'dataConsumer',
+                method: 'GET',
+                uri: '/inetrnalData/search/index/internalDataFullIndexer'
+            }
         },
         trigger: {
             expression: "00 00 01 * * *"
@@ -43,10 +45,12 @@ module.exports = {
         active: true,
         logResult: false,
         jobDetail: {
-            nodeId: 0,
-            module: 'dataConsumer',
-            method: 'GET',
-            uri: '/inetrnalData/search/index/internalDataIncrementalIndexer'
+            internal: {
+                nodeId: 0,
+                module: 'dataConsumer',
+                method: 'GET',
+                uri: '/inetrnalData/search/index/internalDataIncrementalIndexer'
+            }
         },
         trigger: {
             expression: "10 * * * * *"
@@ -67,10 +71,12 @@ module.exports = {
         active: true,
         logResult: false,
         jobDetail: {
-            nodeId: 0,
-            module: 'dataConsumer',
-            method: 'GET',
-            uri: '/inetrnalData/search/index/externalDataFullIndexer'
+            internal: {
+                nodeId: 0,
+                module: 'dataConsumer',
+                method: 'GET',
+                uri: '/inetrnalData/search/index/externalDataFullIndexer'
+            }
         },
         trigger: {
             expression: "00 00 01 * * *"
@@ -91,10 +97,12 @@ module.exports = {
         active: true,
         logResult: false,
         jobDetail: {
-            nodeId: 0,
-            module: 'dataConsumer',
-            method: 'GET',
-            uri: '/inetrnalData/search/index/internalDataIncrementalIndexer'
+            internal: {
+                nodeId: 0,
+                module: 'dataConsumer',
+                method: 'GET',
+                uri: '/inetrnalData/search/index/internalDataIncrementalIndexer'
+            }
         },
         trigger: {
             expression: "10 * * * * *"

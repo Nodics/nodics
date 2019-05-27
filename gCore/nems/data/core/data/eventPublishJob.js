@@ -21,10 +21,12 @@ module.exports = {
         active: true,
         logResult: false,
         jobDetail: {
-            nodeId: 0,
-            module: 'nems',
-            method: 'GET',
-            uri: '/event/process'
+            internal: {
+                nodeId: 0,
+                module: 'nems',
+                method: 'GET',
+                uri: '/event/process'
+            }
         },
         trigger: {
             expression: "10 * * * * *"
