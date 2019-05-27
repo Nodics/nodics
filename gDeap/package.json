@@ -18,5 +18,9 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {}
+    "dependencies": {},
+    "tmpGroup": [
+        "dataConsumer",
+        "dataPublisher"
+    ]
 }

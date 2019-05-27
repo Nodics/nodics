@@ -58,7 +58,7 @@ module.exports = {
                 },
                 jobDetail: {
                     type: 'object',
-                    required: true,
+                    required: false,
                     description: 'Required to give job handler startNode, endNode and errorNode service funtions'
                 },
                 trigger: {

@@ -99,17 +99,32 @@ module.exports = {
             }).catch(error => {
                 process.error(request, response, error);
             });
-        } else {
-            SERVICE.DefaultModuleService.fetch(this.prepareURL(request.definition)).then(success => {
+        } else if (jobDetail.internal) {
+            SERVICE.DefaultModuleService.fetch(this.prepareInternalURL(request.definition)).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
             });
+        } else if (jobDetail.external) {
+            SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildExternalRequest({
+                header: jobDetail.external.header,
+                uri: jobDetail.external.uri,
+                methodName: jobDetail.external.methodName,
+                requestBody: jobDetail.external.body,
+                responseType: jobDetail.external.responseType,
+                params: jobDetail.external.params
+            })).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.error(request, response, 'Invalid job detail to execute');
         }
     },
 
-    prepareURL: function (definition) {
-        let jobDetail = definition.jobDetail;
+    prepareInternalURL: function (definition) {
+        let jobDetail = definition.jobDetail.internal;
         let connectionType = 'abstract';
         let nodeId = '0';
         if (jobDetail.nodeId) {
@@ -177,7 +192,7 @@ module.exports = {
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
         let errors = [];
-        if (response.errors && response.errors.length > 1) {
+        if (response.errors && response.errors.length >= 1) {
             errors = response.errors;
         } else {
             errors.push(response.error);

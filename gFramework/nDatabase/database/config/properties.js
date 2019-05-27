@@ -16,7 +16,6 @@ module.exports = {
     queryMaxTimeMS: 1000,
 
     database: {
-        processInitialData: false,
         default: {
             options: {
                 databaseType: 'mongodb', //for Cassandra use 'cassandra'

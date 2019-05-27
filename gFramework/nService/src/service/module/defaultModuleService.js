@@ -56,6 +56,34 @@ module.exports = {
         };
     },
 
+    buildExternalRequest: function (options) {
+        this.LOG.debug('Building external request url');
+        let header = {
+            'content-type': options.contentType || CONFIG.get('defaultContentType')
+        };
+        if (options.header) {
+            _.merge(header, options.header);
+        }
+        let uri = options.uri;
+        if (options.params && !UTILS.isBlank(options.params)) {
+            uri = uri + '?';
+            Object.keys(options.params).forEach(param => {
+                if (!uri.endsWith('?')) {
+                    uri = uri + '&';
+                }
+                uri = uri + param + '=' + options.params[param];
+            });
+        }
+        return {
+            method: options.methodName || 'GET',
+            uri: uri,
+            headers: header,
+            body: options.requestBody || {},
+            json: options.isJsonResponse || true,
+            rejectUnauthorized: false
+        };
+    },
+
     fetch: function (requestUrl, callback) {
         this.LOG.debug('Hitting module communication URL : ', JSON.stringify(requestUrl));
         if (callback) {

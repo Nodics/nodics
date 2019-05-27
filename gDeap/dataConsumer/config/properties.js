@@ -22,7 +22,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         schemaName: 'inetrnalData',
-                        operation: 'save'
+                        operation: 'save',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -35,7 +37,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         schemaName: 'inetrnalData',
-                        operation: 'save'
+                        operation: 'save',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -50,7 +54,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         schemaName: 'externalData',
-                        operation: 'save'
+                        operation: 'save',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -63,7 +69,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         schemaName: 'externalData',
-                        operation: 'save'
+                        operation: 'save',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -78,7 +86,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         indexName: 'inetrnalData',
-                        operation: 'doSave'
+                        operation: 'doSave',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -91,7 +101,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         indexName: 'inetrnalData',
-                        operation: 'doSave'
+                        operation: 'doSave',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -106,7 +118,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         indexName: 'externalData',
-                        operation: 'doSave'
+                        operation: 'doSave',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -119,7 +133,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         indexName: 'externalData',
-                        operation: 'doSave'
+                        operation: 'doSave',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -134,7 +150,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         schemaName: 'inetrnalData',
-                        operation: 'save'
+                        operation: 'save',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -147,7 +165,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         schemaName: 'inetrnalData',
-                        operation: 'save'
+                        operation: 'save',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -162,7 +182,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         schemaName: 'externalData',
-                        operation: 'save'
+                        operation: 'save',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -175,7 +197,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         schemaName: 'externalData',
-                        operation: 'save'
+                        operation: 'save',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -190,7 +214,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         indexName: 'inetrnalData',
-                        operation: 'doSave'
+                        operation: 'doSave',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -203,7 +229,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         indexName: 'inetrnalData',
-                        operation: 'doSave'
+                        operation: 'doSave',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -218,7 +246,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         indexName: 'externalData',
-                        operation: 'doSave'
+                        operation: 'doSave',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             },
@@ -231,7 +261,9 @@ module.exports = {
                     eventName: 'internalDataPushEvent',
                     header: {
                         indexName: 'externalData',
-                        operation: 'doSave'
+                        operation: 'doSave',
+                        enterpriseCode: 'default',
+                        tenant: 'default'
                     }
                 }
             }
