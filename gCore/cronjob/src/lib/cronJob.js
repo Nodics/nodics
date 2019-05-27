@@ -73,10 +73,36 @@ module.exports = function (definition, trigger, context, timeZone) {
                             }, {}).then(success => {
                                 _running = false;
                                 _self.LOG.warn('Job : ', _definition.code, ' completed its execution successfully');
+                                if (_definition.logResult) {
+                                    SERVICE.DefaultCronJobLogService.save({
+                                        tenant: _definition.tenant,
+                                        model: {
+                                            jobCode: _definition.code,
+                                            result: success
+                                        }
+                                    }).then(success => {
+                                        _self.LOG.debug('Log has been updated successfully');
+                                    }).catch(error => {
+                                        _self.LOG.error('Failed updating log');
+                                    });
+                                }
                                 if (oneTime) _self.stopJob(true);
                             }).catch(error => {
                                 _running = false;
                                 _self.LOG.error('Job: ' + _definition.code + ' has issue while execution: ' + error);
+                                if (_definition.logResult) {
+                                    SERVICE.DefaultCronJobLogService.save({
+                                        tenant: _definition.tenant,
+                                        model: {
+                                            jobCode: _definition.code,
+                                            result: error
+                                        }
+                                    }).then(success => {
+                                        _self.LOG.debug('Log has been updated successfully');
+                                    }).catch(error => {
+                                        _self.LOG.error('Failed updating log');
+                                    });
+                                }
                                 if (oneTime) _self.stopJob(true);
                             });
                         }

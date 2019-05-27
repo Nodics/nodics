@@ -32,33 +32,6 @@ module.exports = {
         });
     },
 
-    // configureEMSClients: function (options) {
-    //     let _self = this;
-    //     return new Promise((resolve, reject) => {
-    //         let emsConfig = CONFIG.get('emsClient');
-
-    //         if (emsConfig.enabled && emsConfig.type) {
-    //             let conf = emsConfig[emsConfig.type];
-    //             SERVICE[conf.handler].configureClent(conf).then(success => {
-    //                 _self.LOG.debug('Successfully established connection with : ', emsConfig.type);
-    //                 resolve(true);
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         } else {
-    //             _self.LOG.warn('EMS Client configurationn is not enabled, please check [emsClient.enabled] property in emsClient module');
-    //             resolve(true);
-    //         }
-    //     });
-    // },
-
-    /*
-        let message = {
-            topic: payload.queue,
-            messages: payload.messages,
-            partition: payload.partition || 0
-        };
-    */
     publish: function (request) {
         return new Promise((resolve, reject) => {
             let emsConfig = CONFIG.get('emsClient');

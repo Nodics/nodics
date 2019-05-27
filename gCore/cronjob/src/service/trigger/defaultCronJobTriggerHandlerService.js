@@ -172,21 +172,13 @@ module.exports = {
         this.LOG.debug('Request has been processed successfully');
         response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
         let jobDefinition = request.definition;
-        SERVICE.DefaultCronJobService.update({
-            tenant: jobDefinition.tenant,
-            query: {
-                code: jobDefinition.code
-            },
-            model: {
-                state: ENUMS.CronJobState.ACTIVE.key,
-                status: ENUMS.CronJobStatus.SUCCESS.key
-            }
-        }).then(success => {
+        jobDefinition.state = ENUMS.CronJobState.ACTIVE.key;
+        jobDefinition.status = ENUMS.CronJobStatus.SUCCESS.key;
+        this.updateJob(jobDefinition).then(success => {
             process.resolve(response.success);
         }).catch(error => {
             process.resolve(response.success);
         });
-
     },
 
     handleErrorEnd: function (request, response, process) {
@@ -223,23 +215,25 @@ module.exports = {
         jobDefinition.state = ENUMS.CronJobState.ACTIVE.key;
         jobDefinition.status = ENUMS.CronJobStatus.ERROR.key;
         jobDefinition.log = response.errors;
-        SERVICE.DefaultCronJobService.update({
-            tenant: jobDefinition.tenant,
-            query: {
-                code: jobDefinition.code
-            },
-            model: jobDefinition
-        }).then(success => {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
+        this.updateJob(jobDefinition).then(success => {
+            process.reject(response.errors);
         }).catch(error => {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
+            process.reject(response.errors);
+        });
+    },
+
+    updateJob: function (definition) {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultCronJobService.update({
+                tenant: definition.tenant,
+                query: {
+                    code: definition.code
+                },
+                model: definition
+            }).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
             });
         });
     }

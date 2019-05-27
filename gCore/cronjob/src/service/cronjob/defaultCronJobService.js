@@ -144,5 +144,5 @@ module.exports = {
                 }, CONFIG.get('processRetrySleepTime') || 2000);
             }
         }
-    },
+    }
 };

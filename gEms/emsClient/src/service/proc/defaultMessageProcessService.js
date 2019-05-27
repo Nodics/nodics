@@ -77,8 +77,8 @@ module.exports = {
         message.tenant = message.tenant || 'default';
         this.LOG.debug('Pushing event recieved message from  : ', queue.name);
         SERVICE.DefaultEventService.publish({
-            enterpriseCode: message.enterpriseCode,
-            tenant: message.tenant,
+            enterpriseCode: queue.options.header.enterpriseCode || message.enterpriseCode,
+            tenant: queue.options.header.tenant || message.tenant,
             event: queue.options.eventName || queue.name,
             source: queue.options.source,
             target: queue.options.target,
