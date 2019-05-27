@@ -147,7 +147,7 @@ module.exports = {
         }).then(() => {
             return config.loadModules();
         }).then(() => {
-            return SERVICE.DefaultInfraService.generateModuleGroup(options);
+            return SERVICE.DefaultInfraService.generateApp(options);
         }).catch(error => {
             SERVICE.DefaultInfraService.LOG.error(error);
         });

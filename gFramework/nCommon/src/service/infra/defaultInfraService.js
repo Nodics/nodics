@@ -12,30 +12,169 @@ const copy = require('recursive-copy');
 
 module.exports = {
 
+    generateApp: function () {
+        return new Promise((resolve, reject) => {
+            let command = this.parseCommand();
+            this.initAppGen(command).then(success => {
+                resolve(success);
+            }).then(error => {
+                resolve(error);
+            });
+        });
+    },
+
+    initAppGen: function (command) {
+        return new Promise((resolve, reject) => {
+            let appDetail = {
+                name: command.name,
+                index: command.index + ".99",
+                path: command.path,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(appDetail, 'group');
+            let modulesDetail = {
+                name: command.name + 'Modules',
+                index: command.index + ".1",
+                path: command.path + '/' + appDetail.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(modulesDetail, 'group');
+
+            let modules = [{
+                name: command.name + 'Core',
+                index: command.index + ".1.1",
+                path: modulesDetail.path + '/' + modulesDetail.name,
+                commonPath: command.commonPath
+            }, {
+                name: command.name + 'Int',
+                index: command.index + ".1.10",
+                path: modulesDetail.path + '/' + modulesDetail.name,
+                commonPath: command.commonPath
+            }, {
+                name: command.name + 'Api',
+                index: command.index + ".1.15",
+                path: modulesDetail.path + '/' + modulesDetail.name,
+                commonPath: command.commonPath
+            }];
+            modules.forEach(detail => {
+                this.generateTarget(detail, 'module');
+            });
+
+            let envsDetail = {
+                name: command.name + 'Envs',
+                index: command.index + ".10",
+                path: command.path + '/' + appDetail.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(envsDetail, 'group');
+
+            let envLocal = {
+                name: command.name + 'Local',
+                index: envsDetail.index + ".1",
+                path: envsDetail.path + '/' + envsDetail.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(envLocal, 'group');
+
+            let serverLocal = {
+                name: command.name + 'LocalServer',
+                index: envLocal.index + ".1",
+                path: envLocal.path + '/' + envLocal.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(serverLocal, 'module');
+
+            let envDev = {
+                name: command.name + 'Dev',
+                index: envsDetail.index + ".10",
+                path: envsDetail.path + '/' + envsDetail.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(envDev, 'group');
+            let serverDev = {
+                name: command.name + 'DevServer',
+                index: envDev.index + ".1",
+                path: envDev.path + '/' + envDev.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(serverDev, 'module');
+
+            let envQA = {
+                name: command.name + 'QA',
+                index: envsDetail.index + ".15",
+                path: envsDetail.path + '/' + envsDetail.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(envQA, 'group');
+            let serverQA = {
+                name: command.name + 'QAServer',
+                index: envQA.index + ".1",
+                path: envQA.path + '/' + envQA.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(serverQA, 'module');
+
+            let preProd = {
+                name: command.name + 'PreProd',
+                index: envsDetail.index + ".20",
+                path: envsDetail.path + '/' + envsDetail.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(preProd, 'group');
+            let serverPreProd = {
+                name: command.name + 'PreProdServer',
+                index: preProd.index + ".1",
+                path: preProd.path + '/' + preProd.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(serverPreProd, 'module');
+
+            let prod = {
+                name: command.name + 'Prod',
+                index: envsDetail.index + ".25",
+                path: envsDetail.path + '/' + envsDetail.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(prod, 'group');
+            let serverProd = {
+                name: command.name + 'ProdServer',
+                index: prod.index + ".1",
+                path: prod.path + '/' + prod.name,
+                commonPath: command.commonPath
+            };
+            this.generateTarget(serverProd, 'module');
+            resolve(true);
+        });
+    },
+
     generateModuleGroup: function () {
         return new Promise((resolve, reject) => {
-            this.generateTarget('app');
+            let command = this.parseCommand();
+            this.generateTarget(command, 'group');
             resolve(true);
         });
     },
 
     generateModule: function () {
         return new Promise((resolve, reject) => {
-            this.generateTarget('module');
+            let command = this.parseCommand();
+            this.generateTarget(command, 'module');
             resolve(true);
         });
     },
 
     generateReactModule: function () {
         return new Promise((resolve, reject) => {
-            this.generateTarget('moduleReact');
+            let command = this.parseCommand();
+            this.generateTarget(command, 'moduleReact');
             resolve(true);
         });
     },
 
     generateVueModule: function () {
         return new Promise((resolve, reject) => {
-            this.generateTarget('moduleVue');
+            let command = this.parseCommand();
+            this.generateTarget(command, 'moduleVue');
             resolve(true);
         });
     },
@@ -63,7 +202,7 @@ module.exports = {
     },
 
     parseCommand: function () {
-        let name, path;
+        let name, path, index;
         process.argv.forEach(element => {
             if (element.startsWith('N=')) {
                 name = element.replace('N=', '');
@@ -77,9 +216,17 @@ module.exports = {
             if (element.startsWith('DEST=')) {
                 path = element.replace('DEST=', '');
             }
+            if (element.startsWith('IDX=')) {
+                index = element.replace('IDX=', '');
+            }
         });
         if (!name || name === '') {
             this.LOG.error('Name can not be null or empty');
+            this.moduleGenHelp();
+            process.exit(1);
+        }
+        if (name === 'app' && !index) {
+            this.LOG.error('Index can not be null or empty');
             this.moduleGenHelp();
             process.exit(1);
         }
@@ -92,12 +239,12 @@ module.exports = {
         return {
             name: name,
             path: moduleObject.path,
+            index: index,
             commonPath: NODICS.getRawModule('nCommon').path + '/templates'
         };
     },
 
-    generateTarget: function (templateName) {
-        let command = this.parseCommand();
+    generateTarget: function (command, templateName) {
         let sourcePath = command.commonPath + '/' + templateName;
         let destPath = command.path + '/' + command.name;
         let appName = command.name;
@@ -120,7 +267,6 @@ module.exports = {
         };
 
         copy(sourcePath, destPath, options).on(copy.events.COPY_FILE_START, function (copyOperation) {
-            //console.info('Copying file ' + copyOperation.src + '...');
         }).on(copy.events.COPY_FILE_COMPLETE, function (copyOperation) {
             fs.readFile(copyOperation.dest, 'utf8', (error, content) => {
                 if (error) {
@@ -128,6 +274,9 @@ module.exports = {
                     return;
                 }
                 content = content.replace(/customApplication/g, appName);
+                if (command.index) {
+                    content = content.replace('$index', command.index);
+                }
                 fs.writeFile(copyOperation.dest,
                     content.replace('customApplication', appName),
                     'utf8',

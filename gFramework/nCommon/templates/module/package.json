@@ -1,7 +1,6 @@
 {
     "name": "customApplication",
-    "//": "value for index property should start from 2000, value <5000 are reserved for Nodics",
-    "index": "index",
+    "index": "$index",
     "publish": false,
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customApplication",
     "homepage": "http://www.nodics.com/",
