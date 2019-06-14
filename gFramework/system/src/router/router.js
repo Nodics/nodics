@@ -12,6 +12,44 @@
 module.exports = {
 
     system: {
+        fileResponses: {
+            returnFileContent: {
+                secured: true,
+                key: '/file/data',
+                method: 'POST',
+                controller: 'DefaultFileController',
+                operation: 'getFileContent',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/import/init',
+                    body: {
+                        type: 'static/entiry',
+                        path: 'Path of external location to get list of files',
+                        fileName: 'Name of file'
+                    }
+                }
+            },
+            downloadFile: {
+                secured: true,
+                key: '/file/download',
+                method: 'POST',
+                controller: 'DefaultFileController',
+                operation: 'downloadFile',
+                responseHandler: 'fileDownloadResponseHandler',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/import/init',
+                    body: {
+                        path: 'Path of external location to get list of files',
+                        fileName: 'Name of file'
+                    }
+                }
+            }
+        },
         importInitData: {
             importInitPost: {
                 secured: true,

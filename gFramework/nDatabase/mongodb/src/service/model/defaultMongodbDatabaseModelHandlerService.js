@@ -44,6 +44,7 @@ module.exports = {
                 let schema = options.moduleObject.rawSchema[options.schemaName];
                 let indexedFields = {};
                 let defaultValues = {};
+                let validators = {};
                 let jsonSchema = {
                     bsonType: 'object',
                     required: [],
@@ -64,6 +65,10 @@ module.exports = {
                         if (typeof property.default !== 'undefined') {
                             defaultValues[propertyName] = property.default;
                             delete property.default;
+                        }
+                        if (typeof property.validator !== 'undefined') {
+                            validators[propertyName] = property.validator;
+                            delete property.validator;
                         }
                         let schemaProperties = options.dataBase.master.getOptions().schemaProperties;
                         if (!UTILS.isBlank(property) && schemaProperties && schemaProperties.length) {
@@ -102,7 +107,8 @@ module.exports = {
                         }
                     },
                     indexedFields: indexedFields,
-                    defaultValues: defaultValues
+                    defaultValues: defaultValues,
+                    validators: validators
                 };
                 resolve(true);
             } catch (error) {

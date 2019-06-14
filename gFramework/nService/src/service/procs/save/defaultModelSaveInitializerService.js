@@ -279,6 +279,25 @@ module.exports = {
         }
     },
 
+    applyValidators: function (request, response, process) {
+        this.LOG.debug('Applying default values to the model');
+        let validators = request.schemaModel.rawSchema.schemaOptions[request.tenant].validators;
+        if (validators && !UTILS.isBlank(validators)) {
+            _.each(validators, (value, property) => {
+                if (request.model[property]) {
+                    try {
+                        let serviceName = value.substring(0, value.indexOf('.'));
+                        let functionName = value.substring(value.indexOf('.') + 1, value.length);
+                        SERVICE[serviceName][functionName](request.model[property]);
+                    } catch (error) {
+                        process.error(request, response, error);
+                    }
+                }
+            });
+        }
+        process.nextSuccess(request, response);
+    },
+
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model ');
         request.schemaModel.saveItems(request).then(success => {

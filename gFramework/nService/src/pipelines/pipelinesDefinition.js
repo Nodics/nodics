@@ -158,6 +158,12 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.applyPreInterceptors',
+                success: 'applyValidators'
+            },
+
+            applyValidators: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.applyValidators',
                 success: 'saveModel'
             },
 

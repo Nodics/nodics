@@ -41,7 +41,7 @@ module.exports = {
                 _self.loadSearchSchemaFromSchema(tenants);
                 _self.loadSearchSchema(tenants);
                 _self.loadSearchSchemaFromDatabase(tenants).then(success => {
-                    _self.extractDefaultValues();
+                    _self.extractSchemaOptions();
                     resolve(true);
                 }).catch(error => {
                     reject(error);
@@ -184,7 +184,7 @@ module.exports = {
         });
     },
 
-    extractDefaultValues: function () {
+    extractSchemaOptions: function () {
         let searchSchemas = SERVICE.DefaultSearchConfigurationService.getAllRawSearchSchema();
         if (searchSchemas && !UTILS.isBlank(searchSchemas)) {
             _.each(searchSchemas, (moduleObject, ModuleName) => {
@@ -192,6 +192,7 @@ module.exports = {
                     _.each(tenantObject, (schemaObject, indexName) => {
                         let defaultProps = {};
                         let valueProviders = {};
+                        let validators = {};
                         let properties = Object.keys(schemaObject.properties);
                         for (let count = 0; count < properties.length; count++) {
                             let propertyName = properties[count];
@@ -202,12 +203,18 @@ module.exports = {
                             if (propertyObject.valueProvider && !UTILS.isBlank(propertyObject.valueProvider)) {
                                 valueProviders[propertyName] = propertyObject.valueProvider;
                             }
+                            if (propertyObject.validator && !UTILS.isBlank(propertyObject.validator)) {
+                                validators[propertyName] = propertyObject.validator;
+                            }
                         }
                         if (!UTILS.isBlank(defaultProps)) {
                             schemaObject.defaultValues = defaultProps;
                         }
                         if (!UTILS.isBlank(valueProviders)) {
                             schemaObject.valueProviders = valueProviders;
+                        }
+                        if (!UTILS.isBlank(validators)) {
+                            schemaObject.validators = validators;
                         }
                     });
                 });

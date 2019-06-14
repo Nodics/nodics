@@ -22,6 +22,10 @@ module.exports = {
         'initErrorRoutes',
         'initExtras'
     ],
+    responseHandler: {
+        jsonResponseHandler: 'DefaultJsonResponseHandlerService',
+        fileDownloadResponseHandler: 'DefaultFileDownloadResponseHandlerService'
+    },
     server: {
         options: {
             contextRoot: 'nodics'

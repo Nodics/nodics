@@ -49,10 +49,11 @@ module.exports = {
             method: request.method,
             body: request.body || {}
         };
+        let responseHandler = CONFIG.get('responseHandler')[routerDef.responseHandler || 'jsonResponseHandler'];
         SERVICE.DefaultPipelineService.start('requestHandlerPipeline', input, {}).then(success => {
-            response.json(success);
+            SERVICE[responseHandler].handleSuccess(request, response, success);
         }).catch(error => {
-            response.json(error);
+            SERVICE[responseHandler].handleError(request, response, error);
         });
     },
 
