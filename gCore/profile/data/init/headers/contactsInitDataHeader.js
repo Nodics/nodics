@@ -13,6 +13,7 @@ module.exports = {
     profile: {
         defaultContact: {
             options: {
+                enabled: true,
                 schemaName: 'contact',
                 operation: 'save', //save, update and saveOrUpdate
                 tenants: ['default'],
@@ -25,6 +26,7 @@ module.exports = {
 
         tenantDefaultContact: {
             options: {
+                enabled: true,
                 schemaName: 'contact',
                 operation: 'save', //save, update and saveOrUpdate
                 dataFilePrefix: 'tenantDefaultContactData'

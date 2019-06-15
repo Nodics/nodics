@@ -13,6 +13,7 @@ module.exports = {
     profile: {
         defaultAddress: {
             options: {
+                enabled: true,
                 schemaName: 'address',
                 operation: 'save', //save, update and saveOrUpdate
                 tenants: ['default'],
@@ -25,6 +26,7 @@ module.exports = {
 
         tenantDefaultAddresses: {
             options: {
+                enabled: true,
                 schemaName: 'address',
                 operation: 'save', //save, update and saveOrUpdate
                 dataFilePrefix: 'tenantDefaultAddressesData'

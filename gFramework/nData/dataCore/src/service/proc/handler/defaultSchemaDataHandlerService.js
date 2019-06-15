@@ -44,7 +44,7 @@ module.exports = {
     applyProcessors: function (request, response, process) {
         this.LOG.debug('Applying schema processors in models');
         if (request.header && request.header.options && request.header.options.processors) {
-            SERVICE.DefaultProcessorHandlerService.executeSearchProcessors([].concat(request.header.options.processors), {
+            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(request.header.options.processors), {
                 tenant: request.tenant,
                 moduleName: request.moduleName,
                 header: request.header,
@@ -68,20 +68,22 @@ module.exports = {
         let schemaName = request.header.options.schemaName;
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(schemaName);
         if (interceptors && interceptors.import && interceptors.import.length > 0) {
-            SERVICE.DefaultProcessorHandlerService.executeProcessors(
-                [].concat(interceptors.import), {
-                    models: request.models
-                }, {}).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
+            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.import), {
+                tenant: request.tenant,
+                moduleName: moduleName,
+                header: request.header,
+                models: request.models
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
         } else {
             process.nextSuccess(request, response);
         }
     },
 
-    executeIndexerPipeline: function (request, response, process) {
+    executeSchemaPipeline: function (request, response, process) {
         this.LOG.debug('Checking target process to handle request');
         let processPipeline = 'defaultImportDataFilterPipeline';
         if (request.header.options && request.header.options.processPipeline) {

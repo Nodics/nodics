@@ -12,7 +12,7 @@
 module.exports = {
     default: {
         importDataProcessor: {
-            type: 'importProcessor',
+            type: 'import',
             active: 'true',
             index: 0,
             handler: 'DefaultSampleImportInterceptorService.handleDefaultImportProcessor'
@@ -20,7 +20,7 @@ module.exports = {
     },
     enterprise: {
         importEnterpriseDataProcessor: {
-            type: 'importProcessor',
+            type: 'import',
             active: 'true',
             index: 0,
             handler: 'DefaultSampleImportInterceptorService.handleEnterpriseImportProcessor'

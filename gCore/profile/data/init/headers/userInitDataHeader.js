@@ -13,6 +13,7 @@ module.exports = {
     profile: {
         defaultEmployee: {
             options: {
+                enabled: true,
                 schemaName: 'employee',
                 operation: 'save', //save, update and saveOrUpdate
                 dataFilePrefix: 'defaultEmployeeData'
@@ -52,6 +53,7 @@ module.exports = {
 
         defaultCustomer: {
             options: {
+                enabled: true,
                 schemaName: 'customer',
                 operation: 'save', //save, update and saveOrUpdate
                 dataFilePrefix: 'defaultCutomerData'

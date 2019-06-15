@@ -9,12 +9,6 @@
 
  */
 
-const StreamArray = require('stream-json/streamers/StreamArray');
-const path = require('path');
-const fs = require('fs');
-var sizeof = require('object-sizeof');
-
-
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 

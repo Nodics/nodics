@@ -16,11 +16,6 @@ module.exports = {
         return new Promise((resolve, reject) => {
             var today = new Date();
             this.LOG.info('CronJos:', definition.code, ' Started................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
-            // console.log('Hey, wait a second!');
-            // setTimeout(function () {
-            //     console.log('Hey, I am here');
-            //     resolve(true);
-            // }, 10 * 1000);
             resolve(true);
         });
     },

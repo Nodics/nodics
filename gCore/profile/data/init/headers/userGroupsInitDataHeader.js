@@ -13,6 +13,7 @@ module.exports = {
     profile: {
         defaultUserGroup: {
             options: {
+                enabled: true,
                 schemaName: 'userGroup',
                 operation: 'save', //save, update and saveOrUpdate
                 dataFilePrefix: 'defaultUserGroupData'

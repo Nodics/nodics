@@ -13,6 +13,7 @@ module.exports = {
     dataConsumer: {
         defaultIndexerData: {
             options: {
+                enabled: true,
                 schemaName: 'indexer',
                 operation: 'save', //save, update and saveOrUpdate
                 dataFilePrefix: 'defaultIndexerData'

@@ -13,6 +13,7 @@ module.exports = {
     profile: {
         defaultEnterprise: {
             options: {
+                enabled: true,
                 schemaName: 'enterprise',
                 operation: 'save', //save, update and saveOrUpdate
                 tenants: ['default'],

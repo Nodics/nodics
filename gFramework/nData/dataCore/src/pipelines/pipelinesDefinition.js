@@ -62,11 +62,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultSchemaDataHandlerService.applyInterceptors',
-                success: 'executeIndexerPipeline'
+                success: 'executeSchemaPipeline'
             },
-            executeIndexerPipeline: {
+            executeSchemaPipeline: {
                 type: 'function',
-                handler: 'DefaultSchemaDataHandlerService.executeIndexerPipeline',
+                handler: 'DefaultSchemaDataHandlerService.executeSchemaPipeline',
                 success: 'processData'
             },
             processData: {

@@ -13,6 +13,7 @@ module.exports = {
     cronjob: {
         eventPublishJob: {
             options: {
+                enabled: true,
                 schemaName: 'cronJob',
                 operation: 'save', //save, update and saveOrUpdate
                 tenants: ['default'],

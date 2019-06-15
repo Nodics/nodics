@@ -13,6 +13,7 @@ module.exports = {
     cronjob: {
         indexerJob: {
             options: {
+                enabled: true,
                 schemaName: 'cronJob',
                 operation: 'saveOrUpdate', //save, update and saveOrUpdate
                 tenants: ['default'],
