@@ -65,6 +65,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                             _self.LOG.warn('   WARN: Job : ', _definition.code, ' got expired. hence has been stopped');
                             _self.stopJob(true);
                         }
+                        let startTime = new Date();
                         if (NODICS.getServerState() === 'started' && (!_definition.runOnNode || CONFIG.get('nodeId') === _definition.runOnNode)) {
                             _running = true;
                             SERVICE.DefaultPipelineService.start('defaultCronJobTriggerHandlerPipeline', {
@@ -72,12 +73,15 @@ module.exports = function (definition, trigger, context, timeZone) {
                                 definition: _definition
                             }, {}).then(success => {
                                 _running = false;
+                                let endTime = new Date();
                                 _self.LOG.warn('Job : ', _definition.code, ' completed its execution successfully');
                                 if (_definition.logResult) {
                                     SERVICE.DefaultCronJobLogService.save({
                                         tenant: _definition.tenant,
                                         model: {
                                             jobCode: _definition.code,
+                                            startTime: startTime,
+                                            endTime: endTime,
                                             result: success
                                         }
                                     }).then(success => {
@@ -89,12 +93,15 @@ module.exports = function (definition, trigger, context, timeZone) {
                                 if (oneTime) _self.stopJob(true);
                             }).catch(error => {
                                 _running = false;
+                                let endTime = new Date();
                                 _self.LOG.error('Job: ' + _definition.code + ' has issue while execution: ' + error);
                                 if (_definition.logResult) {
                                     SERVICE.DefaultCronJobLogService.save({
                                         tenant: _definition.tenant,
                                         model: {
                                             jobCode: _definition.code,
+                                            startTime: startTime,
+                                            endTime: endTime,
                                             result: error
                                         }
                                     }).then(success => {

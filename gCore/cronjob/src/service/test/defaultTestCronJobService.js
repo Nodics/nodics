@@ -16,9 +16,14 @@ module.exports = {
         return new Promise((resolve, reject) => {
             var today = new Date();
             this.LOG.info('CronJos:', input.definition.code, ' Started................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
-            resolve({
-                success: true,
-                code: 'SUC_CRON_00000',
+            // resolve({
+            //     success: true,
+            //     code: 'SUC_CRON_00000',
+            //     msg: 'Successfully completed'
+            // });
+            reject({
+                success: false,
+                code: 'ERR_CRON_00000',
                 msg: 'Successfully completed'
             });
         });
