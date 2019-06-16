@@ -95,12 +95,14 @@ module.exports = {
                 job: request.job,
                 definition: request.definition
             }).then(success => {
+                response.success = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
             });
         } else if (jobDetail.internal) {
             SERVICE.DefaultModuleService.fetch(this.prepareInternalURL(request.definition)).then(success => {
+                response.success = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -114,6 +116,7 @@ module.exports = {
                 responseType: jobDetail.external.responseType,
                 params: jobDetail.external.params
             })).then(success => {
+                response.success = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -166,6 +169,37 @@ module.exports = {
         } else {
             process.nextSuccess(request, response);
         }
+    },
+
+    triggerEvent: function (request, response, process) {
+        try {
+            let jobDefinition = request.definition;
+            if (jobDefinition.event && jobDefinition.event.executed) {
+                this.LOG.debug('Triggering event for Executed job');
+                let event = {
+                    enterpriseCode: jobDefinition.enterpriseCode,
+                    tenant: jobDefinition.tenant,
+                    active: true,
+                    event: 'jobExecuted',
+                    source: 'cronjob',
+                    target: jobDefinition.event.targetModule,
+                    state: "NEW",
+                    type: (jobDefinition.event && jobDefinition.event.eventType) ? jobDefinition.event.eventType : 'ASYNC',
+                    targetType: (jobDefinition.event && jobDefinition.event.targetType) ? jobDefinition.event.targetType : ENUMS.TargetType.MODULE.key,
+                    targetNodeId: (jobDefinition.event && jobDefinition.event.targetNodeId) ? jobDefinition.event.targetNodeId : 0,
+                    data: jobDefinition
+                };
+                this.LOG.debug('Pushing event for item created : ', jobDefinition.code);
+                SERVICE.DefaultEventService.publish(event).then(success => {
+                    this.LOG.debug('Event successfully posted');
+                }).catch(error => {
+                    this.LOG.error('While posting model change event : ', error);
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while pushing save event : ', error);
+        }
+        process.nextSuccess(request, response);
     },
 
     handleSucessEnd: function (request, response, process) {

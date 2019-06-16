@@ -12,19 +12,27 @@
 module.exports = {
     //Created this class to test if cronJob run process works fine
 
-    runJob: function (definition) {
+    runJob: function (input) {
         return new Promise((resolve, reject) => {
             var today = new Date();
-            this.LOG.info('CronJos:', definition.code, ' Started................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
-            resolve(true);
+            this.LOG.info('CronJos:', input.definition.code, ' Started................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
+            resolve({
+                success: true,
+                code: 'SUC_CRON_00000',
+                msg: 'Successfully completed'
+            });
         });
     },
 
-    stopJob: function (definition) {
+    stopJob: function (input) {
         return new Promise((resolve, reject) => {
             var today = new Date();
-            this.LOG.info('CronJos:', definition.code, ' Stoped................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
-            resolve(true);
+            this.LOG.info('CronJos:', input.definition.code, ' Stoped................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
+            resolve({
+                success: true,
+                code: 'SUC_CRON_00000',
+                msg: 'Successfully completed'
+            });
         });
     }
 };

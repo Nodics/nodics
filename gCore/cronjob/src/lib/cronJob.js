@@ -113,7 +113,7 @@ module.exports = function (definition, trigger, context, timeZone) {
             },
             onComplete: function () {
                 try {
-                    if (NODICS.getServerState() === 'started' && CONFIG.get('nodeId') === _definition.runOnNode) {
+                    if (NODICS.getServerState() === 'started' && (!_definition.runOnNode || CONFIG.get('nodeId') === _definition.runOnNode)) {
                         SERVICE.DefaultPipelineService.start('defaultCronJobCompleteHandlerPipeline', {
                             job: _self,
                             definition: _definition
