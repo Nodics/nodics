@@ -19,7 +19,16 @@ module.exports = {
             'nodicsLocalEnv'
         ]
     },
+
     log: {
         level: 'debug'
+    },
+
+    emsClient: {
+        clients: {
+            kafka: {
+                enabled: true
+            }
+        }
     }
 };

@@ -16,7 +16,7 @@ module.exports = {
                 enabled: false,
                 runOnCluster: 0,
                 handler: 'DefaultKafkaClientService',
-                publisherType: 1, // 0 for normal, 1 for HighLevel Producer
+                publisherType: 0, // 0 for normal, 1 for HighLevel Producer
                 consumerType: 0, // 0 for normal, 1 for HighLevel Producer
                 eventOptions: {
                     source: 'emsClient',

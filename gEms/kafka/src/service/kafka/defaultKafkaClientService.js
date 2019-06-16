@@ -40,7 +40,7 @@ module.exports = {
     configureClient: function (config) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (!config.options) {
+            if (!config.connectionOptions) {
                 reject('Kafka configuration is not valid');
             }
             try {
