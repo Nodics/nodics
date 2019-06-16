@@ -107,6 +107,30 @@ module.exports = {
                 }
             }
         },
+        importLocalData: {
+            importLocalPost: {
+                secured: true,
+                key: '/import/local',
+                method: 'POST',
+                controller: 'DefaultImportController',
+                operation: 'importLocalData',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/import/local',
+                    body: {
+                        inputPath: {
+                            rootPath: "/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data",
+                            dataPath: "/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data/data",
+                            headerPath: "/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data/headers",
+                            successPath: "/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data/success",
+                            errorPath: "/Users/himkar.dwivedi/apps/HimProjects/nodics/tmp/data/error"
+                        }
+                    }
+                }
+            }
+        },
         changeLogLevel: {
             changeLevelPost: {
                 secured: true,

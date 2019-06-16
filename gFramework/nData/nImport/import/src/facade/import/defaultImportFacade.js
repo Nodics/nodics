@@ -41,5 +41,9 @@ module.exports = {
 
     importSampleData: function (request) {
         return SERVICE.DefaultImportService.importSampleData(request);
+    },
+
+    importLocalData: function (request) {
+        return SERVICE.DefaultImportService.importLocalData(request);
     }
 };

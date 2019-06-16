@@ -152,7 +152,11 @@ module.exports = {
             process.nextSuccess(request, response);
         } else {
             this.LOG.debug('Could not found any header to import local data');
-            process.nextSuccess(request, response);
+            process.stop(request, response, {
+                success: true,
+                code: 'SUC_DATA_00001',
+                msg: 'Could not find any data to import for given modules'
+            });
         }
     },
 
