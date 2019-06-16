@@ -1,13 +1,11 @@
 {
-    "name": "gSearch",
-    "index": "15.99",
-    "publish": false,
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gSearch",
+    "name": "search",
+    "index": "1.13.0",
+    "publish": true,
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to search",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "server",
-        "environment",
-        "gSearch"
+        "search"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

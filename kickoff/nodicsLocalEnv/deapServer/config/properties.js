@@ -12,7 +12,7 @@
 module.exports = {
     activeModules: {
         updateGroups: true,
-        groups: ['gEms', 'gDeap', 'gSearch'], // Group 'framework' will be included automatically
+        groups: ['gEms', 'gDeap'], // Group 'framework' will be included automatically
         modules: [
             'deapServer',
             'kickoff',

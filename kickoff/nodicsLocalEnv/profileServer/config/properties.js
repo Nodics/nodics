@@ -12,7 +12,7 @@
 module.exports = {
     activeModules: {
         updateGroups: true,
-        //groups: ['gSearch'], // Group 'framework' will be included automatically
+        //groups: ['gCore'], // Group 'framework' will be included automatically
         modules: [
             'profile',
             'profileServer',
