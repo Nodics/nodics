@@ -1,0 +1,20 @@
+{
+    "name": "dataConsumer",
+    "index": "400.10",
+    "publish": true,
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataConsumer",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "dataConsumer"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

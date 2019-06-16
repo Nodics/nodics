@@ -1,1 +1,0 @@
-This is a sample readme file for your nData module

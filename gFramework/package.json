@@ -1,0 +1,23 @@
+{
+    "name": "gFramework",
+    "index": "1.99",
+    "description": "This module is a collection of gFramework related modules",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "Nodics",
+        "Custom App",
+        "server",
+        "gFramework"
+    ],
+    "author": "Nodics Framework <nodics.framework@gmail.com>",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GNU General Public License v3",
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics.git"
+    },
+    "dependencies": {}
+}

@@ -16,7 +16,7 @@
     "license": "GPL License",
     "repository": {
         "type": "git",
-        "url": "repository URL"
+        "url": "https://github.com/Nodics/nodics"
     },
     "dependencies": {}
 }

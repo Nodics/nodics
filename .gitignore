@@ -25,7 +25,12 @@ yarn-error.log*
 
 # Nodics specific exclution files and folders
 **/logs/**
+**/temp/**
 **/dist/**
 **/gen/**
 **/web/lib/**
 **/tmp/**
+**/kickoff/custom/**
+
+**/rrldataengine/**
+**/config/modules.js
