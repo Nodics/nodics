@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    emsClient: {
+    ems: {
         consumers: {
             // Kafka queues for putting data into InternalSchema model
             kafkaInternalJsonSchemaDataConsumerQueue: {

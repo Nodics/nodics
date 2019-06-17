@@ -1,0 +1,20 @@
+{
+    "name": "allAloneServer",
+    "index": "10000.0.1",
+    "publish": false,
+    "description": "Nodics applicaion module. It will hold all configuration and allAloneServer point to start nodics",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "allAloneServer"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

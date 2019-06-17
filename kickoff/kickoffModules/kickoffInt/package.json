@@ -1,0 +1,20 @@
+{
+    "name": "kickoffInt",
+    "index": "1000.1.10",
+    "publish": false,
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoffInt",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "kickoffInt"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

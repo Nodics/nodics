@@ -1,0 +1,22 @@
+{
+    "name": "nodicsLocalEnv",
+    "index": "10000.0",
+    "publish": false,
+    "description": "Nodics applicaion module. It will hold all configuration and nodicsLocalEnv point to start nodics",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "server",
+        "environment",
+        "nodicsLocalEnv"
+    ],
+    "author": "Nodics Framework",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

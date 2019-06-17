@@ -1,15 +1,15 @@
 {
     "name": "kickoff",
-    "index": "1000",
+    "index": "1000.99",
     "publish": false,
-    "description": "Nodics applicaion module. It will hold all configuration and kickoff point to start nodics",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoff",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "server",
         "environment",
         "kickoff"
     ],
-    "author": "Nodics Framework",
+    "author": "Himkar Dwivedi",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,

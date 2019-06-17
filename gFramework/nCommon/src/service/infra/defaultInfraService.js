@@ -34,7 +34,7 @@ module.exports = {
             this.generateTarget(appDetail, 'group');
             let modulesDetail = {
                 name: command.name + 'Modules',
-                index: command.index + ".1",
+                index: command.index + ".1.99",
                 path: command.path + '/' + appDetail.name,
                 commonPath: command.commonPath
             };
@@ -62,7 +62,7 @@ module.exports = {
 
             let envsDetail = {
                 name: command.name + 'Envs',
-                index: command.index + ".10",
+                index: command.index + ".10.99",
                 path: command.path + '/' + appDetail.name,
                 commonPath: command.commonPath
             };
