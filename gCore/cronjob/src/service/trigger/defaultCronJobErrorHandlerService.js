@@ -68,6 +68,7 @@ module.exports = {
     stateChangeError: function (request, response, process) {
         this.LOG.debug('Changing job state to error');
         let jobDefinition = request.definition;
+        jobDefinition.endTime = new Date();
         if (!jobDefinition.log) {
             jobDefinition.log = [];
         }
@@ -79,6 +80,7 @@ module.exports = {
             },
             model: {
                 status: ENUMS.CronJobStatus.ERROR.key,
+                endTime: jobDefinition.endTime,
                 log: jobDefinition.log
             }
         }).then(success => {

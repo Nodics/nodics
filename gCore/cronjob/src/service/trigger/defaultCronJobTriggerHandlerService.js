@@ -48,13 +48,17 @@ module.exports = {
     stateChangeRunning: function (request, response, process) {
         this.LOG.debug('Changing job state to running');
         let jobDefinition = request.definition;
+        jobDefinition.state = ENUMS.CronJobState.RUNNING.key;
+        jobDefinition.lastEndTime = jobDefinition.endTime;
         SERVICE.DefaultCronJobService.update({
             tenant: jobDefinition.tenant,
             query: {
                 code: jobDefinition.code
             },
             model: {
-                state: ENUMS.CronJobState.RUNNING.key
+                state: ENUMS.CronJobState.RUNNING.key,
+                startTime: jobDefinition.startTime,
+                lastEndTime: jobDefinition.lastEndTime
             }
         }).then(success => {
             process.nextSuccess(request, response);
@@ -208,7 +212,18 @@ module.exports = {
         let jobDefinition = request.definition;
         jobDefinition.state = ENUMS.CronJobState.ACTIVE.key;
         jobDefinition.status = ENUMS.CronJobStatus.SUCCESS.key;
-        this.updateJob(jobDefinition).then(success => {
+        jobDefinition.endTime = new Date();
+        SERVICE.DefaultCronJobService.update({
+            tenant: jobDefinition.tenant,
+            query: {
+                code: jobDefinition.code
+            },
+            model: {
+                state: ENUMS.CronJobState.ACTIVE.key,
+                status: ENUMS.CronJobStatus.SUCCESS.key,
+                endTime: jobDefinition.endTime
+            }
+        }).then(success => {
             process.resolve(response.success);
         }).catch(error => {
             process.resolve(response.success);
@@ -231,7 +246,7 @@ module.exports = {
             let functionName = errorNode.substring(errorNode.indexOf('.') + 1, errorNode.length);
             SERVICE[serviceName][functionName]({
                 job: request.job,
-                definition: request.definition,
+                definition: definition,
                 errors: errors
             }).then(success => {
                 this.handleError(request, response, process);
@@ -249,26 +264,28 @@ module.exports = {
         jobDefinition.state = ENUMS.CronJobState.ACTIVE.key;
         jobDefinition.status = ENUMS.CronJobStatus.ERROR.key;
         jobDefinition.log = response.errors;
-        this.updateJob(jobDefinition).then(success => {
+        jobDefinition.endTime = new Date();
+        SERVICE.DefaultCronJobService.update({
+            tenant: jobDefinition.tenant,
+            query: {
+                code: jobDefinition.code
+            },
+            model: {
+                state: ENUMS.CronJobState.ACTIVE.key,
+                status: ENUMS.CronJobStatus.ERROR.key,
+                endTime: jobDefinition.endTime,
+                log: response.errors
+            }
+        }).then(success => {
             process.reject(response.errors);
         }).catch(error => {
             process.reject(response.errors);
         });
-    },
 
-    updateJob: function (definition) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultCronJobService.update({
-                tenant: definition.tenant,
-                query: {
-                    code: definition.code
-                },
-                model: definition
-            }).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+        this.updateJob(jobDefinition).then(success => {
+            process.reject(response.errors);
+        }).catch(error => {
+            process.reject(response.errors);
         });
     }
 };

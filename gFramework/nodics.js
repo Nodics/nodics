@@ -100,6 +100,9 @@ module.exports = {
     start: function (options) {
         this.initFramework(options).then(success => {
             SERVICE.DefaultRouterService.startServers().then(success => {
+                if (CONFIG.get('activateClusterPing')) {
+                    SERVICE.DefaultClusterManagerService.checkActiveClusters();
+                }
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');
                 NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');

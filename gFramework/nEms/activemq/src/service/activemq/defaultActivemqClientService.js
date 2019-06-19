@@ -166,16 +166,18 @@ module.exports = {
     handleConsumerError: function (options) {
         let _self = this;
         try {
-            let tenant = options.queue.options.header.tenant || 'default';
-            options.message.active = true;
-            SERVICE.DefaultEmsFailedMessagesService.save({
-                tenant: tenant,
-                model: options.message
-            }).then(success => {
-                _self.LOG.debug('Message Successfully logged: ', options.consumer.name);
-            }).catch(error => {
-                _self.LOG.error('Failed to log message : ', options.consumer.name, ' : ERROR is ', error);
-            });
+            if (CONFIG.get('emsClient').logFailedMessages) {
+                let tenant = options.queue.options.header.tenant || 'default';
+                options.message.active = true;
+                SERVICE.DefaultEmsFailedMessagesService.save({
+                    tenant: tenant,
+                    model: options.message
+                }).then(success => {
+                    _self.LOG.debug('Message Successfully logged: ', options.consumer.name);
+                }).catch(error => {
+                    _self.LOG.error('Failed to log message : ', options.consumer.name, ' : ERROR is ', error);
+                });
+            }
         } catch (error) {
             _self.LOG.error('Failed to log message : ', options.consumer.name, ' : ERROR is ', error);
         }

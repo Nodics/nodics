@@ -23,6 +23,10 @@ module.exports = function (definition, trigger, context, timeZone) {
     let _authToken = '';
     let _jobPool = [];
 
+    this.getCronJob = function () {
+        return _cronJob;
+    };
+
     this.getDefinition = function () {
         return _definition;
     };
@@ -61,15 +65,18 @@ module.exports = function (definition, trigger, context, timeZone) {
             onTick: function () {
                 try {
                     if (_active && !_paused && !_running) {
+                        let cronJob = _self.getCronJob();
+                        let startTime = new Date();
                         if (_definition.end && _definition.end < new Date()) {
                             _self.LOG.warn('   WARN: Job : ', _definition.code, ' got expired. hence has been stopped');
                             _self.stopJob(true);
                         }
-                        let startTime = new Date();
                         if (NODICS.getServerState() === 'started' && (!_definition.runOnNode || CONFIG.get('nodeId') === _definition.runOnNode)) {
                             _running = true;
+                            _definition.startTime = startTime;
                             SERVICE.DefaultPipelineService.start('defaultCronJobTriggerHandlerPipeline', {
                                 job: _self,
+                                cronJob: cronJob,
                                 definition: _definition
                             }, {}).then(success => {
                                 _running = false;
@@ -93,21 +100,22 @@ module.exports = function (definition, trigger, context, timeZone) {
                                 if (oneTime) _self.stopJob(true);
                             }).catch(error => {
                                 _running = false;
-                                let endTime = new Date();
+                                _definition.endTime = new Date();
+                                _definition.error = error;
                                 _self.LOG.error('Job: ' + _definition.code + ' has issue while execution: ' + error);
                                 if (_definition.logResult) {
                                     SERVICE.DefaultCronJobLogService.save({
                                         tenant: _definition.tenant,
                                         model: {
                                             jobCode: _definition.code,
-                                            startTime: startTime,
-                                            endTime: endTime,
-                                            result: error
+                                            startTime: _definition.startTime,
+                                            endTime: _definition.endTime,
+                                            result: _definition.error
                                         }
                                     }).then(success => {
                                         _self.LOG.debug('Log has been updated successfully');
                                     }).catch(error => {
-                                        _self.LOG.error('Failed updating log');
+                                        _self.LOG.error('Failed updating log: ', error);
                                     });
                                 }
                                 if (oneTime) _self.stopJob(true);
@@ -123,6 +131,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                     if (NODICS.getServerState() === 'started' && (!_definition.runOnNode || CONFIG.get('nodeId') === _definition.runOnNode)) {
                         SERVICE.DefaultPipelineService.start('defaultCronJobCompleteHandlerPipeline', {
                             job: _self,
+                            cronJob: _self.getCronJob,
                             definition: _definition
                         }, {}).then(success => {
                             _self.LOG.warn('Job : ', _definition.code, ' completes successfully');
