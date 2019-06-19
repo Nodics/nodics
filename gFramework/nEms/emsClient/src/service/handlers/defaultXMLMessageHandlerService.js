@@ -59,7 +59,8 @@ module.exports = {
         } catch (error) {
             process.error(request, response, {
                 success: false,
-                code: 'ERR_EMS_00004'
+                code: 'ERR_EMS_00004',
+                error: error.message || error
             });
         }
     },

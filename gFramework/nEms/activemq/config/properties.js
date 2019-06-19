@@ -27,8 +27,8 @@ module.exports = {
                 },
                 consumerOptions: {
                     encodingType: 'UTF-8',
-                    acknowledgeType: 'client-individual',
-                    ackRequired: true
+                    acknowledgeType: 'client-individual', // auto, client, client-individual
+                    ackRequired: false
                 },
                 connectionOptions: [{
                     host: 'localhost',
@@ -41,10 +41,10 @@ module.exports = {
                     }
                 }],
                 reconnectOptions: {
-                    "initialReconnectDelay": 10,    // milliseconds delay of the first reconnect
+                    "initialReconnectDelay": 50000,    // milliseconds delay of the first reconnect
                     "maxReconnectDelay": 5000,     // maximum milliseconds delay of any reconnect
                     "useExponentialBackOff": true,  // exponential increase in reconnect delay
-                    "maxReconnects": 10,            // maximum number of failed reconnects consecutively
+                    "maxReconnects": 100,            // maximum number of failed reconnects consecutively
                     "randomize": false              // randomly choose a server to use when reconnecting
                 },
             }

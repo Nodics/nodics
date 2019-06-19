@@ -93,7 +93,6 @@ module.exports = {
                     }
                 }
             }
-        },
-
+        }
     }
 };

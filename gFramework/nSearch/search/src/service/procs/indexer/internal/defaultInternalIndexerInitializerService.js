@@ -102,7 +102,6 @@ module.exports = {
     },
     buildQuery: function (request, response, process) {
         let indexerConfig = request.header.local.indexerConfig;
-
         let query = _.merge({}, indexerConfig.schema.query || {});
         let queryOptions = _.merge({}, indexerConfig.schema.options || {});
         queryOptions.projection = _.merge({ _id: 0 }, queryOptions.projection || {});

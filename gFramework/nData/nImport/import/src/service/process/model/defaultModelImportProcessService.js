@@ -327,7 +327,7 @@ module.exports = {
                     reject(reject);
                 }
             }).catch(error => {
-                reject(reject);
+                reject(error);
             });
         });
     },

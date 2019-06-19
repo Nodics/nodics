@@ -1,11 +1,11 @@
 {
-    "name": "ems",
+    "name": "emsClient",
     "index": "1.18.0",
     "publish": true,
-    "description": "Nodics applicaion module. It will hold all configuration and ems point to start nodics",
+    "description": "Nodics applicaion module. It will hold all configuration and emsClient point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "ems"
+        "emsClient"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

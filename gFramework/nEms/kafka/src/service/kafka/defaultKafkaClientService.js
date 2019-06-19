@@ -141,7 +141,40 @@ module.exports = {
                     if (consumer) {
                         options.consumer.name = queueName;
                         consumer.on("message", function (response) {
-                            _self.onConsume(options.consumer, response);
+                            _self.onConsume(options.consumer, response, (error, success) => {
+                                if (error) {
+                                    _self.LOG.info(response);
+                                    _self.LOG.error('Failed to consume message : ', options.consumer.name, ' : ERROR is ', error);
+                                    response.errorType = 'FAILED_CONSUMED';
+                                    response.error = error;
+                                    _self.handleConsumerError({
+                                        consumer: consumer,
+                                        queue: options.consumer,
+                                        options: options.consumer.consumerOptions,
+                                        message: response
+                                    });
+                                } else {
+                                    if (!options.consumer.consumerOptions.autoCommit) {
+                                        consumer.commit(function (error, data) {
+                                            if (error) {
+                                                _self.LOG.error('Failed to commit message : ', options.consumer.name, ' : ERROR is ', error);
+                                                response.errorType = 'FAILED_COMMIT';
+                                                response.error = error;
+                                                _self.handleConsumerError({
+                                                    consumer: consumer,
+                                                    queue: options.consumer,
+                                                    options: options.consumer.consumerOptions,
+                                                    message: response
+                                                });
+                                            } else {
+                                                _self.LOG.debug('Message Successfully consumed and commited: ', options.consumer.name);
+                                            }
+                                        });
+                                    } else {
+                                        _self.LOG.debug('Message Successfully consumed and commited: ', options.consumer.name);
+                                    }
+                                }
+                            });
                         });
                         consumer.on("error", function (message) {
                             _self.LOG.error(message);
@@ -159,31 +192,57 @@ module.exports = {
         });
     },
 
-    onConsume: function (queue, response) {
-        return new Promise((resolve, reject) => {
-            try {
-                if (response.key && queue.consumerOptions.keyEncoding && queue.consumerOptions.keyEncoding === 'buffer') {
-                    let buf = new Buffer(response.key, "binary");
-                    response.key = buf.toString();
-                }
-                if (response.value && queue.consumerOptions.encoding && queue.consumerOptions.encoding === 'buffer') {
-                    let buf = new Buffer(response.value, "binary");
-                    response.value = buf.toString();
-                }
-                SERVICE.DefaultPipelineService.start('processConsumedMessagePipeline', {
-                    queue: queue,
-                    message: response.value
-                }, {}).then(success => {
-                    resolve(true);
-                }).catch(error => {
-                    this.LOG.error('Failed to publish message : ', queue.name, ' : ERROR is ', error);
-                    reject(error);
-                });
-            } catch (error) {
-                this.LOG.error('Could not parse message recieved from queue : ', queue.name, ' : ERROR is ', error);
-                reject(error);
+    handleConsumerError: function (options) {
+        let _self = this;
+        try {
+            let tenant = options.queue.options.header.tenant || 'default';
+            options.message.active = true;
+            SERVICE.DefaultEmsFailedMessagesService.save({
+                tenant: tenant,
+                model: options.message
+            }).then(success => {
+                _self.LOG.debug('Message Successfully logged: ', options.consumer.name);
+            }).catch(error => {
+                _self.LOG.error('Failed to log message : ', options.consumer.name, ' : ERROR is ', error);
+            });
+        } catch (error) {
+            _self.LOG.error('Failed to log message : ', options.consumer.name, ' : ERROR is ', error);
+        }
+    },
+    onConsume: function (queue, response, callback) {
+        try {
+            if (response.key && queue.consumerOptions.keyEncoding && queue.consumerOptions.keyEncoding === 'buffer') {
+                let buf = new Buffer(response.key, "binary");
+                response.key = buf.toString();
             }
-        });
+            if (response.value && queue.consumerOptions.encoding && queue.consumerOptions.encoding === 'buffer') {
+                let buf = new Buffer(response.value, "binary");
+                response.value = buf.toString();
+            }
+            SERVICE.DefaultPipelineService.start('processConsumedMessagePipeline', {
+                queue: queue,
+                message: response.value
+            }, {}).then(success => {
+                if (callback) {
+                    callback(null, success);
+                } else {
+                    Promise.resolve(success);
+                }
+
+            }).catch(error => {
+                if (callback) {
+                    callback(error);
+                } else {
+                    Promise.reject(error);
+                }
+            });
+        } catch (error) {
+            if (callback) {
+                callback(error);
+            } else {
+                Promise.reject(error);
+            }
+        }
     },
 
     /**

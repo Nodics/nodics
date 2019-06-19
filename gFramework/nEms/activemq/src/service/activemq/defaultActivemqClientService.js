@@ -121,15 +121,36 @@ module.exports = {
                             if (err) {
                                 _self.LOG.error('While consuming message from queue : ' + queueName);
                                 _self.LOG.error(err);
+                                if (!options.consumer.consumerOptions.ackRequired) {
+                                    msg.nack(msg);
+                                }
                             } else {
                                 options.consumer.name = queueName;
                                 _self.onConsume(options.consumer, body).then(success => {
                                     if (options.consumer.consumerOptions.ackRequired) {
-                                        msg.ack();
+                                        msg.ack(msg);
                                     }
                                 }).catch(error => {
                                     _self.LOG.error('While processing comsumed message: ', body);
                                     _self.LOG.error(error);
+                                    try {
+                                        body = JSON.parse(body);
+                                    } catch (err) {
+                                        body = {
+                                            data: body
+                                        };
+                                    }
+                                    body.errorType = 'FAILED_CONSUMED';
+                                    body.error = error;
+                                    _self.handleConsumerError({
+                                        consumer: options.client.connection,
+                                        queue: options.consumer,
+                                        options: options.consumer.consumerOptions,
+                                        message: body
+                                    });
+                                    if (options.consumer.consumerOptions.ackRequired) {
+                                        msg.nack(msg);
+                                    }
                                 });
                             }
                         });
@@ -140,6 +161,24 @@ module.exports = {
                 reject(error);
             }
         });
+    },
+
+    handleConsumerError: function (options) {
+        let _self = this;
+        try {
+            let tenant = options.queue.options.header.tenant || 'default';
+            options.message.active = true;
+            SERVICE.DefaultEmsFailedMessagesService.save({
+                tenant: tenant,
+                model: options.message
+            }).then(success => {
+                _self.LOG.debug('Message Successfully logged: ', options.consumer.name);
+            }).catch(error => {
+                _self.LOG.error('Failed to log message : ', options.consumer.name, ' : ERROR is ', error);
+            });
+        } catch (error) {
+            _self.LOG.error('Failed to log message : ', options.consumer.name, ' : ERROR is ', error);
+        }
     },
 
     onConsume: function (queue, body) {

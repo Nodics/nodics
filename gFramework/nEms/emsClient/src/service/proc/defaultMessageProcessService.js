@@ -70,15 +70,25 @@ module.exports = {
         }
     },
 
+    validateData: function (request, response, process) {
+        let queue = request.queue;
+        let message = request.message;
+        if (!queue.options.ignoreMandate && (!message.enterpriseCode || !message.tenant)) {
+            process.error(request, response, 'Message should contain enterpriseCode and tenant');
+        } else {
+            message.enterpriseCode = queue.options.header.enterpriseCode || message.enterpriseCode || 'default';
+            message.tenant = queue.options.header.tenant || message.tenant || 'default';
+            process.nextSuccess(request, response);
+        }
+    },
+
     publishEvent: function (request, response, process) {
         let queue = request.queue;
         let message = request.message;
-        message.enterpriseCode = message.enterpriseCode || 'default';
-        message.tenant = message.tenant || 'default';
         this.LOG.debug('Pushing event recieved message from  : ', queue.name);
-        SERVICE.DefaultEventService.publish({
-            enterpriseCode: queue.options.header.enterpriseCode || message.enterpriseCode,
-            tenant: queue.options.header.tenant || message.tenant,
+        let event = {
+            enterpriseCode: message.enterpriseCode,
+            tenant: message.tenant,
             event: queue.options.eventName || queue.name,
             source: queue.options.source,
             target: queue.options.target,
@@ -88,13 +98,28 @@ module.exports = {
             active: true,
             header: queue.options.header,
             data: message
-        }).then(success => {
-            this.LOG.debug('Message published successfully');
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            this.LOG.error('Message publishing failed: ', error);
-            process.error(request, response, error);
-        });
+        };
+        if (queue.options.target && !NODICS.isModuleActive(queue.options.target)) {
+            SERVICE.DefaultEventService.publish(event).then(success => {
+                this.LOG.debug('Message published successfully');
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                this.LOG.error('Message publishing failed: ', error);
+                process.error(request, response, error);
+            });
+        } else {
+            SERVICE.DefaultEventService.handleEvent({
+                enterpriseCode: event.enterpriseCode,
+                tenant: event.tenant,
+                event: event
+            }).then(success => {
+                this.LOG.debug('Message published successfully');
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                this.LOG.error('Message publishing failed: ', error);
+                process.error(request, response, error);
+            });
+        }
     },
 
     handleSucessEnd: function (request, response, process) {

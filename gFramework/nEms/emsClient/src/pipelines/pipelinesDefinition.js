@@ -25,6 +25,11 @@ module.exports = {
             processMessage: {
                 type: 'function',
                 handler: 'DefaultMessageProcessService.processMessage',
+                success: 'validateData'
+            },
+            validateData: {
+                type: 'function',
+                handler: 'DefaultMessageProcessService.validateData',
                 success: 'publishEvent'
             },
             publishEvent: {

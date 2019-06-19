@@ -24,7 +24,7 @@ module.exports = {
                 },
                 publisherOptions: {
                     requireAcks: 1,
-                    ackTimeoutMs: 100,
+                    ackTimeoutMs: 1000,
                     partitionerType: 0
                 },
                 consumerOptions: {
@@ -36,7 +36,7 @@ module.exports = {
                 },
                 connectionOptions: {
                     kafkaHost: 'localhost:9092',
-                    connectTimeout: 10,
+                    connectTimeout: 10000,
                     requestTimeout: 30000,
                     autoConnect: true,
                     idleConnection: 5000,

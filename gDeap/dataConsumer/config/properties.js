@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    ems: {
+    emsClient: {
         consumers: {
             // Kafka queues for putting data into InternalSchema model
             kafkaInternalJsonSchemaDataConsumerQueue: {
@@ -21,7 +21,7 @@ module.exports = {
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        schemaName: 'inetrnalData',
+                        schemaName: 'internalData',
                         operation: 'save',
                         enterpriseCode: 'default',
                         tenant: 'default'
@@ -32,11 +32,11 @@ module.exports = {
                 enabled: true,
                 client: 'kafka',
                 options: {
-                    messageHandler: 'jsonMessageHandler',
+                    messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        schemaName: 'inetrnalData',
+                        schemaName: 'internalData',
                         operation: 'save',
                         enterpriseCode: 'default',
                         tenant: 'default'
@@ -51,7 +51,7 @@ module.exports = {
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
-                    eventName: 'internalDataPushEvent',
+                    eventName: 'externalDataPushEvent',
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
@@ -64,9 +64,9 @@ module.exports = {
                 enabled: true,
                 client: 'kafka',
                 options: {
-                    messageHandler: 'jsonMessageHandler',
+                    messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
-                    eventName: 'internalDataPushEvent',
+                    eventName: 'externalDataPushEvent',
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
@@ -85,7 +85,7 @@ module.exports = {
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        indexName: 'inetrnalData',
+                        indexName: 'internalData',
                         operation: 'doSave',
                         enterpriseCode: 'default',
                         tenant: 'default'
@@ -96,11 +96,11 @@ module.exports = {
                 enabled: true,
                 client: 'kafka',
                 options: {
-                    messageHandler: 'jsonMessageHandler',
+                    messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        indexName: 'inetrnalData',
+                        indexName: 'internalData',
                         operation: 'doSave',
                         enterpriseCode: 'default',
                         tenant: 'default'
@@ -115,7 +115,7 @@ module.exports = {
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
-                    eventName: 'internalDataPushEvent',
+                    eventName: 'externalDataPushEvent',
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',
@@ -128,9 +128,9 @@ module.exports = {
                 enabled: true,
                 client: 'kafka',
                 options: {
-                    messageHandler: 'jsonMessageHandler',
+                    messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
-                    eventName: 'internalDataPushEvent',
+                    eventName: 'externalDataPushEvent',
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',
@@ -149,7 +149,7 @@ module.exports = {
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        schemaName: 'inetrnalData',
+                        schemaName: 'internalData',
                         operation: 'save',
                         enterpriseCode: 'default',
                         tenant: 'default'
@@ -160,11 +160,11 @@ module.exports = {
                 enabled: true,
                 client: 'activemq',
                 options: {
-                    messageHandler: 'jsonMessageHandler',
+                    messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        schemaName: 'inetrnalData',
+                        schemaName: 'internalData',
                         operation: 'save',
                         enterpriseCode: 'default',
                         tenant: 'default'
@@ -179,7 +179,7 @@ module.exports = {
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
-                    eventName: 'internalDataPushEvent',
+                    eventName: 'externalDataPushEvent',
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
@@ -192,9 +192,9 @@ module.exports = {
                 enabled: true,
                 client: 'activemq',
                 options: {
-                    messageHandler: 'jsonMessageHandler',
+                    messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
-                    eventName: 'internalDataPushEvent',
+                    eventName: 'externalDataPushEvent',
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
@@ -213,7 +213,7 @@ module.exports = {
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        indexName: 'inetrnalData',
+                        indexName: 'internalData',
                         operation: 'doSave',
                         enterpriseCode: 'default',
                         tenant: 'default'
@@ -224,11 +224,11 @@ module.exports = {
                 enabled: true,
                 client: 'activemq',
                 options: {
-                    messageHandler: 'jsonMessageHandler',
+                    messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
                     header: {
-                        indexName: 'inetrnalData',
+                        indexName: 'internalData',
                         operation: 'doSave',
                         enterpriseCode: 'default',
                         tenant: 'default'
@@ -243,7 +243,7 @@ module.exports = {
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
-                    eventName: 'internalDataPushEvent',
+                    eventName: 'externalDataPushEvent',
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',
@@ -256,9 +256,9 @@ module.exports = {
                 enabled: true,
                 client: 'activemq',
                 options: {
-                    messageHandler: 'jsonMessageHandler',
+                    messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
-                    eventName: 'internalDataPushEvent',
+                    eventName: 'externalDataPushEvent',
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',

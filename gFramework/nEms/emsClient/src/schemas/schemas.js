@@ -10,5 +10,23 @@
  */
 
 module.exports = {
-
+    emsClient: {
+        emsFailedMessages: {
+            super: 'super',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            search: {
+                enabled: true,
+                idPropertyName: '_id',
+            },
+            definition: {
+                enterpriseCode: {
+                    required: false,
+                    description: 'Define enterprise code'
+                }
+            }
+        }
+    }
 };

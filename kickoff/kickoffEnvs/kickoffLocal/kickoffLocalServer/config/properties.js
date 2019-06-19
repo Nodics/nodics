@@ -24,9 +24,13 @@ module.exports = {
     },
 
     emsClient: {
+        logFailedMessages: true,
         clients: {
-            kafka: {
+            activemq: {
                 enabled: true
+            },
+            kafka: {
+                enabled: false
             }
         }
     }
