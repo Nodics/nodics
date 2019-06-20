@@ -73,11 +73,11 @@ module.exports = {
     validateData: function (request, response, process) {
         let queue = request.queue;
         let message = request.message;
-        if (!queue.options.ignoreMandate && (!message.enterpriseCode || !message.tenant)) {
+        if (queue.options.requiredMandateProperties && (!message.enterpriseCode || !message.tenant)) {
             process.error(request, response, 'Message should contain enterpriseCode and tenant');
         } else {
-            message.enterpriseCode = queue.options.header.enterpriseCode || message.enterpriseCode || 'default';
-            message.tenant = queue.options.header.tenant || message.tenant || 'default';
+            message.enterpriseCode = message.enterpriseCode || queue.options.header.enterpriseCode || 'default';
+            message.tenant = message.tenant || queue.options.header.tenant || 'default';
             process.nextSuccess(request, response);
         }
     },

@@ -10,24 +10,17 @@
  */
 
 module.exports = {
-    emsClient: {
-        emsFailedMessages: {
-            super: 'super',
-            model: true,
-            service: true,
-            event: false,
-            router: true,
-            search: {
+    cronjob: {
+        indexerJob: {
+            options: {
                 enabled: true,
-                idPropertyName: '_id',
+                schemaName: 'cronJob',
+                operation: 'save',
+                //tenants: ['default'],
+                dataFilePrefix: 'defaultIndexerJobsData'
             },
-            definition: {
-                active: {
-                    required: false
-                },
-                enterpriseCode: {
-                    required: false
-                },
+            query: {
+                code: '$code'
             }
         }
     }

@@ -135,7 +135,11 @@ module.exports = {
                         _self.LOG.error('Something went wrong while starting CronJobs : ', error);
                     });
                 }).catch(error => {
-                    _self.LOG.error('Something went wrong while creating CronJobs : ', error);
+                    if (error.code && error.code === 'ERR_JOB_00001') {
+                        _self.LOG.info('No jobs found to activate');
+                    } else {
+                        _self.LOG.error('Something went wrong while creating CronJobs : ', error);
+                    }
                 });
             } else {
                 _self.LOG.info('Server is not started yet, hence waiting');

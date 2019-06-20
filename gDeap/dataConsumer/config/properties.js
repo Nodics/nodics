@@ -20,6 +20,7 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         schemaName: 'internalData',
                         operation: 'save',
@@ -35,6 +36,7 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         schemaName: 'internalData',
                         operation: 'save',
@@ -52,6 +54,7 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
@@ -67,6 +70,7 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
@@ -84,6 +88,7 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         indexName: 'internalData',
                         operation: 'doSave',
@@ -99,6 +104,7 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         indexName: 'internalData',
                         operation: 'doSave',
@@ -116,6 +122,7 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',
@@ -131,6 +138,7 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',
@@ -148,6 +156,7 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         schemaName: 'internalData',
                         operation: 'save',
@@ -163,6 +172,7 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         schemaName: 'internalData',
                         operation: 'save',
@@ -180,6 +190,7 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
@@ -195,6 +206,7 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
@@ -212,6 +224,7 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         indexName: 'internalData',
                         operation: 'doSave',
@@ -227,6 +240,7 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         indexName: 'internalData',
                         operation: 'doSave',
@@ -244,6 +258,7 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',
@@ -259,6 +274,7 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
+                    requiredMandateProperties: true,
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',

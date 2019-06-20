@@ -11,7 +11,6 @@
 
 module.exports = {
     activeModules: {
-        updateGroups: true,
         //groups: ['gCore'], // Group 'framework' will be included automatically
         modules: [
             'profile',

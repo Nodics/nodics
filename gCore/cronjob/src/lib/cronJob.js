@@ -9,6 +9,7 @@
 
  */
 
+
 const CronJob = require('cron').CronJob;
 
 module.exports = function (definition, trigger, context, timeZone) {
@@ -59,7 +60,8 @@ module.exports = function (definition, trigger, context, timeZone) {
     this.init = function (oneTime) {
         let _self = this;
         let cronTime = this.getCronTime(oneTime);
-        _self.LOG.info('###### Creating job with time schedule : ', cronTime);
+        var currentTime = new Date();
+        _self.LOG.info('###### Creating job with time schedule : ', cronTime, ' at: ', currentTime.getHours(), ':', currentTime.getMinutes(), ':', currentTime.getSeconds());
         _cronJob = new CronJob({
             cronTime: cronTime,
             onTick: function () {

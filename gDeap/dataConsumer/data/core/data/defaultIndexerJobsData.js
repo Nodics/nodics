@@ -79,7 +79,7 @@ module.exports = {
             }
         },
         trigger: {
-            expression: "00 00 01 * * *"
+            expression: "0 0 1 * * *"
         },
         emails: [{
             email: "nodics.framework@nodics.com"
@@ -105,7 +105,7 @@ module.exports = {
             }
         },
         trigger: {
-            expression: "10 * * * * *"
+            expression: "0 */10 * * * *"
         },
         emails: [{
             email: "nodics.framework@nodics.com"

@@ -11,7 +11,6 @@
 
 module.exports = {
     activeModules: {
-        updateGroups: true,
         groups: ['gTools'], // Group 'framework' will be included automatically
         modules: [
             'kickoffLocalToolsServer',
@@ -40,7 +39,7 @@ module.exports = {
 
                 httpsHost: 'localhost',
                 httpsPort: 3009
-            },//Clusters information is optional and will be managed for Backoffice application
+            },
             nodes: {
                 0: {
                     httpHost: 'localhost',
@@ -69,7 +68,7 @@ module.exports = {
 
                 httpsHost: 'localhost',
                 httpsPort: 3001
-            },//Clusters information is optional and will be managed for Backoffice application
+            },
             nodes: {
                 0: {
                     httpHost: 'localhost',
@@ -98,7 +97,7 @@ module.exports = {
 
                 httpsHost: 'localhost',
                 httpsPort: 3005
-            },//Clusters information is optional and will be managed for Backoffice application
+            },
             nodes: {
                 0: {
                     httpHost: 'localhost',

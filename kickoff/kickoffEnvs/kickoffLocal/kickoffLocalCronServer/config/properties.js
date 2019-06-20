@@ -11,7 +11,6 @@
 
 module.exports = {
     activeModules: {
-        updateGroups: true,
         //groups: ['core', 'ems'], // Group 'framework' will be included automatically
         modules: [
             'cronjob',
@@ -19,8 +18,21 @@ module.exports = {
             'kickoffLocal'
         ]
     },
+
     log: {
         level: 'debug'
+    },
+
+    cronjob: {
+        runOnStartup: false
+    },
+
+    search: {
+        default: {
+            options: {
+                enabled: false
+            }
+        }
     },
 
     server: {

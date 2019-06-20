@@ -58,7 +58,7 @@ module.exports = {
         tenant: 'default',
         loginId: 'apiAdmin'
     },
-
+    //https://github.com/winstonjs/winston/issues/1134
     log: {
         enabled: true,
         level: 'debug',

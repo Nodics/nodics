@@ -17,6 +17,10 @@ module.exports = {
             service: true,
             event: false,
             router: true,
+            search: {
+                enabled: true,
+                idPropertyName: '_id',
+            },
             definition: {
                 active: {
                     required: false

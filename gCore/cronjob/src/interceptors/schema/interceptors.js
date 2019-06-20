@@ -15,13 +15,19 @@ module.exports = {
             type: 'preSave',
             active: 'true',
             index: 0,
-            handler: 'DefaultActiveValuesCheckService.convertToDate'
+            handler: 'DefaultActiveValuesCheckInterceptorService.convertToDate'
         },
         preUpdateCheckActiveValue: {
             type: 'preUpdate',
             active: 'true',
             index: 0,
-            handler: 'DefaultActiveValuesCheckService.convertToDate'
+            handler: 'DefaultActiveValuesCheckInterceptorService.convertToDate'
+        },
+        postSaveStartJob: {
+            type: 'postSave',
+            active: 'true',
+            index: 9999999,
+            handler: 'DefaultJobActivatorInterceptorService.activateJob'
         }
     }
 };

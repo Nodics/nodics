@@ -11,7 +11,6 @@
 
 module.exports = {
     activeModules: {
-        updateGroups: true,
         groups: ['gCore', 'gTools', 'gDeap', 'kickoffModules'], // Group 'framework' will be included automatically
         modules: [
             'kickoffLocalServer',
@@ -20,9 +19,20 @@ module.exports = {
     },
 
     log: {
-        level: 'debug'
+        level: 'info'
     },
 
+    cronjob: {
+        runOnStartup: true
+    },
+
+    search: {
+        default: {
+            options: {
+                enabled: true
+            }
+        }
+    },
     emsClient: {
         logFailedMessages: false,
         clients: {

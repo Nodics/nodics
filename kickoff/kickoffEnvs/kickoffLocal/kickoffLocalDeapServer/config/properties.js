@@ -11,7 +11,6 @@
 
 module.exports = {
     activeModules: {
-        updateGroups: true,
         groups: ['gDeap'], // Group 'framework' will be included automatically
         modules: [
             'kickoffLocalDeapServer',
@@ -23,10 +22,22 @@ module.exports = {
         level: 'debug'
     },
 
+    search: {
+        default: {
+            options: {
+                enabled: false
+            }
+        }
+    },
+
     emsClient: {
+        logFailedMessages: false,
         clients: {
             activemq: {
-                enabled: true
+                enabled: false
+            },
+            kafka: {
+                enabled: false
             }
         }
     },
@@ -49,7 +60,7 @@ module.exports = {
 
                 httpsHost: 'localhost',
                 httpsPort: 3011
-            },//Clusters information is optional and will be managed for Backoffice application
+            },
             nodes: {
                 0: {
                     httpHost: 'localhost',
@@ -78,7 +89,7 @@ module.exports = {
 
                 httpsHost: 'localhost',
                 httpsPort: 3001
-            },//Clusters information is optional and will be managed for Backoffice application
+            },
             nodes: {
                 0: {
                     httpHost: 'localhost',
@@ -107,7 +118,7 @@ module.exports = {
 
                 httpsHost: 'localhost',
                 httpsPort: 3005
-            },//Clusters information is optional and will be managed for Backoffice application
+            },
             nodes: {
                 0: {
                     httpHost: 'localhost',
