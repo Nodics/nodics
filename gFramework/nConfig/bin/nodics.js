@@ -157,13 +157,13 @@ module.exports = function () {
         return _envPath;
     };
 
-    this.getApplicationName = function () {
-        return _appName;
-    };
+    // this.getApplicationName = function () {
+    //     return _appName;
+    // };
 
-    this.getApplicationPath = function () {
-        return _appPath;
-    };
+    // this.getApplicationPath = function () {
+    //     return _appPath;
+    // };
 
     this.addTenant = function (tntCode) {
         _tenants.push(tntCode);

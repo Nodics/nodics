@@ -55,7 +55,7 @@ module.exports = {
         this.LOG.info('###   Initializing Nodics, Node based enterprise application solution   ###');
         this.LOG.info('---------------------------------------------------------------------------');
         this.LOG.info('NODICS_HOME       : ', NODICS.getNodicsHome());
-        this.LOG.info('NODICS_APP        : ', NODICS.getApplicationPath());
+        //this.LOG.info('NODICS_APP        : ', NODICS.getApplicationPath());
         this.LOG.info('NODICS_ENV        : ', NODICS.getEnvironmentPath());
         this.LOG.info('SERVER_PATH       : ', NODICS.getServerPath());
         this.LOG.info('LOG_PATH          : ', NODICS.getServerPath() + '/temp/logs');
@@ -109,11 +109,11 @@ module.exports = {
     getActiveModules: function () {
         try {
             let modules = [];
-            let appHome = NODICS.getApplicationPath();
+            //let appHome = NODICS.getApplicationPath();
             let envHome = NODICS.getEnvironmentPath();
             let serverHome = NODICS.getServerPath();
             let serverProperties = {};
-            serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
+            //serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
             serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
             serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
             let prop = _.merge(props, serverProperties);

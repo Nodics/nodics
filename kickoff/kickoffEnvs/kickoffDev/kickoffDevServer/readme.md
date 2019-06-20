@@ -1,1 +1,1 @@
-This is a sample readme file for your kickoffDevServer module
+This is a sample readme file for your kickoffLocalServer module
