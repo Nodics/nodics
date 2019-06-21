@@ -67,11 +67,17 @@ module.exports = {
         let activeModules = [];
         NODICS.getIndexedModules().forEach((obj, key) => {
             if (obj.name.length > 0 && obj.name.length <= 8) {
-                this.LOG.info('    ' + obj.name + '\t\t\t : ' + key);
-            } else if (obj.name.length > 8 && obj.name.length < 15) {
-                this.LOG.info('    ' + obj.name + '\t\t : ' + key);
+                this.LOG.info('    ' + obj.name + '\t\t\t\t\t :  ' + key);
+            } else if (obj.name.length > 8 && obj.name.length <= 15) {
+                this.LOG.info('    ' + obj.name + '\t\t\t\t :  ' + key);
+            } else if (obj.name.length > 15 && obj.name.length <= 23) {
+                this.LOG.info('    ' + obj.name + '\t\t\t :  ' + key);
+            } else if (obj.name.length > 23 && obj.name.length <= 35) {
+                this.LOG.info('    ' + obj.name + '\t\t :  ' + key);
+            } else if (obj.name.length > 35 && obj.name.length <= 45) {
+                this.LOG.info('    ' + obj.name + '\t :  ' + key);
             } else {
-                this.LOG.info('    ' + obj.name + '\t : ' + key);
+                this.LOG.info('    ' + obj.name + ':  ' + key);
             }
             activeModules.push(obj.name);
         });

@@ -11,7 +11,7 @@
 
 module.exports = {
     activeModules: {
-        groups: ['gTools'], // Group 'framework' will be included automatically
+        groups: ['gTools', 'kickoffModules'], // Group 'framework' will be included automatically
         modules: [
             'kickoffLocalToolsServer',
             'kickoffLocal'

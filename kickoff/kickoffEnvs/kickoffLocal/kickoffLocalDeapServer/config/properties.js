@@ -11,7 +11,7 @@
 
 module.exports = {
     activeModules: {
-        groups: ['gDeap'], // Group 'framework' will be included automatically
+        groups: ['gDeap', 'kickoffModules'], // Group 'framework' will be included automatically
         modules: [
             'kickoffLocalDeapServer',
             'kickoffLocal'

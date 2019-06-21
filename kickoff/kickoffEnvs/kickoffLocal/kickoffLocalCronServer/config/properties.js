@@ -11,7 +11,7 @@
 
 module.exports = {
     activeModules: {
-        //groups: ['core', 'ems'], // Group 'framework' will be included automatically
+        groups: ['kickoffModules'], // Group 'framework' will be included automatically
         modules: [
             'cronjob',
             'kickoffLocalCronServer',
