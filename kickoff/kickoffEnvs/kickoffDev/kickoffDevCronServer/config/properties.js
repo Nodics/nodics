@@ -65,7 +65,6 @@ module.exports = {
             }
         },
 
-        // This configuration required to load enterprise, tenants and all internal communication
         profile: {
             options: {
                 contextRoot: 'nodics'
@@ -95,7 +94,6 @@ module.exports = {
             }
         },
 
-        // This configuration required to push any event needs to be send for other module
         nems: {
             options: {
                 contextRoot: 'nodics'

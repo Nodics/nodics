@@ -52,4 +52,10 @@ module.exports = {
         message: 'Consumer object can not be null or empty'
     },
 
+    ERR_EMS_00006: {
+        code: '130006',
+        description: 'EMS is not active for this module',
+        message: 'EMS is not active for this module'
+    },
+
 };

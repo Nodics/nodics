@@ -45,7 +45,7 @@ module.exports = {
                     method: 'POST',
                     url: 'http://host:port/nodics/emsClient/publish',
                     body: {
-                        consumerName
+                        consumerName: {}
                     }
                 }
             }

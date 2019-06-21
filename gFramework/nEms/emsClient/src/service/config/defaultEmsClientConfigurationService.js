@@ -36,6 +36,10 @@ module.exports = {
         });
     },
 
+    getEmsClients: function () {
+        return this.emsClients;
+    },
+
     configureEMSClients: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -93,16 +97,20 @@ module.exports = {
     configurePublishers: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
-            let publishers = CONFIG.get('emsClient').publishers;
-            if (publishers && !UTILS.isBlank(publishers)) {
-                _self.configurePublisher(Object.keys(publishers), publishers).then(success => {
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                _self.LOG.warn('There is none client configuration provided');
+            if (UTILS.isBlank(_self.emsClients)) {
                 resolve(true);
+            } else {
+                let publishers = CONFIG.get('emsClient').publishers;
+                if (publishers && !UTILS.isBlank(publishers)) {
+                    _self.configurePublisher(Object.keys(publishers), publishers).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    _self.LOG.warn('There is none client configuration provided');
+                    resolve(true);
+                }
             }
         });
     },
@@ -154,16 +162,18 @@ module.exports = {
         let _self = this;
         if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
             !NODICS.isNTestRunning() && CONFIG.get('event').publishAllActive) {
-            let consumers = CONFIG.get('emsClient').consumers;
-            if (consumers && !UTILS.isBlank(consumers)) {
-                let comsumerList = Object.keys(consumers);
-                _self.registerConsumer(comsumerList, consumers).then(success => {
-                    //_self.LOG.debug('Consumers has been registered successfully');
-                }).catch(error => {
-                    //_self.LOG.error('Failed on consumer registration ', error);
-                });
-            } else {
-                _self.LOG.warn('There is none client configuration provided');
+            if (!UTILS.isBlank(_self.emsClients)) {
+                let consumers = CONFIG.get('emsClient').consumers;
+                if (consumers && !UTILS.isBlank(consumers)) {
+                    let comsumerList = Object.keys(consumers);
+                    _self.registerConsumer(comsumerList, consumers).then(success => {
+                        //_self.LOG.debug('Consumers has been registered successfully');
+                    }).catch(error => {
+                        //_self.LOG.error('Failed on consumer registration ', error);
+                    });
+                } else {
+                    _self.LOG.warn('There is none client configuration provided');
+                }
             }
         } else {
             _self.LOG.info('Server is not started yet, hence waiting to register consumers');
