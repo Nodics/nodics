@@ -61,7 +61,7 @@ module.exports = function (definition, trigger, context, timeZone) {
         let _self = this;
         let cronTime = this.getCronTime(oneTime);
         var currentTime = new Date();
-        _self.LOG.info('###### Creating job with time schedule : ', cronTime, ' at: ', currentTime.getHours(), ':', currentTime.getMinutes(), ':', currentTime.getSeconds());
+        _self.LOG.info('###### Creating job: ', _definition.code, ' with time schedule : ', cronTime, ' at: ', currentTime.getHours(), ':', currentTime.getMinutes(), ':', currentTime.getSeconds());
         _cronJob = new CronJob({
             cronTime: cronTime,
             onTick: function () {

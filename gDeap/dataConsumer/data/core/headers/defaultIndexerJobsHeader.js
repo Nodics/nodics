@@ -15,8 +15,8 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'cronJob',
-                operation: 'saveOrUpdate', //save, update and saveOrUpdate
-                tenants: ['default'],
+                operation: 'save', //save, update and saveOrUpdate
+                //tenants: ['default'],
                 dataFilePrefix: 'defaultIndexerJobsData'
             },
             query: {

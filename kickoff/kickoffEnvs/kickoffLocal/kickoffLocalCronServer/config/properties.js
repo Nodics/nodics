@@ -24,7 +24,7 @@ module.exports = {
     },
 
     cronjob: {
-        runOnStartup: false
+        runOnStartup: true
     },
 
     search: {

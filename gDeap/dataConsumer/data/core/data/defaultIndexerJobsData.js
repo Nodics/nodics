@@ -16,7 +16,7 @@ module.exports = {
         tenant: "default",
         description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
         runOnNode: 0,
-        active: true,
+        active: false,
         logResult: false,
         jobDetail: {
             internal: {
@@ -27,7 +27,7 @@ module.exports = {
             }
         },
         trigger: {
-            expression: "00 00 01 * * *"
+            expression: "0 0 1 * * *"
         },
         emails: [{
             email: "nodics.framework@nodics.com"
@@ -42,7 +42,7 @@ module.exports = {
         tenant: "default",
         description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
         runOnNode: 0,
-        active: true,
+        active: false,
         logResult: false,
         jobDetail: {
             internal: {
@@ -53,7 +53,7 @@ module.exports = {
             }
         },
         trigger: {
-            expression: "10 * * * * *"
+            expression: "0 */10 * * * *"
         },
         emails: [{
             email: "nodics.framework@nodics.com"
@@ -66,9 +66,9 @@ module.exports = {
         code: "triggerExternalFullIndexer",
         enterpriseCode: "default",
         tenant: "default",
-        description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
+        description: 'This job is to trigger process external data indexer, which will push all data to elastic search',
         runOnNode: 0,
-        active: true,
+        active: false,
         logResult: false,
         jobDetail: {
             internal: {
@@ -89,19 +89,19 @@ module.exports = {
         state: "NEW"
     },
     record4: {
-        code: "triggerInternalIncrementalIndexer",
+        code: "triggerExternalIncrementalIndexer",
         enterpriseCode: "default",
         tenant: "default",
-        description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
+        description: 'This job is to trigger process external data indexer, which will push all data to elastic search',
         runOnNode: 0,
-        active: true,
+        active: false,
         logResult: false,
         jobDetail: {
             internal: {
                 nodeId: 0,
                 module: 'dataConsumer',
                 method: 'GET',
-                uri: '/inetrnalData/search/index/internalDataIncrementalIndexer'
+                uri: '/inetrnalData/search/index/externalDataIncrementalIndexer'
             }
         },
         trigger: {

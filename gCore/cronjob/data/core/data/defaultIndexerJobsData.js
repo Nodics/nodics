@@ -16,7 +16,7 @@ module.exports = {
         tenant: "default",
         description: 'This job is to trigger process job log indexer, which will push all data to elastic search',
         runOnNode: 0,
-        active: true,
+        active: false,
         logResult: false,
         jobDetail: {
             internal: {
@@ -43,7 +43,7 @@ module.exports = {
         tenant: "default",
         description: 'This job is to trigger process job log indexer, which will push all data to elastic search',
         runOnNode: 0,
-        active: true,
+        active: false,
         logResult: false,
         jobDetail: {
             internal: {

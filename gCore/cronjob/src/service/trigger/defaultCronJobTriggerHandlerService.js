@@ -281,11 +281,5 @@ module.exports = {
         }).catch(error => {
             process.reject(response.errors);
         });
-
-        this.updateJob(jobDefinition).then(success => {
-            process.reject(response.errors);
-        }).catch(error => {
-            process.reject(response.errors);
-        });
     }
 };
