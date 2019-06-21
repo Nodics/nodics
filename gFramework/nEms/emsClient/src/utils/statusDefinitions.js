@@ -46,4 +46,10 @@ module.exports = {
         message: 'Failed converting message from XML to JSON'
     },
 
+    ERR_EMS_00005: {
+        code: '130005',
+        description: 'Consumer object can not be null or empty',
+        message: 'Consumer object can not be null or empty'
+    },
+
 };

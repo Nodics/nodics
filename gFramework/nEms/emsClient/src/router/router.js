@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    emsClient: {
+    common: {
         publishMessage: {
             postMessage: {
                 secured: true,
@@ -27,6 +27,45 @@ module.exports = {
                         queue: 'Name of the queue',
                         messages: 'Message to be send',
                         partition: 'currently optional, its used for Kafka'
+                    }
+                }
+            }
+        },
+
+        registerConsumers: {
+            postRegisterConsumers: {
+                secured: true,
+                key: '/register/consumer',
+                method: 'POST',
+                controller: 'DefaultEmsClientController',
+                operation: 'registerConsumers',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/emsClient/publish',
+                    body: {
+                        consumerName
+                    }
+                }
+            }
+        },
+
+        registerPublishers: {
+            postRegisterPublishers: {
+                secured: true,
+                key: '/register/consumer',
+                method: 'POST',
+                controller: 'DefaultEmsClientController',
+                operation: 'registerPublishers',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/emsClient/publish',
+                    body: {
+                        consumerName: {},
+                        consumerName1: {}
                     }
                 }
             }

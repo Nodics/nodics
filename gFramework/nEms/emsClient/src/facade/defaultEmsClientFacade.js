@@ -13,5 +13,13 @@ module.exports = {
 
     publish: function (request) {
         return SERVICE.DefaultEmsClientService.publish(request);
+    },
+
+    registerConsumers: function (request) {
+        return SERVICE.DefaultEmsClientService.registerConsumers(request);
+    },
+
+    registerPublishers: function (request) {
+        return SERVICE.DefaultEmsClientService.registerPublishers(request);
     }
 };

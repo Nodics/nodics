@@ -69,5 +69,59 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+
+    registerConsumers: function (request) {
+        return new Promise((resolve, reject) => {
+            if (UTILS.isBlank(request.consumers)) {
+                reject({
+                    success: false,
+                    code: 'ERR_EMS_00005',
+                    error: 'Consumer object can not be null or empty'
+                });
+            }
+            try {
+                let comsumerList = Object.keys(request.consumers);
+                SERVICE.DefaultEmsClientConfigurationService.registerConsumer(comsumerList, consumers).then(success => {
+                    _.merge(CONFIG.get('emsClient').consumers, request.consumers);
+                    resolve({
+                        success: true,
+                        code: 'SUC_EMS_00000',
+                        result: Object.keys(request.consumers)
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    registerPublishers: function (request) {
+        return new Promise((resolve, reject) => {
+            if (UTILS.isBlank(request.publishers)) {
+                reject({
+                    success: false,
+                    code: 'ERR_EMS_00005',
+                    error: 'Publisher object can not be null or empty'
+                });
+            }
+            try {
+                let publisherList = Object.keys(request.publishers);
+                SERVICE.DefaultEmsClientConfigurationService.configurePublisher(publisherList, publishers).then(success => {
+                    _.merge(CONFIG.get('emsClient').punlishers, request.publishers);
+                    resolve({
+                        success: true,
+                        code: 'SUC_EMS_00000',
+                        result: Object.keys(request.publishers)
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
 };
