@@ -54,11 +54,14 @@ module.exports = {
         }
         this.LOG.info('###   Initializing Nodics, Node based enterprise application solution   ###');
         this.LOG.info('---------------------------------------------------------------------------');
-        this.LOG.info('NODICS_HOME       : ', NODICS.getNodicsHome());
+        this.LOG.info('NODICS_HOME   : ', NODICS.getNodicsHome());
         //this.LOG.info('NODICS_APP        : ', NODICS.getApplicationPath());
-        this.LOG.info('NODICS_ENV        : ', NODICS.getEnvironmentPath());
-        this.LOG.info('SERVER_PATH       : ', NODICS.getServerPath());
-        this.LOG.info('LOG_PATH          : ', NODICS.getServerPath() + '/temp/logs');
+        this.LOG.info('NODICS_ENV    : ', NODICS.getEnvironmentPath());
+        this.LOG.info('SERVER_PATH   : ', NODICS.getServerPath());
+        if (NODICS.getNodePath()) {
+            this.LOG.info('NODE_PATH     : ', NODICS.getNodePath());
+        }
+        this.LOG.info('LOG_PATH      : ', NODICS.getServerPath() + '/temp/logs');
         this.LOG.info('---------------------------------------------------------------------------\n');
         this.LOG.info('###   Sequence in which modules has been loaded (Top to Bottom)   ###');
         let activeModules = [];
@@ -112,16 +115,23 @@ module.exports = {
             //let appHome = NODICS.getApplicationPath();
             let envHome = NODICS.getEnvironmentPath();
             let serverHome = NODICS.getServerPath();
+            let nodeHome = NODICS.getNodePath();
             let serverProperties = {};
             //serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
             serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
             serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
+            if (nodeHome) {
+                serverProperties = _.merge(serverProperties, require(nodeHome + '/config/properties.js'));
+            }
             let prop = _.merge(props, serverProperties);
             this.LOG = logger.createLogger('DefaultModuleInitializerService', prop.log);
             let moduleGroups = ['gFramework'].concat(serverProperties.activeModules ? serverProperties.activeModules.groups || [] : []);
             moduleGroups.forEach((groupName) => {
                 utils.prepareActiveModuleList(groupName, modules);
             });
+            if (nodeHome) {
+                serverProperties.activeModules.modules.push(NODICS.getNodeName());
+            }
             modules = modules.concat(serverProperties.activeModules.modules);
             return modules;
         } catch (error) {

@@ -124,7 +124,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultInfraService.generateApp(options);
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
 
@@ -136,7 +136,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultInfraService.generateModuleGroup(options);
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
 
@@ -148,7 +148,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultInfraService.generateModule(options);
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
     genReactModule: function (options) {
@@ -159,7 +159,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultInfraService.generateReactModule(options);
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
 
@@ -171,7 +171,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultInfraService.generateVueModule(options);
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
 
@@ -181,7 +181,7 @@ module.exports = {
         }).then(() => {
             return config.cleanModules();
         }).catch(error => {
-            NODICS.LOG.error(error);
+            console.error(error);
         });
     },
 
@@ -195,7 +195,7 @@ module.exports = {
         }).then(() => {
             return config.buildModules();
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
 };

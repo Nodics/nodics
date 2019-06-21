@@ -24,6 +24,8 @@ module.exports = function () {
     let _preScripts = {};
     let _tenants = [];
     let _internalAuthTokens = {};
+    let _nodeName = null;
+    let _nodePath = null;
 
     let _nodics = {
         modules: {},
@@ -46,19 +48,28 @@ module.exports = function () {
 
     this.initEnvironment = function () {
         _serverName = 'kickoffLocalServer';
+        _nodeName = null;
         process.argv.forEach(element => {
             if (element.startsWith('S=')) {
                 _serverName = element.replace('S=', '');
             } else if (element.startsWith('SERVER=')) {
                 _serverName = element.replace('SERVER=', '');
+            } else if (element.startsWith('NODE=')) {
+                _nodeName = element.replace('NODE=', '');
             }
         });
         _serverPath = this.getRawModule(_serverName).path;
         _envName = this.getRawModule(_serverName).parent;
         _envPath = this.getRawModule(_envName).path;
-
-        _appName = this.getRawModule(_envName).parent;
-        _appPath = this.getRawModule(_appName).path;
+        if (_nodeName) {
+            if (this.getRawModule(_nodeName)) {
+                _nodePath = this.getRawModule(_nodeName).path;
+            } else {
+                throw new Error('Invalid node name: ' + _nodeName);
+            }
+        }
+        // _appName = this.getRawModule(_envName).parent;
+        // _appPath = this.getRawModule(_appName).path;
 
     };
 
@@ -131,6 +142,14 @@ module.exports = function () {
 
     this.getStartDuration = function () {
         return (_entTime - _startTime);
+    };
+
+    this.getNodeName = function () {
+        return _nodeName;
+    };
+
+    this.getNodePath = function () {
+        return _nodePath;
     };
 
     this.getServerName = function () {

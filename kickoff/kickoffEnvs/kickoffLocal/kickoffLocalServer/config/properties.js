@@ -23,13 +23,13 @@ module.exports = {
     },
 
     cronjob: {
-        runOnStartup: true
+        runOnStartup: false
     },
 
     search: {
         default: {
             options: {
-                enabled: true
+                enabled: false
             }
         }
     },

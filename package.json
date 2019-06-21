@@ -11,7 +11,9 @@
         "module:react": "node -e 'require(\"./nodics\").genReactModule()'",
         "module:vue": "node -e 'require(\"./nodics\").genVueModule()'",
         "clean": "node -e 'require(\"./nodics\").cleanAll()'",
-        "build": "node -e 'require(\"./nodics\").buildAll()'",
+        "cleanDebug": "node --inspect-brk=9229 -e 'require(\"./nodics\").cleanAll()'",
+        "build": "node --inspect-brk=9229 -e 'require(\"./nodics\").buildAll()'",
+        "buildDebug": "node -e 'require(\"./nodics\").buildAll()'",
         "start": "node -e 'require(\"./nodics\").start()'",
         "debug": "node --inspect-brk=9229 -e 'require(\"./nodics\").start()'"
     },
