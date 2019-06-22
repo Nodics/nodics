@@ -40,7 +40,7 @@ module.exports = {
                 operation: 'getEnterprise',
                 help: {
                     requestType: 'secured',
-                    message: 'enterpriseCode need to set within header',
+                    message: 'entCode need to set within header',
                     method: 'GET',
                     url: 'http://host:port/nodics/profile/enterprise/get',
                 }
@@ -72,7 +72,7 @@ module.exports = {
                 operation: 'authenticateEmployee',
                 help: {
                     requestType: 'secured',
-                    message: 'loginId, password and enterpriseCode need to set within header',
+                    message: 'loginId, password and entCode need to set within header',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/authenticate',
                 }
@@ -85,7 +85,7 @@ module.exports = {
                 operation: 'authenticateCustomer',
                 help: {
                     requestType: 'secured',
-                    message: 'loginId, password and enterpriseCode need to set within header',
+                    message: 'loginId, password and entCode need to set within header',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/authenticate',
                 }

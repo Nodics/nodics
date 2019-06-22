@@ -67,7 +67,7 @@ module.exports = {
     getSearchConfiguration: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             let defaultSearchConfig = CONFIG.get('search', tenant);
@@ -88,7 +88,7 @@ module.exports = {
     addTenantSearchEngine: function (moduleName, tenant, searchEngine) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else if (!this.searchEngines[moduleName]) {
             this.searchEngines[moduleName] = {};
@@ -106,7 +106,7 @@ module.exports = {
     getTenantSearchEngine: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             let searchEngine = this.searchEngines[moduleName] || this.searchEngines.default;
@@ -117,7 +117,7 @@ module.exports = {
     addTenantRawSearchSchema: function (moduleName, tenant, definition) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             if (!this.searchSchema[moduleName]) {
@@ -137,7 +137,7 @@ module.exports = {
     getRawSearchSchema: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
             return this.searchSchema[moduleName][tenant];
@@ -149,7 +149,7 @@ module.exports = {
     getTenantRawSearchSchema: function (moduleName, tenant, typeName) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
             return this.searchSchema[moduleName][tenant][typeName];

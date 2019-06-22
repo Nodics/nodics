@@ -47,13 +47,6 @@ module.exports = {
         }
     },
 
-    resolveEnterpriseCode: function (request, response, process) {
-        if (request.dataModel.enterpriseCode && request.enterpriseCode && request.dataModel.enterpriseCode !== request.enterpriseCode) {
-            request.dataModel.enterpriseCode = request.enterpriseCode;
-        }
-        process.nextSuccess(request, response);
-    },
-
     loadRawSchema: function (request, response, process) {
         this.LOG.debug('Loading raw schema for header');
         let header = request.header;
@@ -336,7 +329,6 @@ module.exports = {
         let header = request.header;
         return new Promise((resolve, reject) => {
             let event = {
-                enterpriseCode: models[0].enterpriseCode || request.enterpriseCode || 'default',
                 tenant: request.tenant,
                 active: true,
                 event: 'saveModels',

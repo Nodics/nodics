@@ -82,10 +82,10 @@ module.exports = {
         if (request.httpRequest.get('authToken')) {
             request.authToken = request.httpRequest.get('authToken');
         }
-        if (request.httpRequest.get('enterpriseCode')) {
-            request.enterpriseCode = request.httpRequest.get('enterpriseCode');
+        if (request.httpRequest.get('entCode')) {
+            request.entCode = request.httpRequest.get('entCode');
         }
-        if (!request.apiKey && !request.authToken && !request.enterpriseCode) {
+        if (!request.apiKey && !request.authToken && !request.entCode) {
             process.error(request, response, {
                 success: false,
                 code: 'ERR_AUTH_00002'

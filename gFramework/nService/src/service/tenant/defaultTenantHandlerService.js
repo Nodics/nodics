@@ -40,7 +40,7 @@ module.exports = {
             try {
                 if (tenants && tenants.length > 0) {
                     tenants.forEach(tenant => {
-                        NODICS.removeTenant(tenant);
+                        NODICS.removeActiveTenant(tenant);
                         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
                             SERVICE.DefaultDatabaseConnectionHandlerService.removeTenantDatabase(moduleName, tenant).then(success => {
                                 SERVICE.DefaultDatabaseModelHandlerService.removeModelsForTenant(moduleName, tenant).then(success => {

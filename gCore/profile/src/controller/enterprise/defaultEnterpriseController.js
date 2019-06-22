@@ -12,7 +12,7 @@
 module.exports = {
 
     getEnterprise: function (request, callback) {
-        if (UTILS.isBlank(request.enterpriseCode)) {
+        if (UTILS.isBlank(request.entCode)) {
             if (callback) {
                 callback({
                     success: false,
@@ -32,7 +32,7 @@ module.exports = {
                 request.options = {
                     recursive: true,
                     query: {
-                        code: request.enterpriseCode
+                        code: request.entCode
                     }
                 };
             }

@@ -89,8 +89,7 @@ module.exports = {
             if (jobDefinition.event && jobDefinition.event.paused) {
                 this.LOG.debug('Triggering event for paused job');
                 let event = {
-                    enterpriseCode: jobDefinition.enterpriseCode,
-                    tenant: jobDefinition.tenant,
+                    tenant: jobDefinition.tenant,//Set tenant from CronJob Himkar
                     active: true,
                     event: 'jobPaused',
                     source: 'cronjob',

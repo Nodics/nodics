@@ -37,7 +37,6 @@ module.exports = {
         this.LOG.debug('Auth token has been expired: ' + key);
         /*let _self = this;
         let event = {
-            enterpriseCode: value.enterprise.code,
             tenant: value.enterprise.tenant.code,
             event: 'invalidateAuthToken',
             source: options.moduleName,

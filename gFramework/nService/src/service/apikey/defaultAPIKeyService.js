@@ -44,7 +44,7 @@ module.exports = {
     //             isJsonResponse: true,
     //             header: {
     //                 apiKey: CONFIG.get('defaultAuthDetail').apiKey,
-    //                 enterpriseCode: CONFIG.get('defaultAuthDetail').enterpriseCode
+    //                 entCode: CONFIG.get('defaultAuthDetail').entCode
     //             }
     //         });
     //         try {

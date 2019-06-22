@@ -21,9 +21,6 @@ module.exports = {
             event: false,
             router: false,
             definition: {
-                enterpriseCode: {
-                    required: false
-                },
                 indexName: {
                     type: 'string',
                     required: true,
@@ -97,9 +94,6 @@ module.exports = {
             event: false,
             router: true,
             definition: {
-                enterpriseCode: {
-                    required: false
-                },
                 name: {
                     type: 'string',
                     required: true,
@@ -250,9 +244,6 @@ module.exports = {
                 },
             },
             definition: {
-                enterpriseCode: {
-                    required: false
-                },
                 indexerCode: {
                     type: 'string',
                     required: true

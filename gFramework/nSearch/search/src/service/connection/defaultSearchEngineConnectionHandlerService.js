@@ -38,7 +38,7 @@ module.exports = {
     createSearchConnections: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
-            this.createTenantsSearchEngines(NODICS.getTenants()).then(success => {
+            this.createTenantsSearchEngines(NODICS.getActiveTenants()).then(success => {
                 _self.LOG.debug('Search connections has been established successfully');
                 resolve(true);
             }).catch(error => {

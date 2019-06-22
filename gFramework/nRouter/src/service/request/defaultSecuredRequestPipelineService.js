@@ -44,7 +44,7 @@ module.exports = {
             this.LOG.debug('Authorizing api key : ', request.apiKey);
             SERVICE.DefaultAuthorizationProviderService.authorizeAPIKey(request).then(success => {
                 request.enterprise = success.enterprise;
-                request.enterpriseCode = success.enterprise.code;
+                request.entCode = success.enterprise.code;
                 request.person = success.person;
                 request.tenant = success.enterprise.tenant.code;
                 process.nextSuccess(request, response);
@@ -62,7 +62,7 @@ module.exports = {
             SERVICE.DefaultAuthorizationProviderService.authorizeToken(request).then(success => {
                 try {
                     if (success.success && success.result) {
-                        request.enterpriseCode = success.result.enterpriseCode;
+                        request.entCode = success.result.entCode;
                         request.tenant = success.result.tenant;
                         request.loginId = success.result.loginId;
                         request.refreshToken = success.result.refreshToken;
@@ -90,7 +90,7 @@ module.exports = {
     },
 
     validateRequestData: function (request, response, process) {
-        if (!request.enterpriseCode) {
+        if (!request.entCode) {
             process.error(request, response, {
                 success: false,
                 code: 'ERR_AUTH_00002',

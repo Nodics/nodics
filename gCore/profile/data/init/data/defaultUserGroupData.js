@@ -13,13 +13,11 @@ module.exports = {
     record0: {
         code: 'adminUserGroup',
         name: 'adminUserGroup',
-        active: true,
-        enterpriseCode: 'default'
+        active: true
     },
     record1: {
         code: 'guestUserGroup',
         name: 'guestUserGroup',
-        active: true,
-        enterpriseCode: 'default'
+        active: true
     }
 };

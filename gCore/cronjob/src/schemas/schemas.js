@@ -25,9 +25,6 @@ module.exports = {
                 active: {
                     required: false
                 },
-                enterpriseCode: {
-                    required: false
-                },
                 jobCode: {
                     type: 'string',
                     required: true

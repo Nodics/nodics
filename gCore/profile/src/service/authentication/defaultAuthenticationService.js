@@ -19,7 +19,7 @@ module.exports = {
             _self.updateAPIKeys({
                 isRemoved: isRemoved,
                 isEnterprise: true,
-                enterpriseCode: enterprise.code,
+                entCode: enterprise.code,
                 tenant: enterprise.tenant.code,
                 enterprise: enterprise
             }).then(success => {
@@ -34,7 +34,6 @@ module.exports = {
     //     let _self = this;
     //     return new Promise((resolve, reject) => {
     //         this.invalidateAuthToken({
-    //             enterpriseCode: person.enterpriseCode,
     //             tenant: person.tenant,
     //             loginId: person.loginId,
     //             type: 'Employee'
@@ -42,7 +41,6 @@ module.exports = {
     //             _self.updateAPIKeys({
     //                 isRemoved: isRemoved,
     //                 isEnterprise: false,
-    //                 enterpriseCode: person.enterpriseCode,
     //                 tenant: person.tenant,
     //                 loginId: person.loginId,
     //                 apiKey: person.apiKey
@@ -60,7 +58,6 @@ module.exports = {
     // invalidateCustomerAuthToken: function (person) {
     //     return new Promise((resolve, reject) => {
     //         this.invalidateAuthToken({
-    //             enterpriseCode: person.enterpriseCode,
     //             tenant: person.tenant,
     //             loginId: person.loginId,
     //             type: 'Customer'
@@ -81,13 +78,13 @@ module.exports = {
                     let matchKeys = [];
                     _.each(apiKeys, (kayObject, tenant) => {
                         let oldValue = _.merge({}, kayObject);
-                        if (options.isEnterprise && kayObject.enterpriseCode === options.enterpriseCode && kayObject.tenant === options.tenant) {
+                        if (options.isEnterprise && kayObject.entCode === options.entCode && kayObject.tenant === options.tenant) {
                             if (options.isRemoved || !options.enterprise.active || !options.enterprise.tenant.active) {
                                 oldValue.operation = 'removed';
                                 NODICS.removeAPIKey(options.tenant);
                                 matchKeys.push(oldValue);
                             }
-                        } else if (kayObject.enterpriseCode === options.enterpriseCode &&
+                        } else if (kayObject.entCode === options.entCode &&
                             kayObject.tenant === options.tenant &&
                             kayObject.loginId === options.loginId) {
                             oldValue.newKey = options.apiKey;
@@ -142,12 +139,12 @@ module.exports = {
     //             let authTokens = [];
     //             _.each(moduleObject.authCache.tokens, (authObj, authToken) => {
     //                 if (options.isEnterprise) {
-    //                     if (authObj.enterpriseCode === options.enterpriseCode) {
+    //                     if (authObj.entCode === options.entCode) {
     //                         authTokens.push(authToken);
     //                         delete moduleObject.authCache.tokens[authToken];
     //                     }
     //                 } else {
-    //                     if (authObj.enterpriseCode === options.enterpriseCode &&
+    //                     if (authObj.entCode === options.entCode &&
     //                         authObj.tenant === options.tenant &&
     //                         authObj.loginId === options.loginId &&
     //                         authObj.type === options.type) {
@@ -189,7 +186,6 @@ module.exports = {
                 let events = [];
                 eventsData.forEach(data => {
                     let eventData = {
-                        enterpriseCode: data.enterpriseCode,
                         tenant: 'default',
                         source: 'profile',
                         target: 'profile',

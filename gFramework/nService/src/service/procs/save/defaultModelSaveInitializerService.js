@@ -517,7 +517,6 @@ module.exports = {
             let schemaModel = request.schemaModel;
             if (response.model.result && schemaModel.rawSchema.event) {
                 let event = {
-                    enterpriseCode: response.model.result.enterpriseCode || request.enterpriseCode,
                     tenant: request.tenant,
                     event: 'save',
                     source: schemaModel.moduleName,
@@ -525,16 +524,11 @@ module.exports = {
                     state: "NEW",
                     type: "ASYNC",
                     targetType: ENUMS.TargetType.EACH_NODE.key,
-                    params: [{
-                        key: 'schemaName',
-                        value: schemaModel.schemaName
-                    }, {
-                        key: 'modelName',
-                        value: schemaModel.modelName
-                    }, {
-                        key: 'data',
-                        value: response.model.result
-                    }]
+                    data: {
+                        schemaName: schemaModel.schemaName,
+                        modelName: schemaModel.modelName,
+                        result: response.model.result
+                    }
                 };
                 this.LOG.debug('Pushing event for item created : ', schemaModel.schemaName);
                 SERVICE.DefaultEventService.publish(event).then(success => {

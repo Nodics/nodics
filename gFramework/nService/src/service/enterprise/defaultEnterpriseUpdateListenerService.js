@@ -36,7 +36,7 @@ module.exports = {
         if (event.data.enterprise) {
             let enterprise = event.data.enterprise;
             if (enterprise.tenant && enterprise.tenant.code) {
-                if (!NODICS.getTenants().includes(enterprise.tenant.code)) {
+                if (!NODICS.getActiveTenants().includes(enterprise.tenant.code)) {
                     SERVICE.DefaultEnterpriseHandlerService.buildEnterprise([enterprise]).then(success => {
                         this.LOG.debug('Enterprise: ' + enterprise.code + ' has been successfully activated');
                         callback(null, {
@@ -83,7 +83,7 @@ module.exports = {
         if (event.data.enterprise) {
             let enterprise = event.data.enterprise;
             if (enterprise.tenant && enterprise.tenant.code) {
-                if (NODICS.getTenants().includes(enterprise.tenant.code)) {
+                if (NODICS.getActiveTenants().includes(enterprise.tenant.code)) {
                     SERVICE.DefaultTenantHandlerService.removeTenants([enterprise.tenant.code]).then(success => {
                         NODICS.removeInternalAuthToken(enterprise.tenant.code);
                         this.LOG.debug('Tenant: ' + enterprise.tenant.code + ' has been successfully deactivated');

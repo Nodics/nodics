@@ -96,8 +96,7 @@ module.exports = {
             if (jobDefinition.event && jobDefinition.event.error) {
                 this.LOG.debug('Triggering event for resumed job');
                 let event = {
-                    enterpriseCode: jobDefinition.enterpriseCode,
-                    tenant: jobDefinition.tenant,
+                    tenant: jobDefinition.tenant, //Set tenant from CronJob Himkar
                     active: true,
                     event: 'jobError',
                     source: 'cronjob',

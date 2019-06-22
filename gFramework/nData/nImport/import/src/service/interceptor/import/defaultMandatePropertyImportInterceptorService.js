@@ -38,8 +38,8 @@ module.exports = {
         return new Promise((resolve, reject) => {
             // if (options.models && options.models instanceof Array) {
             //     options.models.forEach(model => {
-            //         if (model.enterpriseCode && options.enterpriseCode && model.enterpriseCode !== options.enterpriseCode) {
-            //             model.enterpriseCode = options.enterpriseCode;
+            //         if (model.entCode && options.entCode && model.entCode !== options.entCode) {
+            //             model.entCode = options.entCode;
             //         }
 
             //         if (model.tenant && options.tenant && model.tenant !== options.tenant) {

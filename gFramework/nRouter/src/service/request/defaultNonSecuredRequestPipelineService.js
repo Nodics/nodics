@@ -32,9 +32,9 @@ module.exports = {
         });
     },
 
-    validateEnterpriseCode: function (request, response, process) {
-        this.LOG.debug('Validating Enterprise code : ', request.enterpriseCode);
-        if (UTILS.isBlank(request.enterpriseCode)) {
+    validateEntCode: function (request, response, process) {
+        this.LOG.debug('Validating Enterprise code : ', request.entCode);
+        if (UTILS.isBlank(request.entCode)) {
             this.LOG.error('Enterprise code can not be null');
             process.error(request, response, {
                 success: false,
@@ -45,8 +45,8 @@ module.exports = {
         }
     },
 
-    loadEnterpriseCode: function (request, response, process) {
-        this.LOG.debug('Loading Enterprise code : ', request.enterpriseCode);
+    loadEnterprise: function (request, response, process) {
+        this.LOG.debug('Loading Enterprise code : ', request.entCode);
         try {
             request.tenant = 'default';
             SERVICE.DefaultEnterpriseProviderService.loadEnterprise(request).then(response => {

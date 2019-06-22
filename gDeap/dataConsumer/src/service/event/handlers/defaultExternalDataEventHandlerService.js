@@ -32,13 +32,12 @@ module.exports = {
         });
     },
 
-    handleExternalDataPushEvent: function (event, callback) {
+    handleExternalDataPushEvent: function (event, callback, request) {
         this.LOG.debug('----------------------------- External Event has been Handled ');
         if (event && !UTILS.isBlank(event)) {
             SERVICE.DefaultPipelineService.start('processExternalDataPushEventPipeline', {
-                tenant: request.tenant || event.tenant,
-                enterpriseCode: request.enterpriseCode || event.enterpriseCode,
-                moduleName: request.moduleName,
+                tenant: request.tenant,
+                moduleName: event.target,
                 header: event.header,
                 data: event.data,
                 event: event

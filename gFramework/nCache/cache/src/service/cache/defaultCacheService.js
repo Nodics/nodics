@@ -254,7 +254,7 @@ module.exports = {
                     });
                 } else {
                     let modelName = UTILS.createModelName(request.config.schemaName);
-                    NODICS.getTenants().forEach(tntName => {
+                    NODICS.getActiveTenants().forEach(tntName => {
                         let model = NODICS.getModels(request.moduleName, tntName)[modelName];
                         if (model) {
                             model.cache = _.merge(model.cache, request.config.cache || {});

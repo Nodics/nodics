@@ -308,7 +308,6 @@ module.exports = {
             let schemaModel = request.schemaModel;
             if (response.success && response.success.result && schemaModel.rawSchema.event) {
                 let event = {
-                    enterpriseCode: request.enterpriseCode,
                     tenant: request.tenant,
                     event: 'update',
                     source: schemaModel.moduleName,
@@ -316,16 +315,11 @@ module.exports = {
                     state: "NEW",
                     type: "ASYNC",
                     targetType: ENUMS.TargetType.EACH_NODE.key,
-                    params: [{
-                        key: 'schemaName',
-                        value: schemaModel.schemaName
-                    }, {
-                        key: 'modelName',
-                        value: schemaModel.modelName
-                    }, {
-                        key: 'data',
-                        value: response.success.result
-                    }]
+                    data: {
+                        schemaName: schemaModel.schemaName,
+                        modelName: schemaModel.modelName,
+                        result: response.success.result
+                    }
                 };
                 this.LOG.debug('Pushing event for item created : ', schemaModel.schemaName);
                 SERVICE.DefaultEventService.publish(event).then(success => {

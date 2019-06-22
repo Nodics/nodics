@@ -34,7 +34,7 @@ module.exports = {
         });
     },
 
-    prepareSearchSchema: function (tenants = NODICS.getTenants()) {
+    prepareSearchSchema: function (tenants = NODICS.getActiveTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -52,7 +52,7 @@ module.exports = {
         });
     },
 
-    loadSearchSchemaFromSchema: function (tenants = NODICS.getTenants()) {
+    loadSearchSchemaFromSchema: function (tenants = NODICS.getActiveTenants()) {
         let _self = this;
         try {
             tenants.forEach(tntCode => {
@@ -108,7 +108,7 @@ module.exports = {
         }
     },
 
-    loadSearchSchema: function (tenants = NODICS.getTenants()) {
+    loadSearchSchema: function (tenants = NODICS.getActiveTenants()) {
         let _self = this;
         try {
             let searchSchemas = {};
@@ -146,7 +146,7 @@ module.exports = {
         }
     },
 
-    loadSearchSchemaFromDatabase: function (tenants = NODICS.getTenants()) {
+    loadSearchSchemaFromDatabase: function (tenants = NODICS.getActiveTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {

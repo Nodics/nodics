@@ -20,11 +20,10 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true, // Fix this queue to work for header.tenant, so client should not push data to other tenants
                     header: {
                         schemaName: 'internalData',
                         operation: 'save',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -36,11 +35,10 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         schemaName: 'internalData',
                         operation: 'save',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -54,11 +52,10 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -70,11 +67,10 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -88,11 +84,10 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         indexName: 'internalData',
                         operation: 'doSave',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -104,11 +99,10 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         indexName: 'internalData',
                         operation: 'doSave',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -122,11 +116,10 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -138,11 +131,10 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -156,11 +148,10 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         schemaName: 'internalData',
                         operation: 'save',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -172,11 +163,10 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         schemaName: 'internalData',
                         operation: 'save',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -190,11 +180,10 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -206,11 +195,10 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         schemaName: 'externalData',
                         operation: 'save',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -224,11 +212,10 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         indexName: 'internalData',
                         operation: 'doSave',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -240,11 +227,10 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'internalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         indexName: 'internalData',
                         operation: 'doSave',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -258,11 +244,10 @@ module.exports = {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }
@@ -274,11 +259,10 @@ module.exports = {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
                     eventName: 'externalDataPushEvent',
-                    requiredMandateProperties: true,
+                    tenantRestricted: true,
                     header: {
                         indexName: 'externalData',
                         operation: 'doSave',
-                        enterpriseCode: 'default',
                         tenant: 'default'
                     }
                 }

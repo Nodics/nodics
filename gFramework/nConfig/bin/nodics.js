@@ -22,7 +22,8 @@ module.exports = function () {
     let _initRequired = false;
     let _loggers = {};
     let _preScripts = {};
-    let _tenants = [];
+    let _activeEnterprises = {};
+    let _activeTenants = [];
     let _internalAuthTokens = {};
     let _nodeName = null;
     let _nodePath = null;
@@ -176,26 +177,34 @@ module.exports = function () {
         return _envPath;
     };
 
-    // this.getApplicationName = function () {
-    //     return _appName;
-    // };
-
-    // this.getApplicationPath = function () {
-    //     return _appPath;
-    // };
-
-    this.addTenant = function (tntCode) {
-        _tenants.push(tntCode);
+    this.addActiveEnterprise = function (entCode, tenant) {
+        _activeEnterprises[entCode] = tenant;
     };
 
-    this.getTenants = function () {
-        return [].concat(_tenants);
+    this.removeActiveEnterprise = function (entCode) {
+        return delete _activeEnterprises[entCode];
     };
 
-    this.removeTenant = function (tntCode) {
-        let index = _tenants.indexOf(tntCode);
+    this.getTenantForEnterprise = function (entCode) {
+        return _activeEnterprises[entCode];
+    };
+
+    this.getActiveEnterprises = function () {
+        return Object.keys(_activeEnterprises);
+    }
+
+    this.addActiveTenant = function (tntCode) {
+        _activeTenants.push(tntCode);
+    };
+
+    this.getActiveTenants = function () {
+        return [].concat(_activeTenants);
+    };
+
+    this.removeActiveTenant = function (tntCode) {
+        let index = _activeTenants.indexOf(tntCode);
         if (index > -1) {
-            _tenants.splice(index, 1);
+            _activeTenants.splice(index, 1);
             return true;
         }
         return false;
@@ -315,7 +324,7 @@ module.exports = function () {
     this.getSearchModels = function (moduleName, tenant) {
         if (!NODICS.isModuleActive(moduleName) || !this.getModule(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!NODICS.getTenants().includes(tenant)) {
+        } else if (!NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             let moduleObject = this.getModule(moduleName);

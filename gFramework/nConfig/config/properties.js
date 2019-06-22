@@ -54,7 +54,7 @@ module.exports = {
     processRetrySleepTime: 2000,
     defaultAuthDetail: {
         apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
-        enterpriseCode: 'default',
+        entCode: 'default',
         tenant: 'default',
         loginId: 'apiAdmin'
     },

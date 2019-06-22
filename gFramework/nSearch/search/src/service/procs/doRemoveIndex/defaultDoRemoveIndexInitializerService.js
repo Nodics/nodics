@@ -174,7 +174,6 @@ module.exports = {
             let searchModel = request.searchModel;
             if (response.success.success && searchModel.indexDef.event) {
                 let event = {
-                    enterpriseCode: request.enterpriseCode || request.model.enterpriseCode || 'default',
                     tenant: request.tenant || 'default',
                     event: 'indexRemoved',
                     source: searchModel.moduleName,

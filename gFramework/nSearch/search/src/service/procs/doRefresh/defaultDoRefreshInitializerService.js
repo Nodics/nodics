@@ -124,7 +124,6 @@ module.exports = {
             let eventOnRefresh = CONFIG.get('search').eventOnRefresh;
             if (eventOnRefresh) {
                 let event = {
-                    enterpriseCode: request.enterpriseCode || 'default',
                     tenant: request.tenant || 'default',
                     event: 'indexingPerformed',
                     source: searchModel.moduleName,

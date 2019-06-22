@@ -253,7 +253,6 @@ module.exports = {
      * {
      *      "queue": "testPublisherQueue",
      *       "message": {
-     *           "enterpriseCode": "default",
      *           "tenant":"default",
      *           "message":"First API Message by Himkar"
      *       }

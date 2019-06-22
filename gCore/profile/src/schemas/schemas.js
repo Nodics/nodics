@@ -23,9 +23,6 @@ module.exports = {
             router: true,
             tenants: ['default'],
             definition: {
-                enterpriseCode: {
-                    required: false
-                },
                 properties: {
                     type: 'object',
                     required: false,
@@ -59,9 +56,6 @@ module.exports = {
                 }
             },
             definition: {
-                enterpriseCode: {
-                    required: false
-                },
                 flatNo: {
                     type: 'string',
                     required: false,
@@ -122,9 +116,6 @@ module.exports = {
             event: false,
             router: true,
             definition: {
-                enterpriseCode: {
-                    required: false
-                },
                 prefix: {
                     type: 'string',
                     required: false,
@@ -200,9 +191,6 @@ module.exports = {
                 }
             },
             definition: {
-                enterpriseCode: {
-                    required: false,
-                },
                 name: {
                     type: 'string',
                     required: true,
@@ -259,9 +247,6 @@ module.exports = {
             event: false,
             router: false,
             definition: {
-                enterpriseCode: {
-                    required: false
-                },
                 personId: {
                     type: 'objectId',
                     required: true
@@ -319,9 +304,6 @@ module.exports = {
             event: false,
             router: false,
             definition: {
-                enterpriseCode: {
-                    required: false
-                },
                 loginId: {
                     type: 'string',
                     required: true,

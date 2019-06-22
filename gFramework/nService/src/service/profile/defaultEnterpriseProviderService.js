@@ -42,7 +42,7 @@ module.exports = {
                     recursive: true
                 },
                 query: {
-                    code: input.enterpriseCode
+                    code: input.entCode
                 }
             },
             isJsonResponse: true,
@@ -61,7 +61,7 @@ module.exports = {
                         recursive: true
                     },
                     query: {
-                        code: request.enterpriseCode
+                        code: request.entCode
                     }
                 }).then(result => {
                     if (result && result.success && result.result.length > 0) {

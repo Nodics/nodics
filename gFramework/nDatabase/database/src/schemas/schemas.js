@@ -17,18 +17,6 @@ module.exports = {
             event: false,
             router: false,
             definition: {
-                enterpriseCode: {
-                    type: 'string',
-                    required: true,
-                    description: 'Define enterprise code',
-                    searchOptions: {
-                        enabled: true, // default is false
-                        name: 'enterpriseCode', // default is property name
-                        weight: 0, // default is 0, heigher value have heigher weight
-                        sequence: 0,// default is 0
-                        //handler: 'EnterpriseCodeHandlerService.getEnterpriseCode'
-                    }
-                },
                 active: {
                     type: 'bool',
                     required: true,

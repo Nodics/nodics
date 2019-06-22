@@ -91,8 +91,7 @@ module.exports = {
             if (jobDefinition.event && jobDefinition.event.completed) {
                 this.LOG.debug('Triggering event for Completed job');
                 let event = {
-                    enterpriseCode: jobDefinition.enterpriseCode,
-                    tenant: jobDefinition.tenant,
+                    tenant: jobDefinition.tenant, //Set tenant from CronJob Himkar
                     active: true,
                     event: 'jobCompleted',
                     source: 'cronjob',

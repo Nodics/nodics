@@ -20,7 +20,7 @@ module.exports = {
             if (options.tokenLife) jwtSignOptions.expiresIn = options.tokenLife;
             if (options.lifetime) delete jwtSignOptions.expiresIn;
             let payload = {
-                enterpriseCode: options.enterpriseCode,
+                entCode: options.entCode,
                 tenant: options.tenant,
                 refreshToken: options.refreshToken
             };

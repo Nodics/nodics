@@ -12,7 +12,6 @@
 module.exports = {
     record1: {
         code: "triggerJobLogFullIndexer",
-        enterpriseCode: "default",
         tenant: "default",
         description: 'This job is to trigger process job log indexer, which will push all data to elastic search',
         runOnNode: 0,
@@ -39,7 +38,6 @@ module.exports = {
 
     record2: {
         code: "triggerJobLogIncrementalIndexer",
-        enterpriseCode: "default",
         tenant: "default",
         description: 'This job is to trigger process job log indexer, which will push all data to elastic search',
         runOnNode: 0,

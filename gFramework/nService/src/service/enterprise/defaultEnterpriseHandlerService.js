@@ -154,8 +154,13 @@ module.exports = {
             try {
                 if (enterprises && enterprises.length > 0) {
                     let enterprise = enterprises.shift();
-                    if (enterprise.active && enterprise.tenant && enterprise.tenant.active && !NODICS.getTenants().includes(enterprise.tenant.code)) {
-                        NODICS.addTenant(enterprise.tenant.code);
+                    if (enterprise.active) {
+                        NODICS.addActiveEnterprise(enterprise.code, enterprise.tenant.code);
+                    } else {
+                        NODICS.removeActiveEnterprise(enterprise.code);
+                    }
+                    if (enterprise.active && enterprise.tenant && enterprise.tenant.active && !NODICS.getActiveTenants().includes(enterprise.tenant.code)) {
+                        NODICS.addActiveTenant(enterprise.tenant.code);
                         let tntConfig = _.merge({}, CONFIG.getProperties());
                         tntConfig = _.merge(tntConfig, enterprise.tenant.properties);
                         CONFIG.setProperties(tntConfig, enterprise.tenant.code);
@@ -192,7 +197,7 @@ module.exports = {
                                                 }).then(success => {
                                                     if (success.success && success.result.length > 0) {
                                                         let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
-                                                            enterpriseCode: enterprise.code,
+                                                            entCode: enterprise.code,
                                                             tenant: enterprise.tenant.code,
                                                             apiKey: success.result[0].apiKey,
                                                             lifetime: true
@@ -215,7 +220,7 @@ module.exports = {
                                             });
                                         } else {
                                             let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
-                                                enterpriseCode: enterprise.code,
+                                                entCode: enterprise.code,
                                                 tenant: enterprise.tenant.code,
                                                 apiKey: success.result[0].apiKey,
                                                 lifetime: true

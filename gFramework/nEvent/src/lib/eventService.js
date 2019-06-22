@@ -27,7 +27,6 @@ module.exports = class EventService extends EventEmitter {
                     error: error
                 });
             }
-
         });
     }
 };

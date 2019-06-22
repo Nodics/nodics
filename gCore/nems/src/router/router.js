@@ -20,11 +20,10 @@ module.exports = {
                  operation: 'save',
                  help: {
                      requestType: 'non-secured',
-                     message: 'enterpriseCode need to set within header',
+                     message: 'entCode need to set within header',
                      method: 'GET',
                      url: 'http://host:port/nodics/nems/event/push',
                      body: {
-                         enterpriseCode: 'default',
                          event: 'testMe',
                          source: 'cronjob',
                          target: 'profile',

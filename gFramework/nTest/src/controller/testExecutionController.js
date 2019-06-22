@@ -35,7 +35,7 @@ module.exports = {
     runUTest: function (requestContext, callback) {
         let input = {
             tenant: requestContext.tenant,
-            enterpriseCode: requestContext.enterpriseCode
+            entCode: requestContext.entCode
         };
         FACADE.TestExecutionFacade.runUTest(input, callback);
     },
@@ -43,7 +43,7 @@ module.exports = {
     runNTest: function (requestContext, callback) {
         let input = {
             tenant: requestContext.tenant,
-            enterpriseCode: requestContext.enterpriseCode
+            entCode: requestContext.entCode
         };
         FACADE.TestExecutionFacade.runNTest(input, callback);
     }

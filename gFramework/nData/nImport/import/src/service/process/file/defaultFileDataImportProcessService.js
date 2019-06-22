@@ -51,7 +51,7 @@ module.exports = {
         this.LOG.debug('Processing models from file: ' + request.fileName);
         if (request.fileData.models && Object.keys(request.fileData.models).length > 0) {
             let header = request.fileData.header;
-            let tenants = header.options.tenants || NODICS.getTenants();
+            let tenants = header.options.tenants || NODICS.getActiveTenants();
             if (request.tenant) {
                 tenants = [request.tenant];
             }
@@ -73,8 +73,8 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (options.tenants && options.tenants.length > 0) {
                 let tenant = options.tenants.shift();
-                let activeTenants = request.fileData.header.options.tenants || NODICS.getTenants();
-                if (activeTenants.includes(tenant) && NODICS.getTenants().includes(tenant)) {
+                let activeTenants = request.fileData.header.options.tenants || NODICS.getActiveTenants();
+                if (activeTenants.includes(tenant) && NODICS.getActiveTenants().includes(tenant)) {
                     this.processModel(request, response, {
                         tenant: tenant,
                         pendingModels: Object.keys(request.fileData.models)
@@ -112,7 +112,6 @@ module.exports = {
                     if (!fileObj.processed.includes(modelHash)) {
                         SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
                             tenant: options.tenant,
-                            enterpriseCode: request.enterpriseCode,
                             header: request.fileData.header,
                             dataModel: dataModel
                         }, {}).then(success => {

@@ -90,8 +90,7 @@ module.exports = {
             let jobDefinition = request.definition;
             if (jobDefinition.event && jobDefinition.event.started) {
                 this.LOG.debug('Triggering event for start job');
-                let event = {
-                    enterpriseCode: jobDefinition.enterpriseCode,
+                let event = {//Set tenant from CronJob Himkar
                     tenant: jobDefinition.tenant,
                     active: true,
                     event: 'jobStarted',

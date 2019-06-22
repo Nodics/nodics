@@ -24,10 +24,7 @@ module.exports = {
             definition: {
                 active: {
                     required: false
-                },
-                enterpriseCode: {
-                    required: false
-                },
+                }
             }
         }
     }

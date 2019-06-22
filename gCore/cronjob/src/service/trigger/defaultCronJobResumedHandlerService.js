@@ -88,8 +88,7 @@ module.exports = {
             let jobDefinition = request.definition;
             if (jobDefinition.event && jobDefinition.event.resumed) {
                 this.LOG.debug('Triggering event for resumed job');
-                let event = {
-                    enterpriseCode: jobDefinition.enterpriseCode,
+                let event = {//Set tenant from CronJob Himkar
                     tenant: jobDefinition.tenant,
                     active: true,
                     event: 'jobResumed',

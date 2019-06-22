@@ -209,14 +209,12 @@ module.exports = {
      *      "queue": "testPublisherQueue",
      *       "type": "json",
      *       "message": {
-     *           "enterpriseCode": "default",
      *           "tenant":"default",
      *           "message":"First API Message by Himkar"
      *       }
      * }
      */
     publish: function (payload) {
-        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 let client = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);

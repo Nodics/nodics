@@ -21,7 +21,6 @@ module.exports = {
             query: {
                 code: '$code',
                 loginId: '$loginId',
-                enterpriseCode: '$enterpriseCode'
             },
             macros: {
                 addresses: {
@@ -61,7 +60,6 @@ module.exports = {
             query: {
                 code: '$code',
                 loginId: '$loginId',
-                enterpriseCode: '$enterpriseCode'
             },
             macros: {
                 addresses: {

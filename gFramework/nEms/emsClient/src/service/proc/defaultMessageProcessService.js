@@ -73,10 +73,9 @@ module.exports = {
     validateData: function (request, response, process) {
         let queue = request.queue;
         let message = request.message;
-        if (queue.options.requiredMandateProperties && (!message.enterpriseCode || !message.tenant)) {
-            process.error(request, response, 'Message should contain enterpriseCode and tenant');
+        if (queue.options.tenantRestricted) {
+            message.tenant = queue.options.header.tenant;
         } else {
-            message.enterpriseCode = message.enterpriseCode || queue.options.header.enterpriseCode || 'default';
             message.tenant = message.tenant || queue.options.header.tenant || 'default';
             process.nextSuccess(request, response);
         }
@@ -87,7 +86,6 @@ module.exports = {
         let message = request.message;
         this.LOG.debug('Pushing event recieved message from  : ', queue.name);
         let event = {
-            enterpriseCode: message.enterpriseCode,
             tenant: message.tenant,
             event: queue.options.eventName || queue.name,
             source: queue.options.source,
@@ -109,7 +107,6 @@ module.exports = {
             });
         } else {
             SERVICE.DefaultEventService.handleEvent({
-                enterpriseCode: event.enterpriseCode,
                 tenant: event.tenant,
                 event: event
             }).then(success => {

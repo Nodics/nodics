@@ -29,7 +29,7 @@ module.exports = {
     search: {
         default: {
             options: {
-                enabled: true
+                enabled: false
             }
         }
     },
@@ -40,7 +40,7 @@ module.exports = {
                 enabled: false
             },
             kafka: {
-                enabled: true
+                enabled: false
             }
         }
     }

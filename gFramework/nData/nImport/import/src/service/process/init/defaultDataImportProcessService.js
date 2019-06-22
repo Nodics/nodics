@@ -120,7 +120,6 @@ module.exports = {
                             clearRequire(fileObj.file);
                             SERVICE.DefaultPipelineService.start('processFileDataImportPipeline', {
                                 tenant: request.tenant,
-                                enterpriseCode: request.enterpriseCode,
                                 dataFiles: request.dataFiles,
                                 phase: options.phase,
                                 phaseLimit: options.phaseLimit,
