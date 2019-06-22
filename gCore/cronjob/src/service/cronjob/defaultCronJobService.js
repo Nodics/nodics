@@ -150,7 +150,7 @@ module.exports = {
         return this.cronJobContainer.pauseJobs(request.tenant, request.jobCodes);
     },
 
-    resumeJob: function (request, callback) {
+    resumeJob: function (request) {
         return this.cronJobContainer.resumeJobs(request.tenant, request.jobCodes);
     },
 

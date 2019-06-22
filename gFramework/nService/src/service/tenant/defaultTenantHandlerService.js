@@ -41,6 +41,13 @@ module.exports = {
                 if (tenants && tenants.length > 0) {
                     tenants.forEach(tenant => {
                         NODICS.removeActiveTenant(tenant);
+                        if (SERVICE.DefaultCronJobService) {
+                            SERVICE.DefaultCronJobService.getCronJobContainer().removeAllJobs([tenant]).then(success => {
+                                _self.LOG.info('All job removed successfully for thenant: ' + tenant);
+                            }).catch(error => {
+                                _self.LOG.error('Failed removing jobs for tenant: ' + tenant);
+                            });
+                        }
                         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
                             SERVICE.DefaultDatabaseConnectionHandlerService.removeTenantDatabase(moduleName, tenant).then(success => {
                                 SERVICE.DefaultDatabaseModelHandlerService.removeModelsForTenant(moduleName, tenant).then(success => {
@@ -49,6 +56,7 @@ module.exports = {
                                         SERVICE.DefaultSearchConfigurationService.removeTenantRawSearchSchema(moduleName, tenant);
                                         if (moduleObject.searchModels[tenant]) delete moduleObject.searchModels[tenant];
                                     }
+
                                     resolve({
                                         success: true,
                                         code: 'SUC_SYS_00000',

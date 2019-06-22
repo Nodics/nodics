@@ -424,6 +424,34 @@ module.exports = function () {
         });
     };
 
+    this.removeAllJobs = function (tenants = NODICS.getActiveTenants()) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                if (_jobPool[tenant] && !UTILS.isBlank(_jobPool[tenant])) {
+                    this.removeJobs(tenant, Object.keys(_jobPool[tenant])).then(success => {
+                        _self.removeAllJobs(tenants).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    _self.removeAllJobs(tenants).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            } else {
+                resolve(true);
+            }
+        });
+    };
+
     this.removeJobs = function (tenant, jobCodes, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {

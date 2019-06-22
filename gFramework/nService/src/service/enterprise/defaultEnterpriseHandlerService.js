@@ -177,6 +177,18 @@ module.exports = {
                                         this.LOG.error(error);
                                     });
                                 }
+                                if (SERVICE.DefaultCronJobService && CONFIG.get('cronjob') && CONFIG.get('cronjob').runOnStartup) {
+                                    setInterval(function () {
+                                        _self.LOG.info('Starting active jobs for tenant: ' + enterprise.tenant.code);
+                                        SERVICE.DefaultCronJobService.createAllJobs([enterprise.tenant.code]).then(success => {
+                                            _self.LOG.debug('Following job has been started');
+                                            _self.LOG.debug(success);
+                                        }).catch(error => {
+                                            _self.LOG.error('Failed starting jobs for tenant: ' + enterprise.tenant.code);
+                                            _self.LOG.error(error);
+                                        });
+                                    }, 3000);
+                                }
                                 if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                                     SERVICE.DefaultEmployeeService.get({
                                         tenant: enterprise.tenant.code,

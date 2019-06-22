@@ -237,6 +237,14 @@ module.exports = {
                         enabled: true, // default is false
                     }
                 }
+            },
+            indexes: {
+                entTenant: {
+                    name: 'tenant',
+                    options: {
+                        unique: true
+                    }
+                }
             }
         },
 
