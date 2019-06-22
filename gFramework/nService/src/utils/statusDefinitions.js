@@ -289,6 +289,11 @@ module.exports = {
         description: 'Job already running',
         message: 'Job already running'
     },
+    ERR_JOB_00007: {
+        code: '90007',
+        description: 'Invalid tenant id',
+        message: 'Invalid tenant id'
+    },
 
     //Success CronJob 
     SUC_EVNT_00000: {

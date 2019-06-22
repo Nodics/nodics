@@ -18,6 +18,28 @@ module.exports = {
         return this.cronJobContainer;
     },
 
+    createAllJobs: function (tenants = NODICS.getActiveTenants()) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                this.createJob({
+                    tenant: tenant
+                }).then(success => {
+                    _self.createAllJobs(tenants).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
     createJob: function (request) {
         return new Promise((resolve, reject) => {
             request = _.merge({
@@ -30,7 +52,10 @@ module.exports = {
             request.modelName = request.modelName || 'cronJob';
             SERVICE['Default' + request.modelName.toUpperCaseFirstChar() + 'Service'].get(request).then(result => {
                 if (result.success && result.result && result.result.length > 0) {
-                    this.cronJobContainer.createJobs(result.result).then(success => {
+                    this.cronJobContainer.createJobs({
+                        tenant: request.tenant,
+                        definitions: result.result
+                    }).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -58,7 +83,10 @@ module.exports = {
             request.modelName = request.modelName || 'cronJob';
             SERVICE['Default' + request.modelName.toUpperCaseFirstChar() + 'Service'].get(request).then((result) => {
                 if (result.success && result.result && result.result.length > 0) {
-                    this.cronJobContainer.updateJobs(result.result).then(success => {
+                    this.cronJobContainer.updateJobs({
+                        tenant: request.tenant,
+                        definitions: result.result
+                    }).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -86,7 +114,10 @@ module.exports = {
             request.modelName = request.modelName || 'cronJob';
             SERVICE.DefaultCronJobService.get(request).then((result) => {
                 if (result.success && result.result && result.result.length > 0) {
-                    this.cronJobContainer.runJobs(result.result).then(success => {
+                    this.cronJobContainer.runJobs({
+                        tenant: request.tenant,
+                        definitions: result.result
+                    }).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -104,23 +135,23 @@ module.exports = {
     },
 
     startJob: function (request) {
-        return this.cronJobContainer.startJobs(request.jobCodes);
+        return this.cronJobContainer.startJobs(request.tenant, request.jobCodes);
     },
 
     stopJob: function (request) {
-        return this.cronJobContainer.stopJobs(request.jobCodes);
+        return this.cronJobContainer.stopJobs(request.tenant, request.jobCodes);
     },
 
     removeJob: function (request) {
-        return this.cronJobContainer.removeJobs(request.jobCodes);
+        return this.cronJobContainer.removeJobs(request.tenant, request.jobCodes);
     },
 
     pauseJob: function (request) {
-        return this.cronJobContainer.pauseJobs(request.jobCodes);
+        return this.cronJobContainer.pauseJobs(request.tenant, request.jobCodes);
     },
 
     resumeJob: function (request, callback) {
-        return this.cronJobContainer.resumeJobs(request.jobCodes);
+        return this.cronJobContainer.resumeJobs(request.tenant, request.jobCodes);
     },
 
     startOnStartup: function (_self) {
@@ -128,7 +159,7 @@ module.exports = {
         if (CONFIG.get('cronjob').runOnStartup) {
             _self.LOG.debug('Starting all active jobs on server start-up: ' + NODICS.getServerState());
             if (NODICS.getServerState() === 'started') {
-                _self.createJob({ tenant: 'default' }).then(response => {
+                _self.createAllJobs().then(response => {
                     _self.cronJobContainer.startAllJobs().then(success => {
                         _self.LOG.debug('triggered cronjob start process : ', response);
                     }).catch(error => {

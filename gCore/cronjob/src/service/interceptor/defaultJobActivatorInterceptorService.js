@@ -17,8 +17,11 @@ module.exports = {
             try {
                 let model = request.model;
                 if (model.active && model.state === ENUMS.CronJobState.NEW.key) {
-                    SERVICE.DefaultCronJobService.getCronJobContainer().createJobs([model]).then(success => {
-                        SERVICE.DefaultCronJobService.getCronJobContainer().startJobs([model.code]).then(success => {
+                    SERVICE.DefaultCronJobService.getCronJobContainer().createJobs({
+                        tenant: request.tenant,
+                        definitions: [model]
+                    }).then(success => {
+                        SERVICE.DefaultCronJobService.getCronJobContainer().startJobs(request.tenant, [model.code]).then(success => {
                             _self.LOG.info('Successfully started job: ', model.code);
                         }).catch(error => {
                             _self.LOG.error('Failed to start job: ', model.code);
