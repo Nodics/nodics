@@ -32,11 +32,22 @@ module.exports = {
         });
     },
 
-    handleEnterpriseImportProcessor: function (options) {
+
+
+    handleMandateProperties: function (options) {
         return new Promise((resolve, reject) => {
-            this.LOG.debug('Executing Enterprise import interceptor');
+            // if (options.models && options.models instanceof Array) {
+            //     options.models.forEach(model => {
+            //         if (model.enterpriseCode && options.enterpriseCode && model.enterpriseCode !== options.enterpriseCode) {
+            //             model.enterpriseCode = options.enterpriseCode;
+            //         }
+
+            //         if (model.tenant && options.tenant && model.tenant !== options.tenant) {
+            //             model.tenant = options.tenant;
+            //         }
+            //     });
+            // }
             resolve(true);
         });
-    },
-
+    }
 };
