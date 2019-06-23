@@ -70,6 +70,62 @@ module.exports = {
         return schemaInterceptors;
     },
 
+    buildSearchInterceptors: function (interceptors) {
+        let finalInterceptors = {};
+        let schemaInterceptors = {};
+        try {
+            let defaultInterceptors = _.merge({}, interceptors.default);
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                if (!finalInterceptors[moduleName]) {
+                    finalInterceptors[moduleName] = {};
+                }
+                let moduleInterceptors = _.merge({}, interceptors[moduleName]);
+                let moduleDefault = _.merge(_.merge({}, defaultInterceptors), moduleInterceptors.default || {});
+                _.each(moduleObject.searchModels, (tenantObject, tenantName) => {
+                    _.each(tenantObject, (model, modelName) => {
+                        let modelInterceptors = _.merge({}, moduleInterceptors[model.indexName]);
+                        if (!finalInterceptors[moduleName][model.indexName]) {
+                            finalInterceptors[moduleName][model.indexName] = {};
+                        }
+                        let interceptorPool = finalInterceptors[moduleName][model.indexName];
+                        _.each(moduleDefault, (interceptor, interceptorName) => {
+                            if (!interceptorPool[interceptor.type]) {
+                                interceptorPool[interceptor.type] = [];
+                            }
+                            interceptorPool[interceptor.type].push(interceptor);
+                        });
+                        _.each(modelInterceptors, (interceptor, interceptorName) => {
+                            if (!interceptorPool[interceptor.type]) {
+                                interceptorPool[interceptor.type] = [];
+                            }
+                            interceptorPool[interceptor.type].push(interceptor);
+                        });
+                    });
+                });
+            });
+            _.each(finalInterceptors, (moduleInterceptors, moduleName) => {
+                _.each(moduleInterceptors, (modelInterceptors, modelName) => {
+                    _.each(modelInterceptors, (typeInterceptors, typeName) => {
+                        let indexedInterceptors = UTILS.sortObject(typeInterceptors, 'index');
+                        let list = [];
+                        if (indexedInterceptors) {
+                            _.each(indexedInterceptors, (intList, index) => {
+                                list = list.concat(intList);
+                            });
+                            modelInterceptors[typeName] = list;
+                        }
+                    });
+                });
+            });
+            _.each(finalInterceptors, (moduleInterceptors, moduleName) => {
+                schemaInterceptors = _.merge(schemaInterceptors, moduleInterceptors);
+            });
+        } catch (error) {
+            throw (error);
+        }
+        return schemaInterceptors;
+    },
+
     buildInterceptors: function (rawInterceptors) {
         let finalInterceptors = {};
         try {

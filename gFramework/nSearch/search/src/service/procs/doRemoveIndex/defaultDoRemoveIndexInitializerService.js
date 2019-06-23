@@ -49,7 +49,7 @@ module.exports = {
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do remove index interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
-        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(indexName);
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.preDoRemoveIndex) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoRemoveIndex), {
                 schemaModel: request.schemaModel,
@@ -93,7 +93,7 @@ module.exports = {
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do remove index interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
-        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(indexName);
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.postDoRemoveIndex) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoRemoveIndex), {
                 schemaModel: request.schemaModel,

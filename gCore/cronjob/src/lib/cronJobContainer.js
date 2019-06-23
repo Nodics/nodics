@@ -538,7 +538,7 @@ module.exports = function () {
         });
     };
 
-    this.pauseJob = function (jobCode) {
+    this.pauseJob = function (tenant, jobCode) {
         return new Promise((resolve, reject) => {
             if (!_jobPool[tenant] || !_jobPool[tenant][jobCode]) {
                 resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job on tenant: ' + tenant);
@@ -583,7 +583,7 @@ module.exports = function () {
         });
     };
 
-    this.resumeJob = function (jobCode) {
+    this.resumeJob = function (tenant, jobCode) {
         return new Promise((resolve, reject) => {
             if (!_jobPool[tenant] || !_jobPool[tenant][jobCode]) {
                 resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job on tenant: ' + tenant);

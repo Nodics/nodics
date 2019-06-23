@@ -165,11 +165,11 @@ module.exports = {
         return true;
     },
 
-    setInterceptors: function (interceptors) {
+    setSearchInterceptors: function (interceptors) {
         this.interceptors = interceptors;
     },
 
-    getInterceptors: function (indexName) {
+    getSearchInterceptors: function (indexName) {
         if (this.interceptors[indexName]) {
             return this.interceptors[indexName];
         } else {

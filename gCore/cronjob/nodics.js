@@ -29,7 +29,7 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             let jobInterceptors = SERVICE.DefaultInterceptorHandlerService.buildInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/jobInterceptors.js'));
-            SERVICE.DefaultCronJobConfigurationService.setInterceptors(jobInterceptors);
+            SERVICE.DefaultCronJobConfigurationService.setJobInterceptors(jobInterceptors);
             resolve(true);
         });
     }

@@ -32,16 +32,16 @@ module.exports = {
             SERVICE.DefaultSearchEngineConnectionHandlerService.createSearchConnections().then(() => {
                 return SERVICE.DefaultSearchSchemaHandlerService.prepareSearchSchema();
             }).then(() => {
-                return new Promise((resolve, reject) => {
-                    this.LOG.debug('Collecting search interceptors definitions');
-                    let importInterceptors = SERVICE.DefaultInterceptorHandlerService.buildInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/searchInterceptors.js'));
-                    SERVICE.DefaultSearchConfigurationService.setInterceptors(importInterceptors);
-                    resolve(true);
-                });
-            }).then(() => {
                 return SERVICE.DefaultSearchModelHandlerService.prepareSearchModels();
             }).then(() => {
                 return SERVICE.DefaultSearchModelHandlerService.updateIndexesSchema();
+            }).then(() => {
+                return new Promise((resolve, reject) => {
+                    this.LOG.debug('Collecting search interceptors definitions');
+                    let importInterceptors = SERVICE.DefaultInterceptorHandlerService.buildSearchInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/searchInterceptors.js'));
+                    SERVICE.DefaultSearchConfigurationService.setSearchInterceptors(importInterceptors);
+                    resolve(true);
+                });
             }).then(() => {
                 resolve(true);
             }).catch(error => {

@@ -33,7 +33,6 @@ module.exports = {
     },
 
     handleInternalDataPushEvent: function (event, callback, request) {
-        this.LOG.debug('----------------------------- Internal Event has been Handled');
         if (event && !UTILS.isBlank(event)) {
             SERVICE.DefaultPipelineService.start('processInternalDataPushEventPipeline', {
                 tenant: request.tenant,

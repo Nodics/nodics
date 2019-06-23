@@ -108,12 +108,12 @@ module.exports = {
         return true;
     },
 
-    setInterceptors: function (interceptors) {
+    setSchemaInterceptors: function (interceptors) {
         this.interceptors = interceptors;
 
     },
 
-    getInterceptors: function (schmeaName) {
+    getSchemaInterceptors: function (schmeaName) {
         if (this.interceptors[schmeaName]) {
             return this.interceptors[schmeaName];
         } else {

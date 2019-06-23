@@ -63,7 +63,7 @@ module.exports = {
     preProcessor: function (request, response, process) {
         this.LOG.debug('Applying pre processors in models');
         let indexName = request.indexName || request.searchModel.indexName;
-        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(indexName);
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.preSaveProcessor && interceptors.preSaveProcessor.length > 0) {
             let interceptorRequest = {
                 request: request,
@@ -145,7 +145,7 @@ module.exports = {
     postProcessor: function (request, response, process) {
         this.LOG.debug('Applying post processors in models');
         let indexName = request.indexName || request.searchModel.indexName;
-        let interceptors = SERVICE.DefaultSearchConfigurationService.getInterceptors(indexName);
+        let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.postSaveProcessor && interceptors.postSaveProcessor.length > 0) {
             let interceptorRequest = {
                 request: request,
