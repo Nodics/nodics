@@ -38,7 +38,7 @@ module.exports = function () {
     this.addModule = function (moduleName, moduleConfig) {
         let _self = this;
         if (!moduleConfig.server) {
-            throw new Error('Invalid server configuration for module : ', moduleName);
+            throw new Error('Invalid server configuration for module : ' + moduleName);
         }
         if (!moduleConfig.abstractServer) {
             moduleConfig.abstractServer = moduleConfig.server;
@@ -48,13 +48,13 @@ module.exports = function () {
                 0: moduleConfig.server
             };
         }
-        _self.LOG.debug('Adding module for : ', moduleName);
+        _self.LOG.debug('Adding module for : ' + moduleName);
         let moduleObj = new CLASSES.ModuleConfiguration(moduleName);
         moduleObj.addServer(moduleConfig.server);
         moduleObj.addOptions(moduleConfig.options);
         moduleObj.addAbstractServer(moduleConfig.abstractServer);
         _.each(moduleConfig.nodes, (nodeConfig, nodeName) => {
-            _self.LOG.debug('   Adding type for : ', nodeName);
+            _self.LOG.debug('   Adding type for : ' + nodeName);
             moduleObj.addNode(nodeName, nodeConfig);
         });
         _modules[moduleName] = moduleObj;
@@ -64,7 +64,7 @@ module.exports = function () {
         if (_modules[moduleName]) {
             return _modules[moduleName];
         } else {
-            throw new Error('Invalid module name : ', moduleName, ' Please validate your entry');
+            throw new Error('Invalid module name : ' + moduleName + ' Please validate your entry');
         }
     };
 

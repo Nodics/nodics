@@ -13,11 +13,13 @@ const _ = require('lodash');
 const fs = require('fs');
 const winston = require('winston');
 require('winston-daily-rotate-file');
-const Elasticsearch = require('winston-elasticsearch');
+const wElasticsearch = require('winston-elasticsearch');
+var elasticsearch = require('elasticsearch');
 const utils = require('../utils/utils');
 
 module.exports = {
 
+    elasticClient: null,
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -53,7 +55,7 @@ module.exports = {
         logConfig = logConfig || CONFIG.get('log');
         let entityLevel = logConfig['logLevel' + entityName];
         let config = this.getLoggerConfiguration(entityName, entityLevel, logConfig);
-        let logger = new winston.Logger(config);
+        let logger = new winston.createLogger(config);
         NODICS.addLogger(entityName, logger);
         return logger;
     },
@@ -61,7 +63,7 @@ module.exports = {
     getLoggerConfiguration: function (entityName, level, logConfig) {
         return {
             level: level || logConfig.level || 'info',
-            transports: this.getLogTransports(entityName, logConfig)
+            transports: this.createTransports(entityName, logConfig)
         };
     },
 
@@ -72,41 +74,82 @@ module.exports = {
             return winston.format.simple();
         }
     },
-    getLogTransports: function (entityName, logConfig) {
+
+    createTransports: function (labelName, logConfig) {
         let transports = [];
-        transports.push(this.createConsoleTransport(entityName, logConfig));
-        if (logConfig.output.file) {
-            transports.push(this.createFileTransport(entityName, logConfig));
-        }
-        if (logConfig.output.elastic) {
-            transports.push(this.createFileTransport(entityName, logConfig));
-        }
+        Object.keys(logConfig.transports).forEach(channel => {
+            let channelConfig = logConfig.transports[channel];
+            Object.keys(channelConfig).forEach(transportName => {
+                let transportConfig = channelConfig[transportName];
+                if (transportConfig.enabled) {
+                    let transport = null;
+                    if (channel === 'console') {
+                        transport = this.createConsoleTransport(labelName, transportConfig);
+                    } else if (channel === 'file') {
+                        transport = this.createFileTransport(labelName, transportConfig);
+                    } else if (channel === 'elastic') {
+                        transport = this.createElasticTransport(labelName, transportConfig);
+                    }
+                    if (transport) {
+                        transports.push(transport);
+                    }
+                }
+            });
+        });
         return transports;
     },
 
-    createConsoleTransport: function (entityName, logConfig) {
-        let consoleConfig = _.merge({}, logConfig.consoleConfig);
-        consoleConfig.label = entityName;
-        return new winston.transports.Console(consoleConfig);
+    createConsoleTransport: function (labelName, config) {
+        let _self = this;
+        let options = {};
+        options.label = labelName;
+        options.format = winston.format.combine(
+            winston.format.label({ label: labelName }),
+            winston.format.colorize(),
+            winston.format.timestamp({
+                format: 'YYYY-MM-DD HH:mm:ss'
+            }),
+            winston.format.splat(),
+            winston.format.prettyPrint(),
+            _self.getLogFormat(config),
+            winston.format.printf(({ level, message, label, timestamp }) => {
+                return `${timestamp}  ${level}: [${label}] ${message}`;
+            })
+        );
+        return new winston.transports.Console(options);
     },
 
-    createFileTransport: function (entityName, logConfig) {
-        let transport = {};
-        let fileConfig = _.merge({}, logConfig.fileConfig);
-        fileConfig.label = entityName;
-        if (fileConfig.dirname.startsWith('.')) {
-            fileConfig.dirname = NODICS.getServerPath() + '/temp/logs';
-        }
-        try {
-            transport = new winston.transports.DailyRotateFile(fileConfig);
-        } catch (error) {
-            console.error(error);
-        }
-        return transport;
+    createFileTransport: function (labelName, config) {
+        let _self = this;
+        let options = _.merge({}, config.options);
+        options.label = labelName;
+        options.format = winston.format.combine(
+            winston.format.label({ label: labelName }),
+            winston.format.timestamp({
+                format: 'YYYY-MM-DD HH:mm:ss'
+            }),
+            winston.format.splat(),
+            winston.format.prettyPrint(),
+            _self.getLogFormat(config),
+            winston.format.printf(({ level, message, label, timestamp }) => {
+                return `${timestamp} ${level}: [${label}]  ${message}`;
+            })
+        );
+        options.filename = NODICS.getServerPath() + '/temp/logs/' + options.filename;
+        return new winston.transports.File(options);
     },
-    createElasticTransport: function (entityName, logConfig) {
-        let elasticConfig = _.merge({}, logConfig.elasticConfig);
-        elasticConfig.label = entityName;
-        return new Elasticsearch(elasticConfig);
-    }
+
+    createElasticTransport: function (labelName, config) {
+        let options = _.merge({}, config.options);
+        options.label = labelName;
+        options.client = this.createElasticLoggerClient(options.client);
+        return new wElasticsearch(options);
+    },
+
+    createElasticLoggerClient: function (options) {
+        if (this.elasticClient === null) {
+            this.elasticClient = new elasticsearch.Client(options);
+        }
+        return this.elasticClient;
+    },
 };

@@ -16,7 +16,7 @@ module.exports = {
         this.triggerEventHandlerJob(definition, cronJob).then(response => {
             _self.LOG.debug('Job : executed successfuly');
         }).catch(error => {
-            _self.LOG.error('Job : executed with error : ', error);
+            _self.LOG.error('Job : executed with error : ' + error);
         });
     },
 
@@ -101,7 +101,7 @@ module.exports = {
         }).then(response => {
             _self.LOG.debug('Job : executed successfuly');
         }).catch(error => {
-            _self.LOG.error('Job : executed with error : ', error);
+            _self.LOG.error('Job : executed with error : ' + error);
         });
     }
 };

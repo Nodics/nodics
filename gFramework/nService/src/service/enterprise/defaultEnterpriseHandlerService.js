@@ -227,7 +227,7 @@ module.exports = {
                                                     reject(error);
                                                 });
                                             }).catch(error => {
-                                                NODICS.LOG.error('Initial data import failed : ', error);
+                                                NODICS.LOG.error('Initial data import failed : ' + error);
                                                 reject(error);
                                             });
                                         } else {

@@ -33,7 +33,7 @@ module.exports = {
     },
 
     validateEntCode: function (request, response, process) {
-        this.LOG.debug('Validating Enterprise code : ', request.entCode);
+        this.LOG.debug('Validating Enterprise code : ' + request.entCode);
         if (UTILS.isBlank(request.entCode)) {
             this.LOG.error('Enterprise code can not be null');
             process.error(request, response, {
@@ -46,7 +46,7 @@ module.exports = {
     },
 
     loadEnterprise: function (request, response, process) {
-        this.LOG.debug('Loading Enterprise code : ', request.entCode);
+        this.LOG.debug('Loading Enterprise code : ' + request.entCode);
         try {
             request.tenant = 'default';
             SERVICE.DefaultEnterpriseProviderService.loadEnterprise(request).then(response => {
@@ -61,7 +61,7 @@ module.exports = {
                 });
             });
         } catch (error) {
-            this.LOG.error('Enterprise code is not valid: ', error);
+            this.LOG.error('Enterprise code is not valid: ' + error);
             process.error(request, response, error || {
                 success: false,
                 code: 'ERR_ENT_00000'
@@ -70,7 +70,7 @@ module.exports = {
     },
 
     validateTenantId: function (request, response, process) {
-        this.LOG.debug('Validating Tenant Id : ', request.tenant);
+        this.LOG.debug('Validating Tenant Id : ' + request.tenant);
         try {
             if (UTILS.isBlank(request.tenant)) {
                 this.LOG.error('Tenant is null or invalid');

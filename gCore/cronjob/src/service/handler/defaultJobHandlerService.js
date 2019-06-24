@@ -12,27 +12,27 @@
 module.exports = {
 
     handleCronJobStart: function (definition, cronJob) {
-        this.LOG.info('Job Started........ : ', definition.name);
+        this.LOG.info('Job Started........ : ' + definition.name);
     },
 
     handleCronJobEnd: function (definition, cronJob) {
-        this.LOG.info('Job End........ : ', definition.name);
+        this.LOG.info('Job End........ : ' + definition.name);
     },
 
     handleCronJobPaused: function (definition, cronJob) {
-        this.LOG.info('Job End........ : ', definition.name);
+        this.LOG.info('Job End........ : ' + definition.name);
     },
 
     handleCronJobResumed: function (definition, cronJob) {
-        this.LOG.info('Job End........ : ', definition.name);
+        this.LOG.info('Job End........ : ' + definition.name);
     },
 
     handleJobTriggered: function (definition, cronJob) {
-        this.LOG.info('Job Triggered........ : ', definition.name);
+        this.LOG.info('Job Triggered........ : ' + definition.name);
     },
 
     handleJobCompleted: function (definition, cronJob) {
-        this.LOG.info('Job Completed........ : ', definition.name);
+        this.LOG.info('Job Completed........ : ' + definition.name);
     },
 
     handleSuccess: function (definition, job) {

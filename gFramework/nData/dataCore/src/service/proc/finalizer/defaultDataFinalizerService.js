@@ -43,7 +43,7 @@ module.exports = {
     redirectToFileTypeProcess: function (request, response, process) {
         let fileTypeProcess = CONFIG.get('data').fileTypeProcess;
         if (fileTypeProcess && fileTypeProcess[request.inputPath.fileType]) {
-            this.LOG.debug('Processing data for file type: ', request.inputPath.fileType, ' with pipeline: ', fileTypeProcess[request.inputPath.fileType]);
+            this.LOG.debug('Processing data for file type: ' + request.inputPath.fileType + ' with pipeline: ' + fileTypeProcess[request.inputPath.fileType]);
             SERVICE.DefaultPipelineService.start(fileTypeProcess[request.inputPath.fileType], request, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {

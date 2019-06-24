@@ -58,38 +58,57 @@ module.exports = {
         tenant: 'default',
         loginId: 'apiAdmin'
     },
-    //https://github.com/winstonjs/winston/issues/1134
+
     log: {
         enabled: true,
         level: 'debug',
-        format: 'simple', //json or simple
-        output: {
-            file: true,
-            elastic: false
-        },
-        consoleConfig: {
-            colorize: true,
-            timestamp: true,
-            json: false,
-            stringify: false,
-            prettyPrint: false,
-            depth: 5,
-            humanReadableUnhandledException: true,
-            showLevel: true
-        },
-        fileConfig: {
-            dirname: '.',
-            filename: 'nodics-%DATE%.log',
-            datePattern: 'YYYY-MM-DD',
-            zippedArchive: true,
-            json: false,
-            stringify: true,
-            maxSize: '20m',
-            maxFiles: '14d'
-        },
-        elasticConfig: {
-
+        transports: {
+            console: {
+                consoleTransport: {
+                    enabled: true,
+                    format: 'simple'
+                }
+            },
+            file: {
+                fileErrorLog: {
+                    enabled: false,
+                    format: 'simple',
+                    options: {
+                        filename: 'nodics-error.log',
+                        level: 'error',
+                        maxsize: '20971520',
+                        maxFiles: '14',
+                        tailable: true,
+                        zippedArchive: true
+                    }
+                },
+                fileRestLog: {
+                    enabled: false,
+                    format: 'simple',
+                    options: {
+                        filename: 'nodics.log',
+                        level: 'debug',
+                        maxsize: '20971520',
+                        maxFiles: '14',
+                        tailable: true,
+                        zippedArchive: true
+                    }
+                }
+            },
+            elastic: {
+                elasticLogRecorder: {
+                    enabled: false,
+                    format: 'simple',
+                    options: {
+                        level: 'debug',
+                    },
+                    client: {
+                        host: 'localhost:9200'
+                    }
+                }
+            }
         }
     },
+
     jwtSecretKey: 'nodics'
 };

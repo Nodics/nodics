@@ -18,7 +18,7 @@ module.exports = {
             return FACADE.DefaultEmsClientFacade.publish(request).then(success => {
                 callback(null, success);
             }).catch(error => {
-                this.LOG.error('While publishing and event: ', error);
+                this.LOG.error('While publishing and event: ' + error);
                 callback('While publishing and event: ' + error.toString());
             });
         } else {
@@ -32,7 +32,7 @@ module.exports = {
             return FACADE.DefaultEmsClientFacade.registerConsumers(request).then(success => {
                 callback(null, success);
             }).catch(error => {
-                this.LOG.error('While publishing and event: ', error);
+                this.LOG.error('While publishing and event: ' + error);
                 callback('While publishing and event: ' + error.toString());
             });
         } else {
@@ -46,7 +46,7 @@ module.exports = {
             return FACADE.DefaultEmsClientFacade.registerPublishers(request).then(success => {
                 callback(null, success);
             }).catch(error => {
-                this.LOG.error('While publishing and event: ', error);
+                this.LOG.error('While publishing and event: ' + error);
                 callback('While publishing and event: ' + error.toString());
             });
         } else {

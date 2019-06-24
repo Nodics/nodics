@@ -65,7 +65,7 @@ module.exports = function (definition, trigger, context, timeZone) {
         let _self = this;
         let cronTime = this.getCronTime(oneTime);
         var currentTime = new Date();
-        _self.LOG.info('###### Creating job: ', _definition.code, ' tenant: ', definition.tenant, ' with time schedule : ', cronTime, ' at: ', currentTime.getHours(), ':', currentTime.getMinutes(), ':', currentTime.getSeconds());
+        _self.LOG.info('###### Creating job: ' + _definition.code + ' tenant: ' + definition.tenant + ' with time schedule : ' + cronTime, ' at: ' + currentTime.getHours(), ':' + currentTime.getMinutes(), ':' + currentTime.getSeconds());
         _cronJob = new CronJob({
             cronTime: cronTime,
             onTick: function () {
@@ -74,7 +74,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                         let cronJob = _self.getCronJob();
                         let startTime = new Date();
                         if (_definition.end && _definition.end < new Date()) {
-                            _self.LOG.warn('   WARN: Job : ', _definition.code, ' got expired. hence has been stopped');
+                            _self.LOG.warn('   WARN: Job : ' + _definition.code + ' got expired. hence has been stopped');
                             _self.stopJob(true);
                         }
                         if (NODICS.getServerState() === 'started' && (!_definition.runOnNode || CONFIG.get('nodeId') === _definition.runOnNode)) {
@@ -87,7 +87,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                             }, {}).then(success => {
                                 _running = false;
                                 let endTime = new Date();
-                                //_self.LOG.warn('Job : ', _definition.code, ' completed its execution successfully');
+                                //_self.LOG.warn('Job : '+ _definition.code+ ' completed its execution successfully');
                                 if (_definition.logResult) {
                                     SERVICE.DefaultCronJobLogService.save({
                                         tenant: _definition.tenant,
@@ -121,7 +121,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                                     }).then(success => {
                                         _self.LOG.debug('Log has been updated successfully');
                                     }).catch(error => {
-                                        _self.LOG.error('Failed updating log: ', error);
+                                        _self.LOG.error('Failed updating log: ' + error);
                                     });
                                 }
                                 if (oneTime) _self.stopJob(true);
@@ -140,7 +140,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                             cronJob: _self.getCronJob(),
                             definition: _definition
                         }, {}).then(success => {
-                            _self.LOG.warn('Job : ', _definition.code, ' completes successfully');
+                            _self.LOG.warn('Job : ' + _definition.code + ' completes successfully');
                         }).catch(error => {
                             _self.LOG.error('Job: ' + _definition.code + ' has issue while onComplete: ' + error);
                         });

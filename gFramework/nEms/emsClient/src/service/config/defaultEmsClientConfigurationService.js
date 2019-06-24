@@ -65,7 +65,7 @@ module.exports = {
                 let clientConfig = clients[clientName];
                 if (clientConfig.enabled) {
                     SERVICE[clientConfig.handler].configureClient(clientConfig).then(client => {
-                        _self.LOG.debug('Successfully established connection for : ', clientName);
+                        _self.LOG.debug('Successfully established connection for : ' + clientName);
                         _self.emsClients[clientName] = {
                             clientName: clientName,
                             connection: client.connection,
@@ -130,7 +130,7 @@ module.exports = {
                         publisher: publisher,
                         client: client
                     }).then(success => {
-                        _self.LOG.debug('Successfully created publisher for queue : ', publisherName);
+                        _self.LOG.debug('Successfully created publisher for queue : ' + publisherName);
                         _self.emsPublishers[publisherName] = {
                             publisher: success,
                             config: publisher,
@@ -199,7 +199,7 @@ module.exports = {
                             consumer: consumer,
                             client: client
                         }).then(success => {
-                            _self.LOG.debug('Successfully registered consumer for queue : ', consumerName);
+                            _self.LOG.debug('Successfully registered consumer for queue : ' + consumerName);
                             _self.emsConsumers[consumerName] = {
                                 consumer: success,
                                 config: consumer,

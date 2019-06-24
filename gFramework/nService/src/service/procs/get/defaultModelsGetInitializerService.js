@@ -95,7 +95,7 @@ module.exports = {
         if (request.schemaModel.cache &&
             request.schemaModel.cache.enabled) {
             request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createItemKey(request);
-            this.LOG.debug('Model cache lookup for key: ', request.cacheKeyHash);
+            this.LOG.debug('Model cache lookup for key: ' + request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
                 moduleName: request.moduleName || request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.schemaModel.schemaName),
@@ -237,7 +237,7 @@ module.exports = {
             }).then(success => {
                 this.LOG.info('Item saved in item cache');
             }).catch(error => {
-                this.LOG.error('While saving item in item cache : ', error);
+                this.LOG.error('While saving item in item cache : ' + error);
             });
         }
         process.nextSuccess(request, response);

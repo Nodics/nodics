@@ -101,7 +101,7 @@ module.exports = {
                             authToken: NODICS.getInternalAuthToken('default')
                         }
                     })).then(success => {
-                        console.log(moduleName, ' -------------------: ', success);
+                        console.log(moduleName + ' -------------------: ' + success);
                         _self.checkActiveCluster(moduleName, nodes).then(success => {
                             resolve(true);
                         }).catch(error => {

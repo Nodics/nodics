@@ -19,10 +19,10 @@ module.exports = {
         _.each(modules, function (value, moduleName) {
             if (value.metaData.publish) {
                 if (SERVICE.DefaultRouterService.getModulesPool().isAvailableModuleConfig(moduleName)) {
-                    _self.LOG.debug('Initializing server for module : ', moduleName);
+                    _self.LOG.debug('Initializing server for module : ' + moduleName);
                     value.app = require('express')();
                 } else {
-                    _self.LOG.warn('Module : ', moduleName, ' initializing with default');
+                    _self.LOG.warn('Module : ' + moduleName + ' initializing with default');
                     if (!modules.default) {
                         modules.default = {};
                     }

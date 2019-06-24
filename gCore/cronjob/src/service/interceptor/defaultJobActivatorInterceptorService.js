@@ -22,18 +22,18 @@ module.exports = {
                         definitions: [model]
                     }).then(success => {
                         SERVICE.DefaultCronJobService.getCronJobContainer().startJobs(request.tenant, [model.code]).then(success => {
-                            _self.LOG.info('Successfully started job: ', model.code);
+                            _self.LOG.info('Successfully started job: ' + model.code);
                         }).catch(error => {
-                            _self.LOG.error('Failed to start job: ', model.code);
+                            _self.LOG.error('Failed to start job: ' + model.code);
                             _self.LOG.error(error);
                         });
                     }).catch(error => {
-                        _self.LOG.error('Failed to create job: ', model.code);
+                        _self.LOG.error('Failed to create job: ' + model.code);
                         _self.LOG.error(error);
                     });
                 }
             } catch (error) {
-                _self.LOG.error('Failed to start job: ', request.model.code);
+                _self.LOG.error('Failed to start job: ' + request.model.code);
                 _self.LOG.error(error);
             }
         });

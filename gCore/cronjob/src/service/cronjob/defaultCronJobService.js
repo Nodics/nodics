@@ -161,15 +161,15 @@ module.exports = {
             if (NODICS.getServerState() === 'started') {
                 _self.createAllJobs().then(response => {
                     _self.cronJobContainer.startAllJobs().then(success => {
-                        _self.LOG.debug('triggered cronjob start process : ', response);
+                        _self.LOG.debug('triggered cronjob start process : ' + response);
                     }).catch(error => {
-                        _self.LOG.error('Something went wrong while starting CronJobs : ', error);
+                        _self.LOG.error('Something went wrong while starting CronJobs : ' + error);
                     });
                 }).catch(error => {
                     if (error.code && error.code === 'ERR_JOB_00001') {
                         _self.LOG.info('No jobs found to activate');
                     } else {
-                        _self.LOG.error('Something went wrong while creating CronJobs : ', error);
+                        _self.LOG.error('Something went wrong while creating CronJobs : ' + error);
                     }
                 });
             } else {

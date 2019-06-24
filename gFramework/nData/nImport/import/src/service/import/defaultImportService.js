@@ -53,7 +53,7 @@ module.exports = {
                         result.import = success;
                         resolve(result);
                     }).catch(error => {
-                        NODICS.LOG.error('Initial data import failed : ', error);
+                        NODICS.LOG.error('Initial data import failed : ' + error);
                     });
                 }
             }).catch(error => {
@@ -83,7 +83,7 @@ module.exports = {
                         result.import = success;
                         resolve(result);
                     }).catch(error => {
-                        NODICS.LOG.error('Initial data import failed : ', error);
+                        NODICS.LOG.error('Initial data import failed : ' + error);
                     });
                 }
             }).catch(error => {
@@ -113,7 +113,7 @@ module.exports = {
                         result.import = success;
                         resolve(result);
                     }).catch(error => {
-                        NODICS.LOG.error('Initial data import failed : ', error);
+                        NODICS.LOG.error('Initial data import failed : ' + error);
                     });
                 }
             }).catch(error => {

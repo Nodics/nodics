@@ -74,7 +74,7 @@ module.exports = {
                 let headers = request.data.headers;
                 let headerName = options.pendingHeaders.shift();
                 let header = headers[headerName];
-                _self.LOG.debug('Starting process for header: ', headerName);
+                _self.LOG.debug('Starting process for header: ' + headerName);
                 SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
                     tenant: request.tenant,
                     moduleName: request.moduleName,

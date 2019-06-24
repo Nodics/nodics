@@ -41,7 +41,7 @@ module.exports = {
 
     authorizeAPIKey: function (request, response, process) {
         if (request.apiKey) {
-            this.LOG.debug('Authorizing api key : ', request.apiKey);
+            this.LOG.debug('Authorizing api key : ' + request.apiKey);
             SERVICE.DefaultAuthorizationProviderService.authorizeAPIKey(request).then(success => {
                 request.enterprise = success.enterprise;
                 request.entCode = success.enterprise.code;
@@ -58,7 +58,7 @@ module.exports = {
 
     authorizeAuthToken: function (request, response, process) {
         if (request.authToken) {
-            this.LOG.debug('Authorizing auth token : ', request.authToken);
+            this.LOG.debug('Authorizing auth token : ' + request.authToken);
             SERVICE.DefaultAuthorizationProviderService.authorizeToken(request).then(success => {
                 try {
                     if (success.success && success.result) {

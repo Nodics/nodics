@@ -53,7 +53,7 @@ module.exports = {
         let indexDef = searchModel.indexDef;
         if (indexDef.cache && indexDef.cache.enabled) {
             request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createSearchKey(request);
-            this.LOG.debug('Model cache lookup for key: ', request.cacheKeyHash);
+            this.LOG.debug('Model cache lookup for key: ' + request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
                 moduleName: request.moduleName || request.searchModel.moduleName || request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSearchCacheChannel(request.searchModel.indexName),
@@ -183,7 +183,7 @@ module.exports = {
             }).then(success => {
                 this.LOG.info('Item saved in item cache');
             }).catch(error => {
-                this.LOG.error('While saving item in item cache : ', error);
+                this.LOG.error('While saving item in item cache : ' + error);
             });
         }
         process.nextSuccess(request, response);

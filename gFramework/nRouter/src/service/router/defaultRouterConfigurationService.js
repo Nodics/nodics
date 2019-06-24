@@ -60,7 +60,7 @@ module.exports = {
             _.each(modules, function (value, moduleName) {
                 if (value.metaData && value.metaData.publish) {
                     if (commonConfig[moduleName] && !UTILS.isBlank(commonConfig[moduleName])) {
-                        _self.LOG.debug('  Executing module configurations :', moduleName);
+                        _self.LOG.debug('  Executing module configurations :' + moduleName);
                         _self.executeRouterConfig(modules.default.app, commonConfig[moduleName]);
                     }
                 }
@@ -70,16 +70,16 @@ module.exports = {
                 if (value.metaData && value.metaData.publish) {
                     if (commonConfig[moduleName] && !UTILS.isBlank(commonConfig[moduleName])) {
                         if (value.app) {
-                            _self.LOG.debug('Configuring App from module : ', moduleName);
+                            _self.LOG.debug('Configuring App from module : ' + moduleName);
                             _self.LOG.debug('  Executing common configurations');
                             _self.executeRouterConfig(value.app, commonConfig.default);
-                            _self.LOG.debug('  Executing module specific configurations for :', moduleName, ' with : ', moduleName);
+                            _self.LOG.debug('  Executing module specific configurations for :' + moduleName + ' with : ' + moduleName);
                             _self.executeRouterConfig(value.app, commonConfig[moduleName]);
                         } else if (modules.default && modules.default.app) {
-                            _self.LOG.debug('Executing module specific configurations for :', moduleName, ' with : default');
+                            _self.LOG.debug('Executing module specific configurations for :' + moduleName + ' with : default');
                             _self.executeRouterConfig(modules.default.app, commonConfig[moduleName]);
                         } else {
-                            _self.LOG.error('Could not found app configuration for module : ', moduleName);
+                            _self.LOG.error('Could not found app configuration for module : ' + moduleName);
                             throw new Error('Could not found app configuration for module : ' + moduleName);
                         }
                     }

@@ -19,17 +19,18 @@ module.exports = {
     },
 
     log: {
-        level: 'debug'
+        level: 'debug',
+        //logLevelDefaultRequestHandlerPipelineService: 'info'
     },
 
     cronjob: {
-        runOnStartup: true
+        runOnStartup: false
     },
 
     search: {
         default: {
             options: {
-                enabled: true
+                enabled: false
             }
         }
     },

@@ -292,7 +292,7 @@ module.exports = {
         }).on(copy.events.COPY_FILE_COMPLETE, function (copyOperation) {
             fs.readFile(copyOperation.dest, 'utf8', (error, content) => {
                 if (error) {
-                    console.log('Got error in file : ', copyOperation.dest, ' --- ', error);
+                    console.log('Got error in file : ' + copyOperation.dest + ' --- ' + error);
                     return;
                 }
                 content = content.replace(/customApplication/g, appName);
@@ -310,7 +310,7 @@ module.exports = {
             console.error('Unable to copy ' + copyOperation.dest);
         }).then(function (results) {
             console.log('------------------------------------------------------------------------------------');
-            console.log('Module has been generated at : ', destPath, ' - ', results.length + ' file(s) copied');
+            console.log('Module has been generated at : ' + destPath + ' - ' + results.length + ' file(s) copied');
             console.log("Please visit package.json file and update index value, before executing");
             console.log('------------------------------------------------------------------------------------');
 

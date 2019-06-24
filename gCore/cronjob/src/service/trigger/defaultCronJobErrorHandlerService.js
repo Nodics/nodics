@@ -107,15 +107,15 @@ module.exports = {
                     targetNodeId: (jobDefinition.event && jobDefinition.event.targetNodeId) ? jobDefinition.event.targetNodeId : 0,
                     data: jobDefinition
                 };
-                this.LOG.debug('Pushing event for item created : ', jobDefinition.code);
+                this.LOG.debug('Pushing event for item created : ' + jobDefinition.code);
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {
-                    this.LOG.error('While posting model change event : ', error);
+                    this.LOG.error('While posting model change event : ' + error);
                 });
             }
         } catch (error) {
-            this.LOG.error('Facing issue while pushing save event : ', error);
+            this.LOG.error('Facing issue while pushing save event : ' + error);
         }
         process.nextSuccess(request, response);
     },

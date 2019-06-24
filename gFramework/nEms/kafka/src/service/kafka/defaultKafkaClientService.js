@@ -144,7 +144,7 @@ module.exports = {
                             _self.onConsume(options.consumer, response, (error, success) => {
                                 if (error) {
                                     _self.LOG.info(response);
-                                    _self.LOG.error('Failed to consume message : ', options.consumer.name, ' : ERROR is ', error);
+                                    _self.LOG.error('Failed to consume message : ' + options.consumer.name + ' : ERROR is ' + error);
                                     response.errorType = 'FAILED_CONSUMED';
                                     response.error = error;
                                     _self.handleConsumerError({
@@ -157,7 +157,7 @@ module.exports = {
                                     if (!options.consumer.consumerOptions.autoCommit) {
                                         consumer.commit(function (error, data) {
                                             if (error) {
-                                                _self.LOG.error('Failed to commit message : ', options.consumer.name, ' : ERROR is ', error);
+                                                _self.LOG.error('Failed to commit message : ' + options.consumer.name + ' : ERROR is ' + error);
                                                 response.errorType = 'FAILED_COMMIT';
                                                 response.error = error;
                                                 _self.handleConsumerError({
@@ -167,11 +167,11 @@ module.exports = {
                                                     message: response
                                                 });
                                             } else {
-                                                _self.LOG.debug('Message Successfully consumed and commited: ', options.consumer.name);
+                                                _self.LOG.debug('Message Successfully consumed and commited: ' + options.consumer.name);
                                             }
                                         });
                                     } else {
-                                        _self.LOG.debug('Message Successfully consumed and commited: ', options.consumer.name);
+                                        _self.LOG.debug('Message Successfully consumed and commited: ' + options.consumer.name);
                                     }
                                 }
                             });
@@ -202,13 +202,13 @@ module.exports = {
                     tenant: tenant,
                     model: options.message
                 }).then(success => {
-                    _self.LOG.debug('Message Successfully logged: ', options.consumer.name);
+                    _self.LOG.debug('Message Successfully logged: ' + options.consumer.name);
                 }).catch(error => {
-                    _self.LOG.error('Failed to log message : ', options.consumer.name, ' : ERROR is ', error);
+                    _self.LOG.error('Failed to log message : ' + options.consumer.name + ' : ERROR is ' + error);
                 });
             }
         } catch (error) {
-            _self.LOG.error('Failed to log message : ', options.consumer.name, ' : ERROR is ', error);
+            _self.LOG.error('Failed to log message : ' + options.consumer.name + ' : ERROR is ' + error);
         }
     },
     onConsume: function (queue, response, callback) {

@@ -84,7 +84,7 @@ module.exports = {
     publishEvent: function (request, response, process) {
         let queue = request.queue;
         let message = request.message;
-        this.LOG.debug('Pushing event recieved message from  : ', queue.name);
+        this.LOG.debug('Pushing event recieved message from  : ' + queue.name);
         let event = {
             tenant: message.tenant,
             event: queue.options.eventName || queue.name,
@@ -102,7 +102,7 @@ module.exports = {
                 this.LOG.debug('Message published successfully');
                 process.nextSuccess(request, response);
             }).catch(error => {
-                this.LOG.error('Message publishing failed: ', error);
+                this.LOG.error('Message publishing failed: ' + error);
                 process.error(request, response, error);
             });
         } else {
@@ -113,7 +113,7 @@ module.exports = {
                 this.LOG.debug('Message published successfully');
                 process.nextSuccess(request, response);
             }).catch(error => {
-                this.LOG.error('Message publishing failed: ', error);
+                this.LOG.error('Message publishing failed: ' + error);
                 process.error(request, response, error);
             });
         }

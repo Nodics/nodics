@@ -114,7 +114,7 @@ module.exports = function () {
                             resolve('Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant);
                         }
                     } else {
-                        _self.LOG.warn('Job: ', definition.code, ' is already available on tenant: ' + definition.tenant);
+                        _self.LOG.warn('Job: ' + definition.code, ' is already available on tenant: ' + definition.tenant);
                         resolve('Job: ' + definition.code + ' is already available in ready to run pool on tenant: ' + definition.tenant);
                     }
                 }
@@ -175,7 +175,7 @@ module.exports = function () {
                     code: 'ERR_JOB_00003'
                 });
             } else if (!_jobPool[definition.tenant] || !_jobPool[definition.tenant][definition.code]) {
-                _self.LOG.debug('Could not found job, so creating new : ', definition.code);
+                _self.LOG.debug('Could not found job, so creating new : ' + definition.code);
                 this.createJob(authToken, definition).then(success => {
                     resolve(success);
                 }).catch(error => {

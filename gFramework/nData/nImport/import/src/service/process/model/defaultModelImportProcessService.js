@@ -343,7 +343,7 @@ module.exports = {
                     models: models
                 }
             };
-            this.LOG.debug('Pushing event for item created : ', event.event);
+            this.LOG.debug('Pushing event for item created : ' + event.event);
             SERVICE.DefaultEventService.publish(event).then(success => {
                 resolve(success);
             }).catch(error => {

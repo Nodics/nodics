@@ -15,7 +15,7 @@ module.exports = {
     runJob: function (input) {
         return new Promise((resolve, reject) => {
             var today = new Date();
-            this.LOG.info('CronJos:', input.definition.code, input.definition.tenant, ' Started................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
+            this.LOG.info('CronJos:' + input.definition.code + ' : ' + input.definition.tenant + ' Started................ : ' + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds());
             resolve({
                 success: true,
                 code: 'SUC_CRON_00000',
@@ -32,7 +32,7 @@ module.exports = {
     stopJob: function (input) {
         return new Promise((resolve, reject) => {
             var today = new Date();
-            this.LOG.info('CronJos:', input.definition.code, input.definition.tenant, ' Stoped................ : ', today.getHours(), ':', today.getMinutes(), ':', today.getSeconds());
+            this.LOG.info('CronJos:' + input.definition.code + ' : ' + input.definition.tenant + ' Stoped................ : ' + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds());
             resolve({
                 success: true,
                 code: 'SUC_CRON_00000',

@@ -530,15 +530,15 @@ module.exports = {
                         result: response.model.result
                     }
                 };
-                this.LOG.debug('Pushing event for item created : ', schemaModel.schemaName);
+                this.LOG.debug('Pushing event for item created : ' + schemaModel.schemaName);
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {
-                    this.LOG.error('While posting model change event : ', error);
+                    this.LOG.error('While posting model change event : ' + error);
                 });
             }
         } catch (error) {
-            this.LOG.error('Facing issue while pushing save event : ', error);
+            this.LOG.error('Facing issue while pushing save event : ' + error);
         }
         process.nextSuccess(request, response);
     },

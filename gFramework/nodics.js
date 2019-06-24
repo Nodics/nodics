@@ -72,7 +72,7 @@ module.exports = {
                         }).then(success => {
                             resolve(success);
                         }).catch(error => {
-                            NODICS.LOG.error('Initial data import failed : ', error);
+                            NODICS.LOG.error('Initial data import failed : ' + error);
                             reject(error);
                         });
                     } else {
@@ -105,13 +105,13 @@ module.exports = {
                 }
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');
-                NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
+                NODICS.LOG.info('Nodics started successfully in (' + NODICS.getStartDuration() + ') ms \n');
                 //this.initTestRuner();
             }).catch(error => {
-                NODICS.LOG.error('Nodics server error : ', error);
+                NODICS.LOG.error('Nodics server error : ' + error);
             });
         }).catch(error => {
-            console.error('Nodics server not started properly : ', error);
+            console.error('Nodics server not started properly : ' + error);
             process.exit(1);
         });
     },

@@ -85,7 +85,7 @@ module.exports = {
     },
 
     fetch: function (requestUrl, callback) {
-        //this.LOG.debug('Hitting module communication URL : ', JSON.stringify(requestUrl));
+        //this.LOG.debug('Hitting module communication URL : ' + JSON.stringify(requestUrl));
         if (callback) {
             try {
                 requestPromise(requestUrl).then(response => {

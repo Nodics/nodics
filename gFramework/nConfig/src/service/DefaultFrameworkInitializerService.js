@@ -54,14 +54,14 @@ module.exports = {
         }
         this.LOG.info('###   Initializing Nodics, Node based enterprise application solution   ###');
         this.LOG.info('---------------------------------------------------------------------------');
-        this.LOG.info('NODICS_HOME   : ', NODICS.getNodicsHome());
-        //this.LOG.info('NODICS_APP        : ', NODICS.getApplicationPath());
-        this.LOG.info('NODICS_ENV    : ', NODICS.getEnvironmentPath());
-        this.LOG.info('SERVER_PATH   : ', NODICS.getServerPath());
+        this.LOG.info('NODICS_HOME   : ' + NODICS.getNodicsHome());
+        //this.LOG.info('NODICS_APP        : '+ NODICS.getApplicationPath());
+        this.LOG.info('NODICS_ENV    : ' + NODICS.getEnvironmentPath());
+        this.LOG.info('SERVER_PATH   : ' + NODICS.getServerPath());
         if (NODICS.getNodePath()) {
-            this.LOG.info('NODE_PATH     : ', NODICS.getNodePath());
+            this.LOG.info('NODE_PATH     : ' + NODICS.getNodePath());
         }
-        this.LOG.info('LOG_PATH      : ', NODICS.getServerPath() + '/temp/logs');
+        this.LOG.info('LOG_PATH      : ' + NODICS.getServerPath() + '/temp/logs');
         this.LOG.info('---------------------------------------------------------------------------\n');
         this.LOG.info('###   Sequence in which modules has been loaded (Top to Bottom)   ###');
         let activeModules = [];
@@ -141,7 +141,7 @@ module.exports = {
             modules = modules.concat(serverProperties.activeModules.modules);
             return modules;
         } catch (error) {
-            console.error('While preparing active module list : ', error);
+            console.error('While preparing active module list : ' + error);
         }
     },
 
@@ -293,7 +293,7 @@ module.exports = {
     loadModule: function (moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.LOG.debug('Starting process for module : ', moduleName);
+            _self.LOG.debug('Starting process for module : ' + moduleName);
             let moduleObject = NODICS.getRawModule(moduleName);
             let moduleFile = require(moduleObject.path + '/nodics.js');
             if (moduleFile.init) {
@@ -611,7 +611,7 @@ module.exports = {
     finalizeModule: function (moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.LOG.debug('Starting process to finalize module : ', moduleName);
+            _self.LOG.debug('Starting process to finalize module : ' + moduleName);
             let moduleObject = NODICS.getRawModule(moduleName);
             let moduleFile = require(moduleObject.path + '/nodics.js');
             if (moduleFile.postInit && typeof moduleFile.postInit === 'function') {

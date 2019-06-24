@@ -118,7 +118,7 @@ module.exports = {
     },
 
     loadDataFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of files from Path to be imported: ', request.inputPath.dataPath);
+        this.LOG.debug('Loading list of files from Path to be imported: ' + request.inputPath.dataPath);
         if (request.header) {
             let dataFiles = {};
             let fileList = {};

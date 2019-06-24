@@ -84,7 +84,7 @@ module.exports = {
     },
 
     loadHeaderFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of headers from Path to be imported: ', request.inputPath.headerPath);
+        this.LOG.debug('Loading list of headers from Path to be imported: ' + request.inputPath.headerPath);
         SERVICE.DefaultImportUtilityService.getLocalHeaderFiles(request.inputPath.headerPath).then(success => {
             request.data.headerFiles = success;
             process.nextSuccess(request, response);

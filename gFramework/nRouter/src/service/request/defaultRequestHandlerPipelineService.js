@@ -74,7 +74,7 @@ module.exports = {
     },
 
     parseHeader: function (request, response, process) {
-        this.LOG.debug('Parsing request header for : ', request.originalUrl);
+        this.LOG.debug('Parsing request header for : ' + request.originalUrl);
         request.cache = null;
         if (request.httpRequest.get('apiKey')) {
             request.apiKey = request.httpRequest.get('apiKey');
@@ -96,13 +96,13 @@ module.exports = {
     },
 
     parseBody: function (request, response, process) {
-        this.LOG.debug('Parsing request body : ', request.originalUrl);
+        this.LOG.debug('Parsing request body : ' + request.originalUrl);
         process.nextSuccess(request, response);
     },
 
     handleSpecialRequest: function (request, response, process) {
         let _self = this;
-        this.LOG.debug('Handling special request : ', request.originalUrl);
+        this.LOG.debug('Handling special request : ' + request.originalUrl);
         if (request.special) {
             if (!request.tenant) {
                 request.tenant = 'default';
@@ -124,7 +124,7 @@ module.exports = {
     },
 
     redirectRequest: function (request, response, process) {
-        this.LOG.debug('Redirecting secured/non-secured request  : ', request.originalUrl);
+        this.LOG.debug('Redirecting secured/non-secured request  : ' + request.originalUrl);
         if (request.secured) {
             this.LOG.debug('Handling secured request');
             response.targetNode = 'securedRequest';
@@ -137,7 +137,7 @@ module.exports = {
 
     lookupCache: function (request, response, process) {
         let _self = this;
-        this.LOG.debug('Looking up result in cache system  : ', request.originalUrl);
+        this.LOG.debug('Looking up result in cache system  : ' + request.originalUrl);
         try {
             let keyHash = UTILS.generateHash(SERVICE.DefaultCacheConfigurationService.createApiKey(request.httpRequest));
             request.apiCacheKeyHash = request.router.prefix ? request.router.prefix + '_' + keyHash : keyHash;
@@ -175,7 +175,7 @@ module.exports = {
 
     handleRequest: function (request, response, process) {
         let _self = this;
-        _self.LOG.debug('processing your request : ', request.originalUrl);
+        _self.LOG.debug('processing your request : ' + request.originalUrl);
         try {
             CONTROLLER[request.router.controller][request.router.operation](request, (error, success) => {
                 if (error) {
@@ -204,7 +204,7 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully : ', request.originalUrl);
+        this.LOG.debug('Request has been processed successfully : ' + request.originalUrl);
         let success = response.success;
         if (!UTILS.isObject(success)) {
             success = {
