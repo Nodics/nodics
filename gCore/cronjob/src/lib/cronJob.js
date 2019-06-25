@@ -80,6 +80,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                         if (NODICS.getServerState() === 'started' && (!_definition.runOnNode || CONFIG.get('nodeId') === _definition.runOnNode)) {
                             _running = true;
                             _definition.startTime = startTime;
+                            _self.LOG.info('--->> job triggered : ' + _definition.code + ' tenant: ' + definition.tenant + ' at: ' + _definition.startTime.getHours() + ':' + _definition.startTime.getMinutes() + ':' + _definition.startTime.getSeconds());
                             SERVICE.DefaultPipelineService.start('defaultCronJobTriggerHandlerPipeline', {
                                 job: _self,
                                 cronJob: cronJob,

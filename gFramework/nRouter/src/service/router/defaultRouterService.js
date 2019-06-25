@@ -255,7 +255,6 @@ module.exports = {
     registerListenEvents: function (moduleName, port, isSecure, server) {
         let _self = this;
         server.on('error', function (error) {
-            console.log(error);
             if (isSecure) {
                 _self.LOG.error('Failed to start HTTPS Server for module : ' + moduleName + ' on PORT : ' + port);
             } else {

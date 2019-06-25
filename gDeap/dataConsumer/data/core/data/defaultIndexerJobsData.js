@@ -11,7 +11,7 @@
 
 module.exports = {
     record1: {
-        code: "triggerInternalFullIndexer",
+        code: "jobInternalFullIndexer",
         description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
         runOnNode: 0,
         active: false,
@@ -21,7 +21,7 @@ module.exports = {
                 nodeId: 0,
                 module: 'dataConsumer',
                 method: 'GET',
-                uri: '/inetrnalData/search/index/internalDataFullIndexer'
+                uri: '/internalData/search/index/internalDataFullIndexer'
             }
         },
         trigger: {
@@ -35,7 +35,7 @@ module.exports = {
         state: "NEW"
     },
     record2: {
-        code: "triggerInternalIncrementalIndexer",
+        code: "jobInternalIncrementalIndexer",
         description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
         runOnNode: 0,
         active: false,
@@ -45,7 +45,7 @@ module.exports = {
                 nodeId: 0,
                 module: 'dataConsumer',
                 method: 'GET',
-                uri: '/inetrnalData/search/index/internalDataIncrementalIndexer'
+                uri: '/internalData/search/index/internalDataIncrementalIndexer'
             }
         },
         trigger: {
@@ -59,7 +59,7 @@ module.exports = {
         state: "NEW"
     },
     record3: {
-        code: "triggerExternalFullIndexer",
+        code: "jobExternalFullIndexer",
         description: 'This job is to trigger process external data indexer, which will push all data to elastic search',
         runOnNode: 0,
         active: false,
@@ -69,7 +69,7 @@ module.exports = {
                 nodeId: 0,
                 module: 'dataConsumer',
                 method: 'GET',
-                uri: '/inetrnalData/search/index/externalDataFullIndexer'
+                uri: '/externalData/search/index/externalDataFullIndexer'
             }
         },
         trigger: {
@@ -83,7 +83,7 @@ module.exports = {
         state: "NEW"
     },
     record4: {
-        code: "triggerExternalIncrementalIndexer",
+        code: "jobExternalIncrementalIndexer",
         description: 'This job is to trigger process external data indexer, which will push all data to elastic search',
         runOnNode: 0,
         active: false,
@@ -93,7 +93,7 @@ module.exports = {
                 nodeId: 0,
                 module: 'dataConsumer',
                 method: 'GET',
-                uri: '/inetrnalData/search/index/externalDataIncrementalIndexer'
+                uri: '/externalData/search/index/externalDataIncrementalIndexer'
             }
         },
         trigger: {

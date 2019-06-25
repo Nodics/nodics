@@ -113,7 +113,11 @@ module.exports = {
             winston.format.prettyPrint(),
             _self.getLogFormat(config),
             winston.format.printf(({ level, message, label, timestamp }) => {
-                return `${timestamp}  ${level}: [${label}] ${message}`;
+                let data = message;
+                if (message instanceof Error || message instanceof Object) {
+                    data = JSON.stringify(message);
+                }
+                return `${timestamp}  ${level}: [${label}] ${data}`;
             })
         );
         return new winston.transports.Console(options);
@@ -132,7 +136,11 @@ module.exports = {
             winston.format.prettyPrint(),
             _self.getLogFormat(config),
             winston.format.printf(({ level, message, label, timestamp }) => {
-                return `${timestamp} ${level}: [${label}]  ${message}`;
+                let data = message;
+                if (message instanceof Error || message instanceof Object) {
+                    data = JSON.stringify(message);
+                }
+                return `${timestamp}  ${level}: [${label}] ${data}`;
             })
         );
         options.filename = NODICS.getServerPath() + '/temp/logs/' + options.filename;
