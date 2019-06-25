@@ -48,6 +48,7 @@ module.exports = {
     cronjob: {
         runOnStartup: false
     },
+
     cache: {
         default: {
             channels: {
@@ -73,11 +74,14 @@ module.exports = {
             options: {
                 enabled: false
             },
-            connection: {
-                hosts: ['http://10.21.77.61:9200', 'http://10.21.77.61:9200'],
+            elastic: {
+                connection: {
+                    hosts: ['http://10.21.77.61:9200', 'http://10.21.77.61:9200'],
+                }
             }
         }
     },
+
     emsClient: {
         logFailedMessages: false,
         clients: {
@@ -92,6 +96,7 @@ module.exports = {
             }
         }
     },
+
     database: {
         default: {
             mongodb: {

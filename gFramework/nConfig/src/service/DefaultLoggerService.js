@@ -15,6 +15,7 @@ const winston = require('winston');
 require('winston-daily-rotate-file');
 const wElasticsearch = require('winston-elasticsearch');
 var elasticsearch = require('elasticsearch');
+const splt = require('triple-beam').SPLAT;
 const utils = require('../utils/utils');
 
 module.exports = {
@@ -99,6 +100,13 @@ module.exports = {
         return transports;
     },
 
+    formatObject: function (param) {
+        if (_.isObject(param)) {
+            return JSON.stringify(param);
+        }
+        return param;
+    },
+
     createConsoleTransport: function (labelName, config) {
         let _self = this;
         let options = {};
@@ -109,15 +117,18 @@ module.exports = {
             winston.format.timestamp({
                 format: 'YYYY-MM-DD HH:mm:ss'
             }),
-            winston.format.splat(),
             winston.format.prettyPrint(),
             _self.getLogFormat(config),
-            winston.format.printf(({ level, message, label, timestamp }) => {
-                let data = message;
-                if (message instanceof Error || message instanceof Object) {
-                    data = JSON.stringify(message);
+            winston.format.printf((info) => {
+                const splat = info[splt] || [];
+                const message = this.formatObject(info.message);
+                const rest = splat.map(this.formatObject).join(' ');
+                if (rest && !utils.isBlank(rest) && rest !== '{}' && rest !== '[]') {
+                    info.message = `${message} ${rest}`;
+                } else {
+                    info.message = `${message}`;
                 }
-                return `${timestamp}  ${level}: [${label}] ${data}`;
+                return `${info.timestamp}  ${info.level}: [${info.label}] ${info.message}`;
             })
         );
         return new winston.transports.Console(options);
@@ -132,15 +143,18 @@ module.exports = {
             winston.format.timestamp({
                 format: 'YYYY-MM-DD HH:mm:ss'
             }),
-            winston.format.splat(),
             winston.format.prettyPrint(),
             _self.getLogFormat(config),
-            winston.format.printf(({ level, message, label, timestamp }) => {
-                let data = message;
-                if (message instanceof Error || message instanceof Object) {
-                    data = JSON.stringify(message);
+            winston.format.printf((info) => {
+                const splat = info[splt] || [];
+                const message = this.formatObject(info.message);
+                const rest = splat.map(this.formatObject).join(' ');
+                if (rest && !utils.isBlank(rest) && rest !== '{}' && rest !== '[]') {
+                    info.message = `${message} ${rest}`;
+                } else {
+                    info.message = `${message}`;
                 }
-                return `${timestamp}  ${level}: [${label}] ${data}`;
+                return `${info.timestamp}  ${info.level}: [${info.label}] ${info.message}`;
             })
         );
         options.filename = NODICS.getServerPath() + '/temp/logs/' + options.filename;

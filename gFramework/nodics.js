@@ -105,7 +105,7 @@ module.exports = {
                 }
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');
-                NODICS.LOG.info('Nodics started successfully in (' + NODICS.getStartDuration() + ') ms \n');
+                NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
                 //this.initTestRuner();
             }).catch(error => {
                 NODICS.LOG.error('Nodics server error : ' + error);
