@@ -103,7 +103,7 @@ module.exports = {
                         level: 'debug',
                     },
                     client: {
-                        host: 'localhost:9200'
+                        hosts: ['http://localhost:9200']
                     }
                 }
             }

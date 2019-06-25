@@ -19,17 +19,62 @@ module.exports = {
     },
 
     log: {
-        level: 'info'
+        level: 'debug',
+        transports: {
+            console: {
+                consoleTransport: {
+                    enabled: true
+                }
+            },
+            file: {
+                fileErrorLog: {
+                    enabled: false
+                },
+                fileRestLog: {
+                    enabled: false
+                }
+            },
+            elastic: {
+                elasticLogRecorder: {
+                    enabled: false,
+                    client: {
+                        hosts: ['http://10.21.77.61:9200', 'http://10.21.77.61:9200']
+                    }
+                }
+            }
+        }
     },
 
     cronjob: {
-        runOnStartup: true
+        runOnStartup: false
     },
-
+    cache: {
+        default: {
+            channels: {
+                router: {
+                    engine: 'redis'
+                },
+                schema: {
+                    engine: 'redis'
+                }
+            },
+            engines: {
+                redis: {
+                    options: {
+                        host: '10.21.77.75',
+                        port: 6379
+                    }
+                },
+            }
+        }
+    },
     search: {
         default: {
             options: {
-                enabled: true
+                enabled: false
+            },
+            connection: {
+                hosts: ['http://10.21.77.61:9200', 'http://10.21.77.61:9200'],
             }
         }
     },
@@ -40,7 +85,24 @@ module.exports = {
                 enabled: false
             },
             kafka: {
-                enabled: false
+                enabled: false,
+                connectionOptions: {
+                    kafkaHost: '10.21.77.64:9092,10.21.77.65:9092,10.21.77.66:9092'
+                }
+            }
+        }
+    },
+    database: {
+        default: {
+            mongodb: {
+                master: {
+                    URI: 'mongodb://10.21.77.63:27017,10.21.77.64:27017,10.21.77.66:27017/?replicaSet=vms.mongo-01',
+                    databaseName: 'teeDefaultMaster'
+                },
+                test: {
+                    URI: 'mongodb://10.21.77.63:27017,10.21.77.64:27017,10.21.77.66:27017/?replicaSet=vms.mongo-01',
+                    databaseName: 'teeDefaultTest'
+                }
             }
         }
     }

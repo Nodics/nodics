@@ -75,62 +75,62 @@ module.exports = {
             }
         },
 
-        profile: {
-            elastic: {
-                options: {
-                    connectionHandler: 'DefaultElasticSearchEngineConnectionHandlerService',
-                    schemaHandler: 'DefaultElasticSearchSchemaHandlerService',
-                    fullIndexDataQuery: {},
-                    incrementalIndexDataQuery: {},
+        // profile: {
+        //     elastic: {
+        //         options: {
+        //             connectionHandler: 'DefaultElasticSearchEngineConnectionHandlerService',
+        //             schemaHandler: 'DefaultElasticSearchSchemaHandlerService',
+        //             fullIndexDataQuery: {},
+        //             incrementalIndexDataQuery: {},
 
-                    existsOptions: {
-                        //level: 'indices'
-                    },
+        //             existsOptions: {
+        //                 //level: 'indices'
+        //             },
 
-                    healthOptions: {
-                        level: 'indices'
-                    },
+        //             healthOptions: {
+        //                 level: 'indices'
+        //             },
 
-                    saveOptions: {
-                        opType: 'index'
-                    },
+        //             saveOptions: {
+        //                 opType: 'index'
+        //             },
 
-                    bulkOptions: {
-                        opType: 'create'
-                    },
+        //             bulkOptions: {
+        //                 opType: 'create'
+        //             },
 
-                    searchOptions: {
+        //             searchOptions: {
 
-                    },
+        //             },
 
-                    removeOptions: {
+        //             removeOptions: {
 
-                    },
+        //             },
 
-                    removeIndexOptions: {
+        //             removeIndexOptions: {
 
-                    },
+        //             },
 
-                    schemaGetOptions: {
+        //             schemaGetOptions: {
 
-                    },
+        //             },
 
-                    schemaPutOptions: {
+        //             schemaPutOptions: {
 
-                    },
+        //             },
 
-                    refreshOptions: {
-                        ignoreUnavailable: false,
-                        expandWildcards: 'all'
-                    }
+        //             refreshOptions: {
+        //                 ignoreUnavailable: false,
+        //                 expandWildcards: 'all'
+        //             }
 
-                },
-                connection: {
-                    hosts: ['http://localhost:9200'],
-                    log: 'info',
-                    deadTimeout: 1000
-                }
-            }
-        }
+        //         },
+        //         connection: {
+        //             hosts: ['http://localhost:9200'],
+        //             log: 'info',
+        //             deadTimeout: 1000
+        //         }
+        //     }
+        // }
     }
 };

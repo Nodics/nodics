@@ -42,10 +42,18 @@ module.exports = {
             redisCacheConfig.options.db = redisCacheConfig.options.db || 0;
             let client = redis.createClient(redisCacheConfig.options);
             client.on("error", err => {
-                reject(err);
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    error: err
+                });
             });
             client.on("connect", success => {
-                resolve(client);
+                resolve({
+                    success: true,
+                    code: 'SUC_CACHE_00000',
+                    result: client
+                });
             });
             client.on("ready", function (err) {
                 _self.LOG.debug('Item redis client is ready for module : ' + moduleName);
