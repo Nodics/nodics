@@ -17,9 +17,6 @@ module.exports = {
             'kickoffDev'
         ]
     },
-    log: {
-        level: 'debug'
-    },
 
     server: {
         default: {

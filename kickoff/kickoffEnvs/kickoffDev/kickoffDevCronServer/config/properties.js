@@ -19,10 +19,6 @@ module.exports = {
         ]
     },
 
-    log: {
-        level: 'debug'
-    },
-
     cronjob: {
         runOnStartup: false
     },
@@ -31,6 +27,11 @@ module.exports = {
         default: {
             options: {
                 enabled: false
+            },
+            elastic: {
+                connection: {
+                    hosts: ['http://10.21.77.61:9200', 'http://10.21.77.61:9200'],
+                }
             }
         }
     },
@@ -119,6 +120,35 @@ module.exports = {
 
                     httpsHost: 'localhost',
                     httpsPort: 3005
+                }
+            }
+        },
+
+        dataConsumer: {
+            options: {
+                contextRoot: 'nodics'
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3010,
+
+                httpsHost: 'localhost',
+                httpsPort: 3011
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3010,
+
+                httpsHost: 'localhost',
+                httpsPort: 3011
+            },
+            nodes: {
+                0: {
+                    httpHost: 'localhost',
+                    httpPort: 3010,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3011
                 }
             }
         }

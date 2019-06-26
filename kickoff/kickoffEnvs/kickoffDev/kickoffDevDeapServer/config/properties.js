@@ -18,26 +18,30 @@ module.exports = {
         ]
     },
 
-    log: {
-        level: 'debug'
-    },
-
     search: {
         default: {
             options: {
                 enabled: false
+            },
+            elastic: {
+                connection: {
+                    hosts: ['http://10.21.77.61:9200', 'http://10.21.77.61:9200'],
+                }
             }
         }
     },
 
     emsClient: {
-        logFailedMessages: false,
+        logFailedMessages: true,
         clients: {
             activemq: {
                 enabled: false
             },
             kafka: {
-                enabled: false
+                enabled: true,
+                connectionOptions: {
+                    kafkaHost: '10.21.77.64:9092,10.21.77.65:9092,10.21.77.66:9092'
+                }
             }
         }
     },
