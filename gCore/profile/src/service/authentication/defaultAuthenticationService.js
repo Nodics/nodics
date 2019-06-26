@@ -212,7 +212,7 @@ module.exports = {
                     SERVICE.DefaultEventService.publish(events).then(success => {
                         this.LOG.debug('Event successfully posted');
                     }).catch(error => {
-                        this.LOG.error('While posting model change event : ' + error);
+                        this.LOG.error('While posting model change event : ', error);
                     });
                 }
             }

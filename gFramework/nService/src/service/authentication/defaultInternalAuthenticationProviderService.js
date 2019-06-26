@@ -48,13 +48,11 @@ module.exports = {
                 }
             });
             try {
-                SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
-                    if (error) {
-                        _self.LOG.error('While connecting profile server to fetch API Key', error);
-                        resolve([]);
-                    } else {
-                        resolve(response.result || []);
-                    }
+                SERVICE.DefaultModuleService.fetch(requestUrl).then(response => {
+                    resolve(response.result || []);
+                }).catch(error => {
+                    _self.LOG.error('While connecting profile server to fetch API Key', error);
+                    resolve([]);
                 });
             } catch (error) {
                 _self.LOG.error('While connecting profile server to fetch API Key', error);

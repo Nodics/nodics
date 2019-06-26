@@ -192,7 +192,7 @@ module.exports = {
                     'utf-8',
                     function (error, success) {
                         if (error) {
-                            UTILS.LOG.error('While creating object for file : ' + fileName.replace(NODICS.getNodicsHome(), '.'), ' : ' + error);
+                            UTILS.LOG.error('While creating object for file : ' + fileName.replace(NODICS.getNodicsHome(), '.'), ' : ', error);
                             reject(error);
                         } else {
                             UTILS.LOG.debug('Creating class object for : ' + fileName.replace(NODICS.getNodicsHome() + '.'));

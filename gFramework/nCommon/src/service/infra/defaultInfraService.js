@@ -315,7 +315,7 @@ module.exports = {
             console.log('------------------------------------------------------------------------------------');
 
         }).catch(function (error) {
-            return console.error('Copy failed: ' + error);
+            return console.error('Copy failed: ', error);
         });
     }
 };

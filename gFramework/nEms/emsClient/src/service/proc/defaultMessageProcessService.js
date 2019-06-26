@@ -102,7 +102,7 @@ module.exports = {
                 this.LOG.debug('Message published successfully');
                 process.nextSuccess(request, response);
             }).catch(error => {
-                this.LOG.error('Message publishing failed: ' + error);
+                this.LOG.error('Message publishing failed: ', error);
                 process.error(request, response, error);
             });
         } else {
@@ -113,7 +113,7 @@ module.exports = {
                 this.LOG.debug('Message published successfully');
                 process.nextSuccess(request, response);
             }).catch(error => {
-                this.LOG.error('Message publishing failed: ' + error);
+                this.LOG.error('Message publishing failed: ', error);
                 process.error(request, response, error);
             });
         }

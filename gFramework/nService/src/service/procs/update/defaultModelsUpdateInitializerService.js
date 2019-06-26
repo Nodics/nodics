@@ -325,11 +325,11 @@ module.exports = {
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {
-                    this.LOG.error('While posting model change event : ' + error);
+                    this.LOG.error('While posting model change event : ', error);
                 });
             }
         } catch (error) {
-            this.LOG.error('Facing issue while pushing save event : ' + error);
+            this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
     },
@@ -342,10 +342,8 @@ module.exports = {
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
         if (response.errors && response.errors.length === 1) {
-            console.log(response.errors[0]);
             process.reject(response.errors[0]);
         } else if (response.errors && response.errors.length > 1) {
-            console.log(response.errors);
             process.reject({
                 success: false,
                 code: 'ERR_UPD_00000',

@@ -40,6 +40,6 @@ module.exports = {
     },
 
     handleError: function (definition, job, error) {
-        this.LOG.error('Please validate job definition for: ' + definition.code + ' Error: ' + error);
+        this.LOG.error('Please validate job definition for: ' + definition.code + ' Error: ', error);
     }
 };

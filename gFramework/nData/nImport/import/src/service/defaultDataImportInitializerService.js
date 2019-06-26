@@ -141,7 +141,7 @@ module.exports = {
                 this.LOG.debug('File moved to error bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(errorFiles);
-                this.LOG.error('Facing issued while moving file to error bucket: ' + error);
+                this.LOG.error('Facing issued while moving file to error bucket: ', error);
             });
         }
         if (response.errors && response.errors.length === 1) {

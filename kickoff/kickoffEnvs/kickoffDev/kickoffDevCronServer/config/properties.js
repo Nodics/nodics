@@ -20,13 +20,13 @@ module.exports = {
     },
 
     cronjob: {
-        runOnStartup: false
+        runOnStartup: true
     },
 
     search: {
         default: {
             options: {
-                enabled: false
+                enabled: true
             },
             elastic: {
                 connection: {

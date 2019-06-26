@@ -61,7 +61,7 @@ module.exports = {
                 this.LOG.debug('File moved to success bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(request.files);
-                this.LOG.error('Facing issued while moving file to success bucket: ' + error);
+                this.LOG.error('Facing issued while moving file to success bucket: ', error);
             });
         }
         process.resolve(response.success);
@@ -74,7 +74,7 @@ module.exports = {
                 this.LOG.debug('File moved to success bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(request.files);
-                this.LOG.error('Facing issued while moving file to success bucket: ' + error);
+                this.LOG.error('Facing issued while moving file to success bucket: ', error);
             });
         }
         if (response.errors && response.errors.length === 1) {

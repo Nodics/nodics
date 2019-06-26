@@ -104,7 +104,7 @@ module.exports = {
                             NODICS.setActiveChannel('master');
                             resolve(true);
                         }).on('error', (error) => {
-                            this.LOG.error('some error : ' + error);
+                            this.LOG.error('some error : ', error);
                         });
                     } catch (error) {
                         NODICS.setActiveChannel('master');
@@ -140,7 +140,7 @@ module.exports = {
                         });
                     } catch (error) {
                         NODICS.setNTestRunning(false);
-                        reject('got error while starting n-test case execution : ' + error);
+                        reject('got error while starting n-test case execution : ', error);
                     }
                 } else {
                     reject('There are none test cases to execute, please write some');

@@ -175,11 +175,11 @@ module.exports = {
                 }).then(success => {
                     _self.LOG.debug('Message Successfully logged: ' + options.consumer.name);
                 }).catch(error => {
-                    _self.LOG.error('Failed to log message : ' + options.consumer.name + ' : ERROR is ' + error);
+                    _self.LOG.error('Failed to log message : ' + options.consumer.name + ' : ERROR is ', error);
                 });
             }
         } catch (error) {
-            _self.LOG.error('Failed to log message : ' + options.consumer.name + ' : ERROR is ' + error);
+            _self.LOG.error('Failed to log message : ' + options.consumer.name + ' : ERROR is ', error);
         }
     },
 
@@ -192,11 +192,11 @@ module.exports = {
                 }, {}).then(success => {
                     resolve(true);
                 }).catch(error => {
-                    this.LOG.error('Failed to publish message : ' + queue.name + ' : ERROR is ' + error);
+                    this.LOG.error('Failed to publish message : ' + queue.name + ' : ERROR is ', error);
                     reject(error);
                 });
             } catch (error) {
-                this.LOG.error('Could not parse message recieved from queue : ' + queue.name + ' : ERROR is ' + error);
+                this.LOG.error('Could not parse message recieved from queue : ' + queue.name + ' : ERROR is ', error);
                 reject(error);
             }
         });

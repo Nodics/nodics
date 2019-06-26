@@ -88,7 +88,7 @@ module.exports = {
             }
             url += '/' + contextRoot + '/' + options.moduleName;
         } catch (error) {
-            this.LOG.error('While Preparing URL for :' + options.moduleName + ' : ' + error);
+            this.LOG.error('While Preparing URL for :' + options.moduleName + ' : ', error);
         }
         return url;
     },

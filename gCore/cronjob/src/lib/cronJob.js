@@ -109,7 +109,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                                 _running = false;
                                 _definition.endTime = new Date();
                                 _definition.error = error;
-                                _self.LOG.error('Job: ' + _definition.code + ' has issue while execution: ' + error);
+                                _self.LOG.error('Job: ' + _definition.code + ' has issue while execution: ', error);
                                 if (_definition.logResult) {
                                     SERVICE.DefaultCronJobLogService.save({
                                         tenant: _definition.tenant,
@@ -122,7 +122,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                                     }).then(success => {
                                         _self.LOG.debug('Log has been updated successfully');
                                     }).catch(error => {
-                                        _self.LOG.error('Failed updating log: ' + error);
+                                        _self.LOG.error('Failed updating log: ', error);
                                     });
                                 }
                                 if (oneTime) _self.stopJob(true);
@@ -143,7 +143,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                         }, {}).then(success => {
                             _self.LOG.warn('Job : ' + _definition.code + ' completes successfully');
                         }).catch(error => {
-                            _self.LOG.error('Job: ' + _definition.code + ' has issue while onComplete: ' + error);
+                            _self.LOG.error('Job: ' + _definition.code + ' has issue while onComplete: ', error);
                         });
                     }
                 } catch (error) {
@@ -181,7 +181,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                         _cronJob.start();
                         resolve('Job: ' + _definition.code + ' started successfully');
                     }).catch(error => {
-                        reject('Job: ' + _definition.code + ' has issue while starting: ' + error);
+                        reject('Job: ' + _definition.code + ' has issue while starting: ', error);
                     });
                 } else {
                     resolve('Job: ' + _definition.code + ' is already running');
@@ -208,7 +208,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                     }, {}).then(success => {
                         resolve('Job: ' + _definition.code + ' stoped successfully');
                     }).catch(error => {
-                        reject('Job: ' + _definition.code + ' has issue while stoping: ' + error);
+                        reject('Job: ' + _definition.code + ' has issue while stoping: ', error);
                     });
                 } else {
                     resolve('Job: ' + _definition.code + ' is already stoped');
@@ -295,7 +295,7 @@ module.exports = function (definition, trigger, context, timeZone) {
     };
 
     this.handleError = function (error) {
-        _self.LOG.error('Job: ' + _definition.code + ' has issue while running: ' + error);
+        _self.LOG.error('Job: ' + _definition.code + ' has issue while running: ', error);
         SERVICE.DefaultPipelineService.start('defaultCronJobErrorHandlerPipeline', {
             job: _self,
             definition: _definition,

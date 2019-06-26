@@ -105,10 +105,12 @@ module.exports = {
                 process.error(request, response, error);
             });
         } else if (jobDetail.internal) {
-            SERVICE.DefaultModuleService.fetch(this.prepareInternalURL(request.definition)).then(success => {
+            let uri = this.prepareInternalURL(request.definition);
+            SERVICE.DefaultModuleService.fetch(uri).then(success => {
                 response.success = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
+                console.log(error);
                 process.error(request, response, error);
             });
         } else if (jobDetail.external) {
@@ -196,11 +198,11 @@ module.exports = {
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {
-                    this.LOG.error('While posting model change event : ' + error);
+                    this.LOG.error('While posting model change event : ', error);
                 });
             }
         } catch (error) {
-            this.LOG.error('Facing issue while pushing save event : ' + error);
+            this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
     },

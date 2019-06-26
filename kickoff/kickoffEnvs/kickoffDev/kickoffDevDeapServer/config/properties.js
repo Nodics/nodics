@@ -21,7 +21,7 @@ module.exports = {
     search: {
         default: {
             options: {
-                enabled: false
+                enabled: true
             },
             elastic: {
                 connection: {

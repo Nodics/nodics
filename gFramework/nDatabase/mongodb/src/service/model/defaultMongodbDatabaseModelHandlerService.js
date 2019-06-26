@@ -164,7 +164,7 @@ module.exports = {
                     _self.LOG.debug('Indexes created for: ' + schemaModel.schemaName);
                     resolve(schemaModel);
                 }).catch(error => {
-                    _self.LOG.error('Indexes failed for: ' + schemaModel.schemaName + ' : ' + error);
+                    _self.LOG.error('Indexes failed for: ' + schemaModel.schemaName + ' : ', error);
                     reject(error);
                 });
             }).catch(error => {

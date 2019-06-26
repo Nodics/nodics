@@ -61,7 +61,7 @@ module.exports = {
                 });
             });
         } catch (error) {
-            this.LOG.error('Enterprise code is not valid: ' + error);
+            this.LOG.error('Enterprise code is not valid: ', error);
             process.error(request, response, error || {
                 success: false,
                 code: 'ERR_ENT_00000'

@@ -183,7 +183,7 @@ module.exports = {
             }).then(success => {
                 this.LOG.info('Item saved in item cache');
             }).catch(error => {
-                this.LOG.error('While saving item in item cache : ' + error);
+                this.LOG.error('While saving item in item cache : ', error);
             });
         }
         process.nextSuccess(request, response);

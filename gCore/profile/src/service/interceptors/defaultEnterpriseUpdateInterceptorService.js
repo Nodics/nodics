@@ -112,7 +112,7 @@ module.exports = {
                                 this.LOG.debug('Event successfully posted');
                                 resolve(success);
                             }).catch(error => {
-                                this.LOG.error('While posting model change event : ' + error);
+                                this.LOG.error('While posting model change event : ', error);
                                 reject(error);
                             });
                         }).catch(error => {
@@ -125,7 +125,7 @@ module.exports = {
                         resolve(success);
                     }
                 }).catch(error => {
-                    this.LOG.error('Failed to check if current tenant is associated with other active enterprises as well : ' + error);
+                    this.LOG.error('Failed to check if current tenant is associated with other active enterprises as well : ', error);
                     reject(error);
                 });
             } else if (enterprise.active && enterprise.tenant.active && !NODICS.getActiveTenants().includes(enterprise.tenant.code)) {
@@ -137,7 +137,7 @@ module.exports = {
                         this.LOG.debug('Event successfully posted');
                         resolve(success);
                     }).catch(error => {
-                        this.LOG.error('While posting model change event : ' + error);
+                        this.LOG.error('While posting model change event : ', error);
                         reject(error);
                     });
                 }).catch(error => {

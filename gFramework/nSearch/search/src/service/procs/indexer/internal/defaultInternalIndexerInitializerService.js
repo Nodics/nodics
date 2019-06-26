@@ -162,12 +162,10 @@ module.exports = {
                         header: {
                             authToken: request.authToken
                         }
-                    }), (error, data) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            _self.processData(request, options, data, resolve, reject);
-                        }
+                    })).then(success => {
+                        _self.processData(request, options, data, resolve, reject);
+                    }).catch(error => {
+                        reject(error);
                     });
                 }
             } catch (error) {

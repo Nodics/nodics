@@ -196,7 +196,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                _self.LOG.error('While broadcasting event to module : ' + error);
+                _self.LOG.error('While broadcasting event to module : ', error);
                 reject(error);
             }
         });

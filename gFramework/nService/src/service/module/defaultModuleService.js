@@ -84,20 +84,26 @@ module.exports = {
         };
     },
 
-    fetch: function (requestUrl, callback) {
+    fetch: function (requestUrl) {
         this.LOG.debug('Hitting module communication URL : ' + JSON.stringify(requestUrl));
-        if (callback) {
+        return new Promise((resolve, reject) => {
             try {
                 requestPromise(requestUrl).then(response => {
-                    callback(null, response);
+                    resolve(response);
                 }).catch(error => {
-                    callback(error);
+                    if (error.statusCode && error.statusCode === 404) {
+                        reject({
+                            success: false,
+                            code: error.statusCode || error.code || 'ERR_SYS_00000',
+                            error: (error.name || '') + ' ' + (error.statusCode || error.code || 'ERR_SYS_00000') + ' at: ' + requestUrl.uri
+                        });
+                    } else {
+                        reject(error);
+                    }
                 });
             } catch (error) {
-                callback(error);
+                reject(error);
             }
-        } else {
-            return requestPromise(requestUrl);
-        }
+        });
     }
 };

@@ -141,7 +141,7 @@ module.exports = {
             modules = modules.concat(serverProperties.activeModules.modules);
             return modules;
         } catch (error) {
-            console.error('While preparing active module list : ' + error);
+            console.error('While preparing active module list : ', error);
         }
     },
 

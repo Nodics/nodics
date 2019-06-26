@@ -205,11 +205,11 @@ module.exports = {
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {
-                    this.LOG.error('While posting model change event : ' + error);
+                    this.LOG.error('While posting model change event : ', error);
                 });
             }
         } catch (error) {
-            this.LOG.error('Facing issue while pushing save event : ' + error);
+            this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
     },

@@ -75,16 +75,14 @@ module.exports = {
                         }
                     });
                     try {
-                        SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
-                            if (error) {
-                                reject({
-                                    success: false,
-                                    code: 'ERR_DBS_00001',
-                                    error: error
-                                });
-                            } else {
-                                resolve(response.result || []);
-                            }
+                        SERVICE.DefaultModuleService.fetch(requestUrl).then(response => {
+                            resolve(response.result || []);
+                        }).catch(error => {
+                            reject({
+                                success: false,
+                                code: 'ERR_DBS_00001',
+                                error: error
+                            });
                         });
                     } catch (error) {
                         reject({
@@ -227,7 +225,7 @@ module.exports = {
                                                     reject(error);
                                                 });
                                             }).catch(error => {
-                                                NODICS.LOG.error('Initial data import failed : ' + error);
+                                                NODICS.LOG.error('Initial data import failed : ', error);
                                                 reject(error);
                                             });
                                         } else {

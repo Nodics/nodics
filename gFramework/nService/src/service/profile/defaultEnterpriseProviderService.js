@@ -76,14 +76,14 @@ module.exports = {
                     reject(error);
                 });
             } else {
-                SERVICE.DefaultModuleService.fetch(this.prepareURL(request), (error, response) => {
-                    if (error) {
-                        reject(error);
-                    } else if (!response.success || !response.result || response.result.length < 1) {
+                SERVICE.DefaultModuleService.fetch(requestUrl).then(success => {
+                    if (!response.success || !response.result || response.result.length < 1) {
                         reject(response.msg);
                     } else {
                         resolve(response.result[0]);
                     }
+                }).catch(error => {
+                    reject(error);
                 });
             }
         });

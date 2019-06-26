@@ -68,7 +68,7 @@ module.exports = function (name, pipelineDefinition) {
             _successEndNode = _nodeList.successEnd;
 
         } catch (error) {
-            this.LOG.error('While building pipeline: ' + error);
+            this.LOG.error('While building pipeline: ', error);
         }
     };
 
