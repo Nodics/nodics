@@ -88,7 +88,7 @@ module.exports = {
                         code: 'SUC_EVNT_00001'
                     });
                 } else {
-                    _self.LOG.debug('Total events to be processed : ', events.length);
+                    _self.LOG.debug('Total events to be processed : ' + events.length);
                     _self.broadcastEvents(events).then(success => {
                         resolve(events);
                     }).catch(error => {

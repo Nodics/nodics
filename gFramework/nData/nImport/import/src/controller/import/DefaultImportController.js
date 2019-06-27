@@ -79,4 +79,20 @@ module.exports = {
             return FACADE.DefaultImportFacade.importSampleData(request);
         }
     },
+
+    importLocalData: function (request, callback) {
+        if (!UTILS.isBlank(request.httpRequest.body) && !UTILS.isBlank(request.httpRequest.body.inputPath)) {
+            request.inputPath = request.httpRequest.body.inputPath;
+            request.importFinalizeData = request.httpRequest.body.importFinalizeData || true;
+        }
+        if (callback) {
+            FACADE.DefaultImportFacade.importLocalData(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultImportFacade.importLocalData(request);
+        }
+    },
 };

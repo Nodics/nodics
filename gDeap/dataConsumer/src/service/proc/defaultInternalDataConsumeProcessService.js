@@ -51,7 +51,8 @@ module.exports = {
             tmpHeader.options = {
                 schemaName: header.schemaName,
                 operation: header.operation || 'save',
-                moduleName: request.moduleName
+                moduleName: request.moduleName,
+                processors: header.processors
             };
         } else if (header.indexName) {
             tmpHeader.options = {
@@ -61,6 +62,13 @@ module.exports = {
                 moduleName: request.moduleName,
                 finalizeData: header.finalizeData || false
             };
+            if (header.processors) {
+                tmpHeader.local = {
+                    indexerConfig: {
+                        processors: header.processors
+                    }
+                };
+            }
         }
         if (!UTILS.isBlank(tmpHeader)) {
             request.header = tmpHeader;

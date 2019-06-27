@@ -48,13 +48,17 @@ module.exports = {
     stateChangeRunning: function (request, response, process) {
         this.LOG.debug('Changing job state to running');
         let jobDefinition = request.definition;
+        jobDefinition.state = ENUMS.CronJobState.RUNNING.key;
+        jobDefinition.lastEndTime = jobDefinition.endTime;
         SERVICE.DefaultCronJobService.update({
             tenant: jobDefinition.tenant,
             query: {
                 code: jobDefinition.code
             },
             model: {
-                state: ENUMS.CronJobState.RUNNING.key
+                state: ENUMS.CronJobState.RUNNING.key,
+                startTime: jobDefinition.startTime,
+                lastEndTime: jobDefinition.lastEndTime
             }
         }).then(success => {
             process.nextSuccess(request, response);
@@ -65,7 +69,7 @@ module.exports = {
 
     applyPreInterceptors: function (request, response, process) {
         let jobDefinition = request.definition;
-        let interceptors = SERVICE.DefaultCronJobConfigurationService.getInterceptors(jobDefinition.code);
+        let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
         if (interceptors && interceptors.preRun) {
             this.LOG.debug('Applying pre job execution interceptors');
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preRun), {
@@ -95,14 +99,18 @@ module.exports = {
                 job: request.job,
                 definition: request.definition
             }).then(success => {
+                response.success = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
             });
         } else if (jobDetail.internal) {
-            SERVICE.DefaultModuleService.fetch(this.prepareInternalURL(request.definition)).then(success => {
+            let uri = this.prepareInternalURL(request.definition);
+            SERVICE.DefaultModuleService.fetch(uri).then(success => {
+                response.success = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
+                console.log(error);
                 process.error(request, response, error);
             });
         } else if (jobDetail.external) {
@@ -114,6 +122,7 @@ module.exports = {
                 responseType: jobDetail.external.responseType,
                 params: jobDetail.external.params
             })).then(success => {
+                response.success = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -148,7 +157,7 @@ module.exports = {
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre job execution interceptors');
         let jobDefinition = request.definition;
-        let interceptors = SERVICE.DefaultCronJobConfigurationService.getInterceptors(jobDefinition.code);
+        let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
         if (interceptors && interceptors.preRun) {
             this.LOG.debug('Applying pre job execution interceptors');
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preRun), {
@@ -168,13 +177,54 @@ module.exports = {
         }
     },
 
+    triggerEvent: function (request, response, process) {
+        try {
+            let jobDefinition = request.definition;
+            if (jobDefinition.event && jobDefinition.event.executed) {
+                this.LOG.debug('Triggering event for Executed job');
+                let event = {//Set tenant from CronJob Himkar
+                    tenant: jobDefinition.tenant,
+                    active: true,
+                    event: 'jobExecuted',
+                    source: 'cronjob',
+                    target: jobDefinition.event.targetModule,
+                    state: "NEW",
+                    type: (jobDefinition.event && jobDefinition.event.eventType) ? jobDefinition.event.eventType : 'ASYNC',
+                    targetType: (jobDefinition.event && jobDefinition.event.targetType) ? jobDefinition.event.targetType : ENUMS.TargetType.MODULE.key,
+                    targetNodeId: (jobDefinition.event && jobDefinition.event.targetNodeId) ? jobDefinition.event.targetNodeId : 0,
+                    data: jobDefinition
+                };
+                this.LOG.debug('Pushing event for item created : ' + jobDefinition.code);
+                SERVICE.DefaultEventService.publish(event).then(success => {
+                    this.LOG.debug('Event successfully posted');
+                }).catch(error => {
+                    this.LOG.error('While posting model change event : ', error);
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while pushing save event : ', error);
+        }
+        process.nextSuccess(request, response);
+    },
+
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
         let jobDefinition = request.definition;
         jobDefinition.state = ENUMS.CronJobState.ACTIVE.key;
         jobDefinition.status = ENUMS.CronJobStatus.SUCCESS.key;
-        this.updateJob(jobDefinition).then(success => {
+        jobDefinition.endTime = new Date();
+        SERVICE.DefaultCronJobService.update({
+            tenant: jobDefinition.tenant,
+            query: {
+                code: jobDefinition.code
+            },
+            model: {
+                state: ENUMS.CronJobState.ACTIVE.key,
+                status: ENUMS.CronJobStatus.SUCCESS.key,
+                endTime: jobDefinition.endTime
+            }
+        }).then(success => {
             process.resolve(response.success);
         }).catch(error => {
             process.resolve(response.success);
@@ -197,7 +247,7 @@ module.exports = {
             let functionName = errorNode.substring(errorNode.indexOf('.') + 1, errorNode.length);
             SERVICE[serviceName][functionName]({
                 job: request.job,
-                definition: request.definition,
+                definition: definition,
                 errors: errors
             }).then(success => {
                 this.handleError(request, response, process);
@@ -215,26 +265,22 @@ module.exports = {
         jobDefinition.state = ENUMS.CronJobState.ACTIVE.key;
         jobDefinition.status = ENUMS.CronJobStatus.ERROR.key;
         jobDefinition.log = response.errors;
-        this.updateJob(jobDefinition).then(success => {
+        jobDefinition.endTime = new Date();
+        SERVICE.DefaultCronJobService.update({
+            tenant: jobDefinition.tenant,
+            query: {
+                code: jobDefinition.code
+            },
+            model: {
+                state: ENUMS.CronJobState.ACTIVE.key,
+                status: ENUMS.CronJobStatus.ERROR.key,
+                endTime: jobDefinition.endTime,
+                log: response.errors
+            }
+        }).then(success => {
             process.reject(response.errors);
         }).catch(error => {
             process.reject(response.errors);
-        });
-    },
-
-    updateJob: function (definition) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultCronJobService.update({
-                tenant: definition.tenant,
-                query: {
-                    code: definition.code
-                },
-                model: definition
-            }).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
         });
     }
 };

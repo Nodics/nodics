@@ -45,16 +45,10 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultModuleService.fetch(this.prepareURL(definition, cronJob), (error, response) => {
-                    let logMessage = '';
-                    if (error || !response.SUCCESS) {
-                        if (error) {
-                            logMessage = error.toString();
-                            _self.LOG.debug('Event process trigger failed : ' + error);
-                        } else {
-                            logMessage = JSON.stringify(response);
-                            _self.LOG.debug('Event process trigger failed : ' + response.msg);
-                        }
+                SERVICE.DefaultModuleService.fetch(this.prepareURL(definition, cronJob)).then(success => {
+                    if (!response.SUCCESS) {
+                        logMessage = JSON.stringify(response);
+                        _self.LOG.debug('Event process trigger failed : ' + response.msg);
                         definition.lastResult = ENUMS.CronJobStatus.ERROR.key;
                         definition.state = ENUMS.CronJobState.FINISHED.key;
                     } else {
@@ -63,6 +57,14 @@ module.exports = {
                         definition.state = ENUMS.CronJobState.FINISHED.key;
                         _self.LOG.debug('Event process triggered successfully');
                     }
+                    _self.updateJobLog(definition, logMessage);
+                    _self.updateJob(definition);
+                    resolve();
+                }).catch(error => {
+                    logMessage = error.toString();
+                    _self.LOG.debug('Event process trigger failed : ', error);
+                    definition.lastResult = ENUMS.CronJobStatus.ERROR.key;
+                    definition.state = ENUMS.CronJobState.FINISHED.key;
                     _self.updateJobLog(definition, logMessage);
                     _self.updateJob(definition);
                     resolve();
@@ -88,7 +90,7 @@ module.exports = {
             }).then(models => {
                 _self.LOG.debug('Log for job: ' + definition.code + ' saved');
             }).catch(error => {
-                _self.LOG.error('While saving log for job: ' + definition.code + ' error: ' + error.toString());
+                _self.LOG.error('While saving log for job: ' + definition.code + ' error: ', error);
             });
         }
     },

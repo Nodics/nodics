@@ -47,13 +47,6 @@ module.exports = {
         }
     },
 
-    resolveEnterpriseCode: function (request, response, process) {
-        if (request.dataModel.enterpriseCode && request.enterpriseCode && request.dataModel.enterpriseCode !== request.enterpriseCode) {
-            request.dataModel.enterpriseCode = request.enterpriseCode;
-        }
-        process.nextSuccess(request, response);
-    },
-
     loadRawSchema: function (request, response, process) {
         this.LOG.debug('Loading raw schema for header');
         let header = request.header;
@@ -327,7 +320,7 @@ module.exports = {
                     reject(reject);
                 }
             }).catch(error => {
-                reject(reject);
+                reject(error);
             });
         });
     },
@@ -336,7 +329,6 @@ module.exports = {
         let header = request.header;
         return new Promise((resolve, reject) => {
             let event = {
-                enterpriseCode: models[0].enterpriseCode || request.enterpriseCode || 'default',
                 tenant: request.tenant,
                 active: true,
                 event: 'saveModels',
@@ -351,7 +343,7 @@ module.exports = {
                     models: models
                 }
             };
-            this.LOG.debug('Pushing event for item created : ', event.event);
+            this.LOG.debug('Pushing event for item created : ' + event.event);
             SERVICE.DefaultEventService.publish(event).then(success => {
                 resolve(success);
             }).catch(error => {

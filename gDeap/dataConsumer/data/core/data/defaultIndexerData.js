@@ -37,25 +37,6 @@ module.exports = {
         logResult: false,
         incremental: true,
         schema: {
-            name: "externalData",
-            moduleName: "dataConsumer",
-            options: {
-                recursive: true,
-                pageSize: 100
-            }
-        },
-        target: {
-            indexName: "externalData"
-        }
-    },
-    record2: {
-        code: "externalDataFullIndexer",
-        name: "externalDataFullIndexer",
-        active: true,
-        finalizeData: false,
-        logResult: false,
-        incremental: false,
-        schema: {
             name: "internalData",
             moduleName: "dataConsumer",
             options: {
@@ -67,9 +48,28 @@ module.exports = {
             indexName: "internalData"
         }
     },
+    record2: {
+        code: "externalDataFullIndexer",
+        name: "externalDataFullIndexer",
+        active: true,
+        finalizeData: false,
+        logResult: false,
+        incremental: false,
+        schema: {
+            name: "externalData",
+            moduleName: "dataConsumer",
+            options: {
+                recursive: true,
+                pageSize: 100
+            }
+        },
+        target: {
+            indexName: "externalData"
+        }
+    },
     record3: {
-        code: "internalDataIncrementalIndexer",
-        name: "internalDataIncrementalIndexer",
+        code: "externalDataIncrementalIndexer",
+        name: "externalDataIncrementalIndexer",
         active: true,
         finalizeData: false,
         logResult: false,

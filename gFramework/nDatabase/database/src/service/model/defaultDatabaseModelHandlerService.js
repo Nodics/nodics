@@ -172,7 +172,7 @@ module.exports = {
                     resolve(true);
                 }
             } else {
-                _self.LOG.warn('Invalid database configuration for module: ', options.moduleName, ' and tenant: ', options.tntCode + '. Hence defailt will be used');
+                _self.LOG.warn('Invalid database configuration for module: ' + options.moduleName + ' and tenant: ' + options.tntCode + '. Hence defailt will be used');
                 resolve(true);
             }
         });

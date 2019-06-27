@@ -12,7 +12,6 @@
 module.exports = {
     record0: {
         code: "publishEvents",
-        enterpriseCode: "default",
         tenant: "default",
         description: 'This job is to trigger process events process, which will push all ASYNC events to target system',
         runOnNode: 0,

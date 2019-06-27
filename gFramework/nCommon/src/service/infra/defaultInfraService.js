@@ -12,6 +12,28 @@ const copy = require('recursive-copy');
 
 module.exports = {
 
+    /**
+    * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+    * defined it that with Promise way
+    * @param {*} options 
+    */
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    /**
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
     generateApp: function () {
         return new Promise((resolve, reject) => {
             let command = this.parseCommand();
@@ -34,7 +56,7 @@ module.exports = {
             this.generateTarget(appDetail, 'group');
             let modulesDetail = {
                 name: command.name + 'Modules',
-                index: command.index + ".1",
+                index: command.index + ".1.99",
                 path: command.path + '/' + appDetail.name,
                 commonPath: command.commonPath
             };
@@ -62,7 +84,7 @@ module.exports = {
 
             let envsDetail = {
                 name: command.name + 'Envs',
-                index: command.index + ".10",
+                index: command.index + ".10.99",
                 path: command.path + '/' + appDetail.name,
                 commonPath: command.commonPath
             };
@@ -270,7 +292,7 @@ module.exports = {
         }).on(copy.events.COPY_FILE_COMPLETE, function (copyOperation) {
             fs.readFile(copyOperation.dest, 'utf8', (error, content) => {
                 if (error) {
-                    console.log('Got error in file : ', copyOperation.dest, ' --- ', error);
+                    console.log('Got error in file : ' + copyOperation.dest + ' --- ' + error);
                     return;
                 }
                 content = content.replace(/customApplication/g, appName);
@@ -288,12 +310,12 @@ module.exports = {
             console.error('Unable to copy ' + copyOperation.dest);
         }).then(function (results) {
             console.log('------------------------------------------------------------------------------------');
-            console.log('Module has been generated at : ', destPath, ' - ', results.length + ' file(s) copied');
+            console.log('Module has been generated at : ' + destPath + ' - ' + results.length + ' file(s) copied');
             console.log("Please visit package.json file and update index value, before executing");
             console.log('------------------------------------------------------------------------------------');
 
         }).catch(function (error) {
-            return console.error('Copy failed: ' + error);
+            return console.error('Copy failed: ', error);
         });
     }
 };

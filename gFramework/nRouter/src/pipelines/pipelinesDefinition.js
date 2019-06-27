@@ -114,18 +114,18 @@ module.exports = {
     },
 
     handleNonSecuredRequestPipeline: {
-        startNode: "validateEnterpriseCode",
+        startNode: "validateEntCode",
         hardStop: true,
         handleError: 'handleError',
         nodes: {
-            validateEnterpriseCode: {
+            validateEntCode: {
                 type: 'function',
-                handler: 'DefaultNonSecuredRequestPipelineService.validateEnterpriseCode',
-                success: 'loadEnterpriseCode'
+                handler: 'DefaultNonSecuredRequestPipelineService.validateEntCode',
+                success: 'loadEnterprise'
             },
-            loadEnterpriseCode: {
+            loadEnterprise: {
                 type: 'function',
-                handler: 'DefaultNonSecuredRequestPipelineService.loadEnterpriseCode',
+                handler: 'DefaultNonSecuredRequestPipelineService.loadEnterprise',
                 success: 'validateTenantId'
             },
             validateTenantId: {

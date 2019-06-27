@@ -90,7 +90,7 @@ module.exports = {
             if (testConfig.enabled && testConfig.uTest.enabled) {
                 if (!UTILS.isBlank(TEST.uTestPool.suites)) {
                     NODICS.setActiveChannel('test');
-                    this.LOG.debug('Starting Unit Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
+                    this.LOG.debug('Starting Unit Test Execution Process with Active Channel : ' + NODICS.getActiveChannel());
                     try {
                         let uTestMasterMocha = new Mocha({ timeout: 10 });
                         let uTestMasterSuite = Mocha.Suite.create(uTestMasterMocha.suite, 'Starting master suite execution for U-Test');
@@ -125,7 +125,7 @@ module.exports = {
             if (testConfig.enabled && testConfig.nTest.enabled) {
                 if (!UTILS.isBlank(TEST.nTestPool.suites)) {
                     NODICS.setNTestRunning(true);
-                    this.LOG.debug('Starting N-Test Execution Process with Active Channel : ', NODICS.getActiveChannel());
+                    this.LOG.debug('Starting N-Test Execution Process with Active Channel : ' + NODICS.getActiveChannel());
                     try {
                         let nTestMasterMocha = new Mocha();
                         let nTestMasterSuite = Mocha.Suite.create(nTestMasterMocha.suite, 'Starting master suite execution for N-Test');
@@ -140,7 +140,7 @@ module.exports = {
                         });
                     } catch (error) {
                         NODICS.setNTestRunning(false);
-                        reject('got error while starting n-test case execution : ' + error);
+                        reject('got error while starting n-test case execution : ', error);
                     }
                 } else {
                     reject('There are none test cases to execute, please write some');

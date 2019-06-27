@@ -46,7 +46,7 @@ module.exports = {
                     nameOnly: true
                 }).toArray((error, collections) => {
                     if (error) {
-                        _self.LOG.error('While fetching list of collections: ' + error);
+                        _self.LOG.error('While fetching list of collections: ', error);
                         reject('While fetching list of collections: ' + error);
                     } else {
                         resolve({
@@ -56,7 +56,7 @@ module.exports = {
                     }
                 });
             }).catch(error => {
-                _self.LOG.error('MongoDB default connection error: ' + error);
+                _self.LOG.error('MongoDB default connection error: ', error);
                 reject('MongoDB default connection error: ' + error);
             });
         });

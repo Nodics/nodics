@@ -20,7 +20,7 @@ module.exports = {
         }).then(success => {
             _self.LOG.debug('State data has been updated with current time');
         }).catch(error => {
-            _self.LOG.debug('While updating Active data with current time : ', error);
+            _self.LOG.error('While updating Active data with current time : ', error);
         });
     },
 
@@ -36,9 +36,8 @@ module.exports = {
 
     authenticateAPIKey: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.enterpriseCode).then(enterprise => {
+            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.entCode).then(enterprise => {
                 SERVICE.DefaultEmployeeService.findByAPIKey({
-                    enterpriseCode: enterprise.code,
                     tenant: enterprise.tenant.code,
                     apiKey: request.apiKey
                 }).then(employee => {
@@ -59,11 +58,10 @@ module.exports = {
     authenticateEmployee: function (request) {
         return new Promise((resolve, reject) => {
             let _self = this;
-            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.enterpriseCode).then(enterprise => {
+            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.entCode).then(enterprise => {
                 SERVICE.DefaultEmployeeService.findByLoginId({
                     tenant: enterprise.tenant.code,
                     loginId: request.loginId,
-                    enterpriseCode: enterprise.code
                 }).then(employee => {
                     _self.authenticate({
                         request: request,
@@ -92,11 +90,10 @@ module.exports = {
     authenticateCustomer: function (request) {
         return new Promise((resolve, reject) => {
             let _self = this;
-            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.enterpriseCode).then(enterprise => {
+            SERVICE.DefaultEnterpriseService.retrieveEnterprise(request.entCode).then(enterprise => {
                 SERVICE.DefaultCustomerService.findByLoginId({
                     tenant: enterprise.tenant.code,
-                    loginId: request.loginId,
-                    enterpriseCode: enterprise.code
+                    loginId: request.loginId
                 }).then(customer => {
                     _self.authenticate({
                         request: request,
@@ -145,14 +142,14 @@ module.exports = {
                                     tenant: options.enterprise.tenant.code
                                 });
                                 _self.createRefreshToken({
-                                    enterpriseCode: options.enterprise.code,
+                                    entCode: options.enterprise.code,
                                     tenant: options.enterprise.tenant.code,
                                     loginId: options.person.loginId,
                                     password: options.request.password,
                                     type: options.type
                                 }).then(refreshToken => {
                                     let authToken = _self.generateAuthToken({
-                                        enterpriseCode: options.enterprise.code,
+                                        entCode: options.enterprise.code,
                                         tenant: options.enterprise.tenant.code,
                                         loginId: options.person.loginId,
                                         tokenLife: options.person.tokenLife,
@@ -202,9 +199,9 @@ module.exports = {
     createRefreshToken: function (options, callback) {
         return new Promise((resolve, reject) => {
             try {
-                let refreshToken = UTILS.generateHash(options.enterpriseCode + options.loginId + (new Date()).getTime());
+                let refreshToken = UTILS.generateHash(options.entCode + options.loginId + (new Date()).getTime());
                 this.addToken('profile', false, refreshToken, {
-                    enterpriseCode: options.enterpriseCode,
+                    entCode: options.entCode,
                     tenant: options.tenant,
                     loginId: options.loginId,
                     password: options.password,

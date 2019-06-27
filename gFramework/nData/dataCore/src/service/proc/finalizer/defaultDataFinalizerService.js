@@ -43,7 +43,7 @@ module.exports = {
     redirectToFileTypeProcess: function (request, response, process) {
         let fileTypeProcess = CONFIG.get('data').fileTypeProcess;
         if (fileTypeProcess && fileTypeProcess[request.inputPath.fileType]) {
-            this.LOG.debug('Processing data for file type: ', request.inputPath.fileType, ' with pipeline: ', fileTypeProcess[request.inputPath.fileType]);
+            this.LOG.debug('Processing data for file type: ' + request.inputPath.fileType + ' with pipeline: ' + fileTypeProcess[request.inputPath.fileType]);
             SERVICE.DefaultPipelineService.start(fileTypeProcess[request.inputPath.fileType], request, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -61,7 +61,7 @@ module.exports = {
                 this.LOG.debug('File moved to success bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(request.files);
-                this.LOG.error('Facing issued while moving file to success bucket: ' + error);
+                this.LOG.error('Facing issued while moving file to success bucket: ', error);
             });
         }
         process.resolve(response.success);
@@ -74,7 +74,7 @@ module.exports = {
                 this.LOG.debug('File moved to success bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(request.files);
-                this.LOG.error('Facing issued while moving file to success bucket: ' + error);
+                this.LOG.error('Facing issued while moving file to success bucket: ', error);
             });
         }
         if (response.errors && response.errors.length === 1) {

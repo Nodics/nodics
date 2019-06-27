@@ -10,9 +10,9 @@
  */
 
 module.exports = {
-    retrieveEnterprise: function (enterpriseCode) {
+    retrieveEnterprise: function (entCode) {
         return new Promise((resolve, reject) => {
-            if (UTILS.isBlank(enterpriseCode)) {
+            if (UTILS.isBlank(entCode)) {
                 reject({
                     success: false,
                     code: 'ERR_ENT_00000'
@@ -24,7 +24,7 @@ module.exports = {
                         recursive: true
                     },
                     query: {
-                        code: enterpriseCode
+                        code: entCode
                     }
                 }).then(enterprises => {
                     if (enterprises.result.length !== 1) {

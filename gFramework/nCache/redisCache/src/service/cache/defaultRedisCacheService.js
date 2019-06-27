@@ -52,7 +52,7 @@ module.exports = {
                 resolve({
                     success: true,
                     code: 'SUC_CACHE_00000',
-                    result: value
+                    result: options.value
                 });
             } catch (error) {
                 reject({
@@ -105,44 +105,48 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                options.channel.client.keys(function (err, cacheKeys) {
-                    if (err) {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00000',
-                            error: error
-                        });
-                    } else {
-                        if (options.prefix) {
-                            let prefix = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.prefix;
-                            if (!prefix.endsWith('*')) {
-                                prefix += '*';
-                            }
-                            _self.LOG.debug('Flushing value in local cache stored with prefix: ' + prefix);
-                            options.channel.client.keys(prefix, function (err, cacheKeys) {
-                                if (cacheKeys) {
-                                    cacheKeys.forEach(key => {
-                                        options.channel.client.del(key);
-                                    });
-                                }
-                                resolve({
-                                    success: true,
-                                    code: 'SUC_CACHE_00000',
-                                    result: cacheKeys
-                                });
+                if (options.prefix) {
+                    let prefix = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.prefix;
+                    if (!prefix.endsWith('*')) {
+                        prefix += '*';
+                    }
+                    _self.LOG.debug('Flushing value in local cache stored with prefix: ' + prefix);
+                    options.channel.client.keys(prefix, function (err, cacheKeys) {
+                        if (err) {
+                            reject({
+                                success: false,
+                                code: 'ERR_CACHE_00000',
+                                error: err
                             });
                         } else {
-                            options.channel.client.keys(function (err, cacheKeys) {
-                                options.channel.client.flushAll();
-                                resolve({
-                                    success: true,
-                                    code: 'SUC_CACHE_00000',
-                                    result: cacheKeys
-                                });
+                            cacheKeys.forEach(key => {
+                                options.channel.client.del(key);
+                            });
+                            resolve({
+                                success: true,
+                                code: 'SUC_CACHE_00000',
+                                result: cacheKeys
                             });
                         }
-                    }
-                });
+                    });
+                } else {
+                    options.channel.client.keys(function (err, cacheKeys) {
+                        if (err) {
+                            reject({
+                                success: false,
+                                code: 'ERR_CACHE_00000',
+                                error: err
+                            });
+                        } else {
+                            options.channel.client.flushAll();
+                            resolve({
+                                success: true,
+                                code: 'SUC_CACHE_00000',
+                                result: cacheKeys
+                            });
+                        }
+                    });
+                }
             } catch (error) {
                 reject({
                     success: false,

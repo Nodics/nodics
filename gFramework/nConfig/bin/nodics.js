@@ -22,8 +22,11 @@ module.exports = function () {
     let _initRequired = false;
     let _loggers = {};
     let _preScripts = {};
-    let _tenants = [];
+    let _activeEnterprises = {};
+    let _activeTenants = [];
     let _internalAuthTokens = {};
+    let _nodeName = null;
+    let _nodePath = null;
 
     let _nodics = {
         modules: {},
@@ -45,20 +48,29 @@ module.exports = function () {
     };
 
     this.initEnvironment = function () {
-        _serverName = 'nodicsDefaultServer';
+        _serverName = 'kickoffLocalServer';
+        _nodeName = null;
         process.argv.forEach(element => {
             if (element.startsWith('S=')) {
                 _serverName = element.replace('S=', '');
             } else if (element.startsWith('SERVER=')) {
                 _serverName = element.replace('SERVER=', '');
+            } else if (element.startsWith('NODE=')) {
+                _nodeName = element.replace('NODE=', '');
             }
         });
         _serverPath = this.getRawModule(_serverName).path;
         _envName = this.getRawModule(_serverName).parent;
         _envPath = this.getRawModule(_envName).path;
-
-        _appName = this.getRawModule(_envName).parent;
-        _appPath = this.getRawModule(_appName).path;
+        if (_nodeName) {
+            if (this.getRawModule(_nodeName)) {
+                _nodePath = this.getRawModule(_nodeName).path;
+            } else {
+                throw new Error('Invalid node name: ' + _nodeName);
+            }
+        }
+        // _appName = this.getRawModule(_envName).parent;
+        // _appPath = this.getRawModule(_appName).path;
 
     };
 
@@ -133,6 +145,14 @@ module.exports = function () {
         return (_entTime - _startTime);
     };
 
+    this.getNodeName = function () {
+        return _nodeName;
+    };
+
+    this.getNodePath = function () {
+        return _nodePath;
+    };
+
     this.getServerName = function () {
         return _serverName;
     };
@@ -157,26 +177,34 @@ module.exports = function () {
         return _envPath;
     };
 
-    this.getApplicationName = function () {
-        return _appName;
+    this.addActiveEnterprise = function (entCode, tenant) {
+        _activeEnterprises[entCode] = tenant;
     };
 
-    this.getApplicationPath = function () {
-        return _appPath;
+    this.removeActiveEnterprise = function (entCode) {
+        return delete _activeEnterprises[entCode];
     };
 
-    this.addTenant = function (tntCode) {
-        _tenants.push(tntCode);
+    this.getTenantForEnterprise = function (entCode) {
+        return _activeEnterprises[entCode];
     };
 
-    this.getTenants = function () {
-        return [].concat(_tenants);
+    this.getActiveEnterprises = function () {
+        return Object.keys(_activeEnterprises);
+    }
+
+    this.addActiveTenant = function (tntCode) {
+        _activeTenants.push(tntCode);
     };
 
-    this.removeTenant = function (tntCode) {
-        let index = _tenants.indexOf(tntCode);
+    this.getActiveTenants = function () {
+        return [].concat(_activeTenants);
+    };
+
+    this.removeActiveTenant = function (tntCode) {
+        let index = _activeTenants.indexOf(tntCode);
         if (index > -1) {
-            _tenants.splice(index, 1);
+            _activeTenants.splice(index, 1);
             return true;
         }
         return false;
@@ -271,7 +299,7 @@ module.exports = function () {
         if (channel === 'master' || channel === 'test') {
             _activeChannel = channel;
         } else {
-            NODICS.LOG.error('Given channel not supported here : ', channel);
+            NODICS.LOG.error('Given channel not supported here : ' + channel);
             process.exit(1);
         }
     };
@@ -296,7 +324,7 @@ module.exports = function () {
     this.getSearchModels = function (moduleName, tenant) {
         if (!NODICS.isModuleActive(moduleName) || !this.getModule(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!NODICS.getTenants().includes(tenant)) {
+        } else if (!NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             let moduleObject = this.getModule(moduleName);

@@ -95,7 +95,7 @@ module.exports = {
         if (request.schemaModel.cache &&
             request.schemaModel.cache.enabled) {
             request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createItemKey(request);
-            this.LOG.debug('Model cache lookup for key: ', request.cacheKeyHash);
+            this.LOG.debug('Model cache lookup for key: ' + request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
                 moduleName: request.moduleName || request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.schemaModel.schemaName),
@@ -126,7 +126,7 @@ module.exports = {
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre get model interceptors');
         let schemaName = request.schemaModel.schemaName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(schemaName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.preGet) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preGet), {
                 schemaModel: request.schemaModel,
@@ -202,7 +202,7 @@ module.exports = {
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post model interceptors');
         let schemaName = request.schemaModel.schemaName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(schemaName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.postGet) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postGet), {
                 schemaModel: request.schemaModel,

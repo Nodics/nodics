@@ -35,7 +35,7 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating Header: ', request.headerName, ' for processing');
+        this.LOG.debug('Validating Header: ' + request.headerName + ' for processing');
         process.nextSuccess(request, response);
     },
 
@@ -66,7 +66,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (options.pendingFileList && options.pendingFileList.length > 0) {
                 let fileName = options.pendingFileList.shift(); //Actual Files group name
-                _self.LOG.debug('Processing file: ', fileName, ' from header: ', request.headerName);
+                _self.LOG.debug('Processing file: ' + fileName + ' from header: ' + request.headerName);
                 let fileObj = header.dataFiles[fileName];
                 if (fileObj.list && fileObj.list.length > 0) {
                     request.inputPath.fileName = fileName;
@@ -94,7 +94,7 @@ module.exports = {
                     });
                 }
             } else {
-                _self.LOG.debug('Done import for files for header : ', request.headerName);
+                _self.LOG.debug('Done import for files for header : ' + request.headerName);
                 header.done = true;
                 resolve(true);
             }

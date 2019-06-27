@@ -38,17 +38,25 @@ module.exports = {
     initCache: function (redisCacheConfig, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.LOG.info('Initializing Redis API Cache instance for module: ', moduleName);
+            _self.LOG.info('Initializing Redis API Cache instance for module: ' + moduleName);
             redisCacheConfig.options.db = redisCacheConfig.options.db || 0;
             let client = redis.createClient(redisCacheConfig.options);
             client.on("error", err => {
-                reject(err);
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    error: err
+                });
             });
             client.on("connect", success => {
-                resolve(client);
+                resolve({
+                    success: true,
+                    code: 'SUC_CACHE_00000',
+                    result: client
+                });
             });
             client.on("ready", function (err) {
-                _self.LOG.debug('Item redis client is ready for module : ', moduleName);
+                _self.LOG.debug('Item redis client is ready for module : ' + moduleName);
             });
         });
     },

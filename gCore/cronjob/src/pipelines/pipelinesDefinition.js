@@ -39,6 +39,11 @@ module.exports = {
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultCronJobTriggerHandlerService.applyPostInterceptors',
+                success: 'triggerEvent'
+            },
+            triggerEvent: {
+                type: 'function',
+                handler: 'DefaultCronJobTriggerHandlerService.triggerEvent',
                 success: 'successEnd'
             },
             successEnd: {

@@ -157,10 +157,17 @@ module.exports = {
                     }
                 });
             });
+            delete request.data.headerFiles;
+            delete request.data.dataFiles;
+            process.nextSuccess(request, response);
+        } else {
+            process.stop(request, response, {
+                success: true,
+                code: 'SUC_DATA_00001',
+                msg: 'Could not find any data to import for given modules'
+            });
         }
-        delete request.data.headerFiles;
-        delete request.data.dataFiles;
-        process.nextSuccess(request, response);
+
     },
 
     handleSucessEnd: function (request, response, process) {

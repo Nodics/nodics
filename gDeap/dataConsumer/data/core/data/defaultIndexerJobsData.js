@@ -11,23 +11,21 @@
 
 module.exports = {
     record1: {
-        code: "triggerInternalFullIndexer",
-        enterpriseCode: "default",
-        tenant: "default",
+        code: "jobInternalFullIndexer",
         description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
         runOnNode: 0,
-        active: true,
+        active: false,
         logResult: false,
         jobDetail: {
             internal: {
                 nodeId: 0,
                 module: 'dataConsumer',
                 method: 'GET',
-                uri: '/inetrnalData/search/index/internalDataFullIndexer'
+                uri: '/internalData/search/index/internalDataFullIndexer'
             }
         },
         trigger: {
-            expression: "00 00 01 * * *"
+            expression: "0 0 1 * * *"
         },
         emails: [{
             email: "nodics.framework@nodics.com"
@@ -37,23 +35,21 @@ module.exports = {
         state: "NEW"
     },
     record2: {
-        code: "triggerInternalIncrementalIndexer",
-        enterpriseCode: "default",
-        tenant: "default",
+        code: "jobInternalIncrementalIndexer",
         description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
         runOnNode: 0,
-        active: true,
+        active: false,
         logResult: false,
         jobDetail: {
             internal: {
                 nodeId: 0,
                 module: 'dataConsumer',
                 method: 'GET',
-                uri: '/inetrnalData/search/index/internalDataIncrementalIndexer'
+                uri: '/internalData/search/index/internalDataIncrementalIndexer'
             }
         },
         trigger: {
-            expression: "10 * * * * *"
+            expression: "0 */10 * * * *"
         },
         emails: [{
             email: "nodics.framework@nodics.com"
@@ -63,23 +59,21 @@ module.exports = {
         state: "NEW"
     },
     record3: {
-        code: "triggerExternalFullIndexer",
-        enterpriseCode: "default",
-        tenant: "default",
-        description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
+        code: "jobExternalFullIndexer",
+        description: 'This job is to trigger process external data indexer, which will push all data to elastic search',
         runOnNode: 0,
-        active: true,
+        active: false,
         logResult: false,
         jobDetail: {
             internal: {
                 nodeId: 0,
                 module: 'dataConsumer',
                 method: 'GET',
-                uri: '/inetrnalData/search/index/externalDataFullIndexer'
+                uri: '/externalData/search/index/externalDataFullIndexer'
             }
         },
         trigger: {
-            expression: "00 00 01 * * *"
+            expression: "0 0 1 * * *"
         },
         emails: [{
             email: "nodics.framework@nodics.com"
@@ -89,23 +83,21 @@ module.exports = {
         state: "NEW"
     },
     record4: {
-        code: "triggerInternalIncrementalIndexer",
-        enterpriseCode: "default",
-        tenant: "default",
-        description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
+        code: "jobExternalIncrementalIndexer",
+        description: 'This job is to trigger process external data indexer, which will push all data to elastic search',
         runOnNode: 0,
-        active: true,
+        active: false,
         logResult: false,
         jobDetail: {
             internal: {
                 nodeId: 0,
                 module: 'dataConsumer',
                 method: 'GET',
-                uri: '/inetrnalData/search/index/internalDataIncrementalIndexer'
+                uri: '/externalData/search/index/externalDataIncrementalIndexer'
             }
         },
         trigger: {
-            expression: "10 * * * * *"
+            expression: "0 */10 * * * *"
         },
         emails: [{
             email: "nodics.framework@nodics.com"

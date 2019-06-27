@@ -45,7 +45,7 @@ module.exports = {
 
     applyInterceptors: function (request, response, process) {
         let jobDefinition = request.definition;
-        let interceptors = SERVICE.DefaultCronJobConfigurationService.getInterceptors(jobDefinition.code);
+        let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
         if (interceptors && interceptors.error) {
             this.LOG.debug('Applying job error interceptors');
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.error), {
@@ -68,6 +68,7 @@ module.exports = {
     stateChangeError: function (request, response, process) {
         this.LOG.debug('Changing job state to error');
         let jobDefinition = request.definition;
+        jobDefinition.endTime = new Date();
         if (!jobDefinition.log) {
             jobDefinition.log = [];
         }
@@ -79,6 +80,7 @@ module.exports = {
             },
             model: {
                 status: ENUMS.CronJobStatus.ERROR.key,
+                endTime: jobDefinition.endTime,
                 log: jobDefinition.log
             }
         }).then(success => {
@@ -94,8 +96,7 @@ module.exports = {
             if (jobDefinition.event && jobDefinition.event.error) {
                 this.LOG.debug('Triggering event for resumed job');
                 let event = {
-                    enterpriseCode: jobDefinition.enterpriseCode,
-                    tenant: jobDefinition.tenant,
+                    tenant: jobDefinition.tenant, //Set tenant from CronJob Himkar
                     active: true,
                     event: 'jobError',
                     source: 'cronjob',
@@ -106,7 +107,7 @@ module.exports = {
                     targetNodeId: (jobDefinition.event && jobDefinition.event.targetNodeId) ? jobDefinition.event.targetNodeId : 0,
                     data: jobDefinition
                 };
-                this.LOG.debug('Pushing event for item created : ', jobDefinition.code);
+                this.LOG.debug('Pushing event for item created : ' + jobDefinition.code);
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {

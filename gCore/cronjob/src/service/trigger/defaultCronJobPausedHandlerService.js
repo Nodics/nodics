@@ -45,7 +45,7 @@ module.exports = {
 
     applyInterceptors: function (request, response, process) {
         let jobDefinition = request.definition;
-        let interceptors = SERVICE.DefaultCronJobConfigurationService.getInterceptors(jobDefinition.code);
+        let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
         if (interceptors && interceptors.paused) {
             this.LOG.debug('Applying job pause interceptors');
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.paused), {
@@ -89,8 +89,7 @@ module.exports = {
             if (jobDefinition.event && jobDefinition.event.paused) {
                 this.LOG.debug('Triggering event for paused job');
                 let event = {
-                    enterpriseCode: jobDefinition.enterpriseCode,
-                    tenant: jobDefinition.tenant,
+                    tenant: jobDefinition.tenant,//Set tenant from CronJob Himkar
                     active: true,
                     event: 'jobPaused',
                     source: 'cronjob',
@@ -101,7 +100,7 @@ module.exports = {
                     targetNodeId: (jobDefinition.event && jobDefinition.event.targetNodeId) ? jobDefinition.event.targetNodeId : 0,
                     data: jobDefinition
                 };
-                this.LOG.debug('Pushing event for item created : ', jobDefinition.code);
+                this.LOG.debug('Pushing event for item created : ' + jobDefinition.code);
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {

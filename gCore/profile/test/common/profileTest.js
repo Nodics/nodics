@@ -25,10 +25,10 @@ module.exports = {
                 ui: 'tdd',
                 reporter: 'list'
             },
-            beforeAll: function() {
+            beforeAll: function () {
                 console.log('This is Base beforeAll');
             },
-            afterAll: function() {
+            afterAll: function () {
                 console.log('This is Base afterAll');
             }
         },
@@ -38,23 +38,23 @@ module.exports = {
         createDefaultData: {
             options: {
                 description: 'Test suite to run all user related insertUser',
-                beforeEach: function() {
+                beforeEach: function () {
                     console.log('This is insertUser beforeEach');
                 },
-                beforeAll: function() {
+                beforeAll: function () {
                     console.log('This is insertUser beforeAll');
                 },
-                afterEach: function() {
+                afterEach: function () {
                     console.log('This is insertUser afterEach');
                 },
-                afterAll: function() {
+                afterAll: function () {
                     console.log('This is insertUser afterAll');
                 }
             },
 
             testIfEqual: {
                 description: 'Testing equality...1',
-                test: function(done) {
+                test: function (done) {
                     let val = 2;
                     expect(val).to.equal(TEST.uTestPool.data.value);
                     done();
@@ -68,7 +68,6 @@ module.exports = {
                                     tenant: 'default',
                                     models: [{
                                         _id: '5a6051e068e7aa0f6c15bcb1',
-                                        enterpriseCode: 'default',
                                         firstName: 'Himkar',
                                         middleName: 'Admin',
                                         lastName: 'Admin',

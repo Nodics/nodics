@@ -74,7 +74,7 @@ module.exports = {
                 let headers = request.data.headers;
                 let headerName = options.pendingHeaders.shift();
                 let header = headers[headerName];
-                _self.LOG.debug('Starting process for header: ', headerName);
+                _self.LOG.debug('Starting process for header: ' + headerName);
                 SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
                     tenant: request.tenant,
                     moduleName: request.moduleName,
@@ -141,7 +141,7 @@ module.exports = {
                 this.LOG.debug('File moved to error bucket: ' + success);
             }).catch(error => {
                 this.LOG.error(errorFiles);
-                this.LOG.error('Facing issued while moving file to error bucket: ' + error);
+                this.LOG.error('Facing issued while moving file to error bucket: ', error);
             });
         }
         if (response.errors && response.errors.length === 1) {

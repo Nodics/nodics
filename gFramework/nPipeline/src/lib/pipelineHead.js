@@ -78,7 +78,7 @@ module.exports = function (name, pipelineDefinition) {
         _pipelineId = id;
         _currentNode = _nodeList[_startNode];
         if (!_currentNode) {
-            this.LOG.error('Node link is broken for node : ', _startNode, ' for pipeline : ', _pipelineName);
+            this.LOG.error('Node link is broken for node : ' + _startNode + ' for pipeline : ' + _pipelineName);
             pipeline.exit(CONFIG.get('errorExitCode'));
         }
         if (!response.success) {
@@ -94,7 +94,7 @@ module.exports = function (name, pipelineDefinition) {
         _preNode = _currentNode;
         if (!_nextSuccessNode || _nextSuccessNode === null) {
             let targetNode = response.targetNode;
-            this.LOG.debug('Processing pipeline target node : ', targetNode);
+            this.LOG.debug('Processing pipeline target node : ' + targetNode);
             response.targetNode = 'none';
             if (targetNode && targetNode !== 'none' && UTILS.isObject(_currentNode.getSuccess())) {
                 if (!_currentNode.getSuccess()[targetNode]) {
@@ -154,7 +154,7 @@ module.exports = function (name, pipelineDefinition) {
             if (_nodeList[_currentNode.getSuccess()]) {
                 _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
             } else {
-                this.LOG.error('Pipeline link is broken : invalid node line : ', _currentNode.getSuccess());
+                this.LOG.error('Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess());
                 this.error(request, response, 'Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess());
             }
         } else {

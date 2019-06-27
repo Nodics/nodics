@@ -19,8 +19,7 @@ module.exports = {
                     recursive: true
                 },
                 query: {
-                    loginId: request.loginId,
-                    enterpriseCode: request.enterpriseCode
+                    loginId: request.loginId
                 }
             }).then(employees => {
                 if (employees.result.length !== 1) {

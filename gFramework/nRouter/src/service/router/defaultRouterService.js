@@ -88,7 +88,7 @@ module.exports = {
             }
             url += '/' + contextRoot + '/' + options.moduleName;
         } catch (error) {
-            this.LOG.error('While Preparing URL for :', options.moduleName, ' : ', error);
+            this.LOG.error('While Preparing URL for :' + options.moduleName + ' : ', error);
         }
         return url;
     },
@@ -103,10 +103,10 @@ module.exports = {
                 if (moduleObject.metaData && moduleObject.metaData.publish) {
                     if (CONFIG.get('server').options.runAsDefault || !moduleObject.app) {
                         app = modules.default.app;
-                        _self.LOG.debug('Found default App for module : ', moduleName);
+                        _self.LOG.debug('Found default App for module : ' + moduleName);
                     } else {
                         app = moduleObject.app;
-                        _self.LOG.debug('Found module App for module : ', moduleName);
+                        _self.LOG.debug('Found module App for module : ' + moduleName);
                     }
                     if (!UTILS.isBlank(app)) {
                         try {
@@ -114,7 +114,7 @@ module.exports = {
                             _self.activateRouters(app, moduleObject, moduleName, routers);
                             resolve(true);
                         } catch (error) {
-                            _self.LOG.error('While registration process of web path for module : ', moduleName);
+                            _self.LOG.error('While registration process of web path for module : ' + moduleName);
                             reject(error);
                         }
                     }
@@ -231,7 +231,7 @@ module.exports = {
                                 const httpPort = moduleConfig.getServer().getHttpPort();
                                 const httpsPort = moduleConfig.getServer().getHttpsPort();
                                 if (!httpPort) {
-                                    _self.LOG.error('Please define listening PORT for module: ', moduleName);
+                                    _self.LOG.error('Please define listening PORT for module: ' + moduleName);
                                     process.exit(CONFIG.get('errorExitCode'));
                                 }
                                 if (!moduleConfig.isServerRunning()) {
@@ -256,16 +256,16 @@ module.exports = {
         let _self = this;
         server.on('error', function (error) {
             if (isSecure) {
-                _self.LOG.error('Failed to start HTTPS Server for module : ', moduleName, ' on PORT : ', port);
+                _self.LOG.error('Failed to start HTTPS Server for module : ' + moduleName + ' on PORT : ' + port);
             } else {
                 _self.LOG.error('Failed to start HTTP Server for module : ' + moduleName + ' on PORT : ' + port);
             }
         });
         server.on('listening', function () {
             if (isSecure) {
-                _self.LOG.info('Starting HTTPS Server for module : ', moduleName, ' on PORT : ', port);
+                _self.LOG.info('Starting HTTPS Server for module : ' + moduleName + ' on PORT : ' + port);
             } else {
-                _self.LOG.info('Starting HTTP Server for module : ', moduleName, ' on PORT : ', port);
+                _self.LOG.info('Starting HTTP Server for module : ' + moduleName + ' on PORT : ' + port);
             }
         });
         return server;

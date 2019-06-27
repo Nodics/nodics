@@ -36,11 +36,11 @@ module.exports = {
         });
     },
 
-    setInterceptors: function (interceptors) {
+    setJobInterceptors: function (interceptors) {
         this.interceptors = interceptors;
     },
 
-    getInterceptors: function (jobCode) {
+    getJobInterceptors: function (jobCode) {
         if (this.interceptors[jobCode]) {
             return this.interceptors[jobCode];
         } else {

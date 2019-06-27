@@ -21,7 +21,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let allPromise = [];
-                NODICS.getTenants().forEach(tntName => {
+                NODICS.getActiveTenants().forEach(tntName => {
                     ['master', 'test'].forEach(channel => {
                         let models = NODICS.getModels(moduleName, tntName, channel);
                         if (models) {
@@ -67,7 +67,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let allPromise = [];
-                NODICS.getTenants().forEach(tntName => {
+                NODICS.getActiveTenants().forEach(tntName => {
                     ['master', 'test'].forEach(channel => {
                         let models = NODICS.getModels(moduleName, tntName, channel);
                         if (models) {
@@ -110,7 +110,7 @@ module.exports = {
             try {
                 let allPromise = [];
                 _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                    NODICS.getTenants().forEach(tntName => {
+                    NODICS.getActiveTenants().forEach(tntName => {
                         ['master', 'test'].forEach(channel => {
                             let models = NODICS.getModels(moduleName, tntName, channel);
                             if (models) {

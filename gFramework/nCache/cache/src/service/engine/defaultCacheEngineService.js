@@ -144,7 +144,7 @@ module.exports = {
                             resolve(value);
                         }
                     }).catch(error => {
-                        _self.LOG.debug('Not able to initialize cache for module: ' + moduleName + ', and channel: ' + channelName + '  :  ', error);
+                        _self.LOG.warn('Not able to initialize cache for module: ' + moduleName + ', and channel: ' + channelName + '  :  ', error);
                         if (channelObj.engine !== 'local' && channelObj.fallback) {
                             _self.LOG.debug('Initializing local API cache');
                             channelObj.engine = 'local';

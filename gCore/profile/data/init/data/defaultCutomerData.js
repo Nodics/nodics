@@ -12,7 +12,6 @@
 module.exports = {
     record0: {
         code: 'guest',
-        enterpriseCode: 'default',
         active: true,
         name: {
             title: 'Mr.',

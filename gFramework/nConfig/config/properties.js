@@ -16,7 +16,7 @@ module.exports = {
         If system is running is multi cluster node, this property value needs to be configured. 
         Two different system can't run with same node id.
     */
-    nodeId: 0,
+    nodeId: '0',
 
     /*
         These values are used as system values, so can't be used as veriable or class name
@@ -54,7 +54,7 @@ module.exports = {
     processRetrySleepTime: 2000,
     defaultAuthDetail: {
         apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
-        enterpriseCode: 'default',
+        entCode: 'default',
         tenant: 'default',
         loginId: 'apiAdmin'
     },
@@ -62,34 +62,53 @@ module.exports = {
     log: {
         enabled: true,
         level: 'debug',
-        format: 'simple', //json or simple
-        output: {
-            file: true,
-            elastic: false
-        },
-        consoleConfig: {
-            colorize: true,
-            timestamp: true,
-            json: false,
-            stringify: false,
-            prettyPrint: false,
-            depth: 5,
-            humanReadableUnhandledException: true,
-            showLevel: true
-        },
-        fileConfig: {
-            dirname: '.',
-            filename: 'nodics-%DATE%.log',
-            datePattern: 'YYYY-MM-DD',
-            zippedArchive: true,
-            json: false,
-            stringify: true,
-            maxSize: '20m',
-            maxFiles: '14d'
-        },
-        elasticConfig: {
-
+        transports: {
+            console: {
+                consoleTransport: {
+                    enabled: true,
+                    format: 'simple'
+                }
+            },
+            file: {
+                fileErrorLog: {
+                    enabled: false,
+                    format: 'simple',
+                    options: {
+                        filename: 'nodics-error.log',
+                        level: 'error',
+                        maxsize: '20971520',
+                        maxFiles: '14',
+                        tailable: true,
+                        zippedArchive: true
+                    }
+                },
+                fileRestLog: {
+                    enabled: false,
+                    format: 'simple',
+                    options: {
+                        filename: 'nodics.log',
+                        level: 'debug',
+                        maxsize: '20971520',
+                        maxFiles: '14',
+                        tailable: true,
+                        zippedArchive: true
+                    }
+                }
+            },
+            elastic: {
+                elasticLogRecorder: {
+                    enabled: false,
+                    format: 'simple',
+                    options: {
+                        level: 'debug',
+                    },
+                    client: {
+                        hosts: ['http://localhost:9200']
+                    }
+                }
+            }
         }
     },
+
     jwtSecretKey: 'nodics'
 };

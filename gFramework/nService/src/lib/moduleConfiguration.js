@@ -67,7 +67,7 @@ module.exports = function (moduleName) {
                     node.getHttpPort() === nodeConfig.httpPort ||
                     node.getHttpsHost() === nodeConfig.httpsHost ||
                     node.getHttpsPort() === nodeConfig.httpsPort) {
-                    throw new Error('Invalid node configuration for ', nodeId, ' in module : ', _moduleName);
+                    throw new Error('Invalid node configuration for ' + nodeId + ' in module : ' + _moduleName);
                 }
             });
             _nodes[nodeId] = new CLASSES.NodeConfiguration(nodeId,
@@ -84,7 +84,7 @@ module.exports = function (moduleName) {
         if (_nodes[nodeId]) {
             return _nodes[nodeId];
         } else {
-            throw new Error('Invalid node id : ', nodeId, ' , please validate');
+            throw new Error('Invalid node id : ' + nodeId + ' , please validate');
         }
     };
 

@@ -39,9 +39,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
             this.triggerEnterpriseUpdateEvent(request.model).then(success => {
-                this.LOG.debug('All modules have been informed about Enterprise model changes: ', request.model.code);
+                this.LOG.debug('All modules have been informed about Enterprise model changes: ' + request.model.code);
             }).catch(error => {
-                this.LOG.error('Failed to update modules about Enterprise model changes: ', request.model.code);
+                this.LOG.error('Failed to update modules about Enterprise model changes: ' + request.model.code);
                 this.LOG.error(error);
             });
         });
@@ -53,9 +53,9 @@ module.exports = {
             if (request.result && request.result.models && request.result.models.length > 0) {
                 request.result.models.forEach(model => {
                     this.triggerEnterpriseUpdateEvent(model).then(success => {
-                        this.LOG.debug('All modules have been informed about Enterprise model changes: ', model.code);
+                        this.LOG.debug('All modules have been informed about Enterprise model changes: ' + model.code);
                     }).catch(error => {
-                        this.LOG.error('Failed to update modules about Enterprise model changes: ', model.code);
+                        this.LOG.error('Failed to update modules about Enterprise model changes: ' + model.code);
                         this.LOG.error(error);
                     });
                 });
@@ -69,9 +69,9 @@ module.exports = {
             if (request.result && request.result.models && request.result.models.length > 0) {
                 request.result.models.forEach(model => {
                     this.triggerEnterpriseUpdateEvent(model, true).then(success => {
-                        this.LOG.debug('All modules have been informed about Enterprise model changes: ', model.code);
+                        this.LOG.debug('All modules have been informed about Enterprise model changes: ' + model.code);
                     }).catch(error => {
-                        this.LOG.error('Failed to update modules about Enterprise model changes: ', model.code);
+                        this.LOG.error('Failed to update modules about Enterprise model changes: ' + model.code);
                         this.LOG.error(error);
                     });
                 });
@@ -82,7 +82,6 @@ module.exports = {
     triggerEnterpriseUpdateEvent: function (enterprise, isRemoved) {
         return new Promise((resolve, reject) => {
             let event = {
-                enterpriseCode: enterprise.code,
                 tenant: 'default',
                 source: 'profile',
                 target: 'profile',
@@ -94,7 +93,7 @@ module.exports = {
                     enterprise: enterprise
                 }
             };
-            if ((isRemoved || !enterprise.active || !enterprise.tenant.active) && NODICS.getTenants().includes(enterprise.tenant.code)) {
+            if ((isRemoved || !enterprise.active || !enterprise.tenant.active) && NODICS.getActiveTenants().includes(enterprise.tenant.code)) {
                 SERVICE.DefaultEnterpriseService.get({
                     tenant: 'default',
                     query: {
@@ -105,6 +104,7 @@ module.exports = {
                     if (success.success && (!success.result || success.result.length <= 0)) {
                         SERVICE.DefaultTenantHandlerService.removeTenants([enterprise.tenant.code]).then(success => {
                             NODICS.removeInternalAuthToken(enterprise.tenant.code);
+                            NODICS.removeActiveEnterprise(enterprise.code);
                             this.LOG.debug('Tenant: ' + enterprise.tenant.code + ' has been successfully deactivated from profile module');
                             event.event = 'removeEnterprise';
                             this.LOG.debug('Pushing event for enterprise removed or deactivated');
@@ -128,7 +128,7 @@ module.exports = {
                     this.LOG.error('Failed to check if current tenant is associated with other active enterprises as well : ', error);
                     reject(error);
                 });
-            } else if (enterprise.active && enterprise.tenant.active && !NODICS.getTenants().includes(enterprise.tenant.code)) {
+            } else if (enterprise.active && enterprise.tenant.active && !NODICS.getActiveTenants().includes(enterprise.tenant.code)) {
                 SERVICE.DefaultEnterpriseHandlerService.buildEnterprise([enterprise]).then(success => {
                     this.LOG.debug('Enterprise: ' + enterprise.code + ' has been successfully activated within profile module');
                     event.event = 'addEnterprise';

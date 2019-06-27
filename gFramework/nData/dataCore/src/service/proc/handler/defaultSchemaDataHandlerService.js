@@ -70,7 +70,7 @@ module.exports = {
         if (interceptors && interceptors.import && interceptors.import.length > 0) {
             SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.import), {
                 tenant: request.tenant,
-                moduleName: moduleName,
+                moduleName: request.moduleName,
                 header: request.header,
                 models: request.models
             }, {}).then(success => {

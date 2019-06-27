@@ -42,7 +42,7 @@ module.exports = {
                     recursive: true
                 },
                 query: {
-                    code: input.enterpriseCode
+                    code: input.entCode
                 }
             },
             isJsonResponse: true,
@@ -61,7 +61,7 @@ module.exports = {
                         recursive: true
                     },
                     query: {
-                        code: request.enterpriseCode
+                        code: request.entCode
                     }
                 }).then(result => {
                     if (result && result.success && result.result.length > 0) {
@@ -76,14 +76,14 @@ module.exports = {
                     reject(error);
                 });
             } else {
-                SERVICE.DefaultModuleService.fetch(this.prepareURL(request), (error, response) => {
-                    if (error) {
-                        reject(error);
-                    } else if (!response.success || !response.result || response.result.length < 1) {
+                SERVICE.DefaultModuleService.fetch(requestUrl).then(success => {
+                    if (!response.success || !response.result || response.result.length < 1) {
                         reject(response.msg);
                     } else {
                         resolve(response.result[0]);
                     }
+                }).catch(error => {
+                    reject(error);
                 });
             }
         });

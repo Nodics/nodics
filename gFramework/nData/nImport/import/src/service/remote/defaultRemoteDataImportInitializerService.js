@@ -56,7 +56,7 @@ module.exports = {
     },
 
     loadHeaderFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of headers from Path to be imported: ', request.path);
+        this.LOG.debug('Loading list of headers from Path to be imported: ' + request.path);
         SERVICE.DefaultImportUtilityService.getExternalDataHeaders(request.path).then(success => {
             request.data.headerFiles = success;
             process.nextSuccess(request, response);

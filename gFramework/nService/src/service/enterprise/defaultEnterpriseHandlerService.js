@@ -75,16 +75,14 @@ module.exports = {
                         }
                     });
                     try {
-                        SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
-                            if (error) {
-                                reject({
-                                    success: false,
-                                    code: 'ERR_DBS_00001',
-                                    error: error
-                                });
-                            } else {
-                                resolve(response.result || []);
-                            }
+                        SERVICE.DefaultModuleService.fetch(requestUrl).then(response => {
+                            resolve(response.result || []);
+                        }).catch(error => {
+                            reject({
+                                success: false,
+                                code: 'ERR_DBS_00001',
+                                error: error
+                            });
                         });
                     } catch (error) {
                         reject({
@@ -154,8 +152,13 @@ module.exports = {
             try {
                 if (enterprises && enterprises.length > 0) {
                     let enterprise = enterprises.shift();
-                    if (enterprise.active && enterprise.tenant && enterprise.tenant.active && !NODICS.getTenants().includes(enterprise.tenant.code)) {
-                        NODICS.addTenant(enterprise.tenant.code);
+                    if (enterprise.active) {
+                        NODICS.addActiveEnterprise(enterprise.code, enterprise.tenant.code);
+                    } else {
+                        NODICS.removeActiveEnterprise(enterprise.code);
+                    }
+                    if (enterprise.active && enterprise.tenant && enterprise.tenant.active && !NODICS.getActiveTenants().includes(enterprise.tenant.code)) {
+                        NODICS.addActiveTenant(enterprise.tenant.code);
                         let tntConfig = _.merge({}, CONFIG.getProperties());
                         tntConfig = _.merge(tntConfig, enterprise.tenant.properties);
                         CONFIG.setProperties(tntConfig, enterprise.tenant.code);
@@ -171,6 +174,18 @@ module.exports = {
                                         this.LOG.error('Failed establishing connections with search engine');
                                         this.LOG.error(error);
                                     });
+                                }
+                                if (SERVICE.DefaultCronJobService && CONFIG.get('cronjob') && CONFIG.get('cronjob').runOnStartup) {
+                                    setInterval(function () {
+                                        _self.LOG.info('Starting active jobs for tenant: ' + enterprise.tenant.code);
+                                        SERVICE.DefaultCronJobService.createAllJobs([enterprise.tenant.code]).then(success => {
+                                            _self.LOG.debug('Following job has been started');
+                                            _self.LOG.debug(success);
+                                        }).catch(error => {
+                                            _self.LOG.error('Failed starting jobs for tenant: ' + enterprise.tenant.code);
+                                            _self.LOG.error(error);
+                                        });
+                                    }, 3000);
                                 }
                                 if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                                     SERVICE.DefaultEmployeeService.get({
@@ -192,7 +207,7 @@ module.exports = {
                                                 }).then(success => {
                                                     if (success.success && success.result.length > 0) {
                                                         let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
-                                                            enterpriseCode: enterprise.code,
+                                                            entCode: enterprise.code,
                                                             tenant: enterprise.tenant.code,
                                                             apiKey: success.result[0].apiKey,
                                                             lifetime: true
@@ -215,7 +230,7 @@ module.exports = {
                                             });
                                         } else {
                                             let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
-                                                enterpriseCode: enterprise.code,
+                                                entCode: enterprise.code,
                                                 tenant: enterprise.tenant.code,
                                                 apiKey: success.result[0].apiKey,
                                                 lifetime: true

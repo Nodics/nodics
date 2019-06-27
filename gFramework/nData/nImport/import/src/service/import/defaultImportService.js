@@ -36,18 +36,26 @@ module.exports = {
         request.dataType = 'init';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                this.processImportData({
-                    tenant: request.tenant || 'default',
-                    inputPath: {
-                        rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
-                        dataType: request.dataType,
-                        postFix: 'data'
-                    }
-                }).then(success => {
-                    resolve(true);
-                }).catch(error => {
-                    NODICS.LOG.error('Initial data import failed : ', error);
-                });
+                if (success && success.code && success.code === 'SUC_DATA_00001') {
+                    resolve(success);
+                } else {
+                    let result = {
+                        finalizer: success
+                    };
+                    this.processImportData({
+                        tenant: request.tenant || 'default',
+                        inputPath: {
+                            rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
+                            dataType: request.dataType,
+                            postFix: 'data'
+                        }
+                    }).then(success => {
+                        result.import = success;
+                        resolve(result);
+                    }).catch(error => {
+                        NODICS.LOG.error('Initial data import failed : ', error);
+                    });
+                }
             }).catch(error => {
                 reject(error);
             });
@@ -58,18 +66,26 @@ module.exports = {
         request.dataType = 'core';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                this.processImportData({
-                    tenant: request.tenant || 'default',
-                    inputPath: {
-                        rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
-                        dataType: request.dataType,
-                        postFix: 'data'
-                    }
-                }).then(success => {
-                    resolve(true);
-                }).catch(error => {
-                    NODICS.LOG.error('Initial data import failed : ', error);
-                });
+                if (success && success.code && success.code === 'SUC_DATA_00001') {
+                    resolve(success);
+                } else {
+                    let result = {
+                        finalizer: success
+                    };
+                    this.processImportData({
+                        tenant: request.tenant || 'default',
+                        inputPath: {
+                            rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
+                            dataType: request.dataType,
+                            postFix: 'data'
+                        }
+                    }).then(success => {
+                        result.import = success;
+                        resolve(result);
+                    }).catch(error => {
+                        NODICS.LOG.error('Initial data import failed : ', error);
+                    });
+                }
             }).catch(error => {
                 reject(error);
             });
@@ -80,18 +96,26 @@ module.exports = {
         request.dataType = 'sample';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                this.processImportData({
-                    tenant: request.tenant || 'default',
-                    inputPath: {
-                        rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
-                        dataType: request.dataType,
-                        postFix: 'data'
-                    }
-                }).then(success => {
-                    resolve(true);
-                }).catch(error => {
-                    NODICS.LOG.error('Initial data import failed : ', error);
-                });
+                if (success && success.code && success.code === 'SUC_DATA_00001') {
+                    resolve(success);
+                } else {
+                    let result = {
+                        finalizer: success
+                    };
+                    this.processImportData({
+                        tenant: request.tenant || 'default',
+                        inputPath: {
+                            rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
+                            dataType: request.dataType,
+                            postFix: 'data'
+                        }
+                    }).then(success => {
+                        result.import = success;
+                        resolve(result);
+                    }).catch(error => {
+                        NODICS.LOG.error('Initial data import failed : ', error);
+                    });
+                }
             }).catch(error => {
                 reject(error);
             });
@@ -99,7 +123,49 @@ module.exports = {
     },
 
     importLocalData: function (request) {
-        return SERVICE.DefaultPipelineService.start('localDataImportInitializerPipeline', request, {});
+        if (request.importFinalizeData) {
+            return new Promise((resolve, reject) => {
+                SERVICE.DefaultPipelineService.start('localDataImportInitializerPipeline', request, {}).then(success => {
+                    if (success && success.code && success.code === 'SUC_DATA_00001') {
+                        resolve(success);
+                    } else {
+                        let result = {
+                            finalizer: success
+                        };
+                        let inputPath = {};
+                        if (request.outputPath && request.outputPath.rootPath) {
+                            inputPath = {
+                                rootPath: request.outputPath.rootPath,
+                                dataPath: request.outputPath.rootPath + '/data',
+                                successPath: request.outputPath.successPath || request.outputPath.rootPath + '/success',
+                                errorPath: request.outputPath.errorPath || request.outputPath.rootPath + '/error',
+                                dataType: 'local',
+                                postFix: 'data'
+                            };
+                        } else {
+                            inputPath = {
+                                rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
+                                dataType: 'local',
+                                postFix: 'data'
+                            };
+                        }
+                        SERVICE.DefaultImportService.processImportData({
+                            tenant: request.tenant,
+                            inputPath: inputPath
+                        }).then(success => {
+                            result.import = success;
+                            resolve(result);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        } else {
+            return SERVICE.DefaultPipelineService.start('localDataImportInitializerPipeline', request, {});
+        }
     },
 
     importRemoteData: function (request) {

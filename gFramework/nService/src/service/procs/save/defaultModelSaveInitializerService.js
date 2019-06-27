@@ -254,7 +254,7 @@ module.exports = {
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre save model interceptors');
         let schemaName = request.schemaModel.schemaName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(schemaName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.preSave) {
             let interceptorRequest = {
                 schemaModel: request.schemaModel,
@@ -441,7 +441,7 @@ module.exports = {
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post save model interceptors');
         let schemaName = request.schemaModel.schemaName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getInterceptors(schemaName);
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.postSave) {
             let interceptorRequest = {
                 schemaModel: request.schemaModel,
@@ -517,7 +517,6 @@ module.exports = {
             let schemaModel = request.schemaModel;
             if (response.model.result && schemaModel.rawSchema.event) {
                 let event = {
-                    enterpriseCode: response.model.result.enterpriseCode || request.enterpriseCode,
                     tenant: request.tenant,
                     event: 'save',
                     source: schemaModel.moduleName,
@@ -525,18 +524,13 @@ module.exports = {
                     state: "NEW",
                     type: "ASYNC",
                     targetType: ENUMS.TargetType.EACH_NODE.key,
-                    params: [{
-                        key: 'schemaName',
-                        value: schemaModel.schemaName
-                    }, {
-                        key: 'modelName',
-                        value: schemaModel.modelName
-                    }, {
-                        key: 'data',
-                        value: response.model.result
-                    }]
+                    data: {
+                        schemaName: schemaModel.schemaName,
+                        modelName: schemaModel.modelName,
+                        result: response.model.result
+                    }
                 };
-                this.LOG.debug('Pushing event for item created : ', schemaModel.schemaName);
+                this.LOG.debug('Pushing event for item created : ' + schemaModel.schemaName);
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {

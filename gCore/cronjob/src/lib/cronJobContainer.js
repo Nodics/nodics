@@ -15,21 +15,22 @@ module.exports = function () {
     let _jobPool = {};
     this.LOG = SERVICE.DefaultLoggerService.createLogger('CronJobContainer');
 
-    this.createJobs = function (definitions, result = [], failed = []) {
+    this.createJobs = function (input, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (!UTILS.isBlank(definitions)) {
-                let definition = definitions.shift();
+            if (!UTILS.isBlank(input.definitions)) {
+                let definition = input.definitions.shift();
+                definition.tenant = input.tenant;
                 _self.createJob(NODICS.getInternalAuthToken(definition.tenant), definition).then(success => {
                     result.push(success);
-                    _self.createJobs(definitions, result, failed).then(success => {
+                    _self.createJobs(input, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
                     failed.push(error);
-                    _self.createJobs(definitions, result, failed).then(success => {
+                    _self.createJobs(input, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -56,6 +57,11 @@ module.exports = function () {
                         success: false,
                         code: 'ERR_JOB_00002'
                     });
+                } else if (UTILS.isBlank(definition.tenant)) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00007'
+                    });
                 } else if (UTILS.isBlank(definition.trigger)) {
                     reject({
                         success: false,
@@ -72,7 +78,10 @@ module.exports = function () {
                         code: 'ERR_JOB_00005'
                     });
                 } else {
-                    if (!_jobPool[definition.code]) {
+                    if (!_jobPool[definition.tenant]) {
+                        _jobPool[definition.tenant] = {};
+                    }
+                    if (!_jobPool[definition.tenant][definition.code]) {
                         if (!definition.runOnNode) {
                             definition.runOnNode = CONFIG.get('nodeId');
                         }
@@ -83,7 +92,7 @@ module.exports = function () {
                             tmpCronJob.init();
                             tmpCronJob.setAuthToken(authToken);
                             tmpCronJob.setJobPool(_jobPool);
-                            _jobPool[definition.code] = tmpCronJob;
+                            _jobPool[definition.tenant][definition.code] = tmpCronJob;
                             SERVICE.DefaultCronJobService.update({
                                 tenant: definition.tenant,
                                 query: {
@@ -93,20 +102,20 @@ module.exports = function () {
                                     state: ENUMS.CronJobState.CREATED.key
                                 }
                             }).then(success => {
-                                _self.LOG.debug('Job: ' + definition.code + ' has been successfully added in ready to run pool');
+                                _self.LOG.debug('Job: ' + definition.code + ' has been successfully added in ready to run pool on tenant: ' + definition.tenant);
                             }).catch(error => {
                                 delete _jobPool[definition.code];
-                                _self.LOG.error('Job: ' + definition.code + ' failed on updating state');
+                                _self.LOG.error('Job: ' + definition.code + ' failed on updating state on tenant: ' + definition.tenant);
                                 _self.LOG.error(error);
                             });
-                            resolve('Job: ' + definition.code + ' has been successfully added in ready to run pool');
+                            resolve('Job: ' + definition.code + ' has been successfully added in ready to run pool on tenant: ' + definition.tenant);
                         } else {
-                            _self.LOG.debug('Job: ' + definition.code + ' not set to run on this node');
-                            resolve('Job: ' + definition.code + ' not set to run on this node');
+                            _self.LOG.debug('Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant);
+                            resolve('Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant);
                         }
                     } else {
-                        _self.LOG.warn('Job: ', definition.code, ' is already available.');
-                        resolve('Job: ' + definition.code + ' is already available in ready to run pool');
+                        _self.LOG.warn('Job: ' + definition.code, ' is already available on tenant: ' + definition.tenant);
+                        resolve('Job: ' + definition.code + ' is already available in ready to run pool on tenant: ' + definition.tenant);
                     }
                 }
             } catch (error) {
@@ -115,21 +124,22 @@ module.exports = function () {
         });
     };
 
-    this.updateJobs = function (definitions, result = [], failed = []) {
+    this.updateJobs = function (input, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (!UTILS.isBlank(definitions)) {
-                let definition = definitions.shift();
+            if (!UTILS.isBlank(input.definitions)) {
+                let definition = input.definitions.shift();
+                definition.tenant = input.tenant;
                 _self.updateJob(NODICS.getInternalAuthToken(definition.tenant), definition).then(success => {
                     result.push(success);
-                    _self.updateJobs(definitions, result, failed).then(success => {
+                    _self.updateJobs(input, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
                     failed.push(error);
-                    _self.updateJobs(definitions, result, failed).then(success => {
+                    _self.updateJobs(input, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -154,26 +164,31 @@ module.exports = function () {
                     success: false,
                     code: 'ERR_JOB_00002'
                 });
+            } else if (UTILS.isBlank(definition.tenant)) {
+                reject({
+                    success: false,
+                    code: 'ERR_JOB_00007'
+                });
             } else if (UTILS.isBlank(definition.trigger)) {
                 reject({
                     success: false,
                     code: 'ERR_JOB_00003'
                 });
-            } else if (!_jobPool[definition.code]) {
-                _self.LOG.debug('Could not found job, so creating new : ', definition.code);
+            } else if (!_jobPool[definition.tenant] || !_jobPool[definition.tenant][definition.code]) {
+                _self.LOG.debug('Could not found job, so creating new : ' + definition.code);
                 this.createJob(authToken, definition).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
                 });
             } else {
-                let cronJob = _jobPool[definition.code];
+                let cronJob = _jobPool[definition.tenant][definition.code];
                 let active = cronJob.isActive();
                 cronJob.stopJob().then(success => {
-                    delete _jobPool[definition.code];
+                    delete _jobPool[definition.tenant][definition.code];
                     this.createJob(authToken, definition).then(success => {
                         if (active) {
-                            _jobPool[definition.code].startJob().then(success => {
+                            _jobPool[definition.tenant][definition.code].startJob().then(success => {
                                 resolve(success);
                             }).catch(error => {
                                 reject(error);
@@ -186,27 +201,28 @@ module.exports = function () {
                     });
                 }).catch(error => {
                     _self.LOG.error(error);
-                    reject('Job: ' + definition.code + ' failed to stop it to update');
+                    reject('Job: ' + definition.code + ' failed to stop it to update on tenant: ' + definition.tenant);
                 });
             }
         });
     };
 
-    this.runJobs = function (definitions, result = [], failed = []) {
+    this.runJobs = function (input, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (!UTILS.isBlank(definitions)) {
-                let definition = definitions.shift();
+            if (!UTILS.isBlank(input.definitions)) {
+                let definition = input.definitions.shift();
+                definition.tenant = input.tenant;
                 _self.runJob(NODICS.getInternalAuthToken(definition.tenant), definition).then(success => {
                     result.push(success);
-                    _self.runJobs(definitions, result, failed).then(success => {
+                    _self.runJobs(input, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
                     failed.push(error);
-                    _self.runJobs(definitions, result, failed).then(success => {
+                    _self.runJobs(input, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -232,6 +248,11 @@ module.exports = function () {
                         success: false,
                         code: 'ERR_JOB_00002'
                     });
+                } else if (UTILS.isBlank(definition.tenant)) {
+                    reject({
+                        success: false,
+                        code: 'ERR_JOB_00007'
+                    });
                 } else if (UTILS.isBlank(definition.trigger)) {
                     reject({
                         success: false,
@@ -247,16 +268,20 @@ module.exports = function () {
                         success: false,
                         code: 'ERR_JOB_00005'
                     });
-                } else if (_jobPool[definition.code] && _jobPool[definition.code].isRunning()) {
+                } else if (_jobPool[definition.tenant] &&
+                    _jobPool[definition.tenant][definition.code] &&
+                    _jobPool[definition.tenant][definition.code].isRunning()) {
                     reject({
                         success: false,
                         code: 'ERR_JOB_00006'
                     });
                 } else {
                     let _active = false;
-                    if (_jobPool[definition.code] && _jobPool[definition.code].isActive()) {
+                    if (_jobPool[definition.tenant] &&
+                        _jobPool[definition.tenant][definition.code] &&
+                        _jobPool[definition.tenant][definition.code].isActive()) {
                         _active = _jobPool[definition.code].isActive();
-                        _jobPool[definition.code].pauseJob(true);
+                        _jobPool[definition.tenant][definition.code].pauseJob(true);
                     }
                     if (!definition.runOnNode || CONFIG.get('nodeId') === definition.runOnNode) {
                         let tmpCronJob = new CLASSES.CronJob(definition, definition.trigger);
@@ -265,11 +290,11 @@ module.exports = function () {
                         tmpCronJob.setAuthToken(authToken);
                         tmpCronJob.setJobPool(_jobPool);
                         tmpCronJob.init(true);
-                        if (_jobPool[definition.code] && _active) {
-                            _jobPool[definition.code].resumeJob(true);
+                        if (_active) {
+                            _jobPool[definition.tenant][definition.code].resumeJob(true);
                         }
                     }
-                    resolve('Job: ' + definition.code + ' run successfully');
+                    resolve('Job: ' + definition.code + ' run successfully on tenant: ' + definition.tenant);
                 }
             } catch (error) {
                 reject({
@@ -281,25 +306,49 @@ module.exports = function () {
         });
     };
 
-    this.startAllJobs = function () {
-        return this.startJobs(Object.keys(_jobPool));
+    this.startAllJobs = function (tenants = NODICS.getActiveTenants()) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                if (_jobPool[tenant] && !UTILS.isBlank(_jobPool[tenant])) {
+                    this.startJobs(tenant, Object.keys(_jobPool[tenant])).then(success => {
+                        _self.startAllJobs(tenants).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    _self.startAllJobs(tenants).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            } else {
+                resolve(true);
+            }
+        });
     };
 
-    this.startJobs = function (jobCodes, result = [], failed = []) {
+    this.startJobs = function (tenant, jobCodes, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (jobCodes && jobCodes.length > 0) {
                 let code = jobCodes.shift();
-                _self.startJob(code).then(success => {
+                _self.startJob(tenant, code).then(success => {
                     result.push(success);
-                    _self.startJobs(jobCodes, result, failed).then(success => {
+                    _self.startJobs(tenant, jobCodes, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
                     failed.push(error.message || error.msg || error.stack || error);
-                    _self.startJobs(jobCodes, result, failed).then(success => {
+                    _self.startJobs(tenant, jobCodes, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -316,12 +365,12 @@ module.exports = function () {
         });
     };
 
-    this.startJob = function (jobCode) {
+    this.startJob = function (tenant, jobCode) {
         return new Promise((resolve, reject) => {
-            if (!_jobPool[jobCode]) {
-                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job');
+            if (!_jobPool[tenant] || !_jobPool[tenant][jobCode]) {
+                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job on tenant: ' + tenant);
             } else {
-                _jobPool[jobCode].startJob().then(success => {
+                _jobPool[tenant][jobCode].startJob().then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
@@ -330,21 +379,21 @@ module.exports = function () {
         });
     };
 
-    this.stopJobs = function (jobCodes, result = [], failed = []) {
+    this.stopJobs = function (tenant, jobCodes, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (jobCodes && jobCodes.length > 0) {
                 let code = jobCodes.shift();
-                _self.stopJob(code).then(success => {
+                _self.stopJob(tenant, code).then(success => {
                     result.push(success);
-                    _self.stopJobs(jobCodes, result, failed).then(success => {
+                    _self.stopJobs(tenant, jobCodes, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
                     failed.push(error.message || error.msg || error.stack || error);
-                    _self.stopJobs(jobCodes, result, failed).then(success => {
+                    _self.stopJobs(tenant, jobCodes, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -361,12 +410,12 @@ module.exports = function () {
         });
     };
 
-    this.stopJob = function (jobCode) {
+    this.stopJob = function (tenant, jobCode) {
         return new Promise((resolve, reject) => {
-            if (!_jobPool[jobCode]) {
-                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job');
+            if (!_jobPool[tenant] || !_jobPool[tenant][jobCode]) {
+                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job on tenant: ' + tenant);
             } else {
-                _jobPool[jobCode].stopJob().then(success => {
+                _jobPool[tenant][jobCode].stopJob().then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
@@ -375,21 +424,49 @@ module.exports = function () {
         });
     };
 
-    this.removeJobs = function (jobCodes, result = [], failed = []) {
+    this.removeAllJobs = function (tenants = NODICS.getActiveTenants()) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                if (_jobPool[tenant] && !UTILS.isBlank(_jobPool[tenant])) {
+                    this.removeJobs(tenant, Object.keys(_jobPool[tenant])).then(success => {
+                        _self.removeAllJobs(tenants).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    _self.removeAllJobs(tenants).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            } else {
+                resolve(true);
+            }
+        });
+    };
+
+    this.removeJobs = function (tenant, jobCodes, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (jobCodes && jobCodes.length > 0) {
                 let code = jobCodes.shift();
-                _self.removeJob(code).then(success => {
+                _self.removeJob(tenant, code).then(success => {
                     result.push(success);
-                    _self.removeJobs(jobCodes, result, failed).then(success => {
+                    _self.removeJobs(tenant, jobCodes, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
                     failed.push(error.message || error.msg || error.stack || error);
-                    _self.removeJobs(jobCodes, result, failed).then(success => {
+                    _self.removeJobs(tenant, jobCodes, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -406,19 +483,19 @@ module.exports = function () {
         });
     };
 
-    this.removeJob = function (jobCode) {
+    this.removeJob = function (tenant, jobCode) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (!_jobPool[jobCode]) {
+            if (!_jobPool[tenant] || !_jobPool[tenant][jobCode]) {
                 resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job');
             } else {
-                _jobPool[jobCode].stopJob().then(success => {
-                    let definition = _jobPool[jobCode].getDefinition();
+                _jobPool[tenant][jobCode].stopJob().then(success => {
+                    let definition = _jobPool[tenant][jobCode].getDefinition();
                     SERVICE.DefaultPipelineService.start('defaultCronJobRemovedHandlerPipeline', {
-                        job: _jobPool[jobCode],
+                        job: _jobPool[tenant][jobCode],
                         definition: definition
                     }, {}).then(success => {
-                        delete _jobPool[jobCode];
+                        delete _jobPool[tenant][jobCode];
                         resolve('Job: ' + definition.code + ' removed successfully');
                     }).catch(error => {
                         reject('Job: ' + definition.code + ' has issue while removing: ' + error);
@@ -430,21 +507,21 @@ module.exports = function () {
         });
     };
 
-    this.pauseJobs = function (jobCodes, result = [], failed = []) {
+    this.pauseJobs = function (tenant, jobCodes, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (jobCodes && jobCodes.length > 0) {
                 let code = jobCodes.shift();
-                _self.pauseJob(code).then(success => {
+                _self.pauseJob(tenant, code).then(success => {
                     result.push(success);
-                    _self.pauseJobs(jobCodes, result, failed).then(success => {
+                    _self.pauseJobs(tenant, jobCodes, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
                     failed.push(error.message || error.msg || error.stack || error);
-                    _self.pauseJobs(jobCodes, result, failed).then(success => {
+                    _self.pauseJobs(tenant, jobCodes, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -461,12 +538,12 @@ module.exports = function () {
         });
     };
 
-    this.pauseJob = function (jobCode) {
+    this.pauseJob = function (tenant, jobCode) {
         return new Promise((resolve, reject) => {
-            if (!_jobPool[jobCode]) {
-                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job');
+            if (!_jobPool[tenant] || !_jobPool[tenant][jobCode]) {
+                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job on tenant: ' + tenant);
             } else {
-                _jobPool[jobCode].pauseJob().then(success => {
+                _jobPool[tenant][jobCode].pauseJob().then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
@@ -475,21 +552,21 @@ module.exports = function () {
         });
     };
 
-    this.resumeJobs = function (jobCodes, result = [], failed = []) {
+    this.resumeJobs = function (tenant, jobCodes, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (jobCodes && jobCodes.length > 0) {
                 let code = jobCodes.shift();
-                _self.resumeJob(code).then(success => {
+                _self.resumeJob(tenant, code).then(success => {
                     result.push(success);
-                    _self.resumeJobs(jobCodes, result, failed).then(success => {
+                    _self.resumeJobs(tenant, jobCodes, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
                     failed.push(error.message || error.msg || error.stack || error);
-                    _self.resumeJobs(jobCodes, result, failed).then(success => {
+                    _self.resumeJobs(tenant, jobCodes, result, failed).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -506,12 +583,12 @@ module.exports = function () {
         });
     };
 
-    this.resumeJob = function (jobCode) {
+    this.resumeJob = function (tenant, jobCode) {
         return new Promise((resolve, reject) => {
-            if (!_jobPool[jobCode]) {
-                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job');
+            if (!_jobPool[tenant] || !_jobPool[tenant][jobCode]) {
+                resolve('Job: ' + jobCode + ' is not available in ready to run pool, please create this job on tenant: ' + tenant);
             } else {
-                _jobPool[jobCode].resumeJob().then(success => {
+                _jobPool[tenant][jobCode].resumeJob().then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);

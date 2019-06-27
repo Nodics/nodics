@@ -100,6 +100,9 @@ module.exports = {
     start: function (options) {
         this.initFramework(options).then(success => {
             SERVICE.DefaultRouterService.startServers().then(success => {
+                if (CONFIG.get('activateClusterPing')) {
+                    SERVICE.DefaultClusterManagerService.checkActiveClusters();
+                }
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');
                 NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
@@ -121,7 +124,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultInfraService.generateApp(options);
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
 
@@ -133,7 +136,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultInfraService.generateModuleGroup(options);
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
 
@@ -145,7 +148,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultInfraService.generateModule(options);
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
     genReactModule: function (options) {
@@ -156,7 +159,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultInfraService.generateReactModule(options);
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
 
@@ -168,7 +171,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultInfraService.generateVueModule(options);
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
 
@@ -178,7 +181,7 @@ module.exports = {
         }).then(() => {
             return config.cleanModules();
         }).catch(error => {
-            NODICS.LOG.error(error);
+            console.error(error);
         });
     },
 
@@ -192,7 +195,7 @@ module.exports = {
         }).then(() => {
             return config.buildModules();
         }).catch(error => {
-            SERVICE.DefaultInfraService.LOG.error(error);
+            console.error(error);
         });
     },
 };

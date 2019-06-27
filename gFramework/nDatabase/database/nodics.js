@@ -32,15 +32,16 @@ module.exports = {
             SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection().then(() => {
                 return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema();
             }).then(() => {
-                NODICS.addTenant('default');
+                NODICS.addActiveEnterprise('default', 'default');
+                NODICS.addActiveTenant('default');
                 return SERVICE.DefaultDatabaseModelHandlerService.buildModelsForTenant();
             }).then(() => {
                 return SERVICE.DefaultDatabaseConnectionHandlerService.isInitRequired();
             }).then(() => {
                 return new Promise((resolve, reject) => {
                     this.LOG.debug('Collecting database interceptors definitions');
-                    let interceptors = SERVICE.DefaultInterceptorHandlerService.buildInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/schema/interceptors.js'));
-                    SERVICE.DefaultDatabaseConfigurationService.setInterceptors(interceptors);
+                    let interceptors = SERVICE.DefaultInterceptorHandlerService.buildSchemaInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/schemaInterceptors.js'));
+                    SERVICE.DefaultDatabaseConfigurationService.setSchemaInterceptors(interceptors);
                     resolve(true);
                 });
             }).then(() => {
@@ -48,7 +49,7 @@ module.exports = {
                     if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                         let defaultAuthDetail = CONFIG.get('defaultAuthDetail') || {};
                         let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
-                            enterpriseCode: defaultAuthDetail.enterpriseCode,
+                            entCode: defaultAuthDetail.entCode,
                             tenant: defaultAuthDetail.tenant,
                             apiKey: CONFIG.get('defaultAuthDetail').apiKey,
                             lifetime: true

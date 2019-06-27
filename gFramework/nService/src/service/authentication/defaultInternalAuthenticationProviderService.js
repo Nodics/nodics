@@ -44,17 +44,15 @@ module.exports = {
                 isJsonResponse: true,
                 header: {
                     apiKey: CONFIG.get('defaultAuthDetail').apiKey,
-                    enterpriseCode: CONFIG.get('defaultAuthDetail').enterpriseCode
+                    entCode: CONFIG.get('defaultAuthDetail').entCode
                 }
             });
             try {
-                SERVICE.DefaultModuleService.fetch(requestUrl, (error, response) => {
-                    if (error) {
-                        _self.LOG.error('While connecting profile server to fetch API Key', error);
-                        resolve([]);
-                    } else {
-                        resolve(response.result || []);
-                    }
+                SERVICE.DefaultModuleService.fetch(requestUrl).then(response => {
+                    resolve(response.result || []);
+                }).catch(error => {
+                    _self.LOG.error('While connecting profile server to fetch API Key', error);
+                    resolve([]);
                 });
             } catch (error) {
                 _self.LOG.error('While connecting profile server to fetch API Key', error);

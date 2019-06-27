@@ -12,7 +12,6 @@
 module.exports = {
     record0: {
         code: 'admin',
-        enterpriseCode: 'default',
         active: true,
         name: {
             title: 'Mr.',
@@ -32,7 +31,6 @@ module.exports = {
     },
     record1: {
         code: 'apiAdmin',
-        enterpriseCode: 'default',
         active: true,
         name: {
             title: 'Mr.',

@@ -58,7 +58,7 @@ module.exports = {
     cleanEntitie: function (moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.LOG.debug('Starting process for module : ', moduleName);
+            _self.LOG.debug('Starting process for module : ' + moduleName);
             let moduleObject = NODICS.getRawModule(moduleName);
             _self.cleanServices(moduleObject).then(() => {
                 return _self.cleanFacades(moduleObject);
@@ -147,7 +147,7 @@ module.exports = {
     cleanModule: function (moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.LOG.debug('Starting process to finalize module : ', moduleName);
+            _self.LOG.debug('Starting process to finalize module : ' + moduleName);
             let moduleObject = NODICS.getRawModule(moduleName);
             let moduleFile = require(moduleObject.path + '/nodics.js');
             if (moduleFile.clean && typeof moduleFile.clean === 'function') {
@@ -260,7 +260,7 @@ module.exports = {
     buildModule: function (moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.LOG.debug('Starting process to build module : ', moduleName);
+            _self.LOG.debug('Starting process to build module : ' + moduleName);
             let moduleObject = NODICS.getRawModule(moduleName);
             let moduleFile = require(moduleObject.path + '/nodics.js');
             if (moduleFile.build && typeof moduleFile.build === 'function') {

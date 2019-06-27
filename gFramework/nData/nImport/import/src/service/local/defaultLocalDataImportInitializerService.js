@@ -84,7 +84,7 @@ module.exports = {
     },
 
     loadHeaderFileList: function (request, response, process) {
-        this.LOG.debug('Loading list of headers from Path to be imported: ', request.inputPath.headerPath);
+        this.LOG.debug('Loading list of headers from Path to be imported: ' + request.inputPath.headerPath);
         SERVICE.DefaultImportUtilityService.getLocalHeaderFiles(request.inputPath.headerPath).then(success => {
             request.data.headerFiles = success;
             process.nextSuccess(request, response);
@@ -152,7 +152,11 @@ module.exports = {
             process.nextSuccess(request, response);
         } else {
             this.LOG.debug('Could not found any header to import local data');
-            process.nextSuccess(request, response);
+            process.stop(request, response, {
+                success: true,
+                code: 'SUC_DATA_00001',
+                msg: 'Could not find any data to import for given modules'
+            });
         }
     },
 

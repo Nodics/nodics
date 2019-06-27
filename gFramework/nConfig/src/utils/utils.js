@@ -41,12 +41,12 @@ module.exports = {
             if (moduleName.indexOf(':') > 0) {
                 groupName = moduleName.substring(moduleName.indexOf(':') + 1, moduleName.length);
                 moduleName = moduleName.substring(0, moduleName.indexOf(':'));
-                console.log(moduleName, ' : ', groupName);
+                console.log(moduleName + ' : ' + groupName);
             }
             if (!modulesList.includes(moduleName)) {
                 let moduleObject = NODICS.getRawModule(moduleName);
                 if (!moduleObject) {
-                    console.error('Invalid initialization, could not load module: ', moduleName);
+                    console.error('Invalid initialization, could not load module: ' + moduleName);
                     process.exit(1);
                 }
                 modulesList.push(moduleName);
@@ -192,10 +192,10 @@ module.exports = {
                     'utf-8',
                     function (error, success) {
                         if (error) {
-                            UTILS.LOG.error('While creating object for file : ', fileName.replace(NODICS.getNodicsHome(), '.'), ' : ', error);
+                            UTILS.LOG.error('While creating object for file : ' + fileName.replace(NODICS.getNodicsHome(), '.'), ' : ', error);
                             reject(error);
                         } else {
-                            UTILS.LOG.debug('Creating class object for : ', fileName.replace(NODICS.getNodicsHome(), '.'));
+                            UTILS.LOG.debug('Creating class object for : ' + fileName.replace(NODICS.getNodicsHome() + '.'));
                             resolve(true);
                         }
                     });

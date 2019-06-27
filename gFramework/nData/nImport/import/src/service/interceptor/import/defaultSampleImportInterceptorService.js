@@ -32,13 +32,6 @@ module.exports = {
         });
     },
 
-    handleDefaultImportProcessor: function (options) {
-        return new Promise((resolve, reject) => {
-            this.LOG.debug('Executing default import interceptor');
-            resolve(true);
-        });
-    },
-
     handleEnterpriseImportProcessor: function (options) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Executing Enterprise import interceptor');

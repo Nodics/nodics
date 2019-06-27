@@ -53,7 +53,7 @@ module.exports = {
     getDatabaseConfiguration: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             let defaultConfig = CONFIG.get('database', tenant);
@@ -71,7 +71,7 @@ module.exports = {
     addTenantDatabase: function (moduleName, tenant, database) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             if (!this.dbs[moduleName]) {
@@ -84,7 +84,7 @@ module.exports = {
     getTenantDatabase: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else {
             let database = {};
@@ -100,7 +100,7 @@ module.exports = {
     removeTenantDatabase: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getTenants().includes(tenant)) {
+        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
             throw new Error('Invalid tenant name: ' + tenant);
         } else if (this.dbs[moduleName] && this.dbs[moduleName][tenant]) {
             delete this.dbs[moduleName][tenant];
@@ -108,12 +108,12 @@ module.exports = {
         return true;
     },
 
-    setInterceptors: function (interceptors) {
+    setSchemaInterceptors: function (interceptors) {
         this.interceptors = interceptors;
 
     },
 
-    getInterceptors: function (schmeaName) {
+    getSchemaInterceptors: function (schmeaName) {
         if (this.interceptors[schmeaName]) {
             return this.interceptors[schmeaName];
         } else {

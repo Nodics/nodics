@@ -106,8 +106,8 @@ module.exports = {
         if (request.get('authToken')) {
             key += '-' + request.get('authToken');
         }
-        if (request.get('enterpriseCode')) {
-            key += '-' + request.get('enterpriseCode');
+        if (request.get('tenant')) {
+            key += '-' + request.get('tenant');
         }
         return method + '-' + key;
     },
