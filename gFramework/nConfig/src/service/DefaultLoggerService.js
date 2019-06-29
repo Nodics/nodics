@@ -10,9 +10,7 @@
  */
 
 const _ = require('lodash');
-const fs = require('fs');
 const winston = require('winston');
-require('winston-daily-rotate-file');
 const wElasticsearch = require('winston-elasticsearch');
 var elasticsearch = require('elasticsearch');
 const splt = require('triple-beam').SPLAT;

@@ -9,7 +9,7 @@
 
  */
 
-const parser = require('xml2json');
+const parser = require('xml-js');
 
 module.exports = {
     /**
@@ -48,7 +48,7 @@ module.exports = {
     processMessage: function (request, response, process) {
         this.LOG.debug('Applying message translator');
         try {
-            let jsonData = JSON.parse(parser.toJson(request.message));
+            let jsonData = JSON.parse(parser.xml2json(request.message, { compact: true, spaces: 4 }));
             jsonData = jsonData[Object.keys(jsonData)[0]];
             response.success = {
                 success: true,
