@@ -16,7 +16,7 @@ module.exports = {
         If system is running is multi cluster node, this property value needs to be configured. 
         Two different system can't run with same node id.
     */
-    nodeId: '0',
+    nodeId: 0,
 
     /*
         These values are used as system values, so can't be used as veriable or class name
@@ -101,6 +101,7 @@ module.exports = {
                     format: 'simple',
                     options: {
                         level: 'debug',
+                        index: 'nodicsLog'
                     },
                     client: {
                         hosts: ['http://localhost:9200']

@@ -87,7 +87,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (nodes && nodes.length > 0) {
                 let nodeId = nodes.shift();
-                if (nodeId === CONFIG.get('nodeId')) {
+                if (nodeId == CONFIG.get('nodeId')) {
                     // let serverConfig = SERVICE.DefaultRouterService.getModuleServerConfig(moduleName);
                     // let nodeObj = serverConfig.getNode(nodeId);
                     SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({

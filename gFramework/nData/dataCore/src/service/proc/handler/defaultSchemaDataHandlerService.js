@@ -103,30 +103,35 @@ module.exports = {
     processData: function (request, response, process) {
         let _self = this;
         try {
-            if (request.header.options.finalizeData) {
-                SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
-                    tenant: request.tenant,
-                    moduleName: request.moduleName,
-                    header: request.header,
-                    models: request.models,
-                    outputPath: request.outputPath
-                }, {}).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, {
-                        success: false,
-                        code: 'ERR_SRCH_00000',
-                        error: error
+            if (request.models && request.models.length > 0) {
+                if (request.header.options.finalizeData) {
+                    SERVICE.DefaultPipelineService.start('writeDataIntoFileInitializerPipeline', {
+                        tenant: request.tenant,
+                        moduleName: request.moduleName,
+                        header: request.header,
+                        models: request.models,
+                        outputPath: request.outputPath
+                    }, {}).then(success => {
+                        process.nextSuccess(request, response);
+                    }).catch(error => {
+                        process.error(request, response, {
+                            success: false,
+                            code: 'ERR_SRCH_00000',
+                            error: error
+                        });
                     });
-                });
+                } else {
+                    _self.processModels(request, {
+                        pendingModels: request.models
+                    }).then(success => {
+                        process.nextSuccess(request, response);
+                    }).catch(error => {
+                        process.error(request, response, error);
+                    });
+                }
             } else {
-                _self.processModels(request, {
-                    pendingModels: request.models
-                }).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
+                _self.LOG.warn('None data found to import');
+                process.nextSuccess(request, response);
             }
         } catch (error) {
             process.error(request, response, {

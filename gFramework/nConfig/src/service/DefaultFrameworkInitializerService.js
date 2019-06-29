@@ -63,22 +63,13 @@ module.exports = {
         }
         this.LOG.info('LOG_PATH      : ' + NODICS.getServerPath() + '/temp/logs');
         this.LOG.info('---------------------------------------------------------------------------\n');
-        this.LOG.info('###   Sequence in which modules has been loaded (Top to Bottom)   ###');
+        this.LOG.info('###   Sequence in which modules has been loaded (Top to Bottom)   ###\n');
         let activeModules = [];
+        let maxLength = 30;
+        let space = ' ';
         NODICS.getIndexedModules().forEach((obj, key) => {
-            if (obj.name.length > 0 && obj.name.length <= 8) {
-                this.LOG.info('    ' + obj.name + '\t\t\t\t\t :  ' + key);
-            } else if (obj.name.length > 8 && obj.name.length <= 15) {
-                this.LOG.info('    ' + obj.name + '\t\t\t\t :  ' + key);
-            } else if (obj.name.length > 15 && obj.name.length <= 23) {
-                this.LOG.info('    ' + obj.name + '\t\t\t :  ' + key);
-            } else if (obj.name.length > 23 && obj.name.length <= 35) {
-                this.LOG.info('    ' + obj.name + '\t\t :  ' + key);
-            } else if (obj.name.length > 35 && obj.name.length <= 45) {
-                this.LOG.info('    ' + obj.name + '\t :  ' + key);
-            } else {
-                this.LOG.info('    ' + obj.name + ':  ' + key);
-            }
+            let spaces = maxLength - obj.name.length;
+            this.LOG.info('  ' + obj.name + space.repeat(spaces) + ' : ' + key);
             activeModules.push(obj.name);
         });
         console.log();
