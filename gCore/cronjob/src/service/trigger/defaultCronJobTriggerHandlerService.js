@@ -110,7 +110,6 @@ module.exports = {
                 response.success = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
-                console.log(error);
                 process.error(request, response, error);
             });
         } else if (jobDetail.external) {

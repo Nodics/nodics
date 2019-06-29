@@ -11,7 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const uuidv5 = require('uuid/v5');
 const uuidv4 = require('uuid/v4');
 
