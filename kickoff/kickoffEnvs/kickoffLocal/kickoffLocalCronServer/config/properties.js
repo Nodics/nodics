@@ -61,6 +61,13 @@ module.exports = {
 
                     httpsHost: 'localhost',
                     httpsPort: 3003
+                },
+                1: {
+                    httpHost: 'localhost',
+                    httpPort: 3012,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3013
                 }
             }
         },

@@ -63,9 +63,7 @@ module.exports = function (moduleName) {
                 nodeConfig.httpsPort);
         } else {
             _.each(_nodes, (node, id) => {
-                if (node.getHttpHost() === nodeConfig.httpHost ||
-                    node.getHttpPort() === nodeConfig.httpPort ||
-                    node.getHttpsHost() === nodeConfig.httpsHost ||
+                if (node.getHttpPort() === nodeConfig.httpPort ||
                     node.getHttpsPort() === nodeConfig.httpsPort) {
                     throw new Error('Invalid node configuration for ' + nodeId + ' in module : ' + _moduleName);
                 }

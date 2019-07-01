@@ -15,6 +15,7 @@ const wElasticsearch = require('winston-elasticsearch');
 var elasticsearch = require('elasticsearch');
 const splt = require('triple-beam').SPLAT;
 const utils = require('../utils/utils');
+const logform = require('logform');
 
 module.exports = {
 
@@ -62,6 +63,11 @@ module.exports = {
     getLoggerConfiguration: function (entityName, level, logConfig) {
         return {
             level: level || logConfig.level || 'info',
+            format: logform.format.combine(
+                logform.format.errors({ stack: true }),
+                logform.format.metadata(),
+                logform.format.json()
+            ),
             transports: this.createTransports(entityName, logConfig)
         };
     },
@@ -109,24 +115,24 @@ module.exports = {
         let _self = this;
         let options = {};
         options.label = labelName;
-        options.format = winston.format.combine(
+        options.format = logform.format.combine(
             winston.format.label({ label: labelName }),
             winston.format.colorize(),
             winston.format.timestamp({
                 format: 'YYYY-MM-DD HH:mm:ss'
             }),
             winston.format.prettyPrint(),
-            _self.getLogFormat(config),
             winston.format.printf((info) => {
                 const splat = info[splt] || [];
-                const message = this.formatObject(info.message);
+                let message = this.formatObject(info.message || info.errmsg);
                 const rest = splat.map(this.formatObject).join(' ');
                 if (rest && !utils.isBlank(rest) && rest !== '{}' && rest !== '[]') {
-                    info.message = `${message} ${rest}`;
-                } else {
-                    info.message = `${message}`;
+                    message = message + ' ' + rest;
                 }
-                return `${info.timestamp}  ${info.level}: [${info.label}] ${info.message}`;
+                if (info.metadata && !utils.isBlank(info.metadata) && info.metadata !== '{}' && info.metadata !== '[]') {
+                    message = message + ' ' + this.formatObject(info.metadata);
+                }
+                return `${info.timestamp}  ${info.level}: [${info.label}] ${message}`;
             })
         );
         return new winston.transports.Console(options);
@@ -145,7 +151,7 @@ module.exports = {
             _self.getLogFormat(config),
             winston.format.printf((info) => {
                 const splat = info[splt] || [];
-                const message = this.formatObject(info.message);
+                const message = this.formatObject(info.message || info.errmsg);
                 const rest = splat.map(this.formatObject).join(' ');
                 if (rest && !utils.isBlank(rest) && rest !== '{}' && rest !== '[]') {
                     info.message = `${message} ${rest}`;
