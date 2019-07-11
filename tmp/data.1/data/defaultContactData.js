@@ -10,13 +10,11 @@
  */
 
 module.exports = {
-    returnErrorStack: false,
-    activateClusterPing: true,
-    clusterPingTimeout: 10 * 1000,
-    clusteredModules: {
-        cronjob: 1,
-        profile: 0,
-        emsClient: 0,
-        nems: 0
+    record0: {
+        code: 'defaultEntContact',
+        active: true,
+        prefix: '+91',
+        type: 'PHONE',
+        value: '9108464882'
     }
 };

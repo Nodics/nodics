@@ -10,13 +10,16 @@
  */
 
 module.exports = {
-    returnErrorStack: false,
-    activateClusterPing: true,
-    clusterPingTimeout: 10 * 1000,
-    clusteredModules: {
-        cronjob: 1,
-        profile: 0,
-        emsClient: 0,
-        nems: 0
+    profile: {
+        defaultUserGroup: {
+            options: {
+                schemaName: 'userGroup',
+                operation: 'save', //save, update and saveOrUpdate
+                dataFilePrefix: 'defaultUserGroupData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
     }
 };

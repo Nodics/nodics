@@ -1,0 +1,120 @@
+
+Todos:
+  Priority One:
+    ✔ Call external API from CronJob @done(19-05-27 13:10)
+    ✔ Update CronJobLog id logResult is true @done(19-05-27 15:15)
+    ✔ Create Application with modules (core, intergration, api) environments like (local, dev, qa, preprod, prod) with Single server execution @done(19-06-02 00:34)
+    ✔ Add enterpriseCode and tenant in queue header to route queue specific data @done(19-05-27 13:33)
+    ✔ Test Logger with elastic search @done(19-07-01 11:35)
+    - Check data import with multi application, multi environment and multi server
+    - Check Test loader with multi application, multi environment and multi server
+    - Authentication from external source (Feasibility and Implementation)
+    - Check nested model for Default value and validators - looks code don't support this
+    - Handle default, valueProvider and validators for search operation
+    ✔ Make data header enable/disable to restrict data import from uper layer @done(19-07-01 11:35)
+    - Service API for import local data
+    - API to lock/unlock employee/customer
+    - Update password
+    - Responsibility transfer on Clustered environment 
+      - Cluster started
+      - Cluster goes down
+    - Group ems Listener to manage clustered environment
+    - Work on Job Interceptors
+    - Inter CronJob Dependancy
+        
+  Priority Two:
+    - Test merge process for multi hiererchy function definitions within service
+    - Activate co-relation id with log and nested module request
+    - Change log configuration at layer level
+
+  Priority Three:
+    - Revert inprocess events after 5-10 minute, left incase of error
+    - Check interceptors execution based on index value
+    - Start job if required ASAP Item got created in model
+
+  Priority Four:
+  
+  Prority Five:
+    - Implement Jsdoc NPM to generate JavaScript Docs
+    - Data Export process
+    - Monitoring tool - 
+        https://www.nearform.com/blog/how-to-build-a-real-time-node-js-performance-monitoring-system/
+    - Don't load test cases while server start-up instead while executing
+    - Run individual test case from API for both type
+    - Document complete server configuration for start and connect
+    - Check if running job stops if end time happens
+    - Job handlers are not in Sync currently, it should trigger after first completed
+    - Remove already registered interceptor
+    - Add virtual property calculation as Promise
+    - Support schema to define multi language support (https://www.npmjs.com/package/mongoose-intl)
+    - Support Nodics to fetch langauge specific data on each query
+    - Change log configuration at layer level
+
+  Workflow Items:
+    - Create Item workflow and its steps
+    - Create workflow aware super item like base
+    - Add multiple properties related to workflow like, workflow code, 
+    - Mark active false initially for workflow items
+    - Store workflow steps for the item
+    - Service to get all workflows
+    - Service to get items related to workflow
+Todos:
+  Documentation Points:
+    - Layered Architecture support to extend and generalize code in layered
+    - Bussiness level shared functionality - Layered Architecture
+    - Distrubuted module management - Diployment topology - Layered Architecture
+    - Multi-Application management - each application may use different set of modules
+    - Database handling with MongoDB
+    - Module-Specific database support
+    - Multi-Enterprise with Multi tenancy support
+    - Micro-Services Development and deployment support
+    - Test-Case framework
+      - Module Specific test cases
+      - Application Specific test cases
+      - Environment Specific test cases
+      - Push-Pop and only Pop test cases execution
+    - Data Import process
+      - Initial data load
+      - Core data load
+      - Sample data load
+      - Application Specific data load
+      - Environment Specific data load
+    - Scheduled activity execution support - CronJobs
+    - Modular Event management system support
+    - Schema lyfe cycle management
+    - Process creation and management system
+    - Secured, un-secured and special request handler support
+    - Tow level Distributed cache management system (Application and module specific)
+    - Messaging system support with
+      - Tibco message push and pop
+      - ActiveMQ message push and pop
+      - Kafka message push and pop
+    - Full documentation and Real time support
+    - Winston Logger support with multi-transport and file level enable/disable 
+    - Configuration each modules server to connect each other
+
+
+    https://medium.com/styled-components/the-simple-guide-to-server-side-rendering-react-with-styled-components-d31c6b2b8fbf
+    https://www.templatemonster.com/demo/52949.html
+
+    Kf6hV0rwty;v
+
+Issues:
+  - listCollections return whole collection object with 
+
+BakwasKeeda:
+  - db.createUser( { user: "bakwaskeeda", pwd: "bakwaskeeda@15021981", roles: [ { role: "readWriteAnyDatabase", db: "admin" }, { role: "userAdminAnyDatabase", db: "admin" } ] } )
+  127.0.0.1:27017 - mongodb
+  Successfully added user: {
+    "user" : "bakwaskeeda",
+    "roles" : [
+      {
+        "role" : "readWriteAnyDatabase",
+        "db" : "admin"
+      },
+      {
+        "role" : "userAdminAnyDatabase",
+        "db" : "admin"
+      }
+    ]
+  }

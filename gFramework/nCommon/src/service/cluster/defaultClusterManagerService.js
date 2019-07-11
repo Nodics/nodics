@@ -36,60 +36,40 @@ module.exports = {
     },
 
     checkActiveClusters: function () {
-        this.checkActiveModuleClusters().then(success => {
-            this.LOG.info('Active cluster check activated');
-            setTimeout(() => {
-                SERVICE.DefaultClusterManagerService.checkActiveClusters();
-            }, CONFIG.get('clusterPingTimeout') || 2000);
-        }).catch(error => {
-            this.LOG.info('Failed Activeting cluster check');
-            setTimeout(() => {
-                SERVICE.DefaultClusterManagerService.checkActiveClusters();
-            }, CONFIG.get('clusterPingTimeout') || 2000);
-        });
-
+        setTimeout(() => {
+            SERVICE.DefaultClusterManagerService.checkActiveModuleClusters();
+            SERVICE.DefaultClusterManagerService.checkActiveClusters();
+        }, CONFIG.get('clusterPingTimeout') || 2000);
     },
 
-    checkActiveModuleClusters: function (modules = Object.keys(CONFIG.get('clusteredModules'))) {
+    checkActiveModuleClusters: function () {
         let _self = this;
-        return new Promise((resolve, reject) => {
-            if (modules && modules.length > 0) {
-                let moduleName = modules.shift();
-                let isActive = CONFIG.get('clusteredModules')[moduleName];
-                let moduleObject = NODICS.getModule(moduleName);
-                if (isActive && NODICS.isModuleActive(moduleName) && moduleObject.metaData && moduleObject.metaData.publish) {
-                    let serverConfig = SERVICE.DefaultRouterService.getModuleServerConfig(moduleName);
-                    let nodes = Object.keys(serverConfig.getNodes());
-                    _self.checkActiveCluster(moduleName, nodes).then(success => {
-                        _self.checkActiveModuleClusters(modules).then(success => {
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    _self.checkActiveModuleClusters(modules).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }
-            } else {
-                resolve(true);
+        let modules = Object.keys(CONFIG.get('clusteredModules'));
+        let allModulePromises = [];
+        modules.forEach(moduleName => {
+            let isActive = CONFIG.get('clusteredModules')[moduleName];
+            let moduleObject = NODICS.getModule(moduleName);
+            if (isActive && NODICS.isModuleActive(moduleName) && moduleObject.metaData && moduleObject.metaData.publish) {
+                let serverConfig = SERVICE.DefaultRouterService.getModuleServerConfig(moduleName);
+                allModulePromises.push(_self.checkActiveCluster(moduleName, Object.keys(serverConfig.getNodes())));
             }
         });
+        if (allModulePromises.length > 0) {
+            Promise.all(allModulePromises).then(success => {
+                _self.LOG.debug('Successfully completed cluster check');
+            }).catch(error => {
+                _self.LOG.error('Failed cluster check');
+                _self.LOG.error(error);
+            });
+        }
     },
 
     checkActiveCluster: function (moduleName, nodes) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (nodes && nodes.length > 0) {
-                let nodeId = nodes.shift();
-                if (nodeId == CONFIG.get('nodeId')) {
-                    // let serverConfig = SERVICE.DefaultRouterService.getModuleServerConfig(moduleName);
-                    // let nodeObj = serverConfig.getNode(nodeId);
+                let nodeId = parseInt(nodes.shift());
+                if (nodeId !== CONFIG.get('nodeId')) {
                     SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
                         nodeId: nodeId,
                         moduleName: moduleName,
@@ -101,14 +81,20 @@ module.exports = {
                             authToken: NODICS.getInternalAuthToken('default')
                         }
                     })).then(success => {
-                        console.log(moduleName + ' -------------------: ' + success);
+                        SERVICE.DefaultClusterStateChangeHandlerService.handleClusterActive(moduleName, nodeId);
                         _self.checkActiveCluster(moduleName, nodes).then(success => {
                             resolve(true);
                         }).catch(error => {
                             reject(error);
                         });
                     }).catch(error => {
-                        reject(error);
+                        SERVICE.DefaultClusterStateChangeHandlerService.handleClusterInactive(moduleName, nodeId);
+                        if (error.error && error.error.code === 'ECONNREFUSED') {
+                            _self.LOG.error('Cluster node: ' + nodeId + ' is down at: ' + error.error.address + ' : ' + error.error.port);
+                        } else {
+                            _self.LOG.error(error);
+                        }
+                        resolve(true);
                     });
                 } else {
                     _self.checkActiveCluster(moduleName, nodes).then(success => {

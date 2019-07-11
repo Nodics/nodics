@@ -1,0 +1,7 @@
+<head>
+    <enterpriseCode>testEnt</enterpriseCode>
+    <tenant>testOne</tenant>
+    <name>Nodics</name>
+    <lastName>Framework</lastName>
+    <purpose>Test XML message push</purpose>
+</head>

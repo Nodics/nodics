@@ -10,13 +10,9 @@
  */
 
 module.exports = {
-    returnErrorStack: false,
-    activateClusterPing: true,
-    clusterPingTimeout: 10 * 1000,
-    clusteredModules: {
-        cronjob: 1,
-        profile: 0,
-        emsClient: 0,
-        nems: 0
+    record0: {
+        code: 'default',
+        active: true,
+        description: 'Default tenant, which take configuration from properties configuration'
     }
 };

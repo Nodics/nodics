@@ -29,7 +29,7 @@ yarn-error.log*
 **/dist/**
 **/gen/**
 **/web/lib/**
-**/tmp/**
+# **/tmp/**
 **/kickoff/custom/**
 
 **/rrldataengine/**

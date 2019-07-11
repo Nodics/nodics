@@ -10,13 +10,16 @@
  */
 
 module.exports = {
-    returnErrorStack: false,
-    activateClusterPing: true,
-    clusterPingTimeout: 10 * 1000,
-    clusteredModules: {
-        cronjob: 1,
-        profile: 0,
-        emsClient: 0,
-        nems: 0
+    record0: {
+        code: 'adminUserGroup',
+        name: 'adminUserGroup',
+        active: true,
+        enterpriseCode: 'default'
+    },
+    record1: {
+        code: 'guestUserGroup',
+        name: 'guestUserGroup',
+        active: true,
+        enterpriseCode: 'default'
     }
 };
