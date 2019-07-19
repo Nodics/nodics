@@ -66,7 +66,7 @@ module.exports = {
                 httpsPort: 3011
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3010,
 
@@ -95,7 +95,7 @@ module.exports = {
                 httpsPort: 3001
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3000,
 
@@ -124,7 +124,7 @@ module.exports = {
                 httpsPort: 3005
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3004,
 

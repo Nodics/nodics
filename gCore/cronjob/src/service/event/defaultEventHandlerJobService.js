@@ -22,7 +22,7 @@ module.exports = {
 
     prepareURL: function (definition) {
         let connectionType = 'abstract';
-        let nodeId = '0';
+        let nodeId = 'node0';
         if (definition.targetNodeId) {
             connectionType = 'node';
             nodeId = definition.targetNodeId;
@@ -99,7 +99,11 @@ module.exports = {
         let _self = this;
         SERVICE.DefaultCronJobService.save({
             tenant: definition.tenant,
-            models: [definition]
+            models: [{
+                code: definition.code,
+                lastResult: definition.lastResult,
+                state: definition.state
+            }]
         }).then(response => {
             _self.LOG.debug('Job : executed successfuly');
         }).catch(error => {

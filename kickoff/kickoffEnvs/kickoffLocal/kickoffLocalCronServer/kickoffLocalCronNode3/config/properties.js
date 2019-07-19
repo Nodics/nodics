@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    nodeId: 3,
+    nodeId: 'node3',
     server: {
         default: {
             server: {

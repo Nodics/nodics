@@ -142,16 +142,14 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (nodes && nodes.length > 0) {
-                let nodeId = parseInt(nodes.shift());
+                let nodeId = nodes.shift();
                 if (nodeId !== CONFIG.get('nodeId') && SERVICE.DefaultNodeConfigurationService.isNodeActive(moduleName, nodeId)) {
                     SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
                         nodeId: nodeId,
                         moduleName: moduleName,
-                        methodName: 'POST',
-                        apiName: 'node/active',
-                        requestBody: {
-                            nodeId: CONFIG.get('nodeId')
-                        },
+                        methodName: 'GET',
+                        apiName: 'node/active/' + CONFIG.get('nodeId'),
+                        requestBody: {},
                         isJsonResponse: true,
                         header: {
                             authToken: NODICS.getInternalAuthToken('default')
@@ -216,7 +214,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (nodes && nodes.length > 0) {
-                let nodeId = parseInt(nodes.shift());
+                let nodeId = nodes.shift();
                 if (nodeId !== CONFIG.get('nodeId') && SERVICE.DefaultNodeConfigurationService.isNodeActive(moduleName, nodeId)) {
                     SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
                         nodeId: nodeId,

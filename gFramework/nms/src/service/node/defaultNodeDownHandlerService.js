@@ -66,10 +66,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let allPromise = [];
             nodes.forEach(nodeId => {
-                let nodeIdNum = parseInt(nodeId);
-                if (nodeIdNum !== CONFIG.get('nodeId') && SERVICE.DefaultNodeConfigurationService.isNodeActive(moduleName, nodeIdNum)) {
+                if (nodeId !== CONFIG.get('nodeId') && SERVICE.DefaultNodeConfigurationService.isNodeActive(moduleName, nodeId)) {
                     allPromise.push(SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
-                        nodeId: nodeIdNum,
+                        nodeId: nodeId,
                         moduleName: moduleName,
                         methodName: 'GET',
                         apiName: 'node/request/responsibility/' + downNode,

@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -41,19 +43,20 @@ module.exports = {
     },
 
     handleResponsibilities: function (request, response, process) {
-        this.startTenantSpecificJobs(request.remoteNode, NODICS.getActiveTenants()).then(success => {
+        this.startTenantSpecificJobs(request.moduleName, request.remoteNode, NODICS.getActiveTenants()).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
 
-    startTenantSpecificJobs: function (remoteNode, tenants) {
+    startTenantSpecificJobs: function (moduleName, remoteNode, tenants) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (tenants && tenants.length > 0) {
                 let tenant = tenants.shift();
-                SERVICE.DefaultCronJobService.get({
+                let request = {
+                    moduleName: moduleName,
                     tenant: tenant,
                     options: {
                         noLimit: true,
@@ -61,14 +64,29 @@ module.exports = {
                     },
                     query: _.merge({
                         runOnNode: remoteNode
-                    }, CONFIG.get('cronjob').activeJobsQuery)
-                }).then(result => {
+                    }, SERVICE.DefaultCronJobConfigurationService.getDefaultQuery())
+                };
+                SERVICE.DefaultCronJobService.get(request).then(result => {
                     if (result.success && result.result && result.result.length > 0) {
-                        this.cronJobContainer.createJobs({
+                        let moduleObject = NODICS.getModule(moduleName);
+                        let nodeConfig = moduleObject.nms.nodes[remoteNode];
+                        if (!nodeConfig.remoteData) {
+                            nodeConfig.remoteData = {};
+                        }
+                        nodeConfig.remoteData[tenant] = [];
+                        result.result.forEach(job => {
+                            nodeConfig.remoteData[tenant].push(job.code);
+                            job.tempNode = CONFIG.get('nodeId');
+                        });
+                        SERVICE.DefaultCronJobService.getCronJobContainer().createJobs({
                             tenant: request.tenant,
                             definitions: result.result
                         }).then(success => {
-                            resolve(true);
+                            SERVICE.DefaultCronJobService.getCronJobContainer().startJobs(request.tenant, [].concat(nodeConfig.remoteData[tenant])).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
                         }).catch(error => {
                             reject(error);
                         });

@@ -18,6 +18,12 @@ module.exports = {
         message: 'Successfully processed'
     },
 
+    SUC_CRON_00001: {
+        code: '220001',
+        description: 'Job can not be run in this node',
+        message: 'Job can not be run in this node'
+    },
+
     //ERROR STATUS Cache
     ERR_CRON_00000: {
         code: '210000',

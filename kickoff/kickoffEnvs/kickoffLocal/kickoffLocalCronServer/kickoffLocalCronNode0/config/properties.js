@@ -10,5 +10,5 @@
  */
 
 module.exports = {
-    nodeId: 0,
+    nodeId: 'node0',
 };

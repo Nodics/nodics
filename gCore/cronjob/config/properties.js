@@ -22,27 +22,5 @@ module.exports = {
     cronjob: {
         runOnStartup: false,
         waitTime: 1000,
-        activeJobsQuery: {
-            $and: [{
-                active: true
-            },
-            {
-                start: {
-                    $lt: new Date()
-                }
-            },
-            {
-                $or: [{
-                    end: {
-                        $gte: new Date()
-                    }
-                },
-                {
-                    end: {
-                        $exists: false
-                    }
-                }]
-            }]
-        }
     }
 };

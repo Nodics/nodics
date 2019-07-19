@@ -49,7 +49,7 @@ module.exports = {
                 },
                 query: _.merge({
                     runOnNode: CONFIG.get('nodeId')
-                }, CONFIG.get('cronjob').activeJobsQuery)
+                }, SERVICE.DefaultCronJobConfigurationService.getDefaultQuery())
             }, request);
             request.modelName = request.modelName || 'cronJob';
             SERVICE['Default' + request.modelName.toUpperCaseFirstChar() + 'Service'].get(request).then(result => {

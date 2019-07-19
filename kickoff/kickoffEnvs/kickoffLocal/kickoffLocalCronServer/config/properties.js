@@ -27,11 +27,11 @@ module.exports = {
     },
 
     log: {
-        level: 'debug'
+        level: 'info'
     },
 
     cronjob: {
-        runOnStartup: false
+        runOnStartup: true
     },
 
     search: {
@@ -62,28 +62,28 @@ module.exports = {
                 httpsPort: 3011
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3010,
 
                     httpsHost: 'localhost',
                     httpsPort: 3011
                 },
-                1: {
+                node1: {
                     httpHost: 'localhost',
                     httpPort: 3012,
 
                     httpsHost: 'localhost',
                     httpsPort: 3013
                 },
-                2: {
+                node2: {
                     httpHost: 'localhost',
                     httpPort: 3014,
 
                     httpsHost: 'localhost',
                     httpsPort: 3015
                 },
-                3: {
+                node3: {
                     httpHost: 'localhost',
                     httpPort: 3016,
 
@@ -113,7 +113,7 @@ module.exports = {
                 httpsPort: 3001
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3000,
 
@@ -143,7 +143,7 @@ module.exports = {
                 httpsPort: 3005
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3004,
 

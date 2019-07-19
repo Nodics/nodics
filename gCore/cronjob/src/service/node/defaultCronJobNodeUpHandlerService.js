@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -43,7 +45,7 @@ module.exports = {
     },
 
     shutdownResponsibilities: function (request, response, process) {
-        this.removeRemoteJobs(request.remoteData).then(success => {
+        this.removeRemoteJobs(NODICS.getActiveTenants(), request.remoteData).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -56,7 +58,10 @@ module.exports = {
             if (tenants && tenants.length > 0) {
                 let tenant = tenants.shift();
                 let jobCodes = remoteData[tenant];
-                SERVICE.DefaultCronJobService.removeJob(tenant, jobCodes).then(success => {
+                SERVICE.DefaultCronJobService.removeJob({
+                    tenant: tenant,
+                    jobCodes: jobCodes
+                }).then(success => {
                     _self.removeRemoteJobs(tenants, remoteData).then(success => {
                         resolve(true);
                     }).catch(error => {

@@ -60,7 +60,7 @@ module.exports = {
         if (!moduleObject) {
             throw new Error('Invalid module name: ' + moduleName);
         } else {
-            let nodeData = moduleObject.nodes[nodeId];
+            let nodeData = moduleObject.nms.nodes[nodeId];
             if (!nodeData.requested && !nodeData.handled) {
                 SERVICE.DefaultEventService.handleEvent({
                     event: {

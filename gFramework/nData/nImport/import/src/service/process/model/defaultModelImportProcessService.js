@@ -337,7 +337,7 @@ module.exports = {
                 state: "NEW",
                 type: 'SYNC',
                 targetType: ENUMS.TargetType.MODULE.key,
-                targetNodeId: 0,
+                targetNodeId: 'node0',
                 data: {
                     header: header,
                     models: models
