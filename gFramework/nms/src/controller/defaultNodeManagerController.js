@@ -36,7 +36,11 @@ module.exports = {
     },
 
     handleNodeActivated: function (request, callback) {
-        request = _.merge(request, request.httpRequest.body || {});
+        if (request.httpRequest.params.nodeId) {
+            request.nodeId = request.httpRequest.params.nodeId;
+        } else {
+            request = _.merge(request, request.httpRequest.body || {});
+        }
         if (callback) {
             FACADE.DefaultNodeManagerFacade.handleNodeActivated(request).then(success => {
                 callback(null, success);
@@ -45,6 +49,23 @@ module.exports = {
             });
         } else {
             return FACADE.DefaultNodeManagerFacade.handleNodeActivated(request);
+        }
+    },
+
+    requestResponsibility: function (request, callback) {
+        if (request.httpRequest.params.nodeId) {
+            request.nodeId = request.httpRequest.params.nodeId;
+        } else {
+            request = _.merge(request, request.httpRequest.body || {});
+        }
+        if (callback) {
+            FACADE.DefaultNodeManagerFacade.requestResponsibility(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultNodeManagerFacade.requestResponsibility(request);
         }
     },
 

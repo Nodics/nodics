@@ -84,5 +84,28 @@ module.exports = {
                 moduleObject.nms.nodes[nodeId].active = false;
             }
         }
+    },
+
+    grantNodeResponsibility: function (moduleName, nodeId) {
+        let moduleObject = NODICS.getModule(moduleName);
+        if (!moduleObject) {
+            throw new Error('Module name: ' + moduleName + ' is invalid');
+        } else {
+            if (!moduleObject.nms) {
+                moduleObject.nms = {};
+            }
+            if (!moduleObject.nms.nodes) {
+                moduleObject.nms.nodes = {};
+            }
+            if (!moduleObject.nms.nodes[nodeId]) {
+                moduleObject.nms.nodes[nodeId] = {
+                    active: false
+                };
+            }
+            let nodeConfig = moduleObject.nms.nodes[nodeId];
+            nodeConfig.active = false;
+            nodeConfig.granted = true;
+            nodeConfig.responsibleNode = nodeId;
+        }
     }
 };

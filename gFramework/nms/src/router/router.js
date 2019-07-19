@@ -12,20 +12,31 @@
 module.exports = {
     common: {
         nodeStateChanges: {
-            nodeActivatedPost: {
+            nodeActivatedGet: {
                 secured: true,
-                key: '/node/active',
-                method: 'POST',
+                key: '/node/active/:nodeId',
+                method: 'GET',
                 controller: 'DefaultNodeManagerController',
                 operation: 'handleNodeActivated',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/{moduleName}/node/active',
-                    body: {
-                        nodeId: 'activated node nodeId'
-                    }
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/node/active/:nodeId',
+                }
+            },
+
+            requestResponsibilityGet: {
+                secured: true,
+                key: '/node/request/responsibility/:nodeId',
+                method: 'GET',
+                controller: 'DefaultNodeManagerController',
+                operation: 'requestResponsibility',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/node/request/responsibility/:nodeId',
                 }
             }
         },

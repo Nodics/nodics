@@ -57,6 +57,33 @@ module.exports = {
         });
     },
 
+    requestResponsibility: function (request) {
+        return new Promise((resolve, reject) => {
+            if (request.nodeId === undefined) {
+                reject({
+                    success: false,
+                    code: 'ERR_SYS_00000',
+                    msg: 'NodeId can not be null or empty'
+                });
+            } else if (!moduleObject.nms || !moduleObject.nms.nodes || !moduleObject.nms.nodes[nodeId] ||
+                !moduleObject.nms.nodes[nodeId].requested || nodeId < CONFIG.get('nodeId')) {
+                SERVICE.DefaultNodeConfigurationService.grantNodeResponsibility(request.moduleName, request.nodeId);
+                resolve({
+                    success: true,
+                    code: 'SUC_RES_00001',
+                    msg: 'Successfully granted request'
+                });
+            } else {
+                reject({
+                    success: false,
+                    code: 'ERR_RES_00001',
+                    nodeId: CONFIG.get('nodeId'),
+                    error: 'Already handling responsibility'
+                });
+            }
+        });
+    },
+
     handleNodeActivated: function (request) {
         return new Promise((resolve, reject) => {
             if (request.nodeId === undefined) {

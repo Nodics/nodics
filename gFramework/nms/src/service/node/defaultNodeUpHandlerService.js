@@ -50,6 +50,8 @@ module.exports = {
                 event.remoteData = nmsData.remoteData;
                 SERVICE.DefaultPipelineService.start(event.moduleConfig.nodeUpHandler, event, {}).then(success => {
                     delete nmsData.remoteData;
+                    delete nodeConfig.granted;
+                    delete nodeConfig.responsibleNode;
                     callback(null, {
                         success: true,
                         code: 'SUC_EVNT_00000',

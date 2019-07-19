@@ -19,7 +19,7 @@ module.exports = {
     },
 
     SUC_CACHE_00001: {
-        code: '170001',
+        code: '200000',
         description: 'None schema found for module',
         message: 'None schema found for module'
     },

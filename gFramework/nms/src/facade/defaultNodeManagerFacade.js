@@ -37,6 +37,10 @@ module.exports = {
         return SERVICE.DefaultNodeManagerService.handleNodeActivated(request);
     },
 
+    requestResponsibility: function (request) {
+        return SERVICE.DefaultNodeManagerService.requestResponsibility(request);
+    },
+
     stopHealthCheck: function (request) {
         return SERVICE.DefaultNodeManagerService.stopHealthCheck(request);
     }
