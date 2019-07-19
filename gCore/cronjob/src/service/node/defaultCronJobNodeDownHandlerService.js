@@ -41,7 +41,48 @@ module.exports = {
     },
 
     handleResponsibilities: function (request, response, process) {
-        process.nextSuccess(request, response);
+        this.startTenantSpecificJobs(request.remoteNode, NODICS.getActiveTenants()).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+
+    startTenantSpecificJobs: function (remoteNode, tenants) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                SERVICE.DefaultCronJobService.get({
+                    tenant: tenant,
+                    options: {
+                        noLimit: true,
+                        projection: { _id: 0 }
+                    },
+                    query: _.merge({
+                        runOnNode: remoteNode
+                    }, CONFIG.get('cronjob').activeJobsQuery)
+                }).then(result => {
+                    if (result.success && result.result && result.result.length > 0) {
+                        this.cronJobContainer.createJobs({
+                            tenant: request.tenant,
+                            definitions: result.result
+                        }).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        _self.LOG.info('None jobs found for tenant: ' + tenant);
+                        resolve(true);
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
     },
 
     handleSucessEnd: function (request, response, process) {

@@ -82,10 +82,7 @@ module.exports = function () {
                         _jobPool[definition.tenant] = {};
                     }
                     if (!_jobPool[definition.tenant][definition.code]) {
-                        if (!definition.runOnNode) {
-                            definition.runOnNode = CONFIG.get('nodeId');
-                        }
-                        if (CONFIG.get('nodeId') === definition.runOnNode) {
+                        if (CONFIG.get('nodeId') === definition.runOnNode || (definition.tempNode && CONFIG.get('nodeId') === definition.tempNode)) {
                             let tmpCronJob = new CLASSES.CronJob(definition, definition.trigger);
                             tmpCronJob.LOG = SERVICE.DefaultLoggerService.createLogger('CronJob-' + definition.code);
                             tmpCronJob.validate();

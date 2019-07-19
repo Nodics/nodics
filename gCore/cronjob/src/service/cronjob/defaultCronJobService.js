@@ -47,7 +47,9 @@ module.exports = {
                     noLimit: true,
                     projection: { _id: 0 }
                 },
-                query: CONFIG.get('cronjob').activeJobsQuery
+                query: _.merge({
+                    runOnNode: CONFIG.get('nodeId')
+                }, CONFIG.get('cronjob').activeJobsQuery)
             }, request);
             request.modelName = request.modelName || 'cronJob';
             SERVICE['Default' + request.modelName.toUpperCaseFirstChar() + 'Service'].get(request).then(result => {

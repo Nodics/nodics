@@ -48,7 +48,7 @@ module.exports = {
             definition: {
                 runOnNode: {
                     type: 'int',
-                    required: false,
+                    required: true,
                     description: 'Execution node or cluster id, where job will run. this to avoid running job in multiple nodes'
                 },
                 runOnInit: {

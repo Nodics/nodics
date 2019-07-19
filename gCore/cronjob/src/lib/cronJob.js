@@ -77,7 +77,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                             _self.LOG.warn('   WARN: Job : ' + _definition.code + ' got expired. hence has been stopped');
                             _self.stopJob(true);
                         }
-                        if (NODICS.getServerState() === 'started' && (!_definition.runOnNode || CONFIG.get('nodeId') === _definition.runOnNode)) {
+                        if (NODICS.getServerState() === 'started' && (CONFIG.get('nodeId') === _definition.runOnNode || CONFIG.get('nodeId') === definition.tempNode)) {
                             _running = true;
                             _definition.startTime = startTime;
                             _self.LOG.info('--->> job triggered : ' + _definition.code + ' tenant: ' + definition.tenant + ' at: ' + _definition.startTime.getHours() + ':' + _definition.startTime.getMinutes() + ':' + _definition.startTime.getSeconds());
@@ -135,7 +135,7 @@ module.exports = function (definition, trigger, context, timeZone) {
             },
             onComplete: function () {
                 try {
-                    if (NODICS.getServerState() === 'started' && (!_definition.runOnNode || CONFIG.get('nodeId') === _definition.runOnNode)) {
+                    if (NODICS.getServerState() === 'started' && (CONFIG.get('nodeId') === _definition.runOnNode || CONFIG.get('nodeId') === definition.tempNode)) {
                         SERVICE.DefaultPipelineService.start('defaultCronJobCompleteHandlerPipeline', {
                             job: _self,
                             cronJob: _self.getCronJob(),
