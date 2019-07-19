@@ -27,18 +27,18 @@ module.exports = {
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3002,
+                httpPort: 3010,
 
                 httpsHost: 'localhost',
-                httpsPort: 3003
+                httpsPort: 3011
             },
             nodes: {
                 0: {
                     httpHost: 'localhost',
-                    httpPort: 3002,
+                    httpPort: 3010,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3003
+                    httpsPort: 3011
                 },
                 1: {
                     httpHost: 'localhost',
@@ -46,6 +46,20 @@ module.exports = {
 
                     httpsHost: 'localhost',
                     httpsPort: 3013
+                },
+                2: {
+                    httpHost: 'localhost',
+                    httpPort: 3014,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3015
+                },
+                3: {
+                    httpHost: 'localhost',
+                    httpPort: 3016,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3017
                 }
             }
         }

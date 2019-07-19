@@ -86,26 +86,42 @@ module.exports = {
                     eventService.eventNames().length > 0 &&
                     eventService.eventNames().includes(event.event)) {
                     if (CONFIG.get('event').processAsSyncHandler || (event.processSync !== undefined && event.processSync === true)) {
-                        eventService.emit(event.event, event, (error, success) => {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                resolve(success);
-                            }
-                        }, request);
+                        try {
+                            eventService.emit(event.event, event, (error, success) => {
+                                if (error) {
+                                    reject(error);
+                                } else {
+                                    resolve(success);
+                                }
+                            }, request);
+                        } catch (error) {
+                            reject({
+                                success: false,
+                                code: 'SUC_EVNT_00000',
+                                error: error
+                            });
+                        }
                     } else {
-                        eventService.emit(event.event, event, (error, success) => {
-                            if (error || !success.success) {
-                                _self.LOG.error('Facing issue while handling event');
-                                _self.LOG.error(error);
-                            } else {
-                                _self.LOG.debug('Event has been processed successfully');
-                            }
-                        }, request);
-                        resolve({
-                            success: true,
-                            code: 'SUC_EVNT_00000'
-                        });
+                        try {
+                            eventService.emit(event.event, event, (error, success) => {
+                                if (error || !success.success) {
+                                    _self.LOG.error('Facing issue while handling event');
+                                    _self.LOG.error(error);
+                                } else {
+                                    _self.LOG.debug('Event has been processed successfully');
+                                }
+                            }, request);
+                            resolve({
+                                success: true,
+                                code: 'SUC_EVNT_00000'
+                            });
+                        } catch (error) {
+                            reject({
+                                success: false,
+                                code: 'SUC_EVNT_00000',
+                                error: error
+                            });
+                        }
                     }
 
                 } else {

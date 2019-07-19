@@ -35,40 +35,46 @@ module.exports = {
         });
     },
 
-    handleClusterActive: function (moduleName, nodeId) {
-        let moduleObject = NODICS.getModule(moduleName);
-        if (!moduleObject) {
-            throw new Error('Invalid module name: ' + moduleName);
-        } else {
-            if (!moduleObject.nodes) {
-                moduleObject.nodes = {};
-            }
-            if (!moduleObject.nodes[nodeId]) {
-                moduleObject.nodes[nodeId] = {
-                    active: true
-                };
-            }
-            let nodeData = moduleObject.nodes[nodeId];
-            if (!nodeData.active) {
-                // handle release responsibilities if this node own for others
-                console.log(' ############################ marking node active: ' + nodeId);
-                nodeData.active = true;
-            }
-        }
+    handleNodeActive: function (moduleName, nodeId) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultEventService.handleEvent({
+                event: {
+                    event: 'nodeUpEvent',
+                    localNode: CONFIG.get('nodeId'),
+                    remoteNode: nodeId,
+                    target: moduleName
+                }
+            }).then(success => {
+                _self.LOG.debug('Handled node up event: ', success);
+            }).catch(error => {
+                _self.LOG.error('Failed handling event for node up', error);
+            });
+            resolve(true);
+        });
     },
 
-    handleClusterInactive: function (moduleName, nodeId) {
+    handleNodeInactive: function (moduleName, nodeId) {
+        let _self = this;
         let moduleObject = NODICS.getModule(moduleName);
         if (!moduleObject) {
             throw new Error('Invalid module name: ' + moduleName);
-        } else if (!moduleObject.nodes || !moduleObject.nodes[nodeId] || !moduleObject.nodes[nodeId].active) {
-            return;
         } else {
             let nodeData = moduleObject.nodes[nodeId];
-            console.log(' ------------------------------------ making node inactive: ' + nodeId);
-            // Cluster goes down and handle responsibility
-            nodeData.active = false;
+            if (!nodeData.requested && !nodeData.handled) {
+                SERVICE.DefaultEventService.handleEvent({
+                    event: {
+                        event: 'nodeDownEvent',
+                        localNode: CONFIG.get('nodeId'),
+                        remoteNode: nodeId,
+                        target: moduleName
+                    }
+                }).then(success => {
+                    _self.LOG.debug('Handled node down event: ', success);
+                }).catch(error => {
+                    _self.LOG.error('Failed handling event for node down', error);
+                });
+            }
         }
     }
-
 };

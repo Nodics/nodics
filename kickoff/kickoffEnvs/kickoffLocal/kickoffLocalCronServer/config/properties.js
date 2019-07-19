@@ -19,6 +19,13 @@ module.exports = {
         ]
     },
 
+    activateNodePing: true,
+    nodePingableModules: {
+        cronjob: {
+            enabled: true
+        }
+    },
+
     log: {
         level: 'debug'
     },

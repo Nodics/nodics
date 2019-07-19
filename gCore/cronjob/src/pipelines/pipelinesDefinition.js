@@ -314,5 +314,60 @@ module.exports = {
                 handler: 'DefaultCronJobErrorHandlerService.handleErrorEnd'
             }
         }
+    },
+
+
+    defaultCronJobNodeUpHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultCronJobNodeUpHandlerService.validateRequest',
+                success: 'shutdownResponsibilities'
+            },
+            shutdownResponsibilities: {
+                type: 'function',
+                handler: 'DefaultCronJobNodeUpHandlerService.shutdownResponsibilities',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultCronJobNodeUpHandlerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultCronJobNodeUpHandlerService.handleErrorEnd'
+            }
+        }
+    },
+
+    defaultCronJobNodeDownHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultCronJobNodeDownHandlerService.validateRequest',
+                success: 'handleResponsibilities'
+            },
+            handleResponsibilities: {
+                type: 'function',
+                handler: 'DefaultCronJobNodeDownHandlerService.handleResponsibilities',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultCronJobNodeDownHandlerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultCronJobNodeDownHandlerService.handleErrorEnd'
+            }
+        }
     }
 };

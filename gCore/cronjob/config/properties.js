@@ -11,6 +11,14 @@
 
 module.exports = {
 
+    nodePingableModules: {
+        cronjob: {
+            enabled: false,
+            nodeUpHandler: 'defaultCronJobNodeUpHandlerPipeline',
+            nodeDownHandler: 'defaultCronJobNodeDownHandlerPipeline'
+        }
+    },
+
     cronjob: {
         runOnStartup: false,
         waitTime: 1000,

@@ -128,8 +128,7 @@ module.exports = {
                 const rest = splat.map(this.formatObject).join(' ');
                 if (rest && !utils.isBlank(rest) && rest !== '{}' && rest !== '[]') {
                     message = message + ' ' + rest;
-                }
-                if (info.metadata && !utils.isBlank(info.metadata) && info.metadata !== '{}' && info.metadata !== '[]') {
+                } else if (info.metadata && !utils.isBlank(info.metadata) && info.metadata !== '{}' && info.metadata !== '[]') {
                     message = message + ' ' + this.formatObject(info.metadata);
                 }
                 return `${info.timestamp}  ${info.level}: [${info.label}] ${message}`;

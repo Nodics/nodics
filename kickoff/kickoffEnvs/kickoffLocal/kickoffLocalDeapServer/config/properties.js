@@ -49,25 +49,25 @@ module.exports = {
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3010,
+                httpPort: 3002,
 
                 httpsHost: 'localhost',
-                httpsPort: 3011
+                httpsPort: 3003
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3010,
+                httpPort: 3002,
 
                 httpsHost: 'localhost',
-                httpsPort: 3011
+                httpsPort: 3003
             },
             nodes: {
                 0: {
                     httpHost: 'localhost',
-                    httpPort: 3010,
+                    httpPort: 3002,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3011
+                    httpsPort: 3003
                 }
             }
         },
