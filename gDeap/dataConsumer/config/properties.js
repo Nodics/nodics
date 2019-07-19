@@ -16,6 +16,7 @@ module.exports = {
             kafkaInternalJsonSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'kafka',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
@@ -31,6 +32,7 @@ module.exports = {
             kafkaInternalXMLSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'kafka',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
@@ -48,6 +50,7 @@ module.exports = {
             kafkaExternalJsonSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'kafka',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
@@ -63,6 +66,7 @@ module.exports = {
             kafkaExternalXMLSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'kafka',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
@@ -80,6 +84,7 @@ module.exports = {
             kafkaInternalJsonSearchDataConsumerQueue: {
                 enabled: true,
                 client: 'kafka',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
@@ -95,6 +100,7 @@ module.exports = {
             kafkaInternalXMLSearchDataConsumerQueue: {
                 enabled: true,
                 client: 'kafka',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
@@ -112,6 +118,7 @@ module.exports = {
             kafkaExternalJsonSearchDataConsumerQueue: {
                 enabled: true,
                 client: 'kafka',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
@@ -127,6 +134,7 @@ module.exports = {
             kafkaExternalXMLSearchDataConsumerQueue: {
                 enabled: true,
                 client: 'kafka',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
@@ -144,6 +152,7 @@ module.exports = {
             activeMQInternalJsonSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'activemq',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
@@ -159,6 +168,7 @@ module.exports = {
             activeMQInternalXMLSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'activemq',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
@@ -176,6 +186,7 @@ module.exports = {
             activeMQExternalJsonSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'activemq',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
@@ -191,6 +202,7 @@ module.exports = {
             activeMQExternalXMLSchemaDataConsumerQueue: {
                 enabled: true,
                 client: 'activemq',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
@@ -208,6 +220,7 @@ module.exports = {
             activeMQInternalJsonSearchDataConsumerQueue: {
                 enabled: true,
                 client: 'activemq',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
@@ -223,6 +236,7 @@ module.exports = {
             activeMQInternalXMLSearchDataConsumerQueue: {
                 enabled: true,
                 client: 'activemq',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',
@@ -240,6 +254,7 @@ module.exports = {
             activeMQExternalJsonSearchDataConsumerQueue: {
                 enabled: true,
                 client: 'activemq',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'jsonMessageHandler',
                     target: 'dataConsumer',
@@ -255,6 +270,7 @@ module.exports = {
             activeMQExternalXMLSearchDataConsumerQueue: {
                 enabled: true,
                 client: 'activemq',
+                runOnNode: 'node0',
                 options: {
                     messageHandler: 'xmlMessageHandler',
                     target: 'dataConsumer',

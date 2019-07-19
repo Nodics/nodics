@@ -34,7 +34,7 @@ module.exports = {
         logFailedMessages: false,
         clients: {
             activemq: {
-                enabled: false
+                enabled: true
             },
             kafka: {
                 enabled: false

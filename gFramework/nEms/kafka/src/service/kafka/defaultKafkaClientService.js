@@ -119,6 +119,22 @@ module.exports = {
         });
     },
 
+    closePublisher: function (publisherName, publisher) {
+        return new Promise((resolve, reject) => {
+            try {
+                publisher.publisher.close(true, (error, success) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve('Consumer: ' + publisherName + ' closed successfully');
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
     registerConsumer: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -245,6 +261,22 @@ module.exports = {
                 Promise.reject(error);
             }
         }
+    },
+
+    closeConsumer: function (consumerName, consumer) {
+        return new Promise((resolve, reject) => {
+            try {
+                consumer.consumer.close(true, (error, success) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve('Consumer: ' + consumerName + ' closed successfully');
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
     },
 
     /**
