@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = function () {
     let _tntProperties = {};
 
@@ -34,5 +36,10 @@ module.exports = function () {
             return null;
         }
         return tntProperties[key];
+    };
+
+    this.changeTenantProperties = function (config, tenant) {
+        tenant = tenant || 'default';
+        _tntProperties[tenant] = _.merge(_tntProperties[tenant], config);
     };
 };
