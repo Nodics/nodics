@@ -10,6 +10,15 @@
  */
 
 module.exports = {
+
+    nodePingableModules: {
+        dataConsumer: {
+            enabled: false,
+            nodeUpHandler: 'defaultDataConsumerNodeUpHandlerPipeline',
+            nodeDownHandler: 'defaultDataConsumerbNodeDownHandlerPipeline'
+        }
+    },
+
     emsClient: {
         consumers: {
             // Kafka queues for putting data into InternalSchema model

@@ -40,6 +40,10 @@ module.exports = {
         return this.emsClients;
     },
 
+    getPublisher: function (queueName) {
+        return this.emsPublishers[queueName];
+    },
+
     configureEMSClients: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -158,7 +162,7 @@ module.exports = {
         });
     },
 
-    removePublishers: function (publishers) {
+    closePublishers: function (publishers) {
         let _self = this;
         return new Promise((resolve, reject) => {
             let allPublishers = [];
@@ -286,7 +290,7 @@ module.exports = {
         return valid;
     },
 
-    removeConsumers: function (consumers) {
+    closeConsumers: function (consumers) {
         let _self = this;
         return new Promise((resolve, reject) => {
             let allConsumers = [];

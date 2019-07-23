@@ -151,20 +151,19 @@ module.exports = {
             }
         },
         changeConfig: {
-            changeLevelPost: {
+            changeConfigPost: {
                 secured: true,
                 key: '/config',
                 method: 'POST',
-                controller: 'DefaultLogController',
-                operation: 'changeLogLevel',
+                controller: 'DefaultConfigurationController',
+                operation: 'changeConfig',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/log/level',
+                    url: 'http://host:port/nodics/{moduleName}/config',
                     body: {
-                        entityName: 'like EnterpriseService',
-                        logLevel: 'like info, debug, error and all valid log levels'
+                        //complete configuration heirerchy 
                     }
                 }
             }

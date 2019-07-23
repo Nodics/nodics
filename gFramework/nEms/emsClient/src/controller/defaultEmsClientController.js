@@ -18,8 +18,7 @@ module.exports = {
             return FACADE.DefaultEmsClientFacade.publish(request).then(success => {
                 callback(null, success);
             }).catch(error => {
-                this.LOG.error('While publishing and event: ', error);
-                callback('While publishing and event: ', error.toString());
+                callback(error);
             });
         } else {
             return FACADE.DefaultEmsClientFacade.publish(request);
@@ -27,13 +26,16 @@ module.exports = {
     },
 
     registerConsumers: function (request, callback) {
-        request.consumers = request.httpRequest.body || {};
+        if (request.httpRequest.params.consumer) {
+            request.consumers = [request.httpRequest.params.consumer];
+        } else {
+            request.consumers = request.httpRequest.body || {};
+        }
         if (callback) {
             return FACADE.DefaultEmsClientFacade.registerConsumers(request).then(success => {
                 callback(null, success);
             }).catch(error => {
-                this.LOG.error('While publishing and event: ', error);
-                callback('While publishing and event: ', error.toString());
+                callback(error);
             });
         } else {
             return FACADE.DefaultEmsClientFacade.registerConsumers(request);
@@ -41,16 +43,53 @@ module.exports = {
     },
 
     registerPublishers: function (request, callback) {
-        request.publishers = request.httpRequest.body || {};
+        if (request.httpRequest.params.publisher) {
+            request.publishers = [request.httpRequest.params.publisher];
+        } else {
+            request.publishers = request.httpRequest.body || {};
+        }
         if (callback) {
             return FACADE.DefaultEmsClientFacade.registerPublishers(request).then(success => {
                 callback(null, success);
             }).catch(error => {
-                this.LOG.error('While publishing and event: ', error);
-                callback('While publishing and event: ', error.toString());
+                callback(error);
             });
         } else {
             return FACADE.DefaultEmsClientFacade.registerPublishers(request);
+        }
+    },
+
+    closeConsumers: function (request, callback) {
+        if (request.httpRequest.params.consumer) {
+            request.consumers = [request.httpRequest.params.consumer];
+        } else {
+            request.consumers = request.httpRequest.body || {};
+        }
+        if (callback) {
+            return FACADE.DefaultEmsClientFacade.closeConsumers(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultEmsClientFacade.closeConsumers(request);
+        }
+    },
+
+    closePublishers: function (request, callback) {
+        if (request.httpRequest.params.publisher) {
+            request.publishers = [request.httpRequest.params.publisher];
+        } else {
+            request.publishers = request.httpRequest.body || {};
+        }
+        if (callback) {
+            return FACADE.DefaultEmsClientFacade.closePublishers(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultEmsClientFacade.closePublishers(request);
         }
     }
 };

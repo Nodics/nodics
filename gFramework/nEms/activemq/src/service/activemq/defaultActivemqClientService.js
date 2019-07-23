@@ -101,6 +101,22 @@ module.exports = {
         });
     },
 
+    closePublisher: function (publisherName, publisher) {
+        return new Promise((resolve, reject) => {
+            try {
+                publisher.publisher.close(true, (error, success) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve('Publisher: ' + publisherName + ' closed successfully');
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
     registerConsumer: function (options) {
         _self = this;
         return new Promise((resolve, reject) => {
@@ -183,6 +199,22 @@ module.exports = {
         }
     },
 
+    closeConsumer: function (consumerName, consumer) {
+        return new Promise((resolve, reject) => {
+            try {
+                consumer.consumer.close(true, (error, success) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve('Consumer: ' + consumerName + ' closed successfully');
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
     onConsume: function (queue, body) {
         return new Promise((resolve, reject) => {
             try {
@@ -217,30 +249,22 @@ module.exports = {
     publish: function (payload) {
         return new Promise((resolve, reject) => {
             try {
-                let client = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
-                if (client) {
-                    var frame = client.connection.send({
-                        'destination': payload.queue,
-                        'content-type': 'application/json'
-                    });
-                    if (payload.type === 'json') {
-                        frame.write(JSON.stringify(payload.message));
-                    } else {
-                        frame.write(payload.message);
-                    }
-                    frame.end();
-                    resolve({
-                        success: true,
-                        code: 'SUC_EMS_00000',
-                        msg: 'Message published to queue: ' + payload.queue
-                    });
+                let publisher = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
+                let frame = publisher.client.send({
+                    'destination': payload.queue,
+                    'content-type': 'application/json'
+                });
+                if (payload.type === 'json') {
+                    frame.write(JSON.stringify(payload.message));
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_EMS_00000',
-                        msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
-                    });
+                    frame.write(payload.message);
                 }
+                frame.end();
+                resolve({
+                    success: true,
+                    code: 'SUC_EMS_00000',
+                    msg: 'Message published to queue: ' + payload.queue
+                });
             } catch (error) {
                 reject({
                     success: false,

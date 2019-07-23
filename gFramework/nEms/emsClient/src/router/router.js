@@ -22,7 +22,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/emsClient/publish',
+                    url: 'http://host:port/nodics/[moduleName]/publish',
                     body: {
                         queue: 'Name of the queue',
                         messages: 'Message to be send',
@@ -33,9 +33,22 @@ module.exports = {
         },
 
         registerConsumers: {
+            getRegisterConsumer: {
+                secured: true,
+                key: '/register/consumer/:consumer',
+                method: 'GET',
+                controller: 'DefaultEmsClientController',
+                operation: 'registerConsumers',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/[moduleName]/register/consumer/:consumer',
+                }
+            },
             postRegisterConsumers: {
                 secured: true,
-                key: '/register/consumer',
+                key: '/register/consumers',
                 method: 'POST',
                 controller: 'DefaultEmsClientController',
                 operation: 'registerConsumers',
@@ -43,18 +56,33 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/emsClient/publish',
+                    url: 'http://host:port/nodics/[moduleName]/register/consumers',
                     body: {
-                        consumerName: {}
-                    }
+                        consumerName: {},
+                        consumerName1: {}
+                    },
+                    body1: ['consumer1', 'consumer2']
                 }
             }
         },
 
         registerPublishers: {
+            getRegisterPublisher: {
+                secured: true,
+                key: '/register/publisher/:publisher',
+                method: 'GET',
+                controller: 'DefaultEmsClientController',
+                operation: 'registerPublishers',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/[moduleName]/register/publisher/:publisher'
+                }
+            },
             postRegisterPublishers: {
                 secured: true,
-                key: '/register/consumer',
+                key: '/register/publishers',
                 method: 'POST',
                 controller: 'DefaultEmsClientController',
                 operation: 'registerPublishers',
@@ -62,10 +90,75 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/emsClient/publish',
+                    url: 'http://host:port/nodics/[moduleName]/register/publishers',
                     body: {
-                        consumerName: {},
-                        consumerName1: {}
+                        publisherName: {},
+                        publisherName1: {}
+                    },
+                    body1: ['consumer1', 'consumer2']
+                }
+            }
+        },
+
+        closeConsumers: {
+            getCloseConsumer: {
+                secured: true,
+                key: '/close/consumer/:consumer',
+                method: 'GET',
+                controller: 'DefaultEmsClientController',
+                operation: 'closeConsumers',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/[moduleName]/close/consumer/:consumer',
+                }
+            },
+            postCloseConsumers: {
+                secured: true,
+                key: '/close/consumers',
+                method: 'POST',
+                controller: 'DefaultEmsClientController',
+                operation: 'closeConsumers',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/[moduleName]/close/consumers',
+                    body: {
+                        consumers: ['consumer1', 'consumer2']
+                    }
+                }
+            }
+        },
+
+        closePublishers: {
+            getClosePublishers: {
+                secured: true,
+                key: '/close/publisher/:publisher',
+                method: 'GET',
+                controller: 'DefaultEmsClientController',
+                operation: 'closePublishers',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/[moduleName]/close/publisher/:publisher',
+                }
+            },
+            postClosePublishers: {
+                secured: true,
+                key: '/close/publishers',
+                method: 'POST',
+                controller: 'DefaultEmsClientController',
+                operation: 'closePublishers',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/[moduleName]/close/publishers',
+                    body: {
+                        publishers: ['punlisher1', 'publisher2']
                     }
                 }
             }

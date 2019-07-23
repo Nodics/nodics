@@ -60,5 +60,59 @@ module.exports = {
                 handler: 'DefaultInternalDataConsumeProcessService.handleErrorEnd'
             }
         }
+    },
+
+    defaultDataConsumerNodeUpHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultDataConsumerNodeUpHandlerService.validateRequest',
+                success: 'shutdownResponsibilities'
+            },
+            shutdownResponsibilities: {
+                type: 'function',
+                handler: 'DefaultDataConsumerNodeUpHandlerService.shutdownResponsibilities',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultDataConsumerNodeUpHandlerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultDataConsumerNodeUpHandlerService.handleErrorEnd'
+            }
+        }
+    },
+
+    defaultDataConsumerDownHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultDataConsumerNodeDownHandlerService.validateRequest',
+                success: 'handleResponsibilities'
+            },
+            handleResponsibilities: {
+                type: 'function',
+                handler: 'DefaultDataConsumerNodeDownHandlerService.handleResponsibilities',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultDataConsumerNodeDownHandlerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultDataConsumerNodeDownHandlerService.handleErrorEnd'
+            }
+        }
     }
 };

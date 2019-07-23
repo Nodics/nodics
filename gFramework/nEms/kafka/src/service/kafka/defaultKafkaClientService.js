@@ -12,8 +12,6 @@ const _ = require('lodash');
 const kafka = require('kafka-node');
 
 module.exports = {
-    publisher: {},
-    consumerPool: {},
 
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -126,7 +124,7 @@ module.exports = {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve('Consumer: ' + publisherName + ' closed successfully');
+                        resolve('Publisher: ' + publisherName + ' closed successfully');
                     }
                 });
             } catch (error) {
@@ -293,35 +291,28 @@ module.exports = {
     publish: function (payload) {
         return new Promise((resolve, reject) => {
             try {
-                let client = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
-                if (client) {
-                    client.connection.send([{
-                        topic: payload.queue,
-                        messages: payload.message || payload.messages,
-                        partition: payload.partition || 0
-                    }], function (err, data) {
-                        if (err) {
-                            reject({
-                                success: false,
-                                code: 'ERR_EMS_00000',
-                                msg: err
-                            });
-                        } else {
-                            resolve({
-                                success: true,
-                                code: 'SUC_EMS_00000',
-                                msg: 'Message published to queue: ' + payload.queue
-                            });
-                        }
-                    });
-                } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_EMS_00000',
-                        msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
-                    });
-                }
+                let publisher = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
+                publisher.publisher.send([{
+                    topic: payload.queue,
+                    messages: payload.message || payload.messages,
+                    partition: payload.partition || 0
+                }], function (err, data) {
+                    if (err) {
+                        reject({
+                            success: false,
+                            code: 'ERR_EMS_00000',
+                            msg: err
+                        });
+                    } else {
+                        resolve({
+                            success: true,
+                            code: 'SUC_EMS_00000',
+                            msg: 'Message published to queue: ' + payload.queue
+                        });
+                    }
+                });
             } catch (error) {
+                console.log(error);
                 reject({
                     success: false,
                     code: 'ERR_EMS_00000',

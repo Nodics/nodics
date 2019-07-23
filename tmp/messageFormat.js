@@ -20,5 +20,7 @@ jsonMessage2 = {
     ]
 }
 
+//    ./kafka-console-producer.sh --broker-list localhost:9092 --topic kafkaInternalJsonSchemaDataConsumerQueue
+
 xmlMessage1 = '<head><enterpriseCode>default</enterpriseCode><tenant>default</tenant><name>Nodics</name><lastName>Framework</lastName><purpose>Test XML message push</purpose></head>';
 

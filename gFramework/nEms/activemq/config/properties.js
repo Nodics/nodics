@@ -14,7 +14,6 @@ module.exports = {
         clients: {
             activemq: {
                 enabled: false,
-                runOnCluster: 0,
                 handler: 'DefaultActivemqClientService',
                 eventOptions: {
                     nodeId: '0',
@@ -22,7 +21,7 @@ module.exports = {
                 },
                 publisherOptions: {
                     requireAcks: 1,
-                    ackTimeoutMs: 100,
+                    ackTimeoutMs: 3000,
                     partitionerType: 0
                 },
                 consumerOptions: {

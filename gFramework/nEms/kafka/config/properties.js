@@ -14,9 +14,8 @@ module.exports = {
         clients: {
             kafka: {
                 enabled: false,
-                runOnCluster: 0,
                 handler: 'DefaultKafkaClientService',
-                publisherType: 0, // 0 for normal, 1 for HighLevel Producer
+                publisherType: 1, // 0 for normal, 1 for HighLevel Producer
                 consumerType: 0, // 0 for normal, 1 for HighLevel Producer
                 eventOptions: {
                     nodeId: '0',
@@ -24,7 +23,7 @@ module.exports = {
                 },
                 publisherOptions: {
                     requireAcks: 1,
-                    ackTimeoutMs: 1000,
+                    ackTimeoutMs: 3000,
                     partitionerType: 0
                 },
                 consumerOptions: {

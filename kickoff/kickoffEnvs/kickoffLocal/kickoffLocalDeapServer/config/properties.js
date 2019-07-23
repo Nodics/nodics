@@ -32,9 +32,16 @@ module.exports = {
 
     emsClient: {
         logFailedMessages: false,
+        publishers: {
+            kafkaTempPublisher: {
+                enabled: true,
+                client: 'kafka',
+                runOnNode: 'node0'
+            }
+        },
         clients: {
             activemq: {
-                enabled: true
+                enabled: false
             },
             kafka: {
                 enabled: false
