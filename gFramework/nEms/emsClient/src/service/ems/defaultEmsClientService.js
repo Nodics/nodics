@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -100,13 +102,7 @@ module.exports = {
     registerConsumers: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (UTILS.isBlank(_self.emsClients)) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00006',
-                    error: 'EMS is not active for this module'
-                });
-            } else if (UTILS.isBlank(request.consumers)) {
+            if (UTILS.isBlank(request.consumers)) {
                 reject({
                     success: false,
                     code: 'ERR_EMS_00005',
@@ -134,7 +130,7 @@ module.exports = {
                         resolve({
                             success: true,
                             code: 'SUC_EMS_00000',
-                            result: Object.keys(request.consumers)
+                            result: Object.keys(consumers)
                         });
                     }).catch(error => {
                         reject(error);
@@ -149,13 +145,7 @@ module.exports = {
     closeConsumers: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (UTILS.isBlank(_self.emsClients)) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00006',
-                    error: 'EMS is not active for this module'
-                });
-            } else if (UTILS.isBlank(request.consumers)) {
+            if (UTILS.isBlank(request.consumers)) {
                 reject({
                     success: false,
                     code: 'ERR_EMS_00005',
@@ -178,13 +168,7 @@ module.exports = {
     registerPublishers: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (UTILS.isBlank(_self.emsClients)) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00006',
-                    error: 'EMS is not active for this module'
-                });
-            } else if (UTILS.isBlank(request.publishers)) {
+            if (UTILS.isBlank(request.publishers)) {
                 reject({
                     success: false,
                     code: 'ERR_EMS_00005',
@@ -204,7 +188,7 @@ module.exports = {
                     } else {
                         publishers = request.publishers;
                     }
-                    let publisherList = Object.keys(request.publishers);
+                    let publisherList = Object.keys(publishers);
                     SERVICE.DefaultEmsClientConfigurationService.configurePublisher(publisherList, publishers).then(success => {
                         if (!(request.publishers instanceof Array)) {
                             _.merge(CONFIG.get('emsClient').punlishers, request.publishers);
@@ -212,7 +196,7 @@ module.exports = {
                         resolve({
                             success: true,
                             code: 'SUC_EMS_00000',
-                            result: Object.keys(request.publishers)
+                            result: Object.keys(publishers)
                         });
                     }).catch(error => {
                         reject(error);
