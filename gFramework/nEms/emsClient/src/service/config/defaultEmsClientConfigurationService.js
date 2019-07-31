@@ -73,6 +73,7 @@ module.exports = {
                         _self.emsClients[clientName] = {
                             clientName: clientName,
                             connection: client.connection,
+                            connectionManager: client.connectionManager,
                             config: clientConfig,
                             queues: client.queues
                         };
@@ -130,7 +131,7 @@ module.exports = {
             if (publisherList && publisherList.length > 0) {
                 let publisherName = publisherList.shift();
                 let publisher = publishers[publisherName];
-                if (publisher.enabled && publisher.client && _self.emsClients[publisher.client]) {
+                if (publisher.enabled && publisher.client && _self.emsClients[publisher.client] && (publisher.runOnNode === CONFIG.get('nodeId') || publisher.tempNode === CONFIG.get('nodeId'))) {
                     let client = _self.emsClients[publisher.client];
                     publisher.publisherOptions = _.merge(_.merge({}, client.config.publisherOptions || {}), publisher.publisherOptions || {});
                     publisher.options = _.merge(_.merge({}, client.config.eventOptions || {}), publisher.options || {});
@@ -229,7 +230,7 @@ module.exports = {
                         _self.emsConsumers[consumerName].consumer.resume();
                         resolve(true);
                     } else {
-                        if (consumer.enabled && consumer.client && _self.emsClients[consumer.client]) {
+                        if (consumer.enabled && consumer.client && _self.emsClients[consumer.client] && (publisher.runOnNode === CONFIG.get('nodeId') || publisher.tempNode === CONFIG.get('nodeId'))) {
                             if (_self.validateConsumer(consumerName, consumer)) {
                                 let client = _self.emsClients[consumer.client];
                                 consumer.consumerOptions = _.merge(_.merge({}, client.config.consumerOptions || {}), consumer.consumerOptions || {});
@@ -300,7 +301,6 @@ module.exports = {
                 try {
                     if (_self.emsConsumers[consumerName]) {
                         let consumer = _self.emsConsumers[consumerName];
-                        // delete _self.emsConsumers[consumerName];
                         allConsumers.push(SERVICE[consumer.client.config.handler].closeConsumer(consumerName, consumer));
                         success.push('Consumer: ' + consumerName + ' has been removed successfully');
                     } else {

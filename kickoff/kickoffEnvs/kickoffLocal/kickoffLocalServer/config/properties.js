@@ -41,14 +41,22 @@ module.exports = {
                 enabled: true,
                 client: 'kafka',
                 runOnNode: 'node0'
+            },
+            mqTempPublisher: {
+                enabled: true,
+                client: 'activemq',
+                runOnNode: 'node0'
             }
         },
         clients: {
             activemq: {
-                enabled: false
+                enabled: true,
+                connectionOptions: [{
+                    host: '10.25.131.55'
+                }],
             },
             kafka: {
-                enabled: true
+                enabled: false
             }
         }
     }

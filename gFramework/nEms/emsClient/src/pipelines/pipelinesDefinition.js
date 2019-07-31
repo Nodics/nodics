@@ -101,4 +101,58 @@ module.exports = {
             }
         }
     },
+
+    defaultEmsNodeUpHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultEmsNodeUpHandlerService.validateRequest',
+                success: 'shutdownResponsibilities'
+            },
+            shutdownResponsibilities: {
+                type: 'function',
+                handler: 'DefaultEmsNodeUpHandlerService.shutdownResponsibilities',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultEmsNodeUpHandlerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultEmsNodeUpHandlerService.handleErrorEnd'
+            }
+        }
+    },
+
+    defaultEmsDownHandlerPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultEmsNodeDownHandlerService.validateRequest',
+                success: 'handleResponsibilities'
+            },
+            handleResponsibilities: {
+                type: 'function',
+                handler: 'DefaultEmsNodeDownHandlerService.handleResponsibilities',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultEmsNodeDownHandlerService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultEmsNodeDownHandlerService.handleErrorEnd'
+            }
+        }
+    }
 };

@@ -479,3 +479,66 @@ for(CronJobModel cron : crons){
         out.println("Reset Trigger for "+cron.getCode());
 
 }
+
+
+Select {pk} from {Media} where {mediacontainer} is null and {mime} = 'image/jpeg' and ( {code} like '%433Wx543H' or {code} like '%1080Wx1353H' or {code} like '%777Wx973H' or {code} like '%239Wx300H')
+
+
+
+
+
+import de.hybris.platform.core.model.media.MediaContainerModel
+import de.hybris.platform.core.model.media.MediaModel
+import de.hybris.platform.servicelayer.search.FlexibleSearchQuery
+
+
+modelService = spring.getBean("modelService");
+flexibleSearchService = spring.getBean("flexibleSearchService");
+
+
+Map<String, MediaContainerModel> containers = new HashMap<>();
+List<MediaModel> orphanMedias = getJunkMedias();
+
+if(orphanMedias != null && !orphanMedias.isEmpty()){
+    for(MediaModel mediaModel: orphanMedias){
+        if(mediaModel.getMediaContainer() == null){
+            String mediaName = mediaModel.getCode().substring(0, mediaModel.getCode().lastIndexOf("_"));
+            MediaContainerModel container = containers.get(mediaName);
+            if(container != null){
+                mediaModel.setMediaContainer(container);
+                this.modelService.save(mediaModel);
+            }else{
+                MediaModel masterMedia = getJunkMedia(mediaName);
+                if(masterMedia != null && masterMedia.getMediaContainer() != null){
+                    mediaModel.setMediaContainer(masterMedia.getMediaContainer());
+                    containers.put(mediaName, masterMedia.getMediaContainer());
+                    this.modelService.save(mediaModel);
+                }
+            }
+        }
+    }
+}
+
+def List<MediaModel> getJunkMedias()
+{
+    List<MediaModel> mediaModels = null;
+    final String query = "Select {pk} from {Media} where {mediacontainer} is null and {mime} = 'image/jpeg' and ( {code} like '%433Wx543H' or {code} like '%1080Wx1353H' or {code} like '%777Wx973H' or {code} like '%239Wx300H')";
+    //final String query = "Select {pk} from {Media} where {code} = '8375375d-700f-4cd2-90cd-0c4e7cf76774_1542714938483_1080Wx1353H'";
+    final FlexibleSearchQuery flexibleQuery = new FlexibleSearchQuery(query);
+    return  this.flexibleSearchService.<MediaModel> search(flexibleQuery).getResult();
+}
+
+def MediaModel getJunkMedia(final String mediaCode)
+{
+    List<MediaModel> mediaModel = null;
+    final String query = "select {PK} from {Media} where {code} = ?mediaCode";
+    final Map queryParams = new HashMap<String, Object>();
+    queryParams.put("mediaCode", mediaCode);
+    final FlexibleSearchQuery flexibleQuery = new FlexibleSearchQuery(query, queryParams);
+    mediaModel = this.flexibleSearchService.<MediaModel> search(flexibleQuery).getResult();
+    if (mediaModel != null && mediaModel.size() > 0)
+    {
+        return mediaModel.get(0);
+    }
+    return null;
+}

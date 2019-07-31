@@ -146,22 +146,6 @@ module.exports = {
         });
     },
 
-    // closePublisher: function (publisherName, publisher) {
-    //     return new Promise((resolve, reject) => {
-    //         try {
-    //             publisher.publisher.close(function (error, success) {
-    //                 if (error) {
-    //                     reject(error);
-    //                 } else {
-    //                     resolve('Publisher: ' + publisherName + ' closed successfully');
-    //                 }
-    //             });
-    //         } catch (error) {
-    //             reject(error);
-    //         }
-    //     });
-    // },
-
     registerConsumer: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {

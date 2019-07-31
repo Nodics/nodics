@@ -76,6 +76,7 @@ module.exports = {
                         });
                         resolve({
                             connection: connection,
+                            connectionManager: connectionManager,
                             queues: []
                         });
                     }
@@ -94,7 +95,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                resolve(client);
+                resolve(client.connection);
             } catch (error) {
                 reject(error);
             }
@@ -121,7 +122,7 @@ module.exports = {
             try {
                 let publisher = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
                 let frame = publisher.publisher.send({
-                    'destination': payload.queue,
+                    'destination': '/queue/' + payload.queue,
                     'content-type': 'application/json'
                 });
                 if (payload.type === 'json') {
@@ -145,51 +146,29 @@ module.exports = {
         });
     },
 
-    // closePublisher: function (publisherName, publisher) {
-    //     return new Promise((resolve, reject) => {
-    //         try {
-    //             publisher.publisher.close(true, (error, success) => {
-    //                 if (error) {
-    //                     reject(error);
-    //                 } else {
-    //                     resolve('Publisher: ' + publisherName + ' closed successfully');
-    //                 }
-    //             });
-    //         } catch (error) {
-    //             reject(error);
-    //         }
-    //     });
-    // },
-
     registerConsumer: function (options) {
         _self = this;
         return new Promise((resolve, reject) => {
             let queueName = options.consumerName;
             try {
-                options.client.connection.subscribe({
-                    destination: queueName,
-                    ack: options.consumer.options.acknowledgeType
+                let channel = new stompit.Channel(options.client.connectionManager, {
+                    alwaysConnected: true
+                });
+                channel.subscribe({
+                    destination: queueName
                 }, (err, msg) => {
                     if (err) {
                         _self.LOG.error('While subscribing to queue : ' + queueName);
                         _self.LOG.error(err);
                     } else {
-                        msg.readString(options.consumer.consumerOptions.encodingType, (err, body) => {
-                            if (!options.consumer.consumerOptions.ackRequired) {
-                                msg.ack(msg);
-                            }
+                        msg.readString('utf-8', function (err, body) {
                             if (err) {
                                 _self.LOG.error('While consuming message from queue : ' + queueName);
                                 _self.LOG.error(err);
-                                if (!options.consumer.consumerOptions.ackRequired) {
-                                    msg.nack(msg);
-                                }
                             } else {
                                 options.consumer.name = queueName;
                                 _self.onConsume(options.consumer, body).then(success => {
-                                    if (options.consumer.consumerOptions.ackRequired) {
-                                        msg.ack(msg);
-                                    }
+                                    // just acknowledged if require
                                 }).catch(error => {
                                     _self.LOG.error('While processing comsumed message: ' + body);
                                     _self.LOG.error(error);
@@ -208,15 +187,12 @@ module.exports = {
                                         options: options.consumer.consumerOptions,
                                         message: body
                                     });
-                                    if (options.consumer.consumerOptions.ackRequired) {
-                                        msg.nack(msg);
-                                    }
                                 });
                             }
                         });
                     }
                 });
-                resolve(true);
+                resolve(channel);
             } catch (error) {
                 reject(error);
             }
@@ -243,22 +219,6 @@ module.exports = {
         }
     },
 
-    closeConsumer: function (consumerName, consumer) {
-        return new Promise((resolve, reject) => {
-            try {
-                consumer.consumer.close(true, (error, success) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve('Consumer: ' + consumerName + ' closed successfully');
-                    }
-                });
-            } catch (error) {
-                reject(error);
-            }
-        });
-    },
-
     onConsume: function (queue, body) {
         return new Promise((resolve, reject) => {
             try {
@@ -273,6 +233,17 @@ module.exports = {
                 });
             } catch (error) {
                 this.LOG.error('Could not parse message recieved from queue : ' + queue.name + ' : ERROR is ', error);
+                reject(error);
+            }
+        });
+    },
+
+    closeConsumer: function (consumerName, consumer) {
+        return new Promise((resolve, reject) => {
+            try {
+                consumer.consumer.close();
+                resolve('Consumer: ' + consumerName + ' closed successfully');
+            } catch (error) {
                 reject(error);
             }
         });

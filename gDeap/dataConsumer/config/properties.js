@@ -14,8 +14,8 @@ module.exports = {
     nodePingableModules: {
         dataConsumer: {
             enabled: false,
-            nodeUpHandler: 'defaultDataConsumerNodeUpHandlerPipeline',
-            nodeDownHandler: 'defaultDataConsumerbNodeDownHandlerPipeline'
+            nodeUpHandler: 'defaultEmsNodeUpHandlerPipeline',
+            nodeDownHandler: 'defaultEmsbNodeDownHandlerPipeline'
         }
     },
 

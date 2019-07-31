@@ -1,57 +1,56 @@
-// var kafka = require('kafka-node');
-// var Producer = kafka.Producer;
-// var KeyedMessage = kafka.KeyedMessage;
-// const client = new kafka.KafkaClient({
-//     kafkaHost: 'localhost:9092'
-// });
-// var producer = new Producer(client);
-// var km = new KeyedMessage('key', 'message');
-// var payloads = [
-//     { topic: 'topic1', messages: 'hi', partition: 0 },
-//     { topic: 'topic2', messages: ['hello', 'world', km] }
-// ];
+var stompit = require('stompit');
 
-
-// producer.on('ready', function () {
-//     producer.send(payloads, function (err, data) {
-//         console.log(data);
-//     });
-// });
-
-// producer.on('error', function (err) {
-//     console.log(err);
-// });
-
-// console.log(new Date().getTimezoneOffset());
-
-convertExcel = require('excel-as-json').processFile;
-convertExcel('tntData.xlsx', null, {
-    sheet: 1,
-    isColOriented: false,
-    omitEmptyFields: true,
-    convertTextToNumber: true
-}, (error, success) => {
-    if (error) {
-        console.log(error);
-    } else {
-        console.log(success);
+var connectOptions = {
+    'host': 'localhost',
+    'port': 61613,
+    'connectHeaders': {
+        'host': '/',
+        'login': 'username',
+        'passcode': 'password',
+        'heart-beat': '5000,5000'
     }
+};
+
+stompit.connect(connectOptions, function (error, client) {
+
+    if (error) {
+        console.log('connect error ' + error.message);
+        return;
+    }
+
+    // var sendHeaders = {
+    //     'destination': '/queue/test',
+    //     'content-type': 'text/plain'
+    // };
+
+    // var frame = client.send(sendHeaders);
+    // frame.write('hello');
+    // frame.end();
+
+    var subscribeHeaders = {
+        'destination': '/queue/test',
+        'ack': 'client-individual'
+    };
+
+    client.subscribe(subscribeHeaders, function (error, message) {
+
+        if (error) {
+            console.log('subscribe error ' + error.message);
+            return;
+        }
+
+        message.readString('utf-8', function (error, body) {
+
+            if (error) {
+                console.log('read message error ' + error.message);
+                return;
+            }
+
+            console.log('received message: ' + body);
+
+            client.ack(message);
+
+            client.disconnect();
+        });
+    });
 });
-
-// const excelToJson = require('convert-excel-to-json');
-
-
-// const result = excelToJson({
-//     sourceFile: 'tntData.xlsx',
-//     header: {
-//         rows: 1
-//     },
-//     columnToKey: {
-//         '*': '{{columnHeader}}'
-//     }
-// });
-// let data = [];
-// Object.keys(result).forEach(element => {
-//     data = data.concat(result[element]);
-// });
-// console.log(data);
