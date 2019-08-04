@@ -30,6 +30,12 @@ module.exports = {
         }
     },
 
+    nodePingableModules: {
+        dataConsumer: {
+            enabled: true
+        }
+    },
+
     emsClient: {
         logFailedMessages: false,
         publishers: {
@@ -75,6 +81,13 @@ module.exports = {
 
                     httpsHost: 'localhost',
                     httpsPort: 3003
+                },
+                node1: {
+                    httpHost: 'localhost',
+                    httpPort: 3012,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3013
                 }
             }
         },
