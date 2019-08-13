@@ -150,6 +150,24 @@ module.exports = {
                 }
             }
         },
+        changeConfig: {
+            changeConfigPost: {
+                secured: true,
+                key: '/config',
+                method: 'POST',
+                controller: 'DefaultConfigurationController',
+                operation: 'changeConfig',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/{moduleName}/config',
+                    body: {
+                        //complete configuration heirerchy 
+                    }
+                }
+            }
+        },
         updateAllIndexes: {
             updateAllModulesIndexes: {
                 secured: true,

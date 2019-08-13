@@ -11,30 +11,16 @@
 
 module.exports = {
 
+    nodePingableModules: {
+        cronjob: {
+            enabled: false,
+            nodeUpHandler: 'defaultCronJobNodeUpHandlerPipeline',
+            nodeDownHandler: 'defaultCronJobNodeDownHandlerPipeline'
+        }
+    },
+
     cronjob: {
         runOnStartup: false,
         waitTime: 1000,
-        activeJobsQuery: {
-            $and: [{
-                active: true
-            },
-            {
-                start: {
-                    $lt: new Date()
-                }
-            },
-            {
-                $or: [{
-                    end: {
-                        $gte: new Date()
-                    }
-                },
-                {
-                    end: {
-                        $exists: false
-                    }
-                }]
-            }]
-        }
     }
 };

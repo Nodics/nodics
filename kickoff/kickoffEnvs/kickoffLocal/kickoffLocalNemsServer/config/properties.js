@@ -42,7 +42,7 @@ module.exports = {
                 httpsPort: 3005
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3004,
 
@@ -71,7 +71,7 @@ module.exports = {
                 httpsPort: 3001
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3000,
 
@@ -87,25 +87,25 @@ module.exports = {
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3002,
+                httpPort: 3010,
 
                 httpsHost: 'localhost',
-                httpsPort: 3003
+                httpsPort: 3011
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3002,
+                httpPort: 3010,
 
                 httpsHost: 'localhost',
-                httpsPort: 3003
+                httpsPort: 3011
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
-                    httpPort: 3002,
+                    httpPort: 3010,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3003
+                    httpsPort: 3011
                 }
             }
         },
@@ -129,7 +129,7 @@ module.exports = {
                 httpsPort: 3009
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3008,
 
@@ -145,25 +145,25 @@ module.exports = {
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3010,
+                httpPort: 3002,
 
                 httpsHost: 'localhost',
-                httpsPort: 3011
+                httpsPort: 3003
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3010,
+                httpPort: 3002,
 
                 httpsHost: 'localhost',
-                httpsPort: 3011
+                httpsPort: 3003
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
-                    httpPort: 3010,
+                    httpPort: 3002,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3011
+                    httpsPort: 3003
                 }
             }
         }

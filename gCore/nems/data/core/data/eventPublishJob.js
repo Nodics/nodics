@@ -14,14 +14,14 @@ module.exports = {
         code: "publishEvents",
         tenant: "default",
         description: 'This job is to trigger process events process, which will push all ASYNC events to target system',
-        runOnNode: 0,
-        nodeId: 0,
+        runOnNode: 'node0',
+        nodeId: 'node0',
         runOnInit: false,
         active: true,
         logResult: false,
         jobDetail: {
             internal: {
-                nodeId: 0,
+                nodeId: 'node0',
                 module: 'nems',
                 method: 'GET',
                 uri: '/event/process'

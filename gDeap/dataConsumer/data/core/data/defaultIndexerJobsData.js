@@ -13,12 +13,12 @@ module.exports = {
     record1: {
         code: "jobInternalFullIndexer",
         description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
-        runOnNode: 0,
+        runOnNode: 'node0',
         active: false,
         logResult: false,
         jobDetail: {
             internal: {
-                nodeId: 0,
+                nodeId: 'node0',
                 module: 'dataConsumer',
                 method: 'GET',
                 uri: '/internalData/search/index/internalDataFullIndexer'
@@ -37,12 +37,12 @@ module.exports = {
     record2: {
         code: "jobInternalIncrementalIndexer",
         description: 'This job is to trigger process internal indexer, which will push all data to elastic search',
-        runOnNode: 0,
+        runOnNode: 'node0',
         active: false,
         logResult: false,
         jobDetail: {
             internal: {
-                nodeId: 0,
+                nodeId: 'node0',
                 module: 'dataConsumer',
                 method: 'GET',
                 uri: '/internalData/search/index/internalDataIncrementalIndexer'
@@ -61,12 +61,12 @@ module.exports = {
     record3: {
         code: "jobExternalFullIndexer",
         description: 'This job is to trigger process external data indexer, which will push all data to elastic search',
-        runOnNode: 0,
+        runOnNode: 'node0',
         active: false,
         logResult: false,
         jobDetail: {
             internal: {
-                nodeId: 0,
+                nodeId: 'node0',
                 module: 'dataConsumer',
                 method: 'GET',
                 uri: '/externalData/search/index/externalDataFullIndexer'
@@ -85,12 +85,12 @@ module.exports = {
     record4: {
         code: "jobExternalIncrementalIndexer",
         description: 'This job is to trigger process external data indexer, which will push all data to elastic search',
-        runOnNode: 0,
+        runOnNode: 'node0',
         active: false,
         logResult: false,
         jobDetail: {
             internal: {
-                nodeId: 0,
+                nodeId: 'node0',
                 module: 'dataConsumer',
                 method: 'GET',
                 uri: '/externalData/search/index/externalDataIncrementalIndexer'

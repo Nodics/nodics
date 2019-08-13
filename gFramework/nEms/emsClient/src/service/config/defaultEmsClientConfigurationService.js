@@ -40,6 +40,10 @@ module.exports = {
         return this.emsClients;
     },
 
+    getPublisher: function (queueName) {
+        return this.emsPublishers[queueName];
+    },
+
     configureEMSClients: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -69,11 +73,17 @@ module.exports = {
                         _self.emsClients[clientName] = {
                             clientName: clientName,
                             connection: client.connection,
+                            connectionManager: client.connectionManager,
                             config: clientConfig,
                             queues: client.queues
                         };
-                        _self.configureEMSClient(clientList, clients).then(success => {
-                            resolve(true);
+                        SERVICE[clientConfig.handler].createProducer(_self.emsClients[clientName], clientConfig.publisherOptions).then(producer => {
+                            _self.emsClients[clientName].producer = producer;
+                            _self.configureEMSClient(clientList, clients).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
                         }).catch(error => {
                             reject(error);
                         });
@@ -121,7 +131,7 @@ module.exports = {
             if (publisherList && publisherList.length > 0) {
                 let publisherName = publisherList.shift();
                 let publisher = publishers[publisherName];
-                if (publisher.enabled && publisher.client && _self.emsClients[publisher.client]) {
+                if (publisher.enabled && publisher.client && _self.emsClients[publisher.client] && (publisher.runOnNode === CONFIG.get('nodeId') || publisher.tempNode === CONFIG.get('nodeId'))) {
                     let client = _self.emsClients[publisher.client];
                     publisher.publisherOptions = _.merge(_.merge({}, client.config.publisherOptions || {}), publisher.publisherOptions || {});
                     publisher.options = _.merge(_.merge({}, client.config.eventOptions || {}), publisher.options || {});
@@ -129,10 +139,10 @@ module.exports = {
                         publisherName: publisherName,
                         publisher: publisher,
                         client: client
-                    }).then(success => {
+                    }).then(producer => {
                         _self.LOG.debug('Successfully created publisher for queue : ' + publisherName);
                         _self.emsPublishers[publisherName] = {
-                            publisher: success,
+                            publisher: producer,
                             config: publisher,
                             client: client
                         };
@@ -154,6 +164,40 @@ module.exports = {
                 }
             } else {
                 resolve(true);
+            }
+        });
+    },
+
+    closePublishers: function (publishers) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            let success = [];
+            let failed = [];
+            if (publishers && publishers.length > 0) {
+                publishers.forEach(publisherName => {
+                    try {
+                        if (_self.emsPublishers[publisherName]) {
+                            delete _self.emsPublishers[publisherName];
+                            success.push('Publisher: ' + publisherName + ' has been removed successfully');
+                        } else {
+                            success.push('Publisher: ' + publisherName + ' is not available, or already removed');
+                        }
+                    } catch (error) {
+                        failed.push(error);
+                    }
+                });
+                resolve({
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    result: success,
+                    failed: failed
+                });
+            } else {
+                resolve({
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    msg: 'None publishers are active to close'
+                });
             }
         });
     },
@@ -190,36 +234,49 @@ module.exports = {
                 if (consumerList && consumerList.length > 0) {
                     let consumerName = consumerList.shift();
                     let consumer = consumers[consumerName];
-                    if (consumer.enabled && consumer.client && _self.emsClients[consumer.client]) {
-                        let client = _self.emsClients[consumer.client];
-                        consumer.consumerOptions = _.merge(_.merge({}, client.config.consumerOptions || {}), consumer.consumerOptions || {});
-                        consumer.options = _.merge(_.merge({}, client.config.eventOptions || {}), consumer.options || {});
-                        SERVICE[client.config.handler].registerConsumer({
-                            consumerName: consumerName,
-                            consumer: consumer,
-                            client: client
-                        }).then(success => {
-                            _self.LOG.debug('Successfully registered consumer for queue : ' + consumerName);
-                            _self.emsConsumers[consumerName] = {
-                                consumer: success,
-                                config: consumer,
-                                client: client
-                            };
+                    if (_self.emsConsumers[consumerName] && _self.emsConsumers[consumerName].consumer.paused) {
+                        _self.emsConsumers[consumerName].consumer.resume();
+                        resolve(true);
+                    } else {
+                        if (consumer.enabled && consumer.client && _self.emsClients[consumer.client] && (consumer.runOnNode === CONFIG.get('nodeId') || consumer.tempNode === CONFIG.get('nodeId'))) {
+                            if (_self.validateConsumer(consumerName, consumer)) {
+                                let client = _self.emsClients[consumer.client];
+                                consumer.consumerOptions = _.merge(_.merge({}, client.config.consumerOptions || {}), consumer.consumerOptions || {});
+                                consumer.options = _.merge(_.merge({}, client.config.eventOptions || {}), consumer.options || {});
+                                SERVICE[client.config.handler].registerConsumer({
+                                    consumerName: consumerName,
+                                    consumer: consumer,
+                                    client: client
+                                }).then(success => {
+                                    _self.LOG.info('Successfully registered consumer for queue : ' + consumerName);
+                                    _self.emsConsumers[consumerName] = {
+                                        consumer: success,
+                                        config: consumer,
+                                        client: client
+                                    };
+                                    _self.registerConsumer(consumerList, consumers).then(success => {
+                                        resolve(true);
+                                    }).catch(error => {
+                                        reject(error);
+                                    });
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            } else {
+                                _self.registerConsumer(consumerList, consumers).then(success => {
+                                    resolve(true);
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            }
+                        } else {
+                            _self.LOG.warn('Consumer: ' + consumerName + ' is not enabled or has invalid client configuration');
                             _self.registerConsumer(consumerList, consumers).then(success => {
                                 resolve(true);
                             }).catch(error => {
                                 reject(error);
                             });
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        _self.LOG.warn('Consumer: ' + consumerName + ' is not enabled or has invalid client configuration');
-                        _self.registerConsumer(consumerList, consumers).then(success => {
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
+                        }
                     }
                 } else {
                     resolve(true);
@@ -228,5 +285,60 @@ module.exports = {
                 reject(error);
             }
         });
-    }
+    },
+
+    validateConsumer: function (consumerName, consumer) {
+        let valid = false;
+        if (!consumer.runOnNode) {
+            this.LOG.error('Invalid consumer configuration, runOnNode is mandate for consumer: ' + consumerName);
+        } else if (!(consumer.runOnNode === CONFIG.get('nodeId') || consumer.tempNode === CONFIG.get('nodeId'))) {
+            this.LOG.warn('Consumer: ' + consumerName + ' is not active for current node: ' + CONFIG.get('nodeId'));
+        } else {
+            return true;
+        }
+        return valid;
+    },
+
+    closeConsumers: function (consumers) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            let allConsumers = [];
+            let success = [];
+            let failed = [];
+            if (consumers && consumers.length > 0) {
+                consumers.forEach(consumerName => {
+                    try {
+                        if (_self.emsConsumers[consumerName]) {
+                            let consumer = _self.emsConsumers[consumerName];
+                            allConsumers.push(SERVICE[consumer.client.config.handler].closeConsumer(consumerName, consumer));
+                            success.push('Consumer: ' + consumerName + ' has been removed successfully');
+                        } else {
+                            success.push('Consumer: ' + consumerName + ' is not available, or already removed');
+                        }
+                    } catch (error) {
+                        failed.push(error);
+                    }
+                });
+                if (allConsumers.length > 0) {
+                    Promise.all(allConsumers).then(success => {
+                        _self.LOG.info(success);
+                    }).catch(error => {
+                        _self.LOG.error(error);
+                    });
+                }
+                resolve({
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    result: success,
+                    failed: failed
+                });
+            } else {
+                resolve({
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    msg: 'None consumers are active to close'
+                });
+            }
+        });
+    },
 };

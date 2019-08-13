@@ -46,5 +46,30 @@ module.exports = {
         } else {
             return null;
         }
+    },
+
+    getDefaultQuery: function () {
+        return {
+            $and: [{
+                active: true
+            },
+            {
+                start: {
+                    $lt: new Date()
+                }
+            },
+            {
+                $or: [{
+                    end: {
+                        $gte: new Date()
+                    }
+                },
+                {
+                    end: {
+                        $exists: false
+                    }
+                }]
+            }]
+        };
     }
 };

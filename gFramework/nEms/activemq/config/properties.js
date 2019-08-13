@@ -14,7 +14,6 @@ module.exports = {
         clients: {
             activemq: {
                 enabled: false,
-                runOnCluster: 0,
                 handler: 'DefaultActivemqClientService',
                 eventOptions: {
                     nodeId: '0',
@@ -22,13 +21,12 @@ module.exports = {
                 },
                 publisherOptions: {
                     requireAcks: 1,
-                    ackTimeoutMs: 100,
+                    ackTimeoutMs: 3000,
                     partitionerType: 0
                 },
                 consumerOptions: {
                     encodingType: 'UTF-8',
                     acknowledgeType: 'client-individual', // auto, client, client-individual
-                    ackRequired: false
                 },
                 connectionOptions: [{
                     host: 'localhost',
@@ -45,7 +43,12 @@ module.exports = {
                     "maxReconnectDelay": 5000,     // maximum milliseconds delay of any reconnect
                     "useExponentialBackOff": true,  // exponential increase in reconnect delay
                     "maxReconnects": 100,            // maximum number of failed reconnects consecutively
-                    "randomize": false              // randomly choose a server to use when reconnecting
+                    "randomize": false,            // randomly choose a server to use when reconnecting
+                    connect: {
+                        connectHeaders: {
+                            'heart-beat': '5000,5000'
+                        }
+                    }
                 },
             }
         }

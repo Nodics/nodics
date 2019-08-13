@@ -32,12 +32,19 @@ module.exports = {
 
     emsClient: {
         logFailedMessages: false,
+        publishers: {
+            kafkaTempPublisher: {
+                enabled: true,
+                client: 'kafka',
+                runOnNode: 'node0'
+            }
+        },
         clients: {
             activemq: {
                 enabled: false
             },
             kafka: {
-                enabled: false
+                enabled: true
             }
         }
     },
@@ -49,25 +56,39 @@ module.exports = {
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3010,
+                httpPort: 3002,
 
                 httpsHost: 'localhost',
-                httpsPort: 3011
+                httpsPort: 3003
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3010,
+                httpPort: 3002,
 
                 httpsHost: 'localhost',
-                httpsPort: 3011
+                httpsPort: 3003
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
-                    httpPort: 3010,
+                    httpPort: 3002,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3011
+                    httpsPort: 3003
+                },
+                node1: {
+                    httpHost: 'localhost',
+                    httpPort: 3012,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3013
+                },
+                node2: {
+                    httpHost: 'localhost',
+                    httpPort: 3014,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3015
                 }
             }
         },
@@ -91,7 +112,7 @@ module.exports = {
                 httpsPort: 3001
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3000,
 
@@ -120,7 +141,7 @@ module.exports = {
                 httpsPort: 3005
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3004,
 

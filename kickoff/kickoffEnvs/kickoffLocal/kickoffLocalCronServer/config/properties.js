@@ -19,8 +19,15 @@ module.exports = {
         ]
     },
 
+    activateNodePing: true,
+    nodePingableModules: {
+        cronjob: {
+            enabled: true
+        }
+    },
+
     log: {
-        level: 'debug'
+        level: 'info'
     },
 
     cronjob: {
@@ -42,25 +49,46 @@ module.exports = {
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3002,
+                httpPort: 3010,
 
                 httpsHost: 'localhost',
-                httpsPort: 3003
+                httpsPort: 3011
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3002,
+                httpPort: 3010,
 
                 httpsHost: 'localhost',
-                httpsPort: 3003
+                httpsPort: 3011
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
-                    httpPort: 3002,
+                    httpPort: 3010,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3003
+                    httpsPort: 3011
+                },
+                node1: {
+                    httpHost: 'localhost',
+                    httpPort: 3012,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3013
+                },
+                node2: {
+                    httpHost: 'localhost',
+                    httpPort: 3014,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3015
+                },
+                node3: {
+                    httpHost: 'localhost',
+                    httpPort: 3016,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3017
                 }
             }
         },
@@ -85,7 +113,7 @@ module.exports = {
                 httpsPort: 3001
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3000,
 
@@ -115,7 +143,7 @@ module.exports = {
                 httpsPort: 3005
             },
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3004,
 

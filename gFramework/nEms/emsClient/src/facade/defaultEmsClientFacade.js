@@ -21,5 +21,13 @@ module.exports = {
 
     registerPublishers: function (request) {
         return SERVICE.DefaultEmsClientService.registerPublishers(request);
+    },
+
+    closeConsumers: function (request) {
+        return SERVICE.DefaultEmsClientService.closeConsumers(request);
+    },
+
+    closePublishers: function (request) {
+        return SERVICE.DefaultEmsClientService.closePublishers(request);
     }
 };

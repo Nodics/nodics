@@ -17,16 +17,18 @@ module.exports = {
             try {
                 let model = request.model;
                 if (model.active && model.state === ENUMS.CronJobState.NEW.key) {
-                    SERVICE.DefaultCronJobService.getCronJobContainer().createJobs({
-                        tenant: request.tenant,
-                        definitions: [model]
-                    }).then(success => {
-                        SERVICE.DefaultCronJobService.getCronJobContainer().startJobs(request.tenant, [model.code]).then(success => {
-                            _self.LOG.info('Successfully started job: ' + model.code);
-                        }).catch(error => {
-                            _self.LOG.error('Failed to start job: ' + model.code);
-                            _self.LOG.error(error);
-                        });
+                    model.tenant = request.tenant;
+                    SERVICE.DefaultCronJobService.getCronJobContainer().createJob(NODICS.getInternalAuthToken(model.tenant), model).then(success => {
+                        if (success.success && success.code !== 'SUC_CRON_00001') {
+                            SERVICE.DefaultCronJobService.getCronJobContainer().startJobs(request.tenant, [model.code]).then(success => {
+                                _self.LOG.info('Successfully started job: ' + model.code);
+                            }).catch(error => {
+                                _self.LOG.error('Failed to start job: ' + model.code);
+                                _self.LOG.error(error);
+                            });
+                        } else {
+                            _self.LOG.info(success.msg || success.result);
+                        }
                     }).catch(error => {
                         _self.LOG.error('Failed to create job: ' + model.code);
                         _self.LOG.error(error);

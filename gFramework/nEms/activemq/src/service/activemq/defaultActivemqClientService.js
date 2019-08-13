@@ -76,6 +76,7 @@ module.exports = {
                         });
                         resolve({
                             connection: connection,
+                            connectionManager: connectionManager,
                             queues: []
                         });
                     }
@@ -90,13 +91,57 @@ module.exports = {
         });
     },
 
-    configurePublisher: function (options) {
+    createProducer: function (client, options) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                resolve({});
+                resolve(client.connection);
             } catch (error) {
                 reject(error);
+            }
+        });
+    },
+
+    configurePublisher: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (options.client && options.client.producer) {
+                    resolve(options.client.producer);
+                } else {
+                    reject('Invalid client configuration');
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+
+    publish: function (payload) {
+        return new Promise((resolve, reject) => {
+            try {
+                let publisher = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
+                let frame = publisher.publisher.send({
+                    'destination': '/queue/' + payload.queue,
+                    'content-type': 'application/json'
+                });
+                if (payload.type === 'json') {
+                    frame.write(JSON.stringify(payload.message));
+                } else {
+                    frame.write(payload.message);
+                }
+                frame.end();
+                resolve({
+                    success: true,
+                    code: 'SUC_EMS_00000',
+                    msg: 'Message published to queue: ' + payload.queue
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_EMS_00000',
+                    msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
+                });
             }
         });
     },
@@ -106,30 +151,24 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let queueName = options.consumerName;
             try {
-                options.client.connection.subscribe({
-                    destination: queueName,
-                    ack: options.consumer.options.acknowledgeType
+                let channel = new stompit.Channel(options.client.connectionManager, {
+                    alwaysConnected: true
+                });
+                channel.subscribe({
+                    destination: queueName
                 }, (err, msg) => {
                     if (err) {
                         _self.LOG.error('While subscribing to queue : ' + queueName);
                         _self.LOG.error(err);
                     } else {
-                        msg.readString(options.consumer.consumerOptions.encodingType, (err, body) => {
-                            if (!options.consumer.consumerOptions.ackRequired) {
-                                msg.ack(msg);
-                            }
+                        msg.readString('utf-8', function (err, body) {
                             if (err) {
                                 _self.LOG.error('While consuming message from queue : ' + queueName);
                                 _self.LOG.error(err);
-                                if (!options.consumer.consumerOptions.ackRequired) {
-                                    msg.nack(msg);
-                                }
                             } else {
                                 options.consumer.name = queueName;
                                 _self.onConsume(options.consumer, body).then(success => {
-                                    if (options.consumer.consumerOptions.ackRequired) {
-                                        msg.ack(msg);
-                                    }
+                                    // just acknowledged if require
                                 }).catch(error => {
                                     _self.LOG.error('While processing comsumed message: ' + body);
                                     _self.LOG.error(error);
@@ -148,15 +187,12 @@ module.exports = {
                                         options: options.consumer.consumerOptions,
                                         message: body
                                     });
-                                    if (options.consumer.consumerOptions.ackRequired) {
-                                        msg.nack(msg);
-                                    }
                                 });
                             }
                         });
                     }
                 });
-                resolve(true);
+                resolve(channel);
             } catch (error) {
                 reject(error);
             }
@@ -202,51 +238,13 @@ module.exports = {
         });
     },
 
-    /**
-     * This function is used to publish a message to target ActiveMQ queue. 
-     * @param {*} payload   
-     * {
-     *      "queue": "testPublisherQueue",
-     *       "type": "json",
-     *       "message": {
-     *           "tenant":"default",
-     *           "message":"First API Message by Himkar"
-     *       }
-     * }
-     */
-    publish: function (payload) {
+    closeConsumer: function (consumerName, consumer) {
         return new Promise((resolve, reject) => {
             try {
-                let client = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
-                if (client) {
-                    var frame = client.connection.send({
-                        'destination': payload.queue,
-                        'content-type': 'application/json'
-                    });
-                    if (payload.type === 'json') {
-                        frame.write(JSON.stringify(payload.message));
-                    } else {
-                        frame.write(payload.message);
-                    }
-                    frame.end();
-                    resolve({
-                        success: true,
-                        code: 'SUC_EMS_00000',
-                        msg: 'Message published to queue: ' + payload.queue
-                    });
-                } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_EMS_00000',
-                        msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
-                    });
-                }
+                consumer.consumer.close();
+                resolve('Consumer: ' + consumerName + ' closed successfully');
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00000',
-                    msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
-                });
+                reject(error);
             }
         });
     }

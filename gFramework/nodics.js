@@ -100,8 +100,12 @@ module.exports = {
     start: function (options) {
         this.initFramework(options).then(success => {
             SERVICE.DefaultRouterService.startServers().then(success => {
-                if (CONFIG.get('activateClusterPing')) {
-                    SERVICE.DefaultClusterManagerService.checkActiveClusters();
+                if (CONFIG.get('activateNodePing')) {
+                    SERVICE.DefaultNodeManagerService.notifyNodeStarted().then(success => {
+                        SERVICE.DefaultNodeManagerService.checkActiveNodes();
+                    }).catch(error => {
+                        NODICS.LOG.error('Failed to notify nodes about current node:' + CONFIG.get('nodeId') + ' started');
+                    });
                 }
                 NODICS.setEndTime(new Date());
                 NODICS.setServerState('started');

@@ -12,8 +12,6 @@ const _ = require('lodash');
 const kafka = require('kafka-node');
 
 module.exports = {
-    publisher: {},
-    consumerPool: {},
 
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -65,16 +63,17 @@ module.exports = {
             }
         });
     },
-    configurePublisher: function (options) {
+
+    createProducer: function (client, options) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                let clientConfig = options.client.config;
+                let clientConfig = client.config;
                 let producer;
                 if (clientConfig.publisherType === 0) {
-                    producer = new kafka.Producer(options.client.connection, options.publisher.publisherOptions);
+                    producer = new kafka.Producer(client.connection, options);
                 } else if (clientConfig.publisherType === 1) {
-                    producer = new kafka.HighLevelProducer(options.client.connection, options.publisher.publisherOptions);
+                    producer = new kafka.HighLevelProducer(client.connection, options);
                 } else {
                     _self.LOG.debug('Invalid publisher type : ' + clientConfig.publisherType);
                     reject('Invalid publisher type : ' + clientConfig.publisherType);
@@ -98,23 +97,51 @@ module.exports = {
         });
     },
 
-    checkQueue: function (options) {
+    configurePublisher: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                let queueName = options.consumerName;
-                if (options.client.queues && options.client.queues.length > 0 && options.client.queues.includes(queueName)) {
-                    resolve(true);
+                if (options.client && options.client.producer) {
+                    resolve(options.client.producer);
                 } else {
-                    options.client.connection.createTopics([queueName], (error, result) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(true);
-                        }
-                    });
+                    reject('Invalid client configuration');
                 }
             } catch (error) {
                 reject(error);
+            }
+        });
+    },
+
+
+    publish: function (payload) {
+        return new Promise((resolve, reject) => {
+            try {
+                let publisher = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
+                publisher.publisher.send([{
+                    topic: payload.queue,
+                    messages: payload.message || payload.messages,
+                    partition: payload.partition || 0
+                }], function (err, data) {
+                    if (err) {
+                        reject({
+                            success: false,
+                            code: 'ERR_EMS_00000',
+                            msg: err
+                        });
+                    } else {
+                        resolve({
+                            success: true,
+                            code: 'SUC_EMS_00000',
+                            msg: 'Message published to queue: ' + payload.queue
+                        });
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+                reject({
+                    success: false,
+                    code: 'ERR_EMS_00000',
+                    msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
+                });
             }
         });
     },
@@ -124,20 +151,12 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 _self.checkQueue(options).then(success => {
-                    let clientConfig = options.client.config;
                     let queueName = options.consumerName;
                     const topics = [{
-                        topic: queueName
+                        topic: queueName,
+                        partition: options.consumer.partition || 0
                     }];
-                    let consumer;
-                    if (clientConfig.consumerType === 0) {
-                        consumer = new kafka.Consumer(options.client.connection, topics, options.consumer.consumerOptions);
-                    } else if (config.consumerType === 1) {
-                        consumer = new kafka.HighLevelConsumer(options.client.connection, topics, options.consumer.consumerOptions);
-                    } else {
-                        _self.LOG.error('Invalid consumer type : ' + clientConfig.consumerType);
-                        reject('Invalid consumer type : ' + clientConfig.consumerType);
-                    }
+                    let consumer = new kafka.Consumer(options.client.connection, topics, options.consumer.consumerOptions);
                     if (consumer) {
                         options.consumer.name = queueName;
                         consumer.on("message", function (response) {
@@ -183,6 +202,7 @@ module.exports = {
                     } else {
                         reject('While creating consumer for queue : ' + queueName);
                     }
+                    resolve(consumer);
                 }).catch(error => {
                     reject(error);
                 });
@@ -191,6 +211,31 @@ module.exports = {
             }
         });
     },
+
+    checkQueue: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                let queueName = options.consumerName;
+                if (options.client.queues && options.client.queues[queueName]) {
+                    resolve(true);
+                } else {
+                    options.client.connection.createTopics([queueName], (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            options.client.queues[queueName] = {
+                                created: true
+                            };
+                            resolve(true);
+                        }
+                    });
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
 
     handleConsumerError: function (options) {
         let _self = this;
@@ -211,6 +256,7 @@ module.exports = {
             _self.LOG.error('Failed to log message : ' + options.consumer.name + ' : ERROR is ', error);
         }
     },
+
     onConsume: function (queue, response, callback) {
         try {
             if (response.key && queue.consumerOptions.keyEncoding && queue.consumerOptions.keyEncoding === 'buffer') {
@@ -230,7 +276,6 @@ module.exports = {
                 } else {
                     Promise.resolve(success);
                 }
-
             }).catch(error => {
                 if (callback) {
                     callback(error);
@@ -247,54 +292,17 @@ module.exports = {
         }
     },
 
-    /**
-     * This function is used to publish a message to target Kafka queue. 
-     * @param {*} payload   
-     * {
-     *      "queue": "testPublisherQueue",
-     *       "message": {
-     *           "tenant":"default",
-     *           "message":"First API Message by Himkar"
-     *       }
-     * }
-     */
-    publish: function (payload) {
+    closeConsumer: function (consumerName, consumer) {
         return new Promise((resolve, reject) => {
             try {
-                let client = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
-                if (client) {
-                    client.connection.send([{
-                        topic: payload.queue,
-                        messages: payload.message || payload.messages,
-                        partition: payload.partition || 0
-                    }], function (err, data) {
-                        if (err) {
-                            reject({
-                                success: false,
-                                code: 'ERR_EMS_00000',
-                                msg: err
-                            });
-                        } else {
-                            resolve({
-                                success: true,
-                                code: 'SUC_EMS_00000',
-                                msg: 'Message published to queue: ' + payload.queue
-                            });
-                        }
-                    });
+                if (!consumer.consumer.paused) {
+                    consumer.consumer.pause();
+                    resolve('Consumer: ' + consumerName + ' closed successfully');
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_EMS_00000',
-                        msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
-                    });
+                    resolve('Consumer: ' + consumerName + ' is already closed');
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00000',
-                    msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
-                });
+                reject(error);
             }
         });
     }

@@ -49,7 +49,7 @@ module.exports = {
                 httpsPort: 3001
             },//Clusters information is optional and will be managed for Backoffice application
             nodes: {
-                0: {
+                node0: {
                     httpHost: 'localhost',
                     httpPort: 3000,
 

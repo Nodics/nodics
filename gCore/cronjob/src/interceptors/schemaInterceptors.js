@@ -18,12 +18,12 @@ module.exports = {
                 index: 0,
                 handler: 'DefaultStartValueValidatorInterceptorService.convertToDate'
             },
-            preUpdateCheckActiveValue: {
-                type: 'preUpdate',
-                active: 'true',
-                index: 0,
-                handler: 'DefaultStartValueValidatorInterceptorService.convertToDate'
-            },
+            // preUpdateCheckActiveValue: {
+            //     type: 'preUpdate',
+            //     active: 'true',
+            //     index: 0,
+            //     handler: 'DefaultStartValueValidatorInterceptorService.convertToDate'
+            // },
             postSaveStartJob: {
                 type: 'postSave',
                 active: 'true',

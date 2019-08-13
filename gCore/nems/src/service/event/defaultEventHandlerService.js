@@ -274,7 +274,7 @@ module.exports = {
 
     prepareURL: function (event, target) {
         let connectionType = 'abstract';
-        let nodeId = 0;
+        let nodeId = 'node0';
         if (target.targetNodeId) {
             connectionType = 'node';
             nodeId = target.targetNodeId;

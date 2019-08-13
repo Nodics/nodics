@@ -10,13 +10,5 @@
  */
 
 module.exports = {
-    returnErrorStack: false,
-    activateClusterPing: false,
-    clusterPingTimeout: 10 * 1000,
-    clusteredModules: {
-        cronjob: 1,
-        profile: 0,
-        emsClient: 0,
-        nems: 0
-    }
+    returnErrorStack: false
 };

@@ -11,15 +11,15 @@
 
 module.exports = {
     record1: {
-        code: "jobLogFullIndexer",
+        code: "jobLogFullIndexerJob",
         tenant: "default",
         description: 'This job is to trigger process job log indexer, which will push all data to elastic search',
-        runOnNode: 0,
+        runOnNode: 'node0',
         active: false,
         logResult: false,
         jobDetail: {
             internal: {
-                nodeId: 0,
+                nodeId: 'node0',
                 module: 'cronjob',
                 method: 'GET',
                 uri: '/cronJobLog/search/index/jobLogFullIndexer'
@@ -37,15 +37,15 @@ module.exports = {
     },
 
     record2: {
-        code: "jobLogIncrementalIndexer",
+        code: "jobLogIncrementalIndexerJob",
         tenant: "default",
         description: 'This job is to trigger process job log indexer, which will push all data to elastic search',
-        runOnNode: 0,
+        runOnNode: 'node0',
         active: false,
         logResult: false,
         jobDetail: {
             internal: {
-                nodeId: 0,
+                nodeId: 'node0',
                 module: 'cronjob',
                 method: 'GET',
                 uri: '/cronJobLog/search/index/jobLogIncrementalIndexer'

@@ -11,16 +11,16 @@
 
 module.exports = {
     updateSchemaValidator: function (request, callback) {
-        let moduleName = request.moduleName || request.local.moduleName;
-        if (request.params.schema) {
+        let moduleName = request.moduleName;
+        if (request.httpRequest.params.schema) {
             if (callback) {
-                FACADE.DefaultSchemaValidatorFacade.updateSchemaValidator(moduleName, request.params.schema).then(success => {
+                FACADE.DefaultSchemaValidatorFacade.updateSchemaValidator(moduleName, request.httpRequest.schema).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                return FACADE.DefaultSchemaValidatorFacade.updateSchemaValidator(moduleName, request.params.schema);
+                return FACADE.DefaultSchemaValidatorFacade.updateSchemaValidator(moduleName, request.httpRequest.schema);
             }
         } else {
             if (callback) {
@@ -37,7 +37,7 @@ module.exports = {
 
     updateModulesSchemaValidators: function (request, callback) {
         if (callback) {
-            return FACADE.DefaultSchemaValidatorFacade.updateModulesSchemaValidators().then(success => {
+            FACADE.DefaultSchemaValidatorFacade.updateModulesSchemaValidators().then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);

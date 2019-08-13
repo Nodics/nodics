@@ -77,14 +77,14 @@ module.exports = {
         try {
             let moduleConfig = this.getModuleServerConfig(options.moduleName);
             let contextRoot = moduleConfig.getOptions().contextRoot || CONFIG.get('server').options.contextRoot;
-            if (options.nodeId && options.nodeId > 0) {
+            if (options.nodeId === undefined) {
+                url = this.getURL(moduleConfig.getAbstractServer());
+            } else {
                 if (moduleConfig.getNode(options.nodeId)) {
                     url = this.getURL(moduleConfig.getNode(options.nodeId));
                 } else {
                     this.LOG.error('Invalid node id : ' + options.nodeId + ' while preparing URL for module : ' + options.moduleName);
                 }
-            } else {
-                url = this.getURL(moduleConfig.getAbstractServer());
             }
             url += '/' + contextRoot + '/' + options.moduleName;
         } catch (error) {

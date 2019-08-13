@@ -82,10 +82,7 @@ module.exports = function () {
                         _jobPool[definition.tenant] = {};
                     }
                     if (!_jobPool[definition.tenant][definition.code]) {
-                        if (!definition.runOnNode) {
-                            definition.runOnNode = CONFIG.get('nodeId');
-                        }
-                        if (CONFIG.get('nodeId') === definition.runOnNode) {
+                        if (CONFIG.get('nodeId') === definition.runOnNode || (definition.tempNode && CONFIG.get('nodeId') === definition.tempNode)) {
                             let tmpCronJob = new CLASSES.CronJob(definition, definition.trigger);
                             tmpCronJob.LOG = SERVICE.DefaultLoggerService.createLogger('CronJob-' + definition.code);
                             tmpCronJob.validate();
@@ -108,14 +105,26 @@ module.exports = function () {
                                 _self.LOG.error('Job: ' + definition.code + ' failed on updating state on tenant: ' + definition.tenant);
                                 _self.LOG.error(error);
                             });
-                            resolve('Job: ' + definition.code + ' has been successfully added in ready to run pool on tenant: ' + definition.tenant);
+                            resolve({
+                                success: true,
+                                code: 'SUC_JOB_00000',
+                                msg: 'Job: ' + definition.code + ' has been successfully added in ready to run pool on tenant: ' + definition.tenant
+                            });
                         } else {
                             _self.LOG.debug('Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant);
-                            resolve('Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant);
+                            resolve({
+                                success: true,
+                                code: 'SUC_CRON_00001',
+                                msg: 'Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant
+                            });
                         }
                     } else {
                         _self.LOG.warn('Job: ' + definition.code, ' is already available on tenant: ' + definition.tenant);
-                        resolve('Job: ' + definition.code + ' is already available in ready to run pool on tenant: ' + definition.tenant);
+                        resolve({
+                            success: true,
+                            code: 'SUC_JOB_00000',
+                            msg: 'Job: ' + definition.code + ' is already available in ready to run pool on tenant: ' + definition.tenant
+                        });
                     }
                 }
             } catch (error) {

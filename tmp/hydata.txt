@@ -1,0 +1,544 @@
+Top
+
+@RequestMapping(value = "/{userId}/sendOTP", method = RequestMethod.GET)
+@ResponseBody
+@ApiOperation(value = "Sends OPT to customer's mobile number", notes = "Sends OPT to customer's mobile number.")
+@ApiBaseSiteIdAndUserIdParam
+public SendOTPResponseWsDTO sendOTP(
+        @ApiParam("User identifier.") @PathVariable final String userId,
+        @ApiParam(value = "OTP Type", required = true) @RequestParam("otpType") final String otpType,
+        @ApiParam(value = "Customer identifier.", required = true) @RequestParam final String employeeId,
+        @ApiParam(value = "Amount", required = true) @RequestParam("amount") final double amount,
+        @ApiParam(value = "Response configuration (list of fields, which should be returned in response)", allowableValues = "BASIC, DEFAULT, FULL") @RequestParam(required = false, defaultValue = DEFAULT_FIELD_SET) final String fields) {
+    SendOTPResponseData sendOTPResponse = new SendOTPResponseData();
+    if (StringUtils.isBlank(employeeId)) {
+        sendOTPResponse.setStatusCode(1);
+        sendOTPResponse.setMessage("Customer is not valid");
+    }else{
+        CustomerBalanceResponse customerBalanceResponse =  soServiceFacade.getAllBalances(employeeId);
+        double currentBalance = 0D;
+        double limit = 0D;
+        if(customerBalanceResponse.getSuccess() && customerBalanceResponse.getResult() != null &&
+                customerBalanceResponse.getResult().getBalances() !=null &&
+                !customerBalanceResponse.getResult().getBalances().isEmpty()){
+            for(CustomerBalance balance: customerBalanceResponse.getResult().getBalances()){
+                if("AVAILABLE_BALANCE".equalsIgnoreCase(balance.getBalanceType())){
+                    currentBalance = balance.getAmount();
+                    break;
+                }
+
+            }
+        }
+        if(amount + currentBalance > limit){
+            sendOTPResponse.setStatusCode(2);
+            sendOTPResponse.setMessage("You have exceeded your limit");
+        }else{
+            String opt = customerFacade.sendOTP(userId, otpType);
+            if (StringUtils.isNumeric(opt)) {
+                sendOTPResponse.setStatusCode(3);
+                sendOTPResponse.setMessage("OTP Sent to registered mobile number");
+            } else {
+                sendOTPResponse.setStatusCode(0);
+                sendOTPResponse.setMessage(opt);
+            }
+            return getDataMapper().map(sendOTPResponse, SendOTPResponseWsDTO.class, fields);
+        }
+    }
+    return getDataMapper().map(sendOTPResponse, SendOTPResponseWsDTO.class, fields);
+}
+
+
+
+
+# Add User Groups  for stores
+INSERT_UPDATE StoreEmployeeGroup;uid[unique=true];groups(uid);locname[lang=en]
+;1973Group;employeegroup;1973Group
+;1975Group;employeegroup;1975Group
+
+
+# Add User Groups  for stores
+INSERT_UPDATE UserGroup ; uid[unique=true];groups(uid);locname[lang=en];
+;50029966Group;employeegroup;50029966Group;
+
+
+Nodes related changes for Tibco Listeners - Done
+CronJob not working 
+	Change activation time - Manual
+	Enable 
+Changes for Tax Engine URL - Done
+
+Select {e.uid}, {e.name}, {e.description}, {et.code}  from {Employee as e left outer join EmployeeType as et on {et.pk} = {e.employeeType}} where {e.employeeType} is not null
+
+
+
+#Add Store Employees
+$passwordEncoding=md5
+$setPassword=@password[translator=de.hybris.platform.impex.jalo.translators.ConvertPlaintextToEncodedUserPasswordTranslator][default='$passwordEncoding:$defaultPassword']   
+INSERT_UPDATE ManagerEmployee ; UID[unique=true] ; $setPassword
+;53004206;md5:935682463
+
+INSERT_UPDATE Buyer;UID[unique=true];accountmanager(uid)
+;100001001727167;50039327
+;100001001728326;50035402
+
+- Product catalog and product offerings
+- Bundled Product Offerings
+
+
+
+
+
+- Important Points
+    - Bundles with Plans and Services
+    - Simple and complex bundles
+    - Contract Renewal
+    - Customer retention
+        - Periodical discounts
+        - Customer rewards
+        - Custom Plans based on their usage 
+        - Customer support discussion analysis
+        - Auto comparison with other providers
+        - Ideal cart promotions
+        - Customer engagement via external media
+        - Upgrade Plans
+    - Configurable Guided Selling
+        - Family packs based on family usage
+        - Simplify and easy configurable purchase journey
+
+
+
+select {u.uid},TO_CHAR({metadata}) from {devicemetadata as meta join user as u on {u.pk}={meta.user}} where {creationtime} > TO_DATE('30/06/2019', 'DD/MM/YYYY')
+ 
+import java.util.List;
+import java.util.Date;
+import com.hybris.rrlmp.common.model.SellerProductModel;
+import com.hybris.rrlmp.common.model.SellerPackProductModel;
+import com.hybris.rrlmp.common.model.SellerPackModel;
+import de.hybris.platform.variants.model.*;
+import de.hybris.platform.core.model.order.*;
+import com.hybris.rrlmp.integration.createorder.jaxbs.*;
+import javax.xml.bind.*;
+
+modelService = spring.getBean "modelService";
+defaultOrderToCreateOrderConverter = spring.getBean "defaultOrderToCreateOrderConverter"
+
+List orders = flexibleSearchService.search("select {pk} from {order!} where {code} ='00194049' and {versionid} is null").getResult();
+
+for(OrderModel order : orders) {
+    out.print(order.getCode());
+	CreateOrder createOrder = defaultOrderToCreateOrderConverter.populate(order);
+  	Date currentDate = new Date();
+	JAXBContext jContext = JAXBContext.newInstance(CreateOrder.class)
+	Marshaller marshallObj = jContext.createMarshaller();
+	marshallObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+	marshallObj.marshal(createOrder, new FileOutputStream("/opt/apps/B2B_SF/hybris/log/" + order.getCode() + "_" + currentDate.getTime() + ".txt"));
+	out.println("File's created successfully");
+}
+
+
+import java.util.*;
+import de.hybris.platform.cronjob.model.CronJobModel;
+import de.hybris.platform.cronjob.model.TriggerModel;
+ 
+ 
+flexibleSearchService = spring.getBean("flexibleSearchService");
+modelService = spring.getBean ("modelService");
+ 
+String query = "SELECT {CJ.PK} FROM {TRIGGER AS T JOIN CRONJOB AS CJ ON {T.CRONJOB}={CJ.PK} JOIN CRONJOBSTATUS AS CJS ON {CJS.PK}={CJ.STATUS}} WHERE {T.ACTIVATIONTIME} < SYSDATE";
+ 
+List<CronJobModel> crons = flexibleSearchService.search(query).getResult();
+ 
+for(CronJobModel cron : crons){
+ 
+        List<TriggerModel> triggers = cron.getTriggers();
+        List<TriggerModel> newTriggers = new ArrayList<TriggerModel>();
+       
+        for(TriggerModel trigger : triggers){
+       
+        TriggerModel newTrigger = modelService.clone(trigger);
+        newTriggers.add(newTrigger);
+        }
+        cron.setTriggers(newTriggers);
+        modelService.saveAll(newTriggers);
+        modelService.removeAll(triggers);
+        modelService.save(cron);
+        out.println("Reset Trigger for "+cron.getCode());
+}
+
+Select {p.pk},{sp.hsnCode},{pr.price} from {pricerow as pr join Product as p on {p.pk} = {pr.product} join priceType as pt on {pr.priceType} = {pt.pk} join SellerProduct as sp on {sp.product} = {p.pk}} where {pt.code} = 'SellerPrice' and {sp.hsnCode} is not null
+
+
+Select {p.pk},{sp.hsnCode},{pt.code},{pr.price} from {pricerow as pr join Product as p on {p.pk} = {pr.product} join priceType as pt on {pr.priceType} = {pt.pk} join SellerProduct as sp on {sp.product} = {p.pk}} where ({pt.code} = 'SellerPrice' or {pt.code} = 'MRP') and {sp.hsnCode} is not null and {pr.price} is not null
+
+INSERT_UPDATE B2BCustomer;UID[unique=true];groups(uid)[mode=append]
+;+918778735944;internalgroup
+
+
+import com.hazelcast.core.IMap;
+import com.ril.marketplace.commonplatform.hazelcast.RILHazelCastException;
+import com.ril.marketplace.commonplatform.hazelcast.RILHazelCastMapEnum;
+import com.ril.marketplace.commonplatform.hazelcast.RILHazelCastService;
+import com.ril.marketplace.commonplatform.hazelcast.RILHazelCastServiceFactory;
+import com.ril.marketplace.commonplatform.hazelcast.RILHazelCastTypeEnum;
+import com.ril.marketplace.inventory.generated.models.Inventory;
+import com.ril.marketplace.inventory.generated.models.Inventory.Item;
+import com.ril.marketplace.inventory.generated.models.Inventory.Item.Channel;
+
+RILHazelCastService service = RILHazelCastServiceFactory .getInstance(RILHazelCastTypeEnum.MAP);
+IMap<String, String> map = service.getMap("opt_map");
+out.print("getting otp");
+map.get("+919108464882_login");
+out.print("getting otp done :"+map.get("+919108464882_login"));
+
+
+
+
+
+import de.hybris.platform.core.model.media.MediaContainerModel
+import de.hybris.platform.core.model.media.MediaModel
+import de.hybris.platform.core.model.product.ProductModel
+import de.hybris.platform.mediaconversion.model.ConversionMediaFormatModel
+import de.hybris.platform.servicelayer.search.FlexibleSearchQuery
+
+
+mediaConversionService = spring.getBean("mediaConversionService");
+flexibleSearchService = spring.getBean("flexibleSearchService");
+
+
+boolean isConverted = true;
+List<ConversionMediaFormatModel> conversionMediaFormatModels = getAllMediaFormats();
+List<ProductModel> productModels = getUnconvertedProducts();
+for(ProductModel productModel: productModels){
+    isConverted = true;
+    List<MediaContainerModel> mediaContainerModels = productModel.getGalleryImages();
+    if(!mediaContainerModels.isEmpty()){
+        for (MediaContainerModel containerModel : mediaContainerModels) {
+            List<ConversionMediaFormatModel> formatModels = null;
+            if (containerModel.getConversionGroup() != null && !containerModel.getConversionGroup().getSupportedFormats().isEmpty()) {
+                formatModels = new ArrayList<ConversionMediaFormatModel>(containerModel.getConversionGroup().getSupportedFormats());
+            } else {
+                formatModels = conversionMediaFormatModels;
+            }
+            for (ConversionMediaFormatModel formatModel : formatModels) {
+                try {
+                    MediaModel media = mediaConversionService.getOrConvert(containerModel, formatModel);
+                    if(containerModel.getName().endsWith("_HERO")){
+                        if(formatModel.getQualifier().equals("239Wx300H")) {
+                            productModel.setThumbnail(media);
+                            List list = new ArrayList<MediaModel>();
+                            list.add(media);
+                            productModel.setThumbnails(list);
+                        }else if(formatModel.getQualifier().equals("777Wx973H")) {
+                            productModel.setPicture(media);
+                        }
+                        this.modelService.save(productModel);
+                    }
+                    out.println("Converted media for container: " + containerModel.getName() + " for format: " + formatModel.getName());
+                } catch (Throwable exp) {
+                    isConverted = false;
+                    //exp.printStackTrace();
+                    out.println("Failed converting media for container: " + containerModel.getName() + " for format: " + formatModel.getName());
+
+                }
+
+            }
+        }
+    }else{
+        isConverted = false;
+        out.print("None gallery images found for Product:  "+productModel.getCode());
+    }
+    if(isConverted){
+        productModel.setMediaConverted(isConverted);
+        this.modelService.save(productModel);
+    }
+
+}
+
+out.println("Conversion Successful");
+
+def List<ProductModel> getUnconvertedProducts()
+{
+    List<ProductModel> productModels = null;
+    final String query = "SELECT * FROM (SELECT sub.pk FROM ({{Select {PK} pk,{creationtime} created from {GENERICVARIANTPRODUCT!} WHERE {mediaConverted}=0 }} UNION {{ Select {PK},{creationtime} from {SELLERPACK!} WHERE {mediaConverted}=0  }}) sub ORDER BY sub.created DESC ) WHERE ROWNUM<10";
+    out.println("Product query : " + query);
+    final FlexibleSearchQuery flexibleQuery = new FlexibleSearchQuery(query);
+    productModels = flexibleSearchService.<ProductModel> search(flexibleQuery).getResult();
+    out.println("Retrieved products : " + productModels);
+
+    return productModels;
+}
+
+def List<ConversionMediaFormatModel> getAllMediaFormats()
+{
+    List<ConversionMediaFormatModel> mediaFormatModels = null;
+    final String query = "Select {PK} from {ConversionMediaFormat}";
+    out.println("ConversionMediaFormat query : " + query);
+    final FlexibleSearchQuery flexibleQuery = new FlexibleSearchQuery(query);
+    mediaFormatModels = flexibleSearchService.<ConversionMediaFormatModel> search(flexibleQuery).getResult();
+    out.println("Retrieved ConversionMediaFormat : " + mediaFormatModels);
+
+    return mediaFormatModels;
+}
+
+
+
+import de.hybris.platform.europe1.model.*;
+
+import com.hybris.rrlmp.pricefactory.enums.PriceType;
+
+import com.hybris.rrlmp.core.service.impl.RrlmpMrpMarginServiceImpl;
+
+ 
+
+priceDao = spring.getBean('mpPriceDao');
+
+ 
+
+                String QUERY = "select {pr.pk} from {PriceRow as pr JOIN GenericVariantProduct! as gvp on {gvp.pk}={pr.product} JOIN PriceType as pt on {pt.pk}={pr.pricetype}} where {pt.code} = 'MRP' AND {pr.jiooCode}='425064969006' AND ROWNUM<100 ";
+
+ 
+
+                List<PriceRowModel> priceRows = flexibleSearchService.search(QUERY).getResult();
+
+ 
+
+ 
+
+                RrlmpMrpMarginServiceImpl rrlmpMrpMarginService = spring.getBean "rrlmpMrpMarginService";
+
+ 
+
+                for(PriceRowModel priceRowModel : priceRows) {
+
+ 
+
+ 
+
+                PriceRowModel sellerPriceRow = priceDao.getPriceDetailByPriceTypeJioCode(priceRowModel.getJiooCode(), PriceType.SELLERPRICE);
+
+ 
+
+ 
+
+                Integer margin = rrlmpMrpMarginService.getMarginValue(priceRowModel, sellerPriceRow);
+
+               
+
+                out.println(margin)
+
+ 
+
+                if(margin != null) {
+
+                                                               priceRowModel.setMargin(margin.doubleValue());
+
+                    modelService.save(priceRowModel);
+
+ 
+
+                                                                }             
+
+ 
+
+}
+
+
+
+import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableSet
+import com.hybris.rrlmp.common.model.SellerPackModel
+import de.hybris.platform.servicelayer.interceptor.impl.InterceptorExecutionPolicy
+import de.hybris.platform.servicelayer.session.SessionExecutionBody
+import org.apache.commons.collections.CollectionUtils
+
+modelService = spring.getBean "modelService"
+flexibleSearchService = spring.getBean "flexibleSearchService"
+sessionService = spring.getBean "sessionService"
+
+
+migrateAndSave()
+
+return "SUCCESS";
+
+def migrateAndSave() {
+
+List<SellerPackModel> sellerPacks = flexibleSearchService.search("SELECT {SPACK.PK} FROM {SELLERPACK AS SPACK LEFT OUTER JOIN PACK2PACKPRODUCT AS P2PP ON {P2PP.SOURCE}={SPACK.PK}} WHERE {P2PP.TARGET} IS NULL AND {SPACK.SELLERPACKPRODUCTS} !=',#1,' ORDER BY {SPACK.CREATIONTIME} ASC ").result
+
+if(CollectionUtils.isNotEmpty(sellerPacks)){
+
+	for (SellerPackModel sellerPackModel : sellerPacks){
+
+sellerPackModel.setPackProducts(sellerPackModel.getSellerPackProducts());
+
+}
+
+
+sessionService.executeInLocalViewWithParams(
+		ImmutableMap.of(InterceptorExecutionPolicy.DISABLED_INTERCEPTOR_BEANS,
+				ImmutableSet.of("sellerPackPriceRollUpPrepareInterceptor","sellerPackStylesPrepareInterceptor")),
+		new SessionExecutionBody() {
+
+			@Override
+			public void executeWithoutResult() {
+		modelService.saveAll(sellerPacks);
+		}});
+out.println("Saving Models");
+
+//migrateAndSave();
+
+
+}
+
+
+
+}
+
+
+
+import java.util.List;
+import com.hybris.rrlmp.common.model.SellerProductModel;
+import com.hybris.rrlmp.common.model.SellerPackProductModel;
+import com.hybris.rrlmp.common.model.SellerPackModel;
+import de.hybris.platform.variants.model.*;
+import de.hybris.platform.core.model.order.*;
+import com.hybris.rrlmp.integration.createorder.jaxbs.*;
+import javax.xml.bind.*;
+
+modelService = spring.getBean "modelService";
+defaultOrderToCreateOrderConverter = spring.getBean "defaultOrderToCreateOrderConverter"
+
+List orders = flexibleSearchService.search("select {pk} from {order!} where {code} ='00194049' and {versionid} is null").getResult();
+
+for(OrderModel order : orders) {
+    out.print(order.getCode());
+	CreateOrder createOrder = defaultOrderToCreateOrderConverter.populate(order);
+  	
+	JAXBContext jContext = JAXBContext.newInstance(CreateOrder.class)
+	Marshaller marshallObj = jContext.createMarshaller();
+	marshallObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+	marshallObj.marshal(createOrder, new FileOutputStream("/opt/apps/B2B_SF/hybris/log/00194949.txt"));
+	out.println("File's created successfully");
+
+}
+
+
+import java.util.*;
+
+import de.hybris.platform.cronjob.model.CronJobModel;
+
+import de.hybris.platform.cronjob.model.TriggerModel;
+
+ 
+
+ 
+
+flexibleSearchService = spring.getBean("flexibleSearchService");
+
+modelService = spring.getBean ("modelService");
+
+ 
+
+String query = "SELECT {CJ.PK} FROM {TRIGGER AS T JOIN CRONJOB AS CJ ON {T.CRONJOB}={CJ.PK} JOIN CRONJOBSTATUS AS CJS ON {CJS.PK}={CJ.STATUS}} WHERE {T.ACTIVATIONTIME} < SYSDATE";
+
+ 
+
+List<CronJobModel> crons = flexibleSearchService.search(query).getResult();
+
+ 
+
+for(CronJobModel cron : crons){
+
+ 
+
+        List<TriggerModel> triggers = cron.getTriggers();
+
+        List<TriggerModel> newTriggers = new ArrayList<TriggerModel>();
+
+       
+
+        for(TriggerModel trigger : triggers){
+
+       
+
+        TriggerModel newTrigger = modelService.clone(trigger);
+
+        newTriggers.add(newTrigger);
+
+        }
+
+        cron.setTriggers(newTriggers);
+
+        modelService.saveAll(newTriggers);
+
+        modelService.removeAll(triggers);
+
+        modelService.save(cron);
+
+        out.println("Reset Trigger for "+cron.getCode());
+
+}
+
+
+Select {pk} from {Media} where {mediacontainer} is null and {mime} = 'image/jpeg' and ( {code} like '%433Wx543H' or {code} like '%1080Wx1353H' or {code} like '%777Wx973H' or {code} like '%239Wx300H')
+
+
+
+
+
+import de.hybris.platform.core.model.media.MediaContainerModel
+import de.hybris.platform.core.model.media.MediaModel
+import de.hybris.platform.servicelayer.search.FlexibleSearchQuery
+
+
+modelService = spring.getBean("modelService");
+flexibleSearchService = spring.getBean("flexibleSearchService");
+
+
+Map<String, MediaContainerModel> containers = new HashMap<>();
+List<MediaModel> orphanMedias = getJunkMedias();
+
+if(orphanMedias != null && !orphanMedias.isEmpty()){
+    for(MediaModel mediaModel: orphanMedias){
+        if(mediaModel.getMediaContainer() == null){
+            String mediaName = mediaModel.getCode().substring(0, mediaModel.getCode().lastIndexOf("_"));
+            MediaContainerModel container = containers.get(mediaName);
+            if(container != null){
+                mediaModel.setMediaContainer(container);
+                this.modelService.save(mediaModel);
+            }else{
+                MediaModel masterMedia = getJunkMedia(mediaName);
+                if(masterMedia != null && masterMedia.getMediaContainer() != null){
+                    mediaModel.setMediaContainer(masterMedia.getMediaContainer());
+                    containers.put(mediaName, masterMedia.getMediaContainer());
+                    this.modelService.save(mediaModel);
+                }
+            }
+        }
+    }
+}
+
+def List<MediaModel> getJunkMedias()
+{
+    List<MediaModel> mediaModels = null;
+    final String query = "Select {pk} from {Media} where {mediacontainer} is null and {mime} = 'image/jpeg' and ( {code} like '%433Wx543H' or {code} like '%1080Wx1353H' or {code} like '%777Wx973H' or {code} like '%239Wx300H')";
+    //final String query = "Select {pk} from {Media} where {code} = '8375375d-700f-4cd2-90cd-0c4e7cf76774_1542714938483_1080Wx1353H'";
+    final FlexibleSearchQuery flexibleQuery = new FlexibleSearchQuery(query);
+    return  this.flexibleSearchService.<MediaModel> search(flexibleQuery).getResult();
+}
+
+def MediaModel getJunkMedia(final String mediaCode)
+{
+    List<MediaModel> mediaModel = null;
+    final String query = "select {PK} from {Media} where {code} = ?mediaCode";
+    final Map queryParams = new HashMap<String, Object>();
+    queryParams.put("mediaCode", mediaCode);
+    final FlexibleSearchQuery flexibleQuery = new FlexibleSearchQuery(query, queryParams);
+    mediaModel = this.flexibleSearchService.<MediaModel> search(flexibleQuery).getResult();
+    if (mediaModel != null && mediaModel.size() > 0)
+    {
+        return mediaModel.get(0);
+    }
+    return null;
+}

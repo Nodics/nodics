@@ -45,7 +45,7 @@ module.exports = function () {
         }
         if (UTILS.isBlank(moduleConfig.nodes)) {
             moduleConfig.nodes = {
-                0: moduleConfig.server
+                node0: moduleConfig.server
             };
         }
         _self.LOG.debug('Adding module for : ' + moduleName);
