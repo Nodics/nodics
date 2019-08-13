@@ -11,6 +11,14 @@
 
 module.exports = {
 
+    nodePingableModules: {
+        emsClient: {
+            enabled: false,
+            nodeUpHandler: 'defaultEmsNodeUpHandlerPipeline',
+            nodeDownHandler: 'defaultEmsNodeDownHandlerPipeline'
+        }
+    },
+
     emsClient: {
         logFailedMessages: false,
         messageHandlers: {

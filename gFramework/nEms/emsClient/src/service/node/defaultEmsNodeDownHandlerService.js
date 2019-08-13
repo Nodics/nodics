@@ -43,17 +43,16 @@ module.exports = {
     },
 
     handleResponsibilities: function (request, response, process) {
-        //if ()
-
-        this.startTenantSpecificJobs(request.moduleName, request.remoteNode, NODICS.getActiveTenants()).then(success => {
+        this.startRemotePublishers(request.moduleName, request.remoteNode).then(() => {
+            return this.startRemoteConsumers(request.moduleName, request.remoteNode);
+        }).then(sucess => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
 
-    startRemotePublishers: function (remoteNode) {
-        let _self = this;
+    startRemotePublishers: function (moduleName, remoteNode) {
         return new Promise((resolve, reject) => {
             let publishers = {};
             if (!UTILS.isBlank(CONFIG.get('emsClient').publishers)) {
@@ -65,7 +64,19 @@ module.exports = {
                     }
                 });
                 if (!UTILS.isBlank(publishers)) {
-
+                    let publisherList = Object.keys(publishers);
+                    SERVICE.DefaultEmsClientConfigurationService.configurePublisher(Object.keys(publishers), publishers).then(success => {
+                        let moduleObject = NODICS.getModule(moduleName);
+                        let nodeConfig = moduleObject.nms.nodes[remoteNode];
+                        if (!nodeConfig.remoteData) {
+                            nodeConfig.remoteData = {};
+                        }
+                        let tmp = Object.keys(publishers);
+                        nodeConfig.remoteData.publishers = publisherList;
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
                 } else {
                     resolve(true);
                 }
@@ -75,53 +86,34 @@ module.exports = {
         });
     },
 
-    startTenantSpecificJobs: function (moduleName, remoteNode, tenants) {
+    startRemoteConsumers: function (moduleName, remoteNode) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (tenants && tenants.length > 0) {
-                let tenant = tenants.shift();
-                let request = {
-                    moduleName: moduleName,
-                    tenant: tenant,
-                    options: {
-                        noLimit: true,
-                        projection: { _id: 0 }
-                    },
-                    query: _.merge({
-                        runOnNode: remoteNode
-                    }, SERVICE.DefaultCronJobConfigurationService.getDefaultQuery())
-                };
-                SERVICE.DefaultCronJobService.get(request).then(result => {
-                    if (result.success && result.result && result.result.length > 0) {
+            let consumers = {};
+            if (!UTILS.isBlank(CONFIG.get('emsClient').consumers)) {
+                Object.keys(CONFIG.get('emsClient').consumers).forEach(consumerName => {
+                    let consumer = CONFIG.get('emsClient').consumers[consumerName];
+                    if (consumer && consumer.runOnNode === remoteNode) {
+                        consumers[consumerName] = _.merge({}, consumer);
+                        consumers[consumerName].tempNode = CONFIG.get('nodeId');
+                    }
+                });
+                if (!UTILS.isBlank(consumers)) {
+                    let comsumerList = Object.keys(consumers);
+                    SERVICE.DefaultEmsClientConfigurationService.registerConsumer(Object.keys(consumers), consumers).then(success => {
                         let moduleObject = NODICS.getModule(moduleName);
                         let nodeConfig = moduleObject.nms.nodes[remoteNode];
                         if (!nodeConfig.remoteData) {
                             nodeConfig.remoteData = {};
                         }
-                        nodeConfig.remoteData[tenant] = [];
-                        result.result.forEach(job => {
-                            nodeConfig.remoteData[tenant].push(job.code);
-                            job.tempNode = CONFIG.get('nodeId');
-                        });
-                        SERVICE.DefaultCronJobService.getCronJobContainer().createJobs({
-                            tenant: request.tenant,
-                            definitions: result.result
-                        }).then(success => {
-                            SERVICE.DefaultCronJobService.getCronJobContainer().startJobs(request.tenant, [].concat(nodeConfig.remoteData[tenant])).then(success => {
-                                resolve(true);
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        _self.LOG.info('None jobs found for tenant: ' + tenant);
+                        nodeConfig.remoteData.consumers = comsumerList;
                         resolve(true);
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    resolve(true);
+                }
             } else {
                 resolve(true);
             }

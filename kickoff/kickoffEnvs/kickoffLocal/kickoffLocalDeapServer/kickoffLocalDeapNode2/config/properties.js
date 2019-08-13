@@ -10,6 +10,17 @@
  */
 
 module.exports = {
-    activateNodePing: false,
-    nodePingTimeout: 10 * 1000
+    nodeId: 'node2',
+
+    server: {
+        default: {
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3014,
+
+                httpsHost: 'localhost',
+                httpsPort: 3015
+            }
+        }
+    }
 };

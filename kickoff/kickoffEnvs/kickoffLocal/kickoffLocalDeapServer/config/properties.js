@@ -30,12 +30,6 @@ module.exports = {
         }
     },
 
-    nodePingableModules: {
-        dataConsumer: {
-            enabled: true
-        }
-    },
-
     emsClient: {
         logFailedMessages: false,
         publishers: {
@@ -50,7 +44,7 @@ module.exports = {
                 enabled: false
             },
             kafka: {
-                enabled: false
+                enabled: true
             }
         }
     },
@@ -88,6 +82,13 @@ module.exports = {
 
                     httpsHost: 'localhost',
                     httpsPort: 3013
+                },
+                node2: {
+                    httpHost: 'localhost',
+                    httpPort: 3014,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3015
                 }
             }
         },

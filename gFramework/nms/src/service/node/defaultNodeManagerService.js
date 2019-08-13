@@ -59,14 +59,15 @@ module.exports = {
 
     requestResponsibility: function (request) {
         return new Promise((resolve, reject) => {
+            let moduleObject = NODICS.getModule(request.moduleName);
             if (request.nodeId === undefined) {
                 reject({
                     success: false,
                     code: 'ERR_SYS_00000',
                     msg: 'NodeId can not be null or empty'
                 });
-            } else if (!moduleObject.nms || !moduleObject.nms.nodes || !moduleObject.nms.nodes[nodeId] ||
-                !moduleObject.nms.nodes[nodeId].requested || nodeId < CONFIG.get('nodeId')) {
+            } else if (!moduleObject.nms || !moduleObject.nms.nodes || !moduleObject.nms.nodes[request.nodeId] ||
+                !moduleObject.nms.nodes[request.nodeId].requested || request.nodeId < CONFIG.get('nodeId')) {
                 SERVICE.DefaultNodeConfigurationService.grantNodeResponsibility(request.moduleName, request.nodeId);
                 resolve({
                     success: true,

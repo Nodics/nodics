@@ -50,10 +50,7 @@ module.exports = {
         },
         clients: {
             activemq: {
-                enabled: true,
-                connectionOptions: [{
-                    host: '10.25.131.55'
-                }],
+                enabled: false
             },
             kafka: {
                 enabled: false

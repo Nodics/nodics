@@ -173,24 +173,32 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let success = [];
             let failed = [];
-            publishers.forEach(publisherName => {
-                try {
-                    if (_self.emsPublishers[publisherName]) {
-                        delete _self.emsPublishers[publisherName];
-                        success.push('Publisher: ' + publisherName + ' has been removed successfully');
-                    } else {
-                        success.push('Publisher: ' + publisherName + ' is not available, or already removed');
+            if (publishers && publishers.length > 0) {
+                publishers.forEach(publisherName => {
+                    try {
+                        if (_self.emsPublishers[publisherName]) {
+                            delete _self.emsPublishers[publisherName];
+                            success.push('Publisher: ' + publisherName + ' has been removed successfully');
+                        } else {
+                            success.push('Publisher: ' + publisherName + ' is not available, or already removed');
+                        }
+                    } catch (error) {
+                        failed.push(error);
                     }
-                } catch (error) {
-                    failed.push(error);
-                }
-            });
-            resolve({
-                success: true,
-                code: 'SUC_SYS_00000',
-                result: success,
-                failed: failed
-            });
+                });
+                resolve({
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    result: success,
+                    failed: failed
+                });
+            } else {
+                resolve({
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    msg: 'None publishers are active to close'
+                });
+            }
         });
     },
 
@@ -230,7 +238,7 @@ module.exports = {
                         _self.emsConsumers[consumerName].consumer.resume();
                         resolve(true);
                     } else {
-                        if (consumer.enabled && consumer.client && _self.emsClients[consumer.client] && (publisher.runOnNode === CONFIG.get('nodeId') || publisher.tempNode === CONFIG.get('nodeId'))) {
+                        if (consumer.enabled && consumer.client && _self.emsClients[consumer.client] && (consumer.runOnNode === CONFIG.get('nodeId') || consumer.tempNode === CONFIG.get('nodeId'))) {
                             if (_self.validateConsumer(consumerName, consumer)) {
                                 let client = _self.emsClients[consumer.client];
                                 consumer.consumerOptions = _.merge(_.merge({}, client.config.consumerOptions || {}), consumer.consumerOptions || {});
@@ -240,7 +248,7 @@ module.exports = {
                                     consumer: consumer,
                                     client: client
                                 }).then(success => {
-                                    _self.LOG.debug('Successfully registered consumer for queue : ' + consumerName);
+                                    _self.LOG.info('Successfully registered consumer for queue : ' + consumerName);
                                     _self.emsConsumers[consumerName] = {
                                         consumer: success,
                                         config: consumer,
@@ -297,32 +305,40 @@ module.exports = {
             let allConsumers = [];
             let success = [];
             let failed = [];
-            consumers.forEach(consumerName => {
-                try {
-                    if (_self.emsConsumers[consumerName]) {
-                        let consumer = _self.emsConsumers[consumerName];
-                        allConsumers.push(SERVICE[consumer.client.config.handler].closeConsumer(consumerName, consumer));
-                        success.push('Consumer: ' + consumerName + ' has been removed successfully');
-                    } else {
-                        success.push('Consumer: ' + consumerName + ' is not available, or already removed');
+            if (consumers && consumers.length > 0) {
+                consumers.forEach(consumerName => {
+                    try {
+                        if (_self.emsConsumers[consumerName]) {
+                            let consumer = _self.emsConsumers[consumerName];
+                            allConsumers.push(SERVICE[consumer.client.config.handler].closeConsumer(consumerName, consumer));
+                            success.push('Consumer: ' + consumerName + ' has been removed successfully');
+                        } else {
+                            success.push('Consumer: ' + consumerName + ' is not available, or already removed');
+                        }
+                    } catch (error) {
+                        failed.push(error);
                     }
-                } catch (error) {
-                    failed.push(error);
+                });
+                if (allConsumers.length > 0) {
+                    Promise.all(allConsumers).then(success => {
+                        _self.LOG.info(success);
+                    }).catch(error => {
+                        _self.LOG.error(error);
+                    });
                 }
-            });
-            if (allConsumers.length > 0) {
-                Promise.all(allConsumers).then(success => {
-                    _self.LOG.info(success);
-                }).catch(error => {
-                    _self.LOG.error(error);
+                resolve({
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    result: success,
+                    failed: failed
+                });
+            } else {
+                resolve({
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    msg: 'None consumers are active to close'
                 });
             }
-            resolve({
-                success: true,
-                code: 'SUC_SYS_00000',
-                result: success,
-                failed: failed
-            });
         });
     },
 };

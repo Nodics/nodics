@@ -129,7 +129,7 @@ module.exports = {
         }
     },
 
-    defaultEmsDownHandlerPipeline: {
+    defaultEmsNodeDownHandlerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one

@@ -151,20 +151,12 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 _self.checkQueue(options).then(success => {
-                    let clientConfig = options.client.config;
                     let queueName = options.consumerName;
                     const topics = [{
-                        topic: queueName
+                        topic: queueName,
+                        partition: options.consumer.partition || 0
                     }];
-                    let consumer;
-                    if (clientConfig.consumerType === 0) {
-                        consumer = new kafka.Consumer(options.client.connection, topics, options.consumer.consumerOptions);
-                    } else if (config.consumerType === 1) {
-                        consumer = new kafka.HighLevelConsumer(options.client.connection, topics, options.consumer.consumerOptions);
-                    } else {
-                        _self.LOG.error('Invalid consumer type : ' + clientConfig.consumerType);
-                        reject('Invalid consumer type : ' + clientConfig.consumerType);
-                    }
+                    let consumer = new kafka.Consumer(options.client.connection, topics, options.consumer.consumerOptions);
                     if (consumer) {
                         options.consumer.name = queueName;
                         consumer.on("message", function (response) {
@@ -210,6 +202,7 @@ module.exports = {
                     } else {
                         reject('While creating consumer for queue : ' + queueName);
                     }
+                    resolve(consumer);
                 }).catch(error => {
                     reject(error);
                 });
@@ -263,6 +256,7 @@ module.exports = {
             _self.LOG.error('Failed to log message : ' + options.consumer.name + ' : ERROR is ', error);
         }
     },
+
     onConsume: function (queue, response, callback) {
         try {
             if (response.key && queue.consumerOptions.keyEncoding && queue.consumerOptions.keyEncoding === 'buffer') {
@@ -282,7 +276,6 @@ module.exports = {
                 } else {
                     Promise.resolve(success);
                 }
-
             }).catch(error => {
                 if (callback) {
                     callback(error);

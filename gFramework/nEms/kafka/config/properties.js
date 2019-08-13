@@ -16,7 +16,6 @@ module.exports = {
                 enabled: false,
                 handler: 'DefaultKafkaClientService',
                 publisherType: 1, // 0 for normal, 1 for HighLevel Producer
-                consumerType: 0, // 0 for normal, 1 for HighLevel Producer
                 eventOptions: {
                     nodeId: '0',
                     eventType: 'ASYNC'
@@ -30,7 +29,6 @@ module.exports = {
                     autoCommit: true,
                     fetchMaxWaitMs: 1000,
                     fetchMaxBytes: 1024 * 1024,
-                    encoding: 'buffer',
                     keyEncoding: 'utf8'
                 },
                 connectionOptions: {
