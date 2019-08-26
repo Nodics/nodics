@@ -241,6 +241,8 @@ module.exports = {
             indexes: {
                 entTenant: {
                     name: 'tenant',
+                    enabled: true,
+                    composite: false,
                     options: {
                         unique: true
                     }
@@ -298,6 +300,8 @@ module.exports = {
             indexes: {
                 indexName: {
                     name: 'name',
+                    enabled: true,
+                    composite: false,
                     options: {
                         unique: true
                     }
@@ -408,6 +412,8 @@ module.exports = {
             indexes: {
                 indexLoginId: {
                     name: 'loginId',
+                    enabled: true,
+                    composite: false,
                     options: {
                         unique: true
                     }

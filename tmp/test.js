@@ -55,45 +55,50 @@
 //     });
 // });
 
-const kafka = require('kafka-node');
-let connection = new kafka.KafkaClient({
-    kafkaHost: '10.21.77.64:9092'
-});
+// const kafka = require('kafka-node');
+// let connection = new kafka.KafkaClient({
+//     kafkaHost: '10.21.77.64:9092'
+// });
 
-let consumer = new kafka.Consumer(
-    connection,
-    [
-        { topic: 'kafkaInternalJsonSchemaDataConsumerQueue', partition: 0 }
-    ],
-    {
-        autoCommit: true
-    }
-);
-consumer.on('message', function (message) {
-    console.log(message);
-});
+// let consumer = new kafka.Consumer(
+//     connection,
+//     [
+//         { topic: 'kafkaInternalJsonSchemaDataConsumerQueue', partition: 0 }
+//     ],
+//     {
+//         autoCommit: true
+//     }
+// );
+// consumer.on('message', function (message) {
+//     console.log(message);
+// });
 
-consumer.on("error", function (message) {
-    console.error(message);
-});
+// consumer.on("error", function (message) {
+//     console.error(message);
+// });
 
-let consumer1 = new kafka.Consumer(
-    connection,
-    [
-        { topic: 'kafkaInternalXMLSchemaDataConsumerQueue', partition: 0 }
-    ],
-    {
-        autoCommit: true,
-        fetchMaxWaitMs: 1000,
-        fetchMaxBytes: 1024 * 1024,
-        encoding: 'buffer',
-        keyEncoding: 'utf8'
-    }
-);
-consumer1.on('message', function (message) {
-    console.log(message);
-});
+// let consumer1 = new kafka.Consumer(
+//     connection,
+//     [
+//         { topic: 'kafkaInternalXMLSchemaDataConsumerQueue', partition: 0 }
+//     ],
+//     {
+//         autoCommit: true,
+//         fetchMaxWaitMs: 1000,
+//         fetchMaxBytes: 1024 * 1024,
+//         encoding: 'buffer',
+//         keyEncoding: 'utf8'
+//     }
+// );
+// consumer1.on('message', function (message) {
+//     console.log(message);
+// });
 
-consumer1.on("error", function (message) {
-    console.error(message);
-});
+// consumer1.on("error", function (message) {
+//     console.error(message);
+// });
+
+
+let obj1 = { code: 1, versionId: 1 };
+let obj2 = { code: 1, versionId: 1 };
+console.log(Object.is(obj1, obj2));

@@ -76,6 +76,8 @@ module.exports = {
             indexes: {
                 indexCode: {
                     name: 'code',
+                    enabled: true,
+                    composite: false,
                     options: {
                         unique: true
                     }

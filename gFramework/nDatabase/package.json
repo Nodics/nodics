@@ -1,7 +1,7 @@
 {
     "name": "nDatabase",
     "index": "1.3.9",
-    "type": "core",
+    "type": "group",
     "description": "Manage database connections and configuration",
     "homepage": "http://www.nodics.com/",
     "keywords": [

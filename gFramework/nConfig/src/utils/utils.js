@@ -32,7 +32,7 @@ module.exports = {
         return moduleIndex;
     },
 
-    prepareActiveModuleList: function (groupName, modulesList) {
+    prepareActiveModuleList: function (props, groupName, modulesList) {
         if (!groupName) {
             return;
         } else {
@@ -49,7 +49,12 @@ module.exports = {
                     console.error('Invalid initialization, could not load module: ' + moduleName);
                     process.exit(1);
                 }
-                modulesList.push(moduleName);
+                console.log(moduleObject.metaData.name, ' : ', moduleObject.metaData.type);
+                if (props.publishEnabled) {
+                    modulesList.push(moduleName);
+                } else if (['group', 'core', 'router', 'web'].includes(moduleObject.metaData.type)) {
+                    modulesList.push(moduleName);
+                }
                 if (groupName) {
                     if (moduleObject.metaData[groupName] && moduleObject.metaData[groupName].length > 0) {
                         moduleObject.metaData[groupName].forEach(element => {
@@ -58,7 +63,7 @@ module.exports = {
                     }
                 } else if (moduleObject.modules && moduleObject.modules.length > 0) {
                     for (let count = 0; count < moduleObject.modules.length; count++) {
-                        this.prepareActiveModuleList(moduleObject.modules[count], modulesList);
+                        this.prepareActiveModuleList(props, moduleObject.modules[count], modulesList);
                     }
                 }
             }

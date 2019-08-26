@@ -42,7 +42,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let schema = options.moduleObject.rawSchema[options.schemaName];
-                let indexedFields = {};
+                let indexedFields = [];
                 let defaultValues = {};
                 let validators = {};
                 let jsonSchema = {
@@ -89,13 +89,37 @@ module.exports = {
                     });
                 }
                 if (schema.indexes) {
+                    let conpositeIndexes = {
+                        fields: {},
+                        options: {}
+                    };
+                    let individualIndexes = [];
                     Object.keys(schema.indexes).forEach(propertyName => {
                         let indexConfig = schema.indexes[propertyName];
-                        indexedFields[indexConfig.name] = {};
-                        indexedFields[indexConfig.name].field = {};
-                        indexedFields[indexConfig.name].field[indexConfig.name] = 1;
-                        indexedFields[indexConfig.name].options = indexConfig.options;
+                        if (indexConfig.name && indexConfig.enabled) {
+                            if (indexConfig.composite) {
+                                if (!conpositeIndexes.fields[indexConfig.name]) {
+                                    conpositeIndexes.fields[indexConfig.name] = 1;
+                                }
+                                _.merge(conpositeIndexes.options, indexConfig.options);
+                            } else {
+                                let tmpIdx = {};
+                                tmpIdx[indexConfig.name] = 1;
+                                individualIndexes.push({
+                                    fields: [tmpIdx],
+                                    options: indexConfig.options
+                                });
+                            }
+                        }
                     });
+                    if (!UTILS.isBlank(conpositeIndexes.fields)) {
+                        indexedFields.push(conpositeIndexes);
+                    }
+                    if (!UTILS.isBlank(individualIndexes)) {
+                        indexedFields = indexedFields.concat(individualIndexes);
+                    }
+                    // console.log('---------------------------------: ', options.schemaName);
+                    // console.log(util.inspect(indexedFields, false, 6));
                 }
                 if (!schema.schemaOptions) {
                     schema.schemaOptions = {};
@@ -131,6 +155,13 @@ module.exports = {
                 schemaModel.dataBase = dataBase;
                 schemaModel.tenant = options.tntCode;
                 schemaModel.channel = options.channel;
+                _self.createIndexes(schemaModel).then(success => {
+                    _self.LOG.debug('Indexes created for: ' + schemaModel.schemaName);
+                    resolve(schemaModel);
+                }).catch(error => {
+                    _self.LOG.error('Indexes failed for: ' + schemaModel.schemaName + ' : ', error);
+                    reject(error);
+                });
                 resolve(schemaModel);
             } else {
                 _self.createModel(options, dataBase).then(success => {
@@ -199,35 +230,46 @@ module.exports = {
                                     }
                                 });
                             }
-                            _.each(schemaOptions.indexedFields, (config, field) => {
-                                let key = UTILS.generateHash(JSON.stringify(config.field));
-                                let tmpIndex = liveIndexes[key];
-                                if (!tmpIndex || tmpIndex.unique !== config.options.unique) {
-                                    allPromise.push(_self.createIndex(model, config));
-                                } else {
-                                    delete liveIndexes[key];
+                            console.log('----------------: ', liveIndexes);
+                            // console.log(util.inspect(schemaOptions.indexedFields, false, 6));
+                            if (schemaOptions.indexedFields.length > 0) {
+                                for (let counter = 0; counter < schemaOptions.indexedFields.length; counter++) {
+                                    let indexData = schemaOptions.indexedFields[counter];
+                                    let key = UTILS.generateHash(JSON.stringify(indexData.fields));
+                                    console.log(key, ' : ', indexData);
+
+                                    console.log('----------------');
                                 }
-                            });
-                            if (cleanOrphan && !UTILS.isBlank(liveIndexes)) {
-                                _.each(liveIndexes, (indexConfig, key) => {
-                                    allPromise.push(_self.dropIndex(model, indexConfig.name));
-                                });
                             }
-                            if (allPromise.length > 0) {
-                                Promise.all(allPromise).then(success => {
-                                    let response = {};
-                                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
-                                    resolve(response);
-                                }).catch(error => {
-                                    let response = {};
-                                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
-                                    reject(response);
-                                });
-                            } else {
-                                let response = {};
-                                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
-                                resolve(response);
-                            }
+                            // _.each(schemaOptions.indexedFields, (config, field) => {
+                            //     let key = UTILS.generateHash(JSON.stringify(config.field));
+                            //     let tmpIndex = liveIndexes[key];
+                            //     if (!tmpIndex || tmpIndex.unique !== config.options.unique) {
+                            //         allPromise.push(_self.createIndex(model, config));
+                            //     } else {
+                            //         delete liveIndexes[key];
+                            //     }
+                            // });
+                            // if (cleanOrphan && !UTILS.isBlank(liveIndexes)) {
+                            //     _.each(liveIndexes, (indexConfig, key) => {
+                            //         allPromise.push(_self.dropIndex(model, indexConfig.name));
+                            //     });
+                            // }
+                            // if (allPromise.length > 0) {
+                            //     Promise.all(allPromise).then(success => {
+                            //         let response = {};
+                            //         response[model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
+                            //         resolve(response);
+                            //     }).catch(error => {
+                            //         let response = {};
+                            //         response[model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
+                            //         reject(response);
+                            //     });
+                            // } else {
+                            //     let response = {};
+                            //     response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
+                            //     resolve(response);
+                            // }
                         });
 
 
@@ -250,7 +292,8 @@ module.exports = {
     createIndex: function (model, indexConfig) {
         return new Promise((resolve, reject) => {
             try {
-                model.dataBase.getConnection().createIndex(model.modelName, indexConfig.field, indexConfig.options).then(success => {
+                console.log('############################: ', indexConfig.field);
+                model.dataBase.getConnection().createIndex(model.modelName, [indexConfig.field, 'versionId'], indexConfig.options).then(success => {
                     resolve('Index updated for ' + Object.keys(indexConfig.field)[0]);
                 }).catch(error => {
                     reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());

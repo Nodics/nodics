@@ -94,6 +94,10 @@ Todos:
     - Configuration each modules server to connect each other
 
 
+
+    db.docs.find({"docId":174}).sort({"v":-1}).limit(-1);
+
+
     https://medium.com/styled-components/the-simple-guide-to-server-side-rendering-react-with-styled-components-d31c6b2b8fbf
     https://www.templatemonster.com/demo/52949.html
 
