@@ -1,8 +1,7 @@
 {
     "name": "powerTool",
     "index": "500.0",
-    "publish": true,
-    "web": true,
+    "type": "web",
     "description": "Nodics applicaion module. It will hold all configuration and storefront point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [

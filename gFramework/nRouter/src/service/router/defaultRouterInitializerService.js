@@ -17,7 +17,7 @@ module.exports = {
         _self.LOG.info('Initializing servers');
         let modules = NODICS.getModules();
         _.each(modules, function (value, moduleName) {
-            if (value.metaData.publish) {
+            if (UTILS.isRouterEnabled(moduleName)) {
                 if (SERVICE.DefaultRouterService.getModulesPool().isAvailableModuleConfig(moduleName)) {
                     _self.LOG.debug('Initializing server for module : ' + moduleName);
                     value.app = require('express')();

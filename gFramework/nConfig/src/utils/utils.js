@@ -226,4 +226,25 @@ module.exports = {
             .replaceAll("ctrlName", 'Default' + options.modelName + 'Controller');
         return commonDefinitionString;
     },
+
+    isRouterEnabled: function (moduleName) {
+        let moduleObject = NODICS.getModule(moduleName);
+        if (moduleObject &&
+            moduleObject.metaData &&
+            (moduleObject.metaData.type === 'router' ||
+                moduleObject.metaData.type === 'web')) {
+            return true;
+        }
+        return false;
+    },
+
+    isWebEnabled: function (moduleName) {
+        let moduleObject = NODICS.getModule(moduleName);
+        if (moduleObject &&
+            moduleObject.metaData &&
+            moduleObject.metaData.type === 'web') {
+            return true;
+        }
+        return false;
+    }
 };

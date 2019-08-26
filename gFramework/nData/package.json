@@ -1,7 +1,7 @@
 {
     "name": "nData",
     "index": "1.17.99",
-    "publish": false,
+    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nData",
     "homepage": "http://www.nodics.com/",
     "keywords": [

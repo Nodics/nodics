@@ -1,7 +1,7 @@
 {
     "name": "nSearch",
     "index": "1.13.99",
-    "publish": false,
+    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nSearch",
     "homepage": "http://www.nodics.com/",
     "keywords": [

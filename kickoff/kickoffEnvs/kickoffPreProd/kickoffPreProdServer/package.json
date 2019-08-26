@@ -1,7 +1,7 @@
 {
     "name": "kickoffPreProdServer",
     "index": "1000.10.20.1",
-    "publish": false,
+    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoffPreProdServer",
     "homepage": "http://www.nodics.com/",
     "keywords": [

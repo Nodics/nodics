@@ -1,7 +1,7 @@
 {
     "name": "kickoffDevServer",
     "index": "1000.10.10.1",
-    "publish": false,
+    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoffDevServer",
     "homepage": "http://www.nodics.com/",
     "keywords": [

@@ -75,8 +75,7 @@ module.exports = {
     },
 
     router: function (localCacheConfig, moduleName) {
-        let moduleObject = NODICS.getModule(moduleName);
-        if (moduleObject.metaData && moduleObject.metaData.publish) {
+        if (UTILS.isRouterEnabled(moduleName)) {
             return this.initCache(localCacheConfig, moduleName);
         } else {
             return Promise.resolve({

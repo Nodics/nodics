@@ -1,7 +1,7 @@
 {
     "name": "nPipeline",
     "index": "1.6",
-    "publish": false,
+    "type": "core",
     "description": "Generate Pipelines configurations",
     "homepage": "http://www.nodics.com/",
     "keywords": [

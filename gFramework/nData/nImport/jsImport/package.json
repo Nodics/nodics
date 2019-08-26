@@ -1,7 +1,7 @@
 {
     "name": "jsImport",
     "index": "1.17.5.1",
-    "publish": false,
+    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to jsImport",
     "homepage": "http://www.nodics.com/",
     "keywords": [

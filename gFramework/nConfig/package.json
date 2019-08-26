@@ -1,7 +1,7 @@
 {
     "name": "nConfig",
     "index": "1.1",
-    "publish": false,
+    "type": "core",
     "description": "Build configuration related functionalities for Nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [

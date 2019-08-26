@@ -100,7 +100,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             _.each(modules, function (moduleObject, moduleName) {
                 let app = {};
-                if (moduleObject.metaData && moduleObject.metaData.publish) {
+                if (UTILS.isRouterEnabled(moduleName)) {
                     if (CONFIG.get('server').options.runAsDefault || !moduleObject.app) {
                         app = modules.default.app;
                         _self.LOG.debug('Found default App for module : ' + moduleName);
@@ -218,7 +218,7 @@ module.exports = {
                 } else {
                     try {
                         _.each(NODICS.getModules(), function (value, moduleName) {
-                            if (value.metaData && value.metaData.publish) {
+                            if (UTILS.isRouterEnabled(moduleName)) {
                                 let app = {};
                                 let moduleConfig;
                                 if (_self.getModulesPool().isAvailableModuleConfig(moduleName)) {

@@ -1,7 +1,7 @@
 {
     "name": "dataPublisher",
     "index": "400.20",
-    "publish": false,
+    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataPublisher",
     "homepage": "http://www.nodics.com/",
     "keywords": [

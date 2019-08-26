@@ -1,7 +1,7 @@
 {
     "name": "kickoffLocalNemsServer",
     "index": "1000.10.1.5",
-    "publish": false,
+    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoffLocalNemsServer",
     "homepage": "http://www.nodics.com/",
     "keywords": [
