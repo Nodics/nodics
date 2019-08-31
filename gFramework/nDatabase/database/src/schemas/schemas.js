@@ -74,12 +74,19 @@ module.exports = {
                 }
             },
             indexes: {
-                indexCode: {
-                    name: 'code',
-                    enabled: true,
-                    composite: false,
-                    options: {
-                        unique: true
+                common: {
+
+                },
+                composite: {
+
+                },
+                individual: {
+                    indexCode: {
+                        name: 'code',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
                     }
                 }
             }

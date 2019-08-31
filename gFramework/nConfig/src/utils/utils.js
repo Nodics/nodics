@@ -41,7 +41,6 @@ module.exports = {
             if (moduleName.indexOf(':') > 0) {
                 groupName = moduleName.substring(moduleName.indexOf(':') + 1, moduleName.length);
                 moduleName = moduleName.substring(0, moduleName.indexOf(':'));
-                console.log(moduleName + ' : ' + groupName);
             }
             if (!modulesList.includes(moduleName)) {
                 let moduleObject = NODICS.getRawModule(moduleName);
@@ -49,7 +48,6 @@ module.exports = {
                     console.error('Invalid initialization, could not load module: ' + moduleName);
                     process.exit(1);
                 }
-                console.log(moduleObject.metaData.name, ' : ', moduleObject.metaData.type);
                 if (props.publishEnabled) {
                     modulesList.push(moduleName);
                 } else if (['group', 'core', 'router', 'web'].includes(moduleObject.metaData.type)) {

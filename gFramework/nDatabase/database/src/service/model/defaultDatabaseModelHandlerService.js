@@ -141,7 +141,7 @@ module.exports = {
                         options.cache = _.merge({}, schema.cache || {});
                         options.channel = 'master';
                         SERVICE[conOptions.modelHandler].retrieveModel(options, options.dataBase.master).then(schemaModel => {
-                            _self.registerModelMiddleWare(options, schemaModel, schema);
+                            _self.registerModelMiddleWare(options, schemaModel);
                             if (!options.moduleObject.models[options.tntCode].master) {
                                 options.moduleObject.models[options.tntCode].master = {};
                             }
@@ -149,7 +149,7 @@ module.exports = {
                             if (options.dataBase.test) {
                                 options.channel = 'test';
                                 SERVICE[conOptions.modelHandler].retrieveModel(options, options.dataBase.master).then(schemaModel => {
-                                    _self.registerModelMiddleWare(options, schemaModel, schema);
+                                    _self.registerModelMiddleWare(options, schemaModel);
                                     if (!options.moduleObject.models[options.tntCode].test) {
                                         options.moduleObject.models[options.tntCode].test = {};
                                     }
@@ -178,21 +178,14 @@ module.exports = {
         });
     },
 
-    modelMiddleware: function (modelGroup, schemaModel, schemaDef) {
-        if (!UTILS.isBlank(modelGroup)) {
-            let modelFunctions = UTILS.getAllMethods(modelGroup);
-            modelFunctions.forEach(function (operationName) {
-                modelGroup[operationName](schemaModel, schemaDef);
-            });
-        }
-    },
-
-    registerModelMiddleWare: function (options, schemaModel, rawSchema) {
+    registerModelMiddleWare: function (options, schemaModel) {
         let rawModels = NODICS.getRawModels();
-        this.modelMiddleware(rawModels.default, schemaModel, rawSchema);
-        if (rawModels[options.moduleName]) {
-            this.modelMiddleware(rawModels[options.moduleName].default, schemaModel, rawSchema);
-            this.modelMiddleware(rawModels[options.moduleName][options.schemaName], schemaModel, rawSchema);
+        _.merge(schemaModel, rawModels.default);
+        if (!UTILS.isBlank(rawModels[options.moduleName])) {
+            _.merge(schemaModel, rawModels[options.moduleName].default);
+            if (!UTILS.isBlank(rawModels[options.moduleName])) {
+                _.merge(schemaModel, rawModels[options.moduleName][options.schemaName]);
+            }
         }
     },
 

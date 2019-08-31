@@ -10,39 +10,5 @@
  */
 
 module.exports = {
-    default: {
-        publishable: {
-            super: 'super',
-            model: false,
-            service: false,
-            event: false,
-            router: false,
-            definition: {
-                versionId: {
-                    type: 'int',
-                    required: true,
-                    description: 'Incremented verison id for staged items'
-                }
-            },
-            indexes: {
-                versionId: {
-                    name: 'versionId',
-                    enabled: true,
-                    composite: true,
-                    options: {
-                        unique: true
-                    }
-                }
-            }
-        },
 
-        base: {
-            super: 'publishable',
-            indexes: {
-                indexCode: {
-                    composite: true,
-                }
-            }
-        },
-    }
 };

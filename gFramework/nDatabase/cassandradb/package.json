@@ -1,6 +1,6 @@
 {
     "name": "cassandradb",
-    "index": "1.3.3",
+    "index": "1.3.20",
     "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cassandradb",
     "homepage": "http://www.nodics.com/",

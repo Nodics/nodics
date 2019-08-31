@@ -239,12 +239,13 @@ module.exports = {
                 }
             },
             indexes: {
-                entTenant: {
-                    name: 'tenant',
-                    enabled: true,
-                    composite: false,
-                    options: {
-                        unique: true
+                individual: {
+                    entTenant: {
+                        name: 'tenant',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
                     }
                 }
             }
@@ -298,12 +299,13 @@ module.exports = {
                 }
             },
             indexes: {
-                indexName: {
-                    name: 'name',
-                    enabled: true,
-                    composite: false,
-                    options: {
-                        unique: true
+                individual: {
+                    indexName: {
+                        name: 'name',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
                     }
                 }
             }
@@ -409,13 +411,31 @@ module.exports = {
                     description: 'All associated contacts with this enterprise'
                 }
             },
+
             indexes: {
-                indexLoginId: {
-                    name: 'loginId',
-                    enabled: true,
-                    composite: false,
-                    options: {
-                        unique: true
+                // composite: {
+                //     indexName: {
+                //         name: 'name',
+                //         enabled: true,
+                //         options: {
+                //             unique: true
+                //         }
+                //     },
+                //     indexName1: {
+                //         name: 'name1',
+                //         enabled: true,
+                //         options: {
+                //             unique: true
+                //         }
+                //     }
+                // },
+                individual: {
+                    indexLoginId: {
+                        name: 'loginId',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
                     }
                 }
             }
