@@ -148,7 +148,7 @@ module.exports = {
                             options.moduleObject.models[options.tntCode].master[options.modelName] = schemaModel;
                             if (options.dataBase.test) {
                                 options.channel = 'test';
-                                SERVICE[conOptions.modelHandler].retrieveModel(options, options.dataBase.master).then(schemaModel => {
+                                SERVICE[conOptions.modelHandler].retrieveModel(options, options.dataBase.test).then(schemaModel => {
                                     _self.registerModelMiddleWare(options, schemaModel);
                                     if (!options.moduleObject.models[options.tntCode].test) {
                                         options.moduleObject.models[options.tntCode].test = {};

@@ -11,12 +11,13 @@
 
 module.exports = {
     default: {
-        publishable: {
+        versioned: {
             super: 'super',
             model: false,
             service: false,
             event: false,
             router: false,
+            versioned: true,
             definition: {
                 versionId: {
                     type: 'int',
@@ -38,7 +39,7 @@ module.exports = {
         },
 
         base: {
-            super: 'publishable',
+            super: 'versioned',
         }
     }
 };
