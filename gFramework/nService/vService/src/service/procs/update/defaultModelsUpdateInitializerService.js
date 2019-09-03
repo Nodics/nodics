@@ -32,5 +32,47 @@ module.exports = {
         });
     },
 
+    executeQuery: function (request, response, process) {
+        this.LOG.debug('Executing remove query');
+        try {
+            if (request.schemaModel.versioned) {
+                request.schemaModel.updateVersionedItems(request).then(result => {
+                    response.success = {
+                        success: true,
+                        code: 'SUC_UPD_00000',
+                        result: result
+                    };
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, {
+                        success: false,
+                        code: 'ERR_UPD_00000',
+                        error: error
+                    });
+                });
+            } else {
+                request.schemaModel.updateItems(request).then(result => {
+                    response.success = {
+                        success: true,
+                        code: 'SUC_UPD_00000',
+                        result: result
+                    };
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, {
+                        success: false,
+                        code: 'ERR_UPD_00000',
+                        error: error
+                    });
+                });
+            }
+        } catch (error) {
+            process.error(request, response, {
+                success: false,
+                code: 'ERR_UPD_00000',
+                error: error
+            });
+        }
+    },
 
 };

@@ -42,6 +42,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let schema = options.moduleObject.rawSchema[options.schemaName];
+                let allIndexes = [];
                 let primaryKeys = [];
                 let indexedFields = [];
                 let defaultValues = {};
@@ -109,6 +110,7 @@ module.exports = {
                                 }
                             };
                             tmpIndex.fields[key] = 1;
+                            allIndexes.push(key);
                             individualIndexes.push(tmpIndex);
                         });
                     }
@@ -124,7 +126,7 @@ module.exports = {
                         if (!UTILS.isBlank(schema.indexes.common)) {
                             Object.keys(schema.indexes.common).forEach(commonIndexName => {
                                 let commonIndexData = schema.indexes.common[commonIndexName];
-                                if (commonIndexData.enabled) {
+                                if (commonIndexData.enabled && !allIndexes.includes(commonIndexData.name)) {
                                     commonIndexes.fields[commonIndexData.name] = 1;
                                     _.merge(commonIndexes.options, commonIndexData.options);
                                 }
@@ -133,7 +135,7 @@ module.exports = {
                         if (!UTILS.isBlank(schema.indexes.composite)) {
                             Object.keys(schema.indexes.composite).forEach(compositeIndexName => {
                                 let compositeIndexData = schema.indexes.composite[compositeIndexName];
-                                if (compositeIndexData.enabled) {
+                                if (compositeIndexData.enabled && !allIndexes.includes(compositeIndexData.name)) {
                                     conpositeIndexes.fields[compositeIndexData.name] = 1;
                                     _.merge(conpositeIndexes.options, compositeIndexData.options);
                                 }
@@ -142,7 +144,7 @@ module.exports = {
                         if (!UTILS.isBlank(schema.indexes.individual)) {
                             Object.keys(schema.indexes.individual).forEach(individualIndexName => {
                                 let individualIndexData = schema.indexes.individual[individualIndexName];
-                                if (individualIndexData.enabled) {
+                                if (individualIndexData.enabled && !allIndexes.includes(individualIndexData.name)) {
                                     let tmpIndex = {
                                         fields: {},
                                         options: {}

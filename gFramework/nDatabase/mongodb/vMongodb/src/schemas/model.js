@@ -37,7 +37,7 @@ module.exports = {
                     }).then(success => {
                         if (success && success.length > 0) {
                             let preMoidel = success[0];
-                            preMoidel.versionId = preMoidel.versionId || -1;
+                            preMoidel.versionId = (preMoidel.versionId === undefined) ? -1 : preMoidel.versionId;
                             if (model.versionId <= preMoidel.versionId) {
                                 reject('Invalid version id: ' + model.versionId + ', it should be: ' + (preMoidel.versionId + 1));
                             } else {
@@ -74,6 +74,81 @@ module.exports = {
                         }).catch(error => {
                             reject(error);
                         });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        },
+
+        fetchPreviousItems: function (matchedItems, newItem, finalizeData) {
+            let _self = this;
+            return new Promise((resolve, reject) => {
+                try {
+                    if (matchedItems && matchedItems.length > 0) {
+                        let currentMatchedItem = matchedItems.shift();
+                        let customQuery = {};
+                        customQuery[_self.primaryKey] = currentMatchedItem[_self.primaryKey];
+                        this.getItems({
+                            query: customQuery,
+                            options: {
+                                limit: 1,
+                                sort: {
+                                    versionId: -1
+                                },
+                                projection: {
+                                    _id: 0
+                                }
+                            }
+                        }).then(success => {
+                            if (success && success.length > 0) {
+                                let data = _.merge(success[0], newItem);
+                                data.versionId = (data.versionId === undefined) ? 1 : data.versionId + 1;
+                                finalizeData.push(data);
+                            }
+                            _self.fetchPreviousItems(matchedItems, newItem, finalizeData).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        resolve(true);
+                    }
+                } catch (error) {
+                    reject(error);
+                }
+            });
+
+        },
+
+        updateVersionedItems: function (input) {
+            let _self = this;
+            return new Promise((resolve, reject) => {
+                try {
+                    _self.getItems(input).then(items => {
+                        if (items && items.length > 0) {
+                            let finalizeData = [];
+                            _self.fetchPreviousItems(items, input.model, finalizeData).then(success => {
+                                if (finalizeData.length > 0) {
+                                    _self.insertMany(finalizeData, {}).then(success => {
+                                        resolve(success);
+                                    }).catch(error => {
+                                        reject(error);
+                                    });
+                                } else {
+                                    resolve('None items found to be updated');
+                                }
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
+                            resolve('None items found to be updated');
+                        }
                     }).catch(error => {
                         reject(error);
                     });

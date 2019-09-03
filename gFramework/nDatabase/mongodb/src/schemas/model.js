@@ -121,6 +121,7 @@ module.exports = {
                 }
             });
         },
+
         removeItems: function (input) {
             return new Promise((resolve, reject) => {
                 if (input.query && !UTILS.isBlank(input.query)) {

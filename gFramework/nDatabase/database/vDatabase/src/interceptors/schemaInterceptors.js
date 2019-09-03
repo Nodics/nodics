@@ -17,11 +17,11 @@ module.exports = {
             index: 0,
             handler: 'DefaultVersionIdHandlerInterceptorService.updateVersionId'
         },
-        publishPreUpdate: {
-            type: 'preUpdate',
-            active: 'true',
-            index: 0,
-            handler: 'DefaultVersionIdHandlerInterceptorService.updateVersionId'
-        }
+        // publishPreUpdate: {
+        //     type: 'preUpdate',
+        //     active: 'true',
+        //     index: 0,
+        //     handler: 'DefaultVersionIdHandlerInterceptorService.updateVersionId'
+        // }
     }
 };

@@ -82,13 +82,7 @@ module.exports = {
 
                 },
                 individual: {
-                    // indexCode: {
-                    //     name: 'code',
-                    //     enabled: true,
-                    //     options: {
-                    //         unique: true
-                    //     }
-                    // }
+
                 }
             }
         }
