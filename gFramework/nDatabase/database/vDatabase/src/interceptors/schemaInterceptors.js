@@ -11,17 +11,17 @@
 
 module.exports = {
     default: {
-        // publishPreSave: {
-        //     type: 'preSave',
-        //     active: 'true',
-        //     index: 0,
-        //     handler: 'DefaultVersionIdHandlerInterceptorService.updateVersionId'
-        // },
-        // publishPreUpdate: {
-        //     type: 'preUpdate',
-        //     active: 'true',
-        //     index: 0,
-        //     handler: 'DefaultVersionIdHandlerInterceptorService.updateVersionId'
-        // }
+        publishPreSave: {
+            type: 'preSave',
+            active: 'true',
+            index: 0,
+            handler: 'DefaultVersionIdHandlerInterceptorService.updateVersionId'
+        },
+        publishPreUpdate: {
+            type: 'preUpdate',
+            active: 'true',
+            index: 0,
+            handler: 'DefaultVersionIdHandlerInterceptorService.updateVersionId'
+        }
     }
 };
