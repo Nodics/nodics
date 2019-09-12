@@ -10,5 +10,60 @@
  */
 
 module.exports = {
+    bpms: {
+        workflow: {
+            super: 'base',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            definition: {
 
+            }
+        },
+
+        node: {
+            super: 'base',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            definition: {
+
+            }
+        },
+
+        action: {
+            super: 'base',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            definition: {
+
+            }
+        },
+
+        channel: {
+            super: 'base',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            definition: {
+
+            }
+        },
+
+        checklist: {
+            super: 'base',
+            model: true,
+            service: true,
+            event: false,
+            router: true,
+            definition: {
+
+            }
+        },
+    }
 };
