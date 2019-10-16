@@ -1,7 +1,7 @@
 {
     "name": "kickoffModules",
     "index": "1000.1.99",
-    "publish": false,
+    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoffModules",
     "homepage": "http://www.nodics.com/",
     "keywords": [

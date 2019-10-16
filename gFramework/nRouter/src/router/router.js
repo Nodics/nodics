@@ -16,7 +16,7 @@ const webpack = require('webpack');
 module.exports = {
     operations: {
         registerWeb: function (app, moduleObject) {
-            if (moduleObject.metaData.web) {
+            if (UTILS.isWebEnabled(moduleObject.metaData.name)) {
                 try {
                     moduleObject.webRootDirName = CONFIG.get('webRootDirName');
                     moduleObject.webDistDirName = CONFIG.get('webDistDirName');

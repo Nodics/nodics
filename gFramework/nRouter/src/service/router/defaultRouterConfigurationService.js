@@ -58,7 +58,7 @@ module.exports = {
                 process.exit(CONFIG.get('errorExitCode'));
             }
             _.each(modules, function (value, moduleName) {
-                if (value.metaData && value.metaData.publish) {
+                if (UTILS.isRouterEnabled(moduleName)) {
                     if (commonConfig[moduleName] && !UTILS.isBlank(commonConfig[moduleName])) {
                         _self.LOG.debug('  Executing module configurations :' + moduleName);
                         _self.executeRouterConfig(modules.default.app, commonConfig[moduleName]);
@@ -67,7 +67,7 @@ module.exports = {
             });
         } else {
             _.each(modules, function (value, moduleName) {
-                if (value.metaData && value.metaData.publish) {
+                if (UTILS.isRouterEnabled(moduleName)) {
                     if (commonConfig[moduleName] && !UTILS.isBlank(commonConfig[moduleName])) {
                         if (value.app) {
                             _self.LOG.debug('Configuring App from module : ' + moduleName);

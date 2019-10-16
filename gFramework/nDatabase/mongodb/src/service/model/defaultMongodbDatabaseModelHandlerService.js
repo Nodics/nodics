@@ -42,7 +42,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let schema = options.moduleObject.rawSchema[options.schemaName];
-                let indexedFields = {};
+                let allIndexes = [];
+                let primaryKeys = [];
+                let indexedFields = [];
                 let defaultValues = {};
                 let validators = {};
                 let jsonSchema = {
@@ -58,9 +60,12 @@ module.exports = {
                             jsonSchema.properties[propertyName].bsonType = property.type;
                             delete property.type;
                         }
-                        if (property.required && property.required === true) {
+                        if (property.required) {
                             jsonSchema.required.push(propertyName);
                             delete property.required;
+                        }
+                        if (property.primary) {
+                            primaryKeys.push(propertyName);
                         }
                         if (typeof property.default !== 'undefined') {
                             defaultValues[propertyName] = property.default;
@@ -88,29 +93,104 @@ module.exports = {
                         }
                     });
                 }
-                if (schema.indexes) {
-                    Object.keys(schema.indexes).forEach(propertyName => {
-                        let indexConfig = schema.indexes[propertyName];
-                        indexedFields[indexConfig.name] = {};
-                        indexedFields[indexConfig.name].field = {};
-                        indexedFields[indexConfig.name].field[indexConfig.name] = 1;
-                        indexedFields[indexConfig.name].options = indexConfig.options;
-                    });
-                }
-                if (!schema.schemaOptions) {
-                    schema.schemaOptions = {};
-                }
-                schema.schemaOptions[options.tntCode] = {
-                    options: {
-                        validator: {
-                            '$jsonSchema': jsonSchema
+                if (primaryKeys.length > 1) {
+                    _self.LOG.error('Multiple primary keys are not supported: ' + primaryKeys.length);
+                    reject('Multiple primary keys are not supported: ' + primaryKeys.length);
+                } else if (schema.versioned && primaryKeys.length <= 0) {
+                    _self.LOG.error('Versioned schema: ' + options.schemaName + ' without primary keys not valid');
+                    reject('Versioned schema: ' + options.schemaName + ' without primary keys not valid');
+                } else {
+                    let individualIndexes = [];
+                    if (primaryKeys.length > 0) {
+                        primaryKeys.forEach(key => {
+                            let tmpIndex = {
+                                fields: {},
+                                options: {
+                                    unique: true
+                                }
+                            };
+                            tmpIndex.fields[key] = 1;
+                            allIndexes.push(key);
+                            individualIndexes.push(tmpIndex);
+                        });
+                    }
+                    if (schema.indexes) {
+                        let commonIndexes = {
+                            fields: {},
+                            options: {}
+                        };
+                        let conpositeIndexes = {
+                            fields: {},
+                            options: {}
+                        };
+                        if (!UTILS.isBlank(schema.indexes.common)) {
+                            Object.keys(schema.indexes.common).forEach(commonIndexName => {
+                                let commonIndexData = schema.indexes.common[commonIndexName];
+                                if (commonIndexData.enabled && !allIndexes.includes(commonIndexData.name)) {
+                                    commonIndexes.fields[commonIndexData.name] = 1;
+                                    _.merge(commonIndexes.options, commonIndexData.options);
+                                }
+                            });
                         }
-                    },
-                    indexedFields: indexedFields,
-                    defaultValues: defaultValues,
-                    validators: validators
-                };
-                resolve(true);
+                        if (!UTILS.isBlank(schema.indexes.composite)) {
+                            Object.keys(schema.indexes.composite).forEach(compositeIndexName => {
+                                let compositeIndexData = schema.indexes.composite[compositeIndexName];
+                                if (compositeIndexData.enabled && !allIndexes.includes(compositeIndexData.name)) {
+                                    conpositeIndexes.fields[compositeIndexData.name] = 1;
+                                    _.merge(conpositeIndexes.options, compositeIndexData.options);
+                                }
+                            });
+                        }
+                        if (!UTILS.isBlank(schema.indexes.individual)) {
+                            Object.keys(schema.indexes.individual).forEach(individualIndexName => {
+                                let individualIndexData = schema.indexes.individual[individualIndexName];
+                                if (individualIndexData.enabled && !allIndexes.includes(individualIndexData.name)) {
+                                    let tmpIndex = {
+                                        fields: {},
+                                        options: {}
+                                    };
+                                    tmpIndex.fields[individualIndexData.name] = 1;
+                                    _.merge(tmpIndex.options, individualIndexData.options);
+                                    individualIndexes.push(tmpIndex);
+                                }
+                            });
+                        }
+
+                        if (!UTILS.isBlank(commonIndexes.fields)) {
+                            if (!UTILS.isBlank(conpositeIndexes.fields)) {
+                                _.merge(conpositeIndexes, commonIndexes);
+                            }
+                            if (individualIndexes.length > 0) {
+                                individualIndexes.forEach(individualIndexe => {
+                                    _.merge(individualIndexe, commonIndexes);
+                                });
+                            }
+                        }
+                        if (!UTILS.isBlank(conpositeIndexes.fields)) {
+                            indexedFields.push(conpositeIndexes);
+                        }
+                        if (individualIndexes && individualIndexes.length > 0) {
+                            indexedFields = indexedFields.concat(individualIndexes);
+                        }
+                        // console.log('---------------------------------: ', options.schemaName);
+                        // console.log(util.inspect(indexedFields, false, 6));
+                    }
+                    if (!schema.schemaOptions) {
+                        schema.schemaOptions = {};
+                    }
+                    schema.schemaOptions[options.tntCode] = {
+                        options: {
+                            validator: {
+                                '$jsonSchema': jsonSchema
+                            }
+                        },
+                        primaryKeys: primaryKeys,
+                        indexedFields: indexedFields,
+                        defaultValues: defaultValues,
+                        validators: validators
+                    };
+                    resolve(true);
+                }
             } catch (error) {
                 reject(error);
             }
@@ -121,9 +201,11 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             let schema = options.moduleObject.rawSchema[options.schemaName];
+            let schemaOptions = schema.schemaOptions[options.tntCode];
             if (dataBase.getCollectionList().includes(options.modelName)) {
                 let schemaModel = dataBase.getConnection().collection(options.modelName);
                 schemaModel.moduleName = options.moduleName;
+                schemaModel.versioned = schema.versioned || false;
                 schemaModel.rawSchema = schema;
                 schemaModel.modelName = options.modelName;
                 schemaModel.schemaName = options.schemaName;
@@ -131,6 +213,16 @@ module.exports = {
                 schemaModel.dataBase = dataBase;
                 schemaModel.tenant = options.tntCode;
                 schemaModel.channel = options.channel;
+                if (schemaOptions.primaryKeys && schemaOptions.primaryKeys.length > 0) {
+                    schemaModel.primaryKey = schemaOptions.primaryKeys[0];
+                }
+                _self.createIndexes(schemaModel).then(success => {
+                    _self.LOG.debug('Indexes created for: ' + schemaModel.schemaName);
+                    resolve(schemaModel);
+                }).catch(error => {
+                    _self.LOG.error('Indexes failed for: ' + schemaModel.schemaName + ' : ', error);
+                    reject(error);
+                });
                 resolve(schemaModel);
             } else {
                 _self.createModel(options, dataBase).then(success => {
@@ -153,6 +245,7 @@ module.exports = {
             }
             dataBase.getConnection().createCollection(options.modelName, tmpOptions).then(schemaModel => {
                 schemaModel.moduleName = options.moduleName;
+                schemaModel.versioned = schema.versioned || false;
                 schemaModel.rawSchema = schema;
                 schemaModel.modelName = options.modelName;
                 schemaModel.schemaName = options.schemaName;
@@ -160,6 +253,9 @@ module.exports = {
                 schemaModel.dataBase = dataBase;
                 schemaModel.tenant = options.tntCode;
                 schemaModel.channel = options.channel;
+                if (schemaOptions.primaryKeys && schemaOptions.primaryKeys.length > 0) {
+                    schemaModel.primaryKey = schemaOptions.primaryKeys[0];
+                }
                 _self.createIndexes(schemaModel).then(success => {
                     _self.LOG.debug('Indexes created for: ' + schemaModel.schemaName);
                     resolve(schemaModel);
@@ -175,62 +271,84 @@ module.exports = {
 
     createIndexes: function (model, cleanOrphan) {
         let _self = this;
+        cleanOrphan = cleanOrphan || CONFIG.get('database').default.options.cleanOrphan;
         return new Promise((resolve, reject) => {
             try {
                 if (model) {
+                    let databaseOptions = model.dataBase.getOptions();
                     let schemaOptions = model.rawSchema.schemaOptions[model.tenant];
-                    let allPromise = [];
-                    let liveIndexes = {};
                     if (!UTILS.isBlank(schemaOptions.indexedFields)) {
                         model.indexes(function (err, indexes) {
-                            if (indexes && indexes.length > 0) {
-                                let idKeyHash = UTILS.generateHash(JSON.stringify({
-                                    _id: 1
-                                }));
-                                indexes.forEach(element => {
-                                    let key = UTILS.generateHash(JSON.stringify(element.key));
-                                    if (key != idKeyHash) {
-                                        liveIndexes[key] = {
-                                            hash: key,
-                                            key: element.key,
-                                            name: element.name,
-                                            unique: element.unique || false
-                                        };
+                            if (databaseOptions.defaultIndexes && databaseOptions.defaultIndexes.length > 0 && indexes && indexes.length > 0) {
+                                databaseOptions.defaultIndexes.forEach(property => {
+                                    let tmpKey = {};
+                                    tmpKey[property] = 1;
+                                    for (counter = 0; counter < indexes.length; counter++) {
+                                        if (_.isEqual(indexes[counter].key, tmpKey)) {
+                                            indexes.splice(counter, 1);
+                                        }
                                     }
                                 });
                             }
-                            _.each(schemaOptions.indexedFields, (config, field) => {
-                                let key = UTILS.generateHash(JSON.stringify(config.field));
-                                let tmpIndex = liveIndexes[key];
-                                if (!tmpIndex || tmpIndex.unique !== config.options.unique) {
-                                    allPromise.push(_self.createIndex(model, config));
-                                } else {
-                                    delete liveIndexes[key];
+                            let finalIndexes = _self.finalizeIndexes(schemaOptions.indexedFields, indexes, cleanOrphan);
+                            //console.log('  ++++++++++ ', finalIndexes.create);
+                            //console.log('  ---------- ', finalIndexes.drop);
+                            let response = {
+                                success: {},
+                                failed: {}
+                            };
+                            if (finalIndexes.create && finalIndexes.create.length > 0) {
+                                let allCreatePromises = [];
+                                finalIndexes.create.forEach(indexData => {
+                                    allCreatePromises.push(_self.createIndex(model, indexData));
+                                });
+                                if (allCreatePromises.length > 0) {
+                                    Promise.all(allCreatePromises).then(success => {
+                                        response.success['Create_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
+                                        if (finalIndexes.drop && finalIndexes.drop.length > 0) {
+                                            let allDropPromises = [];
+                                            finalIndexes.drop.forEach(name => {
+                                                allDropPromises.push(_self.dropIndex(model, name));
+                                            });
+                                            if (allDropPromises.length > 0) {
+                                                Promise.all(allDropPromises).then(success => {
+                                                    response.success['Drop_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
+                                                    resolve(response);
+                                                }).catch(error => {
+                                                    response.failed['Drop_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
+                                                    reject(response);
+                                                });
+                                            } else {
+                                                resolve(response);
+                                            }
+                                        } else {
+                                            resolve(response);
+                                        }
+                                    }).catch(error => {
+                                        response.failed['Create_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
+                                        reject(response);
+                                    });
                                 }
-                            });
-                            if (cleanOrphan && !UTILS.isBlank(liveIndexes)) {
-                                _.each(liveIndexes, (indexConfig, key) => {
-                                    allPromise.push(_self.dropIndex(model, indexConfig.name));
+                            } else if (finalIndexes.drop && finalIndexes.drop.length > 0) {
+                                let allDropPromises = [];
+                                finalIndexes.drop.forEach(name => {
+                                    allDropPromises.push(_self.dropIndex(model, name));
                                 });
-                            }
-                            if (allPromise.length > 0) {
-                                Promise.all(allPromise).then(success => {
-                                    let response = {};
-                                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
+                                if (allDropPromises.length > 0) {
+                                    Promise.all(allDropPromises).then(success => {
+                                        response.success['Drop_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
+                                        resolve(response);
+                                    }).catch(error => {
+                                        response.failed['Drop_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
+                                        reject(response);
+                                    });
+                                } else {
                                     resolve(response);
-                                }).catch(error => {
-                                    let response = {};
-                                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
-                                    reject(response);
-                                });
+                                }
                             } else {
-                                let response = {};
-                                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
                                 resolve(response);
                             }
                         });
-
-
                     } else {
                         let response = {};
                         response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'There are none properties having index value';
@@ -247,16 +365,53 @@ module.exports = {
         });
     },
 
+    finalizeIndexes: function (indexedFields, indexes, cleanOrphan) {
+        let _self = this;
+        let finalIndexes = {};
+        if (indexedFields.length > 0) {
+            finalIndexes.create = [];
+            for (let counter = 0; counter < indexedFields.length; counter++) {
+                let indexData = indexedFields[counter];
+                if (!_self.isIndexLive(indexData.fields, indexes)) {
+                    finalIndexes.create.push(indexData);
+                }
+            }
+        }
+
+        if (cleanOrphan && indexes && indexes.length > 0) {
+            finalIndexes.drop = [];
+            for (counter = 0; counter < indexes.length; counter++) {
+                finalIndexes.drop.push(indexes[counter].name);
+            }
+        }
+
+        return finalIndexes;
+    },
+
+    isIndexLive: function (key, liveIndex) {
+        let available = false;
+        if (liveIndex && liveIndex.length > 0) {
+            for (counter = 0; counter < liveIndex.length; counter++) {
+                if (_.isEqual(liveIndex[counter].key, key)) {
+                    available = true;
+                    liveIndex.splice(counter, 1);
+                    break;
+                }
+            }
+        }
+        return available;
+    },
+
     createIndex: function (model, indexConfig) {
         return new Promise((resolve, reject) => {
             try {
-                model.dataBase.getConnection().createIndex(model.modelName, indexConfig.field, indexConfig.options).then(success => {
-                    resolve('Index updated for ' + Object.keys(indexConfig.field)[0]);
+                model.dataBase.getConnection().createIndex(model.modelName, indexConfig.fields, indexConfig.options).then(success => {
+                    resolve('Index updated for ' + indexConfig.fields);
                 }).catch(error => {
-                    reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());
+                    reject('Index failed for ' + indexConfig.fields + ' : ' + error.toString());
                 });
             } catch (error) {
-                reject('Index failed for ' + Object.keys(indexConfig.field)[0] + ' : ' + error.toString());
+                reject('Index failed for ' + indexConfig.fields + ' : ' + error.toString());
             }
         });
     },

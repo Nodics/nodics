@@ -1,7 +1,7 @@
 {
     "name": "nCache",
     "index": "1.11.99",
-    "publish": false,
+    "type": "group",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nCache",
     "homepage": "http://www.nodics.com/",
     "keywords": [

@@ -10,6 +10,9 @@
  */
 
 module.exports = {
+
+    publishEnabled: true,
+
     activeModules: {
         groups: ['gCore', 'gTools', 'gDeap', 'kickoffModules'], // Group 'framework' will be included automatically
         modules: [

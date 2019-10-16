@@ -19,6 +19,7 @@ module.exports = {
         default: {
             options: {
                 databaseType: 'mongodb', //for Cassandra use 'cassandra'
+                cleanOrphan: true
             },
         }
     }

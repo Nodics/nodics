@@ -124,7 +124,7 @@ module.exports = {
             this.LOG = logger.createLogger('DefaultModuleInitializerService', prop.log);
             let moduleGroups = ['gFramework'].concat(serverProperties.activeModules ? serverProperties.activeModules.groups || [] : []);
             moduleGroups.forEach((groupName) => {
-                utils.prepareActiveModuleList(groupName, modules);
+                utils.prepareActiveModuleList(prop, groupName, modules);
             });
             if (nodeHome) {
                 serverProperties.activeModules.modules.push(NODICS.getNodeName());

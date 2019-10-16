@@ -1,7 +1,7 @@
 {
     "name": "nEms",
     "index": "1.18.99",
-    "publish": false,
+    "type": "group",
     "description": "Nodics applicaion module. It will hold all configuration and nEms point to start nodics",
     "homepage": "http://www.nodics.com/",
     "keywords": [

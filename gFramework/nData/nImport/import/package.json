@@ -1,7 +1,7 @@
 {
     "name": "import",
     "index": "1.17.5.0",
-    "publish": false,
+    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to import",
     "homepage": "http://www.nodics.com/",
     "keywords": [

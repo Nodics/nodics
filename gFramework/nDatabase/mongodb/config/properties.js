@@ -21,6 +21,7 @@ module.exports = {
                     modelHandler: 'DefaultMongodbDatabaseModelHandlerService',
                     interceptorHandler: 'DefaultMongodbDatabaseInterceptorHandlerService',
                     schemaProperties: ['enum', 'minimum', 'maximum', 'exclusiveMaximum', 'pattern'],
+                    defaultIndexes: ['_id'],
                     modelSaveOptions: {
                         upsert: true,
                         returnOriginal: false

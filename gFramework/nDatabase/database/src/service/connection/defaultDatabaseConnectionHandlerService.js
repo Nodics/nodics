@@ -114,14 +114,14 @@ module.exports = {
                                         _self.LOG.error('Default test database configuration not found. Please velidate database configuration');
                                         process.exit(CONFIG.get('errorExitCode'));
                                     }
-                                    NODICS.addTenantDatabase(moduleName, tntCode, {
+                                    SERVICE.DefaultDatabaseConfigurationService.addTenantDatabase(moduleName, tntCode, {
                                         master: masterDatabase,
                                         test: testDB
                                     });
                                     resolve();
                                 }
                             } else {
-                                NODICS.addTenantDatabase(moduleName, tntCode, {
+                                SERVICE.DefaultDatabaseConfigurationService.addTenantDatabase(moduleName, tntCode, {
                                     master: masterDatabase,
                                     test: testDatabase
                                 });

@@ -67,6 +67,7 @@ module.exports = {
                 code: {
                     type: 'string',
                     required: true,
+                    primary: true,
                     description: 'To uniquely identify a perticuller item',
                     searchOptions: {
                         enabled: true, // default is false
@@ -74,11 +75,14 @@ module.exports = {
                 }
             },
             indexes: {
-                indexCode: {
-                    name: 'code',
-                    options: {
-                        unique: true
-                    }
+                common: {
+
+                },
+                composite: {
+
+                },
+                individual: {
+
                 }
             }
         }

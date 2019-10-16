@@ -239,10 +239,13 @@ module.exports = {
                 }
             },
             indexes: {
-                entTenant: {
-                    name: 'tenant',
-                    options: {
-                        unique: true
+                individual: {
+                    entTenant: {
+                        name: 'tenant',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
                     }
                 }
             }
@@ -296,10 +299,13 @@ module.exports = {
                 }
             },
             indexes: {
-                indexName: {
-                    name: 'name',
-                    options: {
-                        unique: true
+                individual: {
+                    indexName: {
+                        name: 'name',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
                     }
                 }
             }
@@ -405,11 +411,31 @@ module.exports = {
                     description: 'All associated contacts with this enterprise'
                 }
             },
+
             indexes: {
-                indexLoginId: {
-                    name: 'loginId',
-                    options: {
-                        unique: true
+                // composite: {
+                //     indexName: {
+                //         name: 'name',
+                //         enabled: true,
+                //         options: {
+                //             unique: true
+                //         }
+                //     },
+                //     indexName1: {
+                //         name: 'name1',
+                //         enabled: true,
+                //         options: {
+                //             unique: true
+                //         }
+                //     }
+                // },
+                individual: {
+                    indexLoginId: {
+                        name: 'loginId',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
                     }
                 }
             }

@@ -1,7 +1,7 @@
 {
     "name": "profile",
     "index": "5.10",
-    "publish": true,
+    "type": "router",
     "description": "Nodics applicaion module. It will hold all profile realted information",
     "homepage": "http://www.nodics.com/",
     "keywords": [

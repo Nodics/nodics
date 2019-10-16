@@ -1,7 +1,7 @@
 {
     "name": "nExport",
     "index": "1.17.10.99",
-    "publish": false,
+    "type": "group",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nExport",
     "homepage": "http://www.nodics.com/",
     "keywords": [

@@ -113,9 +113,8 @@ module.exports = {
             if (moduleList && moduleList.length > 0) {
                 let moduleName = moduleList.shift();
                 let moduleConfig = CONFIG.get('nodePingableModules')[moduleName];
-                let moduleObject = NODICS.getModule(moduleName);
                 if (moduleConfig && moduleConfig.enabled &&
-                    NODICS.isModuleActive(moduleName) && moduleObject.metaData && moduleObject.metaData.publish) {
+                    NODICS.isModuleActive(moduleName) && UTILS.isRouterEnabled(moduleName)) {
                     let serverConfig = SERVICE.DefaultRouterService.getModuleServerConfig(moduleName);
                     SERVICE.DefaultNodeManagerService.notifyNode(moduleName, Object.keys(serverConfig.getNodes())).then(success => {
                         SERVICE.DefaultNodeManagerService.notifyNodeStarted(moduleList).then(success => {
@@ -196,7 +195,7 @@ module.exports = {
             let moduleConfig = CONFIG.get('nodePingableModules')[moduleName];
             let moduleObject = NODICS.getModule(moduleName);
             if (moduleConfig && moduleConfig.enabled &&
-                NODICS.isModuleActive(moduleName) && moduleObject.metaData && moduleObject.metaData.publish) {
+                NODICS.isModuleActive(moduleName) && UTILS.isRouterEnabled(moduleName)) {
                 let serverConfig = SERVICE.DefaultRouterService.getModuleServerConfig(moduleName);
                 moduleObject.nms = moduleObject.nms || {};
                 moduleObject.nms.checker = setInterval(() => {

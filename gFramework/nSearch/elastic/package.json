@@ -1,7 +1,7 @@
 {
     "name": "elastic",
     "index": "1.13.5",
-    "publish": false,
+    "type": "core",
     "description": "Nodics applicaion module. It will hold all elastic search related configurations",
     "homepage": "http://www.nodics.com/",
     "keywords": [

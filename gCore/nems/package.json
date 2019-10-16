@@ -1,7 +1,7 @@
 {
     "name": "nems",
     "index": "5.5",
-    "publish": true,
+    "type": "router",
     "description": "Nodics applicaion module. This module works for Even management and Exchange",
     "homepage": "http://www.nodics.com/",
     "keywords": [

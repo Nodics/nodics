@@ -32,7 +32,7 @@ module.exports = {
         return moduleIndex;
     },
 
-    prepareActiveModuleList: function (groupName, modulesList) {
+    prepareActiveModuleList: function (props, groupName, modulesList) {
         if (!groupName) {
             return;
         } else {
@@ -41,7 +41,6 @@ module.exports = {
             if (moduleName.indexOf(':') > 0) {
                 groupName = moduleName.substring(moduleName.indexOf(':') + 1, moduleName.length);
                 moduleName = moduleName.substring(0, moduleName.indexOf(':'));
-                console.log(moduleName + ' : ' + groupName);
             }
             if (!modulesList.includes(moduleName)) {
                 let moduleObject = NODICS.getRawModule(moduleName);
@@ -49,7 +48,11 @@ module.exports = {
                     console.error('Invalid initialization, could not load module: ' + moduleName);
                     process.exit(1);
                 }
-                modulesList.push(moduleName);
+                if (props.publishEnabled) {
+                    modulesList.push(moduleName);
+                } else if (['group', 'core', 'router', 'web'].includes(moduleObject.metaData.type)) {
+                    modulesList.push(moduleName);
+                }
                 if (groupName) {
                     if (moduleObject.metaData[groupName] && moduleObject.metaData[groupName].length > 0) {
                         moduleObject.metaData[groupName].forEach(element => {
@@ -58,7 +61,7 @@ module.exports = {
                     }
                 } else if (moduleObject.modules && moduleObject.modules.length > 0) {
                     for (let count = 0; count < moduleObject.modules.length; count++) {
-                        this.prepareActiveModuleList(moduleObject.modules[count], modulesList);
+                        this.prepareActiveModuleList(props, moduleObject.modules[count], modulesList);
                     }
                 }
             }
@@ -226,4 +229,25 @@ module.exports = {
             .replaceAll("ctrlName", 'Default' + options.modelName + 'Controller');
         return commonDefinitionString;
     },
+
+    isRouterEnabled: function (moduleName) {
+        let moduleObject = NODICS.getModule(moduleName);
+        if (moduleObject &&
+            moduleObject.metaData &&
+            (moduleObject.metaData.type === 'router' ||
+                moduleObject.metaData.type === 'web')) {
+            return true;
+        }
+        return false;
+    },
+
+    isWebEnabled: function (moduleName) {
+        let moduleObject = NODICS.getModule(moduleName);
+        if (moduleObject &&
+            moduleObject.metaData &&
+            moduleObject.metaData.type === 'web') {
+            return true;
+        }
+        return false;
+    }
 };
