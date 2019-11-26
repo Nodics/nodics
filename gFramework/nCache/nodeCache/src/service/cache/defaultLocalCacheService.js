@@ -65,26 +65,40 @@ module.exports = {
             try {
                 let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
                 this.LOG.debug('Getting value from Local cache storage with key: ' + key);
-                options.channel.client.get(key, (error, value) => {
-                    if (error) {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00000',
-                            error: error
-                        });
-                    } else if (value) {
-                        resolve({
-                            success: true,
-                            code: 'SUC_CACHE_00000',
-                            result: value
-                        });
-                    } else {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00001'
-                        });
-                    }
-                });
+                let value = options.channel.client.get(key);
+                if (value) {
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: value
+                    });
+                } else {
+                    reject({
+                        success: false,
+                        code: 'ERR_CACHE_00001',
+                        error: value
+                    });
+                }
+                // options.channel.client.get(key, (error, value) => {
+                //     if (error) {
+                //         reject({
+                //             success: false,
+                //             code: 'ERR_CACHE_00000',
+                //             error: error
+                //         });
+                //     } else if (value) {
+                //         resolve({
+                //             success: true,
+                //             code: 'SUC_CACHE_00000',
+                //             result: value
+                //         });
+                //     } else {
+                //         reject({
+                //             success: false,
+                //             code: 'ERR_CACHE_00001'
+                //         });
+                //     }
+                // });
             } catch (error) {
                 reject({
                     success: false,

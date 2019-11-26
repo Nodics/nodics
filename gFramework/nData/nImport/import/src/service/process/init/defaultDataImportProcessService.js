@@ -73,6 +73,7 @@ module.exports = {
                     done: false
                 };
             });
+            console.log(files);
             request.dataFiles = files;
             process.nextSuccess(request, response);
         }).catch(error => {
