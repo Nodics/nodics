@@ -110,7 +110,9 @@ module.exports = {
                     }
                     if (!UTILS.isBlank(app)) {
                         try {
-                            routers.operations.registerWeb(app, moduleObject);
+                            if (routers.operations && routers.operations.registerWeb) {
+                                routers.operations.registerWeb(app, moduleObject);
+                            }
                             _self.activateRouters(app, moduleObject, moduleName, routers);
                             resolve(true);
                         } catch (error) {

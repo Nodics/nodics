@@ -12,9 +12,10 @@
 module.exports = {
 
     publishEnabled: false,
+    webEnabled: false,
 
     activeModules: {
-        groups: ['gCore', 'gTools', 'gDeap', 'kickoffModules'], // Group 'framework' will be included automatically
+        groups: ['gCore', 'gDeap', 'kickoffModules'], // Group 'framework' will be included automatically
         modules: [
             'kickoffLocalServer',
             'kickoffLocal'

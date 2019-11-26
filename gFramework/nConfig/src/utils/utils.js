@@ -48,9 +48,11 @@ module.exports = {
                     console.error('Invalid initialization, could not load module: ' + moduleName);
                     process.exit(1);
                 }
-                if (props.publishEnabled) {
+                if ('publish' === moduleObject.metaData.type && props.publishEnabled) {
                     modulesList.push(moduleName);
-                } else if (['group', 'core', 'router', 'web'].includes(moduleObject.metaData.type)) {
+                } else if ('web' === moduleObject.metaData.type && props.webEnabled) {
+                    modulesList.push(moduleName);
+                } else if (['group', 'core', 'router'].includes(moduleObject.metaData.type)) {
                     modulesList.push(moduleName);
                 }
                 if (groupName) {
