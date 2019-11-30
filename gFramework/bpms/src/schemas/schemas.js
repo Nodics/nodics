@@ -11,6 +11,11 @@
 
 module.exports = {
     bpms: {
+
+        /**
+         * This is header definition for all the workflow item created within system, This also hold 
+         * number of items currently associated with this workflow
+         */
         workflow: {
             super: 'base',
             model: true,
@@ -22,17 +27,12 @@ module.exports = {
             }
         },
 
-        node: {
-            super: 'base',
-            model: true,
-            service: true,
-            event: false,
-            router: true,
-            definition: {
-
-            }
-        },
-
+        /**
+         * This is the position where an item exist currently. This action could be manual or auto performable.
+         * If item is auto performable, there will a service associated to do its job and pass to respective
+         * channel based on its result. For manual, it will wait for the trigger, which could be triggered from 
+         * UI user interection.
+         */
         action: {
             super: 'base',
             model: true,
@@ -44,6 +44,10 @@ module.exports = {
             }
         },
 
+        /**
+         * Channels are transition for travelling one action to another, based on result we got from executed action.
+         * There could be multiple channels associated with one action. Multiple channels can target to single action
+         */
         channel: {
             super: 'base',
             model: true,
@@ -55,7 +59,7 @@ module.exports = {
             }
         },
 
-        checklist: {
+        validator: {
             super: 'base',
             model: true,
             service: true,
@@ -64,6 +68,6 @@ module.exports = {
             definition: {
 
             }
-        },
+        }
     }
 };
