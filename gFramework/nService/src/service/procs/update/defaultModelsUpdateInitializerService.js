@@ -77,7 +77,7 @@ module.exports = {
                 model: request.model
             };
             let interceptorResponse = {};
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preUpdate), interceptorRequest, interceptorResponse).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preUpdate), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -238,7 +238,7 @@ module.exports = {
                     result: response.success.result
                 };
                 let interceptorResponse = {};
-                SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postUpdate), interceptorRequest, interceptorResponse).then(success => {
+                SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postUpdate), interceptorRequest, interceptorResponse).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, {

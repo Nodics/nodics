@@ -51,7 +51,7 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.preDoRefresh) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoRefresh), {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoRefresh), {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexName: request.searchModel.indexName,
@@ -96,7 +96,7 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.postDoRefresh) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoRefresh), {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoRefresh), {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexName: request.searchModel.indexName,

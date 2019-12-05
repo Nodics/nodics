@@ -1,6 +1,6 @@
 {
     "name": "hazelcastCache",
-    "index": "1.11.3",
+    "index": "1.12.3",
     "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to hazelcastCache",
     "homepage": "http://www.nodics.com/",

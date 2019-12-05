@@ -68,7 +68,7 @@ module.exports = {
         let schemaName = request.header.options.schemaName;
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(schemaName);
         if (interceptors && interceptors.import && interceptors.import.length > 0) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.import), {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.import), {
                 tenant: request.tenant,
                 moduleName: request.moduleName,
                 header: request.header,

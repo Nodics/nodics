@@ -83,7 +83,7 @@ module.exports = {
                 query: request.query
             };
             let interceptorResponse = {};
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preRemove), interceptorRequest, interceptorResponse).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preRemove), interceptorRequest, interceptorResponse).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -243,7 +243,7 @@ module.exports = {
                     result: response.success.result
                 };
                 let interceptorResponse = {};
-                SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postRemove), interceptorRequest, interceptorResponse).then(success => {
+                SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postRemove), interceptorRequest, interceptorResponse).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, {

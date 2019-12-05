@@ -128,7 +128,7 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.preGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preGet), {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preGet), {
                 schemaModel: request.schemaModel,
                 tenant: request.tenant,
                 query: request.query,
@@ -204,7 +204,7 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.postGet) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postGet), {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postGet), {
                 schemaModel: request.schemaModel,
                 tenant: request.tenant,
                 query: request.query,

@@ -1,6 +1,6 @@
 {
     "name": "redisCache",
-    "index": "1.11.2",
+    "index": "1.12.2",
     "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to redisCache",
     "homepage": "http://www.nodics.com/",

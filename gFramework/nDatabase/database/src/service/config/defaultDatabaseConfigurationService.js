@@ -108,19 +108,6 @@ module.exports = {
         return true;
     },
 
-    setSchemaInterceptors: function (interceptors) {
-        this.interceptors = interceptors;
-
-    },
-
-    getSchemaInterceptors: function (schmeaName) {
-        if (this.interceptors[schmeaName]) {
-            return this.interceptors[schmeaName];
-        } else {
-            return null;
-        }
-    },
-
     toObjectId: function (schemaModel, value) {
         let modelHandlerName = schemaModel.dataBase.getOptions().modelHandler;
         if (!UTILS.isObjectId(value) && SERVICE[modelHandlerName] && SERVICE[modelHandlerName].toObjectId) {
@@ -128,6 +115,43 @@ module.exports = {
         } else {
             return value;
         }
-    }
+    },
 
+    prepareSchemaInterceptors: function () {
+        return new Promise((resolve, reject) => {
+            let items = [];
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                _.each(moduleObject.models, (tenantObject, tenantName) => {
+                    _.each(tenantObject.master, (model, modelName) => {
+                        items.push(model.schemaName);
+                    });
+                });
+            });
+            SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
+                items,
+                ENUMS.InterceptorType.schema.key
+            ).then(schemaInterceptors => {
+                this.interceptors = schemaInterceptors;
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    getSchemaInterceptors: function (schemaName) {
+        if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
+            return this.interceptors[schemaName];
+        } else {
+            return null;
+        }
+    },
+
+    getInterceptors: function () {
+        if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
+            return this.interceptors;
+        } else {
+            return null;
+        }
+    }
 };

@@ -62,5 +62,49 @@ module.exports = {
         } else {
             return null;
         }
-    }
+    },
+
+    prepareImportInterceptors: function () {
+        return new Promise((resolve, reject) => {
+            let items = [];
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                _.each(moduleObject.models, (tenantObject, tenantName) => {
+                    _.each(tenantObject.master, (model, modelName) => {
+                        items.push(model.schemaName);
+                    });
+                });
+            });
+            SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
+                items,
+                ENUMS.InterceptorType.import.key
+            ).then(importInterceptors => {
+                this.importInterceptors = importInterceptors;
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    prepareExportInterceptors: function () {
+        return new Promise((resolve, reject) => {
+            let items = [];
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                _.each(moduleObject.models, (tenantObject, tenantName) => {
+                    _.each(tenantObject.master, (model, modelName) => {
+                        items.push(model.schemaName);
+                    });
+                });
+            });
+            SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
+                items,
+                ENUMS.InterceptorType.export.key
+            ).then(exportInterceptors => {
+                this.exportInterceptors = exportInterceptors;
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
 };

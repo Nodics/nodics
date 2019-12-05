@@ -1,6 +1,6 @@
 {
     "name": "search",
-    "index": "1.13.0",
+    "index": "1.14.0",
     "type": "router",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to search",
     "homepage": "http://www.nodics.com/",

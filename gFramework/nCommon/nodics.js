@@ -28,7 +28,14 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            resolve(true);
+            this.LOG.debug('Collecting database interceptors definitions');
+            SERVICE.DefaultInterceptorService.loadInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/interceptors.js')).then(interceptors => {
+                SERVICE.DefaultInterceptorConfigurationService.setRawInterceptors(interceptors);
+                this.LOG.debug('Database interceptors definitions configured properly');
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };

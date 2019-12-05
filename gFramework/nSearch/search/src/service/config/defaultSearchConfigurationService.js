@@ -16,7 +16,6 @@ module.exports = {
     searchEngines: {},
     searchSchema: {},
     rawSearchModel: {},
-    interceptors: {},
 
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -85,6 +84,7 @@ module.exports = {
     getSearchEngines: function () {
         return this.searchEngines;
     },
+
     addTenantSearchEngine: function (moduleName, tenant, searchEngine) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
@@ -165,15 +165,34 @@ module.exports = {
         return true;
     },
 
-    setSearchInterceptors: function (interceptors) {
-        this.interceptors = interceptors;
-    },
-
     getSearchInterceptors: function (indexName) {
-        if (this.interceptors[indexName]) {
+        if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
             return this.interceptors[indexName];
         } else {
             return null;
         }
-    }
+    },
+
+    prepareSearchInterceptors: function () {
+        return new Promise((resolve, reject) => {
+            let items = [];
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                _.each(moduleObject.searchModels, (tenantObject, tenantName) => {
+                    _.each(tenantObject.master, (model, modelName) => {
+                        items.push(model.schemaName);
+                    });
+                });
+            });
+            SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
+                items,
+                ENUMS.InterceptorType.search.key
+            ).then(searchInterceptors => {
+                console.log('Search Interceptors : ', searchInterceptors);
+                this.interceptors = searchInterceptors;
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
 };

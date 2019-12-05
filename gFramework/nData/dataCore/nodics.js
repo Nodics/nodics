@@ -28,13 +28,15 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            this.LOG.debug('Collecting database interceptors definitions');
+            this.LOG.debug('Collecting data import/export interceptors definitions');
             try {
-                let importInterceptors = SERVICE.DefaultInterceptorHandlerService.buildSchemaInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/importInterceptors.js'));
-                SERVICE.DefaultDataConfigurationService.setImportInterceptors(importInterceptors);
-                let exportInterceptors = SERVICE.DefaultInterceptorHandlerService.buildSchemaInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/exportInterceptors.js'));
-                SERVICE.DefaultDataConfigurationService.setExportInterceptors(exportInterceptors);
-                resolve(true);
+                SERVICE.DefaultDataConfigurationService.prepareImportInterceptors().then(() => {
+                    return SERVICE.DefaultDataConfigurationService.prepareExportInterceptors();
+                }).then(() => {
+                    resolve(true);
+                }).catch(error => {
+
+                });
             } catch (error) {
                 reject(error);
             }

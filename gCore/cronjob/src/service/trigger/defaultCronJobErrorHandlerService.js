@@ -48,7 +48,7 @@ module.exports = {
         let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
         if (interceptors && interceptors.error) {
             this.LOG.debug('Applying job error interceptors');
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.error), {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.error), {
                 job: request.job,
                 definition: request.definition
             }, {}).then(success => {

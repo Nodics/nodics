@@ -23,5 +23,24 @@ module.exports = {
             'EACH_MODULE',
             'MODULE'
         ]
+    },
+
+    InterceptorType: {
+        _options: {
+            name: 'InterceptorType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'schema',
+            'import',
+            'index',
+            'export',
+            'search',
+            'workflow',
+            'job'
+        ]
     }
 };
