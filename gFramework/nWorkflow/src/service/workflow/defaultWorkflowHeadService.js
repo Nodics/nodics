@@ -12,8 +12,9 @@
 const _ = require('lodash');
 
 module.exports = {
-
+    dbs: {},
     interceptors: {},
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -36,55 +37,33 @@ module.exports = {
         });
     },
 
-    getJobInterceptors: function (jobCode) {
-        if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
-            return this.interceptors[jobCode];
-        } else {
-            return null;
-        }
-    },
-
-    prepareJobInterceptors: function () {
+    getTenantActiveWorkflowHeads: function (tenants, itemCodes) {
         return new Promise((resolve, reject) => {
-            let items = [];
-            SERVICE.DefaultCronJobService.getTenantActiveJobs(NODICS.getActiveTenants(), items).then(done => {
-                SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-                    items,
-                    ENUMS.InterceptorType.job.key
-                ).then(jobInterceptors => {
-                    this.interceptors = jobInterceptors;
-                    resolve(true);
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                SERVICE.DefaultCronJobService.get({
+                    tenant: tenant,
+                    options: { noLimit: true },
+                    query: SERVICE.DefaultWorkflowConfigurationService.getWorkflowDefaultQuery()
+                }).then(result => {
+                    if (result.success && result.result && result.result.length >= 0) {
+                        result.result.forEach(workflowHead => {
+                            if (!itemCodes.includes(workflowHead.code)) itemCodes.push(workflowHead.code);
+                        });
+                        this.getTenantActiveWorkflowHeads(tenants, itemCodes).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        reject(result.msg);
+                    }
                 }).catch(error => {
                     reject(error);
                 });
-            }).catch(error => {
-                reject(error);
-            });
+            } else {
+                resolve(true);
+            }
         });
     },
-
-    getDefaultQuery: function () {
-        return {
-            $and: [{
-                active: true
-            },
-            {
-                start: {
-                    $lt: new Date()
-                }
-            },
-            {
-                $or: [{
-                    end: {
-                        $gte: new Date()
-                    }
-                },
-                {
-                    end: {
-                        $exists: false
-                    }
-                }]
-            }]
-        };
-    }
 };

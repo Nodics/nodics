@@ -28,7 +28,12 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            resolve(true);
+            this.LOG.debug('Collecting workflow interceptors definitions');
+            SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowInterceptors().then(done => {
+                resolve(done);
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 };

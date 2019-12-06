@@ -36,7 +36,6 @@ module.exports = {
         definition: [
             'schema',
             'import',
-            'index',
             'export',
             'search',
             'workflow',

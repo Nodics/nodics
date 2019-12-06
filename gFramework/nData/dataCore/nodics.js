@@ -35,7 +35,7 @@ module.exports = {
                 }).then(() => {
                     resolve(true);
                 }).catch(error => {
-
+                    reject(error);
                 });
             } catch (error) {
                 reject(error);

@@ -41,7 +41,8 @@ module.exports = {
                         useNewUrlParser: true,
                         poolSize: 5,
                         ignoreUndefined: true,
-                        connectTimeoutMS: 60000
+                        connectTimeoutMS: 60000,
+                        useUnifiedTopology: true
                     }
                 },
                 test: {
@@ -51,7 +52,8 @@ module.exports = {
                         useNewUrlParser: true,
                         poolSize: 5,
                         ignoreUndefined: true,
-                        connectTimeoutMS: 60000
+                        connectTimeoutMS: 60000,
+                        useUnifiedTopology: true
                     }
                 }
             }

@@ -16,7 +16,7 @@ module.exports = {
          * This is header definition for all the workflow item created within system, This also hold 
          * number of items currently associated with this workflow
          */
-        workflow: {
+        workflowHead: {
             super: 'base',
             model: true,
             service: true,
@@ -33,7 +33,7 @@ module.exports = {
          * channel based on its result. For manual, it will wait for the trigger, which could be triggered from 
          * UI user interection.
          */
-        action: {
+        workflowAction: {
             super: 'base',
             model: true,
             service: true,
@@ -48,7 +48,7 @@ module.exports = {
          * Channels are transition for travelling one action to another, based on result we got from executed action.
          * There could be multiple channels associated with one action. Multiple channels can target to single action
          */
-        channel: {
+        workflowChannel: {
             super: 'base',
             model: true,
             service: true,

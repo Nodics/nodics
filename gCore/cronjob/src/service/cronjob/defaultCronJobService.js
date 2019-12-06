@@ -18,6 +18,36 @@ module.exports = {
         return this.cronJobContainer;
     },
 
+    getTenantActiveJobs: function (tenants, jobCodes) {
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                SERVICE.DefaultCronJobService.get({
+                    tenant: tenant,
+                    options: { noLimit: true },
+                    query: _.merge({ runOnNode: CONFIG.get('nodeId') }, SERVICE.DefaultCronJobConfigurationService.getDefaultQuery())
+                }).then(result => {
+                    if (result.success && result.result && result.result.length >= 0) {
+                        result.result.forEach(job => {
+                            if (!jobCodes.includes(job.code)) jobCodes.push(job.code);
+                        });
+                        this.getTenantActiveJobs(tenants, jobCodes).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        reject(result.msg);
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
     createAllJobs: function (tenants = NODICS.getActiveTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
