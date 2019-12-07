@@ -32,7 +32,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.loadValidators().then(interceptors => {
                 SERVICE.DefaultValidatorConfigurationService.setRawValidators(interceptors);
                 this.LOG.debug('Validator definitions configured properly');
-                this.LOG.debug('Collecting database interceptors definitions');
+                this.LOG.debug('Collecting database validator definitions');
                 SERVICE.DefaultDatabaseConfigurationService.prepareSchemaValidators().then(done => {
                     this.LOG.debug('Database validator definitions configured properly');
                     resolve(done);

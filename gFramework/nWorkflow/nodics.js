@@ -30,7 +30,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Collecting workflow interceptors definitions');
             SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowInterceptors().then(done => {
-                resolve(done);
+                SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowValidators().then(done => {
+                    resolve(done);
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });

@@ -30,7 +30,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Collecting Job interceptors definitions');
             SERVICE.DefaultCronJobConfigurationService.prepareJobInterceptors().then(done => {
-                resolve(true);
+                SERVICE.DefaultCronJobConfigurationService.prepareJobValidators().then(done => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });

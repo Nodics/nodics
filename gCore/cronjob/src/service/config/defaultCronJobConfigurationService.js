@@ -14,6 +14,7 @@ const _ = require('lodash');
 module.exports = {
 
     interceptors: {},
+    valodators: {},
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -44,15 +45,70 @@ module.exports = {
         }
     },
 
+    getJobValidators: function (tenant, jobCode) {
+        if (this.interceptors &&
+            !UTILS.isBlank(this.valodators[tenant]) &&
+            !UTILS.isBlank(this.valodators[tenant][jobCode])) {
+            return this.valodators[tenant][jobCode];
+        } else {
+            return null;
+        }
+    },
+
     prepareJobInterceptors: function () {
         return new Promise((resolve, reject) => {
             let items = [];
-            SERVICE.DefaultCronJobService.getTenantActiveJobs(NODICS.getActiveTenants(), items).then(done => {
+            SERVICE.DefaultCronJobService.getTenantActiveJobs(NODICS.getActiveTenants()).then(jobCodes => {
+                Object.keys(jobCodes).forEach(tenant => {
+                    jobCodes[tenant].forEach(jobCode => {
+                        if (!items.includes(jobCode)) items.push(jobCode);
+                    });
+                });
                 SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
                     items,
                     ENUMS.InterceptorType.job.key
                 ).then(jobInterceptors => {
                     this.interceptors = jobInterceptors;
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildJobValidators: function (jobCodes, validators, tenants = NODICS.getActiveTenants()) {
+        if (!validators) validators = {};
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                SERVICE.DefaultValidatorConfigurationService.prepareValidators(
+                    tenant,
+                    jobCodes[tenant],
+                    ENUMS.ValidatorType.job.key
+                ).then(jobValidators => {
+                    validators[tenant] = jobValidators;
+                    this.buildJobValidators(jobCodes, validators, tenants).then(validators => {
+                        resolve(validators);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(validators);
+            }
+        });
+    },
+
+    prepareJobValidators: function () {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultCronJobService.getTenantActiveJobs(NODICS.getActiveTenants()).then(jobCodes => {
+                this.buildJobValidators(jobCodes).then(jobInterceptors => {
+                    this.valodators = jobInterceptors;
                     resolve(true);
                 }).catch(error => {
                     reject(error);

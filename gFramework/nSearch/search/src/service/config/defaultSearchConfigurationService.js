@@ -17,6 +17,7 @@ module.exports = {
     searchSchema: {},
     rawSearchModel: {},
     interceptors: {},
+    validators: {},
 
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -188,7 +189,6 @@ module.exports = {
                 items,
                 ENUMS.InterceptorType.search.key
             ).then(searchInterceptors => {
-                console.log('Search Interceptors : ', searchInterceptors);
                 this.interceptors = searchInterceptors;
                 resolve(true);
             }).catch(error => {
@@ -196,4 +196,57 @@ module.exports = {
             });
         });
     },
+
+    getSearchValidator: function (tenant, indexName) {
+        if (this.validators && !UTILS.isBlank(this.validators[tenant]) && !UTILS.isBlank(this.validators[tenant][indexName])) {
+            return this.validators[tenant][indexName];
+        } else {
+            return null;
+        }
+    },
+
+    buildValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
+        if (!validators) validators = {};
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                SERVICE.DefaultValidatorConfigurationService.prepareValidators(
+                    tenant,
+                    modules[tenant],
+                    ENUMS.ValidatorType.search.key
+                ).then(searchValidators => {
+                    validators[tenant] = searchValidators;
+                    this.buildValidators(modules, validators, tenants).then(validators => {
+                        resolve(validators);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(validators);
+            }
+        });
+    },
+
+    prepareSearchValidators: function () {
+        return new Promise((resolve, reject) => {
+            let items = {};
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                _.each(moduleObject.searchModels, (tenantObject, tenantName) => {
+                    if (!items[tenantName]) items[tenantName] = [];
+                    _.each(tenantObject.master, (model, modelName) => {
+                        items[tenantName].push(model.schemaName);
+                    });
+                });
+            });
+            this.buildValidators(items).then(searchValidators => {
+                this.validators = searchValidators;
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
 };

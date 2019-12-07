@@ -39,8 +39,10 @@ module.exports = {
 
     getTenantActiveWorkflowActions: function (tenants, itemCodes) {
         return new Promise((resolve, reject) => {
+            if (!itemCodes) itemCodes = {};
             if (tenants && tenants.length > 0) {
                 let tenant = tenants.shift();
+                if (!itemCodes[tenant]) itemCodes[tenant] = [];
                 SERVICE.DefaultCronJobService.get({
                     tenant: tenant,
                     options: { noLimit: true },
@@ -48,10 +50,10 @@ module.exports = {
                 }).then(result => {
                     if (result.success && result.result && result.result.length >= 0) {
                         result.result.forEach(workflowAction => {
-                            if (!itemCodes.includes(workflowAction.code)) itemCodes.push(workflowAction.code);
+                            if (!itemCodes[tenant].includes(workflowAction.code)) itemCodes[tenant].push(workflowAction.code);
                         });
-                        this.getTenantActiveWorkflowActions(tenants, itemCodes).then(success => {
-                            resolve(true);
+                        this.getTenantActiveWorkflowActions(tenants, itemCodes).then(itemCodes => {
+                            resolve(itemCodes);
                         }).catch(error => {
                             reject(error);
                         });
@@ -62,7 +64,7 @@ module.exports = {
                     reject(error);
                 });
             } else {
-                resolve(true);
+                resolve(itemCodes);
             }
         });
     },

@@ -50,13 +50,66 @@ module.exports = {
     prepareWorkflowInterceptors: function () {
         return new Promise((resolve, reject) => {
             let items = [];
-            SERVICE.DefaultWorkflowHeadService.getTenantActiveWorkflowHeads(NODICS.getActiveTenants(), items).then(done => {
-                SERVICE.DefaultWorkflowActionService.getTenantActiveWorkflowActions(NODICS.getActiveTenants(), items).then(done => {
-                    SERVICE.DefaultWorkflowChannelService.getTenantActiveWorkflowChannels(NODICS.getActiveTenants(), items).then(done => {
+            SERVICE.DefaultWorkflowHeadService.getTenantActiveWorkflowHeads(NODICS.getActiveTenants(), items).then(itemCodes => {
+                SERVICE.DefaultWorkflowActionService.getTenantActiveWorkflowActions(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
+                    SERVICE.DefaultWorkflowChannelService.getTenantActiveWorkflowChannels(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
+                        Object.keys(itemCodes).forEach(tenant => {
+                            itemCodes[tenant].forEach(itemCode => {
+                                if (!items.includes(itemCode)) items.push(itemCode);
+                            });
+                        });
                         SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
                             items,
                             ENUMS.InterceptorType.workflow.key
                         ).then(workflowInterceptors => {
+                            this.interceptors = workflowInterceptors;
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildWorkflowValidators: function (itemCodes, validators, tenants = NODICS.getActiveTenants()) {
+        if (!validators) validators = {};
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                SERVICE.DefaultValidatorConfigurationService.prepareValidators(
+                    tenant,
+                    itemCodes[tenant],
+                    ENUMS.ValidatorType.workflow.key
+                ).then(workflowValidators => {
+                    validators[tenant] = workflowValidators;
+                    this.buildWorkflowValidators(itemCodes, validators, tenants).then(validators => {
+                        resolve(validators);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(validators);
+            }
+        });
+    },
+
+    prepareWorkflowValidators: function () {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultWorkflowHeadService.getTenantActiveWorkflowHeads(NODICS.getActiveTenants()).then(itemCodes => {
+                SERVICE.DefaultWorkflowActionService.getTenantActiveWorkflowActions(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
+                    SERVICE.DefaultWorkflowChannelService.getTenantActiveWorkflowChannels(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
+                        this.buildWorkflowValidators(itemCodes).then(workflowInterceptors => {
                             this.interceptors = workflowInterceptors;
                             resolve(true);
                         }).catch(error => {

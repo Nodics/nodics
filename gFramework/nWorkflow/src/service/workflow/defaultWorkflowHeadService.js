@@ -39,8 +39,10 @@ module.exports = {
 
     getTenantActiveWorkflowHeads: function (tenants, itemCodes) {
         return new Promise((resolve, reject) => {
+            if (!itemCodes) itemCodes = {};
             if (tenants && tenants.length > 0) {
                 let tenant = tenants.shift();
+                if (!itemCodes[tenant]) itemCodes[tenant] = [];
                 SERVICE.DefaultCronJobService.get({
                     tenant: tenant,
                     options: { noLimit: true },
@@ -48,10 +50,10 @@ module.exports = {
                 }).then(result => {
                     if (result.success && result.result && result.result.length >= 0) {
                         result.result.forEach(workflowHead => {
-                            if (!itemCodes.includes(workflowHead.code)) itemCodes.push(workflowHead.code);
+                            if (!itemCodes[tenant].includes(workflowHead.code)) itemCodes[tenant].push(workflowHead.code);
                         });
-                        this.getTenantActiveWorkflowHeads(tenants, itemCodes).then(success => {
-                            resolve(true);
+                        this.getTenantActiveWorkflowHeads(tenants, itemCodes).then(itemCodes => {
+                            resolve(itemCodes);
                         }).catch(error => {
                             reject(error);
                         });
@@ -62,7 +64,7 @@ module.exports = {
                     reject(error);
                 });
             } else {
-                resolve(true);
+                resolve(itemCodes);
             }
         });
     },

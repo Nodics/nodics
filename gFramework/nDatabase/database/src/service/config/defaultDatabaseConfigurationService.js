@@ -194,7 +194,6 @@ module.exports = {
             });
             this.buildValidators(items).then(schemaValidators => {
                 this.validators = schemaValidators;
-                console.log('------ >> ', this.validators);
                 resolve(true);
             }).catch(error => {
                 reject(error);

@@ -15,6 +15,9 @@ module.exports = {
     importInterceptors: {},
     exportInterceptors: {},
 
+    importValidators: {},
+    exportValidatos: {},
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -107,4 +110,94 @@ module.exports = {
             });
         });
     },
+
+    buildImportValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
+        if (!validators) validators = {};
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                SERVICE.DefaultValidatorConfigurationService.prepareValidators(
+                    tenant,
+                    modules[tenant],
+                    ENUMS.ValidatorType.import.key
+                ).then(schemaValidators => {
+                    validators[tenant] = schemaValidators;
+                    this.buildImportValidators(modules, validators, tenants).then(validators => {
+                        resolve(validators);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(validators);
+            }
+        });
+    },
+
+    prepareImportValidators: function () {
+        return new Promise((resolve, reject) => {
+            let items = {};
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                _.each(moduleObject.models, (tenantObject, tenantName) => {
+                    if (!items[tenantName]) items[tenantName] = [];
+                    _.each(tenantObject.master, (model, modelName) => {
+                        items[tenantName].push(model.schemaName);
+                    });
+                });
+            });
+            this.buildImportValidators(items).then(importValidators => {
+                this.importValidators = importValidators;
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    buildExportValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
+        if (!validators) validators = {};
+        return new Promise((resolve, reject) => {
+            if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
+                SERVICE.DefaultValidatorConfigurationService.prepareValidators(
+                    tenant,
+                    modules[tenant],
+                    ENUMS.ValidatorType.export.key
+                ).then(schemaValidators => {
+                    validators[tenant] = schemaValidators;
+                    this.buildExportValidators(modules, validators, tenants).then(validators => {
+                        resolve(validators);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(validators);
+            }
+        });
+    },
+
+    prepareExportValidators: function () {
+        return new Promise((resolve, reject) => {
+            let items = {};
+            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                _.each(moduleObject.models, (tenantObject, tenantName) => {
+                    if (!items[tenantName]) items[tenantName] = [];
+                    _.each(tenantObject.master, (model, modelName) => {
+                        items[tenantName].push(model.schemaName);
+                    });
+                });
+            });
+            this.buildExportValidators(items).then(importValidators => {
+                this.importValidators = importValidators;
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
 };

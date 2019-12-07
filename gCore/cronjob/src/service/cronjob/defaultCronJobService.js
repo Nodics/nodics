@@ -20,8 +20,10 @@ module.exports = {
 
     getTenantActiveJobs: function (tenants, jobCodes) {
         return new Promise((resolve, reject) => {
+            if (!jobCodes) jobCodes = {}
             if (tenants && tenants.length > 0) {
                 let tenant = tenants.shift();
+                if (!jobCodes[tenant]) jobCodes[tenant] = [];
                 SERVICE.DefaultCronJobService.get({
                     tenant: tenant,
                     options: { noLimit: true },
@@ -29,10 +31,10 @@ module.exports = {
                 }).then(result => {
                     if (result.success && result.result && result.result.length >= 0) {
                         result.result.forEach(job => {
-                            if (!jobCodes.includes(job.code)) jobCodes.push(job.code);
+                            if (!jobCodes[tenant].includes(job.code)) jobCodes[tenant].push(job.code);
                         });
-                        this.getTenantActiveJobs(tenants, jobCodes).then(success => {
-                            resolve(true);
+                        this.getTenantActiveJobs(tenants, jobCodes).then(jobCodes => {
+                            resolve(jobCodes);
                         }).catch(error => {
                             reject(error);
                         });
@@ -43,7 +45,7 @@ module.exports = {
                     reject(error);
                 });
             } else {
-                resolve(true);
+                resolve(jobCodes);
             }
         });
     },

@@ -33,6 +33,10 @@ module.exports = {
                 SERVICE.DefaultDataConfigurationService.prepareImportInterceptors().then(() => {
                     return SERVICE.DefaultDataConfigurationService.prepareExportInterceptors();
                 }).then(() => {
+                    return SERVICE.DefaultDataConfigurationService.prepareImportValidators();
+                }).then(() => {
+                    return SERVICE.DefaultDataConfigurationService.prepareExportValidators();
+                }).then(() => {
                     resolve(true);
                 }).catch(error => {
                     reject(error);
