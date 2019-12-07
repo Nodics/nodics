@@ -1,6 +1,6 @@
 {
     "name": "validator",
-    "index": "1.8",
+    "index": "1.12",
     "type": "router",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nValidator",
     "homepage": "http://www.nodics.com/",

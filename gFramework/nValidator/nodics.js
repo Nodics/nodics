@@ -28,14 +28,20 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            // this.LOG.debug('Collecting validator definitions');
-            // SERVICE.DefaultValidatorService.prepareValidators().then(done => {
-            //     this.LOG.debug('Validator definitions configured properly---------------------------------');
-            //     resolve(true);
-            // }).catch(error => {
-            //     reject(error);
-            // });
-            resolve(true);
+            this.LOG.debug('Collecting validator definitions');
+            SERVICE.DefaultValidatorService.loadValidators().then(interceptors => {
+                SERVICE.DefaultValidatorConfigurationService.setRawValidators(interceptors);
+                this.LOG.debug('Validator definitions configured properly');
+                this.LOG.debug('Collecting database interceptors definitions');
+                SERVICE.DefaultDatabaseConfigurationService.prepareSchemaValidators().then(done => {
+                    this.LOG.debug('Database validator definitions configured properly');
+                    resolve(done);
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 };
