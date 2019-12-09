@@ -29,11 +29,21 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultCronJobTriggerHandlerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultCronJobTriggerHandlerService.applyPreValidators',
                 success: 'triggerProcess'
             },
             triggerProcess: {
                 type: 'function',
                 handler: 'DefaultCronJobTriggerHandlerService.triggerProcess',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultCronJobTriggerHandlerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -71,6 +81,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultCronJobCompletedHandlerService.applyInterceptors',
+                success: 'applyValidators'
+            },
+            applyValidators: {
+                type: 'function',
+                handler: 'DefaultCronJobCompletedHandlerService.applyValidators',
                 success: 'stateChangeFinished'
             },
             stateChangeFinished: {
@@ -108,6 +123,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultCronJobStartHandlerService.applyInterceptors',
+                success: 'applyValidators'
+            },
+            applyValidators: {
+                type: 'function',
+                handler: 'DefaultCronJobStartHandlerService.applyValidators',
                 success: 'stateChangeStart'
             },
             stateChangeStart: {
@@ -145,6 +165,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultCronJobStopHandlerService.applyInterceptors',
+                success: 'applyValidators'
+            },
+            applyValidators: {
+                type: 'function',
+                handler: 'DefaultCronJobStopHandlerService.applyValidators',
                 success: 'stateChangeStoped'
             },
             stateChangeStoped: {
@@ -182,6 +207,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultCronJobPausedHandlerService.applyInterceptors',
+                success: 'applyValidators'
+            },
+            applyValidators: {
+                type: 'function',
+                handler: 'DefaultCronJobPausedHandlerService.applyValidators',
                 success: 'stateChangePaused'
             },
             stateChangePaused: {
@@ -219,6 +249,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultCronJobResumedHandlerService.applyInterceptors',
+                success: 'applyValidators'
+            },
+            applyValidators: {
+                type: 'function',
+                handler: 'DefaultCronJobResumedHandlerService.applyValidators',
                 success: 'stateChangeResumed'
             },
             stateChangeResumed: {
@@ -256,6 +291,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultCronJobRemovedHandlerService.applyInterceptors',
+                success: 'applyValidators'
+            },
+            applyValidators: {
+                type: 'function',
+                handler: 'DefaultCronJobRemovedHandlerService.applyValidators',
                 success: 'stateChangeRemoved'
             },
             stateChangeRemoved: {
@@ -293,6 +333,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultCronJobErrorHandlerService.applyInterceptors',
+                success: 'applyValidators'
+            },
+            applyValidators: {
+                type: 'function',
+                handler: 'DefaultCronJobErrorHandlerService.applyValidators',
                 success: 'stateChangeError'
             },
             stateChangeError: {

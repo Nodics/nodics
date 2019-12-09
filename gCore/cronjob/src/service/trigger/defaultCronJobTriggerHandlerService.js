@@ -89,6 +89,28 @@ module.exports = {
         }
     },
 
+    applyPreValidators: function (request, response, process) {
+        let jobDefinition = request.definition;
+        let validators = SERVICE.DefaultCronJobConfigurationService.getJobValidators(request.tenant, jobDefinition.code);
+        if (validators && validators.preRun) {
+            this.LOG.debug('Applying job preRun execution validators');
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preRun), {
+                job: request.job,
+                definition: request.definition
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00004',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     triggerProcess: function (request, response, process) {
         this.LOG.debug('Preparing output file path');
         let jobDetail = request.definition.jobDetail;
@@ -153,13 +175,35 @@ module.exports = {
         });
     },
 
+    applyPostValidators: function (request, response, process) {
+        let jobDefinition = request.definition;
+        let validators = SERVICE.DefaultCronJobConfigurationService.getJobValidators(request.tenant, jobDefinition.code);
+        if (validators && validators.postRun) {
+            this.LOG.debug('Applying job postRun execution validators');
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postRun), {
+                job: request.job,
+                definition: request.definition
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00004',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre job execution interceptors');
         let jobDefinition = request.definition;
         let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
-        if (interceptors && interceptors.preRun) {
-            this.LOG.debug('Applying pre job execution interceptors');
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preRun), {
+        if (interceptors && interceptors.postRun) {
+            this.LOG.debug('Applying postRun job execution interceptors');
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postRun), {
                 job: request.job,
                 definition: request.definition
             }, {}).then(success => {

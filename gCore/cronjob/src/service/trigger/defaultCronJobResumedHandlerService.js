@@ -65,6 +65,28 @@ module.exports = {
         }
     },
 
+    applyValidators: function (request, response, process) {
+        let jobDefinition = request.definition;
+        let validators = SERVICE.DefaultCronJobConfigurationService.getJobValidators(request.tenant, jobDefinition.code);
+        if (validators && validators.resumed) {
+            this.LOG.debug('Applying job resumed execution validators');
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.resumed), {
+                job: request.job,
+                definition: request.definition
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_FIND_00004',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     stateChangeResumed: function (request, response, process) {
         this.LOG.debug('Changing job state to resume');
         let jobDefinition = request.definition;
