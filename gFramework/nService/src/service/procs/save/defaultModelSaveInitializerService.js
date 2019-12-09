@@ -256,16 +256,14 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.preSave) {
-            let interceptorRequest = {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preSave), {
                 schemaModel: request.schemaModel,
                 tenant: request.tenant,
                 options: request.options,
                 query: request.query,
                 originalModel: request.model,
                 model: request.model
-            };
-            let interceptorResponse = {};
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preSave), interceptorRequest, interceptorResponse).then(success => {
+            }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -273,6 +271,33 @@ module.exports = {
                     code: 'ERR_FIND_00004',
                     error: error.toString()
                 });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying post model validator');
+        let schemaName = request.schemaModel.schemaName;
+        let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
+        if (validators && validators.preSave) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preSave), {
+                schemaModel: request.schemaModel,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                model: request.model
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                response.error = {
+                    success: false,
+                    code: 'ERR_FIND_00005',
+                    error: error
+                };
+                process.error(request, response);
             });
         } else {
             process.nextSuccess(request, response);
@@ -438,20 +463,44 @@ module.exports = {
         }
     },
 
-    applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post save model interceptors');
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying post model validator');
         let schemaName = request.schemaModel.schemaName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
-        if (interceptors && interceptors.postSave) {
-            let interceptorRequest = {
+        let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
+        if (validators && validators.postSave) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postSave), {
                 schemaModel: request.schemaModel,
                 tenant: request.tenant,
                 query: request.query,
                 originalModel: request.model,
                 model: response.model.result
-            };
-            let interceptorResponse = {};
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postSave), interceptorRequest, interceptorResponse).then(success => {
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                response.error = {
+                    success: false,
+                    code: 'ERR_FIND_00005',
+                    error: error
+                };
+                process.error(request, response);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPostInterceptors: function (request, response, process) {
+        this.LOG.debug('Applying post save model interceptors');
+        let schemaName = request.schemaModel.schemaName;
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
+        if (interceptors && interceptors.postSave) {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postSave), {
+                schemaModel: request.schemaModel,
+                tenant: request.tenant,
+                query: request.query,
+                originalModel: request.model,
+                model: response.model.result
+            }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {

@@ -148,9 +148,9 @@ module.exports = {
         });
     },
 
-    getSchemaValidators: function (schemaName) {
-        if (this.validators && !UTILS.isBlank(this.validators)) {
-            return this.validators[schemaName];
+    getSchemaValidators: function (tenant, schemaName) {
+        if (this.validators && !UTILS.isBlank(this.validators[tenant]) && !UTILS.isBlank(this.validators[tenant][schemaName])) {
+            return this.validators[tenant][schemaName];
         } else {
             return null;
         }

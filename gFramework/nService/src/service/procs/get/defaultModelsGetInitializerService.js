@@ -147,6 +147,31 @@ module.exports = {
         }
     },
 
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre model validator');
+        let schemaName = request.schemaModel.schemaName;
+        let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
+        if (validators && validators.preGet) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preGet), {
+                schemaModel: request.schemaModel,
+                tenant: request.tenant,
+                query: request.query,
+                options: request.options
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                response.error = {
+                    success: false,
+                    code: 'ERR_FIND_00005',
+                    error: error
+                };
+                process.error(request, response);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
         request.schemaModel.getItems(request).then(result => {
@@ -194,6 +219,32 @@ module.exports = {
         if (response.success.result && virtualProperties && !UTILS.isBlank(virtualProperties)) {
             SERVICE.DefaultSchemaVirtualPropertiesHandlerService.populateVirtualProperties(virtualProperties, response.success.result);
             process.nextSuccess(request, response);
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying post model validator');
+        let schemaName = request.schemaModel.schemaName;
+        let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
+        if (validators && validators.postGet) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postGet), {
+                schemaModel: request.schemaModel,
+                tenant: request.tenant,
+                query: request.query,
+                options: request.options,
+                result: response.success
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                response.error = {
+                    success: false,
+                    code: 'ERR_FIND_00005',
+                    error: error
+                };
+                process.error(request, response);
+            });
         } else {
             process.nextSuccess(request, response);
         }

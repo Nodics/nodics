@@ -40,6 +40,11 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultModelsGetInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
@@ -55,6 +60,11 @@ module.exports = {
             populateVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.populateVirtualProperties',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultModelsGetInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -158,6 +168,12 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.applyPreValidators',
                 success: 'applyValidators'
             },
 
@@ -181,6 +197,12 @@ module.exports = {
             populateVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.populateVirtualProperties',
+                success: 'applyPostValidators'
+            },
+
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
 
@@ -239,6 +261,11 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultModelsRemoveInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
@@ -249,6 +276,11 @@ module.exports = {
             populateSubModels: {
                 type: 'function',
                 handler: 'DefaultModelsRemoveInitializerService.populateSubModels',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -296,16 +328,21 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultModelsUpdateInitializerService.validateRequest',
-                success: 'applyPreInterceptors'
-            },
-            applyPreInterceptors: {
-                type: 'function',
-                handler: 'DefaultModelsUpdateInitializerService.applyPreInterceptors',
                 success: 'buildQuery'
             },
             buildQuery: {
                 type: 'function',
                 handler: 'DefaultModelsUpdateInitializerService.buildQuery',
+                success: 'applyPreInterceptors'
+            },
+            applyPreInterceptors: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
@@ -316,6 +353,11 @@ module.exports = {
             populateSubModels: {
                 type: 'function',
                 handler: 'DefaultModelsUpdateInitializerService.populateSubModels',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
