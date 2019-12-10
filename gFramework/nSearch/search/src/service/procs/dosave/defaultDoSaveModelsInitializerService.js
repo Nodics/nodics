@@ -64,13 +64,11 @@ module.exports = {
         this.LOG.debug('Applying pre processors in models');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
-        if (interceptors && interceptors.preSaveProcessor && interceptors.preSaveProcessor.length > 0) {
-            let interceptorRequest = {
+        if (interceptors && interceptors.preDoSaveProcessor && interceptors.preDoSaveProcessor.length > 0) {
+            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.preDoSaveProcessor), {
                 request: request,
                 response: response
-            };
-            let interceptorResponse = {};
-            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.preSaveProcessor), interceptorRequest, interceptorResponse).then(success => {
+            }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -146,13 +144,11 @@ module.exports = {
         this.LOG.debug('Applying post processors in models');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
-        if (interceptors && interceptors.postSaveProcessor && interceptors.postSaveProcessor.length > 0) {
-            let interceptorRequest = {
+        if (interceptors && interceptors.postDoSaveProcessor && interceptors.postDoSaveProcessor.length > 0) {
+            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.postDoSaveProcessor), {
                 request: request,
                 response: response
-            };
-            let interceptorResponse = {};
-            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.postSaveProcessor), interceptorRequest, interceptorResponse).then(success => {
+            }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {

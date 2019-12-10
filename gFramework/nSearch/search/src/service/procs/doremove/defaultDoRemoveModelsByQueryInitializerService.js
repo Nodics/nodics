@@ -49,7 +49,7 @@ module.exports = {
     },
 
     applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post get model interceptors');
+        this.LOG.debug('Applying pre do remove models interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.preDoRemove) {
@@ -74,6 +74,34 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre do remove models validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.preDoRemove) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoRemove), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
 
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
@@ -104,8 +132,35 @@ module.exports = {
         }
     },
 
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying post do remove models validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.postDoRemove) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoRemove), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                query: request.query,
+                model: response.success.result
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post model interceptors');
+        this.LOG.debug('Applying post do remove models interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.postDoRemove) {

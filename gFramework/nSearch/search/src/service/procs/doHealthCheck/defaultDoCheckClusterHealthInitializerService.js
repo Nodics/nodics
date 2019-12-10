@@ -42,11 +42,38 @@ module.exports = {
     },
 
     applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying pre do exist interceptors');
+        this.LOG.debug('Applying pre do health check interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.preDoHealthCheck) {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoHealthCheck), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre do health check validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.preDoHealthCheck) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoHealthCheck), {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexName: request.searchModel.indexName,
@@ -86,6 +113,33 @@ module.exports = {
         });
     },
 
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre do health check validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.postDoHealthCheck) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoHealthCheck), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                query: request.query,
+                result: response.result
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do Health Check interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -97,7 +151,8 @@ module.exports = {
                 indexName: request.searchModel.indexName,
                 typeName: request.searchModel.typeName,
                 tenant: request.tenant,
-                query: request.query
+                query: request.query,
+                result: response.result
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {

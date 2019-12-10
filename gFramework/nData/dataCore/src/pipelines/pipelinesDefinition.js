@@ -62,6 +62,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultSchemaDataHandlerService.applyInterceptors',
+                success: 'applyValidators'
+            },
+            applyValidators: {
+                type: 'function',
+                handler: 'DefaultSchemaDataHandlerService.applyValidators',
                 success: 'executeSchemaPipeline'
             },
             executeSchemaPipeline: {

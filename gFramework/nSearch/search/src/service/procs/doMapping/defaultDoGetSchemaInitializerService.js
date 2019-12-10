@@ -68,6 +68,35 @@ module.exports = {
         }
     },
 
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre do get schema validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.preDoGetSchema) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoGetSchema), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                model: request.model
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing do get schema query');
         request.searchModel.doGetSchema(request).then(result => {
@@ -86,6 +115,33 @@ module.exports = {
         });
     },
 
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre do get schema validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.postDoGetSchema) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoGetSchema), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                query: request.query,
+                schemas: response.success.result
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do get schema interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -97,7 +153,8 @@ module.exports = {
                 indexName: request.searchModel.indexName,
                 typeName: request.searchModel.typeName,
                 tenant: request.tenant,
-                query: request.query
+                query: request.query,
+                schemas: response.success.result
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {

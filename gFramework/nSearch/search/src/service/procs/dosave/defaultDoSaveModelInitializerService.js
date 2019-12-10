@@ -147,6 +147,35 @@ module.exports = {
         }
     },
 
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre doSave model validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.preDoSave) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoSave), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                model: request.model
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     doSaveModel: function (request, response, process) {
         this.LOG.debug('Executing doSave operation');
         request.searchModel.doSave(request).then(result => {
@@ -176,8 +205,36 @@ module.exports = {
         }
     },
 
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying post do save model validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.postDoSave) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoSave), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                query: request.query,
+                originalModel: request.model,
+                model: response.success.result
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post save model interceptors');
+        this.LOG.debug('Applying post do save model interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.postDoSave) {

@@ -47,11 +47,37 @@ module.exports = {
     },
 
     applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post do remove index interceptors');
+        this.LOG.debug('Applying pre do remove index interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.preDoRemoveIndex) {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoRemoveIndex), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre do remove index validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.preDoRemoveIndex) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoRemoveIndex), {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexName: request.searchModel.indexName,
@@ -88,6 +114,33 @@ module.exports = {
                 error: error
             });
         });
+    },
+
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying post do remove index validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.postDoRemoveIndex) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoRemoveIndex), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                query: request.query,
+                model: response.success.result
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     applyPostInterceptors: function (request, response, process) {

@@ -54,6 +54,14 @@ module.exports = {
         }
     },
 
+    getImportValidatorss: function (tenant, entityName) {
+        if (this.importValidators[tenant] && this.importValidators[tenant][entityName]) {
+            return this.importValidators[entityName];
+        } else {
+            return null;
+        }
+    },
+
     setExportInterceptors: function (interceptors) {
         this.exportInterceptors = interceptors;
 

@@ -110,6 +110,35 @@ module.exports = {
         }
     },
 
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre do get validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.preDoGet) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoGet), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                model: request.model
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
         request.searchModel.doGet(request).then(result => {
@@ -139,6 +168,35 @@ module.exports = {
         }
     },
 
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre do get validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.postDoGet) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoGet), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                models: response.success.result
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do get interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -153,7 +211,7 @@ module.exports = {
                 options: request.options,
                 query: request.query,
                 originalModel: request.model,
-                model: response.success.result
+                models: response.success.result
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {

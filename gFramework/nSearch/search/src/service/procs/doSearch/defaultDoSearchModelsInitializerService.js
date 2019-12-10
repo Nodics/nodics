@@ -80,11 +80,40 @@ module.exports = {
     },
 
     applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying pre do get model interceptors');
+        this.LOG.debug('Applying pre do search model interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
-        if (interceptors && interceptors.preDoGet) {
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoGet), {
+        if (interceptors && interceptors.preDoSearch) {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoSearch), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                model: request.model
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre do search model validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.preDoSearch) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoSearch), {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexName: request.searchModel.indexName,
@@ -137,12 +166,41 @@ module.exports = {
         }
     },
 
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying post do search models validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.postDoSearch) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoSearch), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                model: response.success.result
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post do get interceptors');
+        this.LOG.debug('Applying post do search models interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
-        if (interceptors && interceptors.postDoGet) {
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoGet), {
+        if (interceptors && interceptors.postDoSearch) {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoSearch), {
                 schemaModel: request.schemaModel,
                 searchModel: request.searchModel,
                 indexName: request.searchModel.indexName,
@@ -208,23 +266,3 @@ module.exports = {
         }
     }
 };
-
-
-
-// executeQuery: function (request, response, process) {
-//     this.LOG.debug('Executing get query');
-//     request.searchModel.doSearch(request).then(result => {
-//         response.success = {
-//             success: true,
-//             code: 'SUC_SRCH_00000',
-//             result: result
-//         };
-//         process.nextSuccess(request, response);
-//     }).catch(error => {
-//         process.error(request, response, {
-//             success: false,
-//             code: 'ERR_SRCH_00000',
-//             error: error
-//         });
-//     });
-// },

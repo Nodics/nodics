@@ -197,8 +197,10 @@ module.exports = {
         });
     },
 
-    getSearchValidator: function (tenant, indexName) {
-        if (this.validators && !UTILS.isBlank(this.validators[tenant]) && !UTILS.isBlank(this.validators[tenant][indexName])) {
+    getSearchValidators: function (tenant, indexName) {
+        if (this.validators &&
+            !UTILS.isBlank(this.validators[tenant]) &&
+            !UTILS.isBlank(this.validators[tenant][indexName])) {
             return this.validators[tenant][indexName];
         } else {
             return null;

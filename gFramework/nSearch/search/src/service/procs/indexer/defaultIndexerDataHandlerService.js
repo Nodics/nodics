@@ -95,6 +95,35 @@ module.exports = {
         }
     },
 
+    applyValidators: function (request, response, process) {
+        this.LOG.debug('Applying indexer validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.index) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.index), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                model: request.model
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     executeIndexerPipeline: function (request, response, process) {
         if (request.header && request.header.local && request.header.local.indexerConfig && request.header.local.indexerConfig.processPipeline) {
             try {

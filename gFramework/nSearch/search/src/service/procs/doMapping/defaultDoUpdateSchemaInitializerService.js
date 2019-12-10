@@ -94,6 +94,35 @@ module.exports = {
         }
     },
 
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying post do update schema validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.preDoUpdateSchema) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoUpdateSchema), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                options: request.options,
+                query: request.query,
+                originalModel: request.model,
+                model: request.model
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing do update schema query');
 
@@ -113,6 +142,33 @@ module.exports = {
         });
     },
 
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying post do update schema validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.postDoUpdateSchema) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoUpdateSchema), {
+                schemaModel: request.schemaModel,
+                searchModel: request.searchModel,
+                indexName: request.searchModel.indexName,
+                typeName: request.searchModel.typeName,
+                tenant: request.tenant,
+                query: request.query,
+                result: response.success.result
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, {
+                    success: false,
+                    code: 'ERR_SRCH_00000',
+                    error: error.toString()
+                });
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do update schema interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -124,7 +180,8 @@ module.exports = {
                 indexName: request.searchModel.indexName,
                 typeName: request.searchModel.typeName,
                 tenant: request.tenant,
-                query: request.query
+                query: request.query,
+                result: response.success.result
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
