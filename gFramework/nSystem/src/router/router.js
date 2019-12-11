@@ -12,6 +12,39 @@
 module.exports = {
 
     system: {
+
+        processInterceptors: {
+            refreshInterceptors: {
+                secured: true,
+                key: '/interceptors/refresh',
+                method: 'GET',
+                controller: 'DefaultInterceptorController',
+                operation: 'refreshInterceptors',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/interceptors/refresh'
+                }
+            }
+        },
+
+        processValidators: {
+            refreshValidators: {
+                secured: true,
+                key: '/validators/refresh',
+                method: 'GET',
+                controller: 'DefaultValidatorController',
+                operation: 'refreshValidators',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/validators/refresh'
+                }
+            }
+        },
+
         fileResponses: {
             returnFileContent: {
                 secured: true,
@@ -23,7 +56,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/system/import/init',
+                    url: 'http://host:port/nodics/system/file/data',
                     body: {
                         type: 'static/entiry',
                         path: 'Path of external location to get list of files',
@@ -42,7 +75,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/system/import/init',
+                    url: 'http://host:port/nodics/system/file/download',
                     body: {
                         path: 'Path of external location to get list of files',
                         fileName: 'Name of file'
@@ -50,6 +83,7 @@ module.exports = {
                 }
             }
         },
+
         importInitData: {
             importInitPost: {
                 secured: true,
@@ -69,6 +103,7 @@ module.exports = {
                 }
             }
         },
+
         importCoreData: {
             importCorePost: {
                 secured: true,
@@ -88,6 +123,7 @@ module.exports = {
                 }
             }
         },
+
         importSampleData: {
             importSamplePost: {
                 secured: true,
@@ -107,6 +143,7 @@ module.exports = {
                 }
             }
         },
+
         importLocalData: {
             importLocalPost: {
                 secured: true,
@@ -131,6 +168,7 @@ module.exports = {
                 }
             }
         },
+
         changeLogLevel: {
             changeLevelPost: {
                 secured: true,
@@ -150,6 +188,7 @@ module.exports = {
                 }
             }
         },
+
         changeConfig: {
             changeConfigPost: {
                 secured: true,
@@ -168,6 +207,7 @@ module.exports = {
                 }
             }
         },
+
         updateAllIndexes: {
             updateAllModulesIndexes: {
                 secured: true,

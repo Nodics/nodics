@@ -42,7 +42,57 @@ module.exports = {
                         }
                     }
                 });
-                resolve(interceptors);
+                SERVICE.DefaultInterceptorConfigurationService.setRawInterceptors(interceptors);
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    refreshInterceptors: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                this.loadInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/interceptors.js')).then(() => {
+                    if (SERVICE.DefaultDatabaseConfigurationService &&
+                        SERVICE.DefaultDatabaseConfigurationService.prepareSchemaInterceptors) {
+                        return SERVICE.DefaultDatabaseConfigurationService.prepareSchemaInterceptors();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
+                    if (SERVICE.DefaultDataConfigurationService &&
+                        SERVICE.DefaultDataConfigurationService.prepareImportInterceptors) {
+                        return SERVICE.DefaultDataConfigurationService.prepareImportInterceptors();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
+                    if (SERVICE.DefaultDataConfigurationService &&
+                        SERVICE.DefaultDataConfigurationService.prepareExportInterceptors) {
+                        return SERVICE.DefaultDataConfigurationService.prepareExportInterceptors();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
+                    if (SERVICE.DefaultSearchConfigurationService &&
+                        SERVICE.DefaultSearchConfigurationService.prepareSearchInterceptors) {
+                        return SERVICE.DefaultSearchConfigurationService.prepareSearchInterceptors();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
+                    if (SERVICE.DefaultCronJobConfigurationService &&
+                        SERVICE.DefaultCronJobConfigurationService.prepareJobInterceptors) {
+                        return SERVICE.DefaultCronJobConfigurationService.prepareJobInterceptors();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
             } catch (error) {
                 reject(error);
             }
@@ -74,152 +124,4 @@ module.exports = {
             }
         });
     }
-
-    // // ==========================================================================================================
-    // buildSchemaInterceptors: function (interceptors) {
-    //     let finalInterceptors = {};
-    //     let schemaInterceptors = {};
-    //     try {
-    //         let defaultInterceptors = _.merge({}, interceptors.default);
-    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-    //             if (!finalInterceptors[moduleName]) {
-    //                 finalInterceptors[moduleName] = {};
-    //             }
-    //             let moduleInterceptors = _.merge({}, interceptors[moduleName]);
-    //             let moduleDefault = _.merge(_.merge({}, defaultInterceptors), moduleInterceptors.default || {});
-    //             _.each(moduleObject.models, (tenantObject, tenantName) => {
-    //                 _.each(tenantObject.master, (model, modelName) => {
-    //                     let modelInterceptors = _.merge({}, moduleInterceptors[model.schemaName]);
-    //                     if (!finalInterceptors[moduleName][model.schemaName]) {
-    //                         finalInterceptors[moduleName][model.schemaName] = {};
-    //                     }
-    //                     let interceptorPool = finalInterceptors[moduleName][model.schemaName];
-    //                     _.each(moduleDefault, (interceptor, interceptorName) => {
-    //                         if (!interceptorPool[interceptor.type]) {
-    //                             interceptorPool[interceptor.type] = [];
-    //                         }
-    //                         interceptorPool[interceptor.type].push(interceptor);
-    //                     });
-    //                     _.each(modelInterceptors, (interceptor, interceptorName) => {
-    //                         if (!interceptorPool[interceptor.type]) {
-    //                             interceptorPool[interceptor.type] = [];
-    //                         }
-    //                         interceptorPool[interceptor.type].push(interceptor);
-    //                     });
-    //                 });
-    //             });
-    //         });
-    //         _.each(finalInterceptors, (moduleInterceptors, moduleName) => {
-    //             _.each(moduleInterceptors, (modelInterceptors, modelName) => {
-    //                 _.each(modelInterceptors, (typeInterceptors, typeName) => {
-    //                     let indexedInterceptors = UTILS.sortObject(typeInterceptors, 'index');
-    //                     let list = [];
-    //                     if (indexedInterceptors) {
-    //                         _.each(indexedInterceptors, (intList, index) => {
-    //                             list = list.concat(intList);
-    //                         });
-    //                         modelInterceptors[typeName] = list;
-    //                     }
-    //                 });
-    //             });
-    //         });
-    //         _.each(finalInterceptors, (moduleInterceptors, moduleName) => {
-    //             schemaInterceptors = _.merge(schemaInterceptors, moduleInterceptors);
-    //         });
-    //     } catch (error) {
-    //         throw (error);
-    //     }
-    //     return schemaInterceptors;
-    // },
-
-    // buildSearchInterceptors: function (interceptors) {
-    //     let finalInterceptors = {};
-    //     let schemaInterceptors = {};
-    //     try {
-    //         let defaultInterceptors = _.merge({}, interceptors.default);
-    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-    //             if (!finalInterceptors[moduleName]) {
-    //                 finalInterceptors[moduleName] = {};
-    //             }
-    //             let moduleInterceptors = _.merge({}, interceptors[moduleName]);
-    //             let moduleDefault = _.merge(_.merge({}, defaultInterceptors), moduleInterceptors.default || {});
-    //             _.each(moduleObject.searchModels, (tenantObject, tenantName) => {
-    //                 _.each(tenantObject, (model, modelName) => {
-    //                     let modelInterceptors = _.merge({}, moduleInterceptors[model.indexName]);
-    //                     if (!finalInterceptors[moduleName][model.indexName]) {
-    //                         finalInterceptors[moduleName][model.indexName] = {};
-    //                     }
-    //                     let interceptorPool = finalInterceptors[moduleName][model.indexName];
-    //                     _.each(moduleDefault, (interceptor, interceptorName) => {
-    //                         if (!interceptorPool[interceptor.type]) {
-    //                             interceptorPool[interceptor.type] = [];
-    //                         }
-    //                         interceptorPool[interceptor.type].push(interceptor);
-    //                     });
-    //                     _.each(modelInterceptors, (interceptor, interceptorName) => {
-    //                         if (!interceptorPool[interceptor.type]) {
-    //                             interceptorPool[interceptor.type] = [];
-    //                         }
-    //                         interceptorPool[interceptor.type].push(interceptor);
-    //                     });
-    //                 });
-    //             });
-    //         });
-    //         _.each(finalInterceptors, (moduleInterceptors, moduleName) => {
-    //             _.each(moduleInterceptors, (modelInterceptors, modelName) => {
-    //                 _.each(modelInterceptors, (typeInterceptors, typeName) => {
-    //                     let indexedInterceptors = UTILS.sortObject(typeInterceptors, 'index');
-    //                     let list = [];
-    //                     if (indexedInterceptors) {
-    //                         _.each(indexedInterceptors, (intList, index) => {
-    //                             list = list.concat(intList);
-    //                         });
-    //                         modelInterceptors[typeName] = list;
-    //                     }
-    //                 });
-    //             });
-    //         });
-    //         _.each(finalInterceptors, (moduleInterceptors, moduleName) => {
-    //             schemaInterceptors = _.merge(schemaInterceptors, moduleInterceptors);
-    //         });
-    //     } catch (error) {
-    //         throw (error);
-    //     }
-    //     return schemaInterceptors;
-    // },
-
-    // buildInterceptors: function (rawInterceptors) {
-    //     let finalInterceptors = {};
-    //     try {
-    //         let defaultInterceptors = _.merge({}, rawInterceptors.default);
-    //         _.each(rawInterceptors, (entityObject, entityName) => {
-    //             if (entityName !== 'default') {
-    //                 let entityInterceptors = _.merge(_.merge({}, defaultInterceptors), entityObject || {});
-    //                 if (!finalInterceptors[entityName]) finalInterceptors[entityName] = {};
-    //                 _.each(entityInterceptors, (interceptorObject, interceptorName) => {
-    //                     if (!finalInterceptors[entityName][interceptorObject.type]) finalInterceptors[entityName][interceptorObject.type] = [];
-    //                     finalInterceptors[entityName][interceptorObject.type].push(interceptorObject);
-    //                 });
-    //             }
-    //         });
-    //         _.each(finalInterceptors, (entityObject, entityName) => {
-    //             _.each(entityObject, (typeInterceptors, typeName) => {
-    //                 let indexedInterceptors = UTILS.sortObject(typeInterceptors, 'index');
-    //                 let list = [];
-    //                 if (indexedInterceptors) {
-    //                     _.each(indexedInterceptors, (intList, index) => {
-    //                         list = list.concat(intList);
-    //                     });
-    //                     finalInterceptors[entityName][typeName] = list;
-    //                 }
-    //             });
-    //         });
-    //     } catch (error) {
-    //         throw (error);
-    //     }
-    //     //(util.inspect(finalInterceptors, false, 6));
-    //     return finalInterceptors;
-    // },
-
-
 };

@@ -29,9 +29,7 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Collecting validator definitions');
-            SERVICE.DefaultValidatorService.loadValidators().then(interceptors => {
-                SERVICE.DefaultValidatorConfigurationService.setRawValidators(interceptors);
-                this.LOG.debug('Validator definitions configured properly');
+            SERVICE.DefaultValidatorService.loadValidators().then(done => {
                 this.LOG.debug('Collecting database validator definitions');
                 SERVICE.DefaultDatabaseConfigurationService.prepareSchemaValidators().then(done => {
                     this.LOG.debug('Database validator definitions configured properly');

@@ -111,7 +111,57 @@ module.exports = {
                     });
 
                 });
-                resolve(validators);
+                SERVICE.DefaultValidatorConfigurationService.setRawValidators(validators);
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    refreshValidators: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                this.loadValidators().then(() => {
+                    if (SERVICE.DefaultDatabaseConfigurationService &&
+                        SERVICE.DefaultDatabaseConfigurationService.prepareSchemaValidators) {
+                        return SERVICE.DefaultDatabaseConfigurationService.prepareSchemaValidators();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
+                    if (SERVICE.DefaultDataConfigurationService &&
+                        SERVICE.DefaultDataConfigurationService.prepareImportValidators) {
+                        return SERVICE.DefaultDataConfigurationService.prepareImportValidators();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
+                    if (SERVICE.DefaultDataConfigurationService &&
+                        SERVICE.DefaultDataConfigurationService.prepareExportValidators) {
+                        return SERVICE.DefaultDataConfigurationService.prepareExportValidators();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
+                    if (SERVICE.DefaultSearchConfigurationService &&
+                        SERVICE.DefaultSearchConfigurationService.prepareSearchValidators) {
+                        return SERVICE.DefaultSearchConfigurationService.prepareSearchValidators();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
+                    if (SERVICE.DefaultCronJobConfigurationService &&
+                        SERVICE.DefaultCronJobConfigurationService.prepareJobValidators) {
+                        return SERVICE.DefaultCronJobConfigurationService.prepareJobValidators();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
             } catch (error) {
                 reject(error);
             }
@@ -124,17 +174,29 @@ module.exports = {
             try {
                 if (validatorList && validatorList.length > 0) {
                     let validator = validatorList.shift();
-                    let serviceName = validator.handler.substring(0, validator.handler.indexOf('.'));
-                    let functionName = validator.handler.substring(validator.handler.indexOf('.') + 1, validator.handler.length);
-                    SERVICE[serviceName][functionName](request, responce).then(success => {
-                        _self.executeValidators(validatorList, request, responce).then(success => {
-                            resolve(success);
+                    if (validator.handler) {
+                        let serviceName = validator.handler.substring(0, validator.handler.indexOf('.'));
+                        let functionName = validator.handler.substring(validator.handler.indexOf('.') + 1, validator.handler.length);
+                        SERVICE[serviceName][functionName](request, responce).then(success => {
+                            _self.executeValidators(validatorList, request, responce).then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
+                            });
                         }).catch(error => {
                             reject(error);
                         });
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    } else {
+                        SERVICE.DefaultValidatorScriptExecutionService.evaluateScript(request, responce, validator.script).then(success => {
+                            _self.executeValidators(validatorList, request, responce).then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }
                 } else {
                     resolve(true);
                 }
@@ -142,5 +204,5 @@ module.exports = {
                 reject(error);
             }
         });
-    }
+    },
 };
