@@ -11,6 +11,7 @@
 
 module.exports = {
 
+    dynamoEnabled: true,
     publishEnabled: false,
     webEnabled: false,
 
@@ -38,6 +39,7 @@ module.exports = {
             }
         }
     },
+
     emsClient: {
         logFailedMessages: false,
         publishers: {

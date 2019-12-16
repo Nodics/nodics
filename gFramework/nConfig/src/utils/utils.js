@@ -48,7 +48,12 @@ module.exports = {
                     console.error('Invalid initialization, could not load module: ' + moduleName);
                     process.exit(1);
                 }
-                if ('publish' === moduleObject.metaData.type && props.publishEnabled) {
+                if (moduleName === 'dynamo' && !props.dynamoEnabled) {
+                    let currentdate = new Date();
+                    let datetime = currentdate.getFullYear() + '-' + (currentdate.getMonth() + 1) + '-' + currentdate.getDate() +
+                        ' ' + currentdate.getHours() + ':' + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+                    console.log(datetime, ' info: [DefaultModuleInitializerService] Dynamo module is not activated');
+                } else if ('publish' === moduleObject.metaData.type && props.publishEnabled) {
                     modulesList.push(moduleName);
                 } else if ('web' === moduleObject.metaData.type && props.webEnabled) {
                     modulesList.push(moduleName);
@@ -236,8 +241,8 @@ module.exports = {
         let moduleObject = NODICS.getModule(moduleName);
         if (moduleObject &&
             moduleObject.metaData &&
-            (moduleObject.metaData.type === 'router' ||
-                moduleObject.metaData.type === 'web')) {
+            (moduleObject.metaData.type === 'router' || moduleObject.metaData.type === 'web') &&
+            (moduleName != 'dynamo' || CONFIG.get('dynamoEnabled'))) {
             return true;
         }
         return false;

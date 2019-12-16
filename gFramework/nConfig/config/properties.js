@@ -48,7 +48,7 @@ module.exports = {
     // databaseUserURI = mongodb://user:pass@localhost:port,anotherhost:port,yetanother:port/mydatabase
     // databaseUserURI = mongodb://hostA:27501,hostB:27501
     // databaseUserURI = mongodb://nonexistent.domain:27000
-
+    dynamoEnabled: false,
     defaultContentType: 'application/json',
     profileModuleName: 'profile',
     processRetrySleepTime: 2000,

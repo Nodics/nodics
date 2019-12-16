@@ -398,7 +398,6 @@ module.exports = {
                 error: response.errors
             });
         } else {
-            console.log(response.error);
             process.reject(response.error);
         }
     }

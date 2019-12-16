@@ -1,5 +1,5 @@
 {
-    "name": "nConfig",
+    "name": "config",
     "index": "1.1",
     "type": "core",
     "description": "Build configuration related functionalities for Nodics",
