@@ -357,12 +357,13 @@ module.exports = {
             if (response.success && response.success.result && schemaModel.rawSchema.event) {
                 let event = {
                     tenant: request.tenant,
-                    event: 'update',
-                    source: schemaModel.moduleName,
+                    event: schemaModel.schemaName + 'Updated',
+                    sourceName: schemaModel.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
                     target: schemaModel.moduleName,
                     state: "NEW",
                     type: "ASYNC",
-                    targetType: ENUMS.TargetType.EACH_MODULE_NODES.key,
+                    targetType: ENUMS.TargetType.MODULE_NODES.key,
                     active: true,
                     data: {
                         schemaName: schemaModel.schemaName,

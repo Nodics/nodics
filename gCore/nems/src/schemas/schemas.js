@@ -18,10 +18,15 @@ module.exports = {
             event: false,
             router: true,
             definition: {
-                source: {
+                sourceName: {
                     type: 'string',
                     required: true,
                     description: 'Source module from where this event is triggered'
+                },
+                sourceId: {
+                    type: 'string',
+                    required: true,
+                    description: 'NodeId from where this event is triggered'
                 },
                 tenant: {
                     type: 'string',
@@ -51,7 +56,7 @@ module.exports = {
                     description: 'Where this event needs to be pushed [EACH_MODULE_NODES, EACH_MODULE, MODULE_NODES,MODULE]'
                 },
                 targetNodeId: {
-                    type: 'int',
+                    type: 'string',
                     required: false,
                     description: 'To target direct node or cluster for this event'
                 },

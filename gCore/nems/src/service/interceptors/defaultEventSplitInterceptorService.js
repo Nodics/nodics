@@ -27,7 +27,7 @@ module.exports = {
                         let modules = SERVICE.DefaultRouterService.getModulesPool().getModules();
                         let targetModule = modules[model.target] || modules.default;
                         _.each(targetModule.getNodes(), (node, nodeId) => {
-                            if (!(model.skipSource && model.source === model.target + ':' + nodeId)) {
+                            if (!(model.skipSource && (model.sourceName === model.target && model.sourceId === nodeId))) {
                                 model.targets.push({
                                     targetNodeId: nodeId,
                                     target: model.target
@@ -47,7 +47,7 @@ module.exports = {
                                 });
                             }
                         });
-                    } else if (model.targetType === ENUMS.TargetType.EACH_MODULE.key) {
+                    } else if (model.targetType === ENUMS.TargetType.EACH_MODULE_NODES.key) {
                         _.each(SERVICE.DefaultRouterService.getModulesPool().getModules(), (moduleObj, moduleName) => {
                             if (!model.excludeModules.includes(moduleName)) {
                                 let targetName = model.target;
@@ -55,7 +55,7 @@ module.exports = {
                                     targetName = moduleName;
                                 }
                                 _.each(moduleObj.getNodes(), (node, nodeId) => {
-                                    if (!(model.skipSource && model.source === targetName + ':' + nodeId)) {
+                                    if (!(model.skipSource && (model.sourceName === model.target && model.sourceId === nodeId))) {
                                         model.targets.push({
                                             targetNodeId: nodeId,
                                             target: targetName

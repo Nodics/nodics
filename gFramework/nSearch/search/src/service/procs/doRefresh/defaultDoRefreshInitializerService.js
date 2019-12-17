@@ -181,11 +181,12 @@ module.exports = {
                 let event = {
                     tenant: request.tenant || 'default',
                     event: 'indexingPerformed',
-                    source: searchModel.moduleName,
+                    sourceName: searchModel.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
                     target: searchModel.moduleName,
                     state: "NEW",
                     type: "ASYNC",
-                    targetType: ENUMS.TargetType.EACH_MODULE_NODES.key,
+                    targetType: ENUMS.TargetType.MODULE_NODES.key,
                     active: true,
                     data: response.success.result
                 };

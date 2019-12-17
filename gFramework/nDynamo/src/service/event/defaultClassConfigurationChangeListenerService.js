@@ -3,7 +3,7 @@ module.exports = {
     handleClassConfigurationChange: function (event, callback) {
         let _self = this;
         _self.LOG.debug('Event has been Handled.....................');
-        _self.LOG.debug(event);
+        console.log(event);
         _self.LOG.debug('...........................................');
         callback(null, {
             success: true,

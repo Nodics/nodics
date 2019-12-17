@@ -83,12 +83,13 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let event = {
                 tenant: 'default',
-                source: 'profile',
+                sourceName: 'profile',
+                sourceId: CONFIG.get('nodeId'),
                 target: 'profile',
                 state: "NEW",
                 type: "SYNC",
                 active: true,
-                targetType: ENUMS.TargetType.EACH_MODULE_NODES.key,
+                targetType: ENUMS.TargetType.MODULE_NODES.key,
                 data: {
                     enterprise: enterprise
                 }

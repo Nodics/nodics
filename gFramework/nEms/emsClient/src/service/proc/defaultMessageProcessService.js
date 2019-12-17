@@ -88,7 +88,8 @@ module.exports = {
         let event = {
             tenant: message.tenant,
             event: queue.options.eventName || queue.name,
-            source: queue.options.source,
+            sourceName: queue.options.source,
+            sourceId: CONFIG.get('nodeId'),
             target: queue.options.target,
             nodeId: queue.options.nodeId,
             state: "NEW",

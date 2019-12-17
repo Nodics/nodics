@@ -568,11 +568,12 @@ module.exports = {
                 let event = {
                     tenant: request.tenant,
                     event: schemaModel.schemaName + 'Save',
-                    source: schemaModel.moduleName,
+                    sourceName: schemaModel.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
                     target: schemaModel.moduleName,
                     state: "NEW",
                     type: "SYNC",
-                    targetType: ENUMS.TargetType.MODULE_NODES.key,
+                    targetType: ENUMS.TargetType.EACH_MODULE_NODES.key,
                     active: true,
                     data: {
                         schemaName: schemaModel.schemaName,

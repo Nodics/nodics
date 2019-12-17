@@ -187,7 +187,8 @@ module.exports = {
                 eventsData.forEach(data => {
                     let eventData = {
                         tenant: 'default',
-                        source: 'profile',
+                        sourceName: 'profile',
+                        sourceId: CONFIG.get('nodeId'),
                         target: 'profile',
                         excludeModules: ['profile'],
                         state: "NEW",

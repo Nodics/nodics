@@ -113,8 +113,9 @@ module.exports = {
                 let event = {
                     tenant: jobDefinition.tenant,//Set tenant from CronJob Himkar
                     active: true,
-                    event: 'jobRemoved',
-                    source: 'cronjob',
+                    event: jobDefinition.code + 'JobRemoved',
+                    sourceName: 'cronjob',
+                    sourceId: CONFIG.get('nodeId'),
                     target: jobDefinition.event.targetModule,
                     state: "NEW",
                     type: (jobDefinition.event && jobDefinition.event.eventType) ? jobDefinition.event.eventType : 'ASYNC',

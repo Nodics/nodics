@@ -113,10 +113,11 @@ module.exports = {
             if (jobDefinition.event && jobDefinition.event.completed) {
                 this.LOG.debug('Triggering event for Completed job');
                 let event = {
-                    tenant: jobDefinition.tenant, //Set tenant from CronJob Himkar
+                    tenant: jobDefinition.tenant,
                     active: true,
-                    event: 'jobCompleted',
-                    source: 'cronjob',
+                    event: jobDefinition.code + 'JobCompleted',
+                    sourceName: 'cronjob',
+                    sourceId: CONFIG.get('nodeId'),
                     target: jobDefinition.event.targetModule,
                     state: "NEW",
                     type: (jobDefinition.event && jobDefinition.event.eventType) ? jobDefinition.event.eventType : 'ASYNC',
