@@ -278,7 +278,7 @@ module.exports = {
     },
 
     applyPreValidators: function (request, response, process) {
-        this.LOG.debug('Applying post model validator');
+        this.LOG.debug('Applying pre model validator');
         let schemaName = request.schemaModel.schemaName;
         let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
         if (validators && validators.preSave) {
@@ -567,12 +567,13 @@ module.exports = {
             if (response.model.result && schemaModel.rawSchema.event) {
                 let event = {
                     tenant: request.tenant,
-                    event: 'save',
+                    event: schemaModel.schemaName + 'Save',
                     source: schemaModel.moduleName,
                     target: schemaModel.moduleName,
                     state: "NEW",
-                    type: "ASYNC",
-                    targetType: ENUMS.TargetType.EACH_NODE.key,
+                    type: "SYNC",
+                    targetType: ENUMS.TargetType.MODULE_NODES.key,
+                    active: true,
                     data: {
                         schemaName: schemaModel.schemaName,
                         modelName: schemaModel.modelName,

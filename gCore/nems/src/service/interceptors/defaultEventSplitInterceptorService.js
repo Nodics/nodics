@@ -23,56 +23,52 @@ module.exports = {
                         model.state = ENUMS.EventState.PROCESSING.key;
                     }
                     model.targets = [];
-                    if (!model.targetType || model.targetType === ENUMS.TargetType.MODULE.key) {
+                    if (model.targetType === ENUMS.TargetType.MODULE_NODES.key) {
+                        let modules = SERVICE.DefaultRouterService.getModulesPool().getModules();
+                        let targetModule = modules[model.target] || modules.default;
+                        _.each(targetModule.getNodes(), (node, nodeId) => {
+                            if (!(model.skipSource && model.source === model.target + ':' + nodeId)) {
+                                model.targets.push({
+                                    targetNodeId: nodeId,
+                                    target: model.target
+                                });
+                            }
+                        });
+                    } else if (model.targetType === ENUMS.TargetType.EACH_MODULE.key) {
+                        _.each(SERVICE.DefaultRouterService.getModulesPool().getModules(), (moduleObj, moduleName) => {
+                            if (!model.excludeModules.includes(moduleName)) {
+                                let targetName = model.target;
+                                if (moduleName !== 'default') {
+                                    targetName = moduleName;
+                                }
+                                model.targets.push({
+                                    targetNodeId: model.targetNodeId,
+                                    target: targetName
+                                });
+                            }
+                        });
+                    } else if (model.targetType === ENUMS.TargetType.EACH_MODULE.key) {
+                        _.each(SERVICE.DefaultRouterService.getModulesPool().getModules(), (moduleObj, moduleName) => {
+                            if (!model.excludeModules.includes(moduleName)) {
+                                let targetName = model.target;
+                                if (moduleName !== 'default') {
+                                    targetName = moduleName;
+                                }
+                                _.each(moduleObj.getNodes(), (node, nodeId) => {
+                                    if (!(model.skipSource && model.source === targetName + ':' + nodeId)) {
+                                        model.targets.push({
+                                            targetNodeId: nodeId,
+                                            target: targetName
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    } else {
                         model.targets.push({
                             targetNodeId: model.targetNodeId,
                             target: model.target
                         });
-                    } else if (model.targetType === ENUMS.TargetType.EACH_MODULE.key) {
-                        model.targetType = ENUMS.TargetType.MODULE.key;
-                        let includedNems = false;
-                        _.each(SERVICE.DefaultRouterService.getModulesPool().getModules(), (moduleObj, moduleName) => {
-                            if (moduleName !== 'default' && !model.excludeModules.includes(moduleName)) {
-                                model.targets.push({
-                                    targetNodeId: model.targetNodeId,
-                                    target: moduleName
-                                });
-                            }
-                            if (moduleName === CONFIG.get('nemsModuleName')) {
-                                includedNems = true;
-                            }
-                        });
-                        if (!includedNems) {
-                            model.targets.push({
-                                targetNodeId: model.targetNodeId,
-                                target: CONFIG.get('nemsModuleName')
-                            });
-                        }
-                    } else if (model.targetType === ENUMS.TargetType.EACH_NODE.key) {
-                        model.targetType = ENUMS.TargetType.MODULE.key;
-                        let includedNems = false;
-                        _.each(SERVICE.DefaultRouterService.getModulesPool().getModules(), (moduleObj, moduleName) => {
-                            if (moduleName !== 'default' && !model.excludeModules.includes(moduleName)) {
-                                let nodes = SERVICE.DefaultRouterService.getModulesPool().getModule(moduleName).getNodes();
-                                _.each(nodes, (node, nodeId) => {
-                                    model.targets.push({
-                                        targetNodeId: nodeId,
-                                        target: moduleName
-                                    });
-                                });
-                            }
-                        });
-                        if (!includedNems) {
-                            let nodes = SERVICE.DefaultRouterService.getModulesPool().getModule('default').getNodes();
-                            _.each(nodes, (node, nodeId) => {
-                                model.targets.push({
-                                    targetNodeId: nodeId,
-                                    target: CONFIG.get('nemsModuleName')
-                                });
-                            });
-                        }
-                    } else {
-                        reject('Please validate target type in event definition');
                     }
                 }
                 resolve(true);

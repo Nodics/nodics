@@ -324,7 +324,7 @@ module.exports = {
                     target: searchModel.moduleName,
                     state: "NEW",
                     type: "ASYNC",
-                    targetType: ENUMS.TargetType.EACH_NODE.key,
+                    targetType: ENUMS.TargetType.EACH_MODULE_NODES.key,
                     active: true,
                     data: {
                         indexName: searchModel.indexName,

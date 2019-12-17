@@ -101,24 +101,16 @@ module.exports = {
             _.each(modules, function (moduleObject, moduleName) {
                 let app = {};
                 if (UTILS.isRouterEnabled(moduleName)) {
-                    if (CONFIG.get('server').options.runAsDefault || !moduleObject.app) {
-                        app = modules.default.app;
-                        _self.LOG.debug('Found default App for module : ' + moduleName);
-                    } else {
-                        app = moduleObject.app;
-                        _self.LOG.debug('Found module App for module : ' + moduleName);
-                    }
-                    if (!UTILS.isBlank(app)) {
-                        try {
-                            if (routers.operations && routers.operations.registerWeb) {
-                                routers.operations.registerWeb(app, moduleObject);
-                            }
-                            _self.activateRouters(app, moduleObject, moduleName, routers);
-                            resolve(true);
-                        } catch (error) {
-                            _self.LOG.error('While registration process of web path for module : ' + moduleName);
-                            reject(error);
+                    app = moduleObject.app || modules.default.app;
+                    try {
+                        if (routers.operations && routers.operations.registerWeb) {
+                            routers.operations.registerWeb(app, moduleObject);
                         }
+                        _self.activateRouters(app, moduleObject, moduleName, routers);
+                        resolve(true);
+                    } catch (error) {
+                        _self.LOG.error('While registration process of web path for module : ' + moduleName);
+                        reject(error);
                     }
                 }
             });
@@ -205,49 +197,34 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                if (CONFIG.get('server').options.runAsDefault) {
-                    if (!NODICS.getModules().default || !NODICS.getModules().default.app) {
-                        _self.LOG.error('Server configurations has not be initialized. Please verify.');
-                        process.exit(CONFIG.get('errorExitCode'));
+                _.each(NODICS.getModules(), function (value, moduleName) {
+                    if (UTILS.isRouterEnabled(moduleName)) {
+                        let app = {};
+                        let moduleConfig;
+                        let displayName = null;
+                        if (_self.getModulesPool().isAvailableModuleConfig(moduleName)) {
+                            moduleConfig = _self.getModuleServerConfig(moduleName);
+                            app = value.app;
+                            displayName = moduleName;
+                        } else {
+                            moduleConfig = _self.getModuleServerConfig('default');
+                            app = NODICS.getModules().default.app;
+                            displayName = 'default';
+                        }
+                        const httpPort = moduleConfig.getServer().getHttpPort();
+                        const httpsPort = moduleConfig.getServer().getHttpsPort();
+                        if (!httpPort) {
+                            _self.LOG.error('Please define listening PORT for module: ' + moduleName);
+                            process.exit(CONFIG.get('errorExitCode'));
+                        }
+                        if (!moduleConfig.isServerRunning()) {
+                            _self.registerListenEvents(displayName, httpPort, false, http.createServer(app)).listen(httpPort);
+                            _self.registerListenEvents(displayName, httpsPort, true, https.createServer(app)).listen(httpsPort);
+                            moduleConfig.setIsServerRunning(true);
+                        }
                     }
-                    let moduleConfig = _self.getModuleServerConfig('default');
-                    const httpPort = moduleConfig.getServer().getHttpPort();
-                    const httpsPort = moduleConfig.getServer().getHttpsPort();
-                    _self.registerListenEvents('default', httpPort, false, http.createServer(NODICS.getModules().default.app)).listen(httpPort);
-                    _self.registerListenEvents('default', httpsPort, true, https.createServer(NODICS.getModules().default.app)).listen(httpsPort);
-                    moduleConfig.setIsServerRunning(true);
-                    resolve(true);
-                } else {
-                    try {
-                        _.each(NODICS.getModules(), function (value, moduleName) {
-                            if (UTILS.isRouterEnabled(moduleName)) {
-                                let app = {};
-                                let moduleConfig;
-                                if (_self.getModulesPool().isAvailableModuleConfig(moduleName)) {
-                                    moduleConfig = _self.getModuleServerConfig(moduleName);
-                                    app = value.app;
-                                } else {
-                                    moduleConfig = _self.getModuleServerConfig('default');
-                                    app = NODICS.getModules().default.app;
-                                }
-                                const httpPort = moduleConfig.getServer().getHttpPort();
-                                const httpsPort = moduleConfig.getServer().getHttpsPort();
-                                if (!httpPort) {
-                                    _self.LOG.error('Please define listening PORT for module: ' + moduleName);
-                                    process.exit(CONFIG.get('errorExitCode'));
-                                }
-                                if (!moduleConfig.isServerRunning()) {
-                                    _self.registerListenEvents(moduleName, httpPort, false, http.createServer(app)).listen(httpPort);
-                                    _self.registerListenEvents(moduleName, httpsPort, true, https.createServer(app)).listen(httpsPort);
-                                    moduleConfig.setIsServerRunning(true);
-                                }
-                            }
-                        });
-                        resolve(true);
-                    } catch (err) {
-                        reject(err);
-                    }
-                }
+                });
+                resolve(true);
             } catch (error) {
                 reject(error);
             }

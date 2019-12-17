@@ -1,0 +1,1 @@
+This is a sample readme file for your kickoffLocalNode2 module

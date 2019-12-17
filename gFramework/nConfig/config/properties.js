@@ -18,6 +18,8 @@ module.exports = {
     */
     nodeId: 'node0',
 
+    systemId: 0,
+
     /*
         These values are used as system values, so can't be used as veriable or class name
     */

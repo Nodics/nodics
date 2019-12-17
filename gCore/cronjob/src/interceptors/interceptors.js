@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    preSaveCheckActiveValue: {
+    preSaveConvertToDateValue: {
         type: 'schema',
         item: 'cronJob',
         trigger: 'preSave',
@@ -18,14 +18,6 @@ module.exports = {
         index: 0,
         handler: 'DefaultStartValueValidatorInterceptorService.convertToDate'
     },
-    // preUpdateCheckActiveValue: {
-    //     type: 'schema',
-    //     item: 'event',
-    //     trigger: 'preUpdate',
-    //     active: 'true',
-    //     index: 0,
-    //     handler: 'DefaultStartValueValidatorInterceptorService.convertToDate'
-    // },
     postSaveStartJob: {
         type: 'schema',
         item: 'cronJob',

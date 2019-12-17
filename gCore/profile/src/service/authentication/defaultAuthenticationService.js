@@ -193,7 +193,7 @@ module.exports = {
                         state: "NEW",
                         type: "SYNC",
                         active: true,
-                        targetType: ENUMS.TargetType.EACH_NODE.key,
+                        targetType: ENUMS.TargetType.EACH_MODULE_NODES.key,
                         data: {
                             tenant: data.tenant,
                             oldKey: data.key,

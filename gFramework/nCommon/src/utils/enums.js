@@ -19,8 +19,9 @@ module.exports = {
             freez: false
         },
         definition: [
-            'EACH_NODE',
+            'EACH_MODULE_NODES',
             'EACH_MODULE',
+            'MODULE_NODES',
             'MODULE'
         ]
     },

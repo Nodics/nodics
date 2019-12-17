@@ -10,5 +10,35 @@
  */
 
 module.exports = {
+    dynamo: {
+        classConfiguration: {
+            super: 'super',
+            model: true,
+            service: true,
+            event: true,
+            router: true,
+            definition: {
+                body: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required index name'
+                }
+            }
+        },
 
+        routerConfiguration: {
+            super: 'super',
+            model: true,
+            service: true,
+            event: true,
+            router: true,
+            definition: {
+                body: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required index name'
+                }
+            }
+        }
+    }
 };
