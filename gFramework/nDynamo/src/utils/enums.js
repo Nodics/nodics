@@ -10,7 +10,19 @@
  */
 
 module.exports = {
-    getCurrentTimestamp: function () {
-        return new Date();
+    ClassType: {
+        _options: {
+            name: 'ClassType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'SERVICE',
+            'FACADE',
+            'CONTROLLER',
+            'UTILS'
+        ]
     }
 };

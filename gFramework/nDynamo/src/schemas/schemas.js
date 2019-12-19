@@ -17,11 +17,12 @@ module.exports = {
             service: true,
             event: true,
             router: true,
+            tenants: ['default'],
             definition: {
-                body: {
-                    type: 'string',
+                type: {
+                    enum: [ENUMS.ClassType.SERVICE.key, ENUMS.ClassType.FACADE.key, ENUMS.ClassType.CONTROLLER.key, ENUMS.ClassType.UTILS.key],
                     required: true,
-                    description: 'Required index name'
+                    description: 'What is type of class [SERVICE, FACADE, CONTROLLER, UTILS]'
                 }
             }
         },
@@ -32,9 +33,10 @@ module.exports = {
             service: true,
             event: true,
             router: true,
+            tenants: ['default'],
             definition: {
                 body: {
-                    type: 'string',
+                    type: 'object',
                     required: true,
                     description: 'Required index name'
                 }

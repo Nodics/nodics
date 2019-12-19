@@ -22,6 +22,11 @@ module.exports = {
         'initErrorRoutes',
         'initExtras'
     ],
+    requestHandler: {
+        jsonRequestHandler: 'DefaultJsonRequestHandlerService',
+        textRequestHandler: 'DefaultTextRequestHandlerService'
+    },
+
     responseHandler: {
         jsonResponseHandler: 'DefaultJsonResponseHandlerService',
         fileDownloadResponseHandler: 'DefaultFileDownloadResponseHandlerService'

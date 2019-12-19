@@ -80,7 +80,10 @@ module.exports = {
             });
         },
         put: function (app, routerDef) {
-            app.route(routerDef.url).put((req, res) => {
+            //let routerObj = new express.Router().use(SERVICE.DefaultJsonRequestHandlerService.getBodyParser);
+            var router = express.Router();
+            router.put(routerDef.url, (req, res) => {
+                console.log(routerDef.url);
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {

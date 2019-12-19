@@ -10,5 +10,12 @@
  */
 
 module.exports = {
-
+    saveClassConfiguration: {
+        type: 'schema',
+        item: 'classConfiguration',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultClassConfigurationSaveInterceptorService.mergeWithExisting'
+    },
 };

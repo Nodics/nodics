@@ -34,27 +34,31 @@ module.exports = {
     },
 
     startRequestHandlerPipeline: function (request, response, routerDef) {
-        let input = {
-            requestId: UTILS.generateUniqueCode(),
-            parentRequestId: request.get('requestId'),
-            router: routerDef,
-            httpRequest: request,
-            httpResponse: response,
-            protocal: request.protocol,
-            host: request.hostname,
-            originalUrl: request.originalUrl,
-            secured: routerDef.secured,
-            moduleName: routerDef.moduleName,
-            special: (routerDef.controller) ? false : true,
-            method: request.method,
-            body: request.body || {}
-        };
-        let responseHandler = CONFIG.get('responseHandler')[routerDef.responseHandler || 'jsonResponseHandler'];
-        SERVICE.DefaultPipelineService.start('requestHandlerPipeline', input, {}).then(success => {
-            SERVICE[responseHandler].handleSuccess(request, response, success);
-        }).catch(error => {
-            SERVICE[responseHandler].handleError(request, response, error);
+        console.log(request.body);
+        response.json({
+            success: true
         });
+        // let input = {
+        //     requestId: UTILS.generateUniqueCode(),
+        //     parentRequestId: request.get('requestId'),
+        //     router: routerDef,
+        //     httpRequest: request,
+        //     httpResponse: response,
+        //     protocal: request.protocol,
+        //     host: request.hostname,
+        //     originalUrl: request.originalUrl,
+        //     secured: routerDef.secured,
+        //     moduleName: routerDef.moduleName,
+        //     special: (routerDef.controller) ? false : true,
+        //     method: request.method,
+        //     body: request.body || {}
+        // };
+        // let responseHandler = CONFIG.get('responseHandler')[routerDef.responseHandler || 'jsonResponseHandler'];
+        // SERVICE.DefaultPipelineService.start('requestHandlerPipeline', input, {}).then(success => {
+        //     SERVICE[responseHandler].handleSuccess(request, response, success);
+        // }).catch(error => {
+        //     SERVICE[responseHandler].handleError(request, response, error);
+        // });
     },
 
     helpRequest: function (request, response, process) {

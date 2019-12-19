@@ -264,6 +264,7 @@ module.exports = {
                 originalModel: request.model,
                 model: request.model
             }, {}).then(success => {
+                console.log(request.model);
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
