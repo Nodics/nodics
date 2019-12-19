@@ -69,13 +69,7 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.preUpdate) {
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preUpdate), {
-                schemaModel: request.schemaModel,
-                tenant: request.tenant,
-                options: request.options || {},
-                query: request.query,
-                model: request.model
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preUpdate), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -94,13 +88,7 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
         if (validators && validators.preUpdate) {
-            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preUpdate), {
-                schemaModel: request.schemaModel,
-                tenant: request.tenant,
-                options: request.options || {},
-                query: request.query,
-                model: request.model
-            }, {}).then(success => {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preUpdate), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 response.error = {
@@ -253,13 +241,7 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
         if (validators && validators.postUpdate) {
-            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postUpdate), {
-                schemaModel: request.schemaModel,
-                tenant: request.tenant,
-                query: request.query,
-                model: request.model,
-                result: response.success.result
-            }, {}).then(success => {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postUpdate), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 response.error = {
@@ -280,13 +262,7 @@ module.exports = {
             let schemaName = request.schemaModel.schemaName;
             let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
             if (interceptors && interceptors.postUpdate) {
-                SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postUpdate), {
-                    schemaModel: request.schemaModel,
-                    tenant: request.tenant,
-                    query: request.query,
-                    model: request.model,
-                    result: response.success.result
-                }, {}).then(success => {
+                SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postUpdate), request, response).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, {

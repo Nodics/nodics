@@ -76,12 +76,7 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.preRemove) {
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preRemove), {
-                schemaModel: request.schemaModel,
-                tenant: request.tenant,
-                options: request.options || {},
-                query: request.query
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -100,12 +95,7 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
         if (validators && validators.preRemove) {
-            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preRemove), {
-                schemaModel: request.schemaModel,
-                tenant: request.tenant,
-                options: request.options || {},
-                query: request.query
-            }, {}).then(success => {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 response.error = {
@@ -258,12 +248,7 @@ module.exports = {
         let schemaName = request.schemaModel.schemaName;
         let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
         if (validators && validators.postRemove) {
-            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postRemove), {
-                schemaModel: request.schemaModel,
-                tenant: request.tenant,
-                query: request.query,
-                result: response.success.result
-            }, {}).then(success => {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 response.error = {
@@ -284,12 +269,7 @@ module.exports = {
             let schemaName = request.schemaModel.schemaName;
             let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
             if (interceptors && interceptors.postRemove) {
-                SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postRemove), {
-                    schemaModel: request.schemaModel,
-                    tenant: request.tenant,
-                    query: request.query,
-                    result: response.success.result
-                }, {}).then(success => {
+                SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postRemove), request, response).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, {

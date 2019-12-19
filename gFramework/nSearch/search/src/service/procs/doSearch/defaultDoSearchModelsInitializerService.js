@@ -84,17 +84,7 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.preDoSearch) {
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoSearch), {
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexName: request.searchModel.indexName,
-                typeName: request.searchModel.typeName,
-                tenant: request.tenant,
-                options: request.options,
-                query: request.query,
-                originalModel: request.model,
-                model: request.model
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoSearch), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -113,17 +103,7 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
         if (validators && validators.preDoSearch) {
-            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoSearch), {
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexName: request.searchModel.indexName,
-                typeName: request.searchModel.typeName,
-                tenant: request.tenant,
-                options: request.options,
-                query: request.query,
-                originalModel: request.model,
-                model: request.model
-            }, {}).then(success => {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoSearch), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {

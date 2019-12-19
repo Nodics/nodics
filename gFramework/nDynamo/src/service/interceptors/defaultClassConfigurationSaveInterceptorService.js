@@ -14,8 +14,9 @@ module.exports = {
     mergeWithExisting: function (request, responce) {
         return new Promise((resolve, reject) => {
             let currentModel = request.model;
+            console.log('====================================================');
             console.log(currentModel);
-            console.log('.............................');
+            console.log('...');
             SERVICE.DefaultClassConfigurationService.get({
                 tenant: 'default',
                 query: {
@@ -31,7 +32,16 @@ module.exports = {
                     active: currentModel.active || true
                 }, currentModel);
                 console.log(request.model);
-                console.log('.............................');
+                console.log('...');
+                request.model.body = JSON.stringify(request.model.body, function (key, value) {
+                    if (typeof value === 'function') {
+                        return value.toString();
+                    } else {
+                        return value;
+                    }
+                }, 4);
+                console.log(request.model);
+                console.log('====================================================');
                 resolve(true);
             }).catch(error => {
                 reject(error);

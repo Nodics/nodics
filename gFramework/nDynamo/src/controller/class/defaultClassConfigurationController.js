@@ -35,7 +35,7 @@ module.exports = {
         });
     },
 
-    save: function (request, callback) {
+    addClass: function (request, callback) {
         request.models = [requireFromString('module.exports = ' + request.httpRequest.body + ';')];
         if (callback) {
             FACADE.DefaultClassConfigurationFacade.save(request).then(success => {

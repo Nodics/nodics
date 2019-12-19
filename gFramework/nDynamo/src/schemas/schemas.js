@@ -16,7 +16,7 @@ module.exports = {
             model: true,
             service: true,
             event: true,
-            router: true,
+            router: false,
             tenants: ['default'],
             definition: {
                 type: {

@@ -12,8 +12,6 @@
 const Express = require('express');
 const path = require('path');
 
-var bodyParser = require('body-parser');
-
 module.exports = {
     operations: {
         registerWeb: function (moduleRouter, moduleObject) {

@@ -65,10 +65,7 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.preDoSaveProcessor && interceptors.preDoSaveProcessor.length > 0) {
-            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.preDoSaveProcessor), {
-                request: request,
-                response: response
-            }, {}).then(success => {
+            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.preDoSaveProcessor), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -145,10 +142,7 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.postDoSaveProcessor && interceptors.postDoSaveProcessor.length > 0) {
-            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.postDoSaveProcessor), {
-                request: request,
-                response: response
-            }, {}).then(success => {
+            SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.postDoSaveProcessor), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
