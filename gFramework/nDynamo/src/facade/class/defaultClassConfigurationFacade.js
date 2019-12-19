@@ -41,7 +41,7 @@ module.exports = {
         return SERVICE.DefaultClassConfigurationService.updateClass(request);
     },
 
-    removeClass: function (request) {
-        return SERVICE.DefaultClassConfigurationService.removeClass(request);
+    executeClass: function (request) {
+        return SERVICE.DefaultClassConfigurationService.executeClass(request);
     },
 };

@@ -36,47 +36,41 @@ module.exports = {
     },
 
     addClass: function (request, callback) {
-        request.models = [requireFromString('module.exports = ' + request.httpRequest.body + ';')];
+        request.body = requireFromString('module.exports = ' + request.httpRequest.body + ';');
         if (callback) {
-            FACADE.DefaultClassConfigurationFacade.save(request).then(success => {
+            FACADE.DefaultClassConfigurationFacade.addClass(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultClassConfigurationFacade.save(request);
+            return FACADE.DefaultClassConfigurationFacade.addClass(request);
         }
     },
 
-    remove: function (request, callback) {
+    updateClass: function (request, callback) {
+        request.body = requireFromString('module.exports = ' + request.httpRequest.body + ';');
         if (callback) {
-            callback('Delete operation is not supported');
+            FACADE.DefaultClassConfigurationFacade.updateClass(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
         } else {
-            return Promise.reject('Delete operation is not supported');
+            return FACADE.DefaultClassConfigurationFacade.updateClass(request);
         }
     },
 
-    removeById: function (request, callback) {
+    executeClass: function (request, callback) {
         if (callback) {
-            callback('Delete operation is not supported');
+            FACADE.DefaultClassConfigurationFacade.executeClass(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
         } else {
-            return Promise.reject('Delete operation is not supported');
+            return FACADE.DefaultClassConfigurationFacade.executeClass(request);
         }
     },
 
-    removeByCode: function (request, callback) {
-        if (callback) {
-            callback('Delete operation is not supported');
-        } else {
-            return Promise.reject('Delete operation is not supported');
-        }
-    },
-
-    update: function (request, callback) {
-        if (callback) {
-            callback('Update operation is not supported');
-        } else {
-            return Promise.reject('Update operation is not supported');
-        }
-    },
 };

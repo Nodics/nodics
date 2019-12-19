@@ -16,20 +16,59 @@ module.exports = {
             addClass: {
                 secured: true,
                 key: '/class/add',
-                method: 'POST',
-                handler: 'DefaultClassConfigurationController',
+                method: 'PUT',
+                controller: 'DefaultClassConfigurationController',
                 operation: 'addClass',
                 bodyParserHandler: 'textBodyParserHandler',
                 help: {
                     requestType: 'secured',
                     contentType: 'PLAIN|TEXT',
                     message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/config/class/add',
+                    body: {
+                        className: 'Name of the class',
+                        type: 'Type like SERVICE, FACADE, CONTROLLER, UTILS',
+                        body: 'definition of JavaScript litteral object'
+                    }
+                }
+            },
+            updateClass: {
+                secured: true,
+                key: '/class/update',
+                method: 'PATCH',
+                controller: 'DefaultClassConfigurationController',
+                operation: 'updateClass',
+                bodyParserHandler: 'textBodyParserHandler',
+                help: {
+                    requestType: 'secured',
+                    contentType: 'PLAIN|TEXT',
+                    message: 'authToken need to set within header',
+                    method: 'PATCH',
+                    url: 'http://host:port/nodics/config/class/add',
+                    body: {
+                        className: 'Name of the class',
+                        type: 'Type like SERVICE, FACADE, CONTROLLER, UTILS',
+                        body: 'definition of JavaScript litteral object'
+                    }
+                }
+            },
+            executeClass: {
+                secured: true,
+                key: '/class/execute',
+                method: 'POST',
+                controller: 'DefaultClassConfigurationController',
+                operation: 'executeClass',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
                     method: 'POST',
                     url: 'http://host:port/nodics/config/class/add',
                     body: {
-                        name: 'Name of the class',
+                        className: 'Name of the class',
                         type: 'Type like SERVICE, FACADE, CONTROLLER, UTILS',
-                        body: 'definition of JavaScript litteral object'
+                        operationName: 'Name of operation to execute',
+                        isReturnPromise: 'true if operation return Promise'
                     }
                 }
             },

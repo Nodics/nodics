@@ -11,36 +11,36 @@
 
 module.exports = {
     dynamo: {
-        classConfiguration: {
-            super: 'super',
-            model: true,
-            service: true,
-            event: true,
-            router: false,
-            tenants: ['default'],
-            definition: {
-                type: {
-                    enum: [ENUMS.ClassType.SERVICE.key, ENUMS.ClassType.FACADE.key, ENUMS.ClassType.CONTROLLER.key, ENUMS.ClassType.UTILS.key],
-                    required: true,
-                    description: 'What is type of class [SERVICE, FACADE, CONTROLLER, UTILS]'
-                }
-            }
-        },
+        // classConfiguration: {
+        //     super: 'super',
+        //     model: true,
+        //     service: true,
+        //     event: true,
+        //     router: false,
+        //     tenants: ['default'],
+        //     definition: {
+        //         type: {
+        //             enum: [ENUMS.ClassType.SERVICE.key, ENUMS.ClassType.FACADE.key, ENUMS.ClassType.CONTROLLER.key, ENUMS.ClassType.UTILS.key],
+        //             required: true,
+        //             description: 'What is type of class [SERVICE, FACADE, CONTROLLER, UTILS]'
+        //         }
+        //     }
+        // },
 
-        routerConfiguration: {
-            super: 'super',
-            model: true,
-            service: true,
-            event: true,
-            router: true,
-            tenants: ['default'],
-            definition: {
-                body: {
-                    type: 'object',
-                    required: true,
-                    description: 'Required index name'
-                }
-            }
-        }
+        // routerConfiguration: {
+        //     super: 'super',
+        //     model: true,
+        //     service: true,
+        //     event: true,
+        //     router: true,
+        //     tenants: ['default'],
+        //     definition: {
+        //         body: {
+        //             type: 'object',
+        //             required: true,
+        //             description: 'Required index name'
+        //         }
+        //     }
+        // }
     }
 };
