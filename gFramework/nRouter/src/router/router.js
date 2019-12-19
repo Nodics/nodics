@@ -12,9 +12,11 @@
 const Express = require('express');
 const path = require('path');
 
+var bodyParser = require('body-parser');
+
 module.exports = {
     operations: {
-        registerWeb: function (app, moduleObject) {
+        registerWeb: function (moduleRouter, moduleObject) {
             if (UTILS.isWebEnabled(moduleObject.metaData.name)) {
                 try {
                     moduleObject.webRootDirName = CONFIG.get('webRootDirName');
@@ -24,18 +26,17 @@ module.exports = {
                     moduleObject.entryHtmlPlugins = moduleConfig.getHtmlWebpackPlugin(moduleObject);
                     let webpackConfig = moduleConfig.getWebpackConfig(moduleObject);
                     const compiler = webpack(webpackConfig);
-                    app.use(require('webpack-dev-middleware')(compiler, {
+                    moduleRouter.use(require('webpack-dev-middleware')(compiler, {
                         publicPath: webpackConfig.output.publicPath,
                         writeToDisk: true
                     }));
-                    app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, Express.static(path.join(moduleObject.modulePath, '/' + moduleObject.webRootDirName)));
+                    moduleRouter.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, Express.static(path.join(moduleObject.modulePath, '/' + moduleObject.webRootDirName)));
                 } catch (error) {
                     SERVICE.DefaultRouterService.LOG.error(error);
                 }
             }
         },
         get: function (moduleRouter, routerDef) {
-            console.log(routerDef.url);
             moduleRouter.get(routerDef.url, (req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
@@ -50,10 +51,9 @@ module.exports = {
                 }
             });
         },
-        //app.route(routerDef.url)
         post: function (moduleRouter, routerDef) {
-            console.log(routerDef.url);
-            moduleRouter.post(routerDef.url, Express.json(), (req, res) => {
+            let bodyParserHandler = CONFIG.get('bodyParserHandler')[routerDef.bodyParserHandler] || CONFIG.get('bodyParserHandler').jsonBodyParserHandler;
+            moduleRouter.post(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(), (req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
@@ -68,8 +68,8 @@ module.exports = {
             });
         },
         delete: function (moduleRouter, routerDef) {
-            console.log(routerDef.url);
-            moduleRouter.delete(routerDef.url, (req, res) => {
+            let bodyParserHandler = CONFIG.get('bodyParserHandler')[routerDef.bodyParserHandler] || CONFIG.get('bodyParserHandler').jsonBodyParserHandler;
+            moduleRouter.delete(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(), (req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
@@ -84,9 +84,8 @@ module.exports = {
             });
         },
         put: function (moduleRouter, routerDef) {
-            //let routerObj = new express.Router().use(SERVICE.DefaultJsonRequestHandlerService.getBodyParser);
-            console.log(routerDef.url);
-            moduleRouter.put(routerDef.url, (req, res) => {
+            let bodyParserHandler = CONFIG.get('bodyParserHandler')[routerDef.bodyParserHandler] || CONFIG.get('bodyParserHandler').jsonBodyParserHandler;
+            moduleRouter.put(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(), (req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
@@ -101,8 +100,8 @@ module.exports = {
             });
         },
         patch: function (moduleRouter, routerDef) {
-            console.log(routerDef.url);
-            moduleRouter.patch(routerDef.url, (req, res) => {
+            let bodyParserHandler = CONFIG.get('bodyParserHandler')[routerDef.bodyParserHandler] || CONFIG.get('bodyParserHandler').jsonBodyParserHandler;
+            moduleRouter.patch(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(), (req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {

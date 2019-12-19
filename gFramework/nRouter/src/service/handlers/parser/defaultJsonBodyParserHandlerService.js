@@ -36,6 +36,9 @@ module.exports = {
     },
 
     getBodyParser: function (router) {
-        return bodyParser.text();
+        return [
+            bodyParser.urlencoded({ extended: true }),
+            bodyParser.json()
+        ];
     }
 };
