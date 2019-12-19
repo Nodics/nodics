@@ -11,6 +11,7 @@
  */
 
 const _ = require('lodash');
+const Express = require('express');
 
 module.exports = {
 
@@ -100,13 +101,15 @@ module.exports = {
         return new Promise((resolve, reject) => {
             _.each(modules, function (moduleObject, moduleName) {
                 let app = {};
+                let moduleRouter = {};
                 if (UTILS.isRouterEnabled(moduleName)) {
                     app = moduleObject.app || modules.default.app;
+                    moduleRouter = moduleObject.moduleRouter || modules.default.moduleRouter;
                     try {
                         if (routers.operations && routers.operations.registerWeb) {
                             routers.operations.registerWeb(app, moduleObject);
                         }
-                        _self.activateRouters(app, moduleObject, moduleName, routers);
+                        _self.activateRouters(moduleRouter, moduleObject, moduleName, routers);
                         resolve(true);
                     } catch (error) {
                         _self.LOG.error('While registration process of web path for module : ' + moduleName);
@@ -117,7 +120,7 @@ module.exports = {
         });
     },
 
-    activateRouters: function (app, moduleObject, moduleName, routers) {
+    activateRouters: function (moduleRouter, moduleObject, moduleName, routers) {
         let urlPrefix = moduleObject.metaData.prefix || moduleName;
         _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
             if (schemaObject.service && schemaObject.router) {
@@ -142,7 +145,7 @@ module.exports = {
                                     definition.cache = _.merge(definition.cache, routerLevelCache[schemaName][definition.method]);
                                 }
                                 NODICS.addRouter(definition.routerName, definition, moduleName);
-                                routers.operations[definition.method](app, definition);
+                                routers.operations[definition.method](moduleRouter, definition);
                             }
                         });
                     }
@@ -164,7 +167,7 @@ module.exports = {
                             definition.routerName = moduleName + '_' + routerName;
                             definition.routerName = definition.routerName.toLowerCase();
                             NODICS.addRouter(definition.routerName, definition, moduleName);
-                            routers.operations[definition.method](app, definition);
+                            routers.operations[definition.method](moduleRouter, definition);
                         }
                     });
                 }
@@ -185,7 +188,7 @@ module.exports = {
                             definition.routerName = moduleName + '_' + routerName;
                             definition.routerName = definition.routerName.toLowerCase();
                             NODICS.addRouter(definition.routerName, definition, moduleName);
-                            routers.operations[definition.method](app, definition);
+                            routers.operations[definition.method](moduleRouter, definition);
                         }
                     });
                 }
@@ -197,18 +200,20 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                _.each(NODICS.getModules(), function (value, moduleName) {
+                _.each(NODICS.getModules(), function (moduleObject, moduleName) {
                     if (UTILS.isRouterEnabled(moduleName)) {
                         let app = {};
                         let moduleConfig;
                         let displayName = null;
                         if (_self.getModulesPool().isAvailableModuleConfig(moduleName)) {
                             moduleConfig = _self.getModuleServerConfig(moduleName);
-                            app = value.app;
+                            app = moduleObject.app;
+                            app.use('/', moduleObject.moduleRouter);
                             displayName = moduleName;
                         } else {
                             moduleConfig = _self.getModuleServerConfig('default');
                             app = NODICS.getModules().default.app;
+                            app.use('/', NODICS.getModules().default.moduleRouter);
                             displayName = 'default';
                         }
                         const httpPort = moduleConfig.getServer().getHttpPort();
@@ -239,6 +244,7 @@ module.exports = {
             } else {
                 _self.LOG.error('Failed to start HTTP Server for module : ' + moduleName + ' on PORT : ' + port);
             }
+            _self.LOG.error(error);
         });
         server.on('listening', function () {
             if (isSecure) {

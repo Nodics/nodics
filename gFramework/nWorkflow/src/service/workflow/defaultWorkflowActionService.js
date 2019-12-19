@@ -38,12 +38,13 @@ module.exports = {
     },
 
     getTenantActiveWorkflowActions: function (tenants, itemCodes) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             if (!itemCodes) itemCodes = {};
             if (tenants && tenants.length > 0) {
                 let tenant = tenants.shift();
                 if (!itemCodes[tenant]) itemCodes[tenant] = [];
-                SERVICE.DefaultCronJobService.get({
+                _self.get({
                     tenant: tenant,
                     options: { noLimit: true },
                     query: SERVICE.DefaultWorkflowConfigurationService.getActionDefaultQuery()

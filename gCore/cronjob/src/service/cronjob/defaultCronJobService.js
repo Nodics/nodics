@@ -20,7 +20,7 @@ module.exports = {
 
     getTenantActiveJobs: function (tenants, jobCodes) {
         return new Promise((resolve, reject) => {
-            if (!jobCodes) jobCodes = {}
+            if (!jobCodes) jobCodes = {};
             if (tenants && tenants.length > 0) {
                 let tenant = tenants.shift();
                 if (!jobCodes[tenant]) jobCodes[tenant] = [];

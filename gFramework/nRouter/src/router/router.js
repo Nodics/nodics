@@ -9,7 +9,7 @@
 
  */
 
-const express = require('express');
+const Express = require('express');
 const path = require('path');
 
 module.exports = {
@@ -28,14 +28,15 @@ module.exports = {
                         publicPath: webpackConfig.output.publicPath,
                         writeToDisk: true
                     }));
-                    app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, express.static(path.join(moduleObject.modulePath, '/' + moduleObject.webRootDirName)));
+                    app.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, Express.static(path.join(moduleObject.modulePath, '/' + moduleObject.webRootDirName)));
                 } catch (error) {
                     SERVICE.DefaultRouterService.LOG.error(error);
                 }
             }
         },
-        get: function (app, routerDef) {
-            app.route(routerDef.url).get((req, res) => {
+        get: function (moduleRouter, routerDef) {
+            console.log(routerDef.url);
+            moduleRouter.get(routerDef.url, (req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
@@ -49,8 +50,10 @@ module.exports = {
                 }
             });
         },
-        post: function (app, routerDef) {
-            app.route(routerDef.url).post((req, res) => {
+        //app.route(routerDef.url)
+        post: function (moduleRouter, routerDef) {
+            console.log(routerDef.url);
+            moduleRouter.post(routerDef.url, Express.json(), (req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
@@ -64,8 +67,9 @@ module.exports = {
                 }
             });
         },
-        delete: function (app, routerDef) {
-            app.route(routerDef.url).delete((req, res) => {
+        delete: function (moduleRouter, routerDef) {
+            console.log(routerDef.url);
+            moduleRouter.delete(routerDef.url, (req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
@@ -79,11 +83,10 @@ module.exports = {
                 }
             });
         },
-        put: function (app, routerDef) {
+        put: function (moduleRouter, routerDef) {
             //let routerObj = new express.Router().use(SERVICE.DefaultJsonRequestHandlerService.getBodyParser);
-            var router = express.Router();
-            router.put(routerDef.url, (req, res) => {
-                console.log(routerDef.url);
+            console.log(routerDef.url);
+            moduleRouter.put(routerDef.url, (req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {
@@ -97,8 +100,9 @@ module.exports = {
                 }
             });
         },
-        patch: function (app, routerDef) {
-            app.route(routerDef.url).patch((req, res) => {
+        patch: function (moduleRouter, routerDef) {
+            console.log(routerDef.url);
+            moduleRouter.patch(routerDef.url, (req, res) => {
                 try {
                     SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
                 } catch (error) {

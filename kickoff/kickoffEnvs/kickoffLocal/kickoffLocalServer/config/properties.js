@@ -89,6 +89,24 @@ module.exports = {
                     httpsPort: 3005
                 }
             }
-        }
+        },
+        // profile: {
+        //     server: {
+        //         httpHost: 'localhost',
+        //         httpPort: 3002,
+
+        //         httpsHost: 'localhost',
+        //         httpsPort: 3003
+        //     }
+        // },
+        // cronjob: {
+        //     server: {
+        //         httpHost: 'localhost',
+        //         httpPort: 3004,
+
+        //         httpsHost: 'localhost',
+        //         httpsPort: 3005
+        //     }
+        // }
     }
 };
