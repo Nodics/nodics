@@ -15,7 +15,7 @@ module.exports = {
         classOperations: {
             addClass: {
                 secured: true,
-                key: '/class/add',
+                key: '/class/add/:className/:type',
                 method: 'PUT',
                 controller: 'DefaultClassConfigurationController',
                 operation: 'addClass',
@@ -25,7 +25,7 @@ module.exports = {
                     contentType: 'PLAIN|TEXT',
                     message: 'authToken need to set within header',
                     method: 'PUT',
-                    url: 'http://host:port/nodics/config/class/add',
+                    url: 'http://host:port/nodics/config/class/add/:className/:type',
                     body: {
                         className: 'Name of the class',
                         type: 'Type like SERVICE, FACADE, CONTROLLER, UTILS',

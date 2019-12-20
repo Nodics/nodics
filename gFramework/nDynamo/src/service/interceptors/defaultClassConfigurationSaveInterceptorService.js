@@ -11,7 +11,7 @@
 const _ = require('lodash');
 
 module.exports = {
-    mergeWithExisting: function (request, responce) {
+    mergeWithExisting: function (request, response) {
         return new Promise((resolve, reject) => {
             let currentModel = request.model;
             console.log('====================================================');
@@ -46,6 +46,15 @@ module.exports = {
             }).catch(error => {
                 reject(error);
             });
+        });
+    },
+
+    removeBody: function (request, response) {
+        return new Promise((resolve, reject) => {
+            if (response.model && response.model.result && response.model.result.body) {
+                delete response.model.result.body;
+            }
+            resolve(true);
         });
     }
 };

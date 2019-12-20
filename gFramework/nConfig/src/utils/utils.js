@@ -180,16 +180,7 @@ module.exports = {
             if (options.schemaObject.model) {
                 let entityName = options.modelName + options.postFix;
                 let fileName = options.currentDir + '/Default' + entityName + '.js';
-                let data = '/*\n' +
-                    '\tNodics - Enterprice Micro-Services Management Framework\n\n' +
-
-                    '\tCopyright (c) 2017 Nodics All rights reserved.\n\n' +
-
-                    '\tThis software is the confidential and proprietary information of Nodics ("Confidential Information")\n' +
-                    '\tYou shall not disclose such Confidential Information and shall use it only in accordance with the\n' +
-                    '\tterms of the license agreement you entered into with Nodics\n' +
-
-                    '*/\n\n';
+                let data = UTILS.getCopywriteComment();
                 if (!UTILS.isBlank(options.gVar)) {
                     _.each(options.gVar, (value, key) => {
                         data = data + value.value + '\n';
@@ -213,6 +204,19 @@ module.exports = {
                 resolve(true);
             }
         });
+    },
+
+    getCopywriteComment: function () {
+        return '/*\n' +
+            '\tNodics - Enterprice Micro-Services Management Framework\n\n' +
+
+            '\tCopyright (c) 2017 Nodics All rights reserved.\n\n' +
+
+            '\tThis software is the confidential and proprietary information of Nodics ("Confidential Information")\n' +
+            '\tYou shall not disclose such Confidential Information and shall use it only in accordance with the\n' +
+            '\tterms of the license agreement you entered into with Nodics\n' +
+
+            '*/\n\n';
     },
 
     replacePlaceholders: function (options) {

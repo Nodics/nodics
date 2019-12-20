@@ -84,9 +84,9 @@ module.exports = {
         });
     },
 
-    handleSyncEvents: function (request, responce) {
+    handleSyncEvents: function (request, response) {
         return new Promise((resolve, reject) => {
-            let events = request.response.success;
+            let events = response.success;
             let syncEvents = [];
             events.forEach(element => {
                 if (element.type === ENUMS.EventType.SYNC.key) {

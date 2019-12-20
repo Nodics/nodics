@@ -11,9 +11,13 @@
 
 module.exports = {
     common: {
-        saveClassConfigurationListener: {
+        classConfigurationSavedListener: {
             event: 'classConfigurationSave',
-            listener: 'DefaultClassConfigurationChangeListenerService.handleClassConfigurationChange'
-        }
+            listener: 'DefaultClassConfigurationChangeListenerService.handleClassUpdateEventHandler'
+        },
+        // classConfigurationUpdateListener: {
+        //     event: 'classConfigurationUpdate',
+        //     listener: 'DefaultClassConfigurationChangeListenerService.handleClassUpdateEventHandler'
+        // }
     }
 };

@@ -10,12 +10,12 @@
  */
 
 module.exports = {
-    saveClassConfiguration: {
+    postSaveClassConfiguration: {
         type: 'schema',
         item: 'classConfiguration',
-        trigger: 'preSave',
+        trigger: 'postSave',
         active: 'true',
         index: 0,
-        handler: 'DefaultClassConfigurationSaveInterceptorService.mergeWithExisting'
+        handler: 'DefaultClassConfigurationSaveInterceptorService.removeBody'
     },
 };

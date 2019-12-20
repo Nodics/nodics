@@ -36,7 +36,6 @@ module.exports = {
                 if (!input.model) {
                     reject('Invalid model value to save');
                 } else if (input.query && !UTILS.isBlank(input.query)) {
-                    console.log(input.model);
                     try {
                         this.findOneAndUpdate(input.query,
                             {
@@ -59,7 +58,6 @@ module.exports = {
                     }
                 } else {
                     try {
-                        console.log(input.model);
                         this.insertOne(input.model, {}).then(result => {
                             if (result.ops && result.ops.length > 0) {
                                 resolve(result.ops[0]);

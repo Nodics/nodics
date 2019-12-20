@@ -10,7 +10,10 @@
  */
 
 const _ = require('lodash');
+const util = require('util');
+const fs = require('fs');
 
+const RequireFromString = require('require-from-string');
 
 module.exports = {
 
@@ -36,7 +39,7 @@ module.exports = {
         });
     },
 
-    addClass: function (request) {
+    classAddEventHandler: function (request) {
         return new Promise((resolve, reject) => {
             if (!request.body.className) {
                 reject('ClassName can not be null or empty');
@@ -51,22 +54,132 @@ module.exports = {
         });
     },
 
-    updateClass: function (request) {
+    classUpdateEventHandler: function (request) {
+        let _self = this;
+        let body = request.result;
         return new Promise((resolve, reject) => {
-            if (!request.body.className) {
+            if (!body.code) {
                 reject('ClassName can not be null or empty');
-            } else if (!request.body.type || !GLOBAL[request.body.type]) {
-                reject('Invalid type: ' + request.body.type);
-            } else if (!GLOBAL[request.body.type][request.body.className.toUpperCaseFirstChar()]) {
-                reject('Class: ' + request.body.className + ' not exist, please validate your request');
-            } else {
-                GLOBAL[request.body.type][request.body.className.toUpperCaseFirstChar()] = _.merge(
-                    GLOBAL[request.body.type][request.body.className.toUpperCaseFirstChar()],
-                    request.body.body);
-                resolve('Successfully updated class: ' + request.body.className);
             }
+            this.get({
+                tenant: 'default',
+                query: {
+                    code: body.code
+                }
+            }).then(success => {
+                if (success.result && success.result.length > 0) {
+                    let classData = success.result[0];
+                    let classObject = RequireFromString(classData.body.toString('utf8'));
+                    if (global[classData.type]) {
+                        if (global[classData.type][classData.code.toUpperCaseFirstChar()]) {
+                            global[classData.type][classData.code.toUpperCaseFirstChar()] = _.merge(
+                                GLOBAL[classData.type][classData.code.toUpperCaseFirstChar()],
+                                classObject);
+                        } else {
+                            global[classData.type][classData.code.toUpperCaseFirstChar()] = classObject;
+                        }
+                        _self.LOG.debug('Successfully updated class: ' + classData.code);
+                        resolve('Successfully updated class: ' + classData.code);
+                    } else {
+                        _self.LOG.error('Invalid type: ' + classData.type);
+                        reject('Invalid type: ' + request.body.type);
+                    }
+                } else {
+                    _self.LOG.error('Could not found any data for class name ' + classData.code);
+                    reject('Could not found any data for class name ' + classData.code);
+                }
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
+
+    addClass: function (request) {
+        return new Promise((resolve, reject) => {
+            let className = request.className;
+            let type = request.type;
+            let body = request.body;
+            body = Buffer.from('module.exports = ' +
+                body.replace(/\\n/gm, '\n').replaceAll("\"", "") + ';');
+            this.save({
+                tenant: 'default',
+                moduleName: request.moduleName,
+                models: [{
+                    code: className,
+                    type: type,
+                    body: body
+                }]
+            }).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    publishClassAddedEvent: function (request) {
+        return new Promise((resolve, reject) => {
+            let event = {
+                tenant: 'default',
+                event: 'newClassAdded',
+                sourceName: request.moduleName,
+                sourceId: CONFIG.get('nodeId'),
+                target: request.moduleName,
+                state: "NEW",
+                type: "SYNC",
+                targetType: ENUMS.TargetType.MODULE_NODES.key,
+                active: true,
+                data: request.body
+            };
+            this.LOG.debug('Pushing event for class updated : ' + request.body.className);
+            SERVICE.DefaultEventService.publish(event).then(success => {
+                this.LOG.debug('Event successfully posted');
+                resolve(success);
+            }).catch(error => {
+                this.LOG.error('While posting model change event : ', error);
+                reject(error);
+            });
+        });
+    },
+
+    updateClass: function (request) {
+        return new Promise((resolve, reject) => {
+            this.publishClassUpdateEvent({
+                body: request.body,
+                moduleName: request.moduleName
+            }).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    publishClassUpdateEvent: function (request) {
+        return new Promise((resolve, reject) => {
+            let event = {
+                tenant: 'default',
+                event: 'newClassAdded',
+                sourceName: request.moduleName,
+                sourceId: CONFIG.get('nodeId'),
+                target: request.moduleName,
+                state: "NEW",
+                type: "SYNC",
+                targetType: ENUMS.TargetType.MODULE_NODES.key,
+                active: true,
+                data: request.body
+            };
+            this.LOG.debug('Pushing event for class updated : ' + request.body.className);
+            SERVICE.DefaultEventService.publish(event).then(success => {
+                this.LOG.debug('Event successfully posted');
+                resolve(success);
+            }).catch(error => {
+                this.LOG.error('While posting model change event : ', error);
+                reject(error);
+            });
+        });
+    },
+
 
     executeClass: function (request) {
         return new Promise((resolve, reject) => {
@@ -79,16 +192,27 @@ module.exports = {
             } else if (!request.body.operationName || !GLOBAL[request.body.type][request.body.className.toUpperCaseFirstChar()][request.body.operationName]) {
                 reject('Operation name: ' + request.body.operationName + ' can not be null or empty');
             } else {
-                let entity = GLOBAL[request.body.type][request.body.className.toUpperCaseFirstChar()];
+                let entityString = request.body.type + '.' + request.body.className.toUpperCaseFirstChar() + '.' + request.body.operationName;
+                entityString = entityString + '(';
+                if (request.body.params && request.body.params.length > 0) {
+                    for (let counter = 0; counter < request.body.params.length; counter++) {
+                        entityString = entityString + 'request.body.params[' + counter + ']';
+                        if (counter <= request.body.params.length - 1) {
+                            entityString = entityString + ',';
+                        }
+                    }
+                }
+                entityString = entityString + ')';
+                console.log(entityString);
                 if (request.body.isReturnPromise) {
-                    entity[request.body.operationName]().then(success => {
+                    eval(entityString).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 } else {
                     try {
-                        let response = entity[request.body.operationName]();
+                        let response = eval(entityString);
                         if (response) {
                             resolve({
                                 success: true,
@@ -102,6 +226,7 @@ module.exports = {
                         reject(error);
                     }
                 }
+
             }
         });
     }
