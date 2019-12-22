@@ -36,10 +36,8 @@ module.exports = {
     },
 
     addClass: function (request, callback) {
-        //request.body = requireFromString('module.exports = ' + request.httpRequest.body + ';');
         request.className = request.httpRequest.params.className;
         request.type = request.httpRequest.params.type;
-
         request.body = request.httpRequest.body;
         if (callback) {
             FACADE.DefaultClassConfigurationFacade.addClass(request).then(success => {

@@ -8,6 +8,10 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
+const RequireFromString = require('require-from-string');
 
 module.exports = {
 

@@ -10,9 +10,6 @@
  */
 
 const _ = require('lodash');
-const util = require('util');
-const fs = require('fs');
-
 const RequireFromString = require('require-from-string');
 
 module.exports = {
@@ -39,18 +36,60 @@ module.exports = {
         });
     },
 
-    classAddEventHandler: function (request) {
+    finalizeClass: function (className, body) {
+        let byteBody = null;
         return new Promise((resolve, reject) => {
-            if (!request.body.className) {
-                reject('ClassName can not be null or empty');
-            } else if (!request.body.type || !GLOBAL[request.body.type]) {
-                reject('Invalid type: ' + request.body.type);
-            } else if (GLOBAL[request.body.type][request.body.className.toUpperCaseFirstChar()]) {
-                reject('Class: ' + request.body.className + ' already exist, Please use update API');
-            } else {
-                GLOBAL[request.body.type][request.body.className.toUpperCaseFirstChar()] = request.body.body;
-                resolve('Successfully registered class: ' + request.body.className);
-            }
+            SERVICE.DefaultClassConfigurationService.get({
+                tenant: 'default',
+                query: {
+                    code: className
+                }
+            }).then(success => {
+                if (success.result && success.result.length > 0 && success.result[0].body) {
+                    let currentClassBody = RequireFromString('module.exports = ' +
+                        body.replace(/\\n/gm, '\n').replaceAll("\"", "") + ';');
+                    let mergedClass = _.merge(RequireFromString(success.result[0].body.toString('utf8')), currentClassBody);
+                    let finalClassData = JSON.stringify(mergedClass, function (key, value) {
+                        if (typeof value === 'function') {
+                            return value.toString();
+                        } else if (typeof value === 'string') {
+                            return '\'' + value + '\'';
+                        } else {
+                            return value;
+                        }
+                    }, 4);
+                    finalClassData = 'module.exports = ' + finalClassData.replace(/\\n/gm, '\n').replace(/\\t/gm, '').replaceAll("\"", "") + ';';
+                    byteBody = Buffer.from(finalClassData, 'utf8');
+                } else {
+                    byteBody = Buffer.from(body, 'utf8');
+                }
+                resolve(byteBody);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    addClass: function (request) {
+        return new Promise((resolve, reject) => {
+            let className = request.className;
+            let type = request.type;
+            this.finalizeClass(className, request.body).then(success => {
+                this.save({
+                    tenant: 'default',
+                    models: [{
+                        code: className,
+                        type: type,
+                        body: success
+                    }]
+                }).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 
@@ -94,93 +133,6 @@ module.exports = {
         });
     },
 
-    addClass: function (request) {
-        return new Promise((resolve, reject) => {
-            let className = request.className;
-            let type = request.type;
-            let body = request.body;
-            body = Buffer.from('module.exports = ' +
-                body.replace(/\\n/gm, '\n').replaceAll("\"", "") + ';');
-            this.save({
-                tenant: 'default',
-                moduleName: request.moduleName,
-                models: [{
-                    code: className,
-                    type: type,
-                    body: body
-                }]
-            }).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
-
-    publishClassAddedEvent: function (request) {
-        return new Promise((resolve, reject) => {
-            let event = {
-                tenant: 'default',
-                event: 'newClassAdded',
-                sourceName: request.moduleName,
-                sourceId: CONFIG.get('nodeId'),
-                target: request.moduleName,
-                state: "NEW",
-                type: "SYNC",
-                targetType: ENUMS.TargetType.MODULE_NODES.key,
-                active: true,
-                data: request.body
-            };
-            this.LOG.debug('Pushing event for class updated : ' + request.body.className);
-            SERVICE.DefaultEventService.publish(event).then(success => {
-                this.LOG.debug('Event successfully posted');
-                resolve(success);
-            }).catch(error => {
-                this.LOG.error('While posting model change event : ', error);
-                reject(error);
-            });
-        });
-    },
-
-    updateClass: function (request) {
-        return new Promise((resolve, reject) => {
-            this.publishClassUpdateEvent({
-                body: request.body,
-                moduleName: request.moduleName
-            }).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
-
-    publishClassUpdateEvent: function (request) {
-        return new Promise((resolve, reject) => {
-            let event = {
-                tenant: 'default',
-                event: 'newClassAdded',
-                sourceName: request.moduleName,
-                sourceId: CONFIG.get('nodeId'),
-                target: request.moduleName,
-                state: "NEW",
-                type: "SYNC",
-                targetType: ENUMS.TargetType.MODULE_NODES.key,
-                active: true,
-                data: request.body
-            };
-            this.LOG.debug('Pushing event for class updated : ' + request.body.className);
-            SERVICE.DefaultEventService.publish(event).then(success => {
-                this.LOG.debug('Event successfully posted');
-                resolve(success);
-            }).catch(error => {
-                this.LOG.error('While posting model change event : ', error);
-                reject(error);
-            });
-        });
-    },
-
-
     executeClass: function (request) {
         return new Promise((resolve, reject) => {
             if (!request.body.className) {
@@ -203,7 +155,6 @@ module.exports = {
                     }
                 }
                 entityString = entityString + ')';
-                console.log(entityString);
                 if (request.body.isReturnPromise) {
                     eval(entityString).then(success => {
                         resolve(success);
@@ -226,7 +177,6 @@ module.exports = {
                         reject(error);
                     }
                 }
-
             }
         });
     }
