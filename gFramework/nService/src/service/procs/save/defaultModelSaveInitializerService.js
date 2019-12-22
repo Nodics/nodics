@@ -538,7 +538,7 @@ module.exports = {
         this.LOG.debug('Triggering event for modified model');
         try {
             let schemaModel = request.schemaModel;
-            if (response.model.result && schemaModel.rawSchema.event) {
+            if (response.model.result && schemaModel.rawSchema.event && schemaModel.rawSchema.event.enabled) {
                 let event = {
                     tenant: request.tenant,
                     event: schemaModel.schemaName + 'Save',
@@ -546,8 +546,8 @@ module.exports = {
                     sourceId: CONFIG.get('nodeId'),
                     target: schemaModel.moduleName,
                     state: "NEW",
-                    type: "SYNC",
-                    targetType: ENUMS.TargetType.EACH_MODULE_NODES.key,
+                    type: schemaModel.rawSchema.event.type || "ASYNC",
+                    targetType: schemaModel.rawSchema.event.targetType || ENUMS.TargetType.MODULE_NODES.key,
                     active: true,
                     data: {
                         schemaName: schemaModel.schemaName,

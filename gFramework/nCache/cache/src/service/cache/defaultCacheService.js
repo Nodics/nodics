@@ -254,22 +254,23 @@ module.exports = {
                     });
                 } else {
                     let modelName = UTILS.createModelName(request.config.schemaName);
-                    NODICS.getActiveTenants().forEach(tntName => {
-                        let model = NODICS.getModels(request.moduleName, tntName)[modelName];
-                        if (model) {
-                            model.cache = _.merge(model.cache, request.config.cache || {});
-                            resolve({
-                                success: true,
-                                code: 'SUC_CACHE_00000'
-                            });
-                        } else {
-                            reject({
-                                success: false,
-                                code: 'ERR_CACHE_00007',
-                                msg: 'Invalid schemaName: ' + request.config.schemaName + ' to update item cache'
-                            });
-                        }
-                    });
+                    try {
+                        NODICS.getActiveTenants().forEach(tntName => {
+                            let model = NODICS.getModels(request.moduleName, tntName)[modelName];
+                            if (model) {
+                                model.cache = _.merge(model.cache, request.config.cache || {});
+                            } else {
+                                throw new Error('Invalid schemaName: ' + request.config.schemaName + ' to update item cache');
+                            }
+                        });
+                    } catch (error) {
+                        reject({
+                            success: false,
+                            code: 'ERR_CACHE_00007',
+                            msg: error.toString()
+                        });
+                    }
+
                 }
             } catch (error) {
                 reject({

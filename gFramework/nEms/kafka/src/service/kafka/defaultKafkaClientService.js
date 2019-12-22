@@ -136,7 +136,7 @@ module.exports = {
                     }
                 });
             } catch (error) {
-                console.log(error);
+                this.LOG.error(error);
                 reject({
                     success: false,
                     code: 'ERR_EMS_00000',

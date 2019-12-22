@@ -19,7 +19,6 @@ module.exports = {
                 enabled: true,
                 ttl: 3600
             },
-            event: false,
             router: true,
             definition: {
                 type: {

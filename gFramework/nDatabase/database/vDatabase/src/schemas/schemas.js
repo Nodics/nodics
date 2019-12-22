@@ -15,7 +15,6 @@ module.exports = {
             super: 'super',
             model: false,
             service: false,
-            event: false,
             router: false,
             versioned: true,
             definition: {

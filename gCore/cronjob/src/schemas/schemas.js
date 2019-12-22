@@ -15,7 +15,6 @@ module.exports = {
             super: 'super',
             model: true,
             service: true,
-            event: false,
             router: true,
             search: {
                 enabled: true,
@@ -40,7 +39,6 @@ module.exports = {
                 enabled: false,
                 ttl: 100
             },
-            event: false,
             router: true,
             virtualProperties: {
                 fullname: 'DefaultCronJobVirtualService.getFullName',

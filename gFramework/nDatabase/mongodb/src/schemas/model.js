@@ -10,14 +10,12 @@
  */
 
 const _ = require('lodash');
-const util = require('util');
 
 module.exports = {
     default: {
         getItems: function (input) {
             return new Promise((resolve, reject) => {
                 try {
-                    //console.log(util.inspect(input.query, false, 5));
                     this.find(input.query, input.options).toArray((error, result) => {
                         if (error) {
                             reject(error);

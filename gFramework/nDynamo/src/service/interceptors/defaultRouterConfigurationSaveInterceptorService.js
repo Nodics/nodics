@@ -12,12 +12,15 @@ const _ = require('lodash');
 
 module.exports = {
 
-    removeBody: function (request, response) {
+
+    checkIfModuleActiveForRouter: function (request, response) {
         return new Promise((resolve, reject) => {
-            if (response.model && response.model.result && response.model.result.body) {
-                delete response.model.result.body;
+            let moduleName = request.model.moduleName;
+            if (moduleName && (moduleName === 'default' || moduleName === 'common' || UTILS.isRouterEnabled(moduleName))) {
+                resolve(true);
+            } else {
+                reject('Invalid moduleName, it should not be null or inactive for routers');
             }
-            resolve(true);
         });
     }
 };

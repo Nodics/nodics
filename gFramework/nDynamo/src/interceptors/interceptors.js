@@ -18,4 +18,13 @@ module.exports = {
         index: 0,
         handler: 'DefaultClassConfigurationSaveInterceptorService.removeBody'
     },
+
+    preSaveRouterConfiguration: {
+        type: 'schema',
+        item: 'routerConfiguration',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultClassConfigurationSaveInterceptorService.removeBody'
+    },
 };

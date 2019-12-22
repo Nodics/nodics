@@ -8,10 +8,6 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-const _ = require('lodash');
-const fs = require('fs');
-const path = require('path');
-const RequireFromString = require('require-from-string');
 
 module.exports = {
 
@@ -37,19 +33,11 @@ module.exports = {
         });
     },
 
-    getClass: function (request) {
-        return SERVICE.DefaultClassConfigurationService.getClass(request);
+    handleSuccess: function (request, response, success) {
+        response.send(success);
     },
 
-    getSnapshot: function (request) {
-        return SERVICE.DefaultClassConfigurationService.getSnapshot(request);
-    },
-
-    updateClass: function (request) {
-        return SERVICE.DefaultClassConfigurationService.updateClass(request);
-    },
-
-    executeClass: function (request) {
-        return SERVICE.DefaultClassConfigurationService.executeClass(request);
-    },
+    handleError: function (request, response, error) {
+        response.json(error);
+    }
 };

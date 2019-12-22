@@ -172,8 +172,6 @@ module.exports = {
                         if (individualIndexes && individualIndexes.length > 0) {
                             indexedFields = indexedFields.concat(individualIndexes);
                         }
-                        // console.log('---------------------------------: ', options.schemaName);
-                        // console.log(util.inspect(indexedFields, false, 6));
                     }
                     if (!schema.schemaOptions) {
                         schema.schemaOptions = {};
@@ -291,8 +289,6 @@ module.exports = {
                                 });
                             }
                             let finalIndexes = _self.finalizeIndexes(schemaOptions.indexedFields, indexes, cleanOrphan);
-                            //console.log('  ++++++++++ ', finalIndexes.create);
-                            //console.log('  ---------- ', finalIndexes.drop);
                             let response = {
                                 success: {},
                                 failed: {}

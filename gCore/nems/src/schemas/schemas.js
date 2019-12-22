@@ -15,7 +15,6 @@ module.exports = {
             super: 'super',
             model: true,
             service: true,
-            event: false,
             router: true,
             definition: {
                 sourceName: {
@@ -84,7 +83,6 @@ module.exports = {
             super: 'event',
             model: true,
             service: true,
-            event: false,
             router: false
         }
     }

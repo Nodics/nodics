@@ -15,7 +15,6 @@ module.exports = {
             super: 'super',
             model: true,
             service: true,
-            event: false,
             cache: {
                 enabled: true,
                 ttl: 100
@@ -38,7 +37,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: false,
             router: true,
             cache: {
                 enabled: true,
@@ -113,7 +111,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: false,
             router: true,
             definition: {
                 prefix: {
@@ -143,7 +140,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: false,
             cache: {
                 enabled: true,
                 ttl: 360
@@ -255,7 +251,6 @@ module.exports = {
             super: 'super',
             model: true,
             service: true,
-            event: false,
             router: false,
             definition: {
                 personId: {
@@ -289,7 +284,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: false,
             router: true,
             definition: {
                 name: {
@@ -315,7 +309,6 @@ module.exports = {
             super: 'super',
             model: true,
             service: true,
-            event: false,
             router: false,
             definition: {
                 loginId: {
@@ -336,7 +329,6 @@ module.exports = {
             super: 'base',
             model: false,
             service: false,
-            event: false,
             router: false,
             refSchema: {
                 password: {
@@ -445,7 +437,6 @@ module.exports = {
             super: 'user',
             model: true,
             service: true,
-            event: false,
             router: true,
             definition: {
                 apiKey: {
@@ -460,7 +451,6 @@ module.exports = {
             super: 'user',
             model: true,
             service: true,
-            event: false,
             router: true,
             cache: {
                 enabled: true,

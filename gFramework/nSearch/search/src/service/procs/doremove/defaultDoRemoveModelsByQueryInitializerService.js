@@ -225,7 +225,7 @@ module.exports = {
         this.LOG.debug('Triggering event for modified model');
         try {
             let searchModel = request.searchModel;
-            if (response.success.success && searchModel.indexDef.event) {
+            if (response.success.success && searchModel.indexDef.event && searchModel.indexDef.event.enabled) {
                 let event = {
                     tenant: request.tenant || 'default',
                     event: 'searchItemRemoved',
@@ -233,8 +233,8 @@ module.exports = {
                     sourceId: CONFIG.get('nodeId'),
                     target: searchModel.moduleName,
                     state: "NEW",
-                    type: "ASYNC",
-                    targetType: ENUMS.TargetType.MODULE_NODES.key,
+                    type: searchModel.indexDef.event.type || "ASYNC",
+                    targetType: searchModel.indexDef.event.targetType || ENUMS.TargetType.MODULE_NODES.key,
                     active: true,
                     data: {
                         indexName: searchModel.indexName,

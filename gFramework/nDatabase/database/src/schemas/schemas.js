@@ -14,8 +14,11 @@ module.exports = {
         super: {
             model: false,
             service: false,
-            event: false,
             router: false,
+            event: {
+                enabled: false,
+                type: 'ASYNC'
+            },
             definition: {
                 active: {
                     type: 'bool',
@@ -61,7 +64,6 @@ module.exports = {
             super: 'super',
             model: false,
             service: false,
-            event: false,
             router: false,
             definition: {
                 code: {

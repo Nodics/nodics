@@ -18,7 +18,6 @@ module.exports = {
             super: 'super',
             model: true,
             service: true,
-            event: false,
             router: false,
             definition: {
                 indexName: {
@@ -54,7 +53,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: false,
             router: true,
             definition: {
                 indexName: {
@@ -91,7 +89,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: false,
             router: true,
             definition: {
                 name: {
@@ -233,7 +230,6 @@ module.exports = {
             super: 'super',
             model: true,
             service: true,
-            event: false,
             router: true,
             refSchema: {
                 tenant: {

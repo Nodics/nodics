@@ -29,6 +29,7 @@ module.exports = {
 
     responseHandler: {
         jsonResponseHandler: 'DefaultJsonResponseHandlerService',
+        textResponseHandler: 'DefaultTextResponseHandlerService',
         fileDownloadResponseHandler: 'DefaultFileDownloadResponseHandlerService'
     },
     server: {

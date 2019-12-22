@@ -337,7 +337,7 @@ module.exports = {
         this.LOG.debug('Triggering event for removed models');
         try {
             let schemaModel = request.schemaModel;
-            if (response.success && response.success.result && schemaModel.rawSchema.event) {
+            if (response.success && response.success.result && schemaModel.rawSchema.event && schemaModel.rawSchema.event.enabled) {
                 let event = {
                     tenant: request.tenant,
                     event: schemaModel.schemaName + 'Removed',
@@ -345,8 +345,8 @@ module.exports = {
                     sourceId: CONFIG.get('nodeId'),
                     target: schemaModel.moduleName,
                     state: "NEW",
-                    type: "ASYNC",
-                    targetType: ENUMS.TargetType.MODULE_NODES.key,
+                    type: schemaModel.rawSchema.event.type || "ASYNC",
+                    targetType: schemaModel.rawSchema.event.targetType || ENUMS.TargetType.MODULE_NODES.key,
                     active: true,
                     data: {
                         schemaName: schemaModel.schemaName,

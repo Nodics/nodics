@@ -35,7 +35,35 @@ module.exports = {
         });
     },
 
-    addClass: function (request, callback) {
+
+    getClass: function (request, callback) {
+        request.className = request.httpRequest.params.className;
+        if (callback) {
+            FACADE.DefaultClassConfigurationFacade.getClass(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultClassConfigurationFacade.getClass(request);
+        }
+    },
+
+    getSnapshot: function (request, callback) {
+        request.className = request.httpRequest.params.className;
+        request.type = request.httpRequest.params.type;
+        if (callback) {
+            FACADE.DefaultClassConfigurationFacade.getSnapshot(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultClassConfigurationFacade.getSnapshot(request);
+        }
+    },
+
+    updateClass: function (request, callback) {
         request.className = request.httpRequest.params.className;
         request.type = request.httpRequest.params.type;
         request.body = request.httpRequest.body;
@@ -50,18 +78,6 @@ module.exports = {
         }
     },
 
-    updateClass: function (request, callback) {
-        request.body = requireFromString('module.exports = ' + request.httpRequest.body + ';');
-        if (callback) {
-            FACADE.DefaultClassConfigurationFacade.updateClass(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultClassConfigurationFacade.updateClass(request);
-        }
-    },
 
     executeClass: function (request, callback) {
         if (callback) {

@@ -33,21 +33,42 @@ module.exports = {
         });
     },
 
-    addRouter: function (request) {
+    routerUpdateEventHandler: function (request) {
+        let _self = this;
+        let body = request.result;
         return new Promise((resolve, reject) => {
-            resolve('Successfully processed your request');
-        });
-    },
-
-    updateRouter: function (request) {
-        return new Promise((resolve, reject) => {
-            resolve('Successfully processed your request');
-        });
-    },
-
-    removeRouter: function (request) {
-        return new Promise((resolve, reject) => {
-            resolve('Successfully processed your request');
+            if (!body.code) {
+                reject('ClassName can not be null or empty');
+            } else {
+                this.get({
+                    tenant: 'default',
+                    query: {
+                        code: body.code
+                    }
+                }).then(success => {
+                    try {
+                        if (success.result && success.result.length > 0) {
+                            let routers = {};
+                            let routerDefinition = success.result[0];
+                            routers[routerDefinition.moduleName] = {};
+                            routers[routerDefinition.moduleName].tempGroup = {};
+                            routers[routerDefinition.moduleName].tempGroup[routerDefinition.code] = routerDefinition;
+                            SERVICE.DefaultRouterService.registerRouter(routers, true).then(success => {
+                                resolve('Router successfully activated');
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
+                            _self.LOG.error('Could not found any data for router name ' + body.code);
+                            reject('Could not found any data for class name ' + body.code);
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            }
         });
     },
 };

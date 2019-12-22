@@ -15,7 +15,6 @@ module.exports = {
             super: 'super',
             model: true,
             service: true,
-            event: false,
             router: true,
             cache: {
                 enabled: true,
@@ -43,7 +42,6 @@ module.exports = {
             super: 'super',
             model: true,
             service: true,
-            event: false,
             router: true,
             cache: {
                 enabled: true,

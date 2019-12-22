@@ -36,6 +36,81 @@ module.exports = {
         });
     },
 
+    getClass: function (request) {
+        return new Promise((resolve, reject) => {
+            let className = request.className;
+            SERVICE.DefaultClassConfigurationService.get({
+                tenant: 'default',
+                query: {
+                    code: className
+                }
+            }).then(success => {
+                let classDefinition = 'No data found for class: ' + className;
+                if (success.result && success.result.length > 0 && success.result[0].body) {
+                    classDefinition = success.result[0].body.toString('utf8');
+                    classDefinition = classDefinition.replaceAll('\n', '').replaceAll("\"", "");
+                }
+                resolve(classDefinition);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    getSnapshot: function (request) {
+        return new Promise((resolve, reject) => {
+            let className = request.className;
+            let type = request.type;
+            if (!type || !global[type]) {
+                reject('Invlid type: ' + type);
+            } else if (!className || !global[type][className]) {
+                reject('Invlid className: ' + className);
+            } else {
+                var cache = [];
+                let finalClassData = JSON.stringify(global[type][className], function (key, value) {
+                    if (typeof value === 'object' && value !== null) {
+                        if (cache.indexOf(value) !== -1) {
+                            return;
+                        }
+                        cache.push(value);
+                    }
+                    if (typeof value === 'function') {
+                        return value.toString();
+                    } else if (typeof value === 'string') {
+                        return '\'' + value + '\'';
+                    } else {
+                        return value;
+                    }
+                }, 4);
+                resolve('module.exports = ' + finalClassData.replace(/\\n/gm, '\n').replace(/\\t/gm, '').replaceAll("\"", "") + ';');
+            }
+        });
+    },
+
+
+    updateClass: function (request) {
+        return new Promise((resolve, reject) => {
+            let className = request.className;
+            let type = request.type;
+            this.finalizeClass(className, request.body).then(success => {
+                this.save({
+                    tenant: 'default',
+                    models: [{
+                        code: className,
+                        type: type,
+                        body: success
+                    }]
+                }).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
     finalizeClass: function (className, body) {
         let byteBody = null;
         return new Promise((resolve, reject) => {
@@ -70,29 +145,6 @@ module.exports = {
         });
     },
 
-    addClass: function (request) {
-        return new Promise((resolve, reject) => {
-            let className = request.className;
-            let type = request.type;
-            this.finalizeClass(className, request.body).then(success => {
-                this.save({
-                    tenant: 'default',
-                    models: [{
-                        code: className,
-                        type: type,
-                        body: success
-                    }]
-                }).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
-
     classUpdateEventHandler: function (request) {
         let _self = this;
         let body = request.result;
@@ -117,15 +169,15 @@ module.exports = {
                         } else {
                             global[classData.type][classData.code.toUpperCaseFirstChar()] = classObject;
                         }
-                        _self.LOG.debug('Successfully updated class: ' + classData.code);
-                        resolve('Successfully updated class: ' + classData.code);
+                        _self.LOG.debug('Successfully updated class: ' + body.code);
+                        resolve('Successfully updated class: ' + body.code);
                     } else {
-                        _self.LOG.error('Invalid type: ' + classData.type);
+                        _self.LOG.error('Invalid type: ' + body.code);
                         reject('Invalid type: ' + request.body.type);
                     }
                 } else {
-                    _self.LOG.error('Could not found any data for class name ' + classData.code);
-                    reject('Could not found any data for class name ' + classData.code);
+                    _self.LOG.error('Could not found any data for class name ' + body.code);
+                    reject('Could not found any data for class name ' + body.code);
                 }
             }).catch(error => {
                 reject(error);

@@ -1,8 +1,8 @@
 module.exports = {
 
-    handleClassUpdateEventHandler: function (event, callback) {
+    handleRouterUpdateEventHandler: function (event, callback) {
         try {
-            SERVICE.DefaultClassConfigurationService.classUpdateEventHandler(event.data).then(success => {
+            SERVICE.DefaultRouterConfigurationService.routerUpdateEventHandler(event.data).then(success => {
                 callback(null, {
                     success: true,
                     code: 'SUC_EVNT_00000',

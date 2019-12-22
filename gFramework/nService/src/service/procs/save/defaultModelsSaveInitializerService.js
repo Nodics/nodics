@@ -139,7 +139,6 @@ module.exports = {
             SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.postSaveProcessor), request, response, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                console.log(error);
                 process.error(request, response, {
                     success: false,
                     code: 'ERR_SAVE_00005',

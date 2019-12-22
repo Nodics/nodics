@@ -15,7 +15,10 @@ module.exports = {
             super: 'super',
             model: true,
             service: true,
-            event: true,
+            event: {
+                enabled: true,
+                type: 'SYNC'
+            },
             router: false,
             tenants: ['default'],
             definition: {
@@ -27,20 +30,19 @@ module.exports = {
             }
         },
 
-        // routerConfiguration: {
-        //     super: 'super',
-        //     model: true,
-        //     service: true,
-        //     event: true,
-        //     router: true,
-        //     tenants: ['default'],
-        //     definition: {
-        //         body: {
-        //             type: 'object',
-        //             required: true,
-        //             description: 'Required index name'
-        //         }
-        //     }
-        // }
+        routerConfiguration: {
+            super: 'super',
+            model: true,
+            service: true,
+            event: {
+                enabled: true,
+                type: 'SYNC'
+            },
+            router: true,
+            tenants: ['default'],
+            definition: {
+
+            }
+        }
     }
 };

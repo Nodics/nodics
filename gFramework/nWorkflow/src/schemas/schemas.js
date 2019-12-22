@@ -20,7 +20,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: false,
             router: true,
             definition: {
 
@@ -37,7 +36,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: false,
             router: true,
             definition: {
 
@@ -52,7 +50,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            event: false,
             router: true,
             definition: {
 

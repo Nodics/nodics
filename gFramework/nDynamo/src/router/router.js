@@ -13,30 +13,36 @@ module.exports = {
 
     dynamo: {
         classOperations: {
-            addClass: {
+            getClass: {
                 secured: true,
-                key: '/class/add/:className/:type',
-                method: 'PUT',
+                key: '/class/get/:className',
+                method: 'GET',
                 controller: 'DefaultClassConfigurationController',
-                operation: 'addClass',
-                bodyParserHandler: 'textBodyParserHandler',
+                operation: 'getClass',
                 help: {
                     requestType: 'secured',
-                    contentType: 'PLAIN|TEXT',
                     message: 'authToken need to set within header',
-                    method: 'PUT',
-                    url: 'http://host:port/nodics/config/class/add/:className/:type',
-                    body: {
-                        className: 'Name of the class',
-                        type: 'Type like SERVICE, FACADE, CONTROLLER, UTILS',
-                        body: 'definition of JavaScript litteral object'
-                    }
+                    method: 'GET',
+                    url: 'http://host:port/nodics/dynamo/class/get/:className',
+                }
+            },
+            getSnapshot: {
+                secured: true,
+                key: '/class/snapshot/:type/:className',
+                method: 'GET',
+                controller: 'DefaultClassConfigurationController',
+                operation: 'getSnapshot',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/dynamo/class/snapshot/:type/:className',
                 }
             },
             updateClass: {
                 secured: true,
-                key: '/class/update',
-                method: 'PATCH',
+                key: '/class/update/:type/:className',
+                method: 'PUT',
                 controller: 'DefaultClassConfigurationController',
                 operation: 'updateClass',
                 bodyParserHandler: 'textBodyParserHandler',
@@ -44,15 +50,12 @@ module.exports = {
                     requestType: 'secured',
                     contentType: 'PLAIN|TEXT',
                     message: 'authToken need to set within header',
-                    method: 'PATCH',
-                    url: 'http://host:port/nodics/config/class/add',
-                    body: {
-                        className: 'Name of the class',
-                        type: 'Type like SERVICE, FACADE, CONTROLLER, UTILS',
-                        body: 'definition of JavaScript litteral object'
-                    }
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/dynamo/class/update/:type/:className',
+                    body: 'definition of JavaScript litteral object'
                 }
             },
+
             executeClass: {
                 secured: true,
                 key: '/class/execute',
@@ -63,106 +66,16 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/config/class/add',
+                    url: 'http://host:port/nodics/dynamo/class/execute',
                     body: {
                         className: 'Name of the class',
                         type: 'Type like SERVICE, FACADE, CONTROLLER, UTILS',
                         operationName: 'Name of operation to execute',
-                        isReturnPromise: 'true if operation return Promise'
+                        isReturnPromise: 'true if operation return Promise',
+                        params: 'Array of values to be passed in function to execute'
                     }
                 }
-            },
-            // updateClass: {
-            //     secured: true,
-            //     key: '/class/update',
-            //     method: 'POST',
-            //     handler: 'DefaultClassConfigurationController',
-            //     operation: 'updateClass',
-            //     help: {
-            //         requestType: 'secured',
-            //         message: 'authToken need to set within header',
-            //         method: 'POST',
-            //         url: 'http://host:port/nodics/config/class/update',
-            //         body: {
-            //             name: 'Name of the class',
-            //             upsert: 'true/false',
-            //             definition: 'definition of JavaScript litteral object'
-            //         }
-            //     }
-            // },
-            // removeClass: {
-            //     secured: true,
-            //     key: '/class/remove',
-            //     method: 'POST',
-            //     handler: 'DefaultClassConfigurationController',
-            //     operation: 'removeClass',
-            //     help: {
-            //         requestType: 'secured',
-            //         message: 'authToken need to set within header',
-            //         method: 'POST',
-            //         url: 'http://host:port/nodics/config/class/update',
-            //         body: {
-            //             name: 'Name of the class',
-            //             operation: 'Name of operation to delete, if blank, whole class will be deleted',
-            //             definition: 'definition of JavaScript litteral object'
-            //         }
-            //     }
-            // }
-        },
-        // routerOperations: {
-        //     addRouter: {
-        //         secured: true,
-        //         key: '/router/add',
-        //         method: 'POST',
-        //         handler: 'DefaultRouterConfigurationController',
-        //         operation: 'addRouter',
-        //         help: {
-        //             requestType: 'secured',
-        //             message: 'authToken need to set within header',
-        //             method: 'POST',
-        //             url: 'http://host:port/nodics/config/router/add',
-        //             body: {
-        //                 name: 'Name of the router',
-        //                 definition: 'definition of JavaScript litteral object'
-        //             }
-        //         }
-        //     },
-        //     updateRouter: {
-        //         secured: true,
-        //         key: '/router/update',
-        //         method: 'POST',
-        //         handler: 'DefaultRouterConfigurationController',
-        //         operation: 'updateRouter',
-        //         help: {
-        //             requestType: 'secured',
-        //             message: 'authToken need to set within header',
-        //             method: 'POST',
-        //             url: 'http://host:port/nodics/config/router/update',
-        //             body: {
-        //                 name: 'Name of the router',
-        //                 upsert: 'true/false',
-        //                 definition: 'definition of JavaScript litteral object'
-        //             }
-        //         }
-        //     },
-        //     removeRouter: {
-        //         secured: true,
-        //         key: '/router/remove',
-        //         method: 'POST',
-        //         handler: 'DefaultRouterConfigurationController',
-        //         operation: 'removeRouter',
-        //         help: {
-        //             requestType: 'secured',
-        //             message: 'authToken need to set within header',
-        //             method: 'POST',
-        //             url: 'http://host:port/nodics/config/router/remove',
-        //             body: {
-        //                 name: 'Name of the router',
-        //                 operation: 'Name of operation to delete, if blank, whole router will be deleted',
-        //                 definition: 'definition of JavaScript litteral object'
-        //             }
-        //         }
-        //     }
-        // }
+            }
+        }
     }
 };
