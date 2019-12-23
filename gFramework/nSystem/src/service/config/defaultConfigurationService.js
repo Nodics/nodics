@@ -36,7 +36,42 @@ module.exports = {
     changeConfig: function (request) {
         return new Promise((resolve, reject) => {
             try {
+                SERVICE.DefaultEventService.publish({
+                    tenant: request.tenant,
+                    active: true,
+                    event: 'configurationChange',
+                    sourceName: request.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
+                    target: request.modelName,
+                    state: "NEW",
+                    type: 'SYNC',
+                    targetType: ENUMS.TargetType.MODULE_NODES.key,
+                    data: request.config
+                }).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_EVNT_00000',
+                    msg: 'Facing issue while publishing update cache event : ' + error.toString()
+                });
+            }
+        });
+    },
+
+    handleConfigurationChangeEvent: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
                 CONFIG.changeTenantProperties(request.config, request.tenant);
+                resolve({
+                    success: true,
+                    code: 'SUC_SYS_00000',
+                    msg: 'Configuration update successfully'
+                });
             } catch (error) {
                 reject({
                     success: false,

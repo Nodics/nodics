@@ -41,7 +41,11 @@ module.exports = {
             router: true,
             tenants: ['default'],
             definition: {
-
+                moduleName: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required moduleName'
+                },
             }
         }
     }

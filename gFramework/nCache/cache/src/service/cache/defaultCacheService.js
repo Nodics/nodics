@@ -187,11 +187,91 @@ module.exports = {
     },
 
 
-
-
-
-
     updateRouterCacheConfiguration: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                this.publishCacheChangeEvent(request, 'apiCacheChange').then(success => {
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject({
+                        success: false,
+                        code: 'ERR_CACHE_00000',
+                        msg: 'Facing issue while updating router cache : ' + error.toString()
+                    });
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    msg: 'Facing issue while updating router cache : ' + error.toString()
+                });
+            }
+        });
+    },
+
+    updateItemCacheConfiguration: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                this.publishCacheChangeEvent(request, 'itemCacheChange').then(success => {
+                    resolve({
+                        success: true,
+                        code: 'SUC_CACHE_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject({
+                        success: false,
+                        code: 'ERR_CACHE_00000',
+                        msg: 'Facing issue while updating item cache : ' + error.toString()
+                    });
+                });
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    msg: 'Facing issue while updating item cache : ' + error.toString()
+                });
+            }
+        });
+    },
+
+
+    publishCacheChangeEvent: function (request, eventName) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultEventService.publish({
+                    tenant: request.tenant,
+                    active: true,
+                    event: eventName,
+                    sourceName: request.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
+                    target: request.modelName,
+                    state: "NEW",
+                    type: 'SYNC',
+                    targetType: ENUMS.TargetType.MODULE_NODES.key,
+                    data: request.config
+                }).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+
+            } catch (error) {
+                reject({
+                    success: false,
+                    code: 'ERR_CACHE_00000',
+                    msg: 'Facing issue while publishing update cache event : ' + error.toString()
+                });
+            }
+        });
+    },
+
+
+    handleRouterCacheChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {
                 if (UTILS.isBlank(request.config)) {
@@ -239,7 +319,7 @@ module.exports = {
         });
     },
 
-    updateSchemaCacheConfiguration: function (request) {
+    handleItemCacheChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {
                 if (UTILS.isBlank(request.config)) {

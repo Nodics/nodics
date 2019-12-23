@@ -63,11 +63,11 @@ module.exports = {
             let type = request.type;
             if (!type || !global[type]) {
                 reject('Invlid type: ' + type);
-            } else if (!className || !global[type][className]) {
+            } else if (!className || !global[type][className.toUpperCaseFirstChar()]) {
                 reject('Invlid className: ' + className);
             } else {
                 var cache = [];
-                let finalClassData = JSON.stringify(global[type][className], function (key, value) {
+                let finalClassData = JSON.stringify(global[type][className.toUpperCaseFirstChar()], function (key, value) {
                     if (typeof value === 'object' && value !== null) {
                         if (cache.indexOf(value) !== -1) {
                             return;
