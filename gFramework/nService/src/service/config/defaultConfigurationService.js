@@ -10,7 +10,6 @@
  */
 
 module.exports = {
-
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
      * defined it that with Promise way
@@ -29,19 +28,7 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultRouterService.prepareModulesConfiguration().then(() => {
-                return SERVICE.DefaultRouterInitializerService.initializeRouters();
-            }).then(() => {
-                return SERVICE.DefaultRouterConfigurationService.configureRouters();
-            }).then(() => {
-                return SERVICE.DefaultRouterService.registerRouter();
-            }).then(() => {
-                return SERVICE.DefaultRouterConfigurationService.loadPersistedRouters();
-            }).then(() => {
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
+            resolve(true);
         });
     }
 };

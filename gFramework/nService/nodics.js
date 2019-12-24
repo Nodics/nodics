@@ -31,12 +31,4 @@ module.exports = {
             resolve(true);
         });
     },
-
-    // genService: function () {
-    //     let _self = this;
-    //     NODICS.LOG.info('Starting Service Generation process');
-    //     return service.gen().then(success => { }).catch(error => {
-    //         _self.LOG.error(error);
-    //     });
-    // }
 };

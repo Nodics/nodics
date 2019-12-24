@@ -71,6 +71,33 @@ module.exports = {
             }
         });
     },
+    loadPersistedRouters: function () {
+        return new Promise((resolve, reject) => {
+            this.get({
+                tenant: 'default'
+            }).then(success => {
+                try {
+                    let routers = {};
+                    if (success.result && success.result.length > 0) {
+                        success.result.forEach(routerDefinition => {
+                            routers[routerDefinition.moduleName] = {};
+                            routers[routerDefinition.moduleName].tempGroup = {};
+                            routers[routerDefinition.moduleName].tempGroup[routerDefinition.code] = routerDefinition;
+                        });
+                    }
+                    SERVICE.DefaultRouterService.registerRouter(routers, true).then(success => {
+                        resolve('Router successfully activated');
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } catch (error) {
+                    reject(error);
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
 
     remove: function (request) {
         return new Promise((resolve, reject) => {

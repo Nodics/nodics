@@ -27,5 +27,13 @@ module.exports = {
             event: 'removeEnterprise',
             listener: 'DefaultEnterpriseUpdateListenerService.handleRemoveEnterprise'
         },
+        listenerUpdateListener: {
+            event: 'listenerSave',
+            listener: 'DefaultListenerChangeListenerService.handleListenerUpdateEvent'
+        },
+        listenerRemovedListener: {
+            event: 'listenerRemoved',
+            listener: 'DefaultListenerChangeListenerService.handleListenerRemovedEvent'
+        },
     }
 };

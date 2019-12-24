@@ -23,10 +23,20 @@ module.exports = class EventService extends EventEmitter {
             } catch (error) {
                 callback({
                     success: false,
-                    code: 'SUC_EVNT_00000',
+                    code: 'ERR_EVNT_00000',
                     error: error
                 });
             }
+        });
+    }
+
+    removeListener(eventName) {
+        this.removeListener(eventName, () => {
+            callback({
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: 'Event listener: ' + eventName + ' successfully removed'
+            });
         });
     }
 };

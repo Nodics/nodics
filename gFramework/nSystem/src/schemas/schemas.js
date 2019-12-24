@@ -10,5 +10,37 @@
  */
 
 module.exports = {
-
+    system: {
+        eventListener: {
+            super: 'base',
+            model: true,
+            service: true,
+            cache: {
+                enabled: false,
+                ttl: 3600
+            },
+            event: {
+                enabled: true,
+                type: 'SYNC'
+            },
+            router: true,
+            definition: {
+                event: {
+                    type: 'string',
+                    required: false,
+                    description: 'Mandate event name'
+                },
+                listener: {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate listener handler'
+                },
+                moduleName: {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate moduleName, could be common as well'
+                }
+            }
+        }
+    }
 };

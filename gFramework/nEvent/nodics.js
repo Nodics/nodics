@@ -28,8 +28,12 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultEventService.registerEventListeners().then(success => {
-                resolve(true);
+            SERVICE.DefaultEventService.loadPersistedListeners().then(success => {
+                SERVICE.DefaultEventService.registerEventListeners().then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });

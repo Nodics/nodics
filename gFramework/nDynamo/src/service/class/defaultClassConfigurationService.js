@@ -185,6 +185,34 @@ module.exports = {
         });
     },
 
+    loadPersistedClasses: function () {
+        return new Promise((resolve, reject) => {
+            this.get({
+                tenant: 'default'
+            }).then(success => {
+                try {
+                    if (success.result && success.result.length > 0) {
+                        success.result.forEach(classModel => {
+                            let classBody = RequireFromString(classModel.body.toString('utf8'));
+                            if (global[classModel.type][classModel.code.toUpperCaseFirstChar()]) {
+                                global[classModel.type][classModel.code.toUpperCaseFirstChar()] = _.merge(
+                                    global[classModel.type][classModel.code.toUpperCaseFirstChar()], classBody
+                                );
+                            } else {
+                                global[classModel.type][classModel.code.toUpperCaseFirstChar()] = classBody;
+                            }
+                        });
+                    }
+                    resolve(true);
+                } catch (error) {
+                    reject(error);
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
     executeClass: function (request) {
         return new Promise((resolve, reject) => {
             if (!request.body.className) {

@@ -36,24 +36,119 @@ module.exports = {
         });
     },
 
-    registerEventListeners: function () {
+    getListeners: function () {
+        return this.listeners;
+    },
+
+    loadPersistedListeners: function () {
+        return new Promise((resolve, reject) => {
+            let listeners = {};
+            SERVICE.DefaultEventListenerService.get({
+                tenant: 'default'
+            }).then(success => {
+                if (success.result && success.result.length > 0) {
+                    success.result.forEach(listener => {
+                        if (!listeners[listener.moduleName]) listeners[listener.moduleName] = {};
+                        if (listeners[listener.moduleName][listener.code]) {
+                            listeners[listener.moduleName][listener.code] = _.merge(
+                                listeners[listener.moduleName][listener.code], listener
+                            );
+                        } else {
+                            listeners[listener.moduleName][listener.code] = listener;
+                        }
+                    });
+                }
+                this.listeners = _.merge(this.listeners, listeners);
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    handleListenerUpdateEvent: function (listener) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultEventListenerService.get({
+                    tenant: 'default',
+                    query: {
+                        code: listener.code
+                    }
+                }).then(success => {
+                    if (success.result && success.result.length > 0) {
+                        let rawListener = {};
+                        rawListener[success.result[0].moduleName] = {};
+                        rawListener[success.result[0].moduleName][success.result[0].code] = success.result[0];
+                        this.registerEventListeners(rawListener).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        reject('Invalid eventListner code or data been updated');
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    handleListenerRemovedEvent: function (listener) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (listener.moduleName === 'common') {
+                    _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                        if (moduleObject.eventService) {
+                            moduleObject.eventService.removeListener(listener.event);
+                        }
+                    });
+                    resolve('Event listener: ' + listener.event + ' successfully removed from all modules');
+                } else {
+                    let eventService = NODICS.getModule(listener.moduleName).eventService;
+                    if (eventService) {
+                        eventService.removeListener(listener.event);
+                    }
+                    resolve('Event listener: ' + listener.event + ' successfully removed from module: ' + listener.moduleName);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    registerEventListeners: function (listeners = this.getListeners()) {
         this.LOG.debug('Registering events');
         return new Promise((resolve, reject) => {
             try {
-                let commonListeners = this.listeners.common;
+                let commonListeners = listeners.common;
                 _.each(NODICS.getModules(), (value, moduleName) => {
                     value.eventService = new CLASSES.EventService();
                     if (commonListeners) {
                         _.each(commonListeners, (listenerDefinition, listenerName) => {
-                            listenerDefinition.moduleName = moduleName;
-                            value.eventService.registerListener(listenerDefinition);
+                            if (listenerDefinition.nodeId === undefined || listenerDefinition.nodeId === CONFIG.get('nodeId')) {
+                                listenerDefinition.moduleName = moduleName;
+                                if (listenerDefinition.active === undefined || listenerDefinition.active) {
+                                    value.eventService.registerListener(listenerDefinition);
+                                } else if (Object.keys(value.eventService._events).includes(listenerDefinition.event)) {
+                                    value.eventService.removeListener(listenerDefinition);
+                                }
+                            }
                         });
                     }
                     let moduleListeners = this.listeners[moduleName];
                     if (moduleListeners) {
                         _.each(moduleListeners, (listenerDefinition, listenerName) => {
-                            listenerDefinition.moduleName = moduleName;
-                            value.eventService.registerListener(listenerDefinition);
+                            if (listenerDefinition.nodeId === undefined || listenerDefinition.nodeId === CONFIG.get('nodeId')) {
+                                listenerDefinition.moduleName = moduleName;
+                                if (listenerDefinition.active === undefined || listenerDefinition.active) {
+                                    value.eventService.registerListener(listenerDefinition);
+                                } else if (Object.keys(value.eventService._events).includes(listenerDefinition.event)) {
+                                    value.eventService.removeListener(listenerDefinition);
+                                }
+                            }
                         });
                     }
                 });

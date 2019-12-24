@@ -22,9 +22,9 @@ module.exports = {
             router: true,
             definition: {
                 type: {
-                    type: 'string',
+                    enum: [ENUMS.ValidatorType.schema.key, ENUMS.ValidatorType.import.key, ENUMS.ValidatorType.export.key, ENUMS.ValidatorType.search.key, ENUMS.ValidatorType.workflow.key, ENUMS.ValidatorType.job.key],
                     required: true,
-                    description: 'Type could any value of ValidatorType enum'
+                    description: 'Required value could be only in [schema, import, export, search, workflow, job]'
                 },
                 item: {
                     type: 'string',

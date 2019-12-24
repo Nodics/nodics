@@ -28,7 +28,11 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            resolve(true);
+            SERVICE.DefaultClassConfigurationService.loadPersistedClasses().then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 };

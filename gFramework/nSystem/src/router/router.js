@@ -12,7 +12,6 @@
 module.exports = {
 
     system: {
-
         processInterceptors: {
             refreshInterceptors: {
                 secured: true,
