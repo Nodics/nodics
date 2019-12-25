@@ -10,10 +10,13 @@
  */
 
 module.exports = {
-    common: {
-        configurationChangeListener: {
-            event: 'configurationSave',
-            listener: 'DefaultConfigurationChangeListenerService.handleConfigurationChangeEvent'
-        }
-    }
+
+    // preSavePipeline: {
+    //     type: 'schema',
+    //     item: 'pipeline',
+    //     trigger: 'preSave',
+    //     active: 'true',
+    //     index: 0,
+    //     handler: 'DefaultPipelineSaveInterceptorService.mergeExisting'
+    // }
 };

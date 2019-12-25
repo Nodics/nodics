@@ -11,6 +11,27 @@
 
 module.exports = {
     system: {
+        configuration: {
+            super: 'base',
+            model: true,
+            service: true,
+            cache: {
+                enabled: false
+            },
+            event: {
+                enabled: true,
+                type: 'SYNC'
+            },
+            router: true,
+            definition: {
+                config: {
+                    type: 'string',
+                    required: false,
+                    description: 'Mandate configuration'
+                },
+            }
+        },
+
         eventListener: {
             super: 'base',
             model: true,
@@ -23,6 +44,7 @@ module.exports = {
                 enabled: true,
                 type: 'SYNC'
             },
+            tenants: ['default'],
             router: true,
             definition: {
                 event: {

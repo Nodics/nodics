@@ -47,6 +47,20 @@ module.exports = {
                     description: 'Required moduleName'
                 },
             }
+        },
+        pipeline: {
+            super: 'super',
+            model: true,
+            service: true,
+            event: {
+                enabled: true,
+                type: 'SYNC'
+            },
+            router: true,
+            tenants: ['default'],
+            definition: {
+
+            }
         }
     }
 };

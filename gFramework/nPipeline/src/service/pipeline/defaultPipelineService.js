@@ -37,7 +37,45 @@ module.exports = {
     loadPipelines: function () {
         return new Promise((resolve, reject) => {
             global.PIPELINE = SERVICE.DefaultFilesLoaderService.loadFiles('/src/pipelines/pipelinesDefinition.js');
-            resolve(true);
+            this.get({
+                tenant: 'default'
+            }).then(success => {
+                if (success.result && success.result.length > 0) {
+                    success.result.forEach(pipelineObj => {
+                        if (PIPELINE[pipelineObj.code]) {
+                            PIPELINE[pipelineObj.code] = _.merge(PIPELINE[pipelineObj.code], pipelineObj);
+                        } else {
+                            PIPELINE[pipelineObj.code] = pipelineObj;
+                        }
+                    });
+                }
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    handlePipelineChangeEvent: function (pipelineObj) {
+        return new Promise((resolve, reject) => {
+            this.get({
+                tenant: 'default',
+                query: {
+                    code: pipelineObj.code
+                }
+            }).then(success => {
+                if (success.result && success.result.length > 0) {
+                    pipelineObj = success.result[0];
+                    if (PIPELINE[pipelineObj.code]) {
+                        PIPELINE[pipelineObj.code] = _.merge(PIPELINE[pipelineObj.code], pipelineObj);
+                    } else {
+                        PIPELINE[pipelineObj.code] = pipelineObj;
+                    }
+                }
+                resolve('Successfully pipeline updated');
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 

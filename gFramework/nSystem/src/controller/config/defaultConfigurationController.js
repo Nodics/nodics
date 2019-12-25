@@ -33,16 +33,16 @@ module.exports = {
         });
     },
 
-    changeConfig: function (request, callback) {
-        request.config = request.httpRequest.body || {};
-        if (callback) {
-            FACADE.DefaultConfigurationFacade.changeConfig(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultConfigurationFacade.changeConfig(request);
-        }
-    }
+    // changeConfig: function (request, callback) {
+    //     request.config = request.httpRequest.body || {};
+    //     if (callback) {
+    //         FACADE.DefaultConfigurationFacade.changeConfig(request).then(success => {
+    //             callback(null, success);
+    //         }).catch(error => {
+    //             callback(error);
+    //         });
+    //     } else {
+    //         return FACADE.DefaultConfigurationFacade.changeConfig(request);
+    //     }
+    // }
 };

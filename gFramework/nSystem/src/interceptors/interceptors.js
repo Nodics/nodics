@@ -10,22 +10,12 @@
  */
 
 module.exports = {
-
-    postSaveClassConfiguration: {
+    preSaveConfiguration: {
         type: 'schema',
-        item: 'classConfiguration',
-        trigger: 'postSave',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultClassConfigurationSaveInterceptorService.removeBody'
-    },
-
-    postSaveRouterConfiguration: {
-        type: 'schema',
-        item: 'classConfiguration',
+        item: 'configuration',
         trigger: 'preSave',
         active: 'true',
         index: 0,
-        handler: 'DefaultRouterConfigurationSaveInterceptorService.checkIfModuleActiveForRouter'
+        handler: 'DefaultConfigurationSaveInterceptorService.mergeExisting'
     }
 };

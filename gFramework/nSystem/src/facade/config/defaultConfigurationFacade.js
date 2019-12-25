@@ -33,7 +33,7 @@ module.exports = {
         });
     },
 
-    changeConfig: function (request) {
-        return SERVICE.DefaultConfigurationService.changeConfig(request);
-    }
+    // changeConfig: function (request) {
+    //     return SERVICE.DefaultConfigurationService.changeConfig(request);
+    // }
 };

@@ -11,9 +11,9 @@
 
 module.exports = {
     common: {
-        configurationChangeListener: {
-            event: 'configurationSave',
-            listener: 'DefaultConfigurationChangeListenerService.handleConfigurationChangeEvent'
-        }
+        pipelineSavedListener: {
+            event: 'pipelineSave',
+            listener: 'DefaultPipelineChangeListenerService.handlePipelineChangeEvent'
+        },
     }
 };
