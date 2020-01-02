@@ -12,6 +12,118 @@
 module.exports = {
     workflow: {
 
+        workflowItem: {
+            super: 'base',
+            model: false,
+            service: false,
+            router: false,
+            definition: {
+                item: {
+                    type: 'object',
+                    required: true
+                },
+                'item.code': {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate item code'
+                },
+                'item.schemaName': {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate schema name'
+                },
+                'item.moduleName': {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate module name'
+                },
+                workflowHead: {
+                    type: 'object',
+                    required: true
+                },
+                'workflowHead.code': {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate workflow head code'
+                },
+                'workflowHead.status': {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate workflow head status'
+                },
+
+                workflowAction: {
+                    type: 'object',
+                    required: false
+                },
+                'workflowAction.code': {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional workflow action code'
+                },
+                'workflowAction.status': {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional workflow action status'
+                },
+
+                error: {
+                    type: 'object',
+                    required: false
+                },
+                'error.code': {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional error code'
+                },
+                'error.message': {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional error message'
+                },
+                'error.stackTrace': {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional error stack trace'
+                },
+
+            }
+        },
+
+        /**
+         * This schema hold all the items, associated with one of the workflow and which state the item is currently.
+         * This item will hold the reference of its actuall stage, I mean, which workflow and where it is currently
+         */
+        workflowActiveItem: {
+            super: 'workflowItem',
+            model: true,
+            service: true,
+            router: true,
+            definition: {
+
+            }
+        },
+
+        workflowArchivedItem: {
+            super: 'workflowItem',
+            model: true,
+            service: true,
+            router: true,
+            definition: {
+
+            }
+        },
+
+        workflowErrorItem: {
+            super: 'workflowItem',
+            model: true,
+            service: true,
+            router: true,
+            definition: {
+
+            }
+        },
+
         /**
          * This is header definition for all the workflow item created within system, This also hold 
          * number of items currently associated with this workflow
