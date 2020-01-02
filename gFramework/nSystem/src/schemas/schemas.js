@@ -28,7 +28,7 @@ module.exports = {
                     type: 'string',
                     required: false,
                     description: 'Mandate configuration'
-                },
+                }
             }
         },
 

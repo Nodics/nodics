@@ -16,6 +16,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultConfigurationService.get({
                 tenant: request.tenant,
+                options: {
+                    projection: { _id: 0 }
+                },
                 query: {
                     code: 'currentConfiguration'
                 }

@@ -49,6 +49,17 @@ module.exports = {
         });
     },
 
+    removeModelFromModule: function (moduleName, modelName) {
+        let moduleObject = NODICS.getModule(moduleName);
+
+        NODICS.getActiveTenants().forEach(tntCode => {
+            if (NODICS.getModels(moduleName, tntCode)[modelName]) {
+                this.LOG.debug('Deleting model: ' + modelName + ' for tenant: ' + tntCode + ' from module: ' + moduleName);
+                delete NODICS.getModels(moduleName, tntCode)[modelName];
+            }
+        });
+    },
+
     buildModelsForTenant: function (tntCode = 'default') {
         let _self = this;
         return new Promise((resolve, reject) => {

@@ -37,4 +37,13 @@ module.exports = {
         index: 0,
         handler: 'DefaultSchemaConfigurationSaveInterceptorService.checkIfModuleActive'
     },
+
+    // preSaveSchemaConfigurationMerge: {
+    //     type: 'schema',
+    //     item: 'schemaConfiguration',
+    //     trigger: 'preSave',
+    //     active: 'true',
+    //     index: 0,
+    //     handler: 'DefaultSchemaConfigurationSaveInterceptorService.mergeExistingSchema'
+    // },
 };

@@ -12,7 +12,7 @@
 module.exports = {
     dynamo: {
         classConfiguration: {
-            super: 'super',
+            super: 'base',
             model: true,
             service: true,
             event: {
@@ -31,7 +31,7 @@ module.exports = {
         },
 
         routerConfiguration: {
-            super: 'super',
+            super: 'base',
             model: true,
             service: true,
             event: {
@@ -49,7 +49,7 @@ module.exports = {
             }
         },
         pipeline: {
-            super: 'super',
+            super: 'base',
             model: true,
             service: true,
             event: {
@@ -64,7 +64,7 @@ module.exports = {
         },
 
         schemaConfiguration: {
-            super: 'super',
+            super: 'base',
             model: true,
             service: true,
             event: {

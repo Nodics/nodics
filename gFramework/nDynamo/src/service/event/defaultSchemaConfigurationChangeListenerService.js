@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     /**
@@ -33,9 +35,9 @@ module.exports = {
         });
     },
 
-    handleRouterUpdateEventHandler: function (event, callback) {
+    handleSchemaUpdateEventHandler: function (event, callback) {
         try {
-            SERVICE.DefaultRouterConfigurationService.routerUpdateEventHandler(event.data).then(success => {
+            SERVICE.DefaultSchemaConfigurationService.schemaUpdateEventHandler(event.data).then(success => {
                 callback(null, {
                     success: true,
                     code: 'SUC_EVNT_00000',

@@ -15,9 +15,15 @@ module.exports = {
             event: 'classConfigurationSave',
             listener: 'DefaultClassConfigurationChangeListenerService.handleClassUpdateEventHandler'
         },
+
         routerConfigurationSavedListener: {
             event: 'routerConfigurationSave',
             listener: 'DefaultRouterConfigurationChangeListenerService.handleRouterUpdateEventHandler'
+        },
+
+        schemaConfigurationSavedListener: {
+            event: 'schemaConfigurationSave',
+            listener: 'DefaultSchemaConfigurationChangeListenerService.handleSchemaUpdateEventHandler'
         },
     }
 };

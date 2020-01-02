@@ -8,9 +8,33 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+
 const _ = require('lodash');
 
 module.exports = {
+
+    /**
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    /**
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
 
     checkIfModuleActive: function (request, response) {
         return new Promise((resolve, reject) => {
@@ -20,6 +44,28 @@ module.exports = {
             } else {
                 reject('Invalid moduleName, it should not be null or inactive');
             }
+        });
+    },
+
+    mergeExistingSchema: function (request, response) {
+        return new Promise((resolve, reject) => {
+            let model = request.model;
+            SERVICE.DefaultSchemaConfigurationService.get({
+                tenant: 'default',
+                options: {
+                    projection: { _id: 0 }
+                },
+                query: {
+                    code: model.code
+                }
+            }).then(success => {
+                if (success.success && success.result.length > 0) {
+                    request.model = _.merge(success.result, model);
+                }
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };
