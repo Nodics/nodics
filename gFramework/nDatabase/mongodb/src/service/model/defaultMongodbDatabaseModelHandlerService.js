@@ -221,7 +221,7 @@ module.exports = {
                     _self.LOG.error('Indexes failed for: ' + schemaModel.schemaName + ' : ', error);
                     reject(error);
                 });
-                resolve(schemaModel);
+                //resolve(schemaModel);
             } else {
                 _self.createModel(options, dataBase).then(success => {
                     resolve(success);

@@ -8,8 +8,18 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const _ = require('lodash');
 
 module.exports = {
-    returnErrorStack: false,
-    externalDataLocation: NODICS.getServerPath() + '/data'
+
+    checkIfModuleActive: function (request, response) {
+        return new Promise((resolve, reject) => {
+            let moduleName = request.model.moduleName;
+            if (NODICS.isModuleActive(moduleName)) {
+                resolve(true);
+            } else {
+                reject('Invalid moduleName, it should not be null or inactive');
+            }
+        });
+    }
 };

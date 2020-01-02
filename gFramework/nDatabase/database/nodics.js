@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
@@ -30,13 +32,27 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.LOG.info('Starting database configuration process');
             SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection().then(() => {
-                return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema();
+                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/schemas.js', null));
+                return new Promise((resolve, reject) => {
+                    SERVICE.DefaultDatabaseConnectionHandlerService.getRuntimeSchema().then(runtimeSchema => {
+                        SERVICE.DefaultDatabaseConfigurationService.setRawSchema(_.merge(
+                            SERVICE.DefaultDatabaseConfigurationService.getRawSchema(),
+                            runtimeSchema
+                        ));
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
+            }).then(() => {
+                return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema(SERVICE.DefaultDatabaseConfigurationService.getRawSchema());
             }).then(() => {
                 NODICS.addActiveEnterprise('default', 'default');
                 NODICS.addActiveTenant('default');
                 return SERVICE.DefaultDatabaseModelHandlerService.buildModelsForTenant();
             }).then(() => {
                 return SERVICE.DefaultDatabaseConnectionHandlerService.isInitRequired();
+                //return Promise.resolve(true);
             }).then(() => {
                 return new Promise((resolve, reject) => {
                     this.LOG.debug('Collecting database interceptors definitions');

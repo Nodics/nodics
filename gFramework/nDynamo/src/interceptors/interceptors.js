@@ -20,12 +20,21 @@ module.exports = {
         handler: 'DefaultClassConfigurationSaveInterceptorService.removeBody'
     },
 
-    postSaveRouterConfiguration: {
+    preSaveRouterConfiguration: {
         type: 'schema',
         item: 'classConfiguration',
         trigger: 'preSave',
         active: 'true',
         index: 0,
         handler: 'DefaultRouterConfigurationSaveInterceptorService.checkIfModuleActiveForRouter'
-    }
+    },
+
+    preSaveSchemaConfiguration: {
+        type: 'schema',
+        item: 'schemaConfiguration',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultSchemaConfigurationSaveInterceptorService.checkIfModuleActive'
+    },
 };

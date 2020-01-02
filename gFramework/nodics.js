@@ -10,7 +10,6 @@
  */
 
 const _ = require('lodash');
-
 const config = require('./nConfig');
 
 module.exports = {
@@ -195,11 +194,33 @@ module.exports = {
         }).then(() => {
             return config.loadModules();
         }).then(() => {
-            return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema();
+            return new Promise((resolve, reject) => {
+                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/schemas.js', null));
+                resolve(true);
+            });
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection('default', true).then(success => {
+                    SERVICE.DefaultDatabaseConnectionHandlerService.getRuntimeSchema().then(runtimeSchema => {
+                        SERVICE.DefaultDatabaseConfigurationService.setRawSchema(_.merge(
+                            SERVICE.DefaultDatabaseConfigurationService.getRawSchema(),
+                            runtimeSchema
+                        ));
+                        SERVICE.DefaultDatabaseConnectionHandlerService.closeConnection('default', 'default');
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        }).then(() => {
+            return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema(SERVICE.DefaultDatabaseConfigurationService.getRawSchema());
         }).then(() => {
             return config.buildModules();
         }).catch(error => {
             console.error(error);
         });
-    },
+    }
 };

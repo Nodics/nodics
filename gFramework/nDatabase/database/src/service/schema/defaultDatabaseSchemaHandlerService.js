@@ -34,12 +34,11 @@ module.exports = {
         });
     },
 
-    buildDatabaseSchema: function () {
+    buildDatabaseSchema: function (mergedSchema) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 _self.LOG.debug('Starting schemas loading process');
-                let mergedSchema = SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/schemas.js', null);
                 let defaultSchema = mergedSchema.default || {};
                 let modules = NODICS.getModules();
                 Object.keys(mergedSchema).forEach(function (key) {

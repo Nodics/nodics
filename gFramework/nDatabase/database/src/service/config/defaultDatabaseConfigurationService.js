@@ -12,6 +12,7 @@
 const _ = require('lodash');
 
 module.exports = {
+    rawSchema: {},
     dbs: {},
     interceptors: {},
     validators: {},
@@ -38,6 +39,14 @@ module.exports = {
             NODICS.setRawModels(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/model.js'));
             resolve(true);
         });
+    },
+
+    getRawSchema: function () {
+        return this.rawSchema;
+    },
+
+    setRawSchema: function (rawSchema) {
+        this.rawSchema = rawSchema;
     },
 
     getDatabaseActiveModules: function () {

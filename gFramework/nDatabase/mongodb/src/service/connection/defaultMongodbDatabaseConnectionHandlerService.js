@@ -50,6 +50,7 @@ module.exports = {
                         reject('While fetching list of collections: ' + error);
                     } else {
                         resolve({
+                            client: mongoClient,
                             connection: db,
                             collections: collections
                         });
@@ -76,10 +77,12 @@ module.exports = {
                             if (err) {
                                 _self.LOG.error('Not able to fetch if initial data required or not');
                                 _self.LOG.error(err);
+                                resolve(false);
                             } else if (!result) {
                                 resolve(true);
+                            } else {
+                                resolve(false);
                             }
-                            resolve(false);
                         });
                     }
                 } else {
@@ -89,5 +92,33 @@ module.exports = {
                 reject(error);
             }
         });
+    },
+
+    getRuntimeSchema: function () {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                let db = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase('default', 'default');
+                if (db && db.master) {
+                    db.master.getConnection().collection('SchemaConfigurationModel').find({}, {}).toArray((err, result) => {
+                        if (err) {
+                            _self.LOG.error('Not able to fetch runtime schema update data');
+                            reject(err);
+                        } else {
+                            resolve(result);
+                        }
+                    });
+                } else {
+                    _self.LOG.error('Invalid database connection');
+                    reject('Invalid database connection');
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    closeConnection: function (connection) {
+        connection.getClient().close();
     }
 };

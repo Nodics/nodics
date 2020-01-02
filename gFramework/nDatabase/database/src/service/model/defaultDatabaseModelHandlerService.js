@@ -97,7 +97,6 @@ module.exports = {
                     moduleObject: moduleObject,
                     dataBase: SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(moduleName, tntCode),
                     schemas: Object.keys(moduleObject.rawSchema),
-
                 }).then(success => {
                     resolve(success);
                 }).catch(error => {

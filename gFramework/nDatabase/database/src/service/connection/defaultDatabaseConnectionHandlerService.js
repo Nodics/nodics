@@ -42,7 +42,7 @@ module.exports = {
         });
     },
 
-    createDatabaseConnection: function (tntCode = 'default') {
+    createDatabaseConnection: function (tntCode = 'default', onlyDefault = false) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -50,9 +50,11 @@ module.exports = {
                 dbModules.splice(dbModules.indexOf('default'), 1);
                 _self.createDatabase('default', tntCode).then(success => {
                     let allModules = [];
-                    dbModules.forEach(moduleName => {
-                        allModules.push(_self.createDatabase(moduleName, tntCode));
-                    });
+                    if (!onlyDefault) {
+                        dbModules.forEach(moduleName => {
+                            allModules.push(_self.createDatabase(moduleName, tntCode));
+                        });
+                    }
                     if (allModules.length > 0) {
                         Promise.all(allModules).then(success => {
                             resolve(true);
@@ -90,6 +92,7 @@ module.exports = {
                         SERVICE[dbConfig.options.connectionHandler].createConnection(dbConfig.master).then(success => {
                             masterDatabase.setConnection(success.connection);
                             masterDatabase.setCollections(success.collections);
+                            masterDatabase.setClient(success.client);
                             if (testConfig.enabled && testConfig.uTest.enabled) {
                                 testDatabase = new CLASSES.Database();
                                 if (dbConfig.test) {
@@ -100,6 +103,7 @@ module.exports = {
                                     SERVICE[dbConfig.options.connectionHandler].createConnection(dbConfig.test).then(success => {
                                         testDatabase.setConnection(success.connection);
                                         testDatabase.setCollections(success.collections);
+                                        testDatabase.setClient(success.client);
                                         SERVICE.DefaultDatabaseConfigurationService.addTenantDatabase(moduleName, tntCode, {
                                             master: masterDatabase,
                                             test: testDatabase
@@ -166,8 +170,61 @@ module.exports = {
                     reject('Invalid database connection handler found for module: ' + CONFIG.get('profileModuleName') + ', and tenant: default');
                 }
             } else {
-                resolve(false);
+                resolve(true);
             }
         });
+    },
+
+    getRuntimeSchema: function () {
+        return new Promise((resolve, reject) => {
+            let dbConnection = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase('default', 'default');
+            if (dbConnection) {
+                let masterDatabase = dbConnection.master;
+                if (SERVICE[masterDatabase.getOptions().connectionHandler] &&
+                    SERVICE[masterDatabase.getOptions().connectionHandler].getRuntimeSchema &&
+                    typeof SERVICE[masterDatabase.getOptions().connectionHandler].getRuntimeSchema === 'function') {
+                    SERVICE[masterDatabase.getOptions().connectionHandler].getRuntimeSchema(masterDatabase).then(schemas => {
+                        this.LOG.info(' ###  Found runtime schemas ' + schemas.length);
+                        let runtimeSchema = {};
+                        if (schemas && schemas.length > 0) {
+                            schemas.forEach(schema => {
+                                if (!runtimeSchema[schema.moduleName]) runtimeSchema[schema.moduleName] = {};
+                                if (runtimeSchema[schema.moduleName][schema.code]) {
+                                    runtimeSchema[schema.moduleName][schema.code] = _.merge(runtimeSchema[schema.moduleName][schema.code], schema);
+                                } else {
+                                    runtimeSchema[schema.moduleName][schema.code] = schema;
+                                }
+                            });
+                        }
+                        resolve(runtimeSchema);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    reject('Invalid database configuration for connection handler found for module: default, and tenant: default');
+                }
+            } else {
+                reject('Invalid database connection handler found for module: default, and tenant: default');
+            }
+        });
+    },
+
+    closeConnection: function (moduleName, tntCode) {
+        let dbConnection = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(moduleName, tntCode);
+        if (dbConnection) {
+            let masterDatabase = dbConnection.master;
+            if (masterDatabase && SERVICE[masterDatabase.getOptions().connectionHandler] &&
+                SERVICE[masterDatabase.getOptions().connectionHandler].getRuntimeSchema &&
+                typeof SERVICE[masterDatabase.getOptions().connectionHandler].getRuntimeSchema === 'function') {
+                SERVICE[masterDatabase.getOptions().connectionHandler].closeConnection(masterDatabase);
+            }
+
+            let testDatabase = dbConnection.test;
+            if (testDatabase && SERVICE[testDatabase.getOptions().connectionHandler] &&
+                SERVICE[testDatabase.getOptions().connectionHandler].getRuntimeSchema &&
+                typeof SERVICE[testDatabase.getOptions().connectionHandler].getRuntimeSchema === 'function') {
+                SERVICE[testDatabase.getOptions().connectionHandler].closeConnection(testDatabase);
+            }
+        }
     }
 };
