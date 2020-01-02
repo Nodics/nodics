@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     /**
@@ -49,12 +51,20 @@ module.exports = {
                     }).then(success => {
                         if (success.result && success.result.length > 0) {
                             let updatedSchema = success.result[0];
-                            let modelName = UTILS.createModelName(updatedSchema.code);
                             if (!updatedSchema.active) {
-                                SERVICE.DefaultDatabaseModelHandlerService.removeModelFromModule(updatedSchema.moduleName, modelName);
+                                let rawSchema = SERVICE.DefaultDatabaseConfigurationService.getRawSchema();
+                                if (rawSchema[updatedSchema.moduleName] && rawSchema[updatedSchema.moduleName][updatedSchema.code]) {
+                                    delete rawSchema[updatedSchema.moduleName][updatedSchema.code];
+                                }
+                                SERVICE.DefaultDatabaseModelHandlerService.removeModelFromModule(updatedSchema.moduleName, updatedSchema.code);
                                 resolve('Model successfully de-activated');
                             } else {
-                                resolve('Model successfully activated');
+                                this.buildRuntimeSchema(updatedSchema).then(success => {
+                                    resolve('Model successfully activated');
+                                }).catch(error => {
+                                    console.log(error);
+                                    reject(error);
+                                });
                             }
                         } else {
                             _self.LOG.error('Could not found any data for schema name ' + body.code);
@@ -67,6 +77,41 @@ module.exports = {
             } catch (error) {
                 reject(error);
             }
+        });
+    },
+
+    buildRuntimeSchema: function (runtimeSchema) {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultDatabaseSchemaHandlerService.buildRuntimeSchema(runtimeSchema).then(() => {
+                return new Promise((resolve, reject) => {
+                    if (runtimeSchema.moduleName !== 'default') {
+                        let allModels = [];
+                        NODICS.getActiveTenants().forEach(tntCode => {
+                            allModels.push(SERVICE.DefaultDatabaseModelHandlerService.buildModel({
+                                tntCode: tntCode,
+                                moduleName: runtimeSchema.moduleName,
+                                schemaName: runtimeSchema.code,
+                                moduleObject: NODICS.getModule(runtimeSchema.moduleName),
+                                dataBase: SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(runtimeSchema.moduleName, tntCode),
+                                schemas: Object.keys(NODICS.getModule(runtimeSchema.moduleName).rawSchema),
+                            }));
+                        });
+                        if (allModels.length > 0) {
+                            Promise.all(allModels).then(success => {
+                                resolve('Model generated successfully');
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
+                            resolve('Model generated successfully');
+                        }
+                    } else {
+                        resolve('Model generated successfully');
+                    }
+                });
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 

@@ -49,13 +49,22 @@ module.exports = {
         });
     },
 
-    removeModelFromModule: function (moduleName, modelName) {
+    removeModelFromModule: function (moduleName, schemaName) {
         let moduleObject = NODICS.getModule(moduleName);
-
+        let modelName = UTILS.createModelName(schemaName);
         NODICS.getActiveTenants().forEach(tntCode => {
-            if (NODICS.getModels(moduleName, tntCode)[modelName]) {
-                this.LOG.debug('Deleting model: ' + modelName + ' for tenant: ' + tntCode + ' from module: ' + moduleName);
-                delete NODICS.getModels(moduleName, tntCode)[modelName];
+            if (moduleObject.rawSchema[schemaName]) {
+                delete moduleObject.rawSchema[schemaName];
+            }
+            if (moduleObject.models[tntCode] &&
+                moduleObject.models[tntCode].master &&
+                moduleObject.models[tntCode].master[modelName]) {
+                delete moduleObject.models[tntCode].master[modelName];
+            }
+            if (moduleObject.models[tntCode] &&
+                moduleObject.models[tntCode].test &&
+                moduleObject.models[tntCode].test[modelName]) {
+                delete moduleObject.models[tntCode].test[modelName];
             }
         });
     },

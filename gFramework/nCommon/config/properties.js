@@ -10,6 +10,6 @@
  */
 
 module.exports = {
-    returnErrorStack: false,
+    returnErrorStack: true,
     externalDataLocation: NODICS.getServerPath() + '/data'
 };

@@ -62,6 +62,42 @@ module.exports = {
         });
     },
 
+    buildRuntimeSchema: function (runtimeSchema) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                let schema = {};
+                schema[runtimeSchema.moduleName] = {};
+                schema[runtimeSchema.moduleName][runtimeSchema.code] = runtimeSchema;
+                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(_.merge(
+                    SERVICE.DefaultDatabaseConfigurationService.getRawSchema(), schema
+                ));
+                if (runtimeSchema.moduleName === 'default') {
+                    _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                        if (moduleObject.rawSchema) {
+                            moduleObject.rawSchema = _.merge(moduleObject.rawSchema, schema);
+                        }
+                    });
+                } else {
+                    let finalSchema = runtimeSchema;
+                    let moduleRawSchema = NODICS.getModule(runtimeSchema.moduleName).rawSchema;
+                    if (runtimeSchema.super) {
+                        if (!moduleRawSchema[runtimeSchema.super]) {
+                            _self.LOG.error('Invalid super schema definition, could not found in current module');
+                            reject('Invalid super schema definition, could not found in current module');
+                        } else {
+                            finalSchema = _.merge(_.merge({}, moduleRawSchema[runtimeSchema.super]), runtimeSchema);
+                        }
+                    }
+                    moduleRawSchema[runtimeSchema.code] = _.merge(moduleRawSchema[runtimeSchema.code] || {}, finalSchema);
+                }
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
     resolveModuleSchemaDependancy: function (options) {
         let _self = this;
         let mergedSchema = {};

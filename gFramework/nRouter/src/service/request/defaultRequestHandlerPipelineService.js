@@ -236,6 +236,8 @@ module.exports = {
             error.code = error.code || 'ERR_SYS_00000';
             if (!error.msg) {
                 error.msg = SERVICE.DefaultStatusService.get(error.code) ? SERVICE.DefaultStatusService.get(error.code).message : 'Process failed with errors';
+            } else {
+
             }
             if (error.error) {
                 error.msg = error.error.message;
@@ -253,7 +255,7 @@ module.exports = {
                 error: response.errors
             };
             this.LOG.error(error);
-            process.reject();
+            process.reject(error);
         }
     }
 };
