@@ -13,6 +13,16 @@ const _ = require('lodash');
 
 module.exports = {
 
+    rawRouters: {},
+
+    getRawRouters: function () {
+        return this.rawRouters;
+    },
+
+    setRawRouters: function (rawRouters) {
+        this.rawRouters = rawRouters;
+    },
+
     executeRouterConfig: function (app, scripts) {
         if (scripts.initProperties && typeof scripts.initProperties === "function") {
             scripts.initProperties(app);

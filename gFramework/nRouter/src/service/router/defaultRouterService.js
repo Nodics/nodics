@@ -94,10 +94,10 @@ module.exports = {
         return url;
     },
 
-    registerRouter: function (routers, updateEnabled) {
+    registerRouter: function (routers) {
         let _self = this;
         let modules = NODICS.getModules();
-        routers = routers || SERVICE.DefaultFilesLoaderService.loadFiles('/src/router/router.js');
+        routers = routers || SERVICE.DefaultRouterConfigurationService.getRawRouters();
         return new Promise((resolve, reject) => {
             _.each(modules, function (moduleObject, moduleName) {
                 let app = {};
@@ -107,7 +107,7 @@ module.exports = {
                     moduleRouter = moduleObject.moduleRouter || modules.default.moduleRouter;
                     try {
                         SERVICE.DefaultRouterOperationService.registerWeb(app, moduleObject);
-                        _self.activateRouters(moduleRouter, moduleObject, moduleName, routers, updateEnabled);
+                        _self.activateRouters(moduleRouter, moduleObject, moduleName, routers);
                         resolve(true);
                     } catch (error) {
                         _self.LOG.error('While registration process of web path for module : ' + moduleName);
@@ -119,37 +119,18 @@ module.exports = {
         });
     },
 
-    activateRouters: function (moduleRouter, moduleObject, moduleName, routers, updateEnabled) {
+    activateRouters: function (moduleRouter, moduleObject, moduleName, routers) {
+        let _self = this;
         let urlPrefix = moduleObject.metaData.prefix || moduleName;
         if (routers.default) {
             _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
                 if (schemaObject.service && schemaObject.router) {
-                    _.each(routers.default, function (group, groupName) {
-                        if (groupName !== 'options') {
-                            _.each(group, function (routerDef, routerName) {
-                                if (routerName !== 'options') {
-                                    let definition = _.merge({}, routerDef);
-                                    definition.method = definition.method.toLowerCase();
-                                    definition.key = definition.key.replaceAll('schemaName', schemaName.toLowerCase());
-                                    definition.controller = definition.controller.replaceAll('ctrlName', schemaName.toUpperCaseEachWord() + 'Controller');
-                                    definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + urlPrefix + definition.key;
-                                    definition.active = (definition.active === undefined) ? true : definition.active;
-                                    definition.moduleName = moduleName;
-                                    definition.prefix = schemaName + '_' + routerName;
-                                    definition.routerName = moduleName + '_' + schemaName + '_' + routerName;
-                                    definition.routerName = definition.routerName.toLowerCase();
-                                    definition.cache = _.merge({}, definition.cache || {});
-                                    let routerLevelCache = CONFIG.get('cache').routerLevelCache;
-                                    if (routerLevelCache &&
-                                        routerLevelCache[schemaName] &&
-                                        routerLevelCache[schemaName][definition.method]) {
-                                        definition.cache = _.merge(definition.cache, routerLevelCache[schemaName][definition.method]);
-                                    }
-                                    NODICS.addRouter(definition.routerName, definition, moduleName);
-                                    SERVICE.DefaultRouterOperationService[definition.method](moduleRouter, definition);
-                                }
-                            });
-                        }
+                    _self.prepareDefaultRouter({
+                        routers: routers,
+                        urlPrefix: urlPrefix,
+                        schemaName: schemaName,
+                        moduleName: moduleName,
+                        moduleRouter: moduleRouter
                     });
                 }
             });
@@ -160,16 +141,13 @@ module.exports = {
                 if (groupName !== 'options') {
                     _.each(group, function (routerDef, routerName) {
                         if (routerName !== 'options') {
-                            let definition = _.merge({}, routerDef);
-                            definition.method = definition.method.toLowerCase();
-                            definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + urlPrefix + definition.key;
-                            definition.active = (definition.active === undefined) ? true : definition.active;
-                            definition.moduleName = moduleName;
-                            definition.prefix = routerName;
-                            definition.routerName = moduleName + '_' + routerName;
-                            definition.routerName = definition.routerName.toLowerCase();
-                            NODICS.addRouter(definition.routerName, definition, moduleName);
-                            SERVICE.DefaultRouterOperationService[definition.method](moduleRouter, definition);
+                            _self.prepareRouter({
+                                routerName: routerName,
+                                routerDef: routerDef,
+                                urlPrefix: urlPrefix,
+                                moduleName: moduleName,
+                                moduleRouter: moduleRouter
+                            });
                         }
                     });
                 }
@@ -181,21 +159,61 @@ module.exports = {
                 if (groupName !== 'options') {
                     _.each(group, function (routerDef, routerName) {
                         if (routerName !== 'options') {
-                            let definition = _.merge({}, routerDef);
-                            definition.method = definition.method.toLowerCase();
-                            definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + urlPrefix + definition.key;
-                            definition.active = (definition.active === undefined) ? true : definition.active;
-                            definition.moduleName = moduleName;
-                            definition.prefix = routerName;
-                            definition.routerName = moduleName + '_' + routerName;
-                            definition.routerName = definition.routerName.toLowerCase();
-                            NODICS.addRouter(definition.routerName, definition, moduleName);
-                            SERVICE.DefaultRouterOperationService[definition.method](moduleRouter, definition);
+                            _self.prepareRouter({
+                                routerName: routerName,
+                                routerDef: routerDef,
+                                urlPrefix: urlPrefix,
+                                moduleName: moduleName,
+                                moduleRouter: moduleRouter
+                            });
                         }
                     });
                 }
             });
         }
+    },
+
+    prepareDefaultRouter: function (options) {
+        _.each(options.routers.default, function (group, groupName) {
+            if (groupName !== 'options') {
+                _.each(group, function (routerDef, routerName) {
+                    if (routerName !== 'options') {
+                        let definition = _.merge({}, routerDef);
+                        definition.method = definition.method.toLowerCase();
+                        definition.key = definition.key.replaceAll('schemaName', options.schemaName.toLowerCase());
+                        definition.controller = definition.controller.replaceAll('ctrlName', options.schemaName.toUpperCaseEachWord() + 'Controller');
+                        definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + definition.key;
+                        definition.active = (definition.active === undefined) ? true : definition.active;
+                        definition.moduleName = options.moduleName;
+                        definition.prefix = options.schemaName + '_' + routerName;
+                        definition.routerName = options.moduleName + '_' + options.schemaName + '_' + routerName;
+                        definition.routerName = routerName.toLowerCase();
+                        definition.cache = _.merge({}, definition.cache || {});
+                        let routerLevelCache = CONFIG.get('cache').routerLevelCache;
+                        if (routerLevelCache &&
+                            routerLevelCache[options.schemaName] &&
+                            routerLevelCache[options.schemaName][definition.method]) {
+                            definition.cache = _.merge(definition.cache, routerLevelCache[options.schemaName][definition.method]);
+                        }
+                        NODICS.addRouter(definition.routerName, definition, options.moduleName);
+                        SERVICE.DefaultRouterOperationService[definition.method](options.moduleRouter, definition);
+                    }
+                });
+            }
+        });
+    },
+
+    prepareRouter: function (options) {
+        let definition = _.merge({}, options.routerDef);
+        definition.method = definition.method.toLowerCase();
+        definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + definition.key;
+        definition.active = (definition.active === undefined) ? true : definition.active;
+        definition.moduleName = options.moduleName;
+        definition.prefix = options.routerName;
+        definition.routerName = options.moduleName + '_' + options.routerName;
+        definition.routerName = definition.routerName.toLowerCase();
+        NODICS.addRouter(definition.routerName, definition, options.moduleName);
+        SERVICE.DefaultRouterOperationService[definition.method](options.moduleRouter, definition);
     },
 
     startServers: function () {

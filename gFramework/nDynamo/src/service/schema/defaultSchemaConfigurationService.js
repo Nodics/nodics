@@ -61,8 +61,9 @@ module.exports = {
                                 SERVICE.DefaultDatabaseModelHandlerService.removeModelFromModule(updatedSchema.moduleName, updatedSchema.code);
                                 resolve('Model successfully de-activated');
                             } else {
-                                this.buildRuntimeSchema(updatedSchema).then(success => {
-                                    resolve('Model successfully activated');
+                                SERVICE.DefaultPipelineService.start('schemaActivatedPipeline', {
+                                    runtimeSchema: updatedSchema
+                                }, {}).then(success => {
                                 }).catch(error => {
                                     console.log(error);
                                     reject(error);
@@ -79,126 +80,6 @@ module.exports = {
             } catch (error) {
                 reject(error);
             }
-        });
-    },
-
-    buildRuntimeSchema: function (runtimeSchema) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultDatabaseSchemaHandlerService.buildRuntimeSchema(runtimeSchema).then((success) => {
-                return new Promise((resolve, reject) => {
-                    if (runtimeSchema.moduleName !== 'default') {
-                        let allModels = [];
-                        NODICS.getActiveTenants().forEach(tntCode => {
-                            allModels.push(SERVICE.DefaultDatabaseModelHandlerService.buildModel({
-                                tntCode: tntCode,
-                                moduleName: runtimeSchema.moduleName,
-                                schemaName: runtimeSchema.code,
-                                moduleObject: NODICS.getModule(runtimeSchema.moduleName),
-                                dataBase: SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(runtimeSchema.moduleName, tntCode),
-                                schemas: Object.keys(NODICS.getModule(runtimeSchema.moduleName).rawSchema),
-                            }));
-                        });
-                        if (allModels.length > 0) {
-                            Promise.all(allModels).then(success => {
-                                resolve('Model generated successfully');
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        } else {
-                            resolve('Model generated successfully');
-                        }
-                    } else {
-                        resolve('Model generated successfully');
-                    }
-                });
-            }).then((success) => {
-                return new Promise((resolve, reject) => {
-                    let postFix = 'Service';
-                    let serviceName = 'Default' + runtimeSchema.code.toUpperCaseFirstChar() + postFix;
-                    let genDir = path.join(NODICS.getModule('nService').modulePath + '/src/service/gen');
-                    let fileName = genDir + '/' + serviceName + '.js';
-                    if (!fs.existsSync(fileName) &&
-                        runtimeSchema.moduleName !== 'default' &&
-                        NODICS.getModule(runtimeSchema.moduleName).rawSchema[runtimeSchema.code]) {
-                        UTILS.createObject({
-                            commonDefinition: SERVICE.DefaultFilesLoaderService.loadFiles('/src/service/common.js'),
-                            type: 'service',
-                            currentDir: genDir,
-                            postFix: postFix,
-                            gVar: SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/service/common.js'),
-                            moduleName: runtimeSchema.moduleName,
-                            moduleObject: NODICS.getModule(runtimeSchema.moduleName),
-                            schemaName: runtimeSchema.code,
-                            schemaObject: NODICS.getModule(runtimeSchema.moduleName).rawSchema[runtimeSchema.code]
-                        }).then(success => {
-                            SERVICE[serviceName] = require(fileName);
-                            resolve(success);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }
-                });
-            }).then((success) => {
-                return new Promise((resolve, reject) => {
-                    let postFix = 'Facade';
-                    let facadeName = 'Default' + runtimeSchema.code.toUpperCaseFirstChar() + postFix;
-                    let genDir = path.join(NODICS.getModule('nFacade').modulePath + '/src/facade/gen');
-                    let fileName = genDir + '/' + facadeName + '.js';
-                    if (!fs.existsSync(fileName) &&
-                        runtimeSchema.moduleName !== 'default' &&
-                        NODICS.getModule(runtimeSchema.moduleName).rawSchema[runtimeSchema.code]) {
-                        UTILS.createObject({
-                            commonDefinition: SERVICE.DefaultFilesLoaderService.loadFiles('/src/facade/common.js'),
-                            type: 'facade',
-                            currentDir: genDir,
-                            postFix: postFix,
-                            gVar: SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/facade/common.js'),
-                            moduleName: runtimeSchema.moduleName,
-                            moduleObject: NODICS.getModule(runtimeSchema.moduleName),
-                            schemaName: runtimeSchema.code,
-                            schemaObject: NODICS.getModule(runtimeSchema.moduleName).rawSchema[runtimeSchema.code]
-                        }).then(success => {
-                            FACADE[facadeName] = require(fileName);
-                            resolve(success);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }
-                });
-            }).then((success) => {
-                return new Promise((resolve, reject) => {
-                    let postFix = 'Controller';
-                    let controllerName = 'Default' + runtimeSchema.code.toUpperCaseFirstChar() + postFix;
-                    let genDir = path.join(NODICS.getModule('nController').modulePath + '/src/controller/gen');
-                    let fileName = genDir + '/' + controllerName + '.js';
-                    if (!fs.existsSync(fileName) &&
-                        runtimeSchema.moduleName !== 'default' &&
-                        NODICS.getModule(runtimeSchema.moduleName).rawSchema[runtimeSchema.code]) {
-                        UTILS.createObject({
-                            commonDefinition: SERVICE.DefaultFilesLoaderService.loadFiles('/src/controller/common.js'),
-                            type: 'controller',
-                            currentDir: genDir,
-                            postFix: postFix,
-                            gVar: SERVICE.DefaultFilesLoaderService.getGlobalVariables('/src/controller/common.js'),
-                            moduleName: runtimeSchema.moduleName,
-                            moduleObject: NODICS.getModule(runtimeSchema.moduleName),
-                            schemaName: runtimeSchema.code,
-                            schemaObject: NODICS.getModule(runtimeSchema.moduleName).rawSchema[runtimeSchema.code]
-                        }).then(success => {
-                            CONTROLLER[controllerName] = require(fileName);
-                            resolve(success);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }
-                });
-            }).then((success) => {
-                resolve(success);
-            }).then((success) => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
         });
     },
 

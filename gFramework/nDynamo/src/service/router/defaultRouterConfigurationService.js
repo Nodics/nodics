@@ -53,7 +53,7 @@ module.exports = {
                             routers[routerDefinition.moduleName] = {};
                             routers[routerDefinition.moduleName].tempGroup = {};
                             routers[routerDefinition.moduleName].tempGroup[routerDefinition.code] = routerDefinition;
-                            SERVICE.DefaultRouterService.registerRouter(routers, true).then(success => {
+                            SERVICE.DefaultRouterService.registerRouter(routers).then(success => {
                                 resolve('Router successfully activated');
                             }).catch(error => {
                                 reject(error);
@@ -86,7 +86,7 @@ module.exports = {
                             routers[routerDefinition.moduleName].tempGroup[routerDefinition.code] = routerDefinition;
                         });
                     }
-                    SERVICE.DefaultRouterService.registerRouter(routers, true).then(success => {
+                    SERVICE.DefaultRouterService.registerRouter(routers).then(success => {
                         resolve('Router successfully activated');
                     }).catch(error => {
                         reject(error);
