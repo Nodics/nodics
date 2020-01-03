@@ -10,6 +10,53 @@
  */
 
 module.exports = {
+
+    schemaUpdatedPipeline: {
+        startNode: "validateSchema",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateSchema: {
+                type: 'function',
+                handler: 'DefaultSchemaUpdatedPipelineService.validateSchema',
+                success: 'retrieveSchema'
+            },
+            retrieveSchema: {
+                type: 'function',
+                handler: 'DefaultSchemaUpdatedPipelineService.retrieveSchema',
+                success: 'redirectRequest'
+            },
+            redirectRequest: {
+                type: 'function',
+                handler: 'DefaultSchemaUpdatedPipelineService.redirectRequest',
+                success: {
+                    schemaActivated: 'schemaActivated',
+                    schemaDeActivated: 'schemaDeActivated'
+                }
+            },
+            schemaActivated: {
+                type: 'process',
+                handler: 'schemaActivatedPipeline',
+                success: 'successEnd'
+            },
+
+            schemaDeActivated: {
+                type: 'process',
+                handler: 'schemaDeActivatedPipeline',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultSchemaUpdatedPipelineService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultSchemaUpdatedPipelineService.handleErrorEnd'
+            }
+
+        }
+    },
     schemaActivatedPipeline: {
         startNode: "validateSchema",
         hardStop: true,
@@ -50,14 +97,30 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultSchemaActivatedPipelineService.activateRouters',
                 success: 'successEnd'
-            },
-            successEnd: {
+            }
+        }
+    },
+
+    schemaDeActivatedPipeline: {
+        startNode: "validateSchema",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateSchema: {
                 type: 'function',
-                handler: 'DefaultSchemaActivatedPipelineService.handleSucessEnd'
+                handler: 'DefaultSchemaDeActivatedPipelineService.validateSchema',
+                success: 'deactivateRawSchema'
             },
-            handleError: {
+            deactivateRawSchema: {
                 type: 'function',
-                handler: 'DefaultSchemaActivatedPipelineService.handleErrorEnd'
+                handler: 'DefaultSchemaDeActivatedPipelineService.deactivateRawSchema',
+                success: 'removeModels'
+            },
+            removeModels: {
+                type: 'function',
+                handler: 'DefaultSchemaDeActivatedPipelineService.removeModels',
+                success: 'successEnd'
             }
         }
     },

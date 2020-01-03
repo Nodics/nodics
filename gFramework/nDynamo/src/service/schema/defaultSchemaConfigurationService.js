@@ -9,10 +9,6 @@
 
  */
 
-const _ = require('lodash');
-const fs = require('fs');
-const path = require('path');
-
 module.exports = {
 
     /**
@@ -42,41 +38,13 @@ module.exports = {
         let body = request.result;
         return new Promise((resolve, reject) => {
             try {
-                if (!body.code) {
-                    reject('Schema Name can not be null or empty');
-                } else {
-                    this.get({
-                        tenant: 'default',
-                        query: {
-                            code: body.code
-                        }
-                    }).then(success => {
-                        if (success.result && success.result.length > 0) {
-                            let updatedSchema = success.result[0];
-                            if (!updatedSchema.active) {
-                                let rawSchema = SERVICE.DefaultDatabaseConfigurationService.getRawSchema();
-                                if (rawSchema[updatedSchema.moduleName] && rawSchema[updatedSchema.moduleName][updatedSchema.code]) {
-                                    delete rawSchema[updatedSchema.moduleName][updatedSchema.code];
-                                }
-                                SERVICE.DefaultDatabaseModelHandlerService.removeModelFromModule(updatedSchema.moduleName, updatedSchema.code);
-                                resolve('Model successfully de-activated');
-                            } else {
-                                SERVICE.DefaultPipelineService.start('schemaActivatedPipeline', {
-                                    runtimeSchema: updatedSchema
-                                }, {}).then(success => {
-                                }).catch(error => {
-                                    console.log(error);
-                                    reject(error);
-                                });
-                            }
-                        } else {
-                            _self.LOG.error('Could not found any data for schema name ' + body.code);
-                            reject('Could not found any data for schema name ' + body.code);
-                        }
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }
+                SERVICE.DefaultPipelineService.start('schemaUpdatedPipeline', {
+                    schemaName: body.code
+                }, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
             } catch (error) {
                 reject(error);
             }

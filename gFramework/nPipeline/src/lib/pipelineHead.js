@@ -137,7 +137,6 @@ module.exports = function (name, pipelineDefinition) {
         } else {
             _currentNode = _handleError;
         }
-
         this.next(request, response);
     };
 

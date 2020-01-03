@@ -205,15 +205,5 @@ module.exports = {
             process.error(request, response, error);
         }
 
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        process.reject(response.error);
     }
 };
