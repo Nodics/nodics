@@ -68,12 +68,7 @@ module.exports = {
         let schemaName = request.header.options.schemaName;
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(schemaName);
         if (interceptors && interceptors.import && interceptors.import.length > 0) {
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.import), {
-                tenant: request.tenant,
-                moduleName: request.moduleName,
-                header: request.header,
-                models: request.models
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.import), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -88,12 +83,7 @@ module.exports = {
         let schemaName = request.header.options.schemaName;
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportValidatorss(request.tenant, schemaName);
         if (interceptors && interceptors.import && interceptors.import.length > 0) {
-            SERVICE.DefaultValidatorService.executeValidators([].concat(interceptors.import), {
-                tenant: request.tenant,
-                moduleName: request.moduleName,
-                header: request.header,
-                models: request.models
-            }, {}).then(success => {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(interceptors.import), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
