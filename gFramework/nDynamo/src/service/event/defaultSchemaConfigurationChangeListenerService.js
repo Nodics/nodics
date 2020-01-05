@@ -47,14 +47,14 @@ module.exports = {
                 callback({
                     success: false,
                     code: 'ERR_EVNT_00000',
-                    msg: error
+                    msg: (error instanceof Object) ? JSON.stringify(error) : error
                 });
             });
         } catch (error) {
             callback({
                 success: false,
                 code: 'ERR_EVNT_00000',
-                msg: error
+                msg: (error instanceof Object) ? JSON.stringify(error) : error
             });
         }
     }

@@ -57,6 +57,7 @@ module.exports = {
 
         }
     },
+
     schemaActivatedPipeline: {
         startNode: "validateSchema",
         hardStop: true,
@@ -76,6 +77,21 @@ module.exports = {
             buildModels: {
                 type: 'function',
                 handler: 'DefaultSchemaActivatedPipelineService.buildModels',
+                success: 'buildSearchSchema'
+            },
+            buildSearchSchema: {
+                type: 'function',
+                handler: 'DefaultSchemaActivatedPipelineService.buildSearchSchema',
+                success: 'buildSearchModels'
+            },
+            buildSearchModels: {
+                type: 'function',
+                handler: 'DefaultSchemaActivatedPipelineService.buildSearchModels',
+                success: 'updateSearchIndexes'
+            },
+            updateSearchIndexes: {
+                type: 'function',
+                handler: 'DefaultSchemaActivatedPipelineService.updateSearchIndexes',
                 success: 'buildServices'
             },
             buildServices: {
@@ -120,6 +136,11 @@ module.exports = {
             removeModels: {
                 type: 'function',
                 handler: 'DefaultSchemaDeActivatedPipelineService.removeModels',
+                success: 'successEnd'
+            },
+            removeSearchModels: {
+                type: 'function',
+                handler: 'DefaultSchemaDeActivatedPipelineService.removeSearchModels',
                 success: 'successEnd'
             }
         }

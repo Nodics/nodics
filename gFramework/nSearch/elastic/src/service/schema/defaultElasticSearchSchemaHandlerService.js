@@ -65,12 +65,11 @@ module.exports = {
                             if (rawSchema.refSchema && rawSchema.refSchema[name] && rawSchema.refSchema[name].searchEnabled && !processed.includes(rawSchema.refSchema[name].schemaName)) {
                                 let subSchema = _self.prepareFromSchema(moduleName, rawSchema.refSchema[name].schemaName, true, processed);
                                 if (subSchema && !UTILS.isBlank(subSchema)) {
-                                    searchSchema.properties[propName].type = 'nested';//searchSchema.properties[propName].type || 'text';
+                                    searchSchema.properties[propName].type = 'nested';
                                     searchSchema.properties[propName].properties = subSchema.properties;
                                 }
                             } else {
                                 searchSchema.properties[propName].type = searchSchema.properties[propName].type || CONFIG.get('search').dataTypeMap[propDef.type] || CONFIG.get('search').dataTypeMap.default;
-                                //searchSchema.properties[propName].type || 'text';
                             }
                         }
                     });

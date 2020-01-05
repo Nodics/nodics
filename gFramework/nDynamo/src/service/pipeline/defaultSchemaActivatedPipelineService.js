@@ -80,6 +80,74 @@ module.exports = {
         }
     },
 
+    buildSearchSchema: function (request, response, process) {
+        this.LOG.debug('Preparing search schema : ' + request.runtimeSchema.code);
+        try {
+            NODICS.getActiveTenants().forEach(tntCode => {
+                SERVICE.DefaultSearchSchemaHandlerService.prepareFromSchema(request.runtimeSchema.moduleName, request.runtimeSchema.code, tntCode);
+            });
+            process.nextSuccess(request, response);
+        } catch (error) {
+            _self.LOG.error('While collecting properties from module: ' + moduleName);
+            process.error(request, response, error);
+        }
+    },
+
+    buildSearchModels: function (request, response, process) {
+        this.LOG.debug('Preparing search models : ' + request.runtimeSchema.code);
+        try {
+            let runtimeSchema = request.runtimeSchema;
+            NODICS.getActiveTenants().forEach(tntCode => {
+                let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(runtimeSchema.moduleName, tntCode);
+                if (searchEngine && searchEngine.getOptions() && searchEngine.getOptions().enabled) {
+                    SERVICE.DefaultSearchModelHandlerService.prepareTypeSearchModels({
+                        moduleObject: NODICS.getModule(runtimeSchema.moduleName),
+                        moduleTenantSearchRawSchema: SERVICE.DefaultSearchConfigurationService.getRawSearchSchema(runtimeSchema.moduleName, tntCode),
+                        rawSearchModelDef: SERVICE.DefaultSearchConfigurationService.getRawSearchModelDefinition(searchEngine.getOptions().engine),
+                        moduleName: runtimeSchema.moduleName,
+                        tntCode: tntCode,
+                        searchEngine: searchEngine,
+                        indexNames: [runtimeSchema.indexName || runtimeSchema.typeName || runtimeSchema.code]
+                    });
+                }
+            });
+            process.nextSuccess(request, response);
+        } catch (error) {
+            console.log(error);
+            this.LOG.error('While collecting properties from module: ' + request.runtimeSchema.moduleName);
+            process.error(request, response, error);
+        }
+    },
+
+    updateSearchIndexes: function (request, response, process) {
+        this.LOG.debug('Preparing search indexes : ' + request.runtimeSchema.code);
+        try {
+            let runtimeSchema = request.runtimeSchema;
+            let indexName = runtimeSchema.indexName || runtimeSchema.typeName || runtimeSchema.code;
+            NODICS.getActiveTenants().forEach(tntCode => {
+                let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(runtimeSchema.moduleName, tntCode);
+                let searchModelName = indexName.toUpperCaseFirstChar() + 'SearchModel';
+                if (searchEngine && searchEngine.getOptions() && searchEngine.getOptions().enabled) {
+                    SERVICE.DefaultSearchModelHandlerService.updateIndexTypeSchema({
+                        searchModelsName: [searchModelName],
+                        moduleName: runtimeSchema.moduleName,
+                        tntCode: tntCode,
+                        searchEngine: searchEngine
+                    }).then(success => {
+                        process.nextSuccess(request, response);
+                    }).catch(error => {
+                        process.error(request, response, error);
+                    });
+                } else {
+                    process.nextSuccess(request, response);
+                }
+            });
+        } catch (error) {
+            this.LOG.error('While collecting properties from module: ' + request.runtimeSchema.moduleName);
+            process.error(request, response, error);
+        }
+    },
+
     buildServices: function (request, response, process) {
         this.LOG.debug('Validating request for schema : ' + request.runtimeSchema.code);
         let runtimeSchema = request.runtimeSchema;

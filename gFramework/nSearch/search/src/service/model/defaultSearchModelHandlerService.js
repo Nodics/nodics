@@ -35,6 +35,16 @@ module.exports = {
         });
     },
 
+    removeSearchModelFromModule: function (moduleName, indexName) {
+        let moduleObject = NODICS.getModule(moduleName);
+        let searchModelName = indexName.toUpperCaseFirstChar() + 'SearchModel';
+        NODICS.getActiveTenants().forEach(tntCode => {
+            if (moduleObject.searchModels[tntCode] && moduleObject.searchModels[tntCode][searchModelName]) {
+                delete moduleObject.searchModels[tntCode][searchModelName];
+            }
+        });
+    },
+
     prepareSearchModels: function (modules = Object.keys(NODICS.getModules()), tenants = NODICS.getActiveTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {

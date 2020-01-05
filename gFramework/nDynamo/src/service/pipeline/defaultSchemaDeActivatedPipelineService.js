@@ -53,5 +53,13 @@ module.exports = {
         let runtimeSchema = request.runtimeSchema;
         SERVICE.DefaultDatabaseModelHandlerService.removeModelFromModule(runtimeSchema.moduleName, runtimeSchema.code);
         process.nextSuccess(request, response);
+    },
+
+    removeSearchModels: function (request, response, process) {
+        this.LOG.debug('Validating request for schema : ' + request.runtimeSchema.code);
+        let runtimeSchema = request.runtimeSchema;
+        let indexName = runtimeSchema.indexName || runtimeSchema.typeName || runtimeSchema.code;
+        SERVICE.DefaultSearchModelHandlerService.removeSearchModelFromModule(runtimeSchema.moduleName, indexName);
+        process.nextSuccess(request, response);
     }
 };

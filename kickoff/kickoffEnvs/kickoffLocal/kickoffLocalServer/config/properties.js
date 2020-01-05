@@ -74,20 +74,20 @@ module.exports = {
                     httpsHost: 'localhost',
                     httpsPort: 3001
                 },
-                // node1: {
-                //     httpHost: 'localhost',
-                //     httpPort: 3002,
+                node1: {
+                    httpHost: 'localhost',
+                    httpPort: 3002,
 
-                //     httpsHost: 'localhost',
-                //     httpsPort: 3003
-                // },
-                // node2: {
-                //     httpHost: 'localhost',
-                //     httpPort: 3004,
+                    httpsHost: 'localhost',
+                    httpsPort: 3003
+                },
+                node2: {
+                    httpHost: 'localhost',
+                    httpPort: 3004,
 
-                //     httpsHost: 'localhost',
-                //     httpsPort: 3005
-                // }
+                    httpsHost: 'localhost',
+                    httpsPort: 3005
+                }
             }
         },
         // profile: {
