@@ -54,7 +54,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultSchemaUpdatedPipelineService.handleErrorEnd'
             }
-
         }
     },
 

@@ -15,9 +15,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            cache: {
-                enabled: false
-            },
             event: {
                 enabled: true,
                 type: 'SYNC'
@@ -36,10 +33,6 @@ module.exports = {
             super: 'base',
             model: true,
             service: true,
-            cache: {
-                enabled: false,
-                ttl: 3600
-            },
             event: {
                 enabled: true,
                 type: 'SYNC'
@@ -61,6 +54,55 @@ module.exports = {
                     type: 'string',
                     required: true,
                     description: 'Mandate moduleName, could be common as well'
+                }
+            }
+        },
+
+        interceptor: {
+            super: 'base',
+            model: true,
+            service: true,
+            event: {
+                enabled: true,
+                type: 'SYNC'
+            },
+            tenants: ['default'],
+            router: true,
+            definition: {
+                type: {
+                    enum: [ENUMS.InterceptorType.schema.key, ENUMS.InterceptorType.import.key, ENUMS.InterceptorType.export.key, ENUMS.InterceptorType.search.key, ENUMS.InterceptorType.workflow.key, ENUMS.InterceptorType.job.key],
+                    required: true,
+                    description: 'Required value could be only in [schema, import, export, search, workflow, job]'
+                },
+                item: {
+                    type: 'string',
+                    required: false,
+                    description: 'For which item it belongs, if blank, will be applied for all validators'
+                },
+                trigger: {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate trigger name like, preSave, postSave'
+                },
+                active: {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate whether this needs to be applied'
+                },
+                index: {
+                    type: 'int',
+                    required: true,
+                    description: 'Mandate sequence where it needs to be applied'
+                },
+                handler: {
+                    type: 'string',
+                    required: false,
+                    description: 'If business logic is defined in service class'
+                },
+                script: {
+                    type: 'string',
+                    required: false,
+                    description: 'Define execution script to be evaluated'
                 }
             }
         }

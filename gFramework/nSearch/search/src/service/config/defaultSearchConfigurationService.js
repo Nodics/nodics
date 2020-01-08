@@ -168,34 +168,41 @@ module.exports = {
     },
 
     getSearchInterceptors: function (indexName) {
+        if (!this.interceptors[indexName]) {
+            this.interceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
+        }
+        return this.interceptors[indexName];
+    },
+
+    refreshSearchInterceptors: function () {
         if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
-            return this.interceptors[indexName];
-        } else {
-            return null;
+            Object.keys(this.interceptors).forEach(indexName => {
+                this.interceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
+            });
         }
     },
 
-    prepareSearchInterceptors: function () {
-        return new Promise((resolve, reject) => {
-            let items = [];
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                _.each(moduleObject.searchModels, (tenantObject, tenantName) => {
-                    _.each(tenantObject.master, (model, modelName) => {
-                        items.push(model.schemaName);
-                    });
-                });
-            });
-            SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-                items,
-                ENUMS.InterceptorType.search.key
-            ).then(searchInterceptors => {
-                this.interceptors = searchInterceptors;
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
+    // prepareSearchInterceptors: function () {
+    //     return new Promise((resolve, reject) => {
+    //         let items = [];
+    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+    //             _.each(moduleObject.searchModels, (tenantObject, tenantName) => {
+    //                 _.each(tenantObject.master, (model, modelName) => {
+    //                     items.push(model.schemaName);
+    //                 });
+    //             });
+    //         });
+    //         SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
+    //             items,
+    //             ENUMS.InterceptorType.search.key
+    //         ).then(searchInterceptors => {
+    //             this.interceptors = searchInterceptors;
+    //             resolve(true);
+    //         }).catch(error => {
+    //             reject(error);
+    //         });
+    //     });
+    // },
 
     getSearchValidators: function (tenant, indexName) {
         if (this.validators &&

@@ -13,96 +13,48 @@ const util = require('util');
 
 module.exports = {
 
-    loadInterceptors: function (rawInterceptors) {
+    loadRawInterceptors: function (rawInterceptors) {
         let interceptors = {};
-        return new Promise((resolve, reject) => {
-            try {
-                Object.keys(rawInterceptors).forEach(interceptorName => {
-                    let interceptor = rawInterceptors[interceptorName];
-                    if (!interceptor.type || !ENUMS.InterceptorType.isDefined(interceptor.type)) {
-                        this.LOG.error('Type within interceptor definition is invalid for : ' + interceptorName);
-                        process.exit(1);
-                    } else if (!interceptor.trigger) {
-                        this.LOG.error('trigger within interceptor definition can not be null or empty: ' + interceptorName);
-                        process.exit(1);
-                    } else {
-                        if (!interceptor.item) {
-                            interceptor.item = 'default';
-                        }
-                        if (!interceptors[interceptor.type]) {
-                            interceptors[interceptor.type] = {};
-                        }
-                        if (!interceptors[interceptor.type][interceptor.item]) {
-                            interceptors[interceptor.type][interceptor.item] = {};
-                        }
-                        if (!interceptors[interceptor.type][interceptor.item][interceptorName]) {
-                            interceptors[interceptor.type][interceptor.item][interceptorName] = interceptor;
-                        } else {
-                            _.merge(interceptors[interceptor.type][interceptor.item][interceptorName], interceptor);
-                        }
-                    }
-                });
-                SERVICE.DefaultInterceptorConfigurationService.setRawInterceptors(interceptors);
-                resolve(true);
-            } catch (error) {
-                reject(error);
+        Object.keys(rawInterceptors).forEach(interceptorName => {
+            let interceptor = rawInterceptors[interceptorName];
+            if (!interceptor.type || !ENUMS.InterceptorType.isDefined(interceptor.type)) {
+                this.LOG.error('Type within interceptor definition is invalid for : ' + interceptorName);
+                process.exit(1);
+            } else if (!interceptor.trigger) {
+                this.LOG.error('trigger within interceptor definition can not be null or empty: ' + interceptorName);
+                process.exit(1);
+            } else {
+                if (!interceptor.item) {
+                    interceptor.item = 'default';
+                }
+                if (!interceptors[interceptor.type]) {
+                    interceptors[interceptor.type] = {};
+                }
+                if (!interceptors[interceptor.type][interceptor.item]) {
+                    interceptors[interceptor.type][interceptor.item] = {};
+                }
+                if (!interceptors[interceptor.type][interceptor.item][interceptorName]) {
+                    interceptors[interceptor.type][interceptor.item][interceptorName] = interceptor;
+                } else {
+                    _.merge(interceptors[interceptor.type][interceptor.item][interceptorName], interceptor);
+                }
             }
         });
+        SERVICE.DefaultInterceptorConfigurationService.setRawInterceptors(_.merge(
+            SERVICE.DefaultInterceptorConfigurationService.getRawInterceptors(),
+            interceptors
+        ));
     },
 
-    refreshInterceptors: function (request) {
+    handleInterceptorChangeEvent: function (interceptor) {
         return new Promise((resolve, reject) => {
-            try {
-                this.loadInterceptors(SERVICE.DefaultFilesLoaderService.loadFiles('/src/interceptors/interceptors.js')).then(() => {
-                    if (SERVICE.DefaultDatabaseConfigurationService &&
-                        SERVICE.DefaultDatabaseConfigurationService.prepareSchemaInterceptors) {
-                        return SERVICE.DefaultDatabaseConfigurationService.prepareSchemaInterceptors();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    if (SERVICE.DefaultDataConfigurationService &&
-                        SERVICE.DefaultDataConfigurationService.prepareImportInterceptors) {
-                        return SERVICE.DefaultDataConfigurationService.prepareImportInterceptors();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    if (SERVICE.DefaultDataConfigurationService &&
-                        SERVICE.DefaultDataConfigurationService.prepareExportInterceptors) {
-                        return SERVICE.DefaultDataConfigurationService.prepareExportInterceptors();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    if (SERVICE.DefaultSearchConfigurationService &&
-                        SERVICE.DefaultSearchConfigurationService.prepareSearchInterceptors) {
-                        return SERVICE.DefaultSearchConfigurationService.prepareSearchInterceptors();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    if (SERVICE.DefaultCronJobConfigurationService &&
-                        SERVICE.DefaultCronJobConfigurationService.prepareJobInterceptors) {
-                        return SERVICE.DefaultCronJobConfigurationService.prepareJobInterceptors();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    if (SERVICE.DefaultWorkflowConfigurationService &&
-                        SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowInterceptors) {
-                        return SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowInterceptors();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
+            SERVICE.DefaultPipelineService.start('interceptorUpdatedPipeline', {
+                code: interceptor.code
+            }, {}).then(success => {
+                resolve('Interceptor updated successfully');
+            }).catch(error => {
                 reject(error);
-            }
+            });
         });
     },
 

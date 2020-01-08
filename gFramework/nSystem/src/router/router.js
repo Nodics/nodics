@@ -12,37 +12,37 @@
 module.exports = {
 
     system: {
-        processInterceptors: {
-            refreshInterceptors: {
-                secured: true,
-                key: '/interceptors/refresh',
-                method: 'GET',
-                controller: 'DefaultInterceptorController',
-                operation: 'refreshInterceptors',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/system/interceptors/refresh'
-                }
-            }
-        },
+        // processInterceptors: {
+        //     refreshInterceptors: {
+        //         secured: true,
+        //         key: '/interceptors/refresh',
+        //         method: 'GET',
+        //         controller: 'DefaultInterceptorController',
+        //         operation: 'refreshInterceptors',
+        //         help: {
+        //             requestType: 'secured',
+        //             message: 'authToken need to set within header',
+        //             method: 'GET',
+        //             url: 'http://host:port/nodics/system/interceptors/refresh'
+        //         }
+        //     }
+        // },
 
-        processValidators: {
-            refreshValidators: {
-                secured: true,
-                key: '/validators/refresh',
-                method: 'GET',
-                controller: 'DefaultValidatorController',
-                operation: 'refreshValidators',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/system/validators/refresh'
-                }
-            }
-        },
+        // processValidators: {
+        //     refreshValidators: {
+        //         secured: true,
+        //         key: '/validators/refresh',
+        //         method: 'GET',
+        //         controller: 'DefaultValidatorController',
+        //         operation: 'refreshValidators',
+        //         help: {
+        //             requestType: 'secured',
+        //             message: 'authToken need to set within header',
+        //             method: 'GET',
+        //             url: 'http://host:port/nodics/system/validators/refresh'
+        //         }
+        //     }
+        // },
 
         fileResponses: {
             returnFileContent: {

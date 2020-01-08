@@ -40,10 +40,17 @@ module.exports = {
     },
 
     getWorkflowInterceptors: function (itemCode) {
+        if (!this.interceptors[itemCode]) {
+            this.interceptors[itemCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(itemCode, ENUMS.InterceptorType.workflow.key);
+        }
+        return this.interceptors[itemCode];
+    },
+
+    refreshWorkflowInterceptors: function () {
         if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
-            return this.interceptors[itemCode];
-        } else {
-            return null;
+            Object.keys(this.interceptors).forEach(itemCode => {
+                this.interceptors[itemCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(itemCode, ENUMS.InterceptorType.workflow.key);
+            });
         }
     },
 
@@ -57,158 +64,158 @@ module.exports = {
         }
     },
 
-    prepareWorkflowInterceptors: function () {
-        return new Promise((resolve, reject) => {
-            let items = [];
-            SERVICE.DefaultWorkflowHeadService.getTenantActiveWorkflowHeads(NODICS.getActiveTenants(), items).then(itemCodes => {
-                SERVICE.DefaultWorkflowActionService.getTenantActiveWorkflowActions(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
-                    SERVICE.DefaultWorkflowChannelService.getTenantActiveWorkflowChannels(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
-                        Object.keys(itemCodes).forEach(tenant => {
-                            itemCodes[tenant].forEach(itemCode => {
-                                if (!items.includes(itemCode)) items.push(itemCode);
-                            });
-                        });
-                        SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-                            items,
-                            ENUMS.InterceptorType.workflow.key
-                        ).then(workflowInterceptors => {
-                            this.interceptors = workflowInterceptors;
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
+    // prepareWorkflowInterceptors: function () {
+    //     return new Promise((resolve, reject) => {
+    //         let items = [];
+    //         SERVICE.DefaultWorkflowHeadService.getTenantActiveWorkflowHeads(NODICS.getActiveTenants(), items).then(itemCodes => {
+    //             SERVICE.DefaultWorkflowActionService.getTenantActiveWorkflowActions(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
+    //                 SERVICE.DefaultWorkflowChannelService.getTenantActiveWorkflowChannels(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
+    //                     Object.keys(itemCodes).forEach(tenant => {
+    //                         itemCodes[tenant].forEach(itemCode => {
+    //                             if (!items.includes(itemCode)) items.push(itemCode);
+    //                         });
+    //                     });
+    //                     SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
+    //                         items,
+    //                         ENUMS.InterceptorType.workflow.key
+    //                     ).then(workflowInterceptors => {
+    //                         this.interceptors = workflowInterceptors;
+    //                         resolve(true);
+    //                     }).catch(error => {
+    //                         reject(error);
+    //                     });
+    //                 }).catch(error => {
+    //                     reject(error);
+    //                 });
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         }).catch(error => {
+    //             reject(error);
+    //         });
+    //     });
+    // },
 
-    buildWorkflowValidators: function (itemCodes, validators, tenants = NODICS.getActiveTenants()) {
-        if (!validators) validators = {};
-        return new Promise((resolve, reject) => {
-            if (tenants && tenants.length > 0) {
-                let tenant = tenants.shift();
-                SERVICE.DefaultValidatorConfigurationService.prepareValidators(
-                    tenant,
-                    itemCodes[tenant],
-                    ENUMS.ValidatorType.workflow.key
-                ).then(workflowValidators => {
-                    validators[tenant] = workflowValidators;
-                    this.buildWorkflowValidators(itemCodes, validators, tenants).then(validators => {
-                        resolve(validators);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(validators);
-            }
-        });
-    },
+    // buildWorkflowValidators: function (itemCodes, validators, tenants = NODICS.getActiveTenants()) {
+    //     if (!validators) validators = {};
+    //     return new Promise((resolve, reject) => {
+    //         if (tenants && tenants.length > 0) {
+    //             let tenant = tenants.shift();
+    //             SERVICE.DefaultValidatorConfigurationService.prepareValidators(
+    //                 tenant,
+    //                 itemCodes[tenant],
+    //                 ENUMS.ValidatorType.workflow.key
+    //             ).then(workflowValidators => {
+    //                 validators[tenant] = workflowValidators;
+    //                 this.buildWorkflowValidators(itemCodes, validators, tenants).then(validators => {
+    //                     resolve(validators);
+    //                 }).catch(error => {
+    //                     reject(error);
+    //                 });
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         } else {
+    //             resolve(validators);
+    //         }
+    //     });
+    // },
 
-    prepareWorkflowValidators: function () {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultWorkflowHeadService.getTenantActiveWorkflowHeads(NODICS.getActiveTenants()).then(itemCodes => {
-                SERVICE.DefaultWorkflowActionService.getTenantActiveWorkflowActions(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
-                    SERVICE.DefaultWorkflowChannelService.getTenantActiveWorkflowChannels(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
-                        this.buildWorkflowValidators(itemCodes).then(workflowInterceptors => {
-                            this.interceptors = workflowInterceptors;
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
+    // prepareWorkflowValidators: function () {
+    //     return new Promise((resolve, reject) => {
+    //         SERVICE.DefaultWorkflowHeadService.getTenantActiveWorkflowHeads(NODICS.getActiveTenants()).then(itemCodes => {
+    //             SERVICE.DefaultWorkflowActionService.getTenantActiveWorkflowActions(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
+    //                 SERVICE.DefaultWorkflowChannelService.getTenantActiveWorkflowChannels(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
+    //                     this.buildWorkflowValidators(itemCodes).then(workflowInterceptors => {
+    //                         this.interceptors = workflowInterceptors;
+    //                         resolve(true);
+    //                     }).catch(error => {
+    //                         reject(error);
+    //                     });
+    //                 }).catch(error => {
+    //                     reject(error);
+    //                 });
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         }).catch(error => {
+    //             reject(error);
+    //         });
+    //     });
+    // },
 
-    getWorkflowDefaultQuery: function () {
-        return {
-            $and: [{
-                active: true
-            },
-            {
-                start: {
-                    $lt: new Date()
-                }
-            },
-            {
-                $or: [{
-                    end: {
-                        $gte: new Date()
-                    }
-                },
-                {
-                    end: {
-                        $exists: false
-                    }
-                }]
-            }]
-        };
-    },
+    // getWorkflowDefaultQuery: function () {
+    //     return {
+    //         $and: [{
+    //             active: true
+    //         },
+    //         {
+    //             start: {
+    //                 $lt: new Date()
+    //             }
+    //         },
+    //         {
+    //             $or: [{
+    //                 end: {
+    //                     $gte: new Date()
+    //                 }
+    //             },
+    //             {
+    //                 end: {
+    //                     $exists: false
+    //                 }
+    //             }]
+    //         }]
+    //     };
+    // },
 
-    getActionDefaultQuery: function () {
-        return {
-            $and: [{
-                active: true
-            },
-            {
-                start: {
-                    $lt: new Date()
-                }
-            },
-            {
-                $or: [{
-                    end: {
-                        $gte: new Date()
-                    }
-                },
-                {
-                    end: {
-                        $exists: false
-                    }
-                }]
-            }]
-        };
-    },
+    // getActionDefaultQuery: function () {
+    //     return {
+    //         $and: [{
+    //             active: true
+    //         },
+    //         {
+    //             start: {
+    //                 $lt: new Date()
+    //             }
+    //         },
+    //         {
+    //             $or: [{
+    //                 end: {
+    //                     $gte: new Date()
+    //                 }
+    //             },
+    //             {
+    //                 end: {
+    //                     $exists: false
+    //                 }
+    //             }]
+    //         }]
+    //     };
+    // },
 
-    getChannelDefaultQuery: function () {
-        return {
-            $and: [{
-                active: true
-            },
-            {
-                start: {
-                    $lt: new Date()
-                }
-            },
-            {
-                $or: [{
-                    end: {
-                        $gte: new Date()
-                    }
-                },
-                {
-                    end: {
-                        $exists: false
-                    }
-                }]
-            }]
-        };
-    }
+    // getChannelDefaultQuery: function () {
+    //     return {
+    //         $and: [{
+    //             active: true
+    //         },
+    //         {
+    //             start: {
+    //                 $lt: new Date()
+    //             }
+    //         },
+    //         {
+    //             $or: [{
+    //                 end: {
+    //                     $gte: new Date()
+    //                 }
+    //             },
+    //             {
+    //                 end: {
+    //                     $exists: false
+    //                 }
+    //             }]
+    //         }]
+    //     };
+    // }
 };

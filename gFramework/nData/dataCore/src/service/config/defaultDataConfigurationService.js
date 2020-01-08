@@ -36,8 +36,6 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            //this.LOG.debug('Collecting database middlewares');
-            //NODICS.setRawModels(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/model.js'));
             resolve(true);
         });
     },
@@ -47,19 +45,10 @@ module.exports = {
     },
 
     getImportInterceptors: function (entityName) {
-        if (this.importInterceptors[entityName]) {
-            return this.importInterceptors[entityName];
-        } else {
-            return null;
+        if (!this.importInterceptors[entityName]) {
+            this.importInterceptors[entityName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.import.key);
         }
-    },
-
-    getImportValidatorss: function (tenant, entityName) {
-        if (this.importValidators[tenant] && this.importValidators[tenant][entityName]) {
-            return this.importValidators[entityName];
-        } else {
-            return null;
-        }
+        return this.importInterceptors[entityName];
     },
 
     setExportInterceptors: function (interceptors) {
@@ -68,144 +57,167 @@ module.exports = {
     },
 
     getExportInterceptors: function (entityName) {
-        if (this.exportInterceptors[entityName]) {
-            return this.exportInterceptors[entityName];
+        if (!this.exportInterceptors[entityName]) {
+            this.exportInterceptors[entityName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.export.key);
+        }
+        return this.exportInterceptors[entityName];
+    },
+
+    refreshImportInterceptors: function () {
+        if (this.importInterceptors && !UTILS.isBlank(this.importInterceptors)) {
+            Object.keys(this.importInterceptors).forEach(entityName => {
+                this.importInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.import.key);
+            });
+        }
+    },
+
+    refreshExportInterceptors: function () {
+        if (this.exportInterceptors && !UTILS.isBlank(this.exportInterceptors)) {
+            Object.keys(this.exportInterceptors).forEach(entityName => {
+                this.exportInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.export.key);
+            });
+        }
+    },
+
+    getImportValidators: function (tenant, entityName) {
+        if (this.importValidators[tenant] && this.importValidators[tenant][entityName]) {
+            return this.importValidators[entityName];
         } else {
             return null;
         }
     },
 
-    prepareImportInterceptors: function () {
-        return new Promise((resolve, reject) => {
-            let items = [];
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                _.each(moduleObject.models, (tenantObject, tenantName) => {
-                    _.each(tenantObject.master, (model, modelName) => {
-                        items.push(model.schemaName);
-                    });
-                });
-            });
-            SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-                items,
-                ENUMS.InterceptorType.import.key
-            ).then(importInterceptors => {
-                this.importInterceptors = importInterceptors;
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
+    // prepareImportInterceptors: function () {
+    //     return new Promise((resolve, reject) => {
+    //         let items = [];
+    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+    //             _.each(moduleObject.models, (tenantObject, tenantName) => {
+    //                 _.each(tenantObject.master, (model, modelName) => {
+    //                     items.push(model.schemaName);
+    //                 });
+    //             });
+    //         });
+    //         SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
+    //             items,
+    //             ENUMS.InterceptorType.import.key
+    //         ).then(importInterceptors => {
+    //             this.importInterceptors = importInterceptors;
+    //             resolve(true);
+    //         }).catch(error => {
+    //             reject(error);
+    //         });
+    //     });
+    // },
 
-    prepareExportInterceptors: function () {
-        return new Promise((resolve, reject) => {
-            let items = [];
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                _.each(moduleObject.models, (tenantObject, tenantName) => {
-                    _.each(tenantObject.master, (model, modelName) => {
-                        items.push(model.schemaName);
-                    });
-                });
-            });
-            SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-                items,
-                ENUMS.InterceptorType.export.key
-            ).then(exportInterceptors => {
-                this.exportInterceptors = exportInterceptors;
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
+    // prepareExportInterceptors: function () {
+    //     return new Promise((resolve, reject) => {
+    //         let items = [];
+    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+    //             _.each(moduleObject.models, (tenantObject, tenantName) => {
+    //                 _.each(tenantObject.master, (model, modelName) => {
+    //                     items.push(model.schemaName);
+    //                 });
+    //             });
+    //         });
+    //         SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
+    //             items,
+    //             ENUMS.InterceptorType.export.key
+    //         ).then(exportInterceptors => {
+    //             this.exportInterceptors = exportInterceptors;
+    //             resolve(true);
+    //         }).catch(error => {
+    //             reject(error);
+    //         });
+    //     });
+    // },
 
-    buildImportValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
-        if (!validators) validators = {};
-        return new Promise((resolve, reject) => {
-            if (tenants && tenants.length > 0) {
-                let tenant = tenants.shift();
-                SERVICE.DefaultValidatorConfigurationService.prepareValidators(
-                    tenant,
-                    modules[tenant],
-                    ENUMS.ValidatorType.import.key
-                ).then(schemaValidators => {
-                    validators[tenant] = schemaValidators;
-                    this.buildImportValidators(modules, validators, tenants).then(validators => {
-                        resolve(validators);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(validators);
-            }
-        });
-    },
+    // buildImportValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
+    //     if (!validators) validators = {};
+    //     return new Promise((resolve, reject) => {
+    //         if (tenants && tenants.length > 0) {
+    //             let tenant = tenants.shift();
+    //             SERVICE.DefaultValidatorConfigurationService.prepareValidators(
+    //                 tenant,
+    //                 modules[tenant],
+    //                 ENUMS.ValidatorType.import.key
+    //             ).then(schemaValidators => {
+    //                 validators[tenant] = schemaValidators;
+    //                 this.buildImportValidators(modules, validators, tenants).then(validators => {
+    //                     resolve(validators);
+    //                 }).catch(error => {
+    //                     reject(error);
+    //                 });
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         } else {
+    //             resolve(validators);
+    //         }
+    //     });
+    // },
 
-    prepareImportValidators: function () {
-        return new Promise((resolve, reject) => {
-            let items = {};
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                _.each(moduleObject.models, (tenantObject, tenantName) => {
-                    if (!items[tenantName]) items[tenantName] = [];
-                    _.each(tenantObject.master, (model, modelName) => {
-                        items[tenantName].push(model.schemaName);
-                    });
-                });
-            });
-            this.buildImportValidators(items).then(importValidators => {
-                this.importValidators = importValidators;
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
+    // prepareImportValidators: function () {
+    //     return new Promise((resolve, reject) => {
+    //         let items = {};
+    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+    //             _.each(moduleObject.models, (tenantObject, tenantName) => {
+    //                 if (!items[tenantName]) items[tenantName] = [];
+    //                 _.each(tenantObject.master, (model, modelName) => {
+    //                     items[tenantName].push(model.schemaName);
+    //                 });
+    //             });
+    //         });
+    //         this.buildImportValidators(items).then(importValidators => {
+    //             this.importValidators = importValidators;
+    //             resolve(true);
+    //         }).catch(error => {
+    //             reject(error);
+    //         });
+    //     });
+    // },
 
-    buildExportValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
-        if (!validators) validators = {};
-        return new Promise((resolve, reject) => {
-            if (tenants && tenants.length > 0) {
-                let tenant = tenants.shift();
-                SERVICE.DefaultValidatorConfigurationService.prepareValidators(
-                    tenant,
-                    modules[tenant],
-                    ENUMS.ValidatorType.export.key
-                ).then(schemaValidators => {
-                    validators[tenant] = schemaValidators;
-                    this.buildExportValidators(modules, validators, tenants).then(validators => {
-                        resolve(validators);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(validators);
-            }
-        });
-    },
+    // buildExportValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
+    //     if (!validators) validators = {};
+    //     return new Promise((resolve, reject) => {
+    //         if (tenants && tenants.length > 0) {
+    //             let tenant = tenants.shift();
+    //             SERVICE.DefaultValidatorConfigurationService.prepareValidators(
+    //                 tenant,
+    //                 modules[tenant],
+    //                 ENUMS.ValidatorType.export.key
+    //             ).then(schemaValidators => {
+    //                 validators[tenant] = schemaValidators;
+    //                 this.buildExportValidators(modules, validators, tenants).then(validators => {
+    //                     resolve(validators);
+    //                 }).catch(error => {
+    //                     reject(error);
+    //                 });
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         } else {
+    //             resolve(validators);
+    //         }
+    //     });
+    // },
 
-    prepareExportValidators: function () {
-        return new Promise((resolve, reject) => {
-            let items = {};
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                _.each(moduleObject.models, (tenantObject, tenantName) => {
-                    if (!items[tenantName]) items[tenantName] = [];
-                    _.each(tenantObject.master, (model, modelName) => {
-                        items[tenantName].push(model.schemaName);
-                    });
-                });
-            });
-            this.buildExportValidators(items).then(importValidators => {
-                this.importValidators = importValidators;
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
+    // prepareExportValidators: function () {
+    //     return new Promise((resolve, reject) => {
+    //         let items = {};
+    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+    //             _.each(moduleObject.models, (tenantObject, tenantName) => {
+    //                 if (!items[tenantName]) items[tenantName] = [];
+    //                 _.each(tenantObject.master, (model, modelName) => {
+    //                     items[tenantName].push(model.schemaName);
+    //                 });
+    //             });
+    //         });
+    //         this.buildExportValidators(items).then(importValidators => {
+    //             this.importValidators = importValidators;
+    //             resolve(true);
+    //         }).catch(error => {
+    //             reject(error);
+    //         });
+    //     });
+    // }
 };

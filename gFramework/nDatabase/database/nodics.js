@@ -55,13 +55,22 @@ module.exports = {
                 //return Promise.resolve(true);
             }).then(() => {
                 return new Promise((resolve, reject) => {
-                    this.LOG.debug('Collecting database interceptors definitions');
-                    SERVICE.DefaultDatabaseConfigurationService.prepareSchemaInterceptors().then(done => {
-                        this.LOG.debug('Database interceptors definitions configured properly');
-                        resolve(done);
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    // SERVICE.DefaultInterceptorService.get({
+                    //     tenant: 'default'
+                    // }).then(response => {
+                    //     if (response.success && response.result.length > 0) {
+                    //         let interceptors = {};
+                    //         response.result.forEach(interceptor => {
+                    //             interceptors[interceptor.code] = interceptor;
+                    //         });
+                    //         SERVICE.DefaultInterceptorService.loadRawInterceptors(interceptors);
+                    //         SERVICE.DefaultDatabaseConfigurationService.setSchemaInterceptors({});
+                    //     }
+                    //     resolve(true);
+                    // }).catch(error => {
+                    //     reject(error);
+                    // });
+                    resolve(true);
                 });
             }).then(() => {
                 return new Promise((resolve, reject) => {

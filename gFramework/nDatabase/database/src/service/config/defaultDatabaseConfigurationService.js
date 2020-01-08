@@ -127,86 +127,46 @@ module.exports = {
         }
     },
 
+    setSchemaInterceptors: function (interceptors) {
+        this.interceptors = interceptors;
+    },
+
     getSchemaInterceptors: function (schemaName) {
+        if (!this.interceptors[schemaName]) {
+            this.interceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
+        }
+        return this.interceptors[schemaName];
+    },
+
+    refreshSchemaInterceptors: function (schemaName) {
         if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
-            return this.interceptors[schemaName];
-        } else {
-            return null;
-        }
-    },
-
-    prepareSchemaInterceptors: function () {
-        return new Promise((resolve, reject) => {
-            let items = [];
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                _.each(moduleObject.models, (tenantObject, tenantName) => {
-                    _.each(tenantObject.master, (model, modelName) => {
-                        items.push(model.schemaName);
-                    });
+            if (!schemaName || schemaName === 'default') {
+                let tmpInterceptors = {};
+                Object.keys(this.interceptors).forEach(schemaName => {
+                    tmpInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
                 });
-            });
-            SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-                items,
-                ENUMS.InterceptorType.schema.key
-            ).then(schemaInterceptors => {
-                this.interceptors = schemaInterceptors;
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
-
-    getSchemaValidators: function (tenant, schemaName) {
-        if (this.validators && !UTILS.isBlank(this.validators[tenant]) && !UTILS.isBlank(this.validators[tenant][schemaName])) {
-            return this.validators[tenant][schemaName];
-        } else {
-            return null;
-        }
-    },
-
-    buildValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
-        if (!validators) validators = {};
-        return new Promise((resolve, reject) => {
-            if (tenants && tenants.length > 0) {
-                let tenant = tenants.shift();
-                SERVICE.DefaultValidatorConfigurationService.prepareValidators(
-                    tenant,
-                    modules[tenant],
-                    ENUMS.ValidatorType.schema.key
-                ).then(schemaValidators => {
-                    validators[tenant] = schemaValidators;
-                    this.buildValidators(modules, validators, tenants).then(validators => {
-                        resolve(validators);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
+                this.interceptors = tmpInterceptors;
             } else {
-                resolve(validators);
+                this.interceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
             }
-        });
+        }
     },
 
-    prepareSchemaValidators: function () {
-        return new Promise((resolve, reject) => {
-            let items = {};
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                _.each(moduleObject.models, (tenantObject, tenantName) => {
-                    if (!items[tenantName]) items[tenantName] = [];
-                    _.each(tenantObject.master, (model, modelName) => {
-                        items[tenantName].push(model.schemaName);
-                    });
-                });
+    handleSchemaInterceptorUpdated: function (event, callback) {
+        try {
+            let schemaName = event.data.item;
+            this.refreshSchemaInterceptors(schemaName);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
             });
-            this.buildValidators(items).then(schemaValidators => {
-                this.validators = schemaValidators;
-                resolve(true);
-            }).catch(error => {
-                reject(error);
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
             });
-        });
+        }
     }
 };

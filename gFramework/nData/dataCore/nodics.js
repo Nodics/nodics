@@ -28,22 +28,23 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            this.LOG.debug('Collecting data import/export interceptors definitions');
-            try {
-                SERVICE.DefaultDataConfigurationService.prepareImportInterceptors().then(() => {
-                    return SERVICE.DefaultDataConfigurationService.prepareExportInterceptors();
-                }).then(() => {
-                    return SERVICE.DefaultDataConfigurationService.prepareImportValidators();
-                }).then(() => {
-                    return SERVICE.DefaultDataConfigurationService.prepareExportValidators();
-                }).then(() => {
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(error);
-            }
+            resolve(true);
+            // this.LOG.debug('Collecting data import/export interceptors definitions');
+            // try {
+            //     SERVICE.DefaultDataConfigurationService.prepareImportInterceptors().then(() => {
+            //         return SERVICE.DefaultDataConfigurationService.prepareExportInterceptors();
+            //     }).then(() => {
+            //         return SERVICE.DefaultDataConfigurationService.prepareImportValidators();
+            //     }).then(() => {
+            //         return SERVICE.DefaultDataConfigurationService.prepareExportValidators();
+            //     }).then(() => {
+            //         resolve(true);
+            //     }).catch(error => {
+            //         reject(error);
+            //     });
+            // } catch (error) {
+            //     reject(error);
+            // }
         });
     },
 };

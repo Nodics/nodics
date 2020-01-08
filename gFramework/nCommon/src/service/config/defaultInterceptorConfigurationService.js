@@ -45,44 +45,29 @@ module.exports = {
         return this.rawInterceptors;
     },
 
-    setInterceptors: function (interceptors) {
-        this.interceptors = interceptors;
-    },
-
-    getInterceptors: function (interceptors) {
-        return this.interceptors;
-    },
-
-    getTypeInterceptors: function (type) {
-        return this.interceptors[type];
-    },
-
-
-    prepareInterceptors: function (items, type) {
-        return new Promise((resolve, reject) => {
-            let itemInterceptors = this.rawInterceptors[type];
-            if (!itemInterceptors || UTILS.isBlank(itemInterceptors)) {
-                resolve({});
-            } else {
-                let schemaInterceptors = {};
-                items.forEach(schemaName => {
-                    let defaultInt = _.merge({}, itemInterceptors.default);
-                    let schemaInterceptor = _.merge({}, itemInterceptors[schemaName] || {});
-                    schemaInterceptors[schemaName] = _.merge(defaultInt, schemaInterceptor);
-                });
-                let rawInterceptors = this.arrangeByTigger(schemaInterceptors);
-                let indexedInterceptors = this.sortInterceptors(rawInterceptors);
-                resolve(indexedInterceptors);
-            }
-        });
+    prepareItemInterceptors: function (itemName, type) {
+        let typeInterceptors = this.getRawInterceptors()[type];
+        if (!typeInterceptors || UTILS.isBlank(typeInterceptors)) {
+            return {};
+        } else {
+            let itemInterceptors = _.merge(
+                _.merge({}, typeInterceptors.default || {}),
+                _.merge({}, typeInterceptors[itemName] || {})
+            );
+            itemInterceptors = this.arrangeByTigger(itemInterceptors);
+            let indexedInterceptors = this.sortInterceptors(itemInterceptors);
+            return indexedInterceptors;
+        }
     },
 
     arrangeByTigger: function (interceptors) {
         let interceptorList = {};
         if (interceptors && !UTILS.isBlank(interceptors)) {
-            _.each(interceptors, (itemInterceptors, itemName) => {
+            Object.keys(interceptors).forEach(itemName => {
+                let itemInterceptors = interceptors[itemName];
                 if (!interceptorList[itemName]) interceptorList[itemName] = {};
-                _.each(itemInterceptors, (interceptor, intName) => {
+                Object.keys(itemInterceptors).forEach(intName => {
+                    let interceptor = itemInterceptors[intName];
                     interceptor.name = intName;
                     if (!interceptorList[itemName][interceptor.trigger]) interceptorList[itemName][interceptor.trigger] = [];
                     interceptorList[itemName][interceptor.trigger].push(interceptor);
@@ -95,9 +80,11 @@ module.exports = {
     sortInterceptors: function (interceptors) {
         let interceptorList = {};
         if (interceptors && !UTILS.isBlank(interceptors)) {
-            _.each(interceptors, (itemInterceptors, itemName) => {
+            Object.keys(interceptors).forEach(itemName => {
+                let itemInterceptors = interceptors[itemName];
                 if (!interceptorList[itemName]) interceptorList[itemName] = {};
-                _.each(itemInterceptors, (triggers, triggerName) => {
+                Object.keys(itemInterceptors).forEach(triggerName => {
+                    let triggers = itemInterceptors[triggerName];
                     let indexedInterceptors = UTILS.sortObject(triggers, 'index');
                     let sortedInterceptors = [];
                     Object.keys(indexedInterceptors).forEach(key => {
@@ -110,5 +97,5 @@ module.exports = {
             });
         }
         return interceptorList;
-    }
+    },
 };
