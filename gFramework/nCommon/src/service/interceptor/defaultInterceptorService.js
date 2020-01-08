@@ -89,6 +89,13 @@ module.exports = {
                         return Promise.resolve(true);
                     }
                 }).then(() => {
+                    if (SERVICE.DefaultWorkflowConfigurationService &&
+                        SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowInterceptors) {
+                        return SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowInterceptors();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
                     resolve(true);
                 }).catch(error => {
                     reject(error);

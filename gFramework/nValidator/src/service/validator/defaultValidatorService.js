@@ -157,6 +157,13 @@ module.exports = {
                         return Promise.resolve(true);
                     }
                 }).then(() => {
+                    if (SERVICE.DefaultWorkflowConfigurationService &&
+                        SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowValidators) {
+                        return SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowValidators();
+                    } else {
+                        return Promise.resolve(true);
+                    }
+                }).then(() => {
                     resolve(true);
                 }).catch(error => {
                     reject(error);

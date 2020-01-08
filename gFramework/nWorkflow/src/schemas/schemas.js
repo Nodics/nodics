@@ -11,9 +11,8 @@
 
 module.exports = {
     workflow: {
-
         workflowItem: {
-            super: 'base',
+            super: 'super',
             model: false,
             service: false,
             router: false,
@@ -29,7 +28,12 @@ module.exports = {
                 },
                 'item.schemaName': {
                     type: 'string',
-                    required: true,
+                    required: false,
+                    description: 'Mandate schema name'
+                },
+                'item.indexName': {
+                    type: 'string',
+                    required: false,
                     description: 'Mandate schema name'
                 },
                 'item.moduleName': {
@@ -46,25 +50,42 @@ module.exports = {
                     required: true,
                     description: 'Mandate workflow head code'
                 },
-                'workflowHead.status': {
+                'workflowHead.state': {
+                    enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key],
+                    required: true,
+                    default: ENUMS.WorkflowItemState.NEW.key,
+                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
+                },
+                activeAction: {
+                    type: 'object',
+                    required: true
+                },
+                'activeAction.code': {
                     type: 'string',
                     required: true,
-                    description: 'Mandate workflow head status'
+                    description: 'Optional workflow action code'
+                },
+                'activeAction.state': {
+                    enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key],
+                    required: true,
+                    default: ENUMS.WorkflowItemState.NEW.key,
+                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
                 },
 
-                workflowAction: {
+                lastAction: {
                     type: 'object',
                     required: false
                 },
-                'workflowAction.code': {
+                'lastAction.code': {
                     type: 'string',
                     required: false,
                     description: 'Optional workflow action code'
                 },
-                'workflowAction.status': {
-                    type: 'string',
+                'lastAction.state': {
+                    enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key],
                     required: false,
-                    description: 'Optional workflow action status'
+                    default: ENUMS.WorkflowItemState.NEW.key,
+                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
                 },
 
                 error: {
@@ -124,17 +145,108 @@ module.exports = {
             }
         },
 
+        stepResponse: {
+            super: 'super',
+            model: true,
+            service: true,
+            router: true,
+            definition: {
+                active: {
+                    required: false
+                },
+                stepCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required step code, it could be workflow head code or any of the action code'
+                },
+                type: {
+                    enum: [ENUMS.WorkflowStepResponseType.PASS.key, ENUMS.WorkflowStepResponseType.SUCCESS.key, ENUMS.WorkflowStepResponseType.ERROR.key],
+                    required: true,
+                    description: 'Mandate workflow head state [PASS, SUCCESS, ERROR]'
+                },
+                response: {
+                    type: 'object',
+                    required: true,
+                    description: 'Required response message, which contain all the data approval send for next step'
+                }
+            }
+        },
+
+
         /**
-         * This is header definition for all the workflow item created within system, This also hold 
-         * number of items currently associated with this workflow
+         * Channels are transition for travelling one action to another, based on result we got from executed action.
+         * There could be multiple channels associated with one action. Multiple channels can target to single action
          */
-        workflowHead: {
+        workflowChannel: {
             super: 'base',
             model: true,
             service: true,
             router: true,
             definition: {
+                qualifier: {
+                    type: 'object',
+                    required: true,
+                    description: 'Required qualifier, which evaluate item, if this is for current channel'
+                },
+                'qualifier.handler': {
+                    type: 'string',
+                    required: false,
+                    description: 'Define handler for this qualifier'
+                },
+                'qualifier.script': {
+                    type: 'string',
+                    required: false,
+                    description: 'Define script for this qualifier, handler have higher priority'
+                },
+                target: {
+                    type: 'string',
+                    required: true,
+                    description: 'It hold target action for the item'
+                }
+            }
+        },
 
+        workflow: {
+            super: 'base',
+            model: false,
+            service: false,
+            router: false,
+            refSchema: {
+                userGroups: {
+                    schemaName: "userGroup",
+                    type: 'many',
+                    propertyName: 'code'
+                },
+
+                channels: {
+                    schemaName: "workflowChannel",
+                    type: 'many',
+                    propertyName: 'code'
+                }
+            },
+            definition: {
+                type: {
+                    enum: [ENUMS.WorkflowActionType.MANUAL.key, ENUMS.WorkflowActionType.AUTO.key],
+                    required: true,
+                    default: ENUMS.WorkflowActionType.MANUAL.key,
+                    description: 'Mandate workflow head state [MANUAL, AUTO]'
+                },
+                handler: {
+                    type: 'string',
+                    required: false,
+                    description: 'Define handler for this action, if its type is AUTO'
+                },
+                userGroups: {
+                    type: 'array',
+                    required: true,
+                    default: ['adminUserGroup'],
+                    description: 'User group code for which this user belongs'
+                },
+                channels: {
+                    type: 'array',
+                    required: true,
+                    description: 'List of channels for the item'
+                }
             }
         },
 
@@ -145,7 +257,7 @@ module.exports = {
          * UI user interection.
          */
         workflowAction: {
-            super: 'base',
+            super: 'workflow',
             model: true,
             service: true,
             router: true,
@@ -155,11 +267,11 @@ module.exports = {
         },
 
         /**
-         * Channels are transition for travelling one action to another, based on result we got from executed action.
-         * There could be multiple channels associated with one action. Multiple channels can target to single action
+         * This is header definition for all the workflow item created within system, This also hold 
+         * number of items currently associated with this workflow
          */
-        workflowChannel: {
-            super: 'base',
+        workflowHead: {
+            super: 'workflow',
             model: true,
             service: true,
             router: true,

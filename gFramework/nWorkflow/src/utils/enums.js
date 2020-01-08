@@ -10,9 +10,9 @@
  */
 
 module.exports = {
-    CronJobState: {
+    WorkflowItemState: {
         _options: {
-            name: 'CronJobState',
+            name: 'WorkflowItemState',
             separator: '|',
             endianness: 'BE',
             ignoreCase: false,
@@ -20,39 +20,37 @@ module.exports = {
         },
         definition: [
             'NEW',
-            'RUNNING',
-            'ACTIVE',
-            'PAUSED',
-            'STOPED',
-            'CREATED',
-            'REMOVED'
+            'PROCESSING',
+            'FINISHED',
+            'ERROR'
         ]
     },
-    CronJobStatus: {
+
+    WorkflowStepResponseType: {
         _options: {
-            name: 'CronJobStatus',
+            name: 'WorkflowStepResponseType',
             separator: '|',
             endianness: 'BE',
             ignoreCase: false,
             freez: false
         },
         definition: [
-            'NEW',
+            'PASS',
             'SUCCESS',
             'ERROR'
         ]
     },
-    TriggerType: {
+    WorkflowActionType: {
         _options: {
-            name: 'TriggerType',
+            name: 'WorkflowActionType',
             separator: '|',
             endianness: 'BE',
             ignoreCase: false,
             freez: false
         },
         definition: [
-            'RANGES',
-            'STEPS'
+            'MANUAL',
+            'AUTO'
         ]
     }
 };

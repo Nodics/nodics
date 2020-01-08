@@ -82,16 +82,16 @@ module.exports = {
                     description: 'define priority to get preference when there are multiple job'
                 },
                 status: {
-                    type: 'string',
+                    enum: [ENUMS.CronJobStatus.NEW.key, ENUMS.CronJobStatus.SUCCESS.key, ENUMS.CronJobStatus.ERROR.key],
                     required: true,
-                    default: 'NEW',
+                    default: ENUMS.CronJobStatus.NEW.key,
                     description: 'Last execution result [NEW, SUCCESS ERROR]'
                 },
                 state: {
-                    type: 'string',
+                    enum: [ENUMS.CronJobState.NEW.key, ENUMS.CronJobState.RUNNING.key, ENUMS.CronJobState.ACTIVE.key, ENUMS.CronJobState.PAUSED.key, ENUMS.CronJobState.STOPED.key, ENUMS.CronJobState.CREATED.key, ENUMS.CronJobState.REMOVED.key],
                     required: true,
                     default: 'NEW',
-                    description: 'Current state of JOB'
+                    description: 'Current state of JOB [NEW, RUNNING, ACTIVE, PAUSED, STOPED, CREATED, REMOVED]'
                 },
                 log: {
                     type: 'array',

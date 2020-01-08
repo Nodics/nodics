@@ -37,36 +37,46 @@ module.exports = {
         });
     },
 
-    getTenantActiveWorkflowHeads: function (tenants, itemCodes) {
-        let _self = this;
+    // getTenantActiveWorkflowHeads: function (tenants, itemCodes) {
+    //     let _self = this;
+    //     return new Promise((resolve, reject) => {
+    //         if (!itemCodes) itemCodes = {};
+    //         if (tenants && tenants.length > 0) {
+    //             let tenant = tenants.shift();
+    //             if (!itemCodes[tenant]) itemCodes[tenant] = [];
+    //             _self.get({
+    //                 tenant: tenant,
+    //                 options: { noLimit: true },
+    //                 query: SERVICE.DefaultWorkflowConfigurationService.getWorkflowDefaultQuery()
+    //             }).then(result => {
+    //                 if (result.success && result.result && result.result.length >= 0) {
+    //                     result.result.forEach(workflowHead => {
+    //                         if (!itemCodes[tenant].includes(workflowHead.code)) itemCodes[tenant].push(workflowHead.code);
+    //                     });
+    //                     this.getTenantActiveWorkflowHeads(tenants, itemCodes).then(itemCodes => {
+    //                         resolve(itemCodes);
+    //                     }).catch(error => {
+    //                         reject(error);
+    //                     });
+    //                 } else {
+    //                     reject(result.msg);
+    //                 }
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         } else {
+    //             resolve(itemCodes);
+    //         }
+    //     });
+    // },
+
+    assignItem: function (request) {
         return new Promise((resolve, reject) => {
-            if (!itemCodes) itemCodes = {};
-            if (tenants && tenants.length > 0) {
-                let tenant = tenants.shift();
-                if (!itemCodes[tenant]) itemCodes[tenant] = [];
-                _self.get({
-                    tenant: tenant,
-                    options: { noLimit: true },
-                    query: SERVICE.DefaultWorkflowConfigurationService.getWorkflowDefaultQuery()
-                }).then(result => {
-                    if (result.success && result.result && result.result.length >= 0) {
-                        result.result.forEach(workflowHead => {
-                            if (!itemCodes[tenant].includes(workflowHead.code)) itemCodes[tenant].push(workflowHead.code);
-                        });
-                        this.getTenantActiveWorkflowHeads(tenants, itemCodes).then(itemCodes => {
-                            resolve(itemCodes);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        reject(result.msg);
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(itemCodes);
-            }
+            SERVICE.DefaultPipelineService.start('assignWorkflowItemPipeline', request, {}).then(success => {
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
         });
-    },
+    }
 };

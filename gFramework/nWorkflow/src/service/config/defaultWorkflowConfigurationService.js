@@ -12,8 +12,8 @@
 const _ = require('lodash');
 
 module.exports = {
-    dbs: {},
     interceptors: {},
+    valodators: {},
 
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -42,6 +42,16 @@ module.exports = {
     getWorkflowInterceptors: function (itemCode) {
         if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
             return this.interceptors[itemCode];
+        } else {
+            return null;
+        }
+    },
+
+    getWorkflowValidators: function (tenant, itemCode) {
+        if (this.interceptors &&
+            !UTILS.isBlank(this.valodators[tenant]) &&
+            !UTILS.isBlank(this.valodators[tenant][itemCode])) {
+            return this.valodators[tenant][itemCode];
         } else {
             return null;
         }
