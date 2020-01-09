@@ -167,6 +167,10 @@ module.exports = {
         return true;
     },
 
+    setSearchInterceptors: function (interceptors) {
+        this.interceptors = interceptors;
+    },
+
     getSearchInterceptors: function (indexName) {
         if (!this.interceptors[indexName]) {
             this.interceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
@@ -174,88 +178,78 @@ module.exports = {
         return this.interceptors[indexName];
     },
 
-    refreshSearchInterceptors: function () {
+    refreshSearchInterceptors: function (indexName) {
         if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
-            Object.keys(this.interceptors).forEach(indexName => {
+            if (!indexName || indexName === 'default') {
+                let tmpInterceptors = {};
+                Object.keys(this.interceptors).forEach(indexName => {
+                    tmpInterceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
+                });
+                this.interceptors = tmpInterceptors;
+            } else if (this.interceptors[indexName]) {
                 this.interceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
+            }
+        }
+    },
+
+    handleSearchInterceptorUpdated: function (event, callback) {
+        try {
+            let indexName = event.data.item;
+            this.refreshSearchInterceptors(indexName);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
             });
         }
     },
 
-    // prepareSearchInterceptors: function () {
-    //     return new Promise((resolve, reject) => {
-    //         let items = [];
-    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-    //             _.each(moduleObject.searchModels, (tenantObject, tenantName) => {
-    //                 _.each(tenantObject.master, (model, modelName) => {
-    //                     items.push(model.schemaName);
-    //                 });
-    //             });
-    //         });
-    //         SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-    //             items,
-    //             ENUMS.InterceptorType.search.key
-    //         ).then(searchInterceptors => {
-    //             this.interceptors = searchInterceptors;
-    //             resolve(true);
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
+    setSearchValidators: function (validators) {
+        this.validators = validators;
+    },
 
     getSearchValidators: function (tenant, indexName) {
-        if (this.validators &&
-            !UTILS.isBlank(this.validators[tenant]) &&
-            !UTILS.isBlank(this.validators[tenant][indexName])) {
-            return this.validators[tenant][indexName];
-        } else {
-            return null;
+        if (!this.validators[tenant] || !this.validators[tenant][indexName]) {
+            if (!this.validators[tenant]) this.validators[tenant] = {};
+            this.validators[tenant][indexName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, indexName, ENUMS.InterceptorType.search.key);
+        }
+        return this.validators[tenant][indexName];
+    },
+
+    refreshSearchValidators: function (tenant, indexName) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant])) {
+            if (!indexName || indexName === 'default') {
+                let tenantValidators = {};
+                Object.keys(this.validators[tenant]).forEach(indexName => {
+                    tenantValidators[indexName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, indexName, ENUMS.InterceptorType.search.key);
+                });
+                this.validators[tenant] = tenantValidators;
+            } else if (this.validators[tenant][indexName]) {
+                this.validators[tenant][indexName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, indexName, ENUMS.InterceptorType.search.key);
+            }
         }
     },
 
-    buildValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
-        if (!validators) validators = {};
-        return new Promise((resolve, reject) => {
-            if (tenants && tenants.length > 0) {
-                let tenant = tenants.shift();
-                SERVICE.DefaultValidatorConfigurationService.prepareValidators(
-                    tenant,
-                    modules[tenant],
-                    ENUMS.ValidatorType.search.key
-                ).then(searchValidators => {
-                    validators[tenant] = searchValidators;
-                    this.buildValidators(modules, validators, tenants).then(validators => {
-                        resolve(validators);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(validators);
-            }
-        });
+    handleSearchValidatorUpdated: function (event, callback) {
+        try {
+            this.refreshSearchValidators(event.data.tenant, event.data.item);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
+            });
+        }
     },
-
-    prepareSearchValidators: function () {
-        return new Promise((resolve, reject) => {
-            let items = {};
-            _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                _.each(moduleObject.searchModels, (tenantObject, tenantName) => {
-                    if (!items[tenantName]) items[tenantName] = [];
-                    _.each(tenantObject.master, (model, modelName) => {
-                        items[tenantName].push(model.schemaName);
-                    });
-                });
-            });
-            this.buildValidators(items).then(searchValidators => {
-                this.validators = searchValidators;
-                resolve(true);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
 };

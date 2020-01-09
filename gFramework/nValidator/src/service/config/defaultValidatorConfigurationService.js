@@ -42,26 +42,28 @@ module.exports = {
         return this.rawValidators;
     },
 
-    prepareValidators: function (tenant, items, type) {
+    getTenantRawValidators: function (tenant) {
+        return this.rawValidators[tenant] ? this.rawValidators[tenant] : {};
+    },
+
+    prepareItemValidators: function (tenant, itemName, type) {
         return new Promise((resolve, reject) => {
             try {
                 if (!tenant || !NODICS.getActiveTenants().includes(tenant)) {
                     this.LOG.error('Tenant is not valid: ', tenant);
                     reject('Tenant is not valid: ', tenant);
                 } else {
-                    if (!this.getRawValidators || UTILS.isBlank(this.getRawValidators[tenant]) || UTILS.isBlank(this.getRawValidators[tenant][type])) {
-                        resolve({});
+                    let typeRawValidators = this.getTenantRawValidators(tenant)[type];
+                    if (!typeRawValidators || UTILS.isBlank(typeRawValidators)) {
+                        return {};
                     } else {
-                        let itemValidators = this.getRawValidators[tenant][type];
-                        let schemaValidators = {};
-                        items.forEach(schemaName => {
-                            let defaultValidators = _.merge({}, itemValidators.default);
-                            let schemaValidator = _.merge({}, itemValidators[schemaName] || {});
-                            schemaValidators[schemaName] = _.merge(defaultValidators, schemaValidator);
-                        });
-                        let rawValidators = this.arrangeByTigger(schemaValidators);
-                        let indexedValidators = this.sortValidators(rawValidators);
-                        resolve(indexedValidators);
+                        let itemValidators = _.merge(
+                            _.merge({}, typeValidators.default || {}),
+                            _.merge({}, typeValidators[itemName] || {})
+                        );
+                        itemValidators = this.arrangeByTigger(itemValidators);
+                        let indexedValidators = this.sortInterceptors(itemValidators);
+                        return indexedValidators;
                     }
                 }
             } catch (error) {

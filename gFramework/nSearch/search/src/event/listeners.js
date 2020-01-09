@@ -11,13 +11,13 @@
 
 module.exports = {
     common: {
-        schemaInterceptorUpdatedListener: {
-            event: 'schemaInterceptorUpdated',
-            listener: 'DefaultDatabaseConfigurationService.handleSchemaInterceptorUpdated'
+        searchInterceptorUpdatedListener: {
+            event: 'searchInterceptorUpdated',
+            listener: 'DefaultSearchConfigurationService.handleSchemaInterceptorUpdated'
         },
-        schemaValidatorUpdatedListener: {
-            event: 'schemaValidatorUpdated',
-            listener: 'DefaultDatabaseConfigurationService.handleSchemaValidatorUpdated'
+        searchValidatorUpdatedListener: {
+            event: 'searchValidatorUpdated',
+            listener: 'DefaultSearchConfigurationService.handleSearchValidatorUpdated'
         }
     }
 };

@@ -11,13 +11,13 @@
 
 module.exports = {
     common: {
-        schemaInterceptorUpdatedListener: {
-            event: 'schemaInterceptorUpdated',
-            listener: 'DefaultDatabaseConfigurationService.handleSchemaInterceptorUpdated'
+        workflowInterceptorUpdatedListener: {
+            event: 'workflowInterceptorUpdated',
+            listener: 'DefaultWorkflowConfigurationService.handleWorkflowInterceptorUpdated'
         },
-        schemaValidatorUpdatedListener: {
-            event: 'schemaValidatorUpdated',
-            listener: 'DefaultDatabaseConfigurationService.handleSchemaValidatorUpdated'
+        workflowValidatorUpdatedListener: {
+            event: 'workflowValidatorUpdated',
+            listener: 'DefaultWorkflowConfigurationService.handleWorkflowValidatorUpdated'
         }
     }
 };

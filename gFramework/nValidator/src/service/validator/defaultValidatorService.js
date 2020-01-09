@@ -63,11 +63,8 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 this.loadTenantValidators(NODICS.getActiveTenants()).then(validators => {
-                    this.buildValidators(validators).then(rawValidators => {
-                        resolve(rawValidators);
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    this.buildValidators(validators);
+                    resolve(rawValidators);
                 }).catch(error => {
                     reject(error);
                 });
@@ -77,100 +74,52 @@ module.exports = {
         });
     },
 
-    buildValidators: function (validatorItems) {
+    loadRawValidators: function (validatorItems) {
         let validators = {};
-        return new Promise((resolve, reject) => {
-            try {
-                Object.keys(validatorItems).forEach(tenant => {
-                    let tenantValidators = validatorItems[tenant];
-                    if (!validators[tenant]) validators[tenant] = {};
-                    tenantValidators.forEach(validator => {
-                        if (!validator.type || !ENUMS.ValidatorType.isDefined(validator.type)) {
-                            this.LOG.error('Type within validator definition is invalid for : ' + validator.code);
-                            process.exit(1);
-                        } else if (!validator.trigger) {
-                            this.LOG.error('trigger within validator definition can not be null or empty: ' + validator.code);
-                            process.exit(1);
-                        } else {
-                            if (!validator.item) {
-                                validator.item = 'default';
-                            }
-                            if (!validators[validator.type]) {
-                                validators[validator.type] = {};
-                            }
-                            if (!validators[validator.type][validator.item]) {
-                                validators[validator.type][validator.item] = {};
-                            }
-                            if (!validators[validator.type][validator.item][validator.code]) {
-                                validators[validator.type][validator.item][validator.code] = validator;
-                            } else {
-                                _.merge(validators[validator.type][validator.item][validator.code], validator);
-                            }
-                        }
-                    });
+        Object.keys(validatorItems).forEach(tenant => {
+            let tenantValidators = validatorItems[tenant];
+            if (!validators[tenant]) validators[tenant] = {};
+            tenantValidators.forEach(validator => {
+                if (!validator.type || !ENUMS.ValidatorType.isDefined(validator.type)) {
+                    this.LOG.error('Type within validator definition is invalid for : ' + validator.code);
+                    process.exit(1);
+                } else if (!validator.trigger) {
+                    this.LOG.error('trigger within validator definition can not be null or empty: ' + validator.code);
+                    process.exit(1);
+                } else {
+                    if (!validator.item) {
+                        validator.item = 'default';
+                    }
+                    if (!validators[validator.type]) {
+                        validators[validator.type] = {};
+                    }
+                    if (!validators[validator.type][validator.item]) {
+                        validators[validator.type][validator.item] = {};
+                    }
+                    if (!validators[validator.type][validator.item][validator.code]) {
+                        validators[validator.type][validator.item][validator.code] = validator;
+                    } else {
+                        _.merge(validators[validator.type][validator.item][validator.code], validator);
+                    }
+                }
+            });
 
-                });
-                SERVICE.DefaultValidatorConfigurationService.setRawValidators(validators);
-                resolve(true);
-            } catch (error) {
-                reject(error);
-            }
         });
+        SERVICE.DefaultValidatorConfigurationService.setRawValidators(_.merge(
+            SERVICE.DefaultValidatorConfigurationService.setRawValidators(),
+            validators
+        ));
     },
 
-    refreshValidators: function (request) {
+    handleValidatorChangeEvent: function (interceptor) {
         return new Promise((resolve, reject) => {
-            try {
-                this.loadValidators().then(() => {
-                    if (SERVICE.DefaultDatabaseConfigurationService &&
-                        SERVICE.DefaultDatabaseConfigurationService.prepareSchemaValidators) {
-                        return SERVICE.DefaultDatabaseConfigurationService.prepareSchemaValidators();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    if (SERVICE.DefaultDataConfigurationService &&
-                        SERVICE.DefaultDataConfigurationService.prepareImportValidators) {
-                        return SERVICE.DefaultDataConfigurationService.prepareImportValidators();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    if (SERVICE.DefaultDataConfigurationService &&
-                        SERVICE.DefaultDataConfigurationService.prepareExportValidators) {
-                        return SERVICE.DefaultDataConfigurationService.prepareExportValidators();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    if (SERVICE.DefaultSearchConfigurationService &&
-                        SERVICE.DefaultSearchConfigurationService.prepareSearchValidators) {
-                        return SERVICE.DefaultSearchConfigurationService.prepareSearchValidators();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    if (SERVICE.DefaultCronJobConfigurationService &&
-                        SERVICE.DefaultCronJobConfigurationService.prepareJobValidators) {
-                        return SERVICE.DefaultCronJobConfigurationService.prepareJobValidators();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    if (SERVICE.DefaultWorkflowConfigurationService &&
-                        SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowValidators) {
-                        return SERVICE.DefaultWorkflowConfigurationService.prepareWorkflowValidators();
-                    } else {
-                        return Promise.resolve(true);
-                    }
-                }).then(() => {
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
+            SERVICE.DefaultPipelineService.start('validatorUpdatedPipeline', {
+                code: interceptor.code
+            }, {}).then(success => {
+                resolve('Validator updated successfully');
+            }).catch(error => {
                 reject(error);
-            }
+            });
         });
     },
 

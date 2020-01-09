@@ -32,25 +32,23 @@ module.exports = {
             SERVICE.DefaultInterceptorService.get({
                 tenant: 'default'
             }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    let interceptors = {};
-                    response.result.forEach(interceptor => {
-                        interceptors[interceptor.code] = interceptor;
-                    });
-                    SERVICE.DefaultInterceptorService.loadRawInterceptors(interceptors);
-                    SERVICE.DefaultDatabaseConfigurationService.setSchemaInterceptors({});
-                }
-                SERVICE.DefaultValidatorService.loadValidators().then(done => {
-                    this.LOG.debug('Collecting database validator definitions');
-                    SERVICE.DefaultDatabaseConfigurationService.prepareSchemaValidators().then(done => {
-                        this.LOG.debug('Database validator definitions configured properly');
+                try {
+                    if (response.success && response.result.length > 0) {
+                        let interceptors = {};
+                        response.result.forEach(interceptor => {
+                            interceptors[interceptor.code] = interceptor;
+                        });
+                        SERVICE.DefaultInterceptorService.loadRawInterceptors(interceptors);
+                        SERVICE.DefaultDatabaseConfigurationService.setSchemaInterceptors({});
+                    }
+                    SERVICE.DefaultValidatorService.loadRawValidators().then(done => {
                         resolve(done);
                     }).catch(error => {
                         reject(error);
                     });
-                }).catch(error => {
+                } catch (error) {
                     reject(error);
-                });
+                }
             }).catch(error => {
                 reject(error);
             });

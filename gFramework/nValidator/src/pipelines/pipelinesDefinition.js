@@ -10,5 +10,40 @@
  */
 
 module.exports = {
+    validatorUpdatedPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
 
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultValidatorUpdatePipelineService.validateRequest',
+                success: 'loadInterceptor'
+            },
+            loadValidator: {
+                type: 'function',
+                handler: 'DefaultValidatorUpdatePipelineService.loadValidator',
+                success: 'mergeExisting'
+            },
+            mergeExisting: {
+                type: 'function',
+                handler: 'DefaultValidatorUpdatePipelineService.mergeExisting',
+                success: 'publishCleanup'
+            },
+            publishCleanup: {
+                type: 'function',
+                handler: 'DefaultValidatorUpdatePipelineService.publishCleanup',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultValidatorUpdatePipelineService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultValidatorUpdatePipelineService.handleErrorEnd'
+            }
+        }
+    }
 };

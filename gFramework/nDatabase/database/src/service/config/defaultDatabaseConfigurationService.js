@@ -146,7 +146,7 @@ module.exports = {
                     tmpInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
                 });
                 this.interceptors = tmpInterceptors;
-            } else {
+            } else if (this.interceptors[schemaName]) {
                 this.interceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
             }
         }
@@ -168,5 +168,48 @@ module.exports = {
                 msg: error
             });
         }
-    }
+    },
+
+    setSchemaValidators: function (validators) {
+        this.validators = validators;
+    },
+
+    getSchemaValidators: function (tenant, schemaName) {
+        if (!this.validators[tenant] || !this.validators[tenant][schemaName]) {
+            if (!this.validators[tenant]) this.validators[tenant] = {};
+            this.validators[tenant][schemaName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, schemaName, ENUMS.InterceptorType.schema.key);
+        }
+        return this.validators[tenant][schemaName];
+    },
+
+    refreshSchemaValidators: function (tenant, schemaName) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant])) {
+            if (!schemaName || schemaName === 'default') {
+                let tenantValidators = {};
+                Object.keys(this.validators[tenant]).forEach(schemaName => {
+                    tenantValidators[schemaName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, schemaName, ENUMS.InterceptorType.schema.key);
+                });
+                this.validators[tenant] = tenantValidators;
+            } else if (this.validators[tenant][schemaName]) {
+                this.validators[tenant][schemaName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, schemaName, ENUMS.InterceptorType.schema.key);
+            }
+        }
+    },
+
+    handleSchemaValidatorUpdated: function (event, callback) {
+        try {
+            this.refreshSchemaValidators(event.data.tenant, event.data.item);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
+            });
+        }
+    },
 };

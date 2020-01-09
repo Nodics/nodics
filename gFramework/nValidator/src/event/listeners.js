@@ -10,10 +10,10 @@
  */
 
 module.exports = {
-    // common: {
-    //     validatorChangeListener: {
-    //         event: 'validatorSave',
-    //         listener: 'DefaultValidatorChangeListenerService.handleValidatorChangeEvent'
-    //     }
-    // }
+    common: {
+        validatorChangeListener: {
+            event: 'validatorSave',
+            listener: 'DefaultValidatorChangeListenerService.handleValidatorChangeEvent'
+        }
+    }
 };

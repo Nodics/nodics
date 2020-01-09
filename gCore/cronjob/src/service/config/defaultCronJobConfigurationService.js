@@ -37,6 +37,10 @@ module.exports = {
         });
     },
 
+    setJobInterceptors: function (interceptors) {
+        this.interceptors = interceptors;
+    },
+
     getJobInterceptors: function (jobCode) {
         if (!this.interceptors[jobCode]) {
             this.interceptors[jobCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(jobCode, ENUMS.InterceptorType.job.key);
@@ -44,110 +48,78 @@ module.exports = {
         return this.interceptors[jobCode];
     },
 
-    refreshJobInterceptors: function () {
+    refreshJobInterceptors: function (jobCode) {
         if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
-            Object.keys(this.interceptors).forEach(jobCode => {
+            if (!jobCode || jobCode === 'default') {
+                let tmpInterceptors = {};
+                Object.keys(this.interceptors).forEach(jobCode => {
+                    tmpInterceptors[jobCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(jobCode, ENUMS.InterceptorType.job.key);
+                });
+                this.interceptors = tmpInterceptors;
+            } else if (this.interceptors[jobCode]) {
                 this.interceptors[jobCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(jobCode, ENUMS.InterceptorType.job.key);
+            }
+        }
+    },
+
+    handleJobInterceptorUpdated: function (event, callback) {
+        try {
+            let jobCode = event.data.item;
+            this.refreshJobInterceptors(jobCode);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
             });
         }
     },
 
+    setJobValidators: function (validators) {
+        this.validators = validators;
+    },
+
     getJobValidators: function (tenant, jobCode) {
-        if (this.interceptors &&
-            !UTILS.isBlank(this.valodators[tenant]) &&
-            !UTILS.isBlank(this.valodators[tenant][jobCode])) {
-            return this.valodators[tenant][jobCode];
-        } else {
-            return null;
+        if (!this.validators[tenant] || !this.validators[tenant][jobCode]) {
+            if (!this.validators[tenant]) this.validators[tenant] = {};
+            this.validators[tenant][jobCode] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, jobCode, ENUMS.InterceptorType.schema.key);
+        }
+        return this.validators[tenant][jobCode];
+    },
+
+    refreshJobValidators: function (tenant, jobCode) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant])) {
+            if (!jobCode || jobCode === 'default') {
+                let tenantValidators = {};
+                Object.keys(this.validators[tenant]).forEach(jobCode => {
+                    tenantValidators[jobCode] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, jobCode, ENUMS.InterceptorType.schema.key);
+                });
+                this.validators[tenant] = tenantValidators;
+            } else if (this.validators[tenant][jobCode]) {
+                this.validators[tenant][jobCode] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, jobCode, ENUMS.InterceptorType.schema.key);
+            }
         }
     },
 
-    // prepareJobInterceptors: function () {
-    //     return new Promise((resolve, reject) => {
-    //         let items = [];
-    //         SERVICE.DefaultCronJobService.getTenantActiveJobs(NODICS.getActiveTenants()).then(jobCodes => {
-    //             Object.keys(jobCodes).forEach(tenant => {
-    //                 jobCodes[tenant].forEach(jobCode => {
-    //                     if (!items.includes(jobCode)) items.push(jobCode);
-    //                 });
-    //             });
-    //             SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-    //                 items,
-    //                 ENUMS.InterceptorType.job.key
-    //             ).then(jobInterceptors => {
-    //                 this.interceptors = jobInterceptors;
-    //                 resolve(true);
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
-
-    // buildJobValidators: function (jobCodes, validators, tenants = NODICS.getActiveTenants()) {
-    //     if (!validators) validators = {};
-    //     return new Promise((resolve, reject) => {
-    //         if (tenants && tenants.length > 0) {
-    //             let tenant = tenants.shift();
-    //             SERVICE.DefaultValidatorConfigurationService.prepareValidators(
-    //                 tenant,
-    //                 jobCodes[tenant],
-    //                 ENUMS.ValidatorType.job.key
-    //             ).then(jobValidators => {
-    //                 validators[tenant] = jobValidators;
-    //                 this.buildJobValidators(jobCodes, validators, tenants).then(validators => {
-    //                     resolve(validators);
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         } else {
-    //             resolve(validators);
-    //         }
-    //     });
-    // },
-
-    // prepareJobValidators: function () {
-    //     return new Promise((resolve, reject) => {
-    //         SERVICE.DefaultCronJobService.getTenantActiveJobs(NODICS.getActiveTenants()).then(jobCodes => {
-    //             this.buildJobValidators(jobCodes).then(jobInterceptors => {
-    //                 this.valodators = jobInterceptors;
-    //                 resolve(true);
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
-
-    // getDefaultQuery: function () {
-    //     return {
-    //         $and: [{
-    //             active: true
-    //         },
-    //         {
-    //             start: {
-    //                 $lt: new Date()
-    //             }
-    //         },
-    //         {
-    //             $or: [{
-    //                 end: {
-    //                     $gte: new Date()
-    //                 }
-    //             },
-    //             {
-    //                 end: {
-    //                     $exists: false
-    //                 }
-    //             }]
-    //         }]
-    //     };
-    // }
+    handleJobValidatorUpdated: function (event, callback) {
+        try {
+            this.refreshJobValidators(event.data.tenant, event.data.item);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
+            });
+        }
+    }
 };

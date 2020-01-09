@@ -63,161 +63,154 @@ module.exports = {
         return this.exportInterceptors[entityName];
     },
 
-    refreshImportInterceptors: function () {
+    refreshImportInterceptors: function (entityName) {
         if (this.importInterceptors && !UTILS.isBlank(this.importInterceptors)) {
-            Object.keys(this.importInterceptors).forEach(entityName => {
-                this.importInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.import.key);
+            if (!entityName || entityName === 'default') {
+                let tmpInterceptors = {};
+                Object.keys(this.importInterceptors).forEach(entityName => {
+                    tmpInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.import.key);
+                });
+                this.importInterceptors = tmpInterceptors;
+            } else if (this.importInterceptors[entityName]) {
+                this.importInterceptors[entityName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.import.key);
+            }
+        }
+    },
+
+    handleImportInterceptorUpdated: function (event, callback) {
+        try {
+            let entityName = event.data.item;
+            this.refreshImportInterceptors(entityName);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
             });
         }
     },
 
-    refreshExportInterceptors: function () {
+    refreshExportInterceptors: function (entityName) {
         if (this.exportInterceptors && !UTILS.isBlank(this.exportInterceptors)) {
-            Object.keys(this.exportInterceptors).forEach(entityName => {
-                this.exportInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.export.key);
+            if (!entityName || entityName === 'default') {
+                let tmpInterceptors = {};
+                Object.keys(this.exportInterceptors).forEach(entityName => {
+                    tmpInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.export.key);
+                });
+                this.exportInterceptors = tmpInterceptors;
+            } else if (this.exportInterceptors[entityName]) {
+                this.exportInterceptors[entityName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.export.key);
+            }
+        }
+    },
+
+    handleExportInterceptorUpdated: function (event, callback) {
+        try {
+            let entityName = event.data.item;
+            this.refreshExportInterceptors(entityName);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
             });
         }
+    },
+
+
+    setImportValidators: function (validators) {
+        this.importValidators = validators;
     },
 
     getImportValidators: function (tenant, entityName) {
-        if (this.importValidators[tenant] && this.importValidators[tenant][entityName]) {
-            return this.importValidators[entityName];
-        } else {
-            return null;
+        if (!this.importValidators[tenant] || !this.importValidators[tenant][entityName]) {
+            if (!this.importValidators[tenant]) this.importValidators[tenant] = {};
+            this.importValidators[tenant][entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.import.key);
+        }
+        return this.importValidators[tenant][entityName];
+    },
+
+    refreshImportValidators: function (tenant, entityName) {
+        if (this.importValidators[tenant] && !UTILS.isBlank(this.importValidators[tenant])) {
+            if (!entityName || entityName === 'default') {
+                let tenantValidators = {};
+                Object.keys(this.importValidators[tenant]).forEach(entityName => {
+                    tenantValidators[entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.import.key);
+                });
+                this.importValidators[tenant] = tenantValidators;
+            } else if (this.importValidators[tenant][entityName]) {
+                this.importValidators[tenant][entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.import.key);
+            }
         }
     },
 
-    // prepareImportInterceptors: function () {
-    //     return new Promise((resolve, reject) => {
-    //         let items = [];
-    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-    //             _.each(moduleObject.models, (tenantObject, tenantName) => {
-    //                 _.each(tenantObject.master, (model, modelName) => {
-    //                     items.push(model.schemaName);
-    //                 });
-    //             });
-    //         });
-    //         SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-    //             items,
-    //             ENUMS.InterceptorType.import.key
-    //         ).then(importInterceptors => {
-    //             this.importInterceptors = importInterceptors;
-    //             resolve(true);
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
+    handleImportValidatorUpdated: function (event, callback) {
+        try {
+            this.refreshImportValidators(event.data.tenant, event.data.item);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
+            });
+        }
+    },
 
-    // prepareExportInterceptors: function () {
-    //     return new Promise((resolve, reject) => {
-    //         let items = [];
-    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-    //             _.each(moduleObject.models, (tenantObject, tenantName) => {
-    //                 _.each(tenantObject.master, (model, modelName) => {
-    //                     items.push(model.schemaName);
-    //                 });
-    //             });
-    //         });
-    //         SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-    //             items,
-    //             ENUMS.InterceptorType.export.key
-    //         ).then(exportInterceptors => {
-    //             this.exportInterceptors = exportInterceptors;
-    //             resolve(true);
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
+    setExportValidators: function (validators) {
+        this.exportValidators = validators;
+    },
 
-    // buildImportValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
-    //     if (!validators) validators = {};
-    //     return new Promise((resolve, reject) => {
-    //         if (tenants && tenants.length > 0) {
-    //             let tenant = tenants.shift();
-    //             SERVICE.DefaultValidatorConfigurationService.prepareValidators(
-    //                 tenant,
-    //                 modules[tenant],
-    //                 ENUMS.ValidatorType.import.key
-    //             ).then(schemaValidators => {
-    //                 validators[tenant] = schemaValidators;
-    //                 this.buildImportValidators(modules, validators, tenants).then(validators => {
-    //                     resolve(validators);
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         } else {
-    //             resolve(validators);
-    //         }
-    //     });
-    // },
+    getExportValidators: function (tenant, entityName) {
+        if (!this.exportValidators[tenant] || !this.exportValidators[tenant][entityName]) {
+            if (!this.exportValidators[tenant]) this.exportValidators[tenant] = {};
+            this.exportValidators[tenant][entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.export.key);
+        }
+        return this.exportValidators[tenant][entityName];
+    },
 
-    // prepareImportValidators: function () {
-    //     return new Promise((resolve, reject) => {
-    //         let items = {};
-    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-    //             _.each(moduleObject.models, (tenantObject, tenantName) => {
-    //                 if (!items[tenantName]) items[tenantName] = [];
-    //                 _.each(tenantObject.master, (model, modelName) => {
-    //                     items[tenantName].push(model.schemaName);
-    //                 });
-    //             });
-    //         });
-    //         this.buildImportValidators(items).then(importValidators => {
-    //             this.importValidators = importValidators;
-    //             resolve(true);
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
+    refreshExportValidators: function (tenant, entityName) {
+        if (this.exportValidators[tenant] && !UTILS.isBlank(this.exportValidators[tenant])) {
+            if (!entityName || entityName === 'default') {
+                let tenantValidators = {};
+                Object.keys(this.exportValidators[tenant]).forEach(entityName => {
+                    tenantValidators[entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.export.key);
+                });
+                this.exportValidators[tenant] = tenantValidators;
+            } else if (this.exportValidators[tenant][entityName]) {
+                this.exportValidators[tenant][entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.export.key);
+            }
+        }
+    },
 
-    // buildExportValidators: function (modules, validators, tenants = NODICS.getActiveTenants()) {
-    //     if (!validators) validators = {};
-    //     return new Promise((resolve, reject) => {
-    //         if (tenants && tenants.length > 0) {
-    //             let tenant = tenants.shift();
-    //             SERVICE.DefaultValidatorConfigurationService.prepareValidators(
-    //                 tenant,
-    //                 modules[tenant],
-    //                 ENUMS.ValidatorType.export.key
-    //             ).then(schemaValidators => {
-    //                 validators[tenant] = schemaValidators;
-    //                 this.buildExportValidators(modules, validators, tenants).then(validators => {
-    //                     resolve(validators);
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         } else {
-    //             resolve(validators);
-    //         }
-    //     });
-    // },
-
-    // prepareExportValidators: function () {
-    //     return new Promise((resolve, reject) => {
-    //         let items = {};
-    //         _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-    //             _.each(moduleObject.models, (tenantObject, tenantName) => {
-    //                 if (!items[tenantName]) items[tenantName] = [];
-    //                 _.each(tenantObject.master, (model, modelName) => {
-    //                     items[tenantName].push(model.schemaName);
-    //                 });
-    //             });
-    //         });
-    //         this.buildExportValidators(items).then(importValidators => {
-    //             this.importValidators = importValidators;
-    //             resolve(true);
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // }
+    handleExportValidatorUpdated: function (event, callback) {
+        try {
+            this.refreshExportValidators(event.data.tenant, event.data.item);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
+            });
+        }
+    }
 };

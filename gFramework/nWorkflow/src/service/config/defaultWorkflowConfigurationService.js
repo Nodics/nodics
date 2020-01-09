@@ -33,10 +33,12 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            this.LOG.debug('Collecting database middlewares');
-            NODICS.setRawModels(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/model.js'));
             resolve(true);
         });
+    },
+
+    setWorkflowInterceptors: function (interceptors) {
+        this.interceptors = interceptors;
     },
 
     getWorkflowInterceptors: function (itemCode) {
@@ -46,176 +48,78 @@ module.exports = {
         return this.interceptors[itemCode];
     },
 
-    refreshWorkflowInterceptors: function () {
+    refreshWorkflowInterceptors: function (itemCode) {
         if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
-            Object.keys(this.interceptors).forEach(itemCode => {
+            if (!itemCode || itemCode === 'default') {
+                let tmpInterceptors = {};
+                Object.keys(this.interceptors).forEach(itemCode => {
+                    tmpInterceptors[itemCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(itemCode, ENUMS.InterceptorType.workflow.key);
+                });
+                this.interceptors = tmpInterceptors;
+            } else if (this.interceptors[itemCode]) {
                 this.interceptors[itemCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(itemCode, ENUMS.InterceptorType.workflow.key);
+            }
+        }
+    },
+
+    handleWorkflowInterceptorUpdated: function (event, callback) {
+        try {
+            let itemCode = event.data.item;
+            this.refreshWorkflowInterceptors(itemCode);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
             });
         }
     },
 
+    setWorkflowValidators: function (validators) {
+        this.validators = validators;
+    },
+
     getWorkflowValidators: function (tenant, itemCode) {
-        if (this.interceptors &&
-            !UTILS.isBlank(this.valodators[tenant]) &&
-            !UTILS.isBlank(this.valodators[tenant][itemCode])) {
-            return this.valodators[tenant][itemCode];
-        } else {
-            return null;
+        if (!this.validators[tenant] || !this.validators[tenant][itemCode]) {
+            if (!this.validators[tenant]) this.validators[tenant] = {};
+            this.validators[tenant][itemCode] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, itemCode, ENUMS.InterceptorType.workflow.key);
+        }
+        return this.validators[tenant][itemCode];
+    },
+
+    refreshWorkflowValidators: function (tenant, itemCode) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant])) {
+            if (!itemCode || itemCode === 'default') {
+                let tenantValidators = {};
+                Object.keys(this.validators[tenant]).forEach(itemCode => {
+                    tenantValidators[itemCode] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, itemCode, ENUMS.InterceptorType.workflow.key);
+                });
+                this.validators[tenant] = tenantValidators;
+            } else if (this.validators[tenant][itemCode]) {
+                this.validators[tenant][itemCode] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, itemCode, ENUMS.InterceptorType.workflow.key);
+            }
         }
     },
 
-    // prepareWorkflowInterceptors: function () {
-    //     return new Promise((resolve, reject) => {
-    //         let items = [];
-    //         SERVICE.DefaultWorkflowHeadService.getTenantActiveWorkflowHeads(NODICS.getActiveTenants(), items).then(itemCodes => {
-    //             SERVICE.DefaultWorkflowActionService.getTenantActiveWorkflowActions(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
-    //                 SERVICE.DefaultWorkflowChannelService.getTenantActiveWorkflowChannels(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
-    //                     Object.keys(itemCodes).forEach(tenant => {
-    //                         itemCodes[tenant].forEach(itemCode => {
-    //                             if (!items.includes(itemCode)) items.push(itemCode);
-    //                         });
-    //                     });
-    //                     SERVICE.DefaultInterceptorConfigurationService.prepareInterceptors(
-    //                         items,
-    //                         ENUMS.InterceptorType.workflow.key
-    //                     ).then(workflowInterceptors => {
-    //                         this.interceptors = workflowInterceptors;
-    //                         resolve(true);
-    //                     }).catch(error => {
-    //                         reject(error);
-    //                     });
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
-
-    // buildWorkflowValidators: function (itemCodes, validators, tenants = NODICS.getActiveTenants()) {
-    //     if (!validators) validators = {};
-    //     return new Promise((resolve, reject) => {
-    //         if (tenants && tenants.length > 0) {
-    //             let tenant = tenants.shift();
-    //             SERVICE.DefaultValidatorConfigurationService.prepareValidators(
-    //                 tenant,
-    //                 itemCodes[tenant],
-    //                 ENUMS.ValidatorType.workflow.key
-    //             ).then(workflowValidators => {
-    //                 validators[tenant] = workflowValidators;
-    //                 this.buildWorkflowValidators(itemCodes, validators, tenants).then(validators => {
-    //                     resolve(validators);
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         } else {
-    //             resolve(validators);
-    //         }
-    //     });
-    // },
-
-    // prepareWorkflowValidators: function () {
-    //     return new Promise((resolve, reject) => {
-    //         SERVICE.DefaultWorkflowHeadService.getTenantActiveWorkflowHeads(NODICS.getActiveTenants()).then(itemCodes => {
-    //             SERVICE.DefaultWorkflowActionService.getTenantActiveWorkflowActions(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
-    //                 SERVICE.DefaultWorkflowChannelService.getTenantActiveWorkflowChannels(NODICS.getActiveTenants(), itemCodes).then(itemCodes => {
-    //                     this.buildWorkflowValidators(itemCodes).then(workflowInterceptors => {
-    //                         this.interceptors = workflowInterceptors;
-    //                         resolve(true);
-    //                     }).catch(error => {
-    //                         reject(error);
-    //                     });
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
-
-    // getWorkflowDefaultQuery: function () {
-    //     return {
-    //         $and: [{
-    //             active: true
-    //         },
-    //         {
-    //             start: {
-    //                 $lt: new Date()
-    //             }
-    //         },
-    //         {
-    //             $or: [{
-    //                 end: {
-    //                     $gte: new Date()
-    //                 }
-    //             },
-    //             {
-    //                 end: {
-    //                     $exists: false
-    //                 }
-    //             }]
-    //         }]
-    //     };
-    // },
-
-    // getActionDefaultQuery: function () {
-    //     return {
-    //         $and: [{
-    //             active: true
-    //         },
-    //         {
-    //             start: {
-    //                 $lt: new Date()
-    //             }
-    //         },
-    //         {
-    //             $or: [{
-    //                 end: {
-    //                     $gte: new Date()
-    //                 }
-    //             },
-    //             {
-    //                 end: {
-    //                     $exists: false
-    //                 }
-    //             }]
-    //         }]
-    //     };
-    // },
-
-    // getChannelDefaultQuery: function () {
-    //     return {
-    //         $and: [{
-    //             active: true
-    //         },
-    //         {
-    //             start: {
-    //                 $lt: new Date()
-    //             }
-    //         },
-    //         {
-    //             $or: [{
-    //                 end: {
-    //                     $gte: new Date()
-    //                 }
-    //             },
-    //             {
-    //                 end: {
-    //                     $exists: false
-    //                 }
-    //             }]
-    //         }]
-    //     };
-    // }
+    handleWorkflowValidatorUpdated: function (event, callback) {
+        try {
+            this.refreshWorkflowValidators(event.data.tenant, event.data.item);
+            callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                msg: success
+            });
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                msg: error
+            });
+        }
+    },
 };
