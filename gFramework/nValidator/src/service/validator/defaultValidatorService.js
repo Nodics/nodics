@@ -111,10 +111,11 @@ module.exports = {
         ));
     },
 
-    handleValidatorChangeEvent: function (interceptor) {
+    handleValidatorChangeEvent: function (validator) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('validatorUpdatedPipeline', {
-                code: interceptor.code
+                code: validator.code,
+                tenant: validator.tenant
             }, {}).then(success => {
                 resolve('Validator updated successfully');
             }).catch(error => {

@@ -11,9 +11,9 @@
 
 module.exports = {
     common: {
-        configurationChangeListener: {
-            event: 'configurationSave',
-            listener: 'DefaultConfigurationChangeListenerService.handleConfigurationChangeEvent'
+        interceptorChangeListener: {
+            event: 'interceptorSave',
+            listener: 'DefaultInterceptorChangeListenerService.handleInterceptorChangeEvent'
         }
     }
 };

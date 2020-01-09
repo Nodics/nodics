@@ -76,7 +76,7 @@ module.exports = {
     },
 
     publishCleanup: function (request, response, process) {
-        this.LOG.debug('Publishing cleanup event');
+        this.LOG.debug('Publishing cleanup event for: ' + request.interceptor.type);
         SERVICE.DefaultEventService.handleEvent({
             event: request.interceptor.type + 'InterceptorUpdated',
             target: 'default',
