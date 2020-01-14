@@ -69,4 +69,31 @@ module.exports = {
             }
         });
     },
+
+    getQalifiedChannel: function (actionResponse, channels) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (channels && channels.length > 0) {
+                let channel = channels.shift();
+                SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
+                    actionResponse: actionResponse,
+                    channel: channel
+                }, {}).then(success => {
+                    if (success) {
+                        resolve(channel);
+                    } else {
+                        this.getQalifiedChannel(actionResponse, channels).then(channel => {
+                            resolve(channel);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve();
+            }
+        });
+    }
 };

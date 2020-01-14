@@ -171,5 +171,20 @@ module.exports = {
             this.getAllFiles(pagesPath, fileList);
             return fileList;
         }
+    },
+
+    evaluateScript: function (request, responce, script) {
+        return new Promise((resolve, reject) => {
+            try {
+                let result = eval(script);
+                if (result) {
+                    resolve(true);
+                } else {
+                    reject(false);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
     }
 };

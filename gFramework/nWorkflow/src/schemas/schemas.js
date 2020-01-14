@@ -11,11 +11,15 @@
 
 module.exports = {
     workflow: {
+        /**
+         * This schema hold all the items, associated with one of the workflow and which state the item is currently.
+         * This item will hold the reference of its actuall stage, I mean, which workflow and where it is currently
+         */
         workflowItem: {
-            super: 'super',
-            model: false,
-            service: false,
-            router: false,
+            super: 'base',
+            model: true,
+            service: true,
+            router: true,
             definition: {
                 item: {
                     type: 'object',
@@ -111,20 +115,6 @@ module.exports = {
             }
         },
 
-        /**
-         * This schema hold all the items, associated with one of the workflow and which state the item is currently.
-         * This item will hold the reference of its actuall stage, I mean, which workflow and where it is currently
-         */
-        workflowActiveItem: {
-            super: 'workflowItem',
-            model: true,
-            service: true,
-            router: true,
-            definition: {
-
-            }
-        },
-
         workflowArchivedItem: {
             super: 'workflowItem',
             model: true,
@@ -145,7 +135,7 @@ module.exports = {
             }
         },
 
-        stepResponse: {
+        actionResponse: {
             super: 'super',
             model: true,
             service: true,
@@ -154,10 +144,20 @@ module.exports = {
                 active: {
                     required: false
                 },
-                stepCode: {
+                workflowCode: {
                     type: 'string',
                     required: true,
                     description: 'Required step code, it could be workflow head code or any of the action code'
+                },
+                actionCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required step code, it could be workflow head code or any of the action code'
+                },
+                decision: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required decision, This decide which channel will process this item'
                 },
                 type: {
                     enum: [ENUMS.WorkflowStepResponseType.PASS.key, ENUMS.WorkflowStepResponseType.SUCCESS.key, ENUMS.WorkflowStepResponseType.ERROR.key],
@@ -187,6 +187,11 @@ module.exports = {
                     type: 'object',
                     required: true,
                     description: 'Required qualifier, which evaluate item, if this is for current channel'
+                },
+                'qualifier.decision': {
+                    type: 'string',
+                    required: false,
+                    description: 'Define decision for this qualifier'
                 },
                 'qualifier.handler': {
                     type: 'string',
@@ -236,11 +241,21 @@ module.exports = {
                     required: false,
                     description: 'Define handler for this action, if its type is AUTO'
                 },
+                script: {
+                    type: 'string',
+                    required: false,
+                    description: 'Define script for this action, if its type is AUTO'
+                },
                 userGroups: {
                     type: 'array',
                     required: true,
                     default: ['adminUserGroup'],
                     description: 'User group code for which this user belongs'
+                },
+                allowedDecisions: {
+                    type: 'array',
+                    required: true,
+                    description: 'List of decisions can be taken'
                 },
                 channels: {
                     type: 'array',

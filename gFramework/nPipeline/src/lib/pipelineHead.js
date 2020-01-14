@@ -93,7 +93,7 @@ module.exports = function (name, pipelineDefinition) {
     this.nextSuccess = function (request, response) {
         _preNode = _currentNode;
         if (!_nextSuccessNode || _nextSuccessNode === null) {
-            let targetNode = response.targetNode;
+            let targetNode = response.targetNode || 'default';
             this.LOG.debug('Processing pipeline target node : ' + targetNode);
             response.targetNode = 'none';
             if (targetNode && targetNode !== 'none' && UTILS.isObject(_currentNode.getSuccess())) {
@@ -113,7 +113,7 @@ module.exports = function (name, pipelineDefinition) {
     };
 
     this.stop = function (request, response, success) {
-        if (success) {
+        if (success !== undefined) {
             response.success = success;
         }
         _preNode = _currentNode;

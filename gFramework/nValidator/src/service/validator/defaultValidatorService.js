@@ -143,7 +143,7 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        SERVICE.DefaultValidatorScriptExecutionService.evaluateScript(request, responce, validator.script).then(success => {
+                        UTILS.evaluateScript(request, responce, validator.script).then(success => {
                             _self.executeValidators(validatorList, request, responce).then(success => {
                                 resolve(success);
                             }).catch(error => {

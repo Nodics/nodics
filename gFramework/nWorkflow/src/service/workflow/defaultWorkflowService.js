@@ -70,13 +70,14 @@ module.exports = {
     //     });
     // },
 
-    // assignItem: function (request) {
-    //     return new Promise((resolve, reject) => {
-    //         SERVICE.DefaultPipelineService.start('assignWorkflowItemPipeline', request, {}).then(success => {
-    //             resolve(true);
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // }
+    assignItem: function (request) {
+        return new Promise((resolve, reject) => {
+            let response = {};
+            SERVICE.DefaultPipelineService.start('assignWorkflowItemPipeline', request, response).then(success => {
+                resolve(response);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
 };
