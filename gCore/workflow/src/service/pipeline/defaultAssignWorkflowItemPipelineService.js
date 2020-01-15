@@ -56,7 +56,8 @@ module.exports = {
             SERVICE.DefaultWorkflowHeadService.get({
                 tenant: request.tenant,
                 query: {
-                    code: request.workflowCode
+                    code: request.workflowCode,
+                    isHead: true
                 }
             }).then(response => {
                 if (response.success && response.result.length > 0) {
@@ -138,9 +139,9 @@ module.exports = {
                 code: request.workflowHead.code
             };
         }
-        request.workflowItem.activeAction = {
-            code: request.workflowAction.code
-        };
+        // request.workflowItem.activeAction = {
+        //     code: request.workflowAction.code
+        // };
         process.nextSuccess(request, response);
     },
 
@@ -199,6 +200,7 @@ module.exports = {
         this.LOG.debug('Triggering action for auto workflow head');
         if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
             SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', {
+                tenant: request.tenant,
                 workflowHead: request.workflowHead,
                 workflowAction: request.workflowAction,
                 workflowItem: request.workflowItem

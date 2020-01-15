@@ -227,6 +227,12 @@ module.exports = {
             triggerModelChangeEvent: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.triggerModelChangeEvent',
+                success: 'handleWorkflowProcess'
+            },
+
+            handleWorkflowProcess: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.handleWorkflowProcess',
                 success: 'successEnd'
             },
 

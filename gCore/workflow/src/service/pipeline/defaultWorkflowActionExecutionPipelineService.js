@@ -35,7 +35,7 @@ module.exports = {
 
     /**
      * This pipeline process can be executed either via last executed action after assiging an item to action if it is AUTO, or via API if it is MANUAL. 
-     * In case of AUTO workflowItem object will be mandate and for manual, workflowItemCode and response will be mandate. Here response is what business
+     * In case of AUTO workflowItem object will be mandate and for manual, itemCode and response will be mandate. Here response is what business
      * have thier comments for the action
      * @param {*} request 
      * @param {*} response 
@@ -54,7 +54,7 @@ module.exports = {
             SERVICE.DefaultWorkflowItemService.get({
                 tenant: request.tenant,
                 query: {
-                    code: request.workflowItemCode
+                    code: request.itemCode
                 }
             }).then(response => {
                 if (response.success && response.result.length > 0) {
@@ -71,13 +71,14 @@ module.exports = {
         }
     },
     loadWorkflowHead: function (request, response, process) {
-        this.LOG.debug('Loading workflow head: ' + request.workflowCode);
+        let workflowCode = request.workflowCode || request.workflowItem.workflowHead.code;
+        this.LOG.debug('Loading workflow head: ' + workflowCode);
         if (!request.workflowHead) {
-            let workflowHead = request.workflowItem.workflowHead;
             SERVICE.DefaultWorkflowHeadService.get({
                 tenant: request.tenant,
                 query: {
-                    code: workflowHead.code
+                    code: workflowCode,
+                    isHead: true
                 }
             }).then(response => {
                 if (response.success && response.result.length > 0) {
@@ -94,24 +95,29 @@ module.exports = {
         }
     },
     loadWorkflowAction: function (request, response, process) {
-        this.LOG.debug('Loading workflow action: ' + request.workflowCode);
         if (!request.workflowAction) {
-            let workflowAction = request.workflowItem.workflowAction;
-            SERVICE.DefaultWorkflowActionService.get({
-                tenant: request.tenant,
-                query: {
-                    code: workflowAction.code
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.workflowAction = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'Invalid request, none workflow action found for code: ' + request.workflowCode);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
+            if (!request.workflowItem.activeAction) {
+                request.workflowAction = request.workflowHead;
+                process.nextSuccess(request, response);
+            } else {
+                let actionCode = request.actionCode || request.workflowItem.activeAction.code;
+                this.LOG.debug('Loading workflow action: ' + actionCode);
+                SERVICE.DefaultWorkflowActionService.get({
+                    tenant: request.tenant,
+                    query: {
+                        code: actionCode
+                    }
+                }).then(response => {
+                    if (response.success && response.result.length > 0) {
+                        request.workflowAction = response.result[0];
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, 'Invalid request, none workflow action found for code: ' + request.workflowCode);
+                    }
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            }
         } else {
             process.nextSuccess(request, response);
         }

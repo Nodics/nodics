@@ -1,13 +1,13 @@
 {
-    "name": "profile",
-    "index": "5.20",
-    "type": "router",
-    "description": "Nodics applicaion module. It will hold all profile realted information",
+    "name": "workflow",
+    "index": "5.10",
+    "type": "core",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to workflow",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "profile"
+        "workflow"
     ],
-    "author": "Nodics Framework <nodics.framework@gmail.com>",
+    "author": "Himkar Dwivedi",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,

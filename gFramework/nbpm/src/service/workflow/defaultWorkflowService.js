@@ -37,36 +37,47 @@ module.exports = {
         });
     },
 
-    getTenantActiveWorkflowActions: function (tenants, itemCodes) {
-        let _self = this;
+    prepareURL: function (definition) {
+        let connectionType = 'abstract';
+        let nodeId = 'node0';
+        if (definition.targetNodeId) {
+            connectionType = 'node';
+            nodeId = definition.targetNodeId;
+        }
+        return SERVICE.DefaultModuleService.buildRequest({
+            connectionType: connectionType,
+            nodeId: nodeId,
+            moduleName: 'workflow',
+            methodName: 'put',
+            apiName: '/item/add',
+            requestBody: definition.requestBody,
+            isJsonResponse: true,
+            header: {
+                authToken: NODICS.getInternalAuthToken(definition.tenant)
+            }
+        });
+    },
+
+    publishToWorkflow: function (itemDetails, tenant) {
         return new Promise((resolve, reject) => {
-            if (!itemCodes) itemCodes = {};
-            if (tenants && tenants.length > 0) {
-                let tenant = tenants.shift();
-                if (!itemCodes[tenant]) itemCodes[tenant] = [];
-                _self.get({
-                    tenant: tenant,
-                    options: { noLimit: true },
-                    query: SERVICE.DefaultWorkflowConfigurationService.getActionDefaultQuery()
-                }).then(result => {
-                    if (result.success && result.result && result.result.length >= 0) {
-                        result.result.forEach(workflowAction => {
-                            if (!itemCodes[tenant].includes(workflowAction.code)) itemCodes[tenant].push(workflowAction.code);
-                        });
-                        this.getTenantActiveWorkflowActions(tenants, itemCodes).then(itemCodes => {
-                            resolve(itemCodes);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        reject(result.msg);
-                    }
+            if (NODICS.isModuleActive('workflow')) {
+                this.initializeWorkflows({
+                    items: itemDetails
+                }).then(success => {
+                    resolve(success);
                 }).catch(error => {
                     reject(error);
                 });
             } else {
-                resolve(itemCodes);
+                SERVICE.DefaultModuleService.fetch(this.prepareURL({
+                    tenant: tenant,
+                    requestBody: itemDetails
+                })).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
             }
         });
-    },
+    }
 };

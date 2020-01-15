@@ -12,37 +12,21 @@
 module.exports = {
 
     system: {
-        // processInterceptors: {
-        //     refreshInterceptors: {
-        //         secured: true,
-        //         key: '/interceptors/refresh',
-        //         method: 'GET',
-        //         controller: 'DefaultInterceptorController',
-        //         operation: 'refreshInterceptors',
-        //         help: {
-        //             requestType: 'secured',
-        //             message: 'authToken need to set within header',
-        //             method: 'GET',
-        //             url: 'http://host:port/nodics/system/interceptors/refresh'
-        //         }
-        //     }
-        // },
-
-        // processValidators: {
-        //     refreshValidators: {
-        //         secured: true,
-        //         key: '/validators/refresh',
-        //         method: 'GET',
-        //         controller: 'DefaultValidatorController',
-        //         operation: 'refreshValidators',
-        //         help: {
-        //             requestType: 'secured',
-        //             message: 'authToken need to set within header',
-        //             method: 'GET',
-        //             url: 'http://host:port/nodics/system/validators/refresh'
-        //         }
-        //     }
-        // },
+        workflow2SchemaUpdate: {
+            saveWorkflow2Schema: {
+                secured: true,
+                key: '/workflow/to/schema',
+                method: 'PUT',
+                controller: 'DefaultWorkflow2SchemaController',
+                operation: 'save',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/workflow/to/schema'
+                }
+            }
+        },
 
         fileResponses: {
             returnFileContent: {

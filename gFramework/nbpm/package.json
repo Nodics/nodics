@@ -1,13 +1,11 @@
 {
-    "name": "workflow",
+    "name": "bpm",
     "index": "1.40",
     "type": "core",
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to bpms",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to bpm",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "bpms",
-        "workflow",
-        "nWorkflow"
+        "bpm"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

@@ -10,7 +10,6 @@
  */
 
 const _ = require('lodash');
-const util = require('util');
 
 module.exports = {
     /**
@@ -561,6 +560,34 @@ module.exports = {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {
                     this.LOG.error('While posting model change event : ', error);
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while pushing save event : ', error);
+        }
+        process.nextSuccess(request, response);
+    },
+
+    handleWorkflowProcess: function (request, response, process) {
+        this.LOG.debug('Triggering event for modified model');
+        try {
+            let schemaModel = request.schemaModel;
+            let savedModel = response.model.result;
+            if (response.model.result && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
+                let itemDetails = [];
+                schemaModel.workflowCodes.forEach(workflowCode => {
+                    itemDetails.push({
+                        tenant: request.tenant,
+                        itemCode: savedModel.code || savedModel._id,
+                        schemaName: schemaModel.schemaName,
+                        moduleName: schemaModel.moduleName,
+                        workflowCode: workflowCode
+                    });
+                });
+                SERVICE.DefaultWorkflowService.publishToWorkflow(itemDetails, tenant).then(success => {
+                    this.LOG.debug('Workflow associated successfully');
+                }).catch(error => {
+                    this.LOG.error('While associating workflow : ', error);
                 });
             }
         } catch (error) {
