@@ -33,7 +33,6 @@ module.exports = {
         });
     },
 
-
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request for executing action handler');
         if (!request.workflowAction) {

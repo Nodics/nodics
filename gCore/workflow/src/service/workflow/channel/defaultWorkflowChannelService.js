@@ -84,9 +84,9 @@ module.exports = {
         });
     },
 
-    handleSuccessProcess: function (request) {
+    handleSuccessProcess: function (request, response) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('handleWorkflowSuccessPipeline', request, {}).then(success => {
+            SERVICE.DefaultPipelineService.start('handleWorkflowSuccessPipeline', request, response).then(success => {
                 reject(success);
             }).catch(error => {
                 reject(error);
