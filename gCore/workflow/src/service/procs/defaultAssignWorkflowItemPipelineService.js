@@ -33,30 +33,22 @@ module.exports = {
         });
     },
 
-    /**
-     * This pipeline process can be executed either via last executed action after assiging an item to action if it is AUTO, or via API if it is MANUAL. 
-     * In case of AUTO workflowItem object will be mandate and for manual, workflowItemCode and response will be mandate. Here response is what business
-     * have thier comments for the action
-     * @param {*} request 
-     * @param {*} response 
-     * @param {*} process 
-     */
     validateRequest: function (request, response, process) {
+        this.LOG.debug('Validating request to assign item with workflow');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
-        } else if (!request.actionResponse) {
-            process.error(request, response, 'Invalid request, could not found a valid action response');
-        } else if (!request.channel) {
-            process.error(request, response, 'Invalid request, could not found a valid channel');
-        } else if (!request.workflowAction && !request.workflowActionCode) {
-            process.error(request, response, 'Invalid request, could not found a valid workflow action');
+        } else if (request.workflowHead && request.workflowCode) {
+            process.error(request, response, 'Invalid request, workflow code or workflow head can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }
     },
     loadWorkflowItem: function (request, response, process) {
-        this.LOG.debug('Create Workflow Active Item');
-        if (!request.workflowItem) {
+        if (request.workflowItem) {
+            this.LOG.debug('Workflow item already available in request: ' + request.workflowItem.code);
+            process.nextSuccess(request, response);
+        } else if (request.workflowItemCode) {
+            this.LOG.debug('Loading workflow item: ' + request.workflowItemCode);
             SERVICE.DefaultWorkflowItemService.get({
                 tenant: request.tenant,
                 query: {
@@ -72,18 +64,22 @@ module.exports = {
             }).catch(error => {
                 process.error(request, response, error);
             });
+        } else if (request.itemType === ENUMS.WorkflowItemType.INTERNAL.key) {
+            response.targetNode = 'loadInternalItem';
+            process.nextSuccess(request, response);
         } else {
+            response.targetNode = 'loadExternalItem';
             process.nextSuccess(request, response);
         }
     },
     loadWorkflowHead: function (request, response, process) {
-        this.LOG.debug('Loading workflow head: ' + request.workflowCode);
         if (!request.workflowHead) {
-            let workflowHead = request.workflowItem.workflowHead;
+            let workflowCode = request.workflowCode || request.workflowItem.workflowHead.code;
+            this.LOG.debug('Loading workflow head: ' + workflowCode);
             SERVICE.DefaultWorkflowHeadService.get({
                 tenant: request.tenant,
                 query: {
-                    code: workflowHead.code
+                    code: workflowCode
                 }
             }).then(response => {
                 if (response.success && response.result.length > 0) {
@@ -101,12 +97,13 @@ module.exports = {
     },
     loadWorkflowAction: function (request, response, process) {
         this.LOG.debug('Loading workflow action: ' + request.workflowCode);
-        if (!request.workflowAction) {
-            let workflowAction = request.workflowItem.workflowAction;
+        if (!request.workflowAction && !request.actionCode) {
+            request.workflowAction = request.workflowHead;
+        } else if (!request.workflowAction && request.actionCode) {
             SERVICE.DefaultWorkflowActionService.get({
                 tenant: request.tenant,
                 query: {
-                    code: workflowAction.code
+                    code: request.actionCode
                 }
             }).then(response => {
                 if (response.success && response.result.length > 0) {
@@ -122,11 +119,25 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    preChannelInterceptors: function (request, response, process) {
-        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.channel.code);
-        if (interceptors && interceptors.preChannel) {
-            this.LOG.debug('Applying preChannel interceptors for workflow channel execution');
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preChannel), request, response).then(success => {
+    updateWorkflowItem: function (request, response, process) {
+        request.workflowItem.lastActionCode = (request.workflowItem.activeAction) ? request.workflowItem.activeAction.code : '';
+        if (!request.workflowItem.workflowHead) {
+            request.workflowItem.workflowHead = {
+                code: request.workflowHead.code
+            };
+        }
+        request.workflowItem.activeAction = {
+            code: request.workflowAction.code
+        };
+        if (!request.workflowItem.actions) request.workflowItem.actions = [];
+        request.workflowItem.actions.push(request.workflowItem.activeAction.code);
+        process.nextSuccess(request, response);
+    },
+    applyPutInterceptors: function (request, response, process) {
+        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowItem.activeAction.code);
+        if (interceptors && interceptors.put) {
+            this.LOG.debug('Applying put interceptors for workflow item creation');
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.put), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -139,11 +150,11 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    preChannelValidators: function (request, response, process) {
-        let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.channel.code);
-        if (validators && validators.preChannel) {
-            this.LOG.debug('Applying preChannel validators for workflow channel execution');
-            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preChannel), request, response).then(success => {
+    applyPutValidators: function (request, response, process) {
+        let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowItem.activeAction.code);
+        if (validators && validators.put) {
+            this.LOG.debug('Applying put validators for workflow item creation');
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.put), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, {
@@ -156,46 +167,30 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    triggerTarget: function (request, response, process) {
-        SERVICE.DefaultWorkflowService.assignItem({
-            workflowHead: request.workflowHead,
-            workflowItem: request.workflowItem,
-            workflowActionCode: request.channel.target
+    saveActiveItem: function (request, response, process) {
+        this.LOG.debug('Creating active workflow item');
+        SERVICE.DefaultWorkflowItemService.save({
+            tenant: request.tenant,
+            moduleName: request.moduleName,
+            models: [request.workflowItem]
         }).then(success => {
+            console.log('=========>>> ', success.result);
+            request.workflowItem = success.result[0];
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
-    postChannelInterceptors: function (request, response, process) {
-        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.channel.code);
-        if (interceptors && interceptors.postChannel) {
-            this.LOG.debug('Applying postChannel interceptors for workflow channel execution');
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postChannel), request, response).then(success => {
+    performAction: function (request, response, process) {
+        this.LOG.debug('Triggering action for auto workflow head');
+        if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
+            SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', {
+                tenant: request.tenant,
+                workflowItem: request.workflowItem
+            }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-    postChannelValidators: function (request, response, process) {
-        let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.channel.code);
-        if (validators && validators.postChannel) {
-            this.LOG.debug('Applying postChannel validators for workflow channel execution');
-            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postChannel), request, response).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -208,16 +203,17 @@ module.exports = {
     },
     handleError: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
+        response.error = (response.errors && response.errors.length === 1) ? response.errors[0] : response.error;
+        if (!(response.error instanceof Error) || !UTILS.isObject(response.error)) {
+            response.error = {
+                message: response.error
+            };
         }
+        response.error.code = response.error.code || 'ERR_SYS_00000';
+        SERVICE.DefaultPipelineService.start('handleWorkflowErrorsPipeline', request, response).then(success => {
+            process.reject(response.error);
+        }).catch(error => {
+            process.reject(response.error);
+        });
     }
 };

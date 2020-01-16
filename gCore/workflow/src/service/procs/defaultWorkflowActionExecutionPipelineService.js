@@ -96,28 +96,23 @@ module.exports = {
     },
     loadWorkflowAction: function (request, response, process) {
         if (!request.workflowAction) {
-            if (!request.workflowItem.activeAction) {
-                request.workflowAction = request.workflowHead;
-                process.nextSuccess(request, response);
-            } else {
-                let actionCode = request.actionCode || request.workflowItem.activeAction.code;
-                this.LOG.debug('Loading workflow action: ' + actionCode);
-                SERVICE.DefaultWorkflowActionService.get({
-                    tenant: request.tenant,
-                    query: {
-                        code: actionCode
-                    }
-                }).then(response => {
-                    if (response.success && response.result.length > 0) {
-                        request.workflowAction = response.result[0];
-                        process.nextSuccess(request, response);
-                    } else {
-                        process.error(request, response, 'Invalid request, none workflow action found for code: ' + request.workflowCode);
-                    }
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
-            }
+            let actionCode = request.actionCode || request.workflowItem.activeAction.code;
+            this.LOG.debug('Loading workflow action: ' + actionCode);
+            SERVICE.DefaultWorkflowActionService.get({
+                tenant: request.tenant,
+                query: {
+                    code: actionCode
+                }
+            }).then(response => {
+                if (response.success && response.result.length > 0) {
+                    request.workflowAction = response.result[0];
+                    process.nextSuccess(request, response);
+                } else {
+                    process.error(request, response, 'Invalid request, none workflow action found for code: ' + request.workflowCode);
+                }
+            }).catch(error => {
+                process.error(request, response, error);
+            });
         } else {
             process.nextSuccess(request, response);
         }
@@ -185,8 +180,10 @@ module.exports = {
     createStepResponse: function (request, response, process) {
         let autoResponse = response.success || {};
         let decision = autoResponse.decision || request.decision;
-        if (request.workflowAction.allowedDecisions.includes(decision)) {
+        if (!request.workflowAction.allowedDecisions || request.workflowAction.allowedDecisions.includes(decision)) {
             request.actionResponse = {
+                itemCode: request.workflowItem.code,
+                originalCode: request.workflowItem.originalCode,
                 workflowCode: request.workflowHead.code,
                 actionCode: request.workflowAction.code,
                 decision: decision,
@@ -196,6 +193,21 @@ module.exports = {
         } else {
             process.error(request, response, 'Invalid decision: ' + decision + ' for action: ' + request.workflowAction.code);
         }
+    },
+    evaluateChannels: function (request, response, process) {
+        this.LOG.debug('Starting channel evaluation process');
+        SERVICE.DefaultWorkflowChannelService.getQalifiedChannel(request.workflowAction, request.actionResponse).then(channels => {
+            request.qualifiedChannels = channels;
+            if (request.qualifiedChannels && request.qualifiedChannels.length > 0) {
+                request.qualifiedChannels.forEach(channel => {
+                    if (!request.actionResponse.channels) request.actionResponse.channels = [];
+                    request.actionResponse.channels.push(channel.code);
+                });
+            }
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
     updateStepResponse: function (request, response, process) {
         SERVICE.DefaultActionResponseService.save({
@@ -244,33 +256,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    evaluateChannels: function (request, response, process) {
-        this.LOG.debug('Starting channel evaluation process');
-        let channels = [].concat(request.workflowAction.channels);
-        SERVICE.DefaultWorkflowChannelService.getQalifiedChannel(request.actionResponse, channels).then(channel => {
-            response.qualifiedChannel = channel;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
-
     executeChannel: function (request, response, process) {
         this.LOG.debug('Starting channel execution process');
-        SERVICE.DefaultPipelineService.start('executeChannelPipeline', {
-            workflowHead: request.workflowHead,
-            workflowAction: request.workflowAction,
-            workflowItem: request.workflowItem,
-            actionResponse: request.actionResponse,
-            channel: response.qualifiedChannel,
-            tenant: request.tenant
-        }, {}).then(success => {
+        if (request.qualifiedChannels.length > 0) {
+            SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
+                tenant: request.tenant,
+                channels: request.qualifiedChannels,
+                workflowItem: request.workflowItem
+            }, {}).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
+        } else {
             process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
+        }
     },
-
     successEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
@@ -285,7 +286,7 @@ module.exports = {
             };
         }
         response.error.code = response.error.code || 'ERR_SYS_00000';
-        SERVICE.DefaultPipelineService.start('handleWorkflowErrorsPipeline', request, response).then(success => {
+        SERVICE.DefaultWorkflowChannelService.handleErrorProcess(request, response).then(success => {
             process.reject(response.error);
         }).catch(error => {
             process.reject(response.error);

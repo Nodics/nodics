@@ -10,17 +10,17 @@
  */
 
 module.exports = {
-    WorkflowItemType: {
-        _options: {
-            name: 'WorkflowItemType',
-            separator: '|',
-            endianness: 'BE',
-            ignoreCase: false,
-            freez: false
-        },
-        definition: [
-            'INTERNAL',
-            'EXTERNAL'
-        ]
+    workflow: {
+        defaultWorkflowActionHeader: {
+            options: {
+                enabled: true,
+                schemaName: 'workflowAction',
+                operation: 'save',
+                dataFilePrefix: 'defaultWorkflowActionData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
     }
 };

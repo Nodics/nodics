@@ -21,29 +21,24 @@ module.exports = {
             service: true,
             router: true,
             definition: {
-                item: {
-                    type: 'object',
-                    required: true
-                },
-                'item.code': {
+                originalCode: {
                     type: 'string',
                     required: true,
                     description: 'Mandate item code'
                 },
-                'item.schemaName': {
-                    type: 'string',
-                    required: false,
-                    description: 'Mandate schema name'
+                item: {
+                    type: 'object',
+                    required: true
                 },
-                'item.indexName': {
-                    type: 'string',
-                    required: false,
-                    description: 'Mandate schema name'
+                'item.type': {
+                    enum: [ENUMS.WorkflowItemType.INTERNAL.key, ENUMS.WorkflowItemType.EXTERNAL.key],
+                    required: true,
+                    description: 'Mandate item type [INTERNAL, EXTERNAL]'
                 },
-                'item.moduleName': {
+                'item.detail': {
                     type: 'string',
                     required: true,
-                    description: 'Mandate module name'
+                    description: 'Required detail of item, either internal or external'
                 },
                 workflowHead: {
                     type: 'object',
@@ -59,6 +54,11 @@ module.exports = {
                     required: true,
                     default: ENUMS.WorkflowItemState.NEW.key,
                     description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
+                },
+                actions: {
+                    type: 'array',
+                    required: false,
+                    description: 'All actions this item passed through'
                 },
                 activeAction: {
                     type: 'object',
@@ -222,7 +222,6 @@ module.exports = {
                     type: 'many',
                     propertyName: 'code'
                 },
-
                 channels: {
                     schemaName: "workflowChannel",
                     type: 'many',
@@ -276,8 +275,30 @@ module.exports = {
             model: true,
             service: true,
             router: true,
+            refSchema: {
+                successChannel: {
+                    schemaName: "workflowChannel",
+                    type: 'one',
+                    propertyName: 'code'
+                }
+            },
             definition: {
-
+                isLeafAction: {
+                    type: 'bool',
+                    required: true,
+                    default: false,
+                    description: 'Required isLeafAction, true only for leaf action'
+                },
+                successChannel: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required channel name for success handler'
+                },
+                errorChannel: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required channel name for error handler'
+                },
             }
         },
 

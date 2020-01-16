@@ -10,17 +10,23 @@
  */
 
 module.exports = {
-    WorkflowItemType: {
-        _options: {
-            name: 'WorkflowItemType',
-            separator: '|',
-            endianness: 'BE',
-            ignoreCase: false,
-            freez: false
+    record0: {
+        code: "defaultSuccessChannel",
+        name: "defaultSuccessChannel",
+        active: true,
+        qualifier: {
+            decision: 'SUCCESS'
         },
-        definition: [
-            'INTERNAL',
-            'EXTERNAL'
-        ]
+        target: 'defaultSuccessAction'
+    },
+
+    record1: {
+        code: "defaultErrorChannel",
+        name: "defaultErrorChannel",
+        active: true,
+        qualifier: {
+            decision: 'ERROR'
+        },
+        target: 'defaultErrorAction'
     }
 };

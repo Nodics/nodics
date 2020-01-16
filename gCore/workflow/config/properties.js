@@ -11,4 +11,8 @@
 
 module.exports = {
 
+    workflow: {
+        defaultSuccessChannel: 'handleSuccessEnd',
+        defaultErrorChannel: 'handleErrorEnd'
+    }
 };

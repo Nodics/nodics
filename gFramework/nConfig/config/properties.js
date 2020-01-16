@@ -18,6 +18,9 @@ module.exports = {
     */
     nodeId: 'node0',
 
+    /**
+     * System id is to group all clusters running for same module
+     */
     systemId: 0,
 
     /*
