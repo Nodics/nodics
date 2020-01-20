@@ -35,7 +35,7 @@ module.exports = {
     },
 
     addItems: function (request, callback) {
-        request.items = request.httpRequest.body;
+        request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {
             FACADE.DefaultWorkflowFacade.addItems(request).then(success => {
                 callback(null, success);
@@ -47,6 +47,7 @@ module.exports = {
         }
     },
 
+    /* ===================================================================== */
     startWorkflow: function (request, callback) {
         request.itemCode = request.httpRequest.params.itemCode;
         request = _.merge(request || {}, request.httpRequest.body);

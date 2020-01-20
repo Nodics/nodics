@@ -22,22 +22,8 @@ module.exports = {
                 success: 'loadWorkflowItem'
             },
             loadWorkflowItem: {
-                type: 'function',
-                handler: 'DefaultAssignWorkflowItemPipelineService.loadWorkflowItem',
-                success: {
-                    loadInternalItem: 'handleInternalItem',
-                    loadExternalItem: 'handleExternalItem',
-                    default: 'loadWorkflowHead'
-                }
-            },
-            handleInternalItem: {
                 type: 'process',
-                handler: 'handleInternalItemCreatePipeline',
-                success: 'loadWorkflowHead'
-            },
-            handleExternalItem: {
-                type: 'process',
-                handler: 'handleExternalItemCreatePipeline',
+                handler: 'loadWorkflowItemPipeline',
                 success: 'loadWorkflowHead'
             },
             loadWorkflowHead: {
@@ -48,11 +34,11 @@ module.exports = {
             loadWorkflowAction: {
                 type: 'function',
                 handler: 'DefaultAssignWorkflowItemPipelineService.loadWorkflow',
-                success: 'updateWorkflowItem'
+                success: 'updateWorkflowItems'
             },
-            updateWorkflowItem: {
+            updateWorkflowItems: {
                 type: 'function',
-                handler: 'DefaultAssignWorkflowItemPipelineService.updateWorkflowItem',
+                handler: 'DefaultAssignWorkflowItemPipelineService.updateWorkflowItems',
                 success: 'applyPutInterceptors'
             },
             applyPutInterceptors: {
@@ -86,44 +72,6 @@ module.exports = {
         }
     },
 
-    handleInternalItemCreatePipeline: {
-        startNode: "validateRequest",
-        hardStop: true,
-        handleError: 'handleError',
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultInternalItemCreatePipelineService.validateRequest',
-                success: 'loadWorkflowItem'
-            },
-            loadWorkflowItem: {
-                type: 'function',
-                handler: 'DefaultInternalItemCreatePipelineService.loadWorkflowItem',
-                success: 'successEnd'
-            }
-        }
-    },
-
-    handleExternalItemCreatePipeline: {
-        startNode: "validateRequest",
-        hardStop: true,
-        handleError: 'handleError',
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultExternalItemCreatePipelineService.validateRequest',
-                success: 'loadWorkflowItem'
-            },
-            loadWorkflowItem: {
-                type: 'function',
-                handler: 'DefaultExternalItemCreatePipelineService.loadWorkflowItem',
-                success: 'successEnd'
-            }
-        }
-    },
-
     performWorkflowActionPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -133,6 +81,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultWorkflowActionExecutionPipelineService.validateRequest',
+                success: 'loadWorkflowItem'
+            },
+            loadWorkflowItem: {
+                type: 'process',
+                handler: 'loadWorkflowItemPipeline',
                 success: 'loadWorkflowHead'
             },
             loadWorkflowHead: {
@@ -143,11 +96,6 @@ module.exports = {
             loadWorkflowAction: {
                 type: 'function',
                 handler: 'DefaultWorkflowActionExecutionPipelineService.loadWorkflowAction',
-                success: 'loadWorkflowItem'
-            },
-            loadWorkflowItem: {
-                type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.loadWorkflowItem',
                 success: 'validateOperation'
             },
             validateOperation: {
@@ -221,6 +169,87 @@ module.exports = {
             handleError: {
                 type: 'function',
                 handler: 'DefaultWorkflowActionExecutionPipelineService.handleErrorEnd'
+            }
+        }
+    },
+
+    loadWorkflowItemPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowItemPipelineService.validateRequest',
+                success: 'loadItem'
+            },
+            loadItem: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowItemPipelineService.loadItem',
+                success: 'loadItems'
+            },
+            loadItems: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowItemPipelineService.loadItems',
+                success: 'loadWorkflowItem'
+            },
+            redirectCreateItems: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowItemPipelineService.redirectCreateItems',
+                success: {
+                    loadInternalItem: 'handleInternalItem',
+                    loadExternalItem: 'handleExternalItem',
+                    default: 'successEnd'
+                }
+            },
+            handleInternalItem: {
+                type: 'process',
+                handler: 'handleInternalItemCreatePipeline',
+                success: 'successEnd'
+            },
+            handleExternalItem: {
+                type: 'process',
+                handler: 'handleExternalItemCreatePipeline',
+                success: 'successEnd'
+            },
+        }
+    },
+
+    handleInternalItemCreatePipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultInternalItemCreatePipelineService.validateRequest',
+                success: 'loadWorkflowItem'
+            },
+            loadWorkflowItem: {
+                type: 'function',
+                handler: 'DefaultInternalItemCreatePipelineService.loadWorkflowItem',
+                success: 'successEnd'
+            }
+        }
+    },
+
+    handleExternalItemCreatePipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultExternalItemCreatePipelineService.validateRequest',
+                success: 'loadWorkflowItem'
+            },
+            loadWorkflowItem: {
+                type: 'function',
+                handler: 'DefaultExternalItemCreatePipelineService.loadWorkflowItem',
+                success: 'successEnd'
             }
         }
     },
@@ -309,8 +338,8 @@ module.exports = {
                 success: 'loadWorkflowItem'
             },
             loadWorkflowItem: {
-                type: 'function',
-                handler: 'DefaultChannelsExecutionPipelineService.loadWorkflowItem',
+                type: 'process',
+                handler: 'loadWorkflowItemPipeline',
                 success: 'loadWorkflowHead'
             },
             loadWorkflowHead: {

@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     /**
@@ -33,28 +35,27 @@ module.exports = {
         });
     },
 
-
-    validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to assign item with workflow');
-        if (!request.itemCode) {
-            process.error(request, response, 'Invalid request, workflow code or workflow item can not be null or empty');
-        } else if (!request.itemDetail) {
-            process.error(request, response, 'Invalid request, item detail can not be null or empty');
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-
-    loadWorkflowItem: function (request, response, process) {
-        this.LOG.debug('Creating new external workflow item');
-        request.workflowItem = {
-            code: request.itemCode,
-            active: true,
-            item: {
-                type: ENUMS.WorkflowItemType.INTERNAL.key,
-                detail: request.itemDetail
-            }
-        };
-        process.nextSuccess(request, response);
+    getByCodes: function (request) {
+        return new Promise((resolve, reject) => {
+            this.get({
+                tenant: request.tenant,
+                options: {
+                    noLimit: true
+                },
+                query: {
+                    code: {
+                        $in: request.itemCode
+                    }
+                }
+            }).then(response => {
+                if (response.success && response.result && response.result.length > 0) {
+                    resolve(response.result);
+                } else {
+                    resolve([]);
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
     }
 };

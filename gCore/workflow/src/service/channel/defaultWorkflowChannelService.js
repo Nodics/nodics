@@ -35,37 +35,24 @@ module.exports = {
         });
     },
 
-    getQalifiedChannel: function (workflowAction, actionResponse) {
-        return new Promise((resolve, reject) => {
-            let rawChannels = [];
-            if (workflowAction.isLeafAction) {
-                rawChannels.push(workflowAction.successChannel);
-                rawChannels = rawChannels.concat(workflowAction.channels || []);
-            } else {
-                rawChannels = workflowAction.channels;
-            }
-            let channels = [];
-            this.evaluateChannels(workflowAction.channels, actionResponse, channels).then(success => {
-                resolve(channels);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
 
-    evaluateChannels: function (rawChannels, actionResponse, channels) {
+    getQalifiedChannel: function (itemResponses, workflowAction, qualifiedChannels = {}) {
         return new Promise((resolve, reject) => {
-            if (rawChannels && rawChannels.length > 0) {
-                let channel = rawChannels.shift();
-                SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
-                    actionResponse: actionResponse,
-                    channel: channel
-                }, {}).then(success => {
-                    if (success) {
-                        channels.push(channel);
-                    }
-                    this.evaluateChannels(rawChannels, actionResponse, channels).then(channel => {
-                        resolve(true);
+            if (!rawChannels) {
+                rawChannels = [];
+                if (workflowAction.isLeafAction) {
+                    rawChannels.push(workflowAction.successChannel);
+                    rawChannels = rawChannels.concat(workflowAction.channels || []);
+                } else {
+                    rawChannels = rawChannels.concat(workflowAction.channels);
+                }
+            }
+            if (itemResponses && itemResponses.length > 0) {
+                let itemResponse = itemResponses.shift();
+                this.evaluateChannels(rawChannels, itemResponse).then(channels => {
+                    qualifiedChannels[itemResponse.code] = channels;
+                    this.getQalifiedChannel(itemsResponses, request.workflowAction).then(qualifiedChannels => {
+                        resolve(qualifiedChannels);
                     }).catch(error => {
                         reject(error);
                     });
@@ -73,16 +60,36 @@ module.exports = {
                     reject(error);
                 });
             } else {
-                resolve(true);
+                resolve(qualifiedChannels);
             }
         });
     },
 
-    executeQualifiedChannels: function (request) {
+    evaluateChannels: function (rawChannels, itemResponse, channels = []) {
         return new Promise((resolve, reject) => {
-            reject(true);
+            if (rawChannels && rawChannels.length > 0) {
+                let channel = rawChannels.shift();
+                SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
+                    itemResponse: itemResponse,
+                    channel: channel
+                }, {}).then(success => {
+                    if (success) {
+                        channels.push(channel);
+                    }
+                    this.evaluateChannels(rawChannels, itemResponse, channels).then(channels => {
+                        resolve(channels);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(channels);
+            }
         });
     },
+
 
     handleSuccessProcess: function (request, response) {
         return new Promise((resolve, reject) => {

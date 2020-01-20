@@ -35,33 +35,30 @@ module.exports = {
 
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to assign item with workflow');
-        if (!request.moduleName) {
-            process.error(request, response, 'Invalid request, module name can not be null or empty');
-        } else if (!request.schemaName && !request.indexName) {
-            process.error(request, response, 'Invalid request, schema name or index name can not be null or empty');
-        } else if (!request.itemCode) {
-            process.error(request, response, 'Invalid request, workflow code or workflow item can not be null or empty');
-        } else {
-            process.nextSuccess(request, response);
-        }
+        process.nextSuccess(request, response);
     },
 
     loadWorkflowItem: function (request, response, process) {
         this.LOG.debug('Creating new internal workflow item');
-        request.workflowItem = {
-            code: request.moduleName + '_' + (request.schemaName || request.indexName) + '_' + request.itemCode,
-            active: true,
-            item: {
-                type: ENUMS.WorkflowItemType.INTERNAL.key,
-                detail: {
-                    code: request.itemCode,
-                    moduleName: request.moduleName,
-                    indexName: request.indexName,
-                    schemaName: request.schemaName
+        if (!request.workflowItems) request.workflowItems = [];
+        request.items.forEach(item => {
+            let code = item.moduleName + '_' + (item.schemaName || item.indexName) + '_' + item.itemCode;
+            request.workflowItems[code] = {
+                item: {
+                    code: code,
+                    active: true,
+                    item: {
+                        type: ENUMS.WorkflowItemType.INTERNAL.key,
+                        detail: {
+                            code: item.itemCode,
+                            moduleName: item.moduleName,
+                            indexName: item.indexName,
+                            schemaName: item.schemaName
+                        }
+                    }
                 }
-            }
-        };
+            };
+        });
         process.nextSuccess(request, response);
     }
 };

@@ -46,77 +46,27 @@ module.exports = {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
         } else if (!request.channels) {
             process.error(request, response, 'Invalid request, could not found a valid channel');
-        } else if (!request.workflowItem && !request.itemCode) {
+        } else if (!request.workflowItems && !request.itemCode) {
             process.error(request, response, 'Invalid request, could not found a valid item detail');
         } else {
             process.nextSuccess(request, response);
         }
     },
-    loadWorkflowItem: function (request, response, process) {
-        this.LOG.debug('Create Workflow Active Item');
-        if (!request.workflowItem) {
-            SERVICE.DefaultWorkflowItemService.get({
-                tenant: request.tenant,
-                query: {
-                    code: request.itemCode
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.workflowItem = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'Invalid request, none workflow action found for code: ' + request.workflowCode);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
     loadWorkflowHead: function (request, response, process) {
-        if (!request.workflowHead) {
-            this.LOG.debug('Loading workflow head: ' + request.workflowItem.workflowHead.code);
-            SERVICE.DefaultWorkflowHeadService.get({
-                tenant: request.tenant,
-                query: {
-                    code: request.workflowItem.workflowHead.code
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.workflowHead = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'Invalid request, none workflows found for code: ' + request.workflowCode);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
+        SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
+            request.workflowHead = workflowHead;
             process.nextSuccess(request, response);
-        }
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
     loadWorkflowAction: function (request, response, process) {
-        if (!request.workflowAction) {
-            this.LOG.debug('Loading workflow action: ' + request.workflowItem.activeAction.code);
-            SERVICE.DefaultWorkflowActionService.get({
-                tenant: request.tenant,
-                query: {
-                    code: request.workflowItem.activeAction.code
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.workflowAction = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'Invalid request, none workflow action found for code: ' + request.workflowCode);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
+        SERVICE.DefaultWorkflowActionService.getWorkflowAction(request).then(workflowAction => {
+            request.workflowAction = workflowAction;
             process.nextSuccess(request, response);
-        }
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
     handleMultiChannelRequest: function (request, response, process) {
         request.channelRequests = {};

@@ -42,88 +42,47 @@ module.exports = {
      * @param {*} process 
      */
     validateRequest: function (request, response, process) {
+        this.LOG.debug('Validating request to perform workflow action');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-    loadWorkflowItem: function (request, response, process) {
-        this.LOG.debug('Create Workflow Active Item');
-        if (!request.workflowItem) {
-            SERVICE.DefaultWorkflowItemService.get({
-                tenant: request.tenant,
-                query: {
-                    code: request.itemCode
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.workflowItem = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'Invalid request, none workflow action found for code: ' + request.workflowCode);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
+        } else if (!request.workflowHead && !request.workflowCode) {
+            process.error(request, response, 'Invalid request, workflow code or workflow head can not be null or empty');
+        } else if (!request.workflowAction && !request.actionCode) {
+            process.error(request, response, 'Invalid request, workflow action code or workflow action can not be null or empty');
+        } else if (!request.workflowItems && !request.items && !request.itemCodes && !request.itemCode) {
+            process.error(request, response, 'Invalid request, cound not found any items to perform this process');
         } else {
             process.nextSuccess(request, response);
         }
     },
     loadWorkflowHead: function (request, response, process) {
-        let workflowCode = request.workflowCode || request.workflowItem.workflowHead.code;
-        this.LOG.debug('Loading workflow head: ' + workflowCode);
-        if (!request.workflowHead) {
-            SERVICE.DefaultWorkflowHeadService.get({
-                tenant: request.tenant,
-                query: {
-                    code: workflowCode,
-                    isHead: true
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.workflowHead = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'Invalid request, none workflows found for code: ' + request.workflowCode);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
+        SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
+            request.workflowHead = workflowHead;
             process.nextSuccess(request, response);
-        }
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
     loadWorkflowAction: function (request, response, process) {
-        if (!request.workflowAction) {
-            let actionCode = request.actionCode || request.workflowItem.activeAction.code;
-            this.LOG.debug('Loading workflow action: ' + actionCode);
-            SERVICE.DefaultWorkflowActionService.get({
-                tenant: request.tenant,
-                query: {
-                    code: actionCode
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.workflowAction = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'Invalid request, none workflow action found for code: ' + request.workflowCode);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
+        SERVICE.DefaultWorkflowActionService.getWorkflowAction(request).then(workflowAction => {
+            request.workflowAction = workflowAction;
             process.nextSuccess(request, response);
-        }
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
     validateOperation: function (request, response, process) {
-        if (request.workflowItem.workflowHead.code !== request.workflowHead.code) {
-            process.error(request, response, 'Invalid request, workflow head mismatch');
-        } else if (request.workflowItem.activeAction.code !== request.workflowAction.code) {
-            process.error(request, response, 'Invalid request, workflow action mismatch');
-        } else if (request.workflowAction.type !== ENUMS.WorkflowActionType.AUTO.key && (!request.feedback || UTILS.isBlank(request.feedback))) {
-            process.error(request, response, 'Invalid action perform request, action response required');
+        let errors = [];
+        Object.keys(request.workflowItems).forEach(itemCode => {
+            let workflowItem = request.workflowItems[itemCode].item;
+            if (workflowItem.workflowHead.code !== request.workflowHead.code) {
+                errors.push('Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code);
+            } else if (workflowItem.activeAction.code !== request.workflowAction.code) {
+                errors.push('Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code);
+            }
+        });
+        if (errors.length > 0) {
+            process.error(request, response, errors);
         } else {
             process.nextSuccess(request, response);
         }
@@ -178,44 +137,68 @@ module.exports = {
         }
     },
     createStepResponse: function (request, response, process) {
-        let autoResponse = response.success || {};
-        let decision = autoResponse.decision || request.decision;
-        if (!request.workflowAction.allowedDecisions || request.workflowAction.allowedDecisions.includes(decision)) {
-            request.actionResponse = {
-                itemCode: request.workflowItem.code,
-                originalCode: request.workflowItem.originalCode,
-                workflowCode: request.workflowHead.code,
-                actionCode: request.workflowAction.code,
-                decision: decision,
-                response: autoResponse.feedback || request.feedback
-            };
-            process.nextSuccess(request, response);
-        } else {
-            process.error(request, response, 'Invalid decision: ' + decision + ' for action: ' + request.workflowAction.code);
-        }
+        let actionResponses = response.success || request.actionResponse;
+        if (!response.errors) response.errors = [];
+        Object.keys(request.workflowItems).forEach(itemCode => {
+            let workflowItem = request.workflowItems[itemCode];
+            let itemResponse = actionResponses[itemCode] || actionResponses.default;
+            if (!request.workflowAction.allowedDecisions || request.workflowAction.allowedDecisions.includes(itemResponse.decision)) {
+                workflowItem.itemResponse = {
+                    itemCode: workflowItem.item.code,
+                    originalCode: workflowItem.item.originalCode,
+                    workflowCode: request.workflowHead.code,
+                    actionCode: request.workflowAction.code,
+                    decision: itemResponse.decision,
+                    response: itemResponse.feedback,
+                    channels: []
+                };
+            } else {
+                response.errors.push('Invalid decision: ' + decision + ' for action: ' + request.workflowAction.code);
+            }
+        });
+        process.nextSuccess(request, response);
     },
     evaluateChannels: function (request, response, process) {
         this.LOG.debug('Starting channel evaluation process');
-        SERVICE.DefaultWorkflowChannelService.getQalifiedChannel(request.workflowAction, request.actionResponse).then(channels => {
-            request.qualifiedChannels = channels;
-            if (request.qualifiedChannels && request.qualifiedChannels.length > 0) {
-                request.qualifiedChannels.forEach(channel => {
-                    if (!request.actionResponse.channels) request.actionResponse.channels = [];
-                    request.actionResponse.channels.push(channel.code);
-                });
-            }
+        let itemsResponses = [];
+        Object.keys(request.workflowItems).forEach(itemCode => {
+            let workflowItem = request.workflowItems[itemCode];
+            itemsResponses.push(workflowItem.itemResponse);
+        });
+        SERVICE.DefaultWorkflowChannelService.getQalifiedChannel(itemsResponses, request.workflowAction).then(qualifiedChannels => {
+            Object.keys(request.workflowItems).forEach(itemCode => {
+                let workflowItem = request.workflowItems[itemCode];
+                if (qualifiedChannels[itemCode] && qualifiedChannels[itemCode].length > 0) {
+                    workflowItem.channels = qualifiedChannels[itemCode];
+                    workflowItem.channels.forEach(channel => {
+                        workflowItem.itemResponse.channels.push(channel.code);
+                    })
+                } else {
+                    response.errors.push('Could not found any qualified channel for item: ' + itemCode + ' for action: ' + request.workflowAction.code);
+                }
+            });
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
     updateStepResponse: function (request, response, process) {
+        let itemsResponses = [];
+        Object.keys(request.workflowItems).forEach(itemCode => {
+            let workflowItem = request.workflowItems[itemCode];
+            itemsResponses.push(workflowItem.itemResponse);
+        });
         SERVICE.DefaultActionResponseService.save({
             tenant: request.tenant,
-            models: [request.actionResponse]
+            models: itemsResponses
         }).then(success => {
             if (success.result && success.result.length > 0) {
-                request.actionResponse = success.result[0];
+                success.result.forEach(itemModel => {
+                    let workflowItem = request.workflowItems[itemModel.code];
+                    if (workflowItem) {
+                        workflowItem.itemResponse = itemModel;
+                    }
+                });
             }
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -256,13 +239,19 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    triggerActionPerformedEvent: function (request, response, process) {
+        this.LOG.debug('Publishing success event');
+        process.nextSuccess(request, response);
+
+    },
     executeChannel: function (request, response, process) {
         this.LOG.debug('Starting channel execution process');
         if (request.qualifiedChannels.length > 0) {
             SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
                 tenant: request.tenant,
-                channels: request.qualifiedChannels,
-                workflowItem: request.workflowItem
+                workflowHead: request.workflowHead,
+                workflowAction: request.workflowAction,
+                workflowItems: request.workflowItems
             }, {}).then(success => {
                 resolve(success);
             }).catch(error => {
