@@ -42,10 +42,9 @@ module.exports = {
      * @param {*} process 
      */
     validateRequest: function (request, response, process) {
-        if (!request.channel) {
-            process.error(request, response, 'Invalid request, channel can not be null or empty');
-        } else if (!request.itemResponse) {
-            process.error(request, response, 'Invalid request, could not found a valid action response');
+        this.LOG.debug('Validating request to evaluate channels');
+        if (!request.tenant) {
+            process.error(request, response, 'Invalid request, tenant can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }
@@ -53,7 +52,7 @@ module.exports = {
 
     checkDecision: function (request, response, process) {
         if (request.channel.qualifier.decision) {
-            if (request.channel.qualifier.decision === request.itemResponse.decision) {
+            if (request.channel.qualifier.decision === request.actionResponse.decision) {
                 process.stop(request, response, true);
             } else {
                 process.stop(request, response, false);
@@ -62,7 +61,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     executeHandler: function (request, response, process) {
         if (request.channel.qualifier.handler) {
             let handler = request.channel.qualifier.handler;
@@ -70,7 +68,7 @@ module.exports = {
                 let serviceName = handler.substring(0, handler.lastIndexOf('.'));
                 let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
                 if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
-                    SERVICE[serviceName.toUpperCaseFirstChar()][operation](request.itemResponse, request.channel).then(success => {
+                    SERVICE[serviceName.toUpperCaseFirstChar()][operation](request.actionResponse, request.channel).then(success => {
                         process.stop(request, response, success);
                     }).catch(error => {
                         process.error(request, response, error);
@@ -86,7 +84,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     executeScript: function (request, response, process) {
         if (request.channel.qualifier.script) {
             try {
@@ -99,7 +96,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     invalidChannel: function (request, response, process) {
         this.LOG.debug('Please validate your channel, It should contain one of [decision, handler or script]');
         process.error(request, response, 'Please validate your channel, It should contain one of [decision, handler or script]');

@@ -45,12 +45,6 @@ module.exports = {
         this.LOG.debug('Validating request to perform workflow action');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
-        } else if (!request.workflowHead && !request.workflowCode) {
-            process.error(request, response, 'Invalid request, workflow code or workflow head can not be null or empty');
-        } else if (!request.workflowAction && !request.actionCode) {
-            process.error(request, response, 'Invalid request, workflow action code or workflow action can not be null or empty');
-        } else if (!request.workflowItems && !request.items && !request.itemCodes && !request.itemCode) {
-            process.error(request, response, 'Invalid request, cound not found any items to perform this process');
         } else {
             process.nextSuccess(request, response);
         }
@@ -72,17 +66,13 @@ module.exports = {
         });
     },
     validateOperation: function (request, response, process) {
-        let errors = [];
-        Object.keys(request.workflowItems).forEach(itemCode => {
-            let workflowItem = request.workflowItems[itemCode].item;
-            if (workflowItem.workflowHead.code !== request.workflowHead.code) {
-                errors.push('Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code);
-            } else if (workflowItem.activeAction.code !== request.workflowAction.code) {
-                errors.push('Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code);
-            }
-        });
-        if (errors.length > 0) {
-            process.error(request, response, errors);
+        let workflowItem = request.workflowItem;
+        if (workflowItem.workflowHead.code !== request.workflowHead.code) {
+            process.error(request, response, 'Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code);
+        } else if (workflowItem.activeAction.code !== request.workflowAction.code) {
+            process.error(request, response, 'Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code);
+        } else if (workflowItem.activeAction.type === ENUMS.WorkflowActionType.MANUAL.key && !request.actionResponse) {
+            process.error(request, response, 'Invalid request, action response can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }
@@ -137,69 +127,37 @@ module.exports = {
         }
     },
     createStepResponse: function (request, response, process) {
-        let actionResponses = response.success || request.actionResponse;
-        if (!response.errors) response.errors = [];
-        Object.keys(request.workflowItems).forEach(itemCode => {
-            let workflowItem = request.workflowItems[itemCode];
-            let itemResponse = actionResponses[itemCode] || actionResponses.default;
-            if (!request.workflowAction.allowedDecisions || request.workflowAction.allowedDecisions.includes(itemResponse.decision)) {
-                workflowItem.itemResponse = {
-                    itemCode: workflowItem.item.code,
-                    originalCode: workflowItem.item.originalCode,
-                    workflowCode: request.workflowHead.code,
-                    actionCode: request.workflowAction.code,
-                    decision: itemResponse.decision,
-                    response: itemResponse.feedback,
-                    channels: []
-                };
-            } else {
-                response.errors.push('Invalid decision: ' + decision + ' for action: ' + request.workflowAction.code);
-            }
+        request.actionResponse = _.merge(response.success || request.actionResponse, {
+            itemCode: request.workflowItem.code,
+            originalCode: request.workflowItem.originalCode,
+            workflowCode: request.workflowHead.code,
+            actionCode: request.workflowAction.code
         });
-        process.nextSuccess(request, response);
+        if (request.workflowAction.allowedDecisions && !request.workflowAction.allowedDecisions.includes(request.actionResponse.decision)) {
+            process.error(request, response, 'Invalid decision value, action don not allow value: ' + request.actionResponse.decision);
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
-    evaluateChannels: function (request, response, process) {
-        this.LOG.debug('Starting channel evaluation process');
-        let itemsResponses = [];
-        Object.keys(request.workflowItems).forEach(itemCode => {
-            let workflowItem = request.workflowItems[itemCode];
-            itemsResponses.push(workflowItem.itemResponse);
-        });
-        SERVICE.DefaultWorkflowChannelService.getQalifiedChannel(itemsResponses, request.workflowAction).then(qualifiedChannels => {
-            Object.keys(request.workflowItems).forEach(itemCode => {
-                let workflowItem = request.workflowItems[itemCode];
-                if (qualifiedChannels[itemCode] && qualifiedChannels[itemCode].length > 0) {
-                    workflowItem.channels = qualifiedChannels[itemCode];
-                    workflowItem.channels.forEach(channel => {
-                        workflowItem.itemResponse.channels.push(channel.code);
-                    })
-                } else {
-                    response.errors.push('Could not found any qualified channel for item: ' + itemCode + ' for action: ' + request.workflowAction.code);
-                }
-            });
+    updateActionResponse: function (request, response, process) {
+        SERVICE.DefaultActionResponseService.save({
+            tenant: request.tenant,
+            models: [request.actionResponse]
+        }).then(success => {
+            if (success.result && success.result.length > 0) {
+                request.actionResponse = success.result[0];
+            }
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
-    updateStepResponse: function (request, response, process) {
-        let itemsResponses = [];
-        Object.keys(request.workflowItems).forEach(itemCode => {
-            let workflowItem = request.workflowItems[itemCode];
-            itemsResponses.push(workflowItem.itemResponse);
-        });
-        SERVICE.DefaultActionResponseService.save({
+    updateWorkflowItem: function (request, response, process) {
+        request.workflowItem.activeAction.responseId = request.actionResponse._id;
+        SERVICE.DefaultWorkflowItemService.save({
             tenant: request.tenant,
-            models: itemsResponses
+            models: [request.workflowItem]
         }).then(success => {
-            if (success.result && success.result.length > 0) {
-                success.result.forEach(itemModel => {
-                    let workflowItem = request.workflowItems[itemModel.code];
-                    if (workflowItem) {
-                        workflowItem.itemResponse = itemModel;
-                    }
-                });
-            }
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -244,18 +202,21 @@ module.exports = {
         process.nextSuccess(request, response);
 
     },
-    executeChannel: function (request, response, process) {
+    processChannels: function (request, response, process) {
         this.LOG.debug('Starting channel execution process');
         if (request.qualifiedChannels.length > 0) {
-            SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
-                tenant: request.tenant,
-                workflowHead: request.workflowHead,
-                workflowAction: request.workflowAction,
-                workflowItems: request.workflowItems
-            }, {}).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
+            return new Promise((resolve, reject) => {
+                SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
+                    tenant: request.tenant,
+                    workflowItem: request.workflowItem,
+                    workflowHead: request.workflowHead,
+                    workflowAction: request.workflowAction,
+                    actionResponse: request.actionResponse
+                }, {}).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
             });
         } else {
             process.nextSuccess(request, response);

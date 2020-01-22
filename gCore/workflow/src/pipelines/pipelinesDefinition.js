@@ -36,9 +36,9 @@ module.exports = {
                 handler: 'DefaultAssignWorkflowItemPipelineService.loadWorkflow',
                 success: 'updateWorkflowItems'
             },
-            updateWorkflowItems: {
+            updateWorkflowItem: {
                 type: 'function',
-                handler: 'DefaultAssignWorkflowItemPipelineService.updateWorkflowItems',
+                handler: 'DefaultAssignWorkflowItemPipelineService.updateWorkflowItem',
                 success: 'applyPutInterceptors'
             },
             applyPutInterceptors: {
@@ -80,7 +80,7 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.validateRequest',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.validateRequest',
                 success: 'loadWorkflowItem'
             },
             loadWorkflowItem: {
@@ -90,32 +90,32 @@ module.exports = {
             },
             loadWorkflowHead: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.loadWorkflowHead',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.loadWorkflowHead',
                 success: 'loadWorkflowAction'
             },
             loadWorkflowAction: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.loadWorkflowAction',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.loadWorkflowAction',
                 success: 'validateOperation'
             },
             validateOperation: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.validateOperation',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.validateOperation',
                 success: 'preActionInterceptors'
             },
             preActionInterceptors: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.preActionInterceptors',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.preActionInterceptors',
                 success: 'preActionValidators'
             },
             preActionValidators: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.preActionValidators',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.preActionValidators',
                 success: 'handleAutoAction'
             },
             handleAutoAction: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.handleAutoAction',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.handleAutoAction',
                 success: {
                     executeActionHandler: 'executeActionHandler',
                     executeActionScript: 'executeActionScript',
@@ -134,41 +134,41 @@ module.exports = {
             },
             createStepResponse: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.createStepResponse',
-                success: 'evaluateChannels'
+                handler: 'DefaultExecuteWorkflowActionPipelineService.createStepResponse',
+                success: 'updateActionResponse'
             },
-            evaluateChannels: {
+            updateActionResponse: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.evaluateChannels',
-                success: 'updateStepResponse'
+                handler: 'DefaultExecuteWorkflowActionPipelineService.updateActionResponse',
+                success: 'postActionInterceptors'
             },
-            updateStepResponse: {
+            updateWorkflowItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.updateStepResponse',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.updateWorkflowItem',
                 success: 'postActionInterceptors'
             },
             postActionInterceptors: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.postActionInterceptors',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.postActionInterceptors',
                 success: 'postActionValidators'
             },
             postActionValidators: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.postActionValidators',
-                success: 'executeChannel'
+                handler: 'DefaultExecuteWorkflowActionPipelineService.postActionValidators',
+                success: 'processChannels'
             },
-            executeChannel: {
+            processChannels: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.executeChannel',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.processChannels',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.handleSucessEnd'
+                handler: 'DefaultExecuteWorkflowActionPipelineService.handleSucessEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultWorkflowActionExecutionPipelineService.handleErrorEnd'
+                handler: 'DefaultExecuteWorkflowActionPipelineService.handleErrorEnd'
             }
         }
     },
@@ -187,16 +187,11 @@ module.exports = {
             loadItem: {
                 type: 'function',
                 handler: 'DefaultLoadWorkflowItemPipelineService.loadItem',
-                success: 'loadItems'
+                success: 'redirectCreateItem'
             },
-            loadItems: {
+            redirectCreateItem: {
                 type: 'function',
-                handler: 'DefaultLoadWorkflowItemPipelineService.loadItems',
-                success: 'loadWorkflowItem'
-            },
-            redirectCreateItems: {
-                type: 'function',
-                handler: 'DefaultLoadWorkflowItemPipelineService.redirectCreateItems',
+                handler: 'DefaultLoadWorkflowItemPipelineService.redirectCreateItem',
                 success: {
                     loadInternalItem: 'handleInternalItem',
                     loadExternalItem: 'handleExternalItem',
@@ -225,11 +220,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultInternalItemCreatePipelineService.validateRequest',
-                success: 'loadWorkflowItem'
+                success: 'createInternalItem'
             },
-            loadWorkflowItem: {
+            createInternalItem: {
                 type: 'function',
-                handler: 'DefaultInternalItemCreatePipelineService.loadWorkflowItem',
+                handler: 'DefaultInternalItemCreatePipelineService.createInternalItem',
                 success: 'successEnd'
             }
         }
@@ -244,11 +239,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultExternalItemCreatePipelineService.validateRequest',
-                success: 'loadWorkflowItem'
+                success: 'createExternalItem'
             },
-            loadWorkflowItem: {
+            createExternalItem: {
                 type: 'function',
-                handler: 'DefaultExternalItemCreatePipelineService.loadWorkflowItem',
+                handler: 'DefaultExternalItemCreatePipelineService.createExternalItem',
                 success: 'successEnd'
             }
         }
@@ -300,27 +295,84 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultChannelEvolutionPipelineService.validateRequest',
-                success: 'checkDecision'
+                handler: 'DefaultEvoluteChannelsPipelineService.validateRequest',
+                success: 'loadWorkflowItem'
+            },
+            loadWorkflowItem: {
+                type: 'process',
+                handler: 'loadWorkflowItemPipeline',
+                success: 'loadWorkflowHead'
+            },
+            loadWorkflowHead: {
+                type: 'function',
+                handler: 'DefaultEvoluteChannelsPipelineService.loadWorkflowHead',
+                success: 'loadWorkflowAction'
+            },
+            loadWorkflowAction: {
+                type: 'function',
+                handler: 'DefaultEvoluteChannelsPipelineService.loadWorkflow',
+                success: 'loadActionResponse'
+            },
+            loadActionResponse: {
+                type: 'function',
+                handler: 'DefaultEvoluteChannelsPipelineService.loadActionResponse',
+                success: 'validateOperation'
+            },
+            validateOperation: {
+                type: 'function',
+                handler: 'DefaultEvoluteChannelsPipelineService.validateOperation',
+                success: 'evaluateChannels'
+            },
+            evaluateChannels: {
+                type: 'function',
+                handler: 'DefaultEvoluteChannelsPipelineService.evaluateChannels',
+                success: 'updateActionResponse'
+            },
+            updateActionResponse: {
+                type: 'function',
+                handler: 'DefaultEvoluteChannelsPipelineService.updateActionResponse',
+                success: 'executeChannels'
+            },
+            executeChannels: {
+                type: 'function',
+                handler: 'DefaultEvoluteChannelsPipelineService.executeChannels',
+                success: 'postActionInterceptors'
+            },
+
+
+
+        }
+    },
+
+    executeChannelQualifierPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelQualifierPipelineService.validateRequest',
+                success: 'loadWorkflowItem'
             },
             checkDecision: {
                 type: 'function',
-                handler: 'DefaultChannelEvolutionPipelineService.checkDecision',
+                handler: 'DefaultExecuteChannelQualifierPipelineService.checkDecision',
                 success: 'executeHandler'
             },
             executeHandler: {
                 type: 'function',
-                handler: 'DefaultChannelEvolutionPipelineService.executeHandler',
+                handler: 'DefaultExecuteChannelQualifierPipelineService.executeHandler',
                 success: 'executeScript'
             },
             executeScript: {
                 type: 'function',
-                handler: 'DefaultChannelEvolutionPipelineService.executeScript',
+                handler: 'DefaultExecuteChannelQualifierPipelineService.executeScript',
                 success: 'invalidChannel'
             },
             invalidChannel: {
                 type: 'function',
-                handler: 'DefaultChannelEvolutionPipelineService.invalidChannel',
+                handler: 'DefaultExecuteChannelQualifierPipelineService.invalidChannel',
                 success: 'successEnd'
             }
         }
@@ -334,7 +386,7 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultChannelsExecutionPipelineService.validateRequest',
+                handler: 'DefaultExecuteChannelsPipelineService.validateRequest',
                 success: 'loadWorkflowItem'
             },
             loadWorkflowItem: {
@@ -344,29 +396,40 @@ module.exports = {
             },
             loadWorkflowHead: {
                 type: 'function',
-                handler: 'DefaultChannelsExecutionPipelineService.loadWorkflowHead',
+                handler: 'DefaultExecuteChannelsPipelineService.loadWorkflowHead',
                 success: 'loadWorkflowAction'
             },
             loadWorkflowAction: {
                 type: 'function',
-                handler: 'DefaultChannelsExecutionPipelineService.loadWorkflowAction',
-                success: 'handleMultiChannelRequest'
+                handler: 'DefaultExecuteChannelsPipelineService.loadWorkflow',
+                success: 'loadActionResponse'
+            },
+            loadActionResponse: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelsPipelineService.loadActionResponse',
+                success: 'validateOperation'
             },
             handleMultiChannelRequest: {
                 type: 'function',
-                handler: 'DefaultChannelsExecutionPipelineService.handleMultiChannelRequest',
+                handler: 'DefaultExecuteChannelsPipelineService.handleMultiChannelRequest',
                 success: 'createChannelRequest'
             },
             createChannelRequest: {
                 type: 'function',
-                handler: 'DefaultChannelsExecutionPipelineService.createChannelRequest',
+                handler: 'DefaultExecuteChannelsPipelineService.createChannelRequest',
                 success: 'triggerChannelExecution'
             },
             triggerChannelExecution: {
                 type: 'function',
-                handler: 'DefaultChannelsExecutionPipelineService.triggerChannelExecution',
+                handler: 'DefaultExecuteChannelsPipelineService.triggerChannelExecution',
+                success: 'executeChannel'
+            },
+            executeChannel: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelsPipelineService.executeChannel',
                 success: 'successEnd'
             }
+
         }
     },
 
@@ -378,32 +441,52 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultChannelExecutionPipelineService.validateRequest',
+                handler: 'DefaultExecuteChannelPipelineService.validateRequest',
                 success: 'loadWorkflowItem'
+            },
+            loadWorkflowItem: {
+                type: 'process',
+                handler: 'loadWorkflowItemPipeline',
+                success: 'loadWorkflowHead'
+            },
+            loadWorkflowHead: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelPipelineService.loadWorkflowHead',
+                success: 'loadWorkflowAction'
+            },
+            loadWorkflowAction: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelPipelineService.loadWorkflow',
+                success: 'loadActionResponse'
+            },
+            loadActionResponse: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelPipelineService.loadActionResponse',
+                success: 'preChannelInterceptors'
             },
             preChannelInterceptors: {
                 type: 'function',
-                handler: 'DefaultChannelExecutionPipelineService.preChannelInterceptors',
+                handler: 'DefaultExecuteChannelPipelineService.preChannelInterceptors',
                 success: 'preChannelValidators'
             },
             preChannelValidators: {
                 type: 'function',
-                handler: 'DefaultChannelExecutionPipelineService.preChannelValidators',
+                handler: 'DefaultExecuteChannelPipelineService.preChannelValidators',
                 success: 'triggerTarget'
             },
             triggerTarget: {
                 type: 'function',
-                handler: 'DefaultChannelExecutionPipelineService.triggerTarget',
+                handler: 'DefaultExecuteChannelPipelineService.triggerTarget',
                 success: 'postChannelInterceptors'
             },
             postChannelInterceptors: {
                 type: 'function',
-                handler: 'DefaultChannelExecutionPipelineService.postChannelInterceptors',
+                handler: 'DefaultExecuteChannelPipelineService.postChannelInterceptors',
                 success: 'postChannelValidators'
             },
             postChannelValidators: {
                 type: 'function',
-                handler: 'DefaultChannelExecutionPipelineService.postChannelValidators',
+                handler: 'DefaultExecuteChannelPipelineService.postChannelValidators',
                 success: 'successEnd'
             }
         }

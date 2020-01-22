@@ -33,29 +33,5 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
-    },
-
-    getByCodes: function (request) {
-        return new Promise((resolve, reject) => {
-            this.get({
-                tenant: request.tenant,
-                options: {
-                    noLimit: true
-                },
-                query: {
-                    code: {
-                        $in: request.itemCode
-                    }
-                }
-            }).then(response => {
-                if (response.success && response.result && response.result.length > 0) {
-                    resolve(response.result);
-                } else {
-                    resolve([]);
-                }
-            }).catch(error => {
-                reject(error);
-            });
-        });
     }
 };

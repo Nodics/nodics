@@ -38,27 +38,21 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    loadWorkflowItem: function (request, response, process) {
+    createInternalItem: function (request, response, process) {
         this.LOG.debug('Creating new internal workflow item');
-        if (!request.workflowItems) request.workflowItems = [];
-        request.items.forEach(item => {
-            let code = item.moduleName + '_' + (item.schemaName || item.indexName) + '_' + item.itemCode;
-            request.workflowItems[code] = {
-                item: {
-                    code: code,
-                    active: true,
-                    item: {
-                        type: ENUMS.WorkflowItemType.INTERNAL.key,
-                        detail: {
-                            code: item.itemCode,
-                            moduleName: item.moduleName,
-                            indexName: item.indexName,
-                            schemaName: item.schemaName
-                        }
-                    }
+        request.workflowItem = {
+            code: request.item.moduleName + '_' + (request.item.schemaName || request.item.indexName) + '_' + request.item.code,
+            active: true,
+            item: {
+                type: ENUMS.WorkflowItemType.INTERNAL.key,
+                detail: {
+                    code: request.item.code,
+                    moduleName: request.item.moduleName,
+                    indexName: request.item.indexName,
+                    schemaName: request.item.schemaName
                 }
-            };
-        });
+            }
+        };
         process.nextSuccess(request, response);
     }
 };

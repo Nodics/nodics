@@ -46,77 +46,34 @@ module.exports = {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
         } else if (!request.channel) {
             process.error(request, response, 'Invalid request, could not found a valid channel');
-        } else if (!request.workflowItem && !request.workflowItemCode) {
-            process.error(request, response, 'Invalid request, could not found a valid workflow item');
         } else {
             process.nextSuccess(request, response);
         }
     },
-    loadWorkflowItem: function (request, response, process) {
-        this.LOG.debug('Create Workflow Active Item');
-        if (!request.workflowItem) {
-            SERVICE.DefaultWorkflowItemService.get({
-                tenant: request.tenant,
-                query: {
-                    code: request.workflowItemCode
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.workflowItem = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'Invalid request, none workflow action found for code: ' + request.workflowCode);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
+
     loadWorkflowHead: function (request, response, process) {
-        if (!request.workflowHead) {
-            this.LOG.debug('Loading workflow head: ' + request.workflowItem.workflowHead.code);
-            SERVICE.DefaultWorkflowHeadService.get({
-                tenant: request.tenant,
-                query: {
-                    code: request.workflowItem.workflowHead.code
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.workflowHead = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'Invalid request, none workflows found for code: ' + request.workflowCode);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
+        SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
+            request.workflowHead = workflowHead;
             process.nextSuccess(request, response);
-        }
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
     loadWorkflowAction: function (request, response, process) {
-        if (!request.workflowAction) {
-            this.LOG.debug('Loading workflow action: ' + request.workflowItem.workflowAction.code);
-            SERVICE.DefaultWorkflowActionService.get({
-                tenant: request.tenant,
-                query: {
-                    code: request.workflowItem.workflowAction.code
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.workflowAction = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'Invalid request, none workflow action found for code: ' + request.workflowCode);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
+        SERVICE.DefaultWorkflowActionService.getWorkflowAction(request).then(workflowAction => {
+            request.workflowAction = workflowAction;
             process.nextSuccess(request, response);
-        }
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+    loadActionResponse: function (request, response, process) {
+        SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {
+            request.actionResponse = actionResponse;
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
     preChannelInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.channel.code);
@@ -201,25 +158,6 @@ module.exports = {
             });
         } else {
             process.nextSuccess(request, response);
-        }
-    },
-    successEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-    handleError: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
         }
     }
 };

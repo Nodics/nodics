@@ -38,21 +38,16 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
-    loadWorkflowItem: function (request, response, process) {
+    createExternalItem: function (request, response, process) {
         this.LOG.debug('Creating new external workflow item');
-        if (!request.workflowItems) request.workflowItems = [];
-        request.items.forEach(item => {
-            request.workflowItems[item.itemCode] = {
-                item: {
-                    code: item.itemCode,
-                    active: true,
-                    item: {
-                        type: ENUMS.WorkflowItemType.EXTERNAL.key,
-                        detail: request.itemDetail
-                    }
-                }
-            };
-        });
+        request.workflowItem = {
+            code: request.item.code,
+            active: true,
+            item: {
+                type: ENUMS.WorkflowItemType.EXTERNAL.key,
+                detail: request.item.detail
+            }
+        };
         process.nextSuccess(request, response);
     }
 };

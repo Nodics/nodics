@@ -37,10 +37,6 @@ module.exports = {
         this.LOG.debug('Validating request to assign item with workflow');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
-        } else if (!request.workflowHead && !request.workflowCode) {
-            process.error(request, response, 'Invalid request, workflow code or workflow head can not be null or empty');
-        } else if (!request.workflowItems && !request.items && !request.itemCodes && !request.itemCode) {
-            process.error(request, response, 'Invalid request, cound not found any items to perform this process');
         } else {
             process.nextSuccess(request, response);
         }
@@ -61,22 +57,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
-    updateWorkflowItems: function (request, response, process) {
+    updateWorkflowItem: function (request, response, process) {
         this.LOG.debug('Updating workflow items');
-        Object.keys(request.workflowItems).forEach(itemCode => {
-            let workflowItem = request.workflowItems[itemCode].item;
-            if (workflowItem.activeAction) workflowItem.lastAction = workflowItem.activeAction.code;
-            if (!workflowItem.workflowHead) {
-                workflowItem.workflowHead = {
-                    code: request.workflowHead.code
-                };
-            }
-            workflowItem.activeAction = {
-                code: request.workflowAction.code
+        let workflowItem = request.workflowItem;
+        if (workflowItem.activeAction) workflowItem.lastAction = workflowItem.activeAction.code;
+        if (!workflowItem.workflowHead) {
+            workflowItem.workflowHead = {
+                code: request.workflowHead.code
             };
-            if (!workflowItem.actions) workflowItem.actions = [];
-            workflowItem.actions.push(workflowItem.activeAction.code);
-        });
+        }
+        workflowItem.activeAction = {
+            code: request.workflowAction.code
+        };
+        if (!workflowItem.actions) workflowItem.actions = [];
+        workflowItem.actions.push(workflowItem.activeAction.code);
+
+
         process.nextSuccess(request, response);
     },
     applyPutInterceptors: function (request, response, process) {
@@ -115,19 +111,13 @@ module.exports = {
     },
     saveActiveItem: function (request, response, process) {
         this.LOG.debug('Creating active workflow item');
-        let itemModels = [];
-        Object.keys(request.workflowItems).forEach(itemCode => {
-            itemModels.push(request.workflowItems[itemCode].item);
-        });
         SERVICE.DefaultWorkflowItemService.save({
             tenant: request.tenant,
             moduleName: request.moduleName,
-            models: itemModels
+            models: [request.workflowItem]
         }).then(success => {
             console.log('=========>>> ', success.result);
-            success.result.forEach(itemModel => {
-                request.workflowItems[itemModel.code].item = itemModel;
-            });
+            request.workflowItem = success.result[0];
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -136,12 +126,12 @@ module.exports = {
     performAction: function (request, response, process) {
         this.LOG.debug('Triggering action for auto workflow head');
         if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
-            SERVICE.DefaultWorkflowService.performAction({
+            SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', {
                 tenant: request.tenant,
                 workflowHead: request.workflowHead,
                 workflowAction: request.workflowAction,
-                workflowItems: request.workflowItems
-            }).then(success => {
+                workflowItem: request.workflowItem
+            }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -150,6 +140,7 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
     successEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;

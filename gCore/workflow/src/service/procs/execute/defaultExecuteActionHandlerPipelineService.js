@@ -46,70 +46,27 @@ module.exports = {
 
     executeHandler: function (request, response, process) {
         this.LOG.debug('Executing action handler');
-        let handler = request.workflowAction.handler;
-        let actionResponse = {
-            default: {
-                decision: 'SUCCESS',
-                feedback: {
-                    message: 'This is auto action script executed response'
-                }
-            }
-        };
         try {
-            this.triggerHandler({
-                workflowItems: _.merge({}, request.workflowItems),
-                workflowHead: request.workflowHead,
-                workflowAction: request.workflowAction,
-                serviceName: handler.substring(0, handler.lastIndexOf('.')),
-                operation: handler.substring(handler.lastIndexOf('.') + 1, handler.length),
-                actionResponse: actionResponse
-            }).then(success => {
-                response.success = actionResponse;
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
+            let handler = request.workflowAction.handler;
+            let serviceName = handler.substring(0, handler.lastIndexOf('.'));
+            let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
+            if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
+                SERVICE[serviceName.toUpperCaseFirstChar()][operation]({
+                    workflowItem: request.workflowItem,
+                    workflowHead: request.workflowHead,
+                    workflowAction: request.workflowAction
+                }).then(success => {
+                    response.success = success;
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            } else {
+                this.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
+                process.error(request, response, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
+            }
         } catch (error) {
             process.error(request, response, error);
         }
-    },
-
-    triggerHandler: function (options) {
-        return new Promise((resolve, reject) => {
-            if (options.workflowItems && options.workflowItems.length > 0) {
-                let workflowItem = options.workflowItems.shift();
-                if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
-                    SERVICE[serviceName.toUpperCaseFirstChar()][operation]({
-                        workflowItem: request.workflowItem,
-                        workflowHead: request.workflowHead,
-                        workflowAction: request.workflowAction
-                    }).then(success => {
-                        options.actionResponse[workflowItem.code] = success;
-                        this.triggerHandler(options).then(success => {
-                            resolve(success);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    this.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
-                    options.actionResponse[workflowItem.code] = {
-                        decision: 'ERROR',
-                        feedback: {
-                            message: 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response)'
-                        }
-                    };
-                    this.triggerHandler(options).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }
-            } else {
-                resolve(true);
-            }
-        });
     }
 };

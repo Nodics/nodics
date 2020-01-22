@@ -26,20 +26,21 @@ module.exports = {
                     body: {
                         workflowCode: 'Workflow code, these items needs to be associated',
                         itemType: 'Type of item, is it INTERNAL or EXTERNAL',
-                        items: [{
-                            itemCode: 'Required item code',
+                        item: {
+                            code: 'Required item code',
                             schemaName: 'Either schema name or index name',
                             indexName: 'Either schema name or index name',
                             moduleName: 'Required module name',
-                            callbackData: 'Any JSON object needs to be send back along with each events'
-                        }]
+                            callbackData: 'Any JSON object needs to be send back along with each events',
+                            detail: 'JSON object if item is external'
+                        }
                     }
                 }
             },
 
             performAction: {
                 secured: true,
-                key: '/action/process',
+                key: '/action/process/:itemCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
                 operation: 'performAction',
@@ -47,22 +48,25 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/workflow/action/process',
+                    url: 'http://host:port/nodics/workflow/action/process/:itemCode',
                     body: {
-                        workflowCode: 'Code of the workflow',
-                        actionCode: 'Code of the action, if null, workflow head will be current action',
-                        itemCodes: 'List of workflow item codes to perform action',
-                        actionResponse: {
-                            default: {
-                                decision: 'Decision that has been taken',
-                                feedback: 'Either json object or simple message'
-                            },
-                            'itemCode': {
-                                decision: 'Decision that has been taken',
-                                feedback: 'Either json object or simple message'
-                            }
-                        }
+                        decision: 'Decision that has been taken',
+                        feedback: 'Either json object or simple message'
                     }
+                }
+            },
+
+            processChannels: {
+                secured: true,
+                key: '/channel/process/:itemCode',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'processChannels',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/workflow/start/:itemCode'
                 }
             },
 

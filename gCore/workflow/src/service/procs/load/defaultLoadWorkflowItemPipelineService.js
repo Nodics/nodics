@@ -37,24 +37,21 @@ module.exports = {
         this.LOG.debug('Validating request to assign item with workflow');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
+        } else if (!request.itemType && (request.itemType !== ENUMS.WorkflowItemType.INTERNAL.key || request.itemType !== ENUMS.WorkflowItemType.EXTERNAL.key)) {
+            process.error(request, response, 'Invalid request, itemType can not be other than [INTERNAL or EXTERNAL]');
+        } else if (!request.workflowItem && !request.item && !request.itemCode) {
+            process.error(request, response, 'Invalid request, item detail can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }
     },
     loadItem: function (request, response, process) {
-        if (request.itemCode) {
-            if (!request.itemCodes) request.itemCodes = [];
-            request.itemCodes.push(request.itemCode);
-            process.nextSuccess(request, response);
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-    loadItems: function (request, response, process) {
-        if (request.itemCodes && request.itemCodes.length > 0) {
-            SERVICE.DefaultWorkflowItemService.getByCodes({
+        if (!request.workflowItem && request.itemCode) {
+            SERVICE.DefaultWorkflowItemService.get({
                 tenant: request.tenant,
-                itemCodes: request.itemCodes
+                query: {
+                    code: request.itemCode
+                }
             }).then(success => {
                 if (!request.workflowItems) request.workflowItems = {};
                 success.forEach(item => {
@@ -70,8 +67,9 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    redirectCreateItems: function (request, response, process) {
-        if (request.items && request.items.length > 0) {
+
+    redirectCreateItem: function (request, response, process) {
+        if (!request.workflowItem && request.item) {
             if (request.itemType === ENUMS.WorkflowItemType.INTERNAL.key) {
                 response.targetNode = 'loadInternalItem';
                 process.nextSuccess(request, response);

@@ -9,8 +9,6 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
 
     /**
@@ -36,22 +34,35 @@ module.exports = {
     },
 
 
-    getQalifiedChannel: function (itemResponses, workflowAction, qualifiedChannels = {}) {
+    getQalifiedChannel: function (actionResponse, workflowAction) {
         return new Promise((resolve, reject) => {
-            if (!rawChannels) {
-                rawChannels = [];
-                if (workflowAction.isLeafAction) {
-                    rawChannels.push(workflowAction.successChannel);
-                    rawChannels = rawChannels.concat(workflowAction.channels || []);
-                } else {
-                    rawChannels = rawChannels.concat(workflowAction.channels);
-                }
+            let rawChannels = [];
+            if (workflowAction.isLeafAction) {
+                rawChannels.push(workflowAction.successChannel);
+                rawChannels = rawChannels.concat(workflowAction.channels || []);
+            } else {
+                rawChannels = rawChannels.concat(workflowAction.channels);
             }
-            if (itemResponses && itemResponses.length > 0) {
-                let itemResponse = itemResponses.shift();
-                this.evaluateChannels(rawChannels, itemResponse).then(channels => {
-                    qualifiedChannels[itemResponse.code] = channels;
-                    this.getQalifiedChannel(itemsResponses, request.workflowAction).then(qualifiedChannels => {
+            this.evaluateChannels(rawChannels, actionResponse).then(qualifiedChannels => {
+                resolve(qualifiedChannels);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    evaluateChannels: function (rawChannels, actionResponse, qualifiedChannels = []) {
+        return new Promise((resolve, reject) => {
+            if (rawChannels && rawChannels.length > 0) {
+                let channel = rawChannels.shift();
+                SERVICE.DefaultPipelineService.start('executeChannelQualifierPipeline', {
+                    actionResponse: actionResponse,
+                    channel: channel
+                }, {}).then(success => {
+                    if (success) {
+                        qualifiedChannels.push(channel);
+                    }
+                    this.evaluateChannels(rawChannels, actionResponse, qualifiedChannels).then(qualifiedChannels => {
                         resolve(qualifiedChannels);
                     }).catch(error => {
                         reject(error);
@@ -65,31 +76,31 @@ module.exports = {
         });
     },
 
-    evaluateChannels: function (rawChannels, itemResponse, channels = []) {
+    processChannels: function (request) {
         return new Promise((resolve, reject) => {
-            if (rawChannels && rawChannels.length > 0) {
-                let channel = rawChannels.shift();
-                SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
-                    itemResponse: itemResponse,
-                    channel: channel
-                }, {}).then(success => {
-                    if (success) {
-                        channels.push(channel);
-                    }
-                    this.evaluateChannels(rawChannels, itemResponse, channels).then(channels => {
-                        resolve(channels);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(channels);
-            }
+            SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
+                tenant: request.tenant,
+                itemCode: request.itemCode
+            }, {}).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 
+    // executeChannel: function (request) {
+    //     return new Promise((resolve, reject) => {
+    //         SERVICE.DefaultPipelineService.start('executeChannelPipeline', {
+    //             tenant: request.tenant,
+    //             itemCode: request.itemCode
+    //         }, {}).then(success => {
+    //             resolve(success);
+    //         }).catch(error => {
+    //             reject(error);
+    //         });
+    //     });
+    // },
 
     handleSuccessProcess: function (request, response) {
         return new Promise((resolve, reject) => {

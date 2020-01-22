@@ -35,25 +35,23 @@ module.exports = {
         });
     },
 
-    getWorkflowAction: function (request) {
+    getActionResponse: function (request) {
         return new Promise((resolve, reject) => {
-            if (request.workflowAction) {
-                resolve(request.workflowAction);
-            } else if (!request.workflowAction && !request.actionCode) {
-                resolve(request.workflowHead);
+            if (request.actionResponse) {
+                resolve(request.actionResponse);
             } else {
-                let actionCode = request.actionCode || workflowItem.activeAction.code;
-                this.LOG.debug('Loading workflow action: ' + actionCode);
+                let actionResponseCode = request.workflowItem.activeAction.responseCode;
+                this.LOG.debug('Loading workflow action response: ' + actionResponseCode);
                 this.get({
                     tenant: request.tenant,
                     query: {
-                        code: actionCode
+                        code: actionResponseCode
                     }
                 }).then(response => {
                     if (response.success && response.result.length > 0) {
                         resolve(response.result[0]);
                     } else {
-                        reject('Invalid request, none workflow action found for code: ' + actionCode);
+                        reject('Invalid request, none workflow action response found for code: ' + actionResponseCode);
                     }
                 }).catch(error => {
                     reject(error);

@@ -35,21 +35,12 @@ module.exports = {
         });
     },
 
-    getWorkflowCode: function (request) {
-        let workflowCode = request.workflowCode;
-        if (workflowCode) {
-            let workflowItem = request.workflowItems[Object.keys(request.workflowItems)[0]];
-            workflowCode = workflowItem.workflowHead.code;
-        }
-        return workflowCode;
-    },
-
     getWorkflowHead: function (request) {
         return new Promise((resolve, reject) => {
             if (request.workflowHead) {
                 resolve(request.workflowHead);
             } else {
-                let workflowCode = this.getWorkflowCode(request);
+                let workflowCode = request.workflowCode || request.workflowItem.workflowHead.code;
                 this.LOG.debug('Loading workflow head: ' + workflowCode);
                 this.get({
                     tenant: request.tenant,

@@ -46,8 +46,6 @@ module.exports = {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
         } else if (!request.channels) {
             process.error(request, response, 'Invalid request, could not found a valid channel');
-        } else if (!request.workflowItems && !request.itemCode) {
-            process.error(request, response, 'Invalid request, could not found a valid item detail');
         } else {
             process.nextSuccess(request, response);
         }
@@ -68,22 +66,27 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    loadActionResponse: function (request, response, process) {
+        SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {
+            request.actionResponse = actionResponse;
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
     handleMultiChannelRequest: function (request, response, process) {
         request.channelRequests = {};
         if (request.channels.length > 1) {
             let count = 1;
             request.channels.forEach(channel => {
-                request.channelRequests[channel.code] = {
-                    itemCode: request.workflowItem.code + '_' + count++,
+                let itemCode = request.workflowItem.code + '_' + count++;
+                request.channelRequests[itemCode] = {
                     originalCode: request.workflowItem.code,
-                    workflowItem: request.workflowItem,
                     channel: channel
                 };
             });
         } else {
-            request.channelRequests[channels[0].code] = {
-                itemCode: request.workflowItem.code,
-                originalCode: request.workflowItem.code,
+            request.channelRequests[request.workflowItem.code] = {
                 workflowItem: request.workflowItem,
                 channel: channels[0]
             };
@@ -92,13 +95,13 @@ module.exports = {
     },
     createChannelRequest: function (request, response, process) {
         request.itemModels = [];
-        Object.keys(request.channelRequests).forEach(requestName => {
-            let channelRequest = request.channelRequests[requestName];
-            let itemModel = channelRequest.workflowItem;
-            delete itemModel._id;
-            itemModel.code = channelRequest.itemCode;
+        let workflowItem = _.merge({}, request.workflowItem);
+        delete workflowItem._id;
+        Object.keys(request.channelRequests).forEach(itemCode => {
+            let channelRequest = request.channelRequests[itemCode];
+            let itemModel = _.merge({}, workflowItem);
+            itemModel.code = itemCode;
             itemModel.originalCode = channelRequest.originalCode;
-            channelRequest.itemModel = itemModel;
             request.itemModels.push(itemModel);
         });
         if (request.itemModels.length > 1) {
@@ -106,6 +109,11 @@ module.exports = {
                 tenant: request.tenant,
                 models: [request.itemModels]
             }).then(success => {
+                if (success.success && success.result && success.result.length > 0) {
+                    success.result.forEach(newModel => {
+                        request.channelRequests[newModel.code].workflowItem = newModel;
+                    });
+                }
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -115,22 +123,23 @@ module.exports = {
         }
     },
     triggerChannelExecution: function (request, response, process) {
-        this.executeChannel(request.channelRequests, request.tenant).then(success => {
+        this.executeChannel(Object.keys(request.channelRequests), request).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
-    executeChannel: function (channelRequests, tenant) {
+    executeChannel: function (itemCodes, request, response) {
         return new Promise((resolve, reject) => {
-            if (channelRequests && channelRequests.length > 0) {
-                let channelRequest = channelRequests.shift();
+            if (itemCodes && itemCodes.length > 0) {
+                let itemCode = itemCodes.shift();
+                let channelRequest = request.channelRequests[itemCode];
                 SERVICE.DefaultPipelineService.start('executeChannelPipeline', {
-                    tenant: tenant,
-                    workflowItemCode: channelRequest.itemCode,
+                    tenant: request.tenant,
+                    itemCode: itemCode,
                     channel: channelRequest.channel
                 }, {}).then(success => {
-                    this.executeChannel(itemModels).then(success => {
+                    this.executeChannel(itemCodes, request, response).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);

@@ -50,23 +50,14 @@ module.exports = {
         try {
             let workflowAction = request.workflowAction;
             let workflowHead = request.workflowHead;
+            let workflowItem = request.workflowItem;
+            let result = eval(request.workflowAction.script);
             response.success = {
-                default: {
-                    decision: 'SUCCESS',
-                    feedback: {
-                        message: 'This is auto action script executed response'
-                    }
+                decision: result,
+                feedback: {
+                    message: 'This is auto action script executed response'
                 }
             };
-            request.workflowItems.forEach(workflowItem => {
-                let result = eval(request.workflowAction.script);
-                response.success[workflowItem.code] = {
-                    decision: result,
-                    feedback: {
-                        message: 'This is auto action script executed response'
-                    }
-                };
-            });
             process.nextSuccess(request, response);
         } catch (error) {
             process.error(request, response, error);

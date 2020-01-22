@@ -37,13 +37,20 @@ module.exports = {
         return SERVICE.DefaultWorkflowService.addItems(request);
     },
 
+    performAction: function (request) {
+        return SERVICE.DefaultWorkflowService.performAction(request);
+    },
+
+    processChannels: function (request) {
+        return SERVICE.DefaultWorkflowService.processChannels(request);
+    },
+
+    /* ===================================================================== */
     startWorkflow: function (request) {
         return SERVICE.DefaultWorkflowService.startWorkflow(request);
     },
 
-    performAction: function (request) {
-        return SERVICE.DefaultWorkflowService.performAction(request);
-    },
+
 
     removeItem: function (request) {
         return SERVICE.DefaultWorkflowService.removeItem(request);

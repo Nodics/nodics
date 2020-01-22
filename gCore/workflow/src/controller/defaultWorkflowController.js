@@ -47,6 +47,34 @@ module.exports = {
         }
     },
 
+    performAction: function (request, callback) {
+        request.itemCode = request.httpRequest.params.itemCode;
+        request.actionResponse = request.httpRequest.body;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.performAction(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.performAction(request);
+        }
+    },
+
+    processChannels: function (request, callback) {
+        request.itemCode = request.httpRequest.params.itemCode;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.processChannels(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.processChannels(request);
+        }
+    },
+
+
     /* ===================================================================== */
     startWorkflow: function (request, callback) {
         request.itemCode = request.httpRequest.params.itemCode;
@@ -62,19 +90,7 @@ module.exports = {
         }
     },
 
-    performAction: function (request, callback) {
-        request.itemCode = request.httpRequest.params.itemCode;
-        request.actionResponse = request.httpRequest.body;
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.performAction(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.performAction(request);
-        }
-    },
+
 
 
     removeItem: function (request, callback) {

@@ -36,7 +36,7 @@ module.exports = {
                     description: 'Mandate item type [INTERNAL, EXTERNAL]'
                 },
                 'item.detail': {
-                    type: 'string',
+                    type: 'object',
                     required: true,
                     description: 'Required detail of item, either internal or external'
                 },
@@ -260,6 +260,11 @@ module.exports = {
                     type: 'array',
                     required: true,
                     description: 'List of channels for the item'
+                },
+                eventDetail: {
+                    type: 'object',
+                    required: false,
+                    description: 'This hold data for external system, to publish action event'
                 }
             }
         },
