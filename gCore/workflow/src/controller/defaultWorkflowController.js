@@ -34,19 +34,57 @@ module.exports = {
         });
     },
 
-    addItems: function (request, callback) {
+    /**
+        * This function is used to assign single or multiple items to the workflow. Here items are restricted to belong same workflow only.
+        * {
+            workflowCode: 'Workflow code, these items needs to be associated',
+            itemType: 'Type of item, is it INTERNAL or EXTERNAL',
+            item: {
+                code: 'Required item code',
+                schemaName: 'Either schema name or index name',
+                indexName: 'Either schema name or index name',
+                moduleName: 'Required module name',
+                callbackData: 'Any JSON object needs to be send back along with each events',
+                detail: 'JSON object if item is external'
+            }
+        * }
+        * @param {*} request 
+        * @param {*} callback 
+    */
+    initItem: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {
-            FACADE.DefaultWorkflowFacade.addItems(request).then(success => {
+            FACADE.DefaultWorkflowFacade.initItem(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultWorkflowFacade.addItems(request);
+            return FACADE.DefaultWorkflowFacade.initItem(request);
         }
     },
 
+    nextAction: function (request, callback) {
+        request.itemCode = request.httpRequest.params.itemCode;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.nextAction(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.nextAction(request);
+        }
+    },
+
+    /**
+     * This function is used to perform an action for item. If action is manual, action response is required
+     * {
+     *  decision: 'Decision that has been taken',
+     *  feedback: 'Either json object or simple message'
+     * }
+     * @param {*} request 
+     */
     performAction: function (request, callback) {
         request.itemCode = request.httpRequest.params.itemCode;
         request.actionResponse = request.httpRequest.body;
@@ -58,79 +96,6 @@ module.exports = {
             });
         } else {
             return FACADE.DefaultWorkflowFacade.performAction(request);
-        }
-    },
-
-    processChannels: function (request, callback) {
-        request.itemCode = request.httpRequest.params.itemCode;
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.processChannels(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.processChannels(request);
-        }
-    },
-
-
-    /* ===================================================================== */
-    startWorkflow: function (request, callback) {
-        request.itemCode = request.httpRequest.params.itemCode;
-        request = _.merge(request || {}, request.httpRequest.body);
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.startWorkflow(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.startWorkflow(request);
-        }
-    },
-
-
-
-
-    removeItem: function (request, callback) {
-        request.itemCode = request.httpRequest.params.itemCode;
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.removeItem(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.removeItem(request);
-        }
-    },
-
-    disableItem: function (request, callback) {
-        request.itemCode = request.httpRequest.params.itemCode;
-        request.actionResponse = request.httpRequest.body;
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.disableItem(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.disableItem(request);
-        }
-    },
-
-    resumeItem: function (request, callback) {
-        request.itemCode = request.httpRequest.params.itemCode;
-        request = _.merge(request || {}, request.httpRequest.body);
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.resumeItem(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.resumeItem(request);
         }
     },
 };

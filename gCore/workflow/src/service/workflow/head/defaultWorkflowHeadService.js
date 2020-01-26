@@ -40,23 +40,33 @@ module.exports = {
             if (request.workflowHead) {
                 resolve(request.workflowHead);
             } else {
-                let workflowCode = request.workflowCode || request.workflowItem.workflowHead.code;
-                this.LOG.debug('Loading workflow head: ' + workflowCode);
-                this.get({
-                    tenant: request.tenant,
-                    query: {
-                        code: workflowCode
-                    }
-                }).then(response => {
-                    if (response.success && response.result.length > 0) {
-                        resolve(response.result[0]);
-                    } else {
-                        reject('Invalid request, none workflows found for code: ' + workflowCode);
-                    }
+                let workflowCode = request.workflowCode || request.workflowItem.activeHead.code;
+                this.getWorkflowHeadByCode(workflowCode, request.tenant).then(response => {
+                    resolve(response);
                 }).catch(error => {
                     reject(error);
                 });
             }
+        });
+    },
+
+    getWorkflowHeadByCode: function (workflowCode, tenant) {
+        return new Promise((resolve, reject) => {
+            this.LOG.debug('Loading workflow head: ' + workflowCode);
+            this.get({
+                tenant: tenant,
+                query: {
+                    code: workflowCode
+                }
+            }).then(response => {
+                if (response.success && response.result.length > 0) {
+                    resolve(response.result[0]);
+                } else {
+                    reject('Invalid request, none workflows found for code: ' + workflowCode);
+                }
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };

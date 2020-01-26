@@ -33,34 +33,15 @@ module.exports = {
         });
     },
 
-    addItems: function (request) {
-        return SERVICE.DefaultWorkflowService.addItems(request);
+    initItem: function (request) {
+        return SERVICE.DefaultWorkflowService.initItem(request);
+    },
+
+    nextAction: function (request) {
+        return SERVICE.DefaultWorkflowService.nextAction(request);
     },
 
     performAction: function (request) {
         return SERVICE.DefaultWorkflowService.performAction(request);
     },
-
-    processChannels: function (request) {
-        return SERVICE.DefaultWorkflowService.processChannels(request);
-    },
-
-    /* ===================================================================== */
-    startWorkflow: function (request) {
-        return SERVICE.DefaultWorkflowService.startWorkflow(request);
-    },
-
-
-
-    removeItem: function (request) {
-        return SERVICE.DefaultWorkflowService.removeItem(request);
-    },
-
-    disableItem: function (request) {
-        return SERVICE.DefaultWorkflowService.disableItem(request);
-    },
-
-    resumeItem: function (request) {
-        return SERVICE.DefaultWorkflowService.resumeItem(request);
-    }
 };

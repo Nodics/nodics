@@ -75,6 +75,7 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
     preChannelInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.channel.code);
         if (interceptors && interceptors.preChannel) {
@@ -111,18 +112,14 @@ module.exports = {
     },
 
     triggerTarget: function (request, response, process) {
-        SERVICE.DefaultPipelineService.start('assignWorkflowItemPipeline', {
+        SERVICE.DefaultWorkflowService.nextAction({
             tenant: itemDetail.tenant,
             workflowItem: request.workflowItem,
             actionCode: request.channel.target
-        }, {}).then(success => {
-            this.assignItemToWorkflow(itemDetails).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+        }).then(success => {
+            process.nextSuccess(request, response);
         }).catch(error => {
-            reject(error);
+            process.error(request, response, error);
         });
     },
 

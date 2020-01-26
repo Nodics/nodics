@@ -41,38 +41,25 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    loadWorkflowHead: function (request, response, process) {
-        SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
-            request.workflowHead = workflowHead;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
-    loadWorkflowAction: function (request, response, process) {
-        SERVICE.DefaultWorkflowActionService.getWorkflowAction(request).then(workflowAction => {
-            request.workflowAction = workflowAction;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
     updateWorkflowItem: function (request, response, process) {
-        this.LOG.debug('Updating workflow items');
+        this.LOG.debug('Updating workflow item');
         let workflowItem = request.workflowItem;
-        if (workflowItem.activeAction) workflowItem.lastAction = workflowItem.activeAction.code;
-        if (!workflowItem.workflowHead) {
-            workflowItem.workflowHead = {
-                code: request.workflowHead.code
+        if (request.workflowAction.isHead) {
+            if (workflowItem.activeHead && workflowItem.activeHead.code) {
+                if (!workflowItem.heads) workflowItem.heads = [];
+                workflowItem.heads.push(workflowItem.activeHead.code);
+            }
+            workflowItem.activeHead = {
+                code: request.workflowAction.code
             };
+        } else {
+            if (!workflowItem.actions) workflowItem.actions = [];
+            workflowItem.actions.push(request.workflowAction.code);
         }
+        if (workflowItem.activeAction) workflowItem.lastAction = workflowItem.activeAction.code;
         workflowItem.activeAction = {
             code: request.workflowAction.code
         };
-        if (!workflowItem.actions) workflowItem.actions = [];
-        workflowItem.actions.push(workflowItem.activeAction.code);
-
-
         process.nextSuccess(request, response);
     },
     applyPutInterceptors: function (request, response, process) {
@@ -126,12 +113,12 @@ module.exports = {
     performAction: function (request, response, process) {
         this.LOG.debug('Triggering action for auto workflow head');
         if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
-            SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', {
+            SERVICE.DefaultWorkflowService.performAction({
                 tenant: request.tenant,
                 workflowHead: request.workflowHead,
                 workflowAction: request.workflowAction,
                 workflowItem: request.workflowItem
-            }, {}).then(success => {
+            }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -139,26 +126,5 @@ module.exports = {
         } else {
             process.nextSuccess(request, response);
         }
-    },
-
-    successEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-    handleError: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        response.error = (response.errors && response.errors.length === 1) ? response.errors[0] : response.error;
-        if (!(response.error instanceof Error) || !UTILS.isObject(response.error)) {
-            response.error = {
-                message: response.error
-            };
-        }
-        response.error.code = response.error.code || 'ERR_SYS_00000';
-        SERVICE.DefaultPipelineService.start('handleWorkflowErrorsPipeline', request, response).then(success => {
-            process.reject(response.error);
-        }).catch(error => {
-            process.reject(response.error);
-        });
     }
 };

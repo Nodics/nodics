@@ -40,18 +40,18 @@ module.exports = {
             if (request.actionResponse) {
                 resolve(request.actionResponse);
             } else {
-                let actionResponseCode = request.workflowItem.activeAction.responseCode;
-                this.LOG.debug('Loading workflow action response: ' + actionResponseCode);
+                let responseId = request.workflowItem.activeAction.responseId;
+                this.LOG.debug('Loading workflow action response: ' + responseId);
                 this.get({
                     tenant: request.tenant,
                     query: {
-                        code: actionResponseCode
+                        code: responseId
                     }
                 }).then(response => {
                     if (response.success && response.result.length > 0) {
                         resolve(response.result[0]);
                     } else {
-                        reject('Invalid request, none workflow action response found for code: ' + actionResponseCode);
+                        reject('Invalid request, none workflow action response found for code: ' + responseId);
                     }
                 }).catch(error => {
                     reject(error);

@@ -45,6 +45,8 @@ module.exports = {
         this.LOG.debug('Validating request to evaluate channels');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
+        } else if (!request.itemCode && !request.workflowItem) {
+            process.error(request, response, 'Invalid request, workflow item detail can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }
@@ -52,14 +54,6 @@ module.exports = {
     loadWorkflowHead: function (request, response, process) {
         SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
             request.workflowHead = workflowHead;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
-    loadWorkflowAction: function (request, response, process) {
-        SERVICE.DefaultWorkflowActionService.getWorkflowAction(request).then(workflowAction => {
-            request.workflowAction = workflowAction;
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -112,15 +106,15 @@ module.exports = {
         });
     },
     executeChannels: function (request, response, process) {
-        this.LOG.debug('Starting channel evaluation process');
-        SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
+        this.LOG.debug('Starting channels execution process');
+        SERVICE.DefaultWorkflowChannelService.executeChannels({
             tenant: request.tenant,
             workflowItem: request.workflowItem,
             workflowHead: request.workflowHead,
             workflowAction: request.workflowAction,
             actionResponse: request.actionResponse,
             channels: request.qualifiedChannels
-        }, {}).then(success => {
+        }).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);

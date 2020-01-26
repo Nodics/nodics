@@ -76,11 +76,42 @@ module.exports = {
         });
     },
 
-    processChannels: function (request) {
+    getChannels: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
+            if (request.channels && request.channels.length > 0) {
+                resolve(request.channels);
+            } else {
+                let channelCodes = request.actionResponse.channels;
+                this.get({
+                    tenant: request.tenant,
+                    query: {
+                        code: {
+                            $in: channelCodes
+                        }
+                    }
+                }).then(response => {
+                    if (response.success && response.result.length > 0) {
+                        resolve(response.result);
+                    } else {
+                        reject('Invalid channels, could not found any channels for: ' + channelCodes);
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            }
+        });
+    },
+
+    executeChannels: function (request) {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
                 tenant: request.tenant,
-                itemCode: request.itemCode
+                itemCode: request.itemCode,
+                workflowItem: request.workflowItem,
+                workflowHead: request.workflowHead,
+                workflowAction: request.workflowAction,
+                actionResponse: request.actionResponse,
+                channels: request.qualifiedChannels
             }, {}).then(success => {
                 resolve(success);
             }).catch(error => {
@@ -89,36 +120,20 @@ module.exports = {
         });
     },
 
-    // executeChannel: function (request) {
-    //     return new Promise((resolve, reject) => {
-    //         SERVICE.DefaultPipelineService.start('executeChannelPipeline', {
-    //             tenant: request.tenant,
-    //             itemCode: request.itemCode
-    //         }, {}).then(success => {
-    //             resolve(success);
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
-
-    handleSuccessProcess: function (request, response) {
+    executeChannel: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('handleWorkflowSuccessPipeline', request, response).then(success => {
-                reject(success);
+            SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
+                tenant: request.tenant,
+                workflowItem: request.workflowItem,
+                workflowHead: request.workflowHead,
+                workflowAction: request.workflowAction,
+                actionResponse: request.actionResponse,
+                channel: request.channel
+            }, {}).then(success => {
+                resolve(success);
             }).catch(error => {
                 reject(error);
             });
         });
     },
-
-    handleErrorProcess: function (request) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('handleWorkflowErrorsPipeline', request, {}).then(success => {
-                reject(success);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
 };

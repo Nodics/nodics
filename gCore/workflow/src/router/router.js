@@ -12,17 +12,17 @@
 module.exports = {
     workflow: {
         workflowOperations: {
-            addItems: {
+            addToWorkflow: {
                 secured: true,
-                key: '/item',
+                key: '/init',
                 method: 'PUT',
                 controller: 'DefaultWorkflowController',
-                operation: 'addItems',
+                operation: 'initItem',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'put',
-                    url: 'http://host:port/nodics/workflow/item/add',
+                    url: 'http://host:port/nodics/workflow/item/init',
                     body: {
                         workflowCode: 'Workflow code, these items needs to be associated',
                         itemType: 'Type of item, is it INTERNAL or EXTERNAL',
@@ -35,6 +35,20 @@ module.exports = {
                             detail: 'JSON object if item is external'
                         }
                     }
+                }
+            },
+
+            nextAction: {
+                secured: true,
+                key: '/action/next/:itemCode',
+                method: 'PUT',
+                controller: 'DefaultWorkflowController',
+                operation: 'nextAction',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'put',
+                    url: 'http://host:port/nodics/workflow/action/next/:itemCode'
                 }
             },
 
@@ -55,84 +69,6 @@ module.exports = {
                     }
                 }
             },
-
-            processChannels: {
-                secured: true,
-                key: '/channel/process/:itemCode',
-                method: 'POST',
-                controller: 'DefaultWorkflowController',
-                operation: 'processChannels',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/workflow/start/:itemCode'
-                }
-            },
-
-            /* ===================================================================== */
-            startWorkflow: {
-                secured: true,
-                key: '/start/:itemCode',
-                method: 'POST',
-                controller: 'DefaultWorkflowController',
-                operation: 'startWorkflow',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/workflow/start/:itemCode',
-                    body: {
-                        decision: 'Decision that has been taken',
-                        feedback: 'Either json object or simple message'
-                    }
-                }
-            },
-
-            removeItem: {
-                secured: true,
-                key: '/item/:itemCode',
-                method: 'DELETE',
-                controller: 'DefaultWorkflowController',
-                operation: 'removeItem',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'DELETE',
-                    url: 'http://host:port/nodics/workflow/item/:itemCode',
-                    body: 'Either json object or simple message'
-                }
-            },
-
-            disableItem: {
-                secured: true,
-                key: '/item/disable/:itemCode',
-                method: 'DELETE',
-                controller: 'DefaultWorkflowController',
-                operation: 'disableItem',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'DELETE',
-                    url: 'http://host:port/nodics/workflow/item/disable/:itemCode',
-                    body: 'Either json object or simple message'
-                }
-            },
-
-            resumeItem: {
-                secured: true,
-                key: '/item/resume/:itemCode',
-                method: 'POST',
-                controller: 'DefaultWorkflowController',
-                operation: 'resumeItem',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'DELETE',
-                    url: 'http://host:port/nodics/workflow/item/resume/:itemCode',
-                    body: 'Either json object or simple message'
-                }
-            }
-        },
+        }
     }
 };

@@ -45,6 +45,8 @@ module.exports = {
         this.LOG.debug('Validating request to evaluate channels');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
+        } else if (!request.actionResponse) {
+            process.error(request, response, 'Invalid request, actionResponse can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }

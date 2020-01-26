@@ -58,17 +58,17 @@ module.exports = {
             process.error(request, response, error);
         });
     },
-    loadWorkflowAction: function (request, response, process) {
-        SERVICE.DefaultWorkflowActionService.getWorkflowAction(request).then(workflowAction => {
-            request.workflowAction = workflowAction;
+    loadActionResponse: function (request, response, process) {
+        SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {
+            request.actionResponse = actionResponse;
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
-    loadActionResponse: function (request, response, process) {
-        SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {
-            request.actionResponse = actionResponse;
+    loadChannels: function (request, response, process) {
+        SERVICE.DefaultWorkflowChannelService.getChannels(request).then(channels => {
+            request.channels = channels;
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -88,26 +88,28 @@ module.exports = {
         } else {
             request.channelRequests[request.workflowItem.code] = {
                 workflowItem: request.workflowItem,
+                originalCode: request.workflowItem.code,
                 channel: channels[0]
             };
         }
         process.nextSuccess(request, response);
     },
+
     createChannelRequest: function (request, response, process) {
-        request.itemModels = [];
-        let workflowItem = _.merge({}, request.workflowItem);
-        delete workflowItem._id;
-        Object.keys(request.channelRequests).forEach(itemCode => {
-            let channelRequest = request.channelRequests[itemCode];
-            let itemModel = _.merge({}, workflowItem);
-            itemModel.code = itemCode;
-            itemModel.originalCode = channelRequest.originalCode;
-            request.itemModels.push(itemModel);
-        });
-        if (request.itemModels.length > 1) {
+        if (request.channelRequests.length > 1) {
+            let itemModels = [];
+            let workflowItem = _.merge({}, request.workflowItem);
+            delete workflowItem._id;
+            Object.keys(request.channelRequests).forEach(itemCode => {
+                let channelRequest = request.channelRequests[itemCode];
+                let itemModel = _.merge({}, workflowItem);
+                itemModel.code = itemCode;
+                itemModel.originalCode = channelRequest.originalCode;
+                itemModels.push(itemModel);
+            });
             SERVICE.DefaultWorkflowItemService.save({
                 tenant: request.tenant,
-                models: [request.itemModels]
+                models: [itemModels]
             }).then(success => {
                 if (success.success && success.result && success.result.length > 0) {
                     success.result.forEach(newModel => {
@@ -134,11 +136,14 @@ module.exports = {
             if (itemCodes && itemCodes.length > 0) {
                 let itemCode = itemCodes.shift();
                 let channelRequest = request.channelRequests[itemCode];
-                SERVICE.DefaultPipelineService.start('executeChannelPipeline', {
+                SERVICE.DefaultWorkflowChannelService.executeChannel({
                     tenant: request.tenant,
-                    itemCode: itemCode,
+                    workflowItem: channelRequest.workflowItem,
+                    workflowHead: request.workflowHead,
+                    workflowAction: request.workflowAction,
+                    actionResponse: request.actionResponse,
                     channel: channelRequest.channel
-                }, {}).then(success => {
+                }).then(success => {
                     this.executeChannel(itemCodes, request, response).then(success => {
                         resolve(success);
                     }).catch(error => {

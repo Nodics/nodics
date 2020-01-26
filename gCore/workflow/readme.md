@@ -1,1 +1,1 @@
-This is a sample readme file for your workflow module
+This is a sample readme file for your vWorkflow module

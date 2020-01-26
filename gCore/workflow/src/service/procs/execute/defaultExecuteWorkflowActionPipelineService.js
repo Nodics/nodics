@@ -57,21 +57,13 @@ module.exports = {
             process.error(request, response, error);
         });
     },
-    loadWorkflowAction: function (request, response, process) {
-        SERVICE.DefaultWorkflowActionService.getWorkflowAction(request).then(workflowAction => {
-            request.workflowAction = workflowAction;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
     validateOperation: function (request, response, process) {
         let workflowItem = request.workflowItem;
-        if (workflowItem.workflowHead.code !== request.workflowHead.code) {
+        if (workflowItem.activeHead.code !== request.workflowHead.code) {
             process.error(request, response, 'Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code);
         } else if (workflowItem.activeAction.code !== request.workflowAction.code) {
             process.error(request, response, 'Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code);
-        } else if (workflowItem.activeAction.type === ENUMS.WorkflowActionType.MANUAL.key && !request.actionResponse) {
+        } else if (workflowItem.activeAction.type === ENUMS.WorkflowActionType.MANUAL.key && (!request.actionResponse || UTILS.isBlank(request.actionResponse))) {
             process.error(request, response, 'Invalid request, action response can not be null or empty');
         } else {
             process.nextSuccess(request, response);
@@ -204,23 +196,17 @@ module.exports = {
     },
     processChannels: function (request, response, process) {
         this.LOG.debug('Starting channel execution process');
-        if (request.qualifiedChannels.length > 0) {
-            return new Promise((resolve, reject) => {
-                SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
-                    tenant: request.tenant,
-                    workflowItem: request.workflowItem,
-                    workflowHead: request.workflowHead,
-                    workflowAction: request.workflowAction,
-                    actionResponse: request.actionResponse
-                }, {}).then(success => {
-                    process.nextSuccess(request, response);
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
-            });
-        } else {
+        SERVICE.DefaultWorkflowService.processChannels({
+            tenant: request.tenant,
+            workflowItem: request.workflowItem,
+            workflowHead: request.workflowHead,
+            workflowAction: request.workflowAction,
+            actionResponse: request.actionResponse
+        }).then(success => {
             process.nextSuccess(request, response);
-        }
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
     successEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');

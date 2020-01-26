@@ -22,5 +22,65 @@ module.exports = {
             'INTERNAL',
             'EXTERNAL'
         ]
+    },
+
+    WorkflowActionType: {
+        _options: {
+            name: 'WorkflowActionType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'HEAD',
+            'NORMAL',
+            'LEAF'
+        ]
+    },
+
+    ChannelTargetType: {
+        _options: {
+            name: 'ChannelTargetType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'HEAD',
+            'ACTION'
+        ]
+    },
+
+    WorkflowItemState: {
+        _options: {
+            name: 'WorkflowItemState',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'NEW',
+            'PROCESSING',
+            'FINISHED',
+            'ERROR'
+        ]
+    },
+
+    WorkflowActionResponseType: {
+        _options: {
+            name: 'WorkflowActionResponseType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'PASS',
+            'SUCCESS',
+            'ERROR'
+        ]
     }
 };

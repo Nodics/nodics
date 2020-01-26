@@ -34,31 +34,35 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to assign item with workflow');
+        this.LOG.debug('Validating request to load workflow action');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
-        } else if (!request.itemType && (request.itemType !== ENUMS.WorkflowItemType.INTERNAL.key || request.itemType !== ENUMS.WorkflowItemType.EXTERNAL.key)) {
-            process.error(request, response, 'Invalid request, itemType can not be other than [INTERNAL or EXTERNAL]');
-        } else if (!request.workflowItem && !request.item && !request.itemCode) {
-            process.error(request, response, 'Invalid request, item detail can not be null or empty');
+        } else if (!request.workflowAction && !request.actionCode) {
+            process.error(request, response, 'Invalid request, actionCode can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }
     },
-    loadItem: function (request, response, process) {
-        if (!request.workflowItem && request.itemCode) {
-            SERVICE.DefaultWorkflowItemService.get({
-                tenant: request.tenant,
-                query: {
-                    code: request.itemCode
-                }
-            }).then(success => {
-                if (!request.workflowItems) request.workflowItems = {};
-                success.forEach(item => {
-                    request.workflowItems[item.code] = {
-                        item: request.workflowItems
-                    };
-                });
+    loadWorkflowAction: function (request, response, process) {
+        if (request.workflowAction) {
+            process.nextSuccess(request, response);
+        } else if (request.actionCode || request.workflowItem.activeAction) {
+            SERVICE.DefaultWorkflowActionService.getWorkflowAction(request).then(workflowAction => {
+                request.workflowAction = workflowAction;
+                request.workflowAction.isHead = false;
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.error(request, response, 'Invalid request, could not load workflow action');
+        }
+    },
+    handleSubWorkflowAction: function (request, response, process) {
+        if (!request.workflowAction && request.actionCode) {
+            SERVICE.DefaultWorkflowHeadService.getWorkflowHeadByCode(request.actionCode, request.tenant).then(workflowAction => {
+                request.workflowAction = workflowAction;
+                request.workflowAction.isHead = true;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -67,16 +71,9 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
-    redirectCreateItem: function (request, response, process) {
-        if (!request.workflowItem && request.item) {
-            if (request.itemType === ENUMS.WorkflowItemType.INTERNAL.key) {
-                response.targetNode = 'loadInternalItem';
-                process.nextSuccess(request, response);
-            } else {
-                response.targetNode = 'loadExternalItem';
-                process.nextSuccess(request, response);
-            }
+    validateAction: function (request, response, process) {
+        if (!request.workflowAction) {
+            process.error(request, response, 'Cound not load workflow action, please validate your request');
         } else {
             process.nextSuccess(request, response);
         }
