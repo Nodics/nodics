@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    initWorkflowItemPipeline: {
+    prepareWorkflowProcessPipeline: {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
@@ -19,121 +19,26 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultInitWorkflowItemPipelineService.validateRequest',
+                handler: 'DefaultWorkflowPreparePipelineService.validateRequest',
                 success: 'loadWorkflowItem'
             },
             loadWorkflowItem: {
                 type: 'process',
                 handler: 'loadWorkflowItemPipeline',
-                success: 'loadWorkflowHead'
-            },
-            loadWorkflowHead: {
-                type: 'function',
-                handler: 'DefaultInitWorkflowItemPipelineService.loadWorkflowHead',
                 success: 'loadWorkflowAction'
             },
             loadWorkflowAction: {
                 type: 'process',
                 handler: 'loadWorkflowActionPipeline',
-                success: 'assignWorkflowItemPipeline'
-            },
-            assignWorkflowItemPipeline: {
-                type: 'process',
-                handler: 'assignWorkflowItemPipeline',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultInitWorkflowItemPipelineService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultInitWorkflowItemPipelineService.handleErrorEnd'
-            }
-        }
-    },
-
-    nextWorkflowActionPipeline: {
-        startNode: "validateRequest",
-        hardStop: true,
-        handleError: 'handleError',
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultNextWorkflowActionPipelineService.validateRequest',
-                success: 'loadWorkflowItem'
-            },
-            loadWorkflowItem: {
-                type: 'process',
-                handler: 'loadWorkflowItemPipeline',
                 success: 'loadWorkflowHead'
             },
             loadWorkflowHead: {
                 type: 'function',
-                handler: 'DefaultNextWorkflowActionPipelineService.loadWorkflowHead',
-                success: 'loadWorkflowAction'
-            },
-            loadWorkflowAction: {
-                type: 'process',
-                handler: 'loadWorkflowActionPipeline',
-                success: 'assignWorkflowItemPipeline'
-            },
-            assignWorkflowItemPipeline: {
-                type: 'process',
-                handler: 'assignWorkflowItemPipeline',
+                handler: 'DefaultWorkflowPreparePipelineService.loadWorkflowHead',
                 success: 'successEnd'
             },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultNextWorkflowActionPipelineService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultNextWorkflowActionPipelineService.handleErrorEnd'
-            }
         }
     },
-
-    assignWorkflowItemPipeline: {
-        startNode: "validateRequest",
-        hardStop: true,
-        handleError: 'handleError',
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultAssignWorkflowItemPipelineService.validateRequest',
-                success: 'updateWorkflowItem'
-            },
-            updateWorkflowItem: {
-                type: 'function',
-                handler: 'DefaultAssignWorkflowItemPipelineService.updateWorkflowItem',
-                success: 'applyPutInterceptors'
-            },
-            applyPutInterceptors: {
-                type: 'function',
-                handler: 'DefaultAssignWorkflowItemPipelineService.applyPutInterceptors',
-                success: 'applyPutValidators'
-            },
-            applyPutValidators: {
-                type: 'function',
-                handler: 'DefaultAssignWorkflowItemPipelineService.applyPutValidators',
-                success: 'saveActiveItem'
-            },
-            saveActiveItem: {
-                type: 'function',
-                handler: 'DefaultAssignWorkflowItemPipelineService.saveActiveItem',
-                success: 'performAction'
-            },
-            performAction: {
-                type: 'function',
-                handler: 'DefaultAssignWorkflowItemPipelineService.performAction',
-                success: 'successEnd'
-            }
-        }
-    },
-
 
     loadWorkflowItemPipeline: {
         startNode: "validateRequest",
@@ -240,6 +145,112 @@ module.exports = {
         }
     },
 
+
+
+    initWorkflowItemPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultInitWorkflowItemPipelineService.validateRequest',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'assignWorkflowItemPipeline'
+            },
+            assignWorkflowItemPipeline: {
+                type: 'process',
+                handler: 'assignWorkflowItemPipeline',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultInitWorkflowItemPipelineService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultInitWorkflowItemPipelineService.handleErrorEnd'
+            }
+        }
+    },
+
+    nextWorkflowActionPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultNextWorkflowActionPipelineService.validateRequest',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'assignWorkflowItemPipeline'
+            },
+            assignWorkflowItemPipeline: {
+                type: 'process',
+                handler: 'assignWorkflowItemPipeline',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultNextWorkflowActionPipelineService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultNextWorkflowActionPipelineService.handleErrorEnd'
+            }
+        }
+    },
+
+    assignWorkflowItemPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultAssignWorkflowItemPipelineService.validateRequest',
+                success: 'updateWorkflowItem'
+            },
+            updateWorkflowItem: {
+                type: 'function',
+                handler: 'DefaultAssignWorkflowItemPipelineService.updateWorkflowItem',
+                success: 'applyPutInterceptors'
+            },
+            applyPutInterceptors: {
+                type: 'function',
+                handler: 'DefaultAssignWorkflowItemPipelineService.applyPutInterceptors',
+                success: 'applyPutValidators'
+            },
+            applyPutValidators: {
+                type: 'function',
+                handler: 'DefaultAssignWorkflowItemPipelineService.applyPutValidators',
+                success: 'saveActiveItem'
+            },
+            saveActiveItem: {
+                type: 'function',
+                handler: 'DefaultAssignWorkflowItemPipelineService.saveActiveItem',
+                success: 'performAction'
+            },
+            performAction: {
+                type: 'function',
+                handler: 'DefaultAssignWorkflowItemPipelineService.performAction',
+                success: 'successEnd'
+            }
+        }
+    },
+
+
     performWorkflowActionPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -249,22 +260,12 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultExecuteWorkflowActionPipelineService.validateRequest',
-                success: 'loadWorkflowItem'
+                success: 'prepareWorkflowProcessPipeline'
             },
-            loadWorkflowItem: {
+            prepareWorkflowProcessPipeline: {
                 type: 'process',
-                handler: 'loadWorkflowItemPipeline',
-                success: 'loadWorkflowHead'
-            },
-            loadWorkflowHead: {
-                type: 'function',
-                handler: 'DefaultExecuteWorkflowActionPipelineService.loadWorkflowHead',
-                success: 'loadWorkflowAction'
-            },
-            loadWorkflowAction: {
-                type: 'process',
-                handler: 'loadWorkflowActionPipeline',
-                success: 'assignWorkflowItemPipeline'
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'validateOperation'
             },
             validateOperation: {
                 type: 'function',
@@ -393,21 +394,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultEvoluteChannelsPipelineService.validateRequest',
-                success: 'loadWorkflowItem'
+                success: 'prepareWorkflowProcessPipeline'
             },
-            loadWorkflowItem: {
+            prepareWorkflowProcessPipeline: {
                 type: 'process',
-                handler: 'loadWorkflowItemPipeline',
-                success: 'loadWorkflowHead'
-            },
-            loadWorkflowHead: {
-                type: 'function',
-                handler: 'DefaultEvoluteChannelsPipelineService.loadWorkflowHead',
-                success: 'loadWorkflowAction'
-            },
-            loadWorkflowAction: {
-                type: 'process',
-                handler: 'loadWorkflowActionPipeline',
+                handler: 'prepareWorkflowProcessPipeline',
                 success: 'loadActionResponse'
             },
             loadActionResponse: {
@@ -484,21 +475,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelsPipelineService.validateRequest',
-                success: 'loadWorkflowItem'
+                success: 'prepareWorkflowProcessPipeline'
             },
-            loadWorkflowItem: {
+            prepareWorkflowProcessPipeline: {
                 type: 'process',
-                handler: 'loadWorkflowItemPipeline',
-                success: 'loadWorkflowHead'
-            },
-            loadWorkflowHead: {
-                type: 'function',
-                handler: 'DefaultExecuteChannelsPipelineService.loadWorkflowHead',
-                success: 'loadWorkflowAction'
-            },
-            loadWorkflowAction: {
-                type: 'process',
-                handler: 'loadWorkflowActionPipeline',
+                handler: 'prepareWorkflowProcessPipeline',
                 success: 'loadActionResponse'
             },
             loadActionResponse: {
@@ -538,21 +519,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelPipelineService.validateRequest',
-                success: 'loadWorkflowItem'
+                success: 'prepareWorkflowProcessPipeline'
             },
-            loadWorkflowItem: {
+            prepareWorkflowProcessPipeline: {
                 type: 'process',
-                handler: 'loadWorkflowItemPipeline',
-                success: 'loadWorkflowHead'
-            },
-            loadWorkflowHead: {
-                type: 'function',
-                handler: 'DefaultExecuteChannelPipelineService.loadWorkflowHead',
-                success: 'loadWorkflowAction'
-            },
-            loadWorkflowAction: {
-                type: 'process',
-                handler: 'loadWorkflowActionPipeline',
+                handler: 'prepareWorkflowProcessPipeline',
                 success: 'loadActionResponse'
             },
             loadActionResponse: {

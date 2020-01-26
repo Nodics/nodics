@@ -37,6 +37,12 @@ module.exports = {
         this.LOG.debug('Validating request to assign item with workflow');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
+        } else if (!request.workflowItem) {
+            process.error(request, response, 'Invalid request, workflowItem can not be null or empty');
+        } else if (!request.workflowAction) {
+            process.error(request, response, 'Invalid request, workflowAction can not be null or empty');
+        } else if (!request.workflowHead) {
+            process.error(request, response, 'Invalid request, workflowHead can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }

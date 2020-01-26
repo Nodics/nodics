@@ -9,8 +9,6 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
 
     /**
@@ -35,23 +33,26 @@ module.exports = {
         });
     },
 
-    getWorkflowAction: function (actionCode, tenant) {
-        return new Promise((resolve, reject) => {
-            this.LOG.debug('Loading workflow action: ' + actionCode);
-            this.get({
-                tenant: tenant,
-                query: {
-                    code: actionCode
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    resolve(response.result[0]);
-                } else {
-                    reject();
-                }
+    validateRequest: function (request, response, process) {
+        this.LOG.debug('Validating request to init item with workflow');
+        if (!request.tenant) {
+            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    loadWorkflowHead: function (request, response, process) {
+        if (request.workflowAction.isHead) {
+            request.workflowHead = request.workflowAction;
+            process.nextSuccess(request, response);
+        } else {
+            SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
+                request.workflowHead = workflowHead;
+                process.nextSuccess(request, response);
             }).catch(error => {
-                reject(error);
+                process.error(request, response, error);
             });
-        });
+        }
     }
 };
