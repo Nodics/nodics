@@ -49,21 +49,15 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    loadWorkflowHead: function (request, response, process) {
-        SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
-            request.workflowHead = workflowHead;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
     validateOperation: function (request, response, process) {
         let workflowItem = request.workflowItem;
         if (workflowItem.activeHead.code !== request.workflowHead.code) {
             process.error(request, response, 'Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code);
         } else if (workflowItem.activeAction.code !== request.workflowAction.code) {
             process.error(request, response, 'Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code);
-        } else if (workflowItem.activeAction.type === ENUMS.WorkflowActionType.MANUAL.key && (!request.actionResponse || UTILS.isBlank(request.actionResponse))) {
+        } else if ((workflowItem.activeAction.type === ENUMS.WorkflowActionType.MANUAL.key ||
+            workflowItem.activeAction.type === ENUMS.WorkflowActionType.PARALLEL.key) &&
+            (!request.actionResponse || UTILS.isBlank(request.actionResponse))) {
             process.error(request, response, 'Invalid request, action response can not be null or empty');
         } else {
             process.nextSuccess(request, response);
@@ -104,7 +98,8 @@ module.exports = {
         }
     },
     handleAutoAction: function (request, response, process) {
-        if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
+        if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key ||
+            request.workflowAction.type === ENUMS.WorkflowActionType.PARALLEL.key) {
             if (request.workflowAction.handler) {
                 response.targetNode = 'executeActionHandler';
                 process.nextSuccess(request, response);
@@ -119,13 +114,14 @@ module.exports = {
         }
     },
     createStepResponse: function (request, response, process) {
-        request.actionResponse = _.merge(response.success || request.actionResponse, {
+        request.actionResponse = _.merge(
+            _.merge(response.success || {}, request.actionResponse || {}), {
             itemCode: request.workflowItem.code,
             originalCode: request.workflowItem.originalCode,
             workflowCode: request.workflowHead.code,
             actionCode: request.workflowAction.code
         });
-        if (request.workflowAction.allowedDecisions && !request.workflowAction.allowedDecisions.includes(request.actionResponse.decision)) {
+        if (!request.actionResponse.decision || (request.workflowAction.allowedDecisions && !request.workflowAction.allowedDecisions.includes(request.actionResponse.decision))) {
             process.error(request, response, 'Invalid decision value, action don not allow value: ' + request.actionResponse.decision);
         } else {
             process.nextSuccess(request, response);
@@ -196,7 +192,7 @@ module.exports = {
     },
     processChannels: function (request, response, process) {
         this.LOG.debug('Starting channel execution process');
-        SERVICE.DefaultWorkflowService.processChannels({
+        SERVICE.DefaultWorkflowChannelService.processChannels({
             tenant: request.tenant,
             workflowItem: request.workflowItem,
             workflowHead: request.workflowHead,

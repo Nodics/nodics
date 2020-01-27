@@ -146,7 +146,6 @@ module.exports = {
     },
 
 
-
     initWorkflowItemPipeline: {
         startNode: "validateRequest",
         hardStop: true,

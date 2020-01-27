@@ -35,7 +35,11 @@ module.exports = {
 
 
     validateRequest: function (request, response, process) {
-        process.nextSuccess(request, response);
+        if (!request.itemType && (request.itemType !== ENUMS.WorkflowItemType.INTERNAL.key || request.itemType !== ENUMS.WorkflowItemType.EXTERNAL.key)) {
+            process.error(request, response, 'Invalid request, itemType can not be other than [INTERNAL or EXTERNAL]');
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     createInternalItem: function (request, response, process) {
@@ -50,7 +54,8 @@ module.exports = {
                     moduleName: request.item.moduleName,
                     indexName: request.item.indexName,
                     schemaName: request.item.schemaName
-                }
+                },
+                callbackData: request.callbackData
             }
         };
         process.nextSuccess(request, response);

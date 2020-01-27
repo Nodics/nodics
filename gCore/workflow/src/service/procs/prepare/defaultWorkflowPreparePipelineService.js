@@ -43,7 +43,7 @@ module.exports = {
     },
 
     loadWorkflowHead: function (request, response, process) {
-        if (request.workflowAction.isHead) {
+        if (!request.workflowHead && request.workflowAction.isHead) {
             request.workflowHead = request.workflowAction;
             process.nextSuccess(request, response);
         } else {

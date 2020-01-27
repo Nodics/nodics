@@ -33,9 +33,9 @@ module.exports = {
             freez: false
         },
         definition: [
-            'HEAD',
-            'NORMAL',
-            'LEAF'
+            'MANUAL',
+            'AUTO',
+            'PARALLEL'
         ]
     },
 

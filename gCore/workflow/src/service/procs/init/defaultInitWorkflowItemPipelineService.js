@@ -44,7 +44,6 @@ module.exports = {
         } else if (!request.workflowCode) {
             process.error(request, response, 'Invalid request, workflowCode can not be null or empty');
         } else {
-            request.optType = 'init';
             process.nextSuccess(request, response);
         }
     },

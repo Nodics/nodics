@@ -40,16 +40,21 @@ module.exports = {
                     required: true,
                     description: 'Required detail of item, either internal or external'
                 },
-                workflowHead: {
+                heads: {
+                    type: 'array',
+                    required: false,
+                    description: 'All actions this item passed through'
+                },
+                activeHead: {
                     type: 'object',
                     required: true
                 },
-                'workflowHead.code': {
+                'activeHead.code': {
                     type: 'string',
                     required: true,
                     description: 'Mandate workflow head code'
                 },
-                'workflowHead.state': {
+                'activeHead.state': {
                     enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key],
                     required: true,
                     default: ENUMS.WorkflowItemState.NEW.key,
@@ -230,10 +235,10 @@ module.exports = {
             },
             definition: {
                 type: {
-                    enum: [ENUMS.WorkflowActionType.MANUAL.key, ENUMS.WorkflowActionType.AUTO.key],
+                    enum: [ENUMS.WorkflowActionType.MANUAL.key, ENUMS.WorkflowActionType.AUTO.key, ENUMS.WorkflowActionType.PARALLEL.key],
                     required: true,
                     default: ENUMS.WorkflowActionType.MANUAL.key,
-                    description: 'Mandate workflow head state [MANUAL, AUTO]'
+                    description: 'Mandate workflow head state [MANUAL, AUTO, PARALLEL]'
                 },
                 handler: {
                     type: 'string',

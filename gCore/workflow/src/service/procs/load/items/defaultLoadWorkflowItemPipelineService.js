@@ -37,8 +37,6 @@ module.exports = {
         this.LOG.debug('Validating request to assign item with workflow');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
-        } else if (!request.itemType && (request.itemType !== ENUMS.WorkflowItemType.INTERNAL.key || request.itemType !== ENUMS.WorkflowItemType.EXTERNAL.key)) {
-            process.error(request, response, 'Invalid request, itemType can not be other than [INTERNAL or EXTERNAL]');
         } else if (!request.workflowItem && !request.item && !request.itemCode) {
             process.error(request, response, 'Invalid request, item detail can not be null or empty');
         } else {
@@ -46,9 +44,7 @@ module.exports = {
         }
     },
     loadItem: function (request, response, process) {
-        if (request.workflowItem) {
-            process.nextSuccess(request, response);
-        } else if (request.itemCode) {
+        if (!request.workflowItem && request.itemCode) {
             SERVICE.DefaultWorkflowItemService.get({
                 tenant: request.tenant,
                 query: {
@@ -64,6 +60,8 @@ module.exports = {
             }).catch(error => {
                 process.error(request, response, error);
             });
+        } else {
+            process.nextSuccess(request, response);
         }
     },
     redirectCreateItem: function (request, response, process) {

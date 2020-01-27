@@ -102,6 +102,27 @@ module.exports = {
         });
     },
 
+    /**
+     * This function is used to evaluate associated channels and process them
+     * @param {*} request 
+     */
+    processChannels: function (request) {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
+                tenant: request.tenant,
+                itemCode: request.itemCode,
+                workflowItem: request.workflowItem,
+                workflowHead: request.workflowHead,
+                workflowAction: request.workflowAction,
+                actionResponse: request.actionResponse,
+            }, {}).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
     executeChannels: function (request) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
@@ -111,7 +132,7 @@ module.exports = {
                 workflowHead: request.workflowHead,
                 workflowAction: request.workflowAction,
                 actionResponse: request.actionResponse,
-                channels: request.qualifiedChannels
+                channels: request.channels
             }, {}).then(success => {
                 resolve(success);
             }).catch(error => {

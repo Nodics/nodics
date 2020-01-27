@@ -34,6 +34,7 @@ module.exports = {
             resolve(true);
         });
     },
+
     /**
      * This function is used to assign single or multiple items to the workflow. Here items are restricted to belong same workflow only.
      * @param {*} request 
@@ -102,22 +103,5 @@ module.exports = {
                 reject(error);
             });
         });
-    },
-
-    /**
-     * This function is used to evaluate associated channels and process them
-     * @param {*} request 
-     */
-    processChannels: function (request) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
-                tenant: request.tenant,
-                itemCode: request.itemCode
-            }, {}).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
+    }
 };

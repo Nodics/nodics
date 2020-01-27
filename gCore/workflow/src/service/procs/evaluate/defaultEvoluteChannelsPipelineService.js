@@ -51,14 +51,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    loadWorkflowHead: function (request, response, process) {
-        SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
-            request.workflowHead = workflowHead;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
     loadActionResponse: function (request, response, process) {
         SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {
             request.actionResponse = actionResponse;
@@ -73,7 +65,7 @@ module.exports = {
             process.error(request, response, 'Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code);
         } else if (workflowItem.activeAction.code !== request.workflowAction.code) {
             process.error(request, response, 'Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code);
-        } else if (workflowItem.activeAction.type === ENUMS.WorkflowActionType.MANUAL.key && !request.actionResponse) {
+        } else if (!request.actionResponse) {
             process.error(request, response, 'Invalid request, action response can not be null or empty');
         } else {
             process.nextSuccess(request, response);
@@ -82,12 +74,16 @@ module.exports = {
     evaluateChannels: function (request, response, process) {
         this.LOG.debug('Starting channel evaluation process');
         SERVICE.DefaultWorkflowChannelService.getQalifiedChannel(request.actionResponse, request.workflowAction).then(qualifiedChannels => {
-            request.qualifiedChannels = qualifiedChannels;
-            request.qualifiedChannels.forEach(channel => {
-                if (!request.actionResponse.channels) request.actionResponse.channels = [];
-                request.actionResponse.channels.push(channel.code);
-            });
-            process.nextSuccess(request, response);
+            if (!qualifiedChannels || qualifiedChannels.length <= 0) {
+                process.error(request, response, 'None channels have bee qualified for this action');
+            } else {
+                request.qualifiedChannels = qualifiedChannels;
+                request.qualifiedChannels.forEach(channel => {
+                    if (!request.actionResponse.channels) request.actionResponse.channels = [];
+                    request.actionResponse.channels.push(channel.code);
+                });
+                process.nextSuccess(request, response);
+            }
         }).catch(error => {
             process.error(request, response, error);
         });

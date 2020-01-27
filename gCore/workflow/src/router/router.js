@@ -12,7 +12,7 @@
 module.exports = {
     workflow: {
         workflowOperations: {
-            addToWorkflow: {
+            initItem: {
                 secured: true,
                 key: '/init',
                 method: 'PUT',

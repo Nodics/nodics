@@ -37,21 +37,19 @@ module.exports = {
         this.LOG.debug('Validating request to load workflow action');
         if (!request.tenant) {
             process.error(request, response, 'Invalid request, tenant can not be null or empty');
-        } else if (!request.workflowAction && !request.actionCode) {
+        } else if (!request.workflowCode && !request.workflowAction && !request.actionCode) {
             process.error(request, response, 'Invalid request, actionCode can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }
     },
     loadWorkflowAction: function (request, response, process) {
-        if (request.workflowAction) {
-            process.nextSuccess(request, response);
-        } else {
+        if (!request.workflowAction) {
             request.actionCode = request.actionCode || ((request.workflowItem.activeAction) ? request.workflowItem.activeAction.code : undefined) || request.workflowCode;
             if (request.actionCode) {
                 SERVICE.DefaultWorkflowActionService.getWorkflowAction(request.actionCode, request.tenant).then(workflowAction => {
                     request.workflowAction = workflowAction;
-                    request.workflowAction.isHead = false;
+                    if (request.workflowAction) request.workflowAction.isHead = false;
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);
@@ -59,13 +57,15 @@ module.exports = {
             } else {
                 process.error(request, response, 'Invalid request, could not load workflow action');
             }
+        } else {
+            process.nextSuccess(request, response);
         }
     },
     handleSubWorkflowAction: function (request, response, process) {
         if (!request.workflowAction && request.actionCode) {
             SERVICE.DefaultWorkflowHeadService.getWorkflowHeadByCode(request.actionCode, request.tenant).then(workflowAction => {
                 request.workflowAction = workflowAction;
-                request.workflowAction.isHead = true;
+                if (request.workflowAction) request.workflowAction.isHead = true;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
