@@ -41,7 +41,7 @@ module.exports = {
     //             methodName: 'GET',
     //             apiName: '/apikey/' + tntCode,
     //             requestBody: {},
-    //             isJsonResponse: true,
+    //             responseType: true,
     //             header: {
     //                 apiKey: CONFIG.get('defaultAuthDetail').apiKey,
     //                 entCode: CONFIG.get('defaultAuthDetail').entCode

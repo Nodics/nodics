@@ -158,7 +158,7 @@ module.exports = {
                             options: options.queryOptions,
                             query: options.query
                         },
-                        isJsonResponse: true,
+                        responseType: true,
                         header: {
                             authToken: request.authToken
                         }

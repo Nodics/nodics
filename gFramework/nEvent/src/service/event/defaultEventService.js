@@ -243,7 +243,7 @@ module.exports = {
             methodName: 'put',
             apiName: '/event',
             requestBody: eventDef,
-            isJsonResponse: true,
+            responseType: true,
             header: {
                 authToken: NODICS.getInternalAuthToken(eventDef.tenant)
             }

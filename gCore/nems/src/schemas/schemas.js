@@ -32,11 +32,6 @@ module.exports = {
                     required: true,
                     description: 'Required to identify database connection for operations'
                 },
-                target: {
-                    type: 'string',
-                    required: true,
-                    description: 'Target module where this event needs to be send'
-                },
                 event: {
                     type: 'string',
                     required: true,

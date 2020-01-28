@@ -168,7 +168,7 @@ module.exports = {
             methodName: jobDetail.method,
             apiName: jobDetail.uri,
             requestBody: jobDetail.body || {},
-            isJsonResponse: true,
+            responseType: true,
             header: {
                 authToken: NODICS.getInternalAuthToken(definition.tenant)
             }

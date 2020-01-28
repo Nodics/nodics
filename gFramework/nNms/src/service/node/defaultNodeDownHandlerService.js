@@ -73,7 +73,7 @@ module.exports = {
                         methodName: 'GET',
                         apiName: 'node/request/responsibility/' + downNode,
                         requestBody: {},
-                        isJsonResponse: true,
+                        responseType: true,
                         header: {
                             authToken: NODICS.getInternalAuthToken('default')
                         }

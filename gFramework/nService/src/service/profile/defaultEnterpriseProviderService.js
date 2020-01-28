@@ -45,7 +45,7 @@ module.exports = {
                     code: input.entCode
                 }
             },
-            isJsonResponse: true,
+            responseType: true,
             header: {
                 authToken: NODICS.getInternalAuthToken('default')
             }

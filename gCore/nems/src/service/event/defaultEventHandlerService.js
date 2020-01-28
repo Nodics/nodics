@@ -213,7 +213,20 @@ module.exports = {
                     if (!target.state || target.state === ENUMS.EventState.ERROR.key) {
                         let finalEvent = _.merge({}, event);
                         finalEvent.target = target.target;
-                        SERVICE.DefaultModuleService.fetch(_self.prepareURL(finalEvent, target)).then(success => {
+                        let requestBody = {};
+                        if (finalEvent.targetType === ENUMS.TargetType.EXTERNAL.key) {
+                            requestBody = SERVICE.DefaultModuleService.buildExternalRequest({
+                                header: finalEvent.target.header,
+                                uri: finalEvent.target.uri,
+                                methodName: finalEvent.target.methodName,
+                                requestBody: finalEvent.target.body,
+                                responseType: finalEvent.target.responseType,
+                                params: finalEvent.target.params
+                            });
+                        } else {
+                            requestBody = _self.prepareURL(finalEvent, target);
+                        }
+                        SERVICE.DefaultModuleService.fetch(requestBody).then(success => {
                             if (success.success) {
                                 target.state = ENUMS.EventState.FINISHED.key;
                                 target.logs.push(success.msg);
@@ -286,7 +299,7 @@ module.exports = {
             methodName: 'POST',
             apiName: '/event/handle',
             requestBody: event,
-            isJsonResponse: true,
+            responseType: true,
             header: {
                 authToken: NODICS.getInternalAuthToken(event.tenant)
             }

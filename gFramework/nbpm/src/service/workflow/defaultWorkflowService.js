@@ -51,7 +51,7 @@ module.exports = {
             methodName: 'put',
             apiName: '/item/add',
             requestBody: definition.requestBody,
-            isJsonResponse: true,
+            responseType: true,
             header: {
                 authToken: NODICS.getInternalAuthToken(definition.tenant)
             }

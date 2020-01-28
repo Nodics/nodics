@@ -52,7 +52,7 @@ module.exports = {
             uri: url + options.apiName,
             headers: header,
             body: options.requestBody || {},
-            json: options.isJsonResponse || true
+            json: options.responseType || true
         };
     },
 
@@ -79,7 +79,7 @@ module.exports = {
             uri: uri,
             headers: header,
             body: options.requestBody || {},
-            json: options.isJsonResponse || true,
+            json: options.responseType || true,
             rejectUnauthorized: false
         };
     },

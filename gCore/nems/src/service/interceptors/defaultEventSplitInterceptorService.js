@@ -23,7 +23,12 @@ module.exports = {
                         model.state = ENUMS.EventState.PROCESSING.key;
                     }
                     model.targets = [];
-                    if (model.targetType === ENUMS.TargetType.MODULE_NODES.key) {
+                    if (model.targetType === ENUMS.TargetType.EXTERNAL.key) {
+                        model.targets.push({
+                            targetNodeId: model.targetNodeId,
+                            target: _.merge({}, model.target)
+                        });
+                    } else if (model.targetType === ENUMS.TargetType.MODULE_NODES.key) {
                         let modules = SERVICE.DefaultRouterService.getModulesPool().getModules();
                         let targetModule = modules[model.target] || modules.default;
                         _.each(targetModule.getNodes(), (node, nodeId) => {

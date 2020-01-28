@@ -34,7 +34,7 @@ module.exports = {
             methodName: 'GET',
             apiName: '/event/process',
             requestBody: {},
-            isJsonResponse: true,
+            responseType: true,
             header: {
                 authToken: NODICS.getInternalAuthToken(definition.tenant)
             }

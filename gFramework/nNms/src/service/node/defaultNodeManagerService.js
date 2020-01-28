@@ -150,7 +150,7 @@ module.exports = {
                         methodName: 'GET',
                         apiName: 'node/active/' + CONFIG.get('nodeId'),
                         requestBody: {},
-                        isJsonResponse: true,
+                        responseType: true,
                         header: {
                             authToken: NODICS.getInternalAuthToken('default')
                         }
@@ -222,7 +222,7 @@ module.exports = {
                         methodName: 'GET',
                         apiName: 'ping',
                         requestBody: {},
-                        isJsonResponse: true,
+                        responseType: true,
                         header: {
                             authToken: NODICS.getInternalAuthToken('default')
                         }

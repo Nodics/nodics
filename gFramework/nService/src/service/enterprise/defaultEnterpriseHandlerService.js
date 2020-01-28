@@ -68,7 +68,7 @@ module.exports = {
                         methodName: 'POST',
                         apiName: '/enterprise',
                         requestBody: {},
-                        isJsonResponse: true,
+                        responseType: true,
                         header: {
                             authToken: NODICS.getInternalAuthToken('default'),
                             recursive: true

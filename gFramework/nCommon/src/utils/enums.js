@@ -19,6 +19,7 @@ module.exports = {
             freez: false
         },
         definition: [
+            'EXTERNAL',
             'EACH_MODULE_NODES',
             'EACH_MODULE',
             'MODULE_NODES',
