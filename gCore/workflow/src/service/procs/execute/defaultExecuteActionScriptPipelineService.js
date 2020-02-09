@@ -52,7 +52,7 @@ module.exports = {
             let workflowHead = request.workflowHead;
             let workflowItem = request.workflowItem;
             let result = eval(request.workflowAction.script);
-            response.success = {
+            response.actionResponse = {
                 decision: result,
                 feedback: {
                     message: 'This is auto action script executed response'

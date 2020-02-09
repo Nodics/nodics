@@ -66,7 +66,6 @@ module.exports = {
     },
     redirectCreateItem: function (request, response, process) {
         if (!request.workflowItem && request.item) {
-            request.actionCode = request.workflowCode;
             if (request.itemType === ENUMS.WorkflowItemType.INTERNAL.key) {
                 response.targetNode = 'loadInternalItem';
                 process.nextSuccess(request, response);

@@ -63,6 +63,11 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    prepareResponse: function (request, response, process) {
+        this.LOG.debug('Preparing response for action execution');
+        if (!response.success) response.success = {};
+        if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
+    },
     preActionInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowAction.code);
         if (interceptors && interceptors.preAction) {
@@ -114,14 +119,29 @@ module.exports = {
         }
     },
     createStepResponse: function (request, response, process) {
+        if (response.actionResponse && !UTILS.isBlank(response.actionResponse)) {
+            response.success[request.workflowAction.code].push({
+                action: 'autoActionPerformed',
+                target: request.workflowAction.code,
+                item: request.workflowItem.code || request.workflowItem._id,
+                timestamp: new Date(),
+                msg: 'Auto action has been performed'
+            });
+        }
         request.actionResponse = _.merge(
-            _.merge(response.success || {}, request.actionResponse || {}), {
+            _.merge(response.actionResponse || {}, request.actionResponse || {}), {
             itemCode: request.workflowItem.code,
             originalCode: request.workflowItem.originalCode,
             workflowCode: request.workflowHead.code,
             actionCode: request.workflowAction.code
         });
-        if (!request.actionResponse.decision || (request.workflowAction.allowedDecisions && !request.workflowAction.allowedDecisions.includes(request.actionResponse.decision))) {
+        process.nextSuccess(request, response);
+    },
+    validateResponse: function (request, response, process) {
+        this.LOG.debug('Validating action response');
+        if (!request.actionResponse.decision) {
+            process.error(request, response, 'Decision value can not be null or empty');
+        } else if (request.workflowAction.allowedDecisions && !request.workflowAction.allowedDecisions.includes(request.actionResponse.decision)) {
             process.error(request, response, 'Invalid decision value, action don not allow value: ' + request.actionResponse.decision);
         } else {
             process.nextSuccess(request, response);
@@ -132,9 +152,14 @@ module.exports = {
             tenant: request.tenant,
             models: [request.actionResponse]
         }).then(success => {
-            if (success.result && success.result.length > 0) {
-                request.actionResponse = success.result[0];
-            }
+            request.actionResponse = success.result[0];
+            response.success[request.workflowAction.code].push({
+                action: 'actionResponseCreated',
+                target: request.workflowAction.code,
+                item: request.workflowItem.code || request.workflowItem._id,
+                timestamp: new Date(),
+                msg: 'Action response updated: ' + request.actionResponse._id
+            });
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -146,6 +171,13 @@ module.exports = {
             tenant: request.tenant,
             models: [request.workflowItem]
         }).then(success => {
+            response.success[request.workflowAction.code].push({
+                action: 'itemUpdated',
+                target: request.workflowAction.code,
+                item: request.workflowItem.code || request.workflowItem._id,
+                timestamp: new Date(),
+                msg: 'Item has been updated with response id: ' + request.actionResponse._id
+            });
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -199,29 +231,39 @@ module.exports = {
             workflowAction: request.workflowAction,
             actionResponse: request.actionResponse
         }).then(success => {
-            process.nextSuccess(request, response);
+            try {
+                if (success && success.result && !UTILS.isBlank(success.result)) {
+                    Object.keys(success.result).forEach(actionCode => {
+                        let actionOutput = success.result[actionCode];
+                        actionOutput.forEach(output => {
+                            response.success[actionCode].push(output);
+                        });
+                    });
+                }
+                process.nextSuccess(request, response);
+            } catch (error) {
+                process.error(request, response, error);
+            }
         }).catch(error => {
             process.error(request, response, error);
         });
     },
     successEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
+        process.resolve({
+            success: true,
+            code: 'SUC_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+            result: response.success
+        });
     },
     handleError: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
-        response.error = (response.errors && response.errors.length === 1) ? response.errors[0] : response.error;
-        if (!(response.error instanceof Error) || !UTILS.isObject(response.error)) {
-            response.error = {
-                message: response.error
-            };
-        }
-        response.error.code = response.error.code || 'ERR_SYS_00000';
-        SERVICE.DefaultWorkflowChannelService.handleErrorProcess(request, response).then(success => {
-            process.reject(response.error);
-        }).catch(error => {
-            process.reject(response.error);
+        process.reject({
+            success: false,
+            code: 'ERR_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
+            errors: response.error || response.errors
         });
     }
 };

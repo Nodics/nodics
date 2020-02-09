@@ -51,7 +51,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     checkDecision: function (request, response, process) {
         if (request.channel.qualifier.decision) {
             if (request.channel.qualifier.decision === request.actionResponse.decision) {
@@ -70,7 +69,14 @@ module.exports = {
                 let serviceName = handler.substring(0, handler.lastIndexOf('.'));
                 let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
                 if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
-                    SERVICE[serviceName.toUpperCaseFirstChar()][operation](request.actionResponse, request.channel).then(success => {
+                    SERVICE[serviceName.toUpperCaseFirstChar()][operation]({
+                        tenant: request.tenant,
+                        workflowItem: request.workflowItem,
+                        workflowHead: request.workflowHead,
+                        workflowAction: request.workflowAction,
+                        actionResponse: request.actionResponse,
+                        channel: request.channel
+                    }).then(success => {
                         process.stop(request, response, success);
                     }).catch(error => {
                         process.error(request, response, error);
@@ -89,6 +95,12 @@ module.exports = {
     executeScript: function (request, response, process) {
         if (request.channel.qualifier.script) {
             try {
+                let tenant = request.tenant;
+                let workflowItem = request.workflowItem;
+                let workflowHead = request.workflowHead;
+                let workflowAction = request.workflowAction;
+                let actionResponse = request.actionResponse;
+                let channel = request.channel;
                 let result = eval(request.channel.qualifier.script);
                 process.stop(request, response, result);
             } catch (error) {

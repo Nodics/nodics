@@ -49,22 +49,20 @@ module.exports = {
     },
     successEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
+        process.resolve({
+            success: true,
+            code: 'SUC_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+            result: response.success
+        });
     },
     handleError: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
-        response.error = (response.errors && response.errors.length === 1) ? response.errors[0] : response.error;
-        if (!(response.error instanceof Error) || !UTILS.isObject(response.error)) {
-            response.error = {
-                message: response.error
-            };
-        }
-        response.error.code = response.error.code || 'ERR_SYS_00000';
-        SERVICE.DefaultPipelineService.start('handleWorkflowErrorsPipeline', request, response).then(success => {
-            process.reject(response.error);
-        }).catch(error => {
-            process.reject(response.error);
+        process.reject({
+            success: false,
+            code: 'ERR_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
+            errors: response.error || response.errors
         });
     }
 };

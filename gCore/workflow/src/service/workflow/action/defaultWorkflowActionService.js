@@ -53,5 +53,25 @@ module.exports = {
                 reject(error);
             });
         });
+    },
+
+    handleSuccessProcess: function (request, response) {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('handleWorkflowSuccessPipeline', request, response).then(success => {
+                reject(success);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    handleErrorProcess: function (request) {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('handleWorkflowErrorsPipeline', request, {}).then(success => {
+                reject(success);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     }
 };

@@ -47,6 +47,11 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    prepareResponse: function (request, response, process) {
+        this.LOG.debug('Preparing response for iten assignmnet');
+        if (!response.success) response.success = {};
+        if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
+    },
     updateWorkflowItem: function (request, response, process) {
         this.LOG.debug('Updating workflow item');
         let workflowItem = request.workflowItem;
@@ -109,8 +114,14 @@ module.exports = {
             moduleName: request.moduleName,
             models: [request.workflowItem]
         }).then(success => {
-            console.log('=========>>> ', success.result);
             request.workflowItem = success.result[0];
+            response.success[request.workflowAction.code].push({
+                action: 'itemAssignToAction',
+                target: request.workflowAction.code,
+                item: request.workflowItem.code || request.workflowItem._id,
+                timestamp: new Date(),
+                msg: 'Item: ' + request.workflowItem.code || request.workflowItem._id + ' has been assign to action: ' + request.workflowAction.code
+            });
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -125,7 +136,19 @@ module.exports = {
                 workflowAction: request.workflowAction,
                 workflowItem: request.workflowItem
             }).then(success => {
-                process.nextSuccess(request, response);
+                try {
+                    if (success && success.result && !UTILS.isBlank(success.result)) {
+                        Object.keys(success.result).forEach(actionCode => {
+                            let actionOutput = success.result[actionCode];
+                            actionOutput.forEach(output => {
+                                response.success[actionCode].push(output);
+                            });
+                        });
+                    }
+                    process.nextSuccess(request, response);
+                } catch (error) {
+                    process.error(request, response, error);
+                }
             }).catch(error => {
                 process.error(request, response, error);
             });

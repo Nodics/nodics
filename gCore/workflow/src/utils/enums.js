@@ -10,6 +10,22 @@
  */
 
 module.exports = {
+    WorkflowActionPosition: {
+        _options: {
+            name: 'WorkflowActionType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'HEAD',
+            'ACTION',
+            'LEAF',
+            'END'
+        ]
+    },
+
     WorkflowItemType: {
         _options: {
             name: 'WorkflowItemType',

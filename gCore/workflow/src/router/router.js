@@ -28,6 +28,7 @@ module.exports = {
                         itemType: 'Type of item, is it INTERNAL or EXTERNAL',
                         item: {
                             code: 'Required item code',
+                            refId: 'external item reference id',
                             schemaName: 'Either schema name or index name',
                             indexName: 'Either schema name or index name',
                             moduleName: 'Required module name',

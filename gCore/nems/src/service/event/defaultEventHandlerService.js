@@ -219,7 +219,7 @@ module.exports = {
                                 header: finalEvent.target.header,
                                 uri: finalEvent.target.uri,
                                 methodName: finalEvent.target.methodName,
-                                requestBody: finalEvent.target.body,
+                                requestBody: finalEvent,
                                 responseType: finalEvent.target.responseType,
                                 params: finalEvent.target.params
                             });

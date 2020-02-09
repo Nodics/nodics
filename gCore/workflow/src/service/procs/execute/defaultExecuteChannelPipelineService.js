@@ -50,22 +50,10 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
-    loadWorkflowHead: function (request, response, process) {
-        SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
-            request.workflowHead = workflowHead;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
-    loadWorkflowAction: function (request, response, process) {
-        SERVICE.DefaultWorkflowActionService.getWorkflowAction(request).then(workflowAction => {
-            request.workflowAction = workflowAction;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
+    prepareResponse: function (request, response, process) {
+        this.LOG.debug('Preparing response for action execution');
+        if (!response.success) response.success = {};
+        if (!response.success[request.channel.target]) response.success[request.channel.target] = [];
     },
     loadActionResponse: function (request, response, process) {
         SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {
@@ -75,7 +63,6 @@ module.exports = {
             process.error(request, response, error);
         });
     },
-
     preChannelInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.channel.code);
         if (interceptors && interceptors.preChannel) {
@@ -110,13 +97,20 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     triggerTarget: function (request, response, process) {
         SERVICE.DefaultWorkflowService.nextAction({
             tenant: itemDetail.tenant,
             workflowItem: request.workflowItem,
             actionCode: request.channel.target
         }).then(success => {
+            if (success && success.result && !UTILS.isBlank(success.result)) {
+                Object.keys(success.result).forEach(actionCode => {
+                    let actionOutput = success.result[actionCode];
+                    actionOutput.forEach(output => {
+                        response.success[actionCode].push(output);
+                    });
+                });
+            }
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -156,5 +150,23 @@ module.exports = {
         } else {
             process.nextSuccess(request, response);
         }
+    },
+    successEnd: function (request, response, process) {
+        this.LOG.debug('Request has been processed successfully');
+        process.resolve({
+            success: true,
+            code: 'SUC_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+            result: response.success
+        });
+    },
+    handleError: function (request, response, process) {
+        this.LOG.error('Request has been processed and got errors');
+        process.reject({
+            success: false,
+            code: 'ERR_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
+            errors: response.error || response.errors
+        });
     }
 };

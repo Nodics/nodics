@@ -59,6 +59,11 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    prepareResponse: function (request, response, process) {
+        this.LOG.debug('Preparing response for action execution');
+        if (!response.success) response.success = {};
+        if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
+    },
     validateOperation: function (request, response, process) {
         let workflowItem = request.workflowItem;
         if (workflowItem.workflowHead.code !== request.workflowHead.code) {
@@ -73,17 +78,28 @@ module.exports = {
     },
     evaluateChannels: function (request, response, process) {
         this.LOG.debug('Starting channel evaluation process');
-        SERVICE.DefaultWorkflowChannelService.getQalifiedChannel(request.actionResponse, request.workflowAction).then(qualifiedChannels => {
-            if (!qualifiedChannels || qualifiedChannels.length <= 0) {
-                process.error(request, response, 'None channels have bee qualified for this action');
-            } else {
-                request.qualifiedChannels = qualifiedChannels;
+        SERVICE.DefaultWorkflowChannelService.getQalifiedChannel({
+            tenant: request.tenant,
+            workflowItem: request.workflowItem,
+            workflowHead: request.workflowHead,
+            workflowAction: request.workflowAction,
+            actionResponse: request.actionResponse
+        }).then(qualifiedChannels => {
+            request.qualifiedChannels = qualifiedChannels;
+            if (request.qualifiedChannels.length > 0) {
                 request.qualifiedChannels.forEach(channel => {
                     if (!request.actionResponse.channels) request.actionResponse.channels = [];
                     request.actionResponse.channels.push(channel.code);
                 });
-                process.nextSuccess(request, response);
             }
+            response.success[request.workflowAction.code].push({
+                action: 'qualifiedChannels',
+                target: request.workflowAction.code,
+                item: request.workflowItem.code || request.workflowItem._id,
+                timestamp: new Date(),
+                msg: 'Qualified channels: ' + request.actionResponse.channels
+            });
+            process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
@@ -93,9 +109,13 @@ module.exports = {
             tenant: request.tenant,
             models: [request.actionResponse]
         }).then(success => {
-            if (success.result && success.result.length > 0) {
-                request.actionResponse = success.result[0];
-            }
+            response.success[request.workflowAction.code].push({
+                action: 'actionResponseUpdated',
+                target: request.workflowAction.code,
+                item: request.workflowItem.code || request.workflowItem._id,
+                timestamp: new Date(),
+                msg: 'Action response updated: ' + request.actionResponse._id
+            });
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -103,17 +123,49 @@ module.exports = {
     },
     executeChannels: function (request, response, process) {
         this.LOG.debug('Starting channels execution process');
-        SERVICE.DefaultWorkflowChannelService.executeChannels({
-            tenant: request.tenant,
-            workflowItem: request.workflowItem,
-            workflowHead: request.workflowHead,
-            workflowAction: request.workflowAction,
-            actionResponse: request.actionResponse,
-            channels: request.qualifiedChannels
-        }).then(success => {
+        if (request.qualifiedChannels.length > 0) {
+            SERVICE.DefaultWorkflowChannelService.executeChannels({
+                tenant: request.tenant,
+                workflowItem: request.workflowItem,
+                workflowHead: request.workflowHead,
+                workflowAction: request.workflowAction,
+                actionResponse: request.actionResponse,
+                channels: request.qualifiedChannels
+            }).then(success => {
+                try {
+                    if (success && success.result && !UTILS.isBlank(success.result)) {
+                        Object.keys(success.result).forEach(channelCode => {
+                            response.success[channelCode].push(success.result[channelCode]);
+                        });
+                    }
+                    process.nextSuccess(request, response);
+                } catch (error) {
+                    process.error(request, response, error);
+                }
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
             process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
+        }
+    },
+    successEnd: function (request, response, process) {
+        this.LOG.debug('Request has been processed successfully');
+        process.resolve({
+            success: true,
+            code: 'SUC_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+            result: response.success
+        });
+    },
+    handleError: function (request, response, process) {
+        this.LOG.error('Request has been processed and got errors');
+        process.reject({
+            success: false,
+            code: 'ERR_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
+            errors: response.error || response.errors
         });
     }
 };

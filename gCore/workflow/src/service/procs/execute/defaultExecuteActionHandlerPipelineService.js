@@ -56,7 +56,7 @@ module.exports = {
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction
                 }).then(success => {
-                    response.success = success;
+                    response.actionResponse = success;
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);

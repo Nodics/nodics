@@ -11,7 +11,16 @@
 
 module.exports = {
     workflow: {
-        defaultSuccessChannel: 'handleSuccessEnd',
-        defaultErrorChannel: 'handleErrorEnd'
+        defaultWorkflowChannelHeader: {
+            options: {
+                enabled: true,
+                schemaName: 'workflowChannel',
+                operation: 'save',
+                dataFilePrefix: 'defaultWorkflowChannelData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
     }
 };

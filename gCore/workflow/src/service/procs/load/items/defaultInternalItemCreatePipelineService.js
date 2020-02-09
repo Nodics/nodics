@@ -44,19 +44,24 @@ module.exports = {
 
     createInternalItem: function (request, response, process) {
         this.LOG.debug('Creating new internal workflow item');
+        let item = request.item;
+        if (!item.event) item.event = {};
         request.workflowItem = {
-            code: request.item.moduleName + '_' + (request.item.schemaName || request.item.indexName) + '_' + request.item.code,
+            code: item.code, //Allways unique code
+            originalCode: item.originalCode || item.code,
+            refId: item.refId, // reference to source of item
             active: true,
-            item: {
-                type: ENUMS.WorkflowItemType.INTERNAL.key,
-                detail: {
-                    code: request.item.code,
-                    moduleName: request.item.moduleName,
-                    indexName: request.item.indexName,
-                    schemaName: request.item.schemaName
-                },
-                callbackData: request.callbackData
-            }
+            type: ENUMS.WorkflowItemType.INTERNAL.key,
+            detail: {
+                moduleName: item.moduleName,
+                indexName: item.indexName,
+                schemaName: item.schemaName
+            },
+            event: {
+                enabled: item.event.enabled || false,
+                config: item.event.config
+            },
+            callbackData: item.callbackData
         };
         process.nextSuccess(request, response);
     }

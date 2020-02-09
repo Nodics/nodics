@@ -26,19 +26,30 @@ module.exports = {
                     required: true,
                     description: 'Mandate item code'
                 },
-                item: {
-                    type: 'object',
-                    required: true
+                refId: {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate item reference id'
                 },
-                'item.type': {
+                type: {
                     enum: [ENUMS.WorkflowItemType.INTERNAL.key, ENUMS.WorkflowItemType.EXTERNAL.key],
                     required: true,
                     description: 'Mandate item type [INTERNAL, EXTERNAL]'
                 },
-                'item.detail': {
+                detail: {
                     type: 'object',
                     required: true,
                     description: 'Required detail of item, either internal or external'
+                },
+                event: {
+                    type: 'object',
+                    required: false,
+                    description: 'Required event configuration'
+                },
+                callbackData: {
+                    type: 'object',
+                    required: false,
+                    description: 'Required callbackData to sent it along with event'
                 },
                 heads: {
                     type: 'array',
@@ -80,7 +91,6 @@ module.exports = {
                     default: ENUMS.WorkflowItemState.NEW.key,
                     description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
                 },
-
                 lastAction: {
                     type: 'object',
                     required: false
@@ -96,7 +106,6 @@ module.exports = {
                     default: ENUMS.WorkflowItemState.NEW.key,
                     description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
                 },
-
                 error: {
                     type: 'object',
                     required: false
@@ -240,6 +249,11 @@ module.exports = {
                     default: ENUMS.WorkflowActionType.MANUAL.key,
                     description: 'Mandate workflow head state [MANUAL, AUTO, PARALLEL]'
                 },
+                position: {
+                    enum: [ENUMS.WorkflowActionPosition.HEAD.key, ENUMS.WorkflowActionPosition.ACTION.key, ENUMS.WorkflowActionPosition.LEAF.key, ENUMS.WorkflowActionPosition.END.key],
+                    required: true,
+                    description: 'Mandate workflow head state [HEAD, ACTION, LEAF, END]'
+                },
                 handler: {
                     type: 'string',
                     required: false,
@@ -290,14 +304,16 @@ module.exports = {
                     schemaName: "workflowChannel",
                     type: 'one',
                     propertyName: 'code'
+                },
+                errorChannel: {
+                    schemaName: "workflowChannel",
+                    type: 'one',
+                    propertyName: 'code'
                 }
             },
             definition: {
-                isLeafAction: {
-                    type: 'bool',
-                    required: true,
-                    default: false,
-                    description: 'Required isLeafAction, true only for leaf action'
+                position: {
+                    default: ENUMS.WorkflowActionPosition.ACTION.key
                 },
                 successChannel: {
                     type: 'string',
@@ -322,7 +338,9 @@ module.exports = {
             service: true,
             router: true,
             definition: {
-
+                position: {
+                    default: ENUMS.WorkflowActionPosition.HEAD.key
+                },
             }
         }
     }

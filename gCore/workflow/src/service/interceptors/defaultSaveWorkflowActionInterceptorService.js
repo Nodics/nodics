@@ -34,7 +34,7 @@ module.exports = {
 
     handlePreSave: function (request, responce) {
         return new Promise((resolve, reject) => {
-            if (!request.model.successChannel) {
+            if (request.model.position === ENUMS.WorkflowActionPosition.LEAF.key && !request.model.successChannel) {
                 request.model.successChannel = CONFIG.get('workflow').defaultSuccessChannel;
             }
             if (!request.model.errorChannel) {

@@ -50,13 +50,9 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    loadWorkflowHead: function (request, response, process) {
-        SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
-            request.workflowHead = workflowHead;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
+    prepareResponse: function (request, response, process) {
+        this.LOG.debug('Preparing response for action execution');
+        if (!response.success) response.success = {};
     },
     loadActionResponse: function (request, response, process) {
         SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {
@@ -73,6 +69,20 @@ module.exports = {
         }).catch(error => {
             process.error(request, response, error);
         });
+    },
+    validateChannels: function (request, response, process) {
+        let targets = [];
+        try {
+            request.channels.forEach(channel => {
+                if (targets.includes(channel.target)) {
+                    throw new Error('Target error: Multiple channels can not hold same target');
+                }
+            });
+            process.nextSuccess(request, response);
+        } catch (error) {
+            this.LOG.error(error);
+            process.error(request, response, error);
+        }
     },
     handleMultiChannelRequest: function (request, response, process) {
         request.channelRequests = {};
@@ -94,7 +104,6 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
-
     createChannelRequest: function (request, response, process) {
         if (request.channelRequests.length > 1) {
             let itemModels = [];
@@ -125,13 +134,32 @@ module.exports = {
         }
     },
     triggerChannelExecution: function (request, response, process) {
-        this.executeChannel(Object.keys(request.channelRequests), request).then(success => {
+        this.walkThroughChannels(Object.keys(request.channelRequests), request, response).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
-    executeChannel: function (itemCodes, request, response) {
+    successEnd: function (request, response, process) {
+        this.LOG.debug('Request has been processed successfully');
+        process.resolve({
+            success: true,
+            code: 'SUC_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+            result: response.success
+        });
+    },
+    handleError: function (request, response, process) {
+        this.LOG.error('Request has been processed and got errors');
+        process.reject({
+            success: false,
+            code: 'ERR_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
+            errors: response.error || response.errors
+        });
+    },
+
+    walkThroughChannels: function (itemCodes, request, response) {
         return new Promise((resolve, reject) => {
             if (itemCodes && itemCodes.length > 0) {
                 let itemCode = itemCodes.shift();
@@ -144,7 +172,8 @@ module.exports = {
                     actionResponse: request.actionResponse,
                     channel: channelRequest.channel
                 }).then(success => {
-                    this.executeChannel(itemCodes, request, response).then(success => {
+                    response.success[channelRequest.channel.code] = success;
+                    this.walkThroughChannels(itemCodes, request, response).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);

@@ -59,15 +59,9 @@ module.exports = {
     nextAction: function (request) {
         SERVICE.DefaultPipelineService.start('nextWorkflowActionPipeline', {
             tenant: request.tenant,
-
             itemCode: request.itemCode,
             workflowItem: request.workflowItem,
-
-            workflowCode: request.workflowCode,
-            workflowHead: request.workflowHead,
-
-
-            actionCode: request.actionCode
+            actionCode: request.actionCode,
         }, {}).then(success => {
             resolve(success);
         }).catch(error => {
@@ -89,14 +83,11 @@ module.exports = {
                 tenant: request.tenant,
                 itemCode: request.itemCode,
                 actionResponse: request.actionResponse,
-
                 workflowItem: request.workflowItem,
                 actionCode: request.actionCode,
                 workflowAction: request.workflowAction,
                 workflowCode: request.workflowCode,
                 workflowHead: request.workflowHead
-
-
             }, {}).then(success => {
                 resolve(success);
             }).catch(error => {

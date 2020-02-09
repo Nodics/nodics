@@ -33,36 +33,63 @@ module.exports = {
         });
     },
 
-
-    getQalifiedChannel: function (actionResponse, workflowAction) {
+    /**
+    * This function is used to evaluate associated channels and process them
+    * @param {*} request 
+    */
+    processChannels: function (request) {
         return new Promise((resolve, reject) => {
-            let rawChannels = [];
-            if (workflowAction.isLeafAction) {
-                rawChannels.push(workflowAction.successChannel);
-                rawChannels = rawChannels.concat(workflowAction.channels || []);
-            } else {
-                rawChannels = rawChannels.concat(workflowAction.channels);
-            }
-            this.evaluateChannels(rawChannels, actionResponse).then(qualifiedChannels => {
-                resolve(qualifiedChannels);
+            SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
+                tenant: request.tenant,
+                itemCode: request.itemCode,
+                workflowItem: request.workflowItem,
+                workflowHead: request.workflowHead,
+                workflowAction: request.workflowAction,
+                actionResponse: request.actionResponse
+            }, {}).then(success => {
+                resolve(success);
             }).catch(error => {
                 reject(error);
             });
         });
     },
 
-    evaluateChannels: function (rawChannels, actionResponse, qualifiedChannels = []) {
+    getQalifiedChannel: function (request) {
+        return new Promise((resolve, reject) => {
+            let workflowAction = request.workflowAction;
+            let rawChannels = [];
+            if (workflowAction.position === ENUMS.WorkflowActionPosition.LEAF.key) {
+                rawChannels.push(workflowAction.successChannel);
+            }
+            rawChannels = rawChannels.concat(workflowAction.channels || []);
+            this.evaluateChannels(rawChannels, request).then(qualifiedChannels => {
+                if (qualifiedChannels.length <= 0 && workflowAction.position !== ENUMS.WorkflowActionPosition.END.key) {
+                    reject('Invalid channels configuration: either no channels or not qualified for action: ' + workflowAction.code);
+                } else {
+                    resolve(qualifiedChannels);
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    evaluateChannels: function (rawChannels, options, qualifiedChannels = []) {
         return new Promise((resolve, reject) => {
             if (rawChannels && rawChannels.length > 0) {
                 let channel = rawChannels.shift();
                 SERVICE.DefaultPipelineService.start('executeChannelQualifierPipeline', {
-                    actionResponse: actionResponse,
+                    tenant: request.tenant,
+                    workflowItem: request.workflowItem,
+                    workflowHead: request.workflowHead,
+                    workflowAction: request.workflowAction,
+                    actionResponse: request.actionResponse,
                     channel: channel
                 }, {}).then(success => {
                     if (success) {
                         qualifiedChannels.push(channel);
                     }
-                    this.evaluateChannels(rawChannels, actionResponse, qualifiedChannels).then(qualifiedChannels => {
+                    this.evaluateChannels(rawChannels, options, qualifiedChannels).then(qualifiedChannels => {
                         resolve(qualifiedChannels);
                     }).catch(error => {
                         reject(error);
@@ -102,27 +129,6 @@ module.exports = {
         });
     },
 
-    /**
-     * This function is used to evaluate associated channels and process them
-     * @param {*} request 
-     */
-    processChannels: function (request) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
-                tenant: request.tenant,
-                itemCode: request.itemCode,
-                workflowItem: request.workflowItem,
-                workflowHead: request.workflowHead,
-                workflowAction: request.workflowAction,
-                actionResponse: request.actionResponse,
-            }, {}).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
-
     executeChannels: function (request) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
@@ -156,5 +162,5 @@ module.exports = {
                 reject(error);
             });
         });
-    },
+    }
 };

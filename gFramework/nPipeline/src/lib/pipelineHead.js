@@ -186,17 +186,17 @@ module.exports = function (name, pipelineDefinition) {
                 }
             } else {
                 try {
-                    SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(success => {
-                        response.success = success;
+                    SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, response).then(success => {
+                        //response.success = success;
                         _self.nextSuccess(request, response, this);
                     }).catch(errors => {
-                        if (errors && UTILS.isArray(errors)) {
-                            errors.forEach(element => {
-                                response.errors.push(element);
-                            });
-                        } else {
-                            response.errors.push(errors);
-                        }
+                        // if (errors && UTILS.isArray(errors)) {
+                        //     errors.forEach(element => {
+                        //         response.errors.push(element);
+                        //     });
+                        // } else {
+                        //     response.errors.push(errors);
+                        // }
                         if (_hardStop) {
                             _self.error(request, response);
                         } else {
