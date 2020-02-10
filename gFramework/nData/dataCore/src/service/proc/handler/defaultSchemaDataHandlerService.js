@@ -81,7 +81,7 @@ module.exports = {
     applyValidators: function (request, response, process) {
         this.LOG.debug('Applying validators in models');
         let schemaName = request.header.options.schemaName;
-        let interceptors = SERVICE.DefaultDataConfigurationService.getImportValidatorss(request.tenant, schemaName);
+        let interceptors = SERVICE.DefaultDataConfigurationService.getImportValidators(request.tenant, schemaName);
         if (interceptors && interceptors.import && interceptors.import.length > 0) {
             SERVICE.DefaultValidatorService.executeValidators([].concat(interceptors.import), request, response).then(success => {
                 process.nextSuccess(request, response);

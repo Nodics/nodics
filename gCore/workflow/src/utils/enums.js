@@ -10,21 +10,6 @@
  */
 
 module.exports = {
-    WorkflowActionPosition: {
-        _options: {
-            name: 'WorkflowActionType',
-            separator: '|',
-            endianness: 'BE',
-            ignoreCase: false,
-            freez: false
-        },
-        definition: [
-            'HEAD',
-            'ACTION',
-            'LEAF',
-            'END'
-        ]
-    },
 
     WorkflowItemType: {
         _options: {
@@ -37,35 +22,6 @@ module.exports = {
         definition: [
             'INTERNAL',
             'EXTERNAL'
-        ]
-    },
-
-    WorkflowActionType: {
-        _options: {
-            name: 'WorkflowActionType',
-            separator: '|',
-            endianness: 'BE',
-            ignoreCase: false,
-            freez: false
-        },
-        definition: [
-            'MANUAL',
-            'AUTO',
-            'PARALLEL'
-        ]
-    },
-
-    ChannelTargetType: {
-        _options: {
-            name: 'ChannelTargetType',
-            separator: '|',
-            endianness: 'BE',
-            ignoreCase: false,
-            freez: false
-        },
-        definition: [
-            'HEAD',
-            'ACTION'
         ]
     },
 
@@ -97,6 +53,37 @@ module.exports = {
             'PASS',
             'SUCCESS',
             'ERROR'
+        ]
+    },
+
+    WorkflowActionType: {
+        _options: {
+            name: 'WorkflowActionType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'MANUAL',
+            'AUTO',
+            'PARALLEL'
+        ]
+    },
+
+    WorkflowActionPosition: {
+        _options: {
+            name: 'WorkflowActionPosition',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'HEAD',
+            'ACTION',
+            'LEAF',
+            'END'
         ]
     }
 };

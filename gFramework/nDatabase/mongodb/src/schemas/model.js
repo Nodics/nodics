@@ -56,15 +56,26 @@ module.exports = {
                     }
                 } else {
                     try {
-                        this.insertOne(input.model, {}).then(result => {
-                            if (result.ops && result.ops.length > 0) {
-                                resolve(result.ops[0]);
-                            } else {
-                                reject('Failed to create doc, , Please check your modelSaveOptions');
-                            }
+                        SERVICE.DefaultModelValidatorService.validateMandate(input.model, this.rawSchema).then((success) => {
+                            return SERVICE.DefaultModelValidatorService.validateDataType(input.model, this.rawSchema);
+                        }).then((success) => {
+                            return new Promise((resolve, reject) => {
+                                this.insertOne(input.model, {}).then(result => {
+                                    if (result.ops && result.ops.length > 0) {
+                                        resolve(result.ops[0]);
+                                    } else {
+                                        reject('Failed to create doc, , Please check your modelSaveOptions');
+                                    }
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            });
+                        }).then((success) => {
+                            resolve(success);
                         }).catch(error => {
                             reject(error);
                         });
+
                     } catch (error) {
                         reject(error);
                     }

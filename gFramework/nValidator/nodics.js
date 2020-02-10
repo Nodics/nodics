@@ -41,7 +41,7 @@ module.exports = {
                         SERVICE.DefaultInterceptorService.loadRawInterceptors(interceptors);
                         SERVICE.DefaultDatabaseConfigurationService.setSchemaInterceptors({});
                     }
-                    SERVICE.DefaultValidatorService.loadRawValidators().then(done => {
+                    SERVICE.DefaultValidatorService.loadValidators().then(done => {
                         resolve(done);
                     }).catch(error => {
                         reject(error);

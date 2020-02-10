@@ -10,5 +10,27 @@
  */
 
 module.exports = {
+    validateModelValuesPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
 
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultModelValuesValidatorPipelineService.validateRequest',
+                success: 'validateMandateValues'
+            },
+            validateMandateValues: {
+                type: 'function',
+                handler: 'DefaultModelValuesValidatorPipelineService.validateRequest',
+                success: 'validateDataType'
+            },
+            validateDataType: {
+                type: 'function',
+                handler: 'DefaultModelValuesValidatorPipelineService.validateRequest',
+                success: 'successEnd'
+            }
+        }
+    },
 };

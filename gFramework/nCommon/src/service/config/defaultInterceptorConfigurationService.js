@@ -60,7 +60,20 @@ module.exports = {
         }
     },
 
-    arrangeByTigger: function (interceptors) {
+    arrangeByTigger: function (itemInterceptors) {
+        let interceptorList = {};
+        if (itemInterceptors && !UTILS.isBlank(itemInterceptors)) {
+            Object.keys(itemInterceptors).forEach(intName => {
+                let interceptor = itemInterceptors[intName];
+                interceptor.name = intName;
+                if (!interceptorList[interceptor.trigger]) interceptorList[interceptor.trigger] = [];
+                interceptorList[interceptor.trigger].push(interceptor);
+            });
+        }
+        return interceptorList;
+    },
+
+    arrangeByTigger1: function (interceptors) {
         let interceptorList = {};
         if (interceptors && !UTILS.isBlank(interceptors)) {
             Object.keys(interceptors).forEach(itemName => {
@@ -77,23 +90,19 @@ module.exports = {
         return interceptorList;
     },
 
-    sortInterceptors: function (interceptors) {
+    sortInterceptors: function (itemInterceptors) {
         let interceptorList = {};
-        if (interceptors && !UTILS.isBlank(interceptors)) {
-            Object.keys(interceptors).forEach(itemName => {
-                let itemInterceptors = interceptors[itemName];
-                if (!interceptorList[itemName]) interceptorList[itemName] = {};
-                Object.keys(itemInterceptors).forEach(triggerName => {
-                    let triggers = itemInterceptors[triggerName];
-                    let indexedInterceptors = UTILS.sortObject(triggers, 'index');
-                    let sortedInterceptors = [];
-                    Object.keys(indexedInterceptors).forEach(key => {
-                        if (indexedInterceptors[key] && indexedInterceptors[key].length > 0) {
-                            sortedInterceptors = sortedInterceptors.concat(indexedInterceptors[key]);
-                        }
-                    });
-                    interceptorList[itemName][triggerName] = sortedInterceptors;
+        if (itemInterceptors && !UTILS.isBlank(itemInterceptors)) {
+            Object.keys(itemInterceptors).forEach(triggerName => {
+                let triggers = itemInterceptors[triggerName];
+                let indexedInterceptors = UTILS.sortObject(triggers, 'index');
+                let sortedInterceptors = [];
+                Object.keys(indexedInterceptors).forEach(key => {
+                    if (indexedInterceptors[key] && indexedInterceptors[key].length > 0) {
+                        sortedInterceptors = sortedInterceptors.concat(indexedInterceptors[key]);
+                    }
                 });
+                interceptorList[triggerName] = sortedInterceptors;
             });
         }
         return interceptorList;

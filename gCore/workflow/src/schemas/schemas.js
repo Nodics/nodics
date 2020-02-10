@@ -174,7 +174,7 @@ module.exports = {
                     description: 'Required decision, This decide which channel will process this item'
                 },
                 type: {
-                    enum: [ENUMS.WorkflowStepResponseType.PASS.key, ENUMS.WorkflowStepResponseType.SUCCESS.key, ENUMS.WorkflowStepResponseType.ERROR.key],
+                    enum: [ENUMS.WorkflowActionResponseType.PASS.key, ENUMS.WorkflowActionResponseType.SUCCESS.key, ENUMS.WorkflowActionResponseType.ERROR.key],
                     required: true,
                     description: 'Mandate workflow head state [PASS, SUCCESS, ERROR]'
                 },

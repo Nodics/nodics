@@ -53,6 +53,7 @@ module.exports = {
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
         if (!response.success) response.success = {};
+        if (!response.errors) response.errors = {};
     },
     loadActionResponse: function (request, response, process) {
         SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {
@@ -146,7 +147,8 @@ module.exports = {
             success: true,
             code: 'SUC_SYS_00000',
             msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
-            result: response.success
+            result: response.success,
+            errors: response.error || response.errors
         });
     },
     handleError: function (request, response, process) {
@@ -155,6 +157,7 @@ module.exports = {
             success: false,
             code: 'ERR_SYS_00000',
             msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
+            result: response.success,
             errors: response.error || response.errors
         });
     },
@@ -179,7 +182,12 @@ module.exports = {
                         reject(error);
                     });
                 }).catch(error => {
-                    reject(error);
+                    response.errors[channelRequest.channel.code] = error;
+                    this.walkThroughChannels(itemCodes, request, response).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
                 });
             } else {
                 resolve(true);

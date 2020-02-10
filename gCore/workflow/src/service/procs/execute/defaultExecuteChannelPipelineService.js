@@ -54,6 +54,7 @@ module.exports = {
         this.LOG.debug('Preparing response for action execution');
         if (!response.success) response.success = {};
         if (!response.success[request.channel.target]) response.success[request.channel.target] = [];
+        //if (!response.errors[request.channel.target]) response.errors[request.channel.target] = [];
     },
     loadActionResponse: function (request, response, process) {
         SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {
@@ -70,11 +71,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preChannel), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -87,11 +84,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preChannel), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -103,17 +96,19 @@ module.exports = {
             workflowItem: request.workflowItem,
             actionCode: request.channel.target
         }).then(success => {
-            if (success && success.result && !UTILS.isBlank(success.result)) {
-                Object.keys(success.result).forEach(actionCode => {
-                    let actionOutput = success.result[actionCode];
-                    actionOutput.forEach(output => {
-                        response.success[actionCode].push(output);
-                    });
-                });
-            }
+            // if (success && success.result && !UTILS.isBlank(success.result)) {
+            //     Object.keys(success.result).forEach(actionCode => {
+            //         let actionOutput = success.result[actionCode];
+            //         actionOutput.forEach(output => {
+            //             response.success[actionCode].push(output);
+            //         });
+            //     });
+            // }
+            response.success = success;
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, error);
+            response.errors = error;
+            process.error(request, response);
         });
     },
 
@@ -124,11 +119,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postChannel), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -141,11 +132,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postChannel), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -157,6 +144,7 @@ module.exports = {
             success: true,
             code: 'SUC_SYS_00000',
             msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+            errors: response.error || response.errors,
             result: response.success
         });
     },
@@ -166,7 +154,8 @@ module.exports = {
             success: false,
             code: 'ERR_SYS_00000',
             msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
-            errors: response.error || response.errors
+            errors: response.error || response.errors,
+            result: response.success
         });
     }
 };

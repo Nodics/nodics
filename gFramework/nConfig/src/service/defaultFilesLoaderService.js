@@ -69,7 +69,7 @@ module.exports = {
                         return file.endsWith(filePostFix);
                     }
                 }).forEach(function (file) {
-                    _self.LOG.debug('   Loading file from : ' + file.replace(NODICS.getNodicsHome(), '.'));
+                    _self.LOG.debug('Loading file from : ' + file.replace(NODICS.getNodicsHome(), '.'));
                     callback(file);
                 });
             }

@@ -149,7 +149,7 @@ module.exports = {
 
     executeChannel: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
+            SERVICE.DefaultPipelineService.start('executeChannelPipeline', {
                 tenant: request.tenant,
                 workflowItem: request.workflowItem,
                 workflowHead: request.workflowHead,

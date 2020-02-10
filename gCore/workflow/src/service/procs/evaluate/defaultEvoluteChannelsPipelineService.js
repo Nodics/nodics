@@ -63,6 +63,7 @@ module.exports = {
         this.LOG.debug('Preparing response for action execution');
         if (!response.success) response.success = {};
         if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
+        if (!response.errors[request.workflowAction.code]) response.errors[request.workflowAction.code] = [];
     },
     validateOperation: function (request, response, process) {
         let workflowItem = request.workflowItem;
@@ -101,7 +102,8 @@ module.exports = {
             });
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, error);
+            response.errors[request.workflowAction.code] = error;
+            process.error(request, response);
         });
     },
     updateActionResponse: function (request, response, process) {
@@ -138,13 +140,26 @@ module.exports = {
                             response.success[channelCode].push(success.result[channelCode]);
                         });
                     }
+                    if (success && success.errors && !UTILS.isBlank(success.errors)) {
+                        Object.keys(success.errors).forEach(channelCode => {
+                            response.errors[channelCode].push(success.errors[channelCode]);
+                        });
+                    }
                     process.nextSuccess(request, response);
                 } catch (error) {
                     process.error(request, response, error);
                 }
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
+            }).catch(errResponse => {
+                try {
+                    if (errResponse && errResponse.errors && !UTILS.isBlank(errResponse.errors)) {
+                        Object.keys(errResponse.errors).forEach(channelCode => {
+                            response.errors[channelCode].push(success.result[channelCode]);
+                        });
+                    }
+                    process.error(request, response);
+                } catch (error) {
+                    process.error(request, response, error);
+                }
             });
         } else {
             process.nextSuccess(request, response);

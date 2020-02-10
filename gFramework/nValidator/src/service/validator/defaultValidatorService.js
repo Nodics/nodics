@@ -63,8 +63,8 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 this.loadTenantValidators(NODICS.getActiveTenants()).then(validators => {
-                    this.buildValidators(validators);
-                    resolve(rawValidators);
+                    this.loadRawValidators(validators);
+                    resolve(true);
                 }).catch(error => {
                     reject(error);
                 });

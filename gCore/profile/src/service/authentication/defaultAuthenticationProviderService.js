@@ -134,6 +134,8 @@ module.exports = {
                             code: 'ERR_LIN_00002'
                         });
                     } else {
+                        console.log(options.request.password);
+                        console.log(options.person.password.password);
                         UTILS.compareHash(options.request.password, options.person.password.password).then(match => {
                             if (match) {
                                 state.attempts = 0;
