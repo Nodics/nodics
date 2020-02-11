@@ -90,23 +90,22 @@ module.exports = {
                     if (!validator.item) {
                         validator.item = 'default';
                     }
-                    if (!validators[validator.type]) {
-                        validators[validator.type] = {};
+                    if (!validators[tenant][validator.type]) {
+                        validators[tenant][validator.type] = {};
                     }
-                    if (!validators[validator.type][validator.item]) {
-                        validators[validator.type][validator.item] = {};
+                    if (!validators[tenant][validator.type][validator.item]) {
+                        validators[tenant][validator.type][validator.item] = {};
                     }
-                    if (!validators[validator.type][validator.item][validator.code]) {
-                        validators[validator.type][validator.item][validator.code] = validator;
+                    if (!validators[tenant][validator.type][validator.item][validator.code]) {
+                        validators[tenant][validator.type][validator.item][validator.code] = validator;
                     } else {
-                        _.merge(validators[validator.type][validator.item][validator.code], validator);
+                        _.merge(validators[tenant][validator.type][validator.item][validator.code], validator);
                     }
                 }
             });
-
         });
         SERVICE.DefaultValidatorConfigurationService.setRawValidators(_.merge(
-            SERVICE.DefaultValidatorConfigurationService.setRawValidators(),
+            SERVICE.DefaultValidatorConfigurationService.getRawValidators(),
             validators
         ));
     },

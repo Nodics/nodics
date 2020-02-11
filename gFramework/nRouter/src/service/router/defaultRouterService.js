@@ -187,7 +187,7 @@ module.exports = {
                         definition.moduleName = options.moduleName;
                         definition.prefix = options.schemaName + '_' + routerName;
                         definition.routerName = options.moduleName + '_' + options.schemaName + '_' + routerName;
-                        definition.routerName = routerName.toLowerCase();
+                        definition.routerName = definition.routerName.toLowerCase();
                         definition.cache = _.merge({}, definition.cache || {});
                         let routerLevelCache = CONFIG.get('cache').routerLevelCache;
                         if (routerLevelCache &&

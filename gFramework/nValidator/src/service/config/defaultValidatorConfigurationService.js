@@ -8,7 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-
+const _ = require('lodash');
 module.exports = {
     rawValidators: {},
 
@@ -47,61 +47,51 @@ module.exports = {
     },
 
     prepareItemValidators: function (tenant, itemName, type) {
-        return new Promise((resolve, reject) => {
-            try {
-                if (!tenant || !NODICS.getActiveTenants().includes(tenant)) {
-                    this.LOG.error('Tenant is not valid: ', tenant);
-                    reject('Tenant is not valid: ', tenant);
-                } else {
-                    let typeRawValidators = this.getTenantRawValidators(tenant)[type];
-                    if (!typeRawValidators || UTILS.isBlank(typeRawValidators)) {
-                        return {};
-                    } else {
-                        let itemValidators = _.merge(
-                            _.merge({}, typeValidators.default || {}),
-                            _.merge({}, typeValidators[itemName] || {})
-                        );
-                        itemValidators = this.arrangeByTigger(itemValidators);
-                        let indexedValidators = this.sortInterceptors(itemValidators);
-                        return indexedValidators;
-                    }
-                }
-            } catch (error) {
-                reject(error);
+        if (!tenant || !NODICS.getActiveTenants().includes(tenant)) {
+            this.LOG.error('Tenant is not valid: ', tenant);
+            throw new Error('Tenant is not valid: ' + tenant);
+        } else {
+            let indexedValidators = {};
+            let typeRawValidators = this.getTenantRawValidators(tenant)[type];
+            if (typeRawValidators && !UTILS.isBlank(typeRawValidators)) {
+                let itemValidators = _.merge(
+                    _.merge({}, typeRawValidators.default || {}),
+                    _.merge({}, typeRawValidators[itemName] || {})
+                );
+                itemValidators = this.arrangeByTigger(itemValidators);
+                indexedValidators = this.sortValidators(itemValidators);
             }
-        });
+            return indexedValidators;
+        }
     },
 
-    arrangeByTigger: function (validators) {
+    arrangeByTigger: function (itemValidators) {
         let validatorList = {};
-        if (validators && !UTILS.isBlank(validators)) {
-            _.each(validators, (itemValidators, itemName) => {
-                if (!validatorList[itemName]) validatorList[itemName] = {};
-                _.each(itemValidators, (validator, validatorname) => {
-                    validator.name = validatorname;
-                    if (!validatorList[itemName][validator.trigger]) validatorList[itemName][validator.trigger] = [];
-                    validatorList[itemName][validator.trigger].push(validator);
-                });
+        if (itemValidators && !UTILS.isBlank(itemValidators)) {
+            Object.keys(itemValidators).forEach(validatorName => {
+                let validator = itemValidators[validatorName];
+                validator.name = validatorName;
+                if (!validatorList[validator.trigger]) validatorList[validator.trigger] = [];
+                validatorList[validator.trigger].push(validator);
             });
         }
         return validatorList;
     },
 
-    sortValidators: function (validators) {
+    sortValidators: function (itemValidators) {
         let validatorList = {};
-        if (validators && !UTILS.isBlank(validators)) {
-            _.each(validators, (itemValidators, itemName) => {
-                if (!validatorList[itemName]) validatorList[itemName] = {};
-                _.each(itemValidators, (triggers, triggerName) => {
-                    let indexedValidators = UTILS.sortObject(triggers, 'index');
-                    let sortedValidators = [];
-                    Object.keys(indexedValidators).forEach(key => {
-                        if (indexedValidators[key] && indexedValidators[key].length > 0) {
-                            sortedValidators = sortedValidators.concat(indexedValidators[key]);
-                        }
-                    });
-                    validatorList[itemName][triggerName] = sortedValidators;
+        if (itemValidators && !UTILS.isBlank(itemValidators)) {
+            Object.keys(itemValidators).forEach(triggerName => {
+                let triggers = itemValidators[triggerName];
+                let indexedValidators = UTILS.sortObject(triggers, 'index');
+                let sortedValidators = [];
+                Object.keys(indexedValidators).forEach(key => {
+                    if (indexedValidators[key] && indexedValidators[key].length > 0) {
+                        sortedValidators = sortedValidators.concat(indexedValidators[key]);
+                    }
                 });
+                validatorList[triggerName] = sortedValidators;
+
             });
         }
         return validatorList;
