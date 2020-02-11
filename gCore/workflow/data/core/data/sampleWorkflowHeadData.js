@@ -10,12 +10,14 @@
  */
 
 module.exports = {
-    preSaveWorkflowAction: {
-        type: 'schema',
-        item: 'workflowAction',
-        trigger: 'preSave',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultSaveWorkflowActionInterceptorService.handlePreSave'
+    record0: {
+        code: "sampleWorkflowHead",
+        name: "sampleWorkflowHead",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        handler: 'DefaultSampleWorkflowService.performHeadOperation',
+        userGroups: ['enployeeAdminGroup'],
+        allowedDecisions: ['ONE', 'TWO', 'ERROR'],
+        channels: ['oneChannel', 'twoChannel', 'sampleChannelError']
     }
 };

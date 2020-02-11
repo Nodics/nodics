@@ -259,6 +259,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
+                console.log(error);
                 process.error(request, response, {
                     success: false,
                     code: 'ERR_FIND_00004',

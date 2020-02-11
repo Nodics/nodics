@@ -10,12 +10,17 @@
  */
 
 module.exports = {
-    preSaveWorkflowAction: {
-        type: 'schema',
-        item: 'workflowAction',
-        trigger: 'preSave',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultSaveWorkflowActionInterceptorService.handlePreSave'
+    workflow: {
+        defaultWorkflowChannelHeader: {
+            options: {
+                enabled: true,
+                schemaName: 'workflowChannel',
+                operation: 'save',
+                dataFilePrefix: 'sampleWorkflowChannelData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
     }
 };

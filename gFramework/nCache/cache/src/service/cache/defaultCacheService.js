@@ -113,7 +113,7 @@ module.exports = {
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
-                Promise.reject({
+                return Promise.reject({
                     success: false,
                     code: 'ERR_CACHE_00010',
                     msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName

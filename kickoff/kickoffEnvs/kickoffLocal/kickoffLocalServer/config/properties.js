@@ -24,7 +24,7 @@ module.exports = {
     },
 
     log: {
-        level: 'info',
+        level: 'debug',
         //logLevelDefaultRequestHandlerPipelineService: 'info'
     },
 
