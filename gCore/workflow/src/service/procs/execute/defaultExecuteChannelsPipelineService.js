@@ -54,6 +54,7 @@ module.exports = {
         this.LOG.debug('Preparing response for action execution');
         if (!response.success) response.success = {};
         if (!response.errors) response.errors = {};
+        process.nextSuccess(request, response);
     },
     loadActionResponse: function (request, response, process) {
         SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {

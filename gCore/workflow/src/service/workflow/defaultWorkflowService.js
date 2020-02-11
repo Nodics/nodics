@@ -40,15 +40,17 @@ module.exports = {
      * @param {*} request 
      */
     initItem: function (request) {
-        SERVICE.DefaultPipelineService.start('initWorkflowItemPipeline', {
-            tenant: request.tenant,
-            itemType: request.itemType,
-            item: request.item,
-            workflowCode: request.workflowCode
-        }, {}).then(success => {
-            resolve(success);
-        }).catch(error => {
-            reject(error);
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('initWorkflowItemPipeline', {
+                tenant: request.tenant,
+                itemType: request.itemType,
+                item: request.item,
+                workflowCode: request.workflowCode
+            }, {}).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 
@@ -57,15 +59,17 @@ module.exports = {
      * @param {*} request 
      */
     nextAction: function (request) {
-        SERVICE.DefaultPipelineService.start('nextWorkflowActionPipeline', {
-            tenant: request.tenant,
-            itemCode: request.itemCode,
-            workflowItem: request.workflowItem,
-            actionCode: request.actionCode,
-        }, {}).then(success => {
-            resolve(success);
-        }).catch(error => {
-            reject(error);
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('nextWorkflowActionPipeline', {
+                tenant: request.tenant,
+                itemCode: request.itemCode,
+                workflowItem: request.workflowItem,
+                actionCode: request.actionCode,
+            }, {}).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 

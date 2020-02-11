@@ -72,21 +72,30 @@ module.exports = {
 
     applyDefaultValues: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
-        let defaultValues = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(request.moduleName, request.tenant, request.indexName).defaultValues;
+        let defaultValues = request.schemaModel.rawSchema.schemaOptions[request.tenant].defaultValues;
         if (defaultValues && !UTILS.isBlank(defaultValues)) {
             _.each(defaultValues, (value, property) => {
-                if (!request.model[property]) {
-                    try {
-                        let serviceName = value.substring(0, value.indexOf('.'));
-                        let functionName = value.substring(value.indexOf('.') + 1, value.length);
-                        request.model[property] = SERVICE[serviceName][functionName](request.model);
-                    } catch (error) {
-                        request.model[property] = value;
-                    }
-                }
+                request.model = this.resolveDefaultProperty(property.split('.'), request.model, value);
             });
         }
         process.nextSuccess(request, response);
+    },
+
+    resolveDefaultProperty: function (properties, model, value) {
+        if (properties && properties.length > 1) {
+            let prop = properties.shift();
+            if (!model[prop]) model[prop] = {};
+            model[prop] = this.resolveDefaultProperty(properties, model[prop], value);
+        } else if (properties && properties.length === 1 && !model[properties[0]]) {
+            try {
+                let serviceName = value.substring(0, value.indexOf('.'));
+                let functionName = value.substring(value.indexOf('.') + 1, value.length);
+                model[properties[0]] = SERVICE[serviceName][functionName](model);
+            } catch (error) {
+                model[properties[0]] = value;
+            }
+        }
+        return model;
     },
 
     removeVirtualProperties: function (request, response, process) {

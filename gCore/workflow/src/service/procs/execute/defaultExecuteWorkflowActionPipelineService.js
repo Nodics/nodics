@@ -67,6 +67,7 @@ module.exports = {
         this.LOG.debug('Preparing response for action execution');
         if (!response.success) response.success = {};
         if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
+        process.nextSuccess(request, response);
     },
     preActionInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowAction.code);

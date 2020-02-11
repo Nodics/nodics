@@ -55,6 +55,7 @@ module.exports = {
         if (!response.success) response.success = {};
         if (!response.success[request.channel.target]) response.success[request.channel.target] = [];
         //if (!response.errors[request.channel.target]) response.errors[request.channel.target] = [];
+        process.nextSuccess(request, response);
     },
     loadActionResponse: function (request, response, process) {
         SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {

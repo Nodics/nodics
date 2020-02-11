@@ -51,6 +51,7 @@ module.exports = {
         this.LOG.debug('Preparing response for iten assignmnet');
         if (!response.success) response.success = {};
         if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
+        process.nextSuccess(request, response);
     },
     updateWorkflowItem: function (request, response, process) {
         this.LOG.debug('Updating workflow item');

@@ -47,7 +47,7 @@ module.exports = {
                 if (response.success && response.result.length > 0) {
                     resolve(response.result[0]);
                 } else {
-                    reject();
+                    resolve();
                 }
             }).catch(error => {
                 reject(error);

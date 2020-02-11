@@ -168,11 +168,11 @@ module.exports = {
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultInitWorkflowItemPipelineService.handleSucessEnd'
+                handler: 'DefaultInitWorkflowItemPipelineService.successEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultInitWorkflowItemPipelineService.handleErrorEnd'
+                handler: 'DefaultInitWorkflowItemPipelineService.handleError'
             }
         }
     },
@@ -200,11 +200,11 @@ module.exports = {
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultNextWorkflowActionPipelineService.handleSucessEnd'
+                handler: 'DefaultNextWorkflowActionPipelineService.successEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultNextWorkflowActionPipelineService.handleErrorEnd'
+                handler: 'DefaultNextWorkflowActionPipelineService.handleError'
             }
         }
     },
@@ -350,11 +350,11 @@ module.exports = {
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultExecuteWorkflowActionPipelineService.handleSucessEnd'
+                handler: 'DefaultExecuteWorkflowActionPipelineService.successEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultExecuteWorkflowActionPipelineService.handleErrorEnd'
+                handler: 'DefaultExecuteWorkflowActionPipelineService.handleError'
             }
         }
     },
@@ -445,11 +445,11 @@ module.exports = {
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultEvoluteChannelsPipelineService.handleSucessEnd'
+                handler: 'DefaultEvoluteChannelsPipelineService.successEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultEvoluteChannelsPipelineService.handleErrorEnd'
+                handler: 'DefaultEvoluteChannelsPipelineService.handleError'
             }
         }
     },
@@ -541,11 +541,11 @@ module.exports = {
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultExecuteChannelsPipelineService.handleSucessEnd'
+                handler: 'DefaultExecuteChannelsPipelineService.successEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultExecuteChannelsPipelineService.handleErrorEnd'
+                handler: 'DefaultExecuteChannelsPipelineService.handleError'
             }
         }
     },
@@ -603,11 +603,11 @@ module.exports = {
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultExecuteChannelPipelineService.handleSucessEnd'
+                handler: 'DefaultExecuteChannelPipelineService.successEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultExecuteChannelPipelineService.handleErrorEnd'
+                handler: 'DefaultExecuteChannelPipelineService.handleError'
             }
         }
     },

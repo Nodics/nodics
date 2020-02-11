@@ -64,6 +64,7 @@ module.exports = {
         if (!response.success) response.success = {};
         if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
         if (!response.errors[request.workflowAction.code]) response.errors[request.workflowAction.code] = [];
+        process.nextSuccess(request, response);
     },
     validateOperation: function (request, response, process) {
         let workflowItem = request.workflowItem;

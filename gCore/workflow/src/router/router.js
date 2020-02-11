@@ -22,7 +22,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'put',
-                    url: 'http://host:port/nodics/workflow/item/init',
+                    url: 'http://host:port/nodics/workflow/init',
                     body: {
                         workflowCode: 'Workflow code, these items needs to be associated',
                         itemType: 'Type of item, is it INTERNAL or EXTERNAL',
