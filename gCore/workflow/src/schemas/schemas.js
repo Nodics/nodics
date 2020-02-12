@@ -66,9 +66,9 @@ module.exports = {
                     description: 'Mandate workflow head code'
                 },
                 'activeHead.state': {
-                    enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key],
+                    enum: [ENUMS.WorkflowActionState.NEW.key, ENUMS.WorkflowActionState.PROCESSING.key, ENUMS.WorkflowActionState.FINISHED.key, ENUMS.WorkflowActionState.ERROR.key],
                     required: true,
-                    default: ENUMS.WorkflowItemState.NEW.key,
+                    default: ENUMS.WorkflowActionState.NEW.key,
                     description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
                 },
                 actions: {
@@ -86,9 +86,9 @@ module.exports = {
                     description: 'Optional workflow action code'
                 },
                 'activeAction.state': {
-                    enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key],
+                    enum: [ENUMS.WorkflowActionState.NEW.key, ENUMS.WorkflowActionState.PROCESSING.key, ENUMS.WorkflowActionState.FINISHED.key, ENUMS.WorkflowActionState.ERROR.key],
                     required: true,
-                    default: ENUMS.WorkflowItemState.NEW.key,
+                    default: ENUMS.WorkflowActionState.NEW.key,
                     description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
                 },
                 lastAction: {
@@ -101,10 +101,16 @@ module.exports = {
                     description: 'Optional workflow action code'
                 },
                 'lastAction.state': {
-                    enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key],
+                    enum: [ENUMS.WorkflowActionState.NEW.key, ENUMS.WorkflowActionState.PROCESSING.key, ENUMS.WorkflowActionState.FINISHED.key, ENUMS.WorkflowActionState.ERROR.key],
+                    required: false,
+                    default: ENUMS.WorkflowActionState.NEW.key,
+                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
+                },
+                state: {
+                    enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key, ENUMS.WorkflowItemState.FATAL.key],
                     required: false,
                     default: ENUMS.WorkflowItemState.NEW.key,
-                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
+                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, FATAL]'
                 },
                 error: {
                     type: 'object',

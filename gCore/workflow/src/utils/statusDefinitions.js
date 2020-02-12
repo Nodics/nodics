@@ -12,22 +12,22 @@
 module.exports = {
 
     // SUCCESS STATUS Cache
-    SUC_CRON_00000: {
-        code: '220000',
+    SUC_WF_00000: {
+        code: '230000',
         description: 'Successfully processed',
         message: 'Successfully processed'
     },
 
-    SUC_CRON_00001: {
-        code: '220001',
-        description: 'Job can not be run in this node',
-        message: 'Job can not be run in this node'
-    },
-
     //ERROR STATUS Cache
-    ERR_CRON_00000: {
-        code: '220000',
+    ERR_WF_00000: {
+        code: '210000',
         description: 'Facing some issues, please try after some time',
         message: 'Facing some issues, please try after some time'
+    },
+
+    ERR_WF_00001: {
+        code: '210001',
+        description: 'This is unhandled error',
+        message: 'This is unhandled error'
     }
 };

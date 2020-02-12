@@ -16,7 +16,7 @@ module.exports = {
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.END.key,
-        handler: 'DefaultWorkflowActionService.handleSuccessProcess',
+        handler: 'DefaultWorkflowSuccessActionService.handleSuccessProcess',
         userGroups: ['enployeeAdminGroup'],
         isLeafAction: true
     },
@@ -27,7 +27,7 @@ module.exports = {
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.END.key,
-        handler: 'DefaultWorkflowActionService.handleErrorProcess',
+        handler: 'DefaultWorkflowErrorActionService.handleErrorProcess',
         userGroups: ['enployeeAdminGroup'],
         isLeafAction: true
     }

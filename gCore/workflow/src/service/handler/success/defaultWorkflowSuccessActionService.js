@@ -35,20 +35,10 @@ module.exports = {
         });
     },
 
-    getWorkflowAction: function (actionCode, tenant) {
+    handleSuccessProcess: function (request, response) {
         return new Promise((resolve, reject) => {
-            this.LOG.debug('Loading workflow action: ' + actionCode);
-            this.get({
-                tenant: tenant,
-                query: {
-                    code: actionCode
-                }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    resolve(response.result[0]);
-                } else {
-                    resolve();
-                }
+            SERVICE.DefaultPipelineService.start('handleWorkflowSuccessPipeline', request, response).then(success => {
+                reject(success);
             }).catch(error => {
                 reject(error);
             });

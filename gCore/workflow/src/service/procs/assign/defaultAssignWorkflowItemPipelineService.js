@@ -129,8 +129,8 @@ module.exports = {
         });
     },
     performAction: function (request, response, process) {
-        this.LOG.debug('Triggering action for auto workflow head');
         if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
+            this.LOG.debug('Triggering action for auto workflow head');
             SERVICE.DefaultWorkflowService.performAction({
                 tenant: request.tenant,
                 workflowHead: request.workflowHead,
@@ -151,7 +151,8 @@ module.exports = {
                     process.error(request, response, error);
                 }
             }).catch(error => {
-                process.error(request, response, error);
+                response.errors = error.errors || error;
+                process.error(request, response);
             });
         } else {
             process.nextSuccess(request, response);

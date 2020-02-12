@@ -9,8 +9,6 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
 
     /**
@@ -32,6 +30,16 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
+        });
+    },
+
+    handleErrorProcess: function (request) {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('handleWorkflowErrorsPipeline', request, {}).then(success => {
+                reject(success);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };

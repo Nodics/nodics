@@ -621,11 +621,6 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultWorkflowSuccessPipelineService.validateRequest',
-                success: 'executeSuccessHandlers'
-            },
-            executeSuccessHandlers: {
-                type: 'function',
-                handler: 'DefaultWorkflowSuccessPipelineService.executeSuccessHandlers',
                 success: 'createSuccessItem'
             },
             createSuccessItem: {
@@ -636,7 +631,20 @@ module.exports = {
             updateArchivePool: {
                 type: 'function',
                 handler: 'DefaultWorkflowSuccessPipelineService.updateArchivePool',
+                success: 'updateItemPool'
+            },
+            updateItemPool: {
+                type: 'function',
+                handler: 'DefaultWorkflowSuccessPipelineService.updateItemPool',
                 success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultWorkflowSuccessPipelineService.successEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultWorkflowSuccessPipelineService.handleError'
             }
         }
     },
@@ -650,11 +658,6 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultWorkflowErrorPipelineService.validateRequest',
-                success: 'executeErrorHandlers'
-            },
-            executeErrorHandlers: {
-                type: 'function',
-                handler: 'DefaultWorkflowErrorPipelineService.executeErrorHandlers',
                 success: 'createErrorItem'
             },
             createErrorItem: {
@@ -665,7 +668,20 @@ module.exports = {
             updateErrorPool: {
                 type: 'function',
                 handler: 'DefaultWorkflowErrorPipelineService.updateErrorPool',
+                success: 'updateItemPool'
+            },
+            updateItemPool: {
+                type: 'function',
+                handler: 'DefaultWorkflowErrorPipelineService.updateItemPool',
                 success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultWorkflowErrorPipelineService.successEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultWorkflowErrorPipelineService.handleError'
             }
         }
     }

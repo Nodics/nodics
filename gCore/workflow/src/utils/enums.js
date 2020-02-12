@@ -25,6 +25,22 @@ module.exports = {
         ]
     },
 
+    WorkflowActionState: {
+        _options: {
+            name: 'WorkflowActionState',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'NEW',
+            'PROCESSING',
+            'FINISHED',
+            'ERROR'
+        ]
+    },
+
     WorkflowItemState: {
         _options: {
             name: 'WorkflowItemState',
@@ -37,7 +53,8 @@ module.exports = {
             'NEW',
             'PROCESSING',
             'FINISHED',
-            'ERROR'
+            'ERROR',
+            'FATAL'
         ]
     },
 

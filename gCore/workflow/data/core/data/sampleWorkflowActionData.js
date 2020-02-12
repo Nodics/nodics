@@ -18,8 +18,7 @@ module.exports = {
         position: ENUMS.WorkflowActionPosition.LEAF.key,
         handler: 'DefaultSampleWorkflowService.performErrorAction',
         userGroups: ['enployeeAdminGroup'],
-        allowedDecisions: ['ERROR'],
-        channels: ['defaultErrorChannel']
+        allowedDecisions: ['ERROR']
     },
 
     record1: {
@@ -30,8 +29,7 @@ module.exports = {
         position: ENUMS.WorkflowActionPosition.LEAF.key,
         handler: 'DefaultSampleWorkflowService.performActionSuccess',
         userGroups: ['enployeeAdminGroup'],
-        allowedDecisions: ['SUCSESS', 'ERROR'],
-        channels: ['defaultSuccessChannel', 'defaultErrorChannel']
+        allowedDecisions: ['SUCSESS', 'ERROR']
     },
 
     record2: {

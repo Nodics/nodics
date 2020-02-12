@@ -35,44 +35,58 @@ module.exports = {
 
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request for error handler');
-        process.nextSuccess(request, response);
-    },
-
-    executeSuccessHandlers: function (request, response, process) {
-        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowCode);
-        if (interceptors && interceptors.error) {
-            this.LOG.debug('Applying error interceptors for workflow: ' + request.workflowCode);
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.error), request, response).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
+        this.LOG.debug('Validating request for default success handler');
+        if (!request.tenant) {
+            process.error(request, response, 'Invalid request, Tenant can not be null or empty');
+        } else if (!request.workflowItem) {
+            process.error(request, response, 'Invalid request, Workflow item can not be null or empty');
         } else {
             process.nextSuccess(request, response);
         }
     },
-
     createSuccessItem: function (request, response, process) {
-        this.LOG.debug('Creating error item');
-        response.errorItem = request.workflowItem;
-        response.errorItem.error = {
-            code: response.error.code,
-            message: response.error.message || response.error.msg,
-            stackTrace: response.error.stackTrace
-        };
+        this.LOG.debug('Creating success item');
+        response.successItem = _.merge({}, request.workflowItem);
+        delete response.successItem._id;
         process.nextSuccess(request, response);
     },
-
     updateArchivePool: function (request, response, process) {
-        this.LOG.debug('updating error pool');
-        SERVICE.DefaultWorkflowErrorItemService.save({
+        this.LOG.debug('updating archive pool');
+        SERVICE.DefaultWorkflowArchivedItemService.save({
             tenant: request.tenant,
-            models: [request.errorItem]
+            models: [response.successItem]
         }).then(success => {
+            this.LOG.info('Item: has been moved to archived pool successfully');
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
+        });
+    },
+    updateItemPool: function (request, response, process) {
+        this.LOG.debug('updating item pool');
+        SERVICE.DefaultWorkflowItemService.removeById([request.workflowItem._id], request.tenant).then(success => {
+            this.LOG.info('Item: has been removed from item pool successfully');
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+    successEnd: function (request, response, process) {
+        this.LOG.debug('Request has been processed successfully');
+        process.resolve({
+            success: true,
+            code: 'SUC_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+            result: response.success
+        });
+    },
+    handleError: function (request, response, process) {
+        this.LOG.error('Request has been processed and got errors');
+        process.reject({
+            success: false,
+            code: 'ERR_SYS_00000',
+            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
+            errors: response.error || response.errors
         });
     }
 };
