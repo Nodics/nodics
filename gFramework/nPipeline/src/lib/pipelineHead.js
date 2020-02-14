@@ -122,22 +122,20 @@ module.exports = function (name, pipelineDefinition) {
     };
 
     this.error = function (request, response, error) {
-        if (error) {
-            if (UTILS.isArray(error)) {
-                error.forEach(element => {
-                    response.errors.push(element);
-                });
+        if (error instanceof Error) {
+            this.LOG.error(error);
+            response.errors.push(error);
+            _preNode = _currentNode;
+            if (_currentNode.getError() && _nodeList[_currentNode.getError()]) {
+                _currentNode = _nodeList[_currentNode.getError()];
             } else {
-                response.errors.push(error);
+                _currentNode = _handleError;
             }
-        }
-        _preNode = _currentNode;
-        if (_currentNode.getError() && _nodeList[_currentNode.getError()]) {
-            _currentNode = _nodeList[_currentNode.getError()];
+            this.next(request, response);
         } else {
-            _currentNode = _handleError;
+            this.LOG.error('Invalid error object', error);
+            throw new Error('Invalid error object');
         }
-        this.next(request, response);
     };
 
     this.resolve = function (response) {
@@ -187,16 +185,8 @@ module.exports = function (name, pipelineDefinition) {
             } else {
                 try {
                     SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, response).then(success => {
-                        //response.success = success;
                         _self.nextSuccess(request, response, this);
                     }).catch(errors => {
-                        // if (errors && UTILS.isArray(errors)) {
-                        //     errors.forEach(element => {
-                        //         response.errors.push(element);
-                        //     });
-                        // } else {
-                        //     response.errors.push(errors);
-                        // }
                         if (_hardStop) {
                             _self.error(request, response);
                         } else {
@@ -204,12 +194,7 @@ module.exports = function (name, pipelineDefinition) {
                         }
                     });
                 } catch (error) {
-                    _self.LOG.error(error);
-                    _self.error(request, response, {
-                        success: false,
-                        code: 'ERR_PIPE_00000',
-                        error: error.toString()
-                    });
+                    _self.error(request, response, error);
                 }
             }
         }
