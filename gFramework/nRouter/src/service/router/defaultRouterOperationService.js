@@ -64,7 +64,7 @@ module.exports = {
         try {
             routerDef = NODICS.getRouter(routerDef.routerName, routerDef.moduleName);
             if (routerDef.active) {
-                SERVICE.DefaultRequestHandlerPipelineService.startRequestHandlerPipeline(req, res, routerDef);
+                SERVICE.DefaultRequestHandlerService.startRequestHandler(req, res, routerDef);
             } else {
                 res.json({
                     success: false,

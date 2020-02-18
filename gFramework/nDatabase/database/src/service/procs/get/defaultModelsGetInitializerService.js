@@ -37,28 +37,19 @@ module.exports = {
         let options = request.options;
         if (!request.schemaModel) {
             process.error(request, response, {
-                success: false,
                 code: 'ERR_FIND_00001',
-                msg: 'Model not available within tenant: ' + request.tenant
+                message: 'Model not available within tenant: ' + request.tenant
             });
-        } else if (options && options.projection) {
-            if (!UTILS.isObject(options.projection)) {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00001'
-                });
-            } else {
-                process.nextSuccess(request, response);
-            }
-        } else if (options && options.sort) {
-            if (!UTILS.isObject(options.sort)) {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00002'
-                });
-            } else {
-                process.nextSuccess(request, response);
-            }
+        } else if (options && options.projection && !UTILS.isObject(options.projection)) {
+            process.error(request, response, {
+                code: 'ERR_FIND_00001',
+                message: 'Invalid projection object'
+            });
+        } else if (options && options.sort && !UTILS.isObject(options.sort)) {
+            process.error(request, response, {
+                code: 'ERR_FIND_00002',
+                message: 'Invalid sort object'
+            });
         } else {
             process.nextSuccess(request, response);
         }
@@ -112,7 +103,7 @@ module.exports = {
                 if (error.code === 'ERR_CACHE_00001') {
                     process.nextSuccess(request, response);
                 } else if (error.code === 'ERR_CACHE_00010') {
-                    this.LOG.warn(error.msg);
+                    this.LOG.warn(error.toJson(false));
                     process.nextSuccess(request, response);
                 } else {
                     process.error(request, response, error);
@@ -131,11 +122,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -150,12 +137,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.error = {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error
-                };
-                process.error(request, response);
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -173,11 +155,7 @@ module.exports = {
             };
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_FIND_00000',
-                error: error
-            });
+            process.error(request, response, error);
         });
     },
 
@@ -192,11 +170,7 @@ module.exports = {
             this.populateModels(request, response, response.success.result, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00003',
-                    error: error
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -222,12 +196,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.error = {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error
-                };
-                process.error(request, response);
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -361,26 +330,5 @@ module.exports = {
                 }
             }
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

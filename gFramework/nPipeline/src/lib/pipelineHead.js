@@ -122,20 +122,21 @@ module.exports = function (name, pipelineDefinition) {
     };
 
     this.error = function (request, response, error) {
-        if (error instanceof Error) {
-            this.LOG.error(error);
-            response.errors.push(error);
-            _preNode = _currentNode;
-            if (_currentNode.getError() && _nodeList[_currentNode.getError()]) {
-                _currentNode = _nodeList[_currentNode.getError()];
-            } else {
-                _currentNode = _handleError;
-            }
-            this.next(request, response);
-        } else {
-            this.LOG.error('Invalid error object', error);
-            throw new Error('Invalid error object');
+        if (error && !(error instanceof CLASSES.NodicsError)) {
+            error = new CLASSES.NodicsError(error);
         }
+        if (!response.error) {
+            response.error = error;
+        } else {
+            response.error.add(error);
+        }
+        _preNode = _currentNode;
+        if (_currentNode.getError() && _nodeList[_currentNode.getError()]) {
+            _currentNode = _nodeList[_currentNode.getError()];
+        } else {
+            _currentNode = _handleError;
+        }
+        this.next(request, response);
     };
 
     this.resolve = function (response) {
@@ -171,22 +172,27 @@ module.exports = function (name, pipelineDefinition) {
                         SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response, this);
                     } catch (err) {
                         _self.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
-                        throw err;
+                        throw new CLASSES.NodicsError(err, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
                     }
                 } catch (error) {
-                    _self.LOG.error(_currentNode.getHandler());
-                    _self.LOG.error(error);
-                    _self.error(request, response, {
-                        success: false,
-                        code: 'ERR_PIPE_00000',
-                        error: error.toString()
-                    });
+                    _self.error(request, response, new CLASSES.NodicsError(error));
                 }
             } else {
                 try {
-                    SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, response).then(success => {
+                    SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(result => {
+                        response.success = _.merge(response.success || {}, result.success);
+                        if (!response.error) {
+                            response.error = result.error;
+                        } else {
+                            response.error.add(result.error);
+                        }
                         _self.nextSuccess(request, response, this);
-                    }).catch(errors => {
+                    }).catch(error => {
+                        if (!response.error) {
+                            response.error = error;
+                        } else {
+                            response.error.add(error);
+                        }
                         if (_hardStop) {
                             _self.error(request, response);
                         } else {
@@ -194,7 +200,7 @@ module.exports = function (name, pipelineDefinition) {
                         }
                     });
                 } catch (error) {
-                    _self.error(request, response, error);
+                    _self.error(request, response, new CLASSES.NodicsError(error));
                 }
             }
         }

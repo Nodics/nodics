@@ -80,17 +80,29 @@ module.exports = {
     },
 
     handleSucessEnd: function (request, response, process) {
-        this.LOG.warn('This is default success handler, will not perform anything ');
+        this.LOG.debug('Pipeline: ' + process.getPipelineName() + ' with Id: ' + process.getPipelineId() + ' processed successfully');
+        // let result = {
+        //     success: response.success
+        // };
+        // let error = response.error;
+        // if (response.error) {
+        //     if (response.error instanceof Error && !(response.error instanceof CLASSES.NodicsError)) {
+        //         result.error = new CLASSES.NodicsError(error);
+        //     } else {
+        //         result.error = error;
+        //     }
+
+        // }
         process.resolve(response.success);
     },
 
     handleErrorEnd: function (request, response, process) {
-        this.LOG.warn('This is default error handler, will not perform anything ');
-        if (response.errors && response.errors.length > 0) {
-            process.reject(response.errors);
-        } else {
-            process.reject(response.error);
+        this.LOG.error('Pipeline: ' + process.getPipelineName() + ' with Id: ' + process.getPipelineId() + ' has error');
+        let error = response.error;
+        if (error instanceof Error && !(error instanceof CLASSES.NodicsError)) {
+            error = new CLASSES.NodicsError(error);
         }
+        process.reject(error);
     },
 
     start: function (name, request, response) {
@@ -105,13 +117,17 @@ module.exports = {
                     pipeline.buildPipeline();
                     pipeline.start(id, request, response, resolve, reject);
                 } catch (err) {
-                    this.LOG.error(err);
-                    reject('Error while creating pipeline: ' + id + ' - ' + err.toString());
+                    reject(new CLASSES.NodicsError(err));
                 }
             } else {
-                this.LOG.error('Error while creating pipeline, Please provide a valid pipeline name');
-                this.LOG.error(name);
-                reject('Error while creating pipeline, Please provide a valid pipeline name');
+                reject(new CLASSES.NodicsError({
+                    code: 'ERR_PIPE_00000',
+                    message: 'Error while creating pipeline, Please provide a valid pipeline name',
+                    metadata: {
+                        found: 'Pipeline name: ' + name,
+                        required: 'A valid pipeline name'
+                    }
+                }));
             }
         });
     }

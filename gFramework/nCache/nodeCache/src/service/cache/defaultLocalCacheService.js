@@ -51,11 +51,7 @@ module.exports = {
                     result: options.value
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     },
@@ -73,38 +69,13 @@ module.exports = {
                         result: value
                     });
                 } else {
-                    reject({
-                        success: false,
+                    reject(new CLASSES.CacheError({
                         code: 'ERR_CACHE_00001',
-                        error: value
-                    });
+                        message: 'Could not found any value for key: ' + key
+                    }));
                 }
-                // options.channel.client.get(key, (error, value) => {
-                //     if (error) {
-                //         reject({
-                //             success: false,
-                //             code: 'ERR_CACHE_00000',
-                //             error: error
-                //         });
-                //     } else if (value) {
-                //         resolve({
-                //             success: true,
-                //             code: 'SUC_CACHE_00000',
-                //             result: value
-                //         });
-                //     } else {
-                //         reject({
-                //             success: false,
-                //             code: 'ERR_CACHE_00001'
-                //         });
-                //     }
-                // });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
 
         });
@@ -149,11 +120,7 @@ module.exports = {
                     }
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     },
@@ -175,11 +142,7 @@ module.exports = {
                     result: tmpKeys
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     }

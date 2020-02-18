@@ -45,18 +45,13 @@ module.exports = {
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
-                return Promise.reject({
-                    success: false,
+                return Promise.reject(new CLASSES.CacheError({
                     code: 'ERR_CACHE_00010',
                     msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
-                });
+                }));
             }
         } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_CACHE_00000',
-                error: error
-            });
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while putting value is cache'));
         }
     },
 
@@ -71,18 +66,13 @@ module.exports = {
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
-                return Promise.reject({
-                    success: false,
+                return Promise.reject(new CLASSES.CacheError({
                     code: 'ERR_CACHE_00010',
                     msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
-                });
+                }));
             }
         } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_CACHE_00000',
-                error: error
-            });
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while getting value is cache'));
         }
     },
 
@@ -94,11 +84,7 @@ module.exports = {
                 return this.flushByPrefix(options);
             }
         } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_CACHE_00000',
-                error: error
-            });
+            return Promise.reject(new CLASSES.CacheError(error));
         }
     },
 
@@ -113,18 +99,13 @@ module.exports = {
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
-                return Promise.reject({
-                    success: false,
+                return Promise.reject(new CLASSES.CacheError({
                     code: 'ERR_CACHE_00010',
                     msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
-                });
+                }));
             }
         } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_CACHE_00000',
-                error: error
-            });
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while getting value is cache'));
         }
     },
 
@@ -139,18 +120,13 @@ module.exports = {
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
-                Promise.reject({
-                    success: false,
+                return Promise.reject(new CLASSES.CacheError({
                     code: 'ERR_CACHE_00010',
-                    msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
-                });
+                    message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
+                }));
             }
         } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_CACHE_00000',
-                error: error
-            });
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while getting value is cache'));
         }
     },
 
@@ -197,18 +173,10 @@ module.exports = {
                         result: success
                     });
                 }).catch(error => {
-                    reject({
-                        success: false,
-                        code: 'ERR_CACHE_00000',
-                        msg: 'Facing issue while updating router cache : ' + error.toString()
-                    });
+                    reject(new CLASSES.CacheError(error, 'Facing issue while updating router cache'));
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    msg: 'Facing issue while updating router cache : ' + error.toString()
-                });
+                reject(new CLASSES.CacheError(error, 'Facing issue while updating router cache'));
             }
         });
     },
@@ -223,18 +191,10 @@ module.exports = {
                         result: success
                     });
                 }).catch(error => {
-                    reject({
-                        success: false,
-                        code: 'ERR_CACHE_00000',
-                        msg: 'Facing issue while updating item cache : ' + error.toString()
-                    });
+                    reject(new CLASSES.CacheError(error, 'Facing issue while updating item cache'));
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    msg: 'Facing issue while updating item cache : ' + error.toString()
-                });
+                reject(new CLASSES.CacheError(error, 'Facing issue while updating item cache'));
             }
         });
     },
@@ -261,11 +221,7 @@ module.exports = {
                 });
 
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    msg: 'Facing issue while publishing update cache event : ' + error.toString()
-                });
+                reject(new CLASSES.CacheError(error, 'Facing issue while publishing update cache event'));
             }
         });
     },
@@ -302,19 +258,14 @@ module.exports = {
                         if (request.config.schemaName) {
                             msg = msg + ' and schemaName: ' + request.config.schemaName;
                         }
-                        reject({
-                            success: false,
+                        reject(new CLASSES.CacheError({
                             code: 'ERR_CACHE_00007',
-                            msg: msg
-                        });
+                            message: msg
+                        }));
                     }
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    msg: 'Facing issue while updating router cache : ' + error.toString()
-                });
+                reject(new CLASSES.CacheError(error, 'Facing issue while updating router cache'));
             }
         });
     },
@@ -323,15 +274,13 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 if (UTILS.isBlank(request.config)) {
-                    reject({
-                        success: false,
+                    reject(new CLASSES.CacheError({
                         code: 'ERR_CACHE_00005'
-                    });
+                    }));
                 } else if (!request.config.schemaName) {
-                    reject({
-                        success: false,
-                        code: 'ERR_CACHE_00008'
-                    });
+                    reject(new CLASSES.CacheError({
+                        code: 'ERR_CACHE_00005'
+                    }));
                 } else {
                     let modelName = UTILS.createModelName(request.config.schemaName);
                     try {
@@ -344,20 +293,11 @@ module.exports = {
                             }
                         });
                     } catch (error) {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00007',
-                            msg: error.toString()
-                        });
+                        reject(new CLASSES.CacheError(error));
                     }
-
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    msg: 'Facing issue while updating item cache : ' + error.toString()
-                });
+                reject(new CLASSES.CacheError(error, 'Facing issue while updating item cache'));
             }
         });
     },

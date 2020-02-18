@@ -9,11 +9,9 @@
 
  */
 
-module.exports = {
-    returnErrorStack: true,
-    externalDataLocation: NODICS.getServerPath() + '/data',
-
-    defaultErrorCodes: {
-        NodicsError: 'ERR_SYS_00000'
+module.exports = class CacheError extends CLASSES.NodicsError {
+    constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').CronJobError) {
+        super(error, message, defaultCode);
+        super.name = 'CronJobError';
     }
 };

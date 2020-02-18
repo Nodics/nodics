@@ -55,11 +55,7 @@ module.exports = {
                     result: options.value
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
 
         });
@@ -72,11 +68,7 @@ module.exports = {
                 this.LOG.debug('Getting value from Redis cache storage with key: ' + key);
                 options.channel.client.get(key, (error, value) => {
                     if (error) {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00000',
-                            error: error
-                        });
+                        reject(new CLASSES.CacheError(error));
                     } else if (value) {
                         resolve({
                             success: true,
@@ -84,18 +76,14 @@ module.exports = {
                             result: JSON.parse(value)
                         });
                     } else {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00001'
-                        });
+                        reject(new CLASSES.CacheError({
+                            code: 'ERR_CACHE_00001',
+                            message: 'Could not found any value for key: ' + key
+                        }));
                     }
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
 
         });
@@ -113,11 +101,7 @@ module.exports = {
                     _self.LOG.debug('Flushing value in local cache stored with prefix: ' + prefix);
                     options.channel.client.keys(prefix, function (err, cacheKeys) {
                         if (err) {
-                            reject({
-                                success: false,
-                                code: 'ERR_CACHE_00000',
-                                error: err
-                            });
+                            reject(new CLASSES.CacheError(error));
                         } else {
                             cacheKeys.forEach(key => {
                                 options.channel.client.del(key);
@@ -132,11 +116,7 @@ module.exports = {
                 } else {
                     options.channel.client.keys(function (err, cacheKeys) {
                         if (err) {
-                            reject({
-                                success: false,
-                                code: 'ERR_CACHE_00000',
-                                error: err
-                            });
+                            reject(new CLASSES.CacheError(err));
                         } else {
                             options.channel.client.flushAll();
                             resolve({
@@ -148,11 +128,7 @@ module.exports = {
                     });
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     },
@@ -175,11 +151,7 @@ module.exports = {
                     result: tmpKeys
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     }

@@ -186,5 +186,23 @@ module.exports = {
                 reject(error);
             }
         });
+    },
+
+    extractFromError: function (error, message, defaultCode) {
+        return {
+            code: defaultCode,
+            name: error.name,
+            responseCode: SERVICE.DefaultStatusService.get(defaultCode).responseCode,
+            message: SERVICE.DefaultStatusService.get(defaultCode).message + ' : ' + message + ' : ' + error.message,
+            stack: error.stack
+        };
+    },
+
+    extractFromMessage: function (error, defaultCode) {
+        return {
+            code: defaultCode,
+            responseCode: SERVICE.DefaultStatusService.get(defaultCode).responseCode,
+            message: error
+        };
     }
 };

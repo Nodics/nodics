@@ -11,19 +11,16 @@
 
 module.exports = {
     SUC_SYS_00000: {
-        code: '000000',
-        description: 'Successfully processed',
+        code: '200',
         message: 'Successfully processed',
     },
 
     ERR_SYS_00000: {
-        code: '000000',
-        description: 'Failed due to some internal error',
+        code: '500',
         message: 'Failed due to some internal error',
     },
     // SUCCESS STATUS FIND
     SUC_FIND_00000: {
-        code: '100000',
         description: 'Successfully processed',
         message: 'Successfully processed',
     },
@@ -31,7 +28,6 @@ module.exports = {
     // ERROR STATUS FIND
     ERR_FIND_00000: {
         code: '100000',
-        description: 'Facing some issues, Please try after some time',
         message: 'Facing some issues, Please try after some time',
     },
 

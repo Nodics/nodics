@@ -8,9 +8,9 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const _ = require('lodash');
 
 module.exports = {
-
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -33,22 +33,27 @@ module.exports = {
         });
     },
 
-    handleSuccess: function (request, response, success) {
-        response.json(success);
-    },
-
-    handleError: function (request, response, error) {
-        if (error instanceof CLASSES.NodicsError) {
-            response.status(error.responseCode);
-            response.json(error.toJson());
-        } else {
-            let status = SERVICE.DefaultStatusService.get('ERR_SYS_00000');
-            response.status(status.code);
-            response.json({
-                code: 'ERR_SYS_00000',
-                message: status.message,
-                error: error
-            });
-        }
+    startRequestHandler: function (request, response, routerDef) {
+        let input = {
+            requestId: UTILS.generateUniqueCode(),
+            parentRequestId: request.get('requestId'),
+            router: routerDef,
+            httpRequest: request,
+            httpResponse: response,
+            protocal: request.protocol,
+            host: request.hostname,
+            originalUrl: request.originalUrl,
+            secured: routerDef.secured,
+            moduleName: routerDef.moduleName,
+            special: (routerDef.controller) ? false : true,
+            method: request.method,
+            body: request.body || {}
+        };
+        let responseHandler = CONFIG.get('responseHandler')[routerDef.responseHandler || 'jsonResponseHandler'];
+        SERVICE.DefaultPipelineService.start('requestHandlerPipeline', input, {}).then(success => {
+            SERVICE[responseHandler].handleSuccess(request, response, success);
+        }).catch(error => {
+            SERVICE[responseHandler].handleError(request, response, error);
+        });
     }
 };

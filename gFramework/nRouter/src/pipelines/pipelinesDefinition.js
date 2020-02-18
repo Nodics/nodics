@@ -71,16 +71,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultRequestHandlerPipelineService.handleRequest',
                 success: 'successEnd'
-            },
-
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultRequestHandlerPipelineService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultRequestHandlerPipelineService.handleErrorEnd'
             }
         }
     },
