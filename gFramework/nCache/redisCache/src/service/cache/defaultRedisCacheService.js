@@ -50,7 +50,6 @@ module.exports = {
                     options.channel.client.set(key, JSON.stringify(options.value));
                 }
                 resolve({
-                    success: true,
                     code: 'SUC_CACHE_00000',
                     result: options.value
                 });
@@ -71,15 +70,11 @@ module.exports = {
                         reject(new CLASSES.CacheError(error));
                     } else if (value) {
                         resolve({
-                            success: true,
                             code: 'SUC_CACHE_00000',
                             result: JSON.parse(value)
                         });
                     } else {
-                        reject(new CLASSES.CacheError({
-                            code: 'ERR_CACHE_00001',
-                            message: 'Could not found any value for key: ' + key
-                        }));
+                        reject(new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key));
                     }
                 });
             } catch (error) {
@@ -107,7 +102,6 @@ module.exports = {
                                 options.channel.client.del(key);
                             });
                             resolve({
-                                success: true,
                                 code: 'SUC_CACHE_00000',
                                 result: cacheKeys
                             });
@@ -120,7 +114,6 @@ module.exports = {
                         } else {
                             options.channel.client.flushAll();
                             resolve({
-                                success: true,
                                 code: 'SUC_CACHE_00000',
                                 result: cacheKeys
                             });
@@ -146,7 +139,6 @@ module.exports = {
                 _self.LOG.debug('Flushing value in local cache stored with keys: ' + tmpKeys);
                 options.channel.client.del(tmpKeys);
                 resolve({
-                    success: true,
                     code: 'SUC_CACHE_00000',
                     result: tmpKeys
                 });

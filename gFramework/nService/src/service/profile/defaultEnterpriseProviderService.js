@@ -63,27 +63,24 @@ module.exports = {
                     query: {
                         code: request.entCode
                     }
-                }).then(result => {
-                    if (result && result.success && result.result.length > 0) {
-                        resolve(result.result[0]);
+                }).then(response => {
+                    if (response && response.result.length > 0) {
+                        resolve(response.result[0]);
                     } else {
-                        reject({
-                            success: false,
-                            code: 'ERR_ENT_00000'
-                        });
+                        reject(new NodicsError('ERR_ENT_00000'));
                     }
                 }).catch(error => {
-                    reject(error);
+                    reject(new NodicsError(error));
                 });
             } else {
-                SERVICE.DefaultModuleService.fetch(requestUrl).then(success => {
-                    if (!response.success || !response.result || response.result.length < 1) {
-                        reject(response.msg);
-                    } else {
+                SERVICE.DefaultModuleService.fetch(requestUrl).then(response => {
+                    if (response.result && response.result.length < 1) {
                         resolve(response.result[0]);
+                    } else {
+                        reject(new NodicsError('ERR_ENT_00000'));
                     }
                 }).catch(error => {
-                    reject(error);
+                    reject(new NodicsError(error));
                 });
             }
         });

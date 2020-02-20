@@ -70,9 +70,7 @@ module.exports = {
                         type: 'Employee'
                     }).then(success => {
                         resolve({
-                            success: true,
-                            code: 'SUC_AUTH_00000',
-                            msg: SERVICE.DefaultStatusService.get('SUC_AUTH_00000').message,
+                            code: 'SUC_AUTH_00001',
                             result: success
                         });
                     }).catch(error => {
@@ -102,9 +100,7 @@ module.exports = {
                         type: 'Customer'
                     }).then(success => {
                         resolve({
-                            success: true,
                             code: 'SUC_AUTH_00000',
-                            msg: SERVICE.DefaultStatusService.get('SUC_AUTH_00000').message,
                             result: success
                         });
                     }).catch(error => {
@@ -129,13 +125,8 @@ module.exports = {
                     _id: options.person._id
                 }).then(state => {
                     if (state.locked || !options.person.active) {
-                        reject({
-                            success: false,
-                            code: 'ERR_LIN_00002'
-                        });
+                        reject('ERR_LIN_00002');
                     } else {
-                        console.log(options.request.password);
-                        console.log(options.person.password.password);
                         UTILS.compareHash(options.request.password, options.person.password.password).then(match => {
                             if (match) {
                                 state.attempts = 0;
@@ -168,32 +159,17 @@ module.exports = {
                                     state: state,
                                     tenant: options.enterprise.tenant.code
                                 });
-                                reject({
-                                    success: false,
-                                    code: 'ERR_LIN_00003'
-                                });
+                                reject('ERR_LIN_00003');
                             }
                         }).catch(error => {
-                            reject({
-                                success: false,
-                                code: 'ERR_AUTH_00000',
-                                error: error
-                            });
+                            reject('ERR_AUTH_00000');
                         });
                     }
                 }).catch(error => {
-                    reject({
-                        success: false,
-                        code: 'ERR_AUTH_00000',
-                        error: error
-                    });
+                    reject('ERR_AUTH_00000');
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_AUTH_00000',
-                    error: error
-                });
+                reject('ERR_AUTH_00000');
             }
         });
     },
@@ -214,11 +190,7 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_AUTH_00000',
-                    error: error
-                });
+                reject('ERR_AUTH_00000');
             }
         });
     }

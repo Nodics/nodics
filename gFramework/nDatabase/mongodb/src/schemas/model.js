@@ -32,7 +32,7 @@ module.exports = {
         saveItems: function (input) {
             return new Promise((resolve, reject) => {
                 if (!input.model) {
-                    reject('Invalid model value to save');
+                    reject(new CLASSES.NodicsError('ERR_MDL_00001'));
                 } else if (input.query && !UTILS.isBlank(input.query)) {
                     try {
                         this.findOneAndUpdate(input.query,
@@ -46,7 +46,7 @@ module.exports = {
                                 if (result && result.value) {
                                     resolve(result.value);
                                 } else {
-                                    reject('Failed to update doc, Please check your modelSaveOptions');
+                                    reject(new CLASSES.NodicsError('ERR_MDL_00002'));
                                 }
                             }).catch(error => {
                                 reject(error);
@@ -64,7 +64,7 @@ module.exports = {
                                     if (result.ops && result.ops.length > 0) {
                                         resolve(result.ops[0]);
                                     } else {
-                                        reject('Failed to create doc, , Please check your modelSaveOptions');
+                                        reject(new CLASSES.NodicsError('ERR_MDL_00002'));
                                     }
                                 }).catch(error => {
                                     reject(error);
@@ -86,9 +86,9 @@ module.exports = {
         updateItems: function (input) {
             return new Promise((resolve, reject) => {
                 if (!input.model) {
-                    reject('Invalid model value to save');
+                    reject(new CLASSES.NodicsError('ERR_MDL_00001'));
                 } else if (!input.query || UTILS.isBlank(input.query)) {
-                    reject('Blank query is not supported');
+                    reject(new CLASSES.NodicsError('ERR_MDL_00003'));
                 } else {
                     if (input.options && input.options.returnModified) {
                         this.find(input.query, input.options).toArray((error, response) => {
@@ -161,7 +161,7 @@ module.exports = {
                         });
                     }
                 } else {
-                    reject('Blank query is not supported');
+                    reject(new CLASSES.NodicsError('ERR_MDL_00003'));
                 }
             });
         }

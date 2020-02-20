@@ -122,9 +122,14 @@ module.exports = function (name, pipelineDefinition) {
     };
 
     this.error = function (request, response, error) {
-        if (error && !(error instanceof CLASSES.NodicsError)) {
-            error = new CLASSES.NodicsError(error);
+        try {
+            if (error && !(error instanceof CLASSES.NodicsError)) {
+                error = new CLASSES.NodicsError(error);
+            }
+        } catch (err) {
+            error = err;
         }
+
         if (!response.error) {
             response.error = error;
         } else {

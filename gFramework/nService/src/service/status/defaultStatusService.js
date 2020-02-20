@@ -54,11 +54,9 @@ module.exports = {
 
     get: function (errorCode) {
         if (!UTILS.isBlank(this.statusMap[errorCode])) {
-            return this.statusMap[code];
+            return this.statusMap[errorCode];
         } else {
-            throw new CLASSES.NodicsError({
-                code: 'ERR_SYS_00000'
-            });
+            throw new CLASSES.NodicsError('ERR_SYS_00000', 'Invalid error code: ' + errorCode);
         }
     },
 };

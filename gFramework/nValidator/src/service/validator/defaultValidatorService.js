@@ -82,10 +82,10 @@ module.exports = {
             tenantValidators.forEach(validator => {
                 if (!validator.type || !ENUMS.ValidatorType.isDefined(validator.type)) {
                     this.LOG.error('Type within validator definition is invalid for : ' + validator.code);
-                    process.exit(1);
+                    throw new CLASSES.NodicsError('ERR_SYS_00000', 'Type within validator definition is invalid for : ' + validator.code);
                 } else if (!validator.trigger) {
                     this.LOG.error('trigger within validator definition can not be null or empty: ' + validator.code);
-                    process.exit(1);
+                    throw new CLASSES.NodicsError('ERR_SYS_00000', 'trigger within validator definition can not be null or empty: ' + validator.code);
                 } else {
                     if (!validator.item) {
                         validator.item = 'default';

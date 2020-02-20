@@ -25,23 +25,32 @@ let assert = require('assert');
 module.exports = class NodicsError extends Error {
 
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').NodicsError) {
-        this.defaultCode = defaultCode;
+        //this.defaultCode = defaultCode;
         if (error && error instanceof Error) {
-            error = UTILS.extractFromError(error, message, this.defaultCode);
+            error = UTILS.extractFromError(error, message, defaultCode);
         } else if ((typeof error === 'string' || error instanceof String) && error.startsWith('ERR_')) {
             error = {
                 code: error,
-                responseCode: SERVICE.DefaultStatusService.get(error).responseCode,
-                message: SERVICE.DefaultStatusService.get(this.defaultCode).message + ' : ' + message,
+                responseCode: SERVICE.DefaultStatusService.get(error).code,
+                message: SERVICE.DefaultStatusService.get(error).message
             };
+            if (message) error.message = error.message + ': ' + message;
         } else if (typeof error === 'string' || error instanceof String) {
-            error = UTILS.extractFromMessage(error, this.defaultCode);
+            error = UTILS.extractFromMessage(error, defaultCode);
+        } else if (UTILS.isObject(error)) {
+            error = {
+                code: error.code,
+                responseCode: SERVICE.DefaultStatusService.get(error.code).code,
+                message: SERVICE.DefaultStatusService.get(error.code).message
+            };
+            if (message) error.message = error.message + ': ' + message;
         }
         assert.ok(error);
         assert.ok(error.code);
         assert.ok(error.message);
         super(error.message);
         super.name = error.name || 'NodicsError';
+        this.defaultCode = defaultCode;
         this.code = error.code;
         this.responseCode = error.responseCode;
         this.metadata = error.metadata;
@@ -79,7 +88,7 @@ module.exports = class NodicsError extends Error {
         let errorJson = {
             responseCode: this.responseCode,
             code: this.code,
-            name: super.name,
+            name: this.name,
             message: this.message
         };
         if (this.metadata && !UTILS.isBlank(this.metadata)) {

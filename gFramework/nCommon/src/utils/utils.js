@@ -189,11 +189,14 @@ module.exports = {
     },
 
     extractFromError: function (error, message, defaultCode) {
+        let errMsg = SERVICE.DefaultStatusService.get(defaultCode).message;
+        if (message) errMsg = errMsg + ' : ' + message;
+        errMsg = errMsg + ' : ' + error.message;
         return {
             code: defaultCode,
             name: error.name,
-            responseCode: SERVICE.DefaultStatusService.get(defaultCode).responseCode,
-            message: SERVICE.DefaultStatusService.get(defaultCode).message + ' : ' + message + ' : ' + error.message,
+            responseCode: SERVICE.DefaultStatusService.get(defaultCode).code,
+            message: errMsg,
             stack: error.stack
         };
     },
@@ -201,7 +204,7 @@ module.exports = {
     extractFromMessage: function (error, defaultCode) {
         return {
             code: defaultCode,
-            responseCode: SERVICE.DefaultStatusService.get(defaultCode).responseCode,
+            responseCode: SERVICE.DefaultStatusService.get(defaultCode).code,
             message: error
         };
     }

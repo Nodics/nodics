@@ -36,20 +36,11 @@ module.exports = {
         this.LOG.debug('Validating get request ');
         let options = request.options;
         if (!request.schemaModel) {
-            process.error(request, response, {
-                code: 'ERR_FIND_00001',
-                message: 'Model not available within tenant: ' + request.tenant
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00001', 'Model not available within tenant: ' + request.tenant));
         } else if (options && options.projection && !UTILS.isObject(options.projection)) {
-            process.error(request, response, {
-                code: 'ERR_FIND_00001',
-                message: 'Invalid projection object'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00001', 'Invalid projection object'));
         } else if (options && options.sort && !UTILS.isObject(options.sort)) {
-            process.error(request, response, {
-                code: 'ERR_FIND_00002',
-                message: 'Invalid sort object'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00001', 'Invalid sort object'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -94,7 +85,6 @@ module.exports = {
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
                 process.stop(request, response, {
-                    success: true,
                     code: 'SUC_FIND_00000',
                     cache: 'item hit',
                     result: value.result
@@ -102,7 +92,7 @@ module.exports = {
             }).catch(error => {
                 if (error.code === 'ERR_CACHE_00001') {
                     process.nextSuccess(request, response);
-                } else if (error.code === 'ERR_CACHE_00010') {
+                } else if (error.code === 'ERR_CACHE_00006') {
                     this.LOG.warn(error.toJson(false));
                     process.nextSuccess(request, response);
                 } else {
@@ -148,7 +138,6 @@ module.exports = {
         this.LOG.debug('Executing get query');
         request.schemaModel.getItems(request).then(result => {
             response.success = {
-                success: true,
                 code: 'SUC_FIND_00000',
                 cache: 'item mis',
                 result: result
@@ -211,12 +200,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.error = {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error
-                };
-                process.error(request, response);
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -295,6 +279,7 @@ module.exports = {
                     options: options,
                     query: query
                 };
+                console.log(property, ' : ', input.query);
                 SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {
                     if (success.result.length > 0) {
                         if (propertyObject.type === 'one') {

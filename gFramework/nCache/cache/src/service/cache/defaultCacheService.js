@@ -46,12 +46,12 @@ module.exports = {
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
                 return Promise.reject(new CLASSES.CacheError({
-                    code: 'ERR_CACHE_00010',
-                    msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
+                    code: 'ERR_CACHE_00006',
+                    message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
         } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while putting value is cache'));
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while putting value in cache'));
         }
     },
 
@@ -67,12 +67,12 @@ module.exports = {
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
                 return Promise.reject(new CLASSES.CacheError({
-                    code: 'ERR_CACHE_00010',
+                    code: 'ERR_CACHE_00006',
                     msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
         } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while getting value is cache'));
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while getting value from cache'));
         }
     },
 
@@ -100,12 +100,12 @@ module.exports = {
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
                 return Promise.reject(new CLASSES.CacheError({
-                    code: 'ERR_CACHE_00010',
+                    code: 'ERR_CACHE_00006',
                     msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
         } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while getting value is cache'));
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while flushing cache'));
         }
     },
 
@@ -121,12 +121,12 @@ module.exports = {
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
                 return Promise.reject(new CLASSES.CacheError({
-                    code: 'ERR_CACHE_00010',
+                    code: 'ERR_CACHE_00006',
                     message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
         } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while getting value is cache'));
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while flushing keys in cache'));
         }
     },
 
@@ -168,7 +168,6 @@ module.exports = {
             try {
                 this.publishCacheChangeEvent(request, 'apiCacheChange').then(success => {
                     resolve({
-                        success: true,
                         code: 'SUC_CACHE_00000',
                         result: success
                     });
@@ -186,7 +185,6 @@ module.exports = {
             try {
                 this.publishCacheChangeEvent(request, 'itemCacheChange').then(success => {
                     resolve({
-                        success: true,
                         code: 'SUC_CACHE_00000',
                         result: success
                     });
@@ -219,7 +217,6 @@ module.exports = {
                 }).catch(error => {
                     reject(error);
                 });
-
             } catch (error) {
                 reject(new CLASSES.CacheError(error, 'Facing issue while publishing update cache event'));
             }
@@ -231,15 +228,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 if (UTILS.isBlank(request.config)) {
-                    reject({
-                        success: false,
-                        code: 'ERR_CACHE_00005'
-                    });
+                    reject(new CLASSES.CacheError('ERR_CACHE_00002'));
                 } else if (!request.config.routerName) {
-                    reject({
-                        success: false,
-                        code: 'ERR_CACHE_00006'
-                    });
+                    reject(new CLASSES.CacheError('ERR_CACHE_00003'));
                 } else {
                     let key = request.moduleName;
                     if (request.config.schemaName) {
@@ -250,7 +241,6 @@ module.exports = {
                     if (routerDefinition) {
                         routerDefinition.cache = _.merge(routerDefinition.cache || {}, request.config.cache);
                         resolve({
-                            success: true,
                             code: 'SUC_CACHE_00000'
                         });
                     } else {
@@ -258,10 +248,7 @@ module.exports = {
                         if (request.config.schemaName) {
                             msg = msg + ' and schemaName: ' + request.config.schemaName;
                         }
-                        reject(new CLASSES.CacheError({
-                            code: 'ERR_CACHE_00007',
-                            message: msg
-                        }));
+                        reject(new CLASSES.CacheError('ERR_CACHE_00005', msg));
                     }
                 }
             } catch (error) {
@@ -274,13 +261,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 if (UTILS.isBlank(request.config)) {
-                    reject(new CLASSES.CacheError({
-                        code: 'ERR_CACHE_00005'
-                    }));
+                    reject(new CLASSES.CacheError('ERR_CACHE_00002'));
                 } else if (!request.config.schemaName) {
-                    reject(new CLASSES.CacheError({
-                        code: 'ERR_CACHE_00005'
-                    }));
+                    reject(new CLASSES.CacheError('ERR_CACHE_00004'));
                 } else {
                     let modelName = UTILS.createModelName(request.config.schemaName);
                     try {

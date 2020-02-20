@@ -35,15 +35,15 @@ module.exports = {
 
     helpRequest: function (request, response, process) {
         if (request.originalUrl.endsWith('?help')) {
-            response.success = true;
-            response.code = 'SUC001';
-            response.msg = 'Processed successfully';
             if (request.router.help) {
-                response.result = request.router.help;
+                response.success = {
+                    code: 'SUC_HLP_00000',
+                    result: request.router.help
+                };
+                process.stop(request, response);
             } else {
-                response.result = 'Not defined';
+                process.error(request, response, 'ERR_HLP_00000');
             }
-            process.stop(request, response);
         } else {
             process.nextSuccess(request, response);
         }
@@ -51,7 +51,6 @@ module.exports = {
 
     parseHeader: function (request, response, process) {
         this.LOG.debug('Parsing request header for : ' + request.originalUrl);
-        request.cache = null;
         if (request.httpRequest.get('apiKey')) {
             request.apiKey = request.httpRequest.get('apiKey');
         }
@@ -71,14 +70,12 @@ module.exports = {
     },
 
     parseBody: function (request, response, process) {
-        this.LOG.debug('Parsing request body : ' + request.originalUrl);
         process.nextSuccess(request, response);
     },
 
     handleSpecialRequest: function (request, response, process) {
-        let _self = this;
-        this.LOG.debug('Handling special request : ' + request.originalUrl);
         if (request.special) {
+            this.LOG.debug('Handling special request : ' + request.originalUrl);
             if (!request.tenant) {
                 request.tenant = 'default';
             }
@@ -124,17 +121,15 @@ module.exports = {
                     ttl: request.router.cache.ttl
                 }).then(value => {
                     process.stop(request, response, {
-                        success: true,
-                        code: 'SUC_SYS_00000',
-                        message: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+                        code: 'SUC_CACHE_00002',
                         cache: 'api hit',
                         result: value.result
                     });
                 }).catch(error => {
-                    if (error.code === 'ERR_CACHE_00010') {
-                        _self.LOG.warn(error.message);
+                    if (error.code === 'ERR_CACHE_00001') {
                         process.nextSuccess(request, response);
-                    } else if (error.code === 'ERR_CACHE_00001') {
+                    } else if (error.code === 'ERR_CACHE_00006') {
+                        _self.LOG.warn(error.message);
                         process.nextSuccess(request, response);
                     } else {
                         process.error(request, response, error);

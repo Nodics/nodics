@@ -16,9 +16,9 @@ module.exports = {
         validateModel: function (query, options, model) {
             return new Promise((resolve, reject) => {
                 if (!model) {
-                    reject('Invalid model value to save');
+                    reject(new CLASSES.NodicsError('ERR_MDL_00001'));
                 } else if (model.versionId === undefined || model.versionId < 0) {
-                    reject('Invalid versionId value to save');
+                    reject(new CLASSES.NodicsError('ERR_MDL_00004'));
                 }
                 try {
                     let customQuery = _.merge({}, query);
@@ -39,14 +39,14 @@ module.exports = {
                             let preMoidel = success[0];
                             preMoidel.versionId = (preMoidel.versionId === undefined) ? -1 : preMoidel.versionId;
                             if (model.versionId <= preMoidel.versionId) {
-                                reject('Invalid version id: ' + model.versionId + ', it should be: ' + (preMoidel.versionId + 1));
+                                reject(new CLASSES.NodicsError('ERR_MDL_00004', model.versionId + ', it should be: ' + (preMoidel.versionId + 1)));
                             } else {
                                 model.versionId = preMoidel.versionId + 1;
                                 resolve(_.merge(preMoidel, model));
                             }
                         } else {
                             if (model.versionId > 0) {
-                                reject('Invalid version id: ' + model.versionId + ', it should be 0');
+                                reject(new CLASSES.NodicsError('ERR_MDL_00004', model.versionId + ', it should be: 0'));
                             } else {
                                 resolve(model);
                             }
@@ -69,7 +69,7 @@ module.exports = {
                             if (result.ops && result.ops.length > 0) {
                                 resolve(result.ops[0]);
                             } else {
-                                reject('Failed to create doc, , Please check your modelSaveOptions');
+                                reject(new CLASSES.NodicsError('ERR_MDL_00002'));
                             }
                         }).catch(error => {
                             reject(error);
@@ -141,13 +141,13 @@ module.exports = {
                                         reject(error);
                                     });
                                 } else {
-                                    resolve('None items found to be updated');
+                                    reject(new CLASSES.NodicsError('ERR_MDL_00000', 'None items found to be updated'));
                                 }
                             }).catch(error => {
                                 reject(error);
                             });
                         } else {
-                            resolve('None items found to be updated');
+                            reject(new CLASSES.NodicsError('ERR_MDL_00000', 'None items found to be updated'));
                         }
                     }).catch(error => {
                         reject(error);

@@ -34,21 +34,28 @@ module.exports = {
     },
 
     handleSuccess: function (request, response, success) {
-        response.json(success);
+        try {
+            let output = {
+                code: success.code || 'SUC_SYS_00000',
+                responseCode: success.responseCode || SERVICE.DefaultStatusService.get(success.code).code,
+                message: success.message || SERVICE.DefaultStatusService.get(success.code).message,
+                cache: success.cache,
+                result: success.result
+            };
+            response.status(output.responseCode);
+            response.json(output);
+        } catch (error) {
+            this.handleError(request, response, error);
+        }
+
     },
 
     handleError: function (request, response, error) {
-        if (error instanceof CLASSES.NodicsError) {
-            response.status(error.responseCode);
-            response.json(error.toJson());
-        } else {
-            let status = SERVICE.DefaultStatusService.get('ERR_SYS_00000');
-            response.status(status.code);
-            response.json({
-                code: 'ERR_SYS_00000',
-                message: status.message,
-                error: error
-            });
+        if (!(error instanceof CLASSES.NodicsError)) {
+            error = new CLASSES.NodicsError(error);
         }
+        this.LOG.error(error);
+        response.status(error.responseCode);
+        response.json(error.toJson());
     }
 };

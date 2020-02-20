@@ -19,10 +19,10 @@ module.exports = {
             let interceptor = rawInterceptors[interceptorName];
             if (!interceptor.type || !ENUMS.InterceptorType.isDefined(interceptor.type)) {
                 this.LOG.error('Type within interceptor definition is invalid for : ' + interceptorName);
-                process.exit(1);
+                throw new CLASSES.NodicsError('ERR_SYS_00000', 'Type within interceptor definition is invalid for : ' + interceptorName);
             } else if (!interceptor.trigger) {
                 this.LOG.error('trigger within interceptor definition can not be null or empty: ' + interceptorName);
-                process.exit(1);
+                throw new CLASSES.NodicsError('ERR_SYS_00000', 'Trigger within interceptor definition can not be null or empty: ' + interceptorName);
             } else {
                 if (!interceptor.item) {
                     interceptor.item = 'default';

@@ -69,7 +69,7 @@ module.exports = {
             }).catch(error => {
                 if (error.code === 'ERR_CACHE_00001') {
                     process.nextSuccess(request, response);
-                } else if (error.code === 'ERR_CACHE_00010') {
+                } else if (error.code === 'ERR_CACHE_00006') {
                     this.LOG.warn(error.msg);
                     process.nextSuccess(request, response);
                 } else {

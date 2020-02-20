@@ -91,18 +91,19 @@ module.exports = {
                 requestPromise(requestUrl).then(response => {
                     resolve(response);
                 }).catch(error => {
-                    if (error.statusCode && error.statusCode === 404) {
-                        reject({
-                            success: false,
-                            code: error.statusCode || error.code || 'ERR_SYS_00000',
-                            error: (error.name || '') + ' ' + (error.statusCode || error.code || 'ERR_SYS_00000') + ' at: ' + requestUrl.uri
-                        });
-                    } else {
-                        reject(error);
-                    }
+                    reject(new NodicsError(error));
+                    // if (error.statusCode && error.statusCode === 404) {
+                    //     reject({
+                    //         success: false,
+                    //         code: error.statusCode || error.code || 'ERR_SYS_00000',
+                    //         error: (error.name || '') + ' ' + (error.statusCode || error.code || 'ERR_SYS_00000') + ' at: ' + requestUrl.uri
+                    //     });
+                    // } else {
+
+                    // }
                 });
             } catch (error) {
-                reject(error);
+                reject(new NodicsError(error));
             }
         });
     }

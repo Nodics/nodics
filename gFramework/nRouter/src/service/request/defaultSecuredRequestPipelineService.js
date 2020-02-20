@@ -23,17 +23,9 @@ module.exports = {
 
     validateSecuredRequest: function (request, response, process) {
         if (!request.apiKey && !request.authToken) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_AUTH_00002',
-                msg: 'Invalid secured request'
-            });
+            process.error(request, response, 'ERR_AUTH_00002');
         } else if (request.apiKey && request.authToken) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_AUTH_00002',
-                msg: 'Request can not hold authToken and apiKey both at sametime'
-            });
+            process.error(request, response, 'ERR_AUTH_00002');
         } else {
             process.nextSuccess(request, response);
         }
@@ -61,25 +53,17 @@ module.exports = {
             this.LOG.debug('Authorizing auth token : ' + request.authToken);
             SERVICE.DefaultAuthorizationProviderService.authorizeToken(request).then(success => {
                 try {
-                    if (success.success && success.result) {
+                    if (success.result && !UTILS.isBlank(success.result)) {
                         request.entCode = success.result.entCode;
                         request.tenant = success.result.tenant;
                         request.loginId = success.result.loginId;
                         request.refreshToken = success.result.refreshToken;
                         process.nextSuccess(request, response);
                     } else {
-                        process.error(request, response, {
-                            success: false,
-                            code: 'ERR_AUTH_00001',
-                            error: 'Invalid authToken'
-                        });
+                        process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00001'));
                     }
                 } catch (err) {
-                    process.error(request, response, {
-                        success: false,
-                        code: 'ERR_AUTH_00001',
-                        error: err
-                    });
+                    process.error(request, response, new CLASSES.NodicsError(err, ' While authorizing token', 'ERR_AUTH_00001'));
                 }
             }).catch(error => {
                 process.error(request, response, error);
@@ -91,17 +75,9 @@ module.exports = {
 
     validateRequestData: function (request, response, process) {
         if (!request.entCode) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_AUTH_00002',
-                msg: 'Invalid secured request'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002', 'Invalid secured request'));
         } else if (!request.tenant) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_AUTH_00002',
-                msg: 'Invalid secured request'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002', 'Invalid secured request'));
         } else {
             process.nextSuccess(request, response);
         }

@@ -36,10 +36,7 @@ module.exports = {
         this.LOG.debug('Validating Enterprise code : ' + request.entCode);
         if (UTILS.isBlank(request.entCode)) {
             this.LOG.error('Enterprise code can not be null');
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_ENT_00000'
-            });
+            process.error(request, response, 'ERR_ENT_00000');
         } else {
             process.nextSuccess(request, response);
         }
@@ -55,10 +52,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 this.LOG.error('Enterprise code is not valid');
-                process.error(request, response, error || {
-                    success: false,
-                    code: 'ERR_ENT_00000'
-                });
+                process.error(request, response, error);
             });
         } catch (error) {
             this.LOG.error('Enterprise code is not valid: ', error);

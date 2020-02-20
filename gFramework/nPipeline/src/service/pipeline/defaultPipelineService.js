@@ -81,18 +81,6 @@ module.exports = {
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Pipeline: ' + process.getPipelineName() + ' with Id: ' + process.getPipelineId() + ' processed successfully');
-        // let result = {
-        //     success: response.success
-        // };
-        // let error = response.error;
-        // if (response.error) {
-        //     if (response.error instanceof Error && !(response.error instanceof CLASSES.NodicsError)) {
-        //         result.error = new CLASSES.NodicsError(error);
-        //     } else {
-        //         result.error = error;
-        //     }
-
-        // }
         process.resolve(response.success);
     },
 
