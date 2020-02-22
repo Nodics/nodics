@@ -36,7 +36,7 @@ module.exports = {
         this.LOG.debug('Validating Enterprise code : ' + request.entCode);
         if (UTILS.isBlank(request.entCode)) {
             this.LOG.error('Enterprise code can not be null');
-            process.error(request, response, 'ERR_ENT_00000');
+            process.error(request, response, new CLASSES.NodicsError('ERR_ENT_00000'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -56,10 +56,7 @@ module.exports = {
             });
         } catch (error) {
             this.LOG.error('Enterprise code is not valid: ', error);
-            process.error(request, response, error || {
-                success: false,
-                code: 'ERR_ENT_00000'
-            });
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_ENT_00000'));
         }
     },
 
@@ -68,19 +65,12 @@ module.exports = {
         try {
             if (UTILS.isBlank(request.tenant)) {
                 this.LOG.error('Tenant is null or invalid');
-                process.error(request, response, {
-                    success: false,
-                    code: 'RR_TNT_00000'
-                });
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_ENT_00000'));
             } else {
                 process.nextSuccess(request, response);
             }
         } catch (err) {
-            process.error(request, response, {
-                success: false,
-                code: 'RR_TNT_00000',
-                msg: 'Tenant is null or invalid'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_TNT_00000', 'Tenant is null or invalid'));
         }
     }
 };

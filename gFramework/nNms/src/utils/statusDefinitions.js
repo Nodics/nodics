@@ -17,11 +17,7 @@ module.exports = {
         message: 'Successfully processed',
     },
 
-    SUC_RES_00001: {
-        code: '170001',
-        description: 'Successfully granted responsibility',
-        message: 'Successfully granted responsibility',
-    },
+
 
     ERR_RES_00000: {
         code: '170000',

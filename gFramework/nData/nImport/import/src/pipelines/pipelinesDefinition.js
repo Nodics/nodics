@@ -192,10 +192,6 @@ module.exports = {
                 handler: 'DefaultDataImportInitializerService.processDataHeaders',
                 success: 'successEnd'
             },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDataImportInitializerService.handleSucessEnd'
-            },
             handleError: {
                 type: 'function',
                 handler: 'DefaultDataImportInitializerService.handleErrorEnd'

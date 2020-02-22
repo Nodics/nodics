@@ -36,16 +36,11 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
+            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for create job');
             if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                callback(error);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                return Promise.reject(error);
             }
         }
     },
@@ -74,16 +69,11 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
+            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for update job');
             if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                callback(error);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                return Promise.reject(error);
             }
         }
     },
@@ -106,16 +96,11 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
+            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for run job');
             if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                callback(error);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                return Promise.reject(error);
             }
         }
     },
@@ -139,16 +124,11 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
+            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for start job');
             if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                callback(error);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                return Promise.reject(error);
             }
         }
     },
@@ -172,16 +152,11 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
+            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for stop job');
             if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                callback(error);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                return Promise.reject(error);
             }
         }
     },
@@ -205,16 +180,11 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
+            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for remove job');
             if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                callback(error);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                return Promise.reject(error);
             }
         }
     },
@@ -238,16 +208,11 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
+            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for pause job');
             if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                callback(error);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                return Promise.reject(error);
             }
         }
     },
@@ -271,16 +236,11 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
+            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for resume job');
             if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                callback(error);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_FIND_00006'
-                });
+                return Promise.reject(error);
             }
         }
     }

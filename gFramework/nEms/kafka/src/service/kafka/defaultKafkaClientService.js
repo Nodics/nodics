@@ -122,26 +122,16 @@ module.exports = {
                     partition: payload.partition || 0
                 }], function (err, data) {
                     if (err) {
-                        reject({
-                            success: false,
-                            code: 'ERR_EMS_00000',
-                            msg: err
-                        });
+                        reject(new CLASSES.NodicsError(err, null, 'ERR_EMS_00000'));
                     } else {
                         resolve({
-                            success: true,
                             code: 'SUC_EMS_00000',
-                            msg: 'Message published to queue: ' + payload.queue
+                            message: 'Message published to queue: ' + payload.queue
                         });
                     }
                 });
             } catch (error) {
-                this.LOG.error(error);
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00000',
-                    msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
-                });
+                reject(new CLASSES.NodicsError(error, 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher', 'ERR_EMS_00000'));
             }
         });
     },
@@ -207,7 +197,7 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
         });
     },
@@ -221,7 +211,7 @@ module.exports = {
                 } else {
                     options.client.connection.createTopics([queueName], (error, result) => {
                         if (error) {
-                            reject(error);
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
                         } else {
                             options.client.queues[queueName] = {
                                 created: true
@@ -231,7 +221,7 @@ module.exports = {
                     });
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
         });
     },
@@ -287,7 +277,7 @@ module.exports = {
             if (callback) {
                 callback(error);
             } else {
-                Promise.reject(error);
+                Promise.reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
         }
     },
@@ -302,7 +292,7 @@ module.exports = {
                     resolve('Consumer: ' + consumerName + ' is already closed');
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
         });
     }

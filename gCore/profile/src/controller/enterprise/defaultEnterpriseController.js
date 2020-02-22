@@ -13,16 +13,11 @@ module.exports = {
 
     getEnterprise: function (request, callback) {
         if (UTILS.isBlank(request.entCode)) {
+            let error = new CLASSES.NodicsError('ERR_ENT_00000');
             if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_ENT_00000'
-                });
+                callback(error);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_ENT_00000'
-                });
+                return Promise.reject(error);
             }
         } else {
             if (!request.tenant) {

@@ -104,30 +104,22 @@ module.exports = {
                             _self.LOG.debug('Successfully updated API keys to all servers');
                             resolve(true);
                         }).catch(error => {
-                            _self.LOG.error('Failed updating API keys to all servers');
-                            _self.LOG.error(error);
-                            reject(error);
+                            reject(new CLASSES.NodicsError(error, 'Failed updating API keys to all servers'));
                         });
                     } else {
                         resolve({
-                            success: true,
                             code: 'SUC_SYS_00000',
-                            msg: 'None apiKeys found to update or remove'
+                            message: 'None apiKeys found to update or remove'
                         });
                     }
                 } else {
                     resolve({
-                        success: true,
                         code: 'SUC_SYS_00000',
-                        msg: 'None apiKeys found to update or remove'
+                        message: 'None apiKeys found to update or remove'
                     });
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    msg: error.toString()
-                });
+                reject(new CLASSES.NodicsError(error));
             }
         });
     },

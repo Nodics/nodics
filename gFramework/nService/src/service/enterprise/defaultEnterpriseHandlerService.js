@@ -49,18 +49,10 @@ module.exports = {
                             resolve(success.result);
                         } else {
                             _self.LOG.error('Could not found any active enterprises currently');
-                            reject({
-                                success: false,
-                                code: 'ERR_DBS_00000',
-                                error: error
-                            });
+                            reject(new CLASSES.NodicsError('ERR_ENT_00001', 'Could not found any active enterprises currently'));
                         }
                     }).catch(error => {
-                        reject({
-                            success: false,
-                            code: 'ERR_DBS_00000',
-                            error: error
-                        });
+                        reject(new CLASSES.NodicsError(error, null, 'ERR_ENT_00001'));
                     });
                 } else {
                     let requestUrl = SERVICE.DefaultModuleService.buildRequest({
@@ -78,22 +70,14 @@ module.exports = {
                         SERVICE.DefaultModuleService.fetch(requestUrl).then(response => {
                             resolve(response.result || []);
                         }).catch(error => {
-                            reject({
-                                success: false,
-                                code: 'ERR_DBS_00001',
-                                error: error
-                            });
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_ENT_00001'));
                         });
                     } catch (error) {
-                        reject({
-                            success: false,
-                            code: 'ERR_DBS_00000',
-                            error: error
-                        });
+                        reject(new CLASSES.NodicsError(error, null, 'ERR_ENT_00001'));
                     }
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_ENT_00001'));
             }
         });
     },
@@ -105,7 +89,6 @@ module.exports = {
                 _self.fetchEnterprise().then(success => {
                     _self.buildEnterprise(success).then(success => {
                         resolve({
-                            success: true,
                             code: 'SUC_SYS_00000'
                         });
                     }).catch(error => {
@@ -219,13 +202,13 @@ module.exports = {
                                                             reject(error);
                                                         });
                                                     } else {
-                                                        reject('Could not load default API key for tenant: ' + enterprise.tenant.code);
+                                                        reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Could not load default API key for tenant: ' + enterprise.tenant.code));
                                                     }
                                                 }).catch(error => {
                                                     reject(error);
                                                 });
                                             }).catch(error => {
-                                                NODICS.LOG.error('Initial data import failed : ', error);
+                                                NODICS.LOG.error('Initial data import failed');
                                                 reject(error);
                                             });
                                         } else {

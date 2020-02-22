@@ -35,9 +35,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating job pause request');
         if (!request.job) {
-            process.error(request, response, 'Invalid job detail to stop');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job detail to stop'));
         } else if (!request.definition) {
-            process.error(request, response, 'Invalid job definition to stop');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job definition to stop'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -54,11 +54,7 @@ module.exports = {
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -76,11 +72,7 @@ module.exports = {
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -134,26 +126,5 @@ module.exports = {
             this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

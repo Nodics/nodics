@@ -35,7 +35,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process Indexer data handler');
         if (!request.models) {
-            process.error(request, response, 'Invalid data object to process');
+            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid data object to process'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -54,11 +54,7 @@ module.exports = {
             SERVICE.DefaultProcessorHandlerService.executeSearchProcessors([].concat(indexerConfig.processors), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00007',
-                    error: error
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00009'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -74,11 +70,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.index), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00008',
-                    error: error
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00009'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -93,11 +85,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.index), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00009'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -119,11 +107,7 @@ module.exports = {
                     process.error(request, response, error);
                 });
             } catch (error) {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00008',
-                    error: error
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00008'));
             }
         } else {
             process.nextSuccess(request, response);
@@ -143,11 +127,7 @@ module.exports = {
                 }, {}).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, {
-                        success: false,
-                        code: 'ERR_SRCH_00000',
-                        error: error
-                    });
+                    process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
                 });
             } else {
                 _self.processModels(request, {
@@ -159,11 +139,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                error: error
-            });
+            process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
         }
     },
 
@@ -190,26 +166,5 @@ module.exports = {
                 resolve(true);
             }
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

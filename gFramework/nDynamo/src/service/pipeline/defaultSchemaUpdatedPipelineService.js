@@ -38,7 +38,7 @@ module.exports = {
     validateSchema: function (request, response, process) {
         this.LOG.debug('Validating schema update request');
         if (!request.schemaName) {
-            process.error(request, response, 'Schema Name can not be null or empty');
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Schema Name can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -57,7 +57,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             } else {
                 _self.LOG.error('Could not found any data for schema name ' + request.schemaName);
-                process.error(request, response, 'Could not found any data for schema name ' + request.schemaName);
+                process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Could not found any data for schema name ' + request.schemaName));
             }
         }).catch(error => {
             process.error(request, response, error);
@@ -72,19 +72,5 @@ module.exports = {
             response.targetNode = 'schemaActivated';
         }
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors instanceof Array) {
-            process.reject(response.errors[0]);
-        } else {
-            process.reject(response.error);
-        }
     }
 };

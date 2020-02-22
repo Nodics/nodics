@@ -36,7 +36,7 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         if (!request.moduleName) {
-            process.error(request, response, 'Invalid moduleName');
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid moduleName'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -101,24 +101,5 @@ module.exports = {
                 resolve(true);
             }
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

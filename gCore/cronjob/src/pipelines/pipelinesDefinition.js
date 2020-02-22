@@ -97,14 +97,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultCronJobCompletedHandlerService.triggerEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCronJobCompletedHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCronJobCompletedHandlerService.handleErrorEnd'
             }
         }
     },
@@ -139,14 +131,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultCronJobStartHandlerService.triggerEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCronJobStartHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCronJobStartHandlerService.handleErrorEnd'
             }
         }
     },
@@ -181,14 +165,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultCronJobStopHandlerService.triggerEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCronJobStopHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCronJobStopHandlerService.handleErrorEnd'
             }
         }
     },
@@ -223,14 +199,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultCronJobPausedHandlerService.triggerEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCronJobPausedHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCronJobPausedHandlerService.handleErrorEnd'
             }
         }
     },
@@ -265,14 +233,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultCronJobResumedHandlerService.triggerEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCronJobResumedHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCronJobResumedHandlerService.handleErrorEnd'
             }
         }
     },
@@ -307,14 +267,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultCronJobRemovedHandlerService.triggerEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCronJobRemovedHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCronJobRemovedHandlerService.handleErrorEnd'
             }
         }
     },
@@ -349,14 +301,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultCronJobErrorHandlerService.triggerEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCronJobErrorHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCronJobErrorHandlerService.handleErrorEnd'
             }
         }
     },
@@ -377,14 +321,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultCronJobNodeUpHandlerService.shutdownResponsibilities',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCronJobNodeUpHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCronJobNodeUpHandlerService.handleErrorEnd'
             }
         }
     },
@@ -404,14 +340,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultCronJobNodeDownHandlerService.handleResponsibilities',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCronJobNodeDownHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCronJobNodeDownHandlerService.handleErrorEnd'
             }
         }
     }

@@ -37,11 +37,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.fileName) {
-            process.error(request, response, 'Please validate request. Mandate property fileName not have valid value');
+            process.error(request, response, new CLASSES.NodicsError('ERR_IMP_00000', 'Please validate request. Mandate property fileName not have valid value'));
         } else if (!request.fileData) {
-            process.error(request, response, 'Please validate request. Mandate property fileName not have valid value');
+            process.error(request, response, new CLASSES.NodicsError('ERR_IMP_00000', 'Please validate request. Mandate property fileName not have valid value'));
         } else if (!request.dataFiles) {
-            process.error(request, response, 'Please validate request. Mandate property dataFiles not have valid value');
+            process.error(request, response, new CLASSES.NodicsError('ERR_IMP_00000', 'Please validate request. Mandate property dataFiles not have valid value'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -138,7 +138,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_IMP_00000'));
             }
         });
     },

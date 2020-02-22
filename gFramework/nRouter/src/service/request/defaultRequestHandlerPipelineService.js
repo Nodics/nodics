@@ -42,7 +42,7 @@ module.exports = {
                 };
                 process.stop(request, response);
             } else {
-                process.error(request, response, 'ERR_HLP_00000');
+                process.error(request, response, new CLASSES.NodicsError('ERR_HLP_00000'));
             }
         } else {
             process.nextSuccess(request, response);
@@ -61,9 +61,7 @@ module.exports = {
             request.entCode = request.httpRequest.get('entCode');
         }
         if (!request.apiKey && !request.authToken && !request.entCode) {
-            process.error(request, response, new CLASSES.NodicsError({
-                code: 'ERR_AUTH_00002'
-            }));
+            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002'));
         } else {
             process.nextSuccess(request, response);
         }

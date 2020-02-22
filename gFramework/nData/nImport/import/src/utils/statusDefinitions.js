@@ -11,23 +11,5 @@
 
 module.exports = {
 
-    // SUCCESS STATUS Cache
-    SUC_DATA_00000: {
-        code: '210000',
-        description: 'Successfully processed',
-        message: 'Successfully processed'
-    },
 
-    SUC_DATA_00001: {
-        code: '210001',
-        description: 'Could not find any data to import for given modules',
-        message: 'Could not find any data to import for given modules'
-    },
-
-    //ERROR STATUS Cache
-    ERR_DATA_00000: {
-        code: '210000',
-        description: 'Facing some issues, please try after some time',
-        message: 'Facing some issues, please try after some time'
-    }
 };

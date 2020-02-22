@@ -36,11 +36,11 @@ module.exports = {
         this.LOG.debug('Validating get request ');
         let options = request.options;
         if (!request.schemaModel) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00001', 'Model not available within tenant: ' + request.tenant));
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Model not available within tenant: ' + request.tenant));
         } else if (options && options.projection && !UTILS.isObject(options.projection)) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00001', 'Invalid projection object'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid projection object'));
         } else if (options && options.sort && !UTILS.isObject(options.sort)) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00001', 'Invalid sort object'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid sort object'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -279,7 +279,6 @@ module.exports = {
                     options: options,
                     query: query
                 };
-                console.log(property, ' : ', input.query);
                 SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {
                     if (success.result.length > 0) {
                         if (propertyObject.type === 'one') {

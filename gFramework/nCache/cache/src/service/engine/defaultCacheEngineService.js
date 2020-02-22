@@ -72,11 +72,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     },
@@ -106,11 +102,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     },
@@ -131,7 +123,6 @@ module.exports = {
                         if (value.code === 'SUC_CACHE_00000') {
                             _self.registerEvents(engineOptions, moduleName, value.result, channelObj);
                             resolve({
-                                success: true,
                                 code: 'SUC_CACHE_00000',
                                 result: {
                                     chennalOptions: channelObj,
@@ -158,7 +149,6 @@ module.exports = {
                                 if (value.code === 'SUC_CACHE_00000') {
                                     _self.registerEvents(engineOptions, moduleName, value.result, channelObj);
                                     resolve({
-                                        success: true,
                                         code: 'SUC_CACHE_00000',
                                         result: {
                                             chennalOptions: channelObj,
@@ -174,26 +164,14 @@ module.exports = {
                                 reject(error);
                             });
                         } else {
-                            reject({
-                                success: false,
-                                code: 'ERR_CACHE_00000',
-                                msg: 'Cache fallback is not allowed for module: ' + moduleName + ', and channel: ' + channelName
-                            });
+                            reject(new CLASSES.CacheError('ERR_CACHE_00000', 'Cache fallback is not allowed for module: ' + moduleName + ', and channel: ' + channelName));
                         }
                     });
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_CACHE_00000',
-                        msg: 'Invalid engine configuration for module: ' + moduleName + ', and channel: ' + channelName
-                    });
+                    reject(new CLASSES.CacheError('ERR_CACHE_00000', 'Invalid engine configuration for module: ' + moduleName + ', and channel: ' + channelName));
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     },

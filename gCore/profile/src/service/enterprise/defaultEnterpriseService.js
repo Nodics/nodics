@@ -13,10 +13,7 @@ module.exports = {
     retrieveEnterprise: function (entCode) {
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(entCode)) {
-                reject({
-                    success: false,
-                    code: 'ERR_ENT_00000'
-                });
+                reject(new CLASSES.NodicsError('ERR_ENT_00000'));
             } else {
                 this.get({
                     tenant: 'default',
@@ -28,10 +25,7 @@ module.exports = {
                     }
                 }).then(enterprises => {
                     if (enterprises.result.length !== 1) {
-                        reject({
-                            success: false,
-                            code: 'ERR_ENT_00000'
-                        });
+                        reject(new CLASSES.NodicsError('ERR_ENT_00000'));
                     } else {
                         resolve(enterprises.result[0]);
                     }

@@ -38,7 +38,6 @@ module.exports = function () {
                 });
             } else {
                 resolve({
-                    success: true,
                     code: 'SUC_JOB_00000',
                     result: result,
                     failed: failed
@@ -53,30 +52,15 @@ module.exports = function () {
             try {
                 let currentDate = new Date();
                 if (UTILS.isBlank(definition)) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00002'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00002'));
                 } else if (UTILS.isBlank(definition.tenant)) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00007'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00007'));
                 } else if (UTILS.isBlank(definition.trigger)) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00003'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00003'));
                 } else if (definition.start > currentDate) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00004'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00004'));
                 } else if (definition.end && definition.end < currentDate) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00005'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00005'));
                 } else {
                     if (!_jobPool[definition.tenant]) {
                         _jobPool[definition.tenant] = {};
@@ -106,22 +90,19 @@ module.exports = function () {
                                 _self.LOG.error(error);
                             });
                             resolve({
-                                success: true,
                                 code: 'SUC_JOB_00000',
-                                msg: 'Job: ' + definition.code + ' has been successfully added in ready to run pool on tenant: ' + definition.tenant
+                                message: 'Job: ' + definition.code + ' has been successfully added in ready to run pool on tenant: ' + definition.tenant
                             });
                         } else {
                             _self.LOG.debug('Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant);
                             resolve({
-                                success: true,
-                                code: 'SUC_CRON_00001',
-                                msg: 'Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant
+                                code: 'SUC_JOB_00000',
+                                message: 'Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant
                             });
                         }
                     } else {
                         _self.LOG.warn('Job: ' + definition.code, ' is already available on tenant: ' + definition.tenant);
                         resolve({
-                            success: true,
                             code: 'SUC_JOB_00000',
                             msg: 'Job: ' + definition.code + ' is already available in ready to run pool on tenant: ' + definition.tenant
                         });
@@ -156,7 +137,6 @@ module.exports = function () {
                 });
             } else {
                 resolve({
-                    success: true,
                     code: 'SUC_JOB_00000',
                     result: result,
                     failed: failed
@@ -169,20 +149,13 @@ module.exports = function () {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(definition)) {
-                reject({
-                    success: false,
-                    code: 'ERR_JOB_00002'
-                });
+                reject(new CLASSES.NodicsError('ERR_JOB_00002'));
             } else if (UTILS.isBlank(definition.tenant)) {
-                reject({
-                    success: false,
-                    code: 'ERR_JOB_00007'
-                });
+                reject(new CLASSES.NodicsError('ERR_JOB_00007'));
             } else if (UTILS.isBlank(definition.trigger)) {
-                reject({
-                    success: false,
-                    code: 'ERR_JOB_00003'
-                });
+                reject(new CLASSES.NodicsError('ERR_JOB_00003'));
+            } else if (UTILS.isBlank(definition.trigger)) {
+                reject(new CLASSES.NodicsError('ERR_JOB_00003'));
             } else if (!_jobPool[definition.tenant] || !_jobPool[definition.tenant][definition.code]) {
                 _self.LOG.debug('Could not found job, so creating new : ' + definition.code);
                 this.createJob(authToken, definition).then(success => {
@@ -210,7 +183,7 @@ module.exports = function () {
                     });
                 }).catch(error => {
                     _self.LOG.error(error);
-                    reject('Job: ' + definition.code + ' failed to stop it to update on tenant: ' + definition.tenant);
+                    reject(new CLASSES.NodicsError(error, 'Job: ' + definition.code + ' failed to stop it to update on tenant: ' + definition.tenant, 'ERR_JOB_00000'));
                 });
             }
         });
@@ -239,7 +212,6 @@ module.exports = function () {
                 });
             } else {
                 resolve({
-                    success: true,
                     code: 'SUC_JOB_00000',
                     result: result,
                     failed: failed
@@ -253,37 +225,21 @@ module.exports = function () {
             try {
                 let currentDate = new Date();
                 if (UTILS.isBlank(definition)) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00002'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00002'));
                 } else if (UTILS.isBlank(definition.tenant)) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00007'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00007'));
                 } else if (UTILS.isBlank(definition.trigger)) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00003'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00003'));
                 } else if (definition.start > currentDate) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00004'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00004'));
                 } else if (definition.end && definition.end < currentDate) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00005'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00005'));
+                } else if (definition.end && definition.end < currentDate) {
+                    reject(new CLASSES.NodicsError('ERR_JOB_00005'));
                 } else if (_jobPool[definition.tenant] &&
                     _jobPool[definition.tenant][definition.code] &&
                     _jobPool[definition.tenant][definition.code].isRunning()) {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00006'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00006'));
                 } else {
                     let _active = false;
                     if (_jobPool[definition.tenant] &&
@@ -306,11 +262,7 @@ module.exports = function () {
                     resolve('Job: ' + definition.code + ' run successfully on tenant: ' + definition.tenant);
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_JOB_00000',
-                    error: error
-                });
+                reject(new CLASSES.NodicsError(error, null, 'ERR_JOB_00000'));
             }
         });
     };
@@ -365,7 +317,6 @@ module.exports = function () {
                 });
             } else {
                 resolve({
-                    success: true,
                     code: 'SUC_JOB_00000',
                     result: result,
                     failed: failed
@@ -410,7 +361,6 @@ module.exports = function () {
                 });
             } else {
                 resolve({
-                    success: true,
                     code: 'SUC_JOB_00000',
                     result: result,
                     failed: failed
@@ -483,7 +433,6 @@ module.exports = function () {
                 });
             } else {
                 resolve({
-                    success: true,
                     code: 'SUC_JOB_00000',
                     result: result,
                     failed: failed
@@ -507,7 +456,7 @@ module.exports = function () {
                         delete _jobPool[tenant][jobCode];
                         resolve('Job: ' + definition.code + ' removed successfully');
                     }).catch(error => {
-                        reject('Job: ' + definition.code + ' has issue while removing: ' + error);
+                        reject(new CLASSES.NodicsError(error, 'Job: ' + definition.code + ' has issue while removing', 'ERR_JOB_00000'));
                     });
                 }).catch(error => {
                     reject(error);
@@ -538,7 +487,6 @@ module.exports = function () {
                 });
             } else {
                 resolve({
-                    success: true,
                     code: 'SUC_JOB_00000',
                     result: result,
                     failed: failed

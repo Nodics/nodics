@@ -23,9 +23,9 @@ module.exports = {
 
     validateSecuredRequest: function (request, response, process) {
         if (!request.apiKey && !request.authToken) {
-            process.error(request, response, 'ERR_AUTH_00002');
+            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002'));
         } else if (request.apiKey && request.authToken) {
-            process.error(request, response, 'ERR_AUTH_00002');
+            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002'));
         } else {
             process.nextSuccess(request, response);
         }

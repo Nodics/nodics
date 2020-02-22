@@ -40,16 +40,11 @@ module.exports = {
             try {
                 let client = new NodeCache(localCacheConfig.options);
                 resolve({
-                    success: true,
                     code: 'SUC_CACHE_00000',
                     result: client
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     },
@@ -60,7 +55,6 @@ module.exports = {
             return this.initCache(localCacheConfig, moduleName);
         } else {
             return Promise.resolve({
-                success: true,
                 code: 'SUC_CACHE_00001',
                 msg: 'None schema found for module: ' + moduleName
             });
@@ -72,7 +66,6 @@ module.exports = {
             return this.initCache(localCacheConfig, moduleName);
         } else {
             return Promise.resolve({
-                success: true,
                 code: 'SUC_CACHE_00001',
                 msg: 'Router is not enabled for module: ' + moduleName
             });

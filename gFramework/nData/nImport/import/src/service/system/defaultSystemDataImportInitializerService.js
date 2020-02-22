@@ -38,7 +38,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.modules && !UTILS.isArray(request.modules) && request.modules.length <= 0) {
-            process.error(request, response, 'Please validate request. Mandate property modules not have valid value');
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property modules not have valid value'));
         } else {
             request.data = {};
             process.nextSuccess(request, response);
@@ -162,31 +162,9 @@ module.exports = {
             process.nextSuccess(request, response);
         } else {
             process.stop(request, response, {
-                success: true,
                 code: 'SUC_DATA_00001',
                 msg: 'Could not find any data to import for given modules'
             });
-        }
-
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
         }
     }
 };

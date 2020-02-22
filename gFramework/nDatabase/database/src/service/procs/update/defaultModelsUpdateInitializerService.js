@@ -35,10 +35,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating remove request: ');
         if (!request.query || UTILS.isBlank(request.query)) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_UPD_00001'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_UPD_00001'));
         } else if (!request.model || UTILS.isBlank(request.model)) {
             process.error(request, response, {
                 success: false,
@@ -72,11 +69,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preUpdate), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error
-                });
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00003'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -91,12 +84,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preUpdate), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.error = {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error
-                };
-                process.error(request, response);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00003'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -108,24 +96,15 @@ module.exports = {
         try {
             request.schemaModel.updateItems(request).then(result => {
                 response.success = {
-                    success: true,
                     code: 'SUC_UPD_00000',
                     result: result
                 };
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_UPD_00000',
-                    error: error
-                });
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_UPD_00000'));
             });
         } catch (error) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_UPD_00000',
-                error: error
-            });
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_UPD_00000'));
         }
     },
 
@@ -139,11 +118,7 @@ module.exports = {
             this.populateModels(request, response, response.success.result.models, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00003',
-                    error: error
-                });
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00002'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -244,12 +219,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postUpdate), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.error = {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error
-                };
-                process.error(request, response);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -265,11 +235,7 @@ module.exports = {
                 SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postUpdate), request, response).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, {
-                        success: false,
-                        code: 'ERR_FIND_00005',
-                        error: error
-                    });
+                    process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
                 });
             } else {
                 process.nextSuccess(request, response);
@@ -360,25 +326,5 @@ module.exports = {
             this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_UPD_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

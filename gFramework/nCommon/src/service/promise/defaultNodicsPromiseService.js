@@ -10,7 +10,6 @@
  */
 
 module.exports = {
-
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -33,34 +32,30 @@ module.exports = {
         });
     },
 
-    validateEvent: function (event) {
-        if (UTILS.isBlank(event)) {
-            return false;
-        }
-        return true;
-    },
-
-    handleEvent: function (request, callback) {
-        if (CONTROLLER.DefaultEventController.validateEvent(request.httpRequest.body)) {
-            request.event = request.httpRequest.body;
-            if (callback) {
-                FACADE.DefaultEventFacade.handleEvent(request).then(success => {
-                    callback(null, success);
+    all: function (promises, response = {}) {
+        return new Promise((resolve, reject) => {
+            if (promises && promises.length > 0) {
+                let ops = promises.shift();
+                Promise.all([ops]).then(success => {
+                    if (!response.success) response.success = [];
+                    response.success = response.success.concat(success);
+                    nodicsPromise(promises, response).then(response => {
+                        resolve(response);
+                    }).catch(error => {
+                        reject(error);
+                    });
                 }).catch(error => {
-                    callback(error);
+                    if (!response.errors) response.errors = [];
+                    response.errors.push(error);
+                    nodicsPromise(promises, response).then(response => {
+                        resolve(response);
+                    }).catch(error => {
+                        reject(error);
+                    });
                 });
             } else {
-                return FACADE.DefaultEventFacade.handleEvent(request);
+                resolve(response);
             }
-        } else {
-            if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00001'
-                });
-            } else {
-                return Promise.reject(new CLASSES.NodicsError('ERR_EVNT_00001'));
-            }
-        }
+        });
     }
 };

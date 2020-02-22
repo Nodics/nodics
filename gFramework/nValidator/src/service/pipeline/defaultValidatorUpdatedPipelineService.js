@@ -38,9 +38,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating validator update request');
         if (!request.code) {
-            process.error(request, response, 'Validator code can not be null or empty');
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Validator code can not be null or empty'));
         } else if (!request.tenant) {
-            process.error(request, response, 'Validator tenant can not be null or empty');
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Validator tenant can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -60,7 +60,7 @@ module.exports = {
                     request.validator.tenant = request.tenant;
                     process.nextSuccess(request, response);
                 } else {
-                    process.error(request, response, 'None validators found for code: ' + request.code);
+                    process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'None validators found for code: ' + request.code));
                 }
             }).catch(error => {
                 process.error(request, response, error);
@@ -90,19 +90,5 @@ module.exports = {
         }).catch(error => {
             process.error(request, response, error);
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors instanceof Array) {
-            process.reject(response.errors[0]);
-        } else {
-            process.reject(response.error);
-        }
     }
 };

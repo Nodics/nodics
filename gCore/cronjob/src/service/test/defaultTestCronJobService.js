@@ -17,15 +17,9 @@ module.exports = {
             var today = new Date();
             this.LOG.info('CronJos:' + input.definition.code + ' : ' + input.definition.tenant + ' Started................ : ' + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds());
             resolve({
-                success: true,
-                code: 'SUC_CRON_00000',
-                msg: 'Successfully executed ' + input.definition.code + ' : ' + input.definition.tenant
+                code: 'SUC_JOB_00000',
+                message: 'Successfully executed ' + input.definition.code + ' : ' + input.definition.tenant
             });
-            // reject({
-            //     success: false,
-            //     code: 'ERR_CRON_00000',
-            //     msg: 'Successfully completed'
-            // });
         });
     },
 
@@ -34,9 +28,8 @@ module.exports = {
             var today = new Date();
             this.LOG.info('CronJos:' + input.definition.code + ' : ' + input.definition.tenant + ' Stoped................ : ' + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds());
             resolve({
-                success: true,
-                code: 'SUC_CRON_00000',
-                msg: 'Successfully completed ' + input.definition.code + ' : ' + input.definition.tenant
+                code: 'SUC_JOB_00000',
+                message: 'Successfully completed ' + input.definition.code + ' : ' + input.definition.tenant
             });
         });
     }

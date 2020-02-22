@@ -37,10 +37,7 @@ module.exports = {
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for saving model');
         if (!request.model) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SAVE_00001'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_SAVE_00001'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -67,11 +64,7 @@ module.exports = {
             process.nextSuccess(request, response);
         } catch (error) {
             console.log(error);
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SAVE_00002',
-                error: error
-            });
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00002'));
         }
     },
 
@@ -208,6 +201,7 @@ module.exports = {
 
     handleNestedModel: function (request, response, property) {
         return new Promise((resolve, reject) => {
+            throw new Error('take care');
             try {
                 let model = request.model;
                 let models = model[property];
@@ -269,11 +263,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 console.log(error);
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -288,12 +278,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.error = {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error
-                };
-                process.error(request, response);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -331,16 +316,10 @@ module.exports = {
             } else {
                 model.result = success;
             }
-            response.model = model;
+            response.success = model;
             process.nextSuccess(request, response);
         }).catch(error => {
-            console.log(request.model);
-            this.LOG.error(error);
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SAVE_00000',
-                error: error.toString()
-            });
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00000'));
         });
     },
 
@@ -348,15 +327,11 @@ module.exports = {
         this.LOG.debug('Populating sub models');
         let rawSchema = request.schemaModel.rawSchema;
         let inputOptions = request.options || {};
-        if (response.model.result && inputOptions.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
-            this.populateModels(request, response, [response.model.result], 0).then(success => {
+        if (response.success.result && inputOptions.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
+            this.populateModels(request, response, [response.success.result], 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00003',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00002'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -452,8 +427,8 @@ module.exports = {
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
         let virtualProperties = request.schemaModel.rawSchema.virtualProperties;
-        if (response.model.result && virtualProperties && !UTILS.isBlank(virtualProperties)) {
-            SERVICE.DefaultSchemaVirtualPropertiesHandlerService.populateVirtualProperties(virtualProperties, response.model.result);
+        if (response.success.result && virtualProperties && !UTILS.isBlank(virtualProperties)) {
+            SERVICE.DefaultSchemaVirtualPropertiesHandlerService.populateVirtualProperties(virtualProperties, response.success.result);
             process.nextSuccess(request, response);
         } else {
             process.nextSuccess(request, response);
@@ -468,12 +443,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.error = {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error
-                };
-                process.error(request, response);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -488,11 +458,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -503,7 +469,7 @@ module.exports = {
         this.LOG.debug('Invalidating router cache for modified model');
         try {
             let schemaModel = request.schemaModel;
-            if (response.model) {
+            if (response.success) {
                 SERVICE.DefaultCacheService.flushCache({
                     moduleName: schemaModel.moduleName,
                     channelName: 'router',
@@ -526,7 +492,7 @@ module.exports = {
         this.LOG.debug('Invalidating item cache for modified model');
         try {
             let schemaModel = request.schemaModel;
-            if (response.model && schemaModel.cache && schemaModel.cache.enabled) {
+            if (response.success && schemaModel.cache && schemaModel.cache.enabled) {
                 SERVICE.DefaultCacheService.flushCache({
                     moduleName: schemaModel.moduleName,
                     channelName: 'schema',
@@ -549,7 +515,7 @@ module.exports = {
         this.LOG.debug('Triggering event for modified model');
         try {
             let schemaModel = request.schemaModel;
-            if (response.model.result && schemaModel.rawSchema.event && schemaModel.rawSchema.event.enabled) {
+            if (response.success.result && schemaModel.rawSchema.event && schemaModel.rawSchema.event.enabled) {
                 let event = {
                     tenant: request.tenant,
                     event: schemaModel.schemaName + 'Save',
@@ -563,7 +529,7 @@ module.exports = {
                     data: {
                         schemaName: schemaModel.schemaName,
                         modelName: schemaModel.modelName,
-                        result: response.model.result
+                        result: response.success.result
                     }
                 };
                 this.LOG.debug('Pushing event for item created : ' + schemaModel.schemaName);
@@ -583,8 +549,8 @@ module.exports = {
         this.LOG.debug('Triggering event for modified model');
         try {
             let schemaModel = request.schemaModel;
-            let savedModel = response.model.result;
-            if (response.model.result && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
+            let savedModel = response.success.result;
+            if (response.success.result && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
                 let itemDetails = [];
                 schemaModel.workflowCodes.forEach(workflowCode => {
                     itemDetails.push({
@@ -605,23 +571,5 @@ module.exports = {
             this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        process.resolve(response.model);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_FIND_00005',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

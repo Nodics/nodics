@@ -11,21 +11,5 @@
 
 module.exports = {
 
-    SUC_DBS_00000: {
-        code: '140000',
-        description: 'Successfully processed',
-        message: 'Successfully processed',
-    },
 
-    ERR_DBS_00000: {
-        code: '140000',
-        description: 'Failed due to some internal error',
-        message: 'Failed due to some internal error',
-    },
-
-    ERR_DBS_00001: {
-        code: '140001',
-        description: 'Failed due to connectivity issue',
-        message: 'Failed due to connectivity issue',
-    }
 };

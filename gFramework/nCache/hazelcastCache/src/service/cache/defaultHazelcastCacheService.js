@@ -51,11 +51,7 @@ module.exports = {
                     result: value
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
 
         });
@@ -68,11 +64,7 @@ module.exports = {
                 this.LOG.debug('Getting value from local cache storage with key: ' + key);
                 options.client.get(key, (error, value) => {
                     if (error) {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00000',
-                            error: error
-                        });
+                        reject(new CLASSES.CacheError(error));
                     } else if (value) {
                         resolve({
                             success: true,
@@ -80,18 +72,11 @@ module.exports = {
                             result: value
                         });
                     } else {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00001'
-                        });
+                        reject(new CLASSES.CacheError('ERR_CACHE_00001'));
                     }
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
 
         });

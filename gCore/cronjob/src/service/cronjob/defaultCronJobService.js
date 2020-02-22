@@ -95,10 +95,7 @@ module.exports = {
                         reject(error);
                     });
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00001'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00001'));
                 }
             }).catch(error => {
                 reject(error);
@@ -126,10 +123,7 @@ module.exports = {
                         reject(error);
                     });
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00001'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00001'));
                 }
             }).catch(error => {
                 reject(error);
@@ -157,10 +151,7 @@ module.exports = {
                         reject(error);
                     });
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00001'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_JOB_00001'));
                 }
             }).catch(error => {
                 reject(error);

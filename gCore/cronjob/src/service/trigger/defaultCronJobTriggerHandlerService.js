@@ -35,11 +35,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating job trigger request');
         if (!request.job) {
-            process.error(request, response, 'Invalid job detail to execute');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job detail to execute'));
         } else if (!request.definition) {
-            process.error(request, response, 'Invalid job definition to execute');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job definition to execute'));
         } else if (!request.definition.jobDetail || UTILS.isBlank(request.definition.jobDetail)) {
-            process.error(request, response, 'Invalid job detail');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job detail'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -78,11 +78,7 @@ module.exports = {
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -100,11 +96,7 @@ module.exports = {
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -149,7 +141,7 @@ module.exports = {
                 process.error(request, response, error);
             });
         } else {
-            process.error(request, response, 'Invalid job detail to execute');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job detail to execute'));
         }
     },
 
@@ -186,11 +178,7 @@ module.exports = {
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -209,11 +197,7 @@ module.exports = {
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -277,13 +261,6 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
-        let errors = [];
-        if (response.errors && response.errors.length >= 1) {
-            errors = response.errors;
-        } else {
-            errors.push(response.error);
-        }
-        response.errors = errors;
         let definition = request.definition;
         if (definition.jobDetail && definition.jobDetail.errorNode) {
             let errorNode = definition.jobDetail.errorNode;
@@ -292,11 +269,11 @@ module.exports = {
             SERVICE[serviceName][functionName]({
                 job: request.job,
                 definition: definition,
-                errors: errors
+                errors: response.error
             }).then(success => {
                 this.handleError(request, response, process);
             }).catch(error => {
-                response.errors.push(error);
+                response.error.add(error);
                 this.handleError(request, response, process);
             });
         } else {
@@ -308,7 +285,7 @@ module.exports = {
         let jobDefinition = request.definition;
         jobDefinition.state = ENUMS.CronJobState.ACTIVE.key;
         jobDefinition.status = ENUMS.CronJobStatus.ERROR.key;
-        jobDefinition.log = response.errors;
+        jobDefinition.log = response.error.toJson();
         jobDefinition.endTime = new Date();
         SERVICE.DefaultCronJobService.update({
             tenant: jobDefinition.tenant,
@@ -322,9 +299,9 @@ module.exports = {
                 log: response.errors
             }
         }).then(success => {
-            process.reject(response.errors);
+            process.reject(response.error);
         }).catch(error => {
-            process.reject(response.errors);
+            process.reject(response.error);
         });
     }
 };

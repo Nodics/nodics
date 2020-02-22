@@ -37,11 +37,7 @@ module.exports = {
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for doSaving model');
         if (!request.model) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                msg: 'Invalid data model to save'
-            });
+            process.error(request, response, new CLASSES.NodicsNodics('ERR_FIND_00001', 'Invalid data model to save'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -59,11 +55,7 @@ module.exports = {
             SERVICE.DefaultSearchValueProviderHandlerService.handleValueProviders(valueProviders, request.model).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -135,11 +127,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00009'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -154,11 +142,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00009'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -169,17 +153,12 @@ module.exports = {
         this.LOG.debug('Executing doSave operation');
         request.searchModel.doSave(request).then(result => {
             response.success = {
-                success: true,
                 code: 'SUC_SRCH_00000',
                 result: result
             };
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                error: error
-            });
+            process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
         });
     },
 
@@ -202,11 +181,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00010'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -221,11 +196,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00010'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -316,23 +287,5 @@ module.exports = {
             this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_FIND_00005',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

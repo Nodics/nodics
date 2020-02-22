@@ -35,7 +35,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do refresh request');
         if (!request.searchModel) {
-            process.error(request, response, 'Invalid search model or search is not active for this schema');
+            process.error(request, response, new CLASSES.NodicsNodics('ERR_FIND_00001', 'Invalid search model or search is not active for this schema'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -54,11 +54,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoRefresh), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00003'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -73,11 +69,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoRefresh), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00003'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -110,11 +102,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoRefresh), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -129,11 +117,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoRefresh), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -169,25 +153,5 @@ module.exports = {
             this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
-    },
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

@@ -17,9 +17,4 @@ module.exports = {
         message: 'Successfully processed',
     },
 
-    ERR_DBS_00000: {
-        code: '160000',
-        description: 'Failed due to some internal error',
-        message: 'Failed due to some internal error',
-    }
 };

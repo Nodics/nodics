@@ -82,11 +82,7 @@ module.exports = {
             try {
                 options.channel.client.keys(function (err, cacheKeys) {
                     if (err) {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00000',
-                            error: error
-                        });
+                        reject(new CLASSES.CacheError(err));
                     } else {
                         if (options.prefix) {
                             let prefix = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.prefix;

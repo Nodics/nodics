@@ -35,15 +35,11 @@ module.exports = {
 
     handleSuccess: function (request, response, success) {
         try {
-            let output = {
-                code: success.code || 'SUC_SYS_00000',
-                responseCode: success.responseCode || SERVICE.DefaultStatusService.get(success.code).code,
-                message: success.message || SERVICE.DefaultStatusService.get(success.code).message,
-                cache: success.cache,
-                result: success.result
-            };
-            response.status(output.responseCode);
-            response.json(output);
+            success.code = success.code || 'SUC_SYS_00000';
+            success.responseCode = success.responseCode || SERVICE.DefaultStatusService.get(success.code).code;
+            success.message = success.message || SERVICE.DefaultStatusService.get(success.code).message;
+            response.status(success.responseCode);
+            response.json(success);
         } catch (error) {
             this.handleError(request, response, error);
         }

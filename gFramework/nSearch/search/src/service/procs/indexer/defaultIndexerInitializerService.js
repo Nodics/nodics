@@ -36,23 +36,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating indexer request');
         if (request.indexerConfig.state === ENUMS.IndexerState.RUNNING.key) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                msg: 'Currently indexer: ' + request.indexerConfig.code + ' is on RUNNING state'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Currently indexer: ' + request.indexerConfig.code + ' is on RUNNING state'));
         } else if (!request.moduleName) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                msg: 'Invalid module name'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid module name'));
         } else if (!request.indexerConfig) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                msg: 'Invalid indexer configuration found'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid indexer configuration found'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -70,16 +58,13 @@ module.exports = {
         }).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00006',
-                error: error
-            });
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SRCH_00006'));
         });
     },
 
     buildOptions: function (request, response, process) {
         this.LOG.debug('Building options for indexer');
+        let error = null;
         try {
             let indexerConfig = request.indexerConfig;
             if (indexerConfig.schema && !UTILS.isBlank(indexerConfig.schema)) {
@@ -129,14 +114,14 @@ module.exports = {
             } else {
                 throw new Error('Target object within indexer can not be null or empty');
             }
-        } catch (error) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                error: error
-            });
+        } catch (err) {
+            error = new CLASSES.NodicsError(error, null, 'ERR_SRCH_00006');
         }
-        process.nextSuccess(request, response);
+        if (error) {
+            process.error(request, response, error);
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     triggerIndex: function (request, response, process) {
@@ -148,11 +133,7 @@ module.exports = {
             response.targetNode = 'externalIndexerInitializer';
             process.nextSuccess(request, response);
         } else {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                msg: 'Invalid type value in indexer: ' + request.indexerConfig.type
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid type value in indexer: ' + request.indexerConfig.type));
         }
     },
 
@@ -169,11 +150,7 @@ module.exports = {
         }).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00006',
-                error: error
-            });
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SRCH_00006'));
         });
     },
 
@@ -193,32 +170,7 @@ module.exports = {
         }).then(success => {
             process.error(request, response);
         }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00006',
-                error: error
-            });
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SRCH_00006'));
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

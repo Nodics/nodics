@@ -45,16 +45,12 @@ module.exports = {
                     options.ttl = 0;
                 }
                 SERVICE.DefaultCacheService.put(options).then(success => {
-                    resolve(true);
+                    resolve(success);
                 }).catch(error => {
                     reject(error);
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_AUTH_00000',
-                    error: error
-                });
+                reject(new CLASSES.NodicsNodics(error, null, 'ERR_AUTH_00000'));
             }
         });
     },
@@ -72,7 +68,7 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsNodics(error, null, 'ERR_AUTH_00000'));
             }
         });
     }

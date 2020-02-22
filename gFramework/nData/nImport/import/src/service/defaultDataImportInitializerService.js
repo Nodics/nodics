@@ -37,11 +37,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.data.headers) {
-            process.error(request, response, 'Please validate request. Mandate property headers not have valid value');
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property headers not have valid value'));
         } else if (!request.inputPath) {
-            process.error(request, response, 'Please validate request. Mandate property inputPath not have valid value');
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property inputPath not have valid value'));
         } else if (!request.outputPath) {
-            process.error(request, response, 'Please validate request. Mandate property outputPath not have valid value');
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property outputPath not have valid value'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -63,7 +63,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            process.error(request, response, error);
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SYS_00000'));
         }
     },
 

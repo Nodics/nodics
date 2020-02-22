@@ -47,7 +47,7 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
             }
         });
     },

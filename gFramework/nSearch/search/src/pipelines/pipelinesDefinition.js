@@ -56,14 +56,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoRefreshInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoRefreshInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoRefreshInitializerService.handleErrorEnd'
             }
         }
     },
@@ -103,14 +95,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoCheckClusterHealthInitializerService.applyPostInterceptors',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoCheckClusterHealthInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoCheckClusterHealthInitializerService.handleErrorEnd'
             }
         }
     },
@@ -150,14 +134,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoExistModelInitializerService.applyPostInterceptors',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoExistModelInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoExistModelInitializerService.handleErrorEnd'
             }
         }
     },
@@ -217,14 +193,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoGetModelsInitializerService.updateCache',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoGetModelsInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoGetModelsInitializerService.handleErrorEnd'
             }
         }
     },
@@ -284,14 +252,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoSearchModelsInitializerService.updateCache',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoSearchModelsInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoSearchModelsInitializerService.handleErrorEnd'
             }
         }
     },
@@ -320,15 +280,11 @@ module.exports = {
             postProcessor: {
                 type: 'function',
                 handler: 'DefaultDoSaveModelsInitializerService.postProcessor',
-                success: 'successEnd'
+                success: 'handleSucessEnd'
             },
-            successEnd: {
+            handleSucessEnd: {
                 type: 'function',
                 handler: 'DefaultDoSaveModelsInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.handleErrorEnd'
             }
         }
     },
@@ -408,14 +364,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoSaveModelInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelInitializerService.handleErrorEnd'
             }
         }
     },
@@ -480,14 +428,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoBulkModelsInitializerService.updateCache',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoBulkModelsInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoBulkModelsInitializerService.handleErrorEnd'
             }
         }
     },
@@ -552,14 +492,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoRemoveModelsInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoRemoveModelsInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoRemoveModelsInitializerService.handleErrorEnd'
             }
         }
     },
@@ -624,14 +556,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoRemoveModelsByQueryInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoRemoveModelsByQueryInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoRemoveModelsByQueryInitializerService.handleErrorEnd'
             }
         }
     },
@@ -671,14 +595,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoGetSchemaInitializerService.applyPostInterceptors',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoGetSchemaInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoGetSchemaInitializerService.handleErrorEnd'
             }
         }
     },
@@ -723,14 +639,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoUpdateSchemaInitializerService.applyPostInterceptors',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoUpdateSchemaInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoUpdateSchemaInitializerService.handleErrorEnd'
             }
         }
     },
@@ -790,14 +698,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoRemoveIndexInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoRemoveIndexInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoRemoveIndexInitializerService.handleErrorEnd'
             }
         }
     },
@@ -856,14 +756,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultIndexerInitializerService.errorHandler',
                 success: 'handleError'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultIndexerInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultIndexerInitializerService.handleErrorEnd'
             }
         }
     },
@@ -913,14 +805,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultInternalIndexerInitializerService.importFinalizeData',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.handleErrorEnd'
             }
         }
     },
@@ -975,14 +859,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultExternalIndexerInitializerService.importFinalizeData',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.handleErrorEnd'
             }
         }
     },
@@ -1022,14 +898,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultIndexerDataHandlerService.processData',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultIndexerDataHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultIndexerDataHandlerService.handleErrorEnd'
             }
         }
     }

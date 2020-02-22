@@ -38,29 +38,16 @@ module.exports = {
     getFileContent: function (request) {
         return new Promise((resolve, reject) => {
             if (!request.type) {
-                reject({
-                    success: false,
-                    code: 'ERR_SYS_00001',
-                    msg: 'Invalid request, Type can not be null or empty'
-                });
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid request, Type can not be null or empty'));
             } else if (!request.fileName) {
-                reject({
-                    success: false,
-                    code: 'ERR_SYS_00002',
-                    msg: 'Invalid request, File name can not be null or empty'
-                });
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid request, File name can not be null or empty'));
             } else {
                 let filePath = NODICS.getNodicsHome() + '/' + request.path + '/' + request.fileName;
                 fs.readFile(filePath, 'utf8', function (error, contents) {
                     if (error) {
-                        reject({
-                            success: false,
-                            code: 'ERR_SYS_00000',
-                            error: error
-                        });
+                        reject(new CLASSES.NodicsError(error, null, 'ERR_SYS_00000'));
                     } else {
                         resolve({
-                            success: true,
                             code: 'SUC_SYS_00001',
                             data: contents
                         });
@@ -73,11 +60,7 @@ module.exports = {
     downloadFile: function (request) {
         return new Promise((resolve, reject) => {
             if (!request.fileName) {
-                reject({
-                    success: false,
-                    code: 'ERR_SYS_00002',
-                    msg: 'Invalid request, File name can not be null or empty'
-                });
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid request, File name can not be null or empty'));
             } else {
                 let filePath = NODICS.getNodicsHome() + '/' + request.path + '/' + request.fileName;
                 if (fs.existsSync) {
@@ -87,11 +70,7 @@ module.exports = {
                         filePath: filePath
                     });
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_SYS_00002',
-                        msg: 'Invalid request, File name can not be null or empty'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid request, File name can not be null or empty'));
                 }
             }
         });

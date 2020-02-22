@@ -56,11 +56,7 @@ module.exports = {
                     requestTimeout: defaultSearchConfig.requestTimeout
                 }, function (error) {
                     if (error) {
-                        reject({
-                            success: false,
-                            code: 'ERR_SRCH_00001',
-                            msg: error
-                        });
+                        reject(new CLASSES.NodicsError(error, null, 'ERR_SRCH_00001'));
                     } else {
                         searchEngine.setConnection(client);
                         searchEngine.setActive(true);
@@ -68,20 +64,12 @@ module.exports = {
                             searchEngine.setIndexes(success);
                             resolve(searchEngine);
                         }).catch(error => {
-                            reject({
-                                success: false,
-                                code: 'ERR_SRCH_00002',
-                                error: error
-                            });
+                            reject(error);
                         });
                     }
                 });
             } catch (err) {
-                reject({
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: err
-                });
+                reject(new CLASSES.NodicsError(err, null, 'ERR_SRCH_00000'));
             }
         });
     },
@@ -93,13 +81,13 @@ module.exports = {
                 _self.LOG.debug('Retrieving list of available indexes for');
                 searchEngine.getConnection().cluster.state({}, function (error, response) {
                     if (error) {
-                        reject(error);
+                        reject(new CLASSES.NodicsError(error, null, 'ERR_SRCH_00000'));
                     } else {
                         resolve(response.metadata.indices || {});
                     }
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_SRCH_00000'));
             }
         });
     },

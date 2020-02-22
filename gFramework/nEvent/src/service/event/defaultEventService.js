@@ -85,13 +85,13 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        reject('Invalid eventListner code or data been updated');
+                        reject(new CLASSES.NodicsError('ERR_EVNT_00000', 'Invalid eventListner code or data been updated'));
                     }
                 }).catch(error => {
                     reject(error);
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
             }
         });
     },
@@ -114,7 +114,7 @@ module.exports = {
                     resolve('Event listener: ' + listener.event + ' successfully removed from module: ' + listener.moduleName);
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
             }
         });
     },
@@ -154,7 +154,7 @@ module.exports = {
                 });
                 resolve(true);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
             }
         });
     },
@@ -164,17 +164,9 @@ module.exports = {
         let event = request.event;
         return new Promise((resolve, reject) => {
             if (!NODICS.getModule(event.target)) {
-                reject({
-                    success: false,
-                    code: 'SUC_EVNT_00000',
-                    msg: 'Could not find target module, whithin system: ' + event.target
-                });
+                reject(new CLASSES.NodicsError('ERR_EVNT_00000', 'Could not find target module, whithin system: ' + event.target));
             } else if (!NODICS.getModule(event.target).eventService) {
-                reject({
-                    success: false,
-                    code: 'SUC_EVNT_00000',
-                    msg: 'Event service has not been initialized for module: ' + event.target
-                });
+                reject(new CLASSES.NodicsError('ERR_EVNT_00000', 'Event service has not been initialized for module: ' + event.target));
             } else {
                 let eventService = NODICS.getModule(event.target).eventService;
                 if (eventService && eventService.eventNames() &&
@@ -190,11 +182,7 @@ module.exports = {
                                 }
                             }, request);
                         } catch (error) {
-                            reject({
-                                success: false,
-                                code: 'SUC_EVNT_00000',
-                                error: error
-                            });
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
                         }
                     } else {
                         try {
@@ -207,31 +195,21 @@ module.exports = {
                                 }
                             }, request);
                             resolve({
-                                success: true,
                                 code: 'SUC_EVNT_00000'
                             });
                         } catch (error) {
-                            reject({
-                                success: false,
-                                code: 'SUC_EVNT_00000',
-                                error: error
-                            });
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
                         }
                     }
 
                 } else {
                     if (CONFIG.get('event').ignoreIfNoLister) {
                         resolve({
-                            success: true,
                             code: 'SUC_EVNT_00000',
                             msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
                         });
                     } else {
-                        reject({
-                            success: true,
-                            code: 'SUC_EVNT_00000',
-                            msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
-                        });
+                        reject(new CLASSES.NodicsError('ERR_EVNT_00000', 'There is no Listener register for event ' + event.event + ' in module ' + event.target));
                     }
                 }
             }
@@ -257,46 +235,21 @@ module.exports = {
                     if (CONFIG.get('event').publishAllActive) {
                         this.LOG.debug('Publishing event to event server');
                         SERVICE.DefaultModuleService.fetch(this.prepareURL(event)).then(response => {
-                            if (response.success) {
-                                resolve({
-                                    success: true,
-                                    code: 'SUC_EVNT_00000',
-                                    result: response
-                                });
-                            } else {
-                                reject({
-                                    success: false,
-                                    code: 'ERR_EVNT_00000',
-                                    error: response
-                                });
-                            }
-                        }).catch(error => {
-                            reject({
-                                success: false,
-                                code: 'ERR_EVNT_00000',
-                                error: error
+                            resolve({
+                                code: 'SUC_EVNT_00000',
+                                result: response.result
                             });
+                        }).catch(error => {
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
                         });
                     } else {
-                        reject({
-                            success: false,
-                            code: 'ERR_EVNT_00002',
-                            msg: 'Currently publishing event is not allowed, pleach check property [event.publishAllActive]'
-                        });
+                        reject(new CLASSES.NodicsError('ERR_EVNT_00002', 'Currently publishing event is not allowed, please check property [event.publishAllActive]'));
                     }
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_EVNT_00002',
-                        msg: 'Currently test channel is running...'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_EVNT_00002', 'Currently test channel is running...'));
                 }
             } else {
-                reject({
-                    success: false,
-                    code: 'ERR_EVNT_00002',
-                    msg: 'Nodics server has not been started yet, please wait..'
-                });
+                reject(new CLASSES.NodicsError('ERR_EVNT_00002', 'Nodics server has not been started yet, please wait..'));
             }
         });
     }

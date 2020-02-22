@@ -54,36 +54,19 @@ module.exports = {
                                     reject(error);
                                 });
                             } else {
-                                reject({
-                                    success: false,
-                                    code: 'ERR_SRCH_00005'
-                                });
+                                reject(new CLASSES.NodicsError('ERR_SRCH_00005'));
                             }
                         } else {
-                            reject({
-                                success: false,
-                                code: 'ERR_SRCH_00003'
-                            });
+                            reject(new CLASSES.NodicsError('ERR_SRCH_00003'));
                         }
                     } else {
-                        reject({
-                            success: false,
-                            code: 'ERR_SRCH_00004'
-                        });
+                        reject(new CLASSES.NodicsError('ERR_SRCH_00004'));
                     }
                 }).catch(error => {
-                    reject({
-                        success: false,
-                        code: 'ERR_SRCH_00000',
-                        error: error
-                    });
+                    reject(new CLASSES.NodicsError('ERR_SRCH_00000'));
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error
-                });
+                reject(new CLASSES.NodicsError('ERR_SRCH_00000'));
             }
         });
     }

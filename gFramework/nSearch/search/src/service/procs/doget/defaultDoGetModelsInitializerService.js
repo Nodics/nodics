@@ -35,9 +35,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do get request');
         if (!request.searchModel) {
-            process.error(request, response, 'Invalid search model or search is not active for this schema');
+            process.error(request, response, new CLASSES.NodicsNodics('ERR_FIND_00001', 'Invalid search model or search is not active for this schema'));
         } else if (!request.query || !request.query.id) {
-            process.error(request, response, 'Invalid search request, query can not be null or conatian invalid property');
+            process.error(request, response, new CLASSES.NodicsNodics('ERR_FIND_00001', 'Invalid search request, query can not be null or conatian invalid property'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -61,7 +61,6 @@ module.exports = {
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
                 process.stop(request, response, {
-                    success: true,
                     code: 'SUC_SRCH_00000',
                     cache: 'item hit',
                     result: value.result
@@ -89,11 +88,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00003'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -108,11 +103,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00003'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -129,11 +120,7 @@ module.exports = {
             };
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                error: error
-            });
+            process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
         });
     },
 
@@ -156,11 +143,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -175,11 +158,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -205,26 +184,5 @@ module.exports = {
             });
         }
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

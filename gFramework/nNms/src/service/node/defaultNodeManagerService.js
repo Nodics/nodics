@@ -43,16 +43,11 @@ module.exports = {
                     clearInterval(moduleObject.nms.checker);
                 }
                 resolve({
-                    success: true,
                     code: 'SUC_SYS_00000',
                     msg: 'Request processed successfuly'
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error
-                });
+                reject(new CLASSES.NodicsError(error, null, 'ERR_SYS_00000'));
             }
         });
     },
@@ -61,26 +56,22 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let moduleObject = NODICS.getModule(request.moduleName);
             if (request.nodeId === undefined) {
-                reject({
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    msg: 'NodeId can not be null or empty'
-                });
+                reject(new CLASSES.NodicsError('ERR_SYS_00000', 'NodeId can not be null or empty'));
             } else if (!moduleObject.nms || !moduleObject.nms.nodes || !moduleObject.nms.nodes[request.nodeId] ||
                 !moduleObject.nms.nodes[request.nodeId].requested || request.nodeId < CONFIG.get('nodeId')) {
                 SERVICE.DefaultNodeConfigurationService.grantNodeResponsibility(request.moduleName, request.nodeId);
                 resolve({
-                    success: true,
                     code: 'SUC_RES_00001',
                     msg: 'Successfully granted request'
                 });
             } else {
-                reject({
-                    success: false,
+                reject(new CLASSES.NodicsError({
                     code: 'ERR_RES_00001',
-                    nodeId: CONFIG.get('nodeId'),
-                    error: 'Already handling responsibility'
-                });
+                    message: 'Already handling responsibility',
+                    metadata: {
+                        nodeId: CONFIG.get('nodeId')
+                    }
+                }));
             }
         });
     },
@@ -88,16 +79,11 @@ module.exports = {
     handleNodeActivated: function (request) {
         return new Promise((resolve, reject) => {
             if (request.nodeId === undefined) {
-                reject({
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    msg: 'NodeId can not be null or empty'
-                });
+                reject(new CLASSES.NodicsError('ERR_SYS_00000', 'NodeId can not be null or empty'));
             } else {
                 SERVICE.DefaultNodeConfigurationService.updateNodeActive(request.moduleName, request.nodeId);
                 SERVICE.DefaultNodeStateChangeHandlerService.handleNodeActive(request.moduleName, request.nodeId).then(success => {
                     resolve({
-                        success: true,
                         code: 'SUC_SYS_00000',
                         msg: 'Request processed successfuly'
                     });
@@ -205,7 +191,7 @@ module.exports = {
                         _self.LOG.error('Error while pinging module for health check');
                         _self.LOG.error(error);
                     });
-                }, CONFIG.get('nodePingTimeout') || 5000)
+                }, CONFIG.get('nodePingTimeout') || 5000);
             }
         });
     },

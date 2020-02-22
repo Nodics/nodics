@@ -10,20 +10,5 @@
  */
 
 module.exports = {
-    SUC_SYS_00001: {
-        code: '000001',
-        description: 'Successfully processed',
-        message: 'Successfully processed',
-    },
 
-    ERR_SYS_00001: {
-        code: '000001',
-        description: 'Invalid request, Type can not be null or empty',
-        message: 'Invalid request, Type can not be null or empty',
-    },
-    ERR_SYS_00002: {
-        code: '000002',
-        description: 'Invalid request, File name can not be null or empty',
-        message: 'Invalid request, File name can not be null or empty',
-    }
 };

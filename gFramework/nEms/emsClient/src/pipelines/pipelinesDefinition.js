@@ -36,14 +36,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultMessageProcessService.publishEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultMessageProcessService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultMessageProcessService.handleErrorEnd'
             }
         }
     },
@@ -63,14 +55,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultJSONMessageHandlerService.processMessage',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultJSONMessageHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultJSONMessageHandlerService.handleErrorEnd'
             }
         }
     },
@@ -90,14 +74,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultXMLMessageHandlerService.processMessage',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultXMLMessageHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultXMLMessageHandlerService.handleErrorEnd'
             }
         }
     },
@@ -117,14 +93,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultEmsNodeUpHandlerService.shutdownResponsibilities',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultEmsNodeUpHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultEmsNodeUpHandlerService.handleErrorEnd'
             }
         }
     },
@@ -144,14 +112,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultEmsNodeDownHandlerService.handleResponsibilities',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultEmsNodeDownHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultEmsNodeDownHandlerService.handleErrorEnd'
             }
         }
     }
