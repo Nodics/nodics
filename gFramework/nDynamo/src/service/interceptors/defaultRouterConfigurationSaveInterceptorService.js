@@ -39,7 +39,7 @@ module.exports = {
             if (moduleName && (moduleName === 'default' || moduleName === 'common' || UTILS.isRouterEnabled(moduleName))) {
                 resolve(true);
             } else {
-                reject('Invalid moduleName, it should not be null or inactive for routers');
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid moduleName, it should not be null or inactive for routers'));
             }
         });
     }

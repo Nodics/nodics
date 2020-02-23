@@ -70,7 +70,7 @@ module.exports = {
             } catch (error) {
                 _self.LOG.error('Failed while loading search schema from schema definitions');
                 _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -105,7 +105,7 @@ module.exports = {
             } catch (error) {
                 _self.LOG.error('Failed while loading search schema from schema definitions');
                 _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -143,7 +143,7 @@ module.exports = {
             } catch (error) {
                 _self.LOG.error('Failed while loading search schema from schema definitions');
                 _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -201,7 +201,7 @@ module.exports = {
             } catch (error) {
                 _self.LOG.error('Failed while loading search schema from schema definitions');
                 _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -239,7 +239,7 @@ module.exports = {
             } catch (error) {
                 _self.LOG.error('Failed while loading search schema from schema definitions');
                 _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -285,7 +285,7 @@ module.exports = {
             } catch (error) {
                 _self.LOG.error('Failed while loading search schema from schema definitions');
                 _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -339,12 +339,12 @@ module.exports = {
                                     reject(error);
                                 });
                             } else {
-                                reject('Please validate your schema handler, looks definitions is not fine: could not found prepareTypeSchema function');
+                                reject(new CLASSES.NodicsError('ERR_SRCH_00000', 'Please validate your schema handler, looks definitions is not fine: could not found prepareTypeSchema function'));
                             }
                         }
                     } else {
                         _self.LOG.error('Invalid search model definition for indexName: ' + indexName + ', module: ' + options.moduleName + ', tenant: ' + options.tntCode);
-                        reject('Invalid search model definition for indexName: ' + indexName + ', module: ' + options.moduleName + ', tenant: ' + options.tntCode);
+                        reject(new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid search model definition for indexName: ' + indexName + ', module: ' + options.moduleName + ', tenant: ' + options.tntCode));
                     }
                 } else {
                     resolve(true);
@@ -352,7 +352,7 @@ module.exports = {
             } catch (error) {
                 _self.LOG.error('Failed while loading search schema from schema definitions');
                 _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     }

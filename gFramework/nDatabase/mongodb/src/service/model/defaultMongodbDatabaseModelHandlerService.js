@@ -404,10 +404,10 @@ module.exports = {
                 model.dataBase.getConnection().createIndex(model.modelName, indexConfig.fields, indexConfig.options).then(success => {
                     resolve('Index updated for ' + indexConfig.fields);
                 }).catch(error => {
-                    reject('Index failed for ' + indexConfig.fields + ' : ' + error.toString());
+                    reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Index failed for ' + indexConfig.fields + ' : ' + error.toString()));
                 });
             } catch (error) {
-                reject('Index failed for ' + indexConfig.fields + ' : ' + error.toString());
+                reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Index failed for ' + indexConfig.fields + ' : ' + error.toString()));
             }
         });
     },
@@ -418,10 +418,10 @@ module.exports = {
                 model.dropIndex(indexName).then(success => {
                     resolve('Index deleted for ' + indexName);
                 }).catch(error => {
-                    reject('Index deleting failed for ' + indexName + ' : ' + error.toString());
+                    reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Index deleting failed for ' + indexName + ' : ' + error.toString()));
                 });
             } catch (error) {
-                reject('Index deleting failed for ' + indexName + ' : ' + error.toString());
+                reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Index deleting failed for ' + indexName + ' : ' + error.toString()));
             }
         });
     },

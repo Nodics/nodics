@@ -53,22 +53,22 @@ module.exports = {
 
     remove: function (request) {
         return new Promise((resolve, reject) => {
-            reject('This operation is not supported currently');
+            reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
     removeById: function (ids, tenant) {
         return new Promise((resolve, reject) => {
-            reject('This operation is not supported currently');
+            reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
     removeByCode: function (codes, tenant) {
         return new Promise((resolve, reject) => {
-            reject('This operation is not supported currently');
+            reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
     update: function (request) {
         return new Promise((resolve, reject) => {
-            reject('This operation is not supported currently');
+            reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
 };

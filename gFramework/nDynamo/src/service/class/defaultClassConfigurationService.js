@@ -62,9 +62,9 @@ module.exports = {
             let className = request.className;
             let type = request.type;
             if (!type || !global[type]) {
-                reject('Invlid type: ' + type);
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invlid type: ' + type));
             } else if (!className || !global[type][className.toUpperCaseFirstChar()]) {
-                reject('Invlid className: ' + className);
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invlid className: ' + className));
             } else {
                 var cache = [];
                 let finalClassData = JSON.stringify(global[type][className.toUpperCaseFirstChar()], function (key, value) {
@@ -150,7 +150,7 @@ module.exports = {
         let body = request.result;
         return new Promise((resolve, reject) => {
             if (!body.code) {
-                reject('ClassName can not be null or empty');
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'ClassName can not be null or empty'));
             }
             this.get({
                 tenant: 'default',
@@ -173,11 +173,11 @@ module.exports = {
                         resolve('Successfully updated class: ' + body.code);
                     } else {
                         _self.LOG.error('Invalid type: ' + body.code);
-                        reject('Invalid type: ' + request.body.type);
+                        reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid type: ' + request.body.type));
                     }
                 } else {
                     _self.LOG.error('Could not found any data for class name ' + body.code);
-                    reject('Could not found any data for class name ' + body.code);
+                    reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Could not found any data for class name ' + body.code));
                 }
             }).catch(error => {
                 reject(error);
@@ -216,13 +216,13 @@ module.exports = {
     executeClass: function (request) {
         return new Promise((resolve, reject) => {
             if (!request.body.className) {
-                reject('ClassName can not be null or empty');
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'ClassName can not be null or empty'));
             } else if (!request.body.type || !GLOBAL[request.body.type]) {
-                reject('Invalid type: ' + request.body.type + ' it should not be null, empty or wrong value');
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid type: ' + request.body.type + ' it should not be null, empty or wrong value'));
             } else if (!GLOBAL[request.body.type][request.body.className.toUpperCaseFirstChar()]) {
-                reject('Class: ' + request.body.className + ' not exist, please validate your request');
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Class: ' + request.body.className + ' not exist, please validate your request'));
             } else if (!request.body.operationName || !GLOBAL[request.body.type][request.body.className.toUpperCaseFirstChar()][request.body.operationName]) {
-                reject('Operation name: ' + request.body.operationName + ' can not be null or empty');
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Operation name: ' + request.body.operationName + ' can not be null or empty'));
             } else {
                 let entityString = request.body.type + '.' + request.body.className.toUpperCaseFirstChar() + '.' + request.body.operationName;
                 entityString = entityString + '(';
@@ -246,7 +246,6 @@ module.exports = {
                         let response = eval(entityString);
                         if (response) {
                             resolve({
-                                success: true,
                                 msg: 'Successfully executed operation: ' + request.body.operationName + ' from class: ' + request.body.className,
                                 response: response
                             });
@@ -254,7 +253,7 @@ module.exports = {
                             resolve('Successfully executed operation: ' + request.body.operationName + ' from class: ' + request.body.className);
                         }
                     } catch (error) {
-                        reject(error);
+                        reject(new CLASSES.NodicsError(error, null, 'ERR_SYS_00000'));
                     }
                 }
             }

@@ -39,14 +39,14 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.connectionOptions) {
-                reject('Kafka configuration is not valid');
+                reject(new CLASSES.NodicsError('ERR_EMS_00003'));
             }
             try {
                 const connection = new kafka.KafkaClient(config.connectionOptions);
                 if (connection) {
                     connection.loadMetadataForTopics([], function (error, results) {
                         if (error) {
-                            reject(error);
+                            reject(new CLASSES.CacheError(error, 'Kafka server is not reachable...', 'ERR_EMS_00002'));
                         } else {
                             let queues = _.get(results, '1.metadata');
                             resolve({
@@ -56,10 +56,10 @@ module.exports = {
                         }
                     });
                 } else {
-                    reject('Got null connection while connecting with kafka');
+                    reject(new CLASSES.CacheError('ERR_EMS_00002', 'Kafka server is not reachable...'));
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
         });
     },
@@ -76,7 +76,7 @@ module.exports = {
                     producer = new kafka.HighLevelProducer(client.connection, options);
                 } else {
                     _self.LOG.debug('Invalid publisher type : ' + clientConfig.publisherType);
-                    reject('Invalid publisher type : ' + clientConfig.publisherType);
+                    reject(new CLASSES.NodicsError('ERR_EMS_00004', 'Invalid publisher type : ' + clientConfig.publisherType));
                 }
                 if (producer) {
                     producer.on("ready", function () {
@@ -85,14 +85,14 @@ module.exports = {
                     });
                     producer.on("error", function (error) {
                         _self.LOG.error('While creating kafka publisher : ', error);
-                        reject('While creating kafka publisher : ', error);
+                        reject(new CLASSES.NodicsError(error, 'While creating kafka publisher', 'ERR_EMS_00003'));
                     });
                 } else {
                     _self.LOG.error('Not able to create kafka publisher');
-                    reject('Not able to create kafka publisher');
+                    reject(new CLASSES.NodicsError('ERR_EMS_00004', 'Not able to create kafka publisher'));
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
         });
     },
@@ -103,10 +103,10 @@ module.exports = {
                 if (options.client && options.client.producer) {
                     resolve(options.client.producer);
                 } else {
-                    reject('Invalid client configuration');
+                    reject(new CLASSES.NodicsError('ERR_EMS_00004', 'Invalid client configuration'));
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
         });
     },
@@ -190,7 +190,7 @@ module.exports = {
                         });
                         resolve(consumer);
                     } else {
-                        reject('While creating consumer for queue : ' + queueName);
+                        reject(new CLASSES.NodicsError('ERR_EMS_00004', 'While creating consumer for queue : ' + queueName));
                     }
                     resolve(consumer);
                 }).catch(error => {

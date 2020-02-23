@@ -181,7 +181,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                         _cronJob.start();
                         resolve('Job: ' + _definition.code + ' started successfully');
                     }).catch(error => {
-                        reject('Job: ' + _definition.code + ' has issue while starting: ', error);
+                        reject(new CLASSES.CronJobError(error, 'Job: ' + _definition.code + ' has issue while starting: '));
                     });
                 } else {
                     resolve('Job: ' + _definition.code + ' is already running');
@@ -208,7 +208,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                     }, {}).then(success => {
                         resolve('Job: ' + _definition.code + ' stoped successfully');
                     }).catch(error => {
-                        reject('Job: ' + _definition.code + ' has issue while stoping: ', error);
+                        reject(new CLASSES.CronJobError(error, 'Job: ' + _definition.code + ' has issue while stoping: '));
                     });
                 } else {
                     resolve('Job: ' + _definition.code + ' is already stoped');
@@ -233,7 +233,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                     }, {}).then(success => {
                         resolve('Job: ' + _definition.code + ' paused successfully');
                     }).catch(error => {
-                        reject('Job: ' + _definition.code + ' has issue while stoping: ' + error);
+                        reject(new CLASSES.CronJobError(error, 'Job: ' + _definition.code + ' has issue while stoping: '));
                     });
                 } else {
                     resolve('Job: ' + _definition.code + ' is already paused');
@@ -258,7 +258,7 @@ module.exports = function (definition, trigger, context, timeZone) {
                     }, {}).then(success => {
                         resolve('Job: ' + _definition.code + ' resumed successfully');
                     }).catch(error => {
-                        reject('Job: ' + _definition.code + ' has issue while resuming: ' + error);
+                        reject(new CLASSES.CronJobError(error, 'Job: ' + _definition.code + ' has issue while resuming: ');
                     });
                 } else {
                     resolve('Job: ' + _definition.code + ' is already resumed');

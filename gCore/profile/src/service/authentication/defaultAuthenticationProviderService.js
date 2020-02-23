@@ -125,7 +125,7 @@ module.exports = {
                     _id: options.person._id
                 }).then(state => {
                     if (state.locked || !options.person.active) {
-                        reject('ERR_LIN_00002');
+                        reject(new CLASSES.NodicsError('ERR_LIN_00002'));
                     } else {
                         UTILS.compareHash(options.request.password, options.person.password.password).then(match => {
                             if (match) {
@@ -159,17 +159,17 @@ module.exports = {
                                     state: state,
                                     tenant: options.enterprise.tenant.code
                                 });
-                                reject('ERR_LIN_00003');
+                                reject(new CLASSES.NodicsError('ERR_LIN_00003'));
                             }
                         }).catch(error => {
-                            reject('ERR_AUTH_00000');
+                            reject(new CLASSES.NodicsError('ERR_AUTH_00000'));
                         });
                     }
                 }).catch(error => {
-                    reject('ERR_AUTH_00000');
+                    reject(new CLASSES.NodicsError('ERR_AUTH_00000'));
                 });
             } catch (error) {
-                reject('ERR_AUTH_00000');
+                reject(new CLASSES.NodicsError('ERR_AUTH_00000'));
             }
         });
     },
@@ -190,7 +190,7 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject('ERR_AUTH_00000');
+                reject(new CLASSES.NodicsError('ERR_AUTH_00000'));
             }
         });
     }

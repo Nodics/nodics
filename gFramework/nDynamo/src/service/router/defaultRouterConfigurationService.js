@@ -38,7 +38,7 @@ module.exports = {
         let body = request.result;
         return new Promise((resolve, reject) => {
             if (!body.code) {
-                reject('ClassName can not be null or empty');
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'ClassName can not be null or empty'));
             } else {
                 this.get({
                     tenant: 'default',
@@ -60,7 +60,7 @@ module.exports = {
                             });
                         } else {
                             _self.LOG.error('Could not found any data for router name ' + body.code);
-                            reject('Could not found any data for class name ' + body.code);
+                            reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Could not found any data for class name ' + body.code));
                         }
                     } catch (error) {
                         reject(error);
@@ -102,22 +102,22 @@ module.exports = {
 
     remove: function (request) {
         return new Promise((resolve, reject) => {
-            reject('This operation is not supported currently');
+            reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
     removeById: function (ids, tenant) {
         return new Promise((resolve, reject) => {
-            reject('This operation is not supported currently');
+            reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
     removeByCode: function (codes, tenant) {
         return new Promise((resolve, reject) => {
-            reject('This operation is not supported currently');
+            reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
     update: function (request) {
         return new Promise((resolve, reject) => {
-            reject('This operation is not supported currently');
+            reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
 };

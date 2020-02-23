@@ -42,7 +42,7 @@ module.exports = {
             if (NODICS.isModuleActive(moduleName)) {
                 resolve(true);
             } else {
-                reject('Invalid moduleName, it should not be null or inactive');
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid moduleName, it should not be null or inactive'));
             }
         });
     },

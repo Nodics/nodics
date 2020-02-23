@@ -227,7 +227,7 @@ module.exports = {
                 consumer.consumer.close();
                 resolve('Consumer: ' + consumerName + ' closed successfully');
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
         });
     }

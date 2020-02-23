@@ -55,7 +55,7 @@ module.exports = {
                     });
                 }
             } else {
-                reject('Invalid database connection handler found for module: profile, and tenant: default');
+                reject(new CLASSES.NodicsError('ERR_DBS_00001', 'Invalid database connection handler found for module: profile, and tenant: default'));
             }
         });
     }
