@@ -4,23 +4,14 @@ module.exports = {
         try {
             SERVICE.DefaultEventService.handleListenerUpdateEvent(event.data).then(success => {
                 callback(null, {
-                    success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: success
+                    message: success
                 });
             }).catch(error => {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    msg: error
-                });
+                callback(new CLASSES.EventError(error));
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error));
         }
     },
 
@@ -28,23 +19,14 @@ module.exports = {
         try {
             SERVICE.DefaultEventService.handleListenerRemovedEvent(event.data).then(success => {
                 callback(null, {
-                    success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: success
+                    message: success
                 });
             }).catch(error => {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    msg: error
-                });
+                callback(new CLASSES.EventError(error));
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error));
         }
     }
 };

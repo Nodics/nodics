@@ -21,19 +21,14 @@ module.exports = class EventService extends EventEmitter {
             try {
                 SERVICE[serviceName][operation](event, callback, request);
             } catch (error) {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    error: error
-                });
+                callback(new CLASSES.EventError(error));
             }
         });
     }
 
-    removeListener(eventName) {
+    removeListener(eventName, callback) {
         this.removeListener(eventName, () => {
-            callback({
-                success: true,
+            callback(null, {
                 code: 'SUC_EVNT_00000',
                 msg: 'Event listener: ' + eventName + ' successfully removed'
             });

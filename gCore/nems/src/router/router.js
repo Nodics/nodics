@@ -11,32 +11,6 @@
 
 module.exports = {
     nems: {
-        /* pushNonSecuredEvent: {
-             saveEvent: {
-                 secured: true,
-                 key: '/event/push',
-                 method: 'PUT',
-                 controller: 'DefaultEventController',
-                 operation: 'save',
-                 help: {
-                     requestType: 'non-secured',
-                     message: 'entCode need to set within header',
-                     method: 'GET',
-                     url: 'http://host:port/nodics/nems/event/push',
-                     body: {
-                         event: 'testMe',
-                         source: 'cronjob',
-                         target: 'profile',
-                         nodeId: 'node0',
-                         state: 'NEW',
-                         type: 'ASYNC',
-                         params: {
-                             //any raw data, want to send to handler
-                         }
-                     }
-                 }
-             },
-         },*/
         processEvent: {
             process: {
                 secured: true,

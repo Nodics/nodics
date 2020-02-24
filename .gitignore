@@ -18,6 +18,8 @@ yarn-error.log*
 .vscode
 *.vscode
 .history
+*.history
+**/.history/**
 *.suo
 *.ntvs*
 *.njsproj

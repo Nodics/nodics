@@ -85,31 +85,36 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        reject(new CLASSES.NodicsError('ERR_EVNT_00000', 'Invalid eventListner code or data been updated'));
+                        reject(new CLASSES.EventError('ERR_EVNT_00003', 'Invalid eventListner code or data been updated'));
                     }
                 }).catch(error => {
                     reject(error);
                 });
             } catch (error) {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+                reject(new CLASSES.EventError(error, null, 'ERR_EVNT_00003'));
             }
         });
     },
 
     handleListenerRemovedEvent: function (listener) {
+        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 if (listener.moduleName === 'common') {
                     _.each(NODICS.getModules(), (moduleObject, moduleName) => {
                         if (moduleObject.eventService) {
-                            moduleObject.eventService.removeListener(listener.event);
+                            moduleObject.eventService.removeListener(listener.event, () => {
+                                _self.LOG.debug('Listener has been removed : ' + listener.event);
+                            });
                         }
                     });
                     resolve('Event listener: ' + listener.event + ' successfully removed from all modules');
                 } else {
                     let eventService = NODICS.getModule(listener.moduleName).eventService;
                     if (eventService) {
-                        eventService.removeListener(listener.event);
+                        eventService.removeListener(listener.event, () => {
+                            _self.LOG.debug('Listener has been removed : ' + listener.event);
+                        });
                     }
                     resolve('Event listener: ' + listener.event + ' successfully removed from module: ' + listener.moduleName);
                 }
@@ -164,9 +169,9 @@ module.exports = {
         let event = request.event;
         return new Promise((resolve, reject) => {
             if (!NODICS.getModule(event.target)) {
-                reject(new CLASSES.NodicsError('ERR_EVNT_00000', 'Could not find target module, whithin system: ' + event.target));
+                reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Could not find target module, whithin system: ' + event.target));
             } else if (!NODICS.getModule(event.target).eventService) {
-                reject(new CLASSES.NodicsError('ERR_EVNT_00000', 'Event service has not been initialized for module: ' + event.target));
+                reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Event service has not been initialized for module: ' + event.target));
             } else {
                 let eventService = NODICS.getModule(event.target).eventService;
                 if (eventService && eventService.eventNames() &&

@@ -14,5 +14,8 @@ module.exports = {
         processAsSyncHandler: true,
         publishAllActive: true,
         ignoreIfNoLister: true
+    },
+    defaultErrorCodes: {
+        EventError: 'ERR_EVNT_00000'
     }
 };

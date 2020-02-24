@@ -35,13 +35,14 @@ module.exports = {
 
     validateEvent: function (event) {
         if (UTILS.isBlank(event)) {
-            return false;
+            throw new CLASSES.EventError('ERR_EVNT_00003', 'Event definition can not be null or empty');
         }
         return true;
     },
 
     handleEvent: function (request, callback) {
-        if (CONTROLLER.DefaultEventController.validateEvent(request.httpRequest.body)) {
+        try {
+            CONTROLLER.DefaultEventController.validateEvent(request.httpRequest.body);
             request.event = request.httpRequest.body;
             if (callback) {
                 FACADE.DefaultEventFacade.handleEvent(request).then(success => {
@@ -52,14 +53,12 @@ module.exports = {
             } else {
                 return FACADE.DefaultEventFacade.handleEvent(request);
             }
-        } else {
+        } catch (error) {
+            let err = new CLASSES.EventError(error, null, 'ERR_EVNT_00003');
             if (callback) {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00001'
-                });
+                callback(err);
             } else {
-                return Promise.reject(new CLASSES.NodicsError('ERR_EVNT_00001'));
+                return Promise.reject(err);
             }
         }
     }

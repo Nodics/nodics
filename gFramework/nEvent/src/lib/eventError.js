@@ -9,9 +9,9 @@
 
  */
 
-module.exports = class CronJobError extends CLASSES.NodicsError {
-    constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').CronJobError) {
+module.exports = class EventError extends CLASSES.NodicsError {
+    constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').EventError) {
         super(error, message, defaultCode);
-        super.name = 'CronJobError';
+        super.name = 'EventError';
     }
 };

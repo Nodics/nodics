@@ -93,39 +93,36 @@ module.exports = {
                     if (input.options && input.options.returnModified) {
                         this.find(input.query, input.options).toArray((error, response) => {
                             if (error) {
-                                reject(error);
+                                reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00003'));
                             } else {
-                                this.updateMany(input.query,
-                                    {
-                                        $set: input.model
-                                    }, this.dataBase.getOptions().modelUpdateOptions || {
-                                        upsert: false,
-                                        returnOriginal: false
-                                    }).then(success => {
-                                        let result = success.result;
-                                        response.forEach(element => {
-                                            _.merge(element, input.model);
-                                        });
-                                        result.models = response;
-                                        resolve(result);
-                                    }).catch(error => {
-                                        reject(error);
+                                this.updateMany(input.query, {
+                                    $set: input.model
+                                }, this.dataBase.getOptions().modelUpdateOptions || {
+                                    upsert: false,
+                                    returnOriginal: false
+                                }).then(success => {
+                                    let result = success.result;
+                                    response.forEach(element => {
+                                        _.merge(element, input.model);
                                     });
+                                    result.models = response;
+                                    resolve(result);
+                                }).catch(error => {
+                                    reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00003'));
+                                });
                             }
                         });
                     } else {
-                        this.updateMany(input.query,
-                            {
-                                $set: input.model
-                            },
-                            this.dataBase.getOptions().modelUpdateOptions || {
-                                upsert: false,
-                                returnOriginal: false
-                            }).then(success => {
-                                resolve(success.result);
-                            }).catch(error => {
-                                reject(error);
-                            });
+                        this.updateMany(input.query, {
+                            $set: input.model
+                        }, this.dataBase.getOptions().modelUpdateOptions || {
+                            upsert: false,
+                            returnOriginal: false
+                        }).then(success => {
+                            resolve(success.result);
+                        }).catch(error => {
+                            reject(error);
+                        });
                     }
                 }
             });
