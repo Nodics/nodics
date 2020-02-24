@@ -23,7 +23,7 @@ module.exports = {
                 }
                 resolve(true);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_JOB_00000'));
             }
         });
     },

@@ -204,49 +204,7 @@ module.exports = {
         message: 'Cache client has not been configured for this module'
     },
 
-    //Error CronJob 
 
-    SUC_JOB_00000: {
-        code: '200',
-        message: 'Successfully processed'
-    },
-
-
-    ERR_JOB_00000: {
-        code: '400',
-        message: 'Failed due to internal error'
-    },
-
-    ERR_JOB_00001: {
-        code: '400',
-        message: 'No jobs to perform requested operation'
-    },
-
-    ERR_JOB_00002: {
-        code: '400',
-        message: 'Invalid job definition'
-    },
-
-    ERR_JOB_00003: {
-        code: '400',
-        message: 'Invalid cron job definition triggers'
-    },
-    ERR_JOB_00004: {
-        code: '400',
-        message: 'Job can not be started before its start date'
-    },
-    ERR_JOB_00005: {
-        code: '404',
-        message: 'Job already expired'
-    },
-    ERR_JOB_00006: {
-        code: '400',
-        message: 'Job already running'
-    },
-    ERR_JOB_00007: {
-        code: '400',
-        message: 'Invalid tenant id'
-    },
 
     // Success model save
     SUC_SAVE_00000: {

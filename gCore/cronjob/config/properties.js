@@ -25,6 +25,6 @@ module.exports = {
     },
 
     defaultErrorCodes: {
-        CronJobError: 'ERR_CRON_00000'
+        CronJobError: 'ERR_JOB_00000'
     }
 };

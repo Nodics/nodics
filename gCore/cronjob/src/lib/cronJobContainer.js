@@ -18,9 +18,8 @@ module.exports = function () {
     this.createJobs = function (input, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            if (!UTILS.isBlank(input.definitions)) {
+            if (input.definitions && input.definitions.length > 0) {
                 let definition = input.definitions.shift();
-                definition.tenant = input.tenant;
                 _self.createJob(NODICS.getInternalAuthToken(definition.tenant), definition).then(success => {
                     result.push(success);
                     _self.createJobs(input, result, failed).then(success => {
@@ -38,7 +37,6 @@ module.exports = function () {
                 });
             } else {
                 resolve({
-                    code: 'SUC_JOB_00000',
                     result: result,
                     failed: failed
                 });
@@ -52,15 +50,15 @@ module.exports = function () {
             try {
                 let currentDate = new Date();
                 if (UTILS.isBlank(definition)) {
-                    reject(new CLASSES.NodicsError('ERR_JOB_00002'));
+                    reject(new CLASSES.CronJobError('ERR_JOB_00003', 'job definition can not be null or empty'));
                 } else if (UTILS.isBlank(definition.tenant)) {
-                    reject(new CLASSES.NodicsError('ERR_JOB_00007'));
+                    reject(new CLASSES.CronJobError('ERR_JOB_00003', 'job definition contain invalid tenant'));
                 } else if (UTILS.isBlank(definition.trigger)) {
-                    reject(new CLASSES.NodicsError('ERR_JOB_00003'));
+                    reject(new CLASSES.CronJobError('ERR_JOB_00003', 'job definition contain invalid trigger'));
                 } else if (definition.start > currentDate) {
-                    reject(new CLASSES.NodicsError('ERR_JOB_00004'));
+                    reject(new CLASSES.CronJobError('ERR_JOB_00003', 'job definition contain invalid start date'));
                 } else if (definition.end && definition.end < currentDate) {
-                    reject(new CLASSES.NodicsError('ERR_JOB_00005'));
+                    reject(new CLASSES.CronJobError('ERR_JOB_00003', 'job definition contain invalid end date'));
                 } else {
                     if (!_jobPool[definition.tenant]) {
                         _jobPool[definition.tenant] = {};
@@ -84,32 +82,23 @@ module.exports = function () {
                                 }
                             }).then(success => {
                                 _self.LOG.debug('Job: ' + definition.code + ' has been successfully added in ready to run pool on tenant: ' + definition.tenant);
+                                resolve('Job: ' + definition.code + ' has been successfully added in ready to run pool on tenant: ' + definition.tenant);
                             }).catch(error => {
                                 delete _jobPool[definition.code];
                                 _self.LOG.error('Job: ' + definition.code + ' failed on updating state on tenant: ' + definition.tenant);
-                                _self.LOG.error(error);
-                            });
-                            resolve({
-                                code: 'SUC_JOB_00000',
-                                message: 'Job: ' + definition.code + ' has been successfully added in ready to run pool on tenant: ' + definition.tenant
+                                reject(new CLASSES.NodicsError(error, 'Job: ' + definition.code + ' failed on updating state on tenant: ' + definition.tenant, 'ERR_JOB_00000'));
                             });
                         } else {
                             _self.LOG.debug('Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant);
-                            resolve({
-                                code: 'SUC_JOB_00000',
-                                message: 'Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant
-                            });
+                            reject(new CLASSES.NodicsError('ERR_JOB_00000', 'Job: ' + definition.code + ' not set to run on this node on tenant: ' + definition.tenant));
                         }
                     } else {
                         _self.LOG.warn('Job: ' + definition.code, ' is already available on tenant: ' + definition.tenant);
-                        resolve({
-                            code: 'SUC_JOB_00000',
-                            msg: 'Job: ' + definition.code + ' is already available in ready to run pool on tenant: ' + definition.tenant
-                        });
+                        resolve('Job: ' + definition.code + ' is already available in ready to run pool on tenant: ' + definition.tenant);
                     }
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_JOB_00000'));
             }
         });
     };
@@ -137,7 +126,6 @@ module.exports = function () {
                 });
             } else {
                 resolve({
-                    code: 'SUC_JOB_00000',
                     result: result,
                     failed: failed
                 });
@@ -212,7 +200,6 @@ module.exports = function () {
                 });
             } else {
                 resolve({
-                    code: 'SUC_JOB_00000',
                     result: result,
                     failed: failed
                 });
@@ -267,14 +254,23 @@ module.exports = function () {
         });
     };
 
-    this.startAllJobs = function (tenants = NODICS.getActiveTenants()) {
+    this.startAllJobs = function (jobCodes, tenants = NODICS.getActiveTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (tenants && tenants.length > 0) {
                 let tenant = tenants.shift();
                 if (_jobPool[tenant] && !UTILS.isBlank(_jobPool[tenant])) {
-                    this.startJobs(tenant, Object.keys(_jobPool[tenant])).then(success => {
-                        _self.startAllJobs(tenants).then(success => {
+                    let jobs = Object.keys(_jobPool[tenant]);
+                    if (jobCodes && jobCodes.length > 0) {
+                        jobs = [];
+                        Object.keys(_jobPool[tenant]).forEach(jobCode => {
+                            if (jobCodes.include(jobCode)) {
+                                jobs.push(jobCode);
+                            }
+                        });
+                    }
+                    this.startJobs(tenant, jobs).then(success => {
+                        _self.startAllJobs(jobCodes, tenants).then(success => {
                             resolve(true);
                         }).catch(error => {
                             reject(error);
@@ -283,7 +279,7 @@ module.exports = function () {
                         reject(error);
                     });
                 } else {
-                    _self.startAllJobs(tenants).then(success => {
+                    _self.startAllJobs(jobCodes, tenants).then(success => {
                         resolve(true);
                     }).catch(error => {
                         reject(error);
@@ -316,8 +312,14 @@ module.exports = function () {
                     });
                 });
             } else {
+                let code = 'SUC_JOB_00000';
+                if (result.length > 0 && failed.length > 0) {
+                    code = 'SUC_JOB_00001';
+                } else if (result.length <= 0 && failed.length > 0) {
+                    code = 'ERR_JOB_00000';
+                }
                 resolve({
-                    code: 'SUC_JOB_00000',
+                    code: code,
                     result: result,
                     failed: failed
                 });
@@ -360,8 +362,14 @@ module.exports = function () {
                     });
                 });
             } else {
+                let code = 'SUC_JOB_00000';
+                if (result.length > 0 && failed.length > 0) {
+                    code = 'SUC_JOB_00001';
+                } else if (result.length <= 0 && failed.length > 0) {
+                    code = 'ERR_JOB_00000';
+                }
                 resolve({
-                    code: 'SUC_JOB_00000',
+                    code: code,
                     result: result,
                     failed: failed
                 });
@@ -391,7 +399,7 @@ module.exports = function () {
                 if (_jobPool[tenant] && !UTILS.isBlank(_jobPool[tenant])) {
                     this.removeJobs(tenant, Object.keys(_jobPool[tenant])).then(success => {
                         _self.removeAllJobs(tenants).then(success => {
-                            resolve(true);
+                            resolve(success);
                         }).catch(error => {
                             reject(error);
                         });
@@ -400,13 +408,15 @@ module.exports = function () {
                     });
                 } else {
                     _self.removeAllJobs(tenants).then(success => {
-                        resolve(true);
+                        resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }
             } else {
-                resolve(true);
+                resolve({
+                    code: 'SUC_JOB_00002'
+                });
             }
         });
     };
@@ -432,8 +442,14 @@ module.exports = function () {
                     });
                 });
             } else {
+                let code = 'SUC_JOB_00000';
+                if (result.length > 0 && failed.length > 0) {
+                    code = 'SUC_JOB_00001';
+                } else if (result.length <= 0 && failed.length > 0) {
+                    code = 'ERR_JOB_00000';
+                }
                 resolve({
-                    code: 'SUC_JOB_00000',
+                    code: code,
                     result: result,
                     failed: failed
                 });
@@ -486,8 +502,14 @@ module.exports = function () {
                     });
                 });
             } else {
+                let code = 'SUC_JOB_00000';
+                if (result.length > 0 && failed.length > 0) {
+                    code = 'SUC_JOB_00001';
+                } else if (result.length <= 0 && failed.length > 0) {
+                    code = 'ERR_JOB_00000';
+                }
                 resolve({
-                    code: 'SUC_JOB_00000',
+                    code: code,
                     result: result,
                     failed: failed
                 });
@@ -530,9 +552,14 @@ module.exports = function () {
                     });
                 });
             } else {
+                let code = 'SUC_JOB_00000';
+                if (result.length > 0 && failed.length > 0) {
+                    code = 'SUC_JOB_00001';
+                } else if (result.length <= 0 && failed.length > 0) {
+                    code = 'ERR_JOB_00000';
+                }
                 resolve({
-                    success: true,
-                    code: 'SUC_JOB_00000',
+                    code: code,
                     result: result,
                     failed: failed
                 });

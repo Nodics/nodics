@@ -67,16 +67,10 @@ module.exports = {
             let jobCode = event.data.item;
             this.refreshJobInterceptors(jobCode);
             callback(null, {
-                success: true,
-                code: 'SUC_EVNT_00000',
-                msg: success
+                code: 'SUC_EVNT_00000'
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
         }
     },
 
@@ -110,16 +104,35 @@ module.exports = {
         try {
             this.refreshJobValidators(event.data.tenant, event.data.item);
             callback(null, {
-                success: true,
-                code: 'SUC_EVNT_00000',
-                msg: success
+                code: 'SUC_EVNT_00000'
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
         }
+    },
+
+    getDefaultQuery: function () {
+        return {
+            $and: [{
+                active: true
+            },
+            {
+                start: {
+                    $lt: new Date()
+                }
+            },
+            {
+                $or: [{
+                    end: {
+                        $gte: new Date()
+                    }
+                },
+                {
+                    end: {
+                        $exists: false
+                    }
+                }]
+            }]
+        };
     }
 };

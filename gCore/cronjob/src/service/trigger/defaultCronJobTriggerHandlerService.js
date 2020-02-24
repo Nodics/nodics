@@ -35,11 +35,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating job trigger request');
         if (!request.job) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job detail to execute'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid job detail to execute'));
         } else if (!request.definition) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job definition to execute'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid job definition to execute'));
         } else if (!request.definition.jobDetail || UTILS.isBlank(request.definition.jobDetail)) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job detail'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid job detail'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -255,7 +255,12 @@ module.exports = {
         }).then(success => {
             process.resolve(response.success);
         }).catch(error => {
-            process.resolve(response.success);
+            if (!response.error) {
+                response.error = new CLASSES.CronJobError(error, 'failed to update success response');
+            } else {
+                response.error.add(new CLASSES.CronJobError(error, 'failed to update success response'));
+            }
+            this.handleError(request, response, process);
         });
     },
 

@@ -36,7 +36,7 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
-            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for create job');
+            let error = new CLASSES.CronJobError('ERR_JOB_00003', 'for create job');
             if (callback) {
                 callback(error);
             } else {
@@ -69,7 +69,7 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
-            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for update job');
+            let error = new CLASSES.CronJobError('ERR_JOB_00003', 'for update job');
             if (callback) {
                 callback(error);
             } else {
@@ -96,7 +96,7 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
-            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for run job');
+            let error = new CLASSES.CronJobError('ERR_JOB_00003', 'for run job');
             if (callback) {
                 callback(error);
             } else {
@@ -124,7 +124,7 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
-            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for start job');
+            let error = new CLASSES.CronJobError('ERR_JOB_00003', 'for start job');
             if (callback) {
                 callback(error);
             } else {
@@ -152,7 +152,7 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
-            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for stop job');
+            let error = new CLASSES.CronJobError('ERR_JOB_00003', 'for stop job');
             if (callback) {
                 callback(error);
             } else {
@@ -180,7 +180,7 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
-            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for remove job');
+            let error = new CLASSES.CronJobError('ERR_JOB_00003', 'for remove job');
             if (callback) {
                 callback(error);
             } else {
@@ -208,7 +208,7 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
-            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for pause job');
+            let error = new CLASSES.CronJobError('ERR_JOB_00003', 'for pause job');
             if (callback) {
                 callback(error);
             } else {
@@ -236,7 +236,7 @@ module.exports = {
             }
         } else {
             this.LOG.error('Please validate your request, it is not a valid one');
-            let error = new CLASSES.NodicsError('ERR_FIND_00001', 'for resume job');
+            let error = new CLASSES.CronJobError('ERR_JOB_00003', 'for resume job');
             if (callback) {
                 callback(error);
             } else {

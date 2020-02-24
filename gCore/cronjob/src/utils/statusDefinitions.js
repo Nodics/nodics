@@ -11,23 +11,37 @@
 
 module.exports = {
 
-    // SUCCESS STATUS Cache
-    SUC_CRON_00000: {
-        code: '220000',
-        description: 'Successfully processed',
-        message: 'Successfully processed'
+    SUC_JOB_00000: {
+        code: '200',
+        message: 'Job successfully processed'
+    },
+    SUC_JOB_00001: {
+        code: '200',
+        message: 'Job partially processed'
+    },
+    SUC_JOB_00002: {
+        code: '200',
+        message: 'Jobs removed successfully'
     },
 
-    SUC_CRON_00001: {
-        code: '220001',
-        description: 'Job can not be run in this node',
-        message: 'Job can not be run in this node'
+    ERR_JOB_00000: {
+        code: '500',
+        message: 'Job internal server error'
     },
-
-    //ERROR STATUS Cache
-    ERR_CRON_00000: {
-        code: '220000',
-        description: 'Facing some issues, please try after some time',
-        message: 'Facing some issues, please try after some time'
+    ERR_JOB_00001: {
+        code: '501',
+        message: 'Job not implemented'
+    },
+    ERR_JOB_00002: {
+        code: '503',
+        message: 'Job unavailable currently'
+    },
+    ERR_JOB_00003: {
+        code: '400',
+        message: 'Invalid job request'
+    },
+    ERR_JOB_00004: {
+        code: '404',
+        message: 'Job not found'
     }
 };

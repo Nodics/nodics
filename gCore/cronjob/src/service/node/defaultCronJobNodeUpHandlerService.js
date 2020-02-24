@@ -36,9 +36,9 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         if (!request.moduleName) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid moduleName'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid moduleName'));
         } else if (!request.remoteData) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid data object'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid data object'));
         } else {
             process.nextSuccess(request, response);
         }

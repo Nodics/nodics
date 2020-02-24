@@ -35,9 +35,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating job error request');
         if (!request.job) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job detail to error'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid job detail to error'));
         } else if (!request.definition) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job definition to error'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid job definition to error'));
         } else {
             process.nextSuccess(request, response);
         }
