@@ -4,9 +4,8 @@ module.exports = {
         let _self = this;
         _self.LOG.debug('#Event has been Handled ');
         callback(null, {
-            success: true,
             code: 'SUC_EVNT_00000',
-            msg: '#Event has been Handled '
+            msg: '====>> Event has been Handled '
         });
     }
 };

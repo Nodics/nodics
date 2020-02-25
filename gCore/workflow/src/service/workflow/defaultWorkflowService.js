@@ -41,16 +41,20 @@ module.exports = {
      */
     initItem: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('initWorkflowItemPipeline', {
-                tenant: request.tenant,
-                itemType: request.itemType,
-                item: request.item,
-                workflowCode: request.workflowCode
-            }, {}).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+            try {
+                SERVICE.DefaultPipelineService.start('initWorkflowItemPipeline', {
+                    tenant: request.tenant,
+                    itemType: request.itemType,
+                    item: request.item,
+                    workflowCode: request.workflowCode
+                }, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
+            }
         });
     },
 
@@ -60,16 +64,20 @@ module.exports = {
      */
     nextAction: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('nextWorkflowActionPipeline', {
-                tenant: request.tenant,
-                itemCode: request.itemCode,
-                workflowItem: request.workflowItem,
-                actionCode: request.actionCode,
-            }, {}).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+            try {
+                SERVICE.DefaultPipelineService.start('nextWorkflowActionPipeline', {
+                    tenant: request.tenant,
+                    itemCode: request.itemCode,
+                    workflowItem: request.workflowItem,
+                    actionCode: request.actionCode,
+                }, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
+            }
         });
     },
 
@@ -83,20 +91,24 @@ module.exports = {
      */
     performAction: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', {
-                tenant: request.tenant,
-                itemCode: request.itemCode,
-                actionResponse: request.actionResponse,
-                workflowItem: request.workflowItem,
-                actionCode: request.actionCode,
-                workflowAction: request.workflowAction,
-                workflowCode: request.workflowCode,
-                workflowHead: request.workflowHead
-            }, {}).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+            try {
+                SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', {
+                    tenant: request.tenant,
+                    itemCode: request.itemCode,
+                    actionResponse: request.actionResponse,
+                    workflowItem: request.workflowItem,
+                    actionCode: request.actionCode,
+                    workflowAction: request.workflowAction,
+                    workflowCode: request.workflowCode,
+                    workflowHead: request.workflowHead
+                }, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
+            }
         });
     }
 };

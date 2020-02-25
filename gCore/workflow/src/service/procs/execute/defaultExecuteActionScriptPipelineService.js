@@ -37,9 +37,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request for executing action script');
         if (!request.workflowAction) {
-            process.error(request, response, 'Invalid request, workflow action not found');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action not found'));
         } else if (!request.workflowAction.script) {
-            process.error(request, response, 'Invalid request, workflow action script not found');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action script not found'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -60,7 +60,7 @@ module.exports = {
             };
             process.nextSuccess(request, response);
         } catch (error) {
-            process.error(request, response, error);
+            process.error(request, response, new CLASSES.WorkflowError(error, 'While executing handler script'));
         }
     }
 };

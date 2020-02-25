@@ -67,16 +67,11 @@ module.exports = {
             let itemCode = event.data.item;
             this.refreshWorkflowInterceptors(itemCode);
             callback(null, {
-                success: true,
                 code: 'SUC_EVNT_00000',
                 msg: success
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error, 'Failed updating workflow interceptors', 'ERR_EVNT_00000'));
         }
     },
 
@@ -110,16 +105,11 @@ module.exports = {
         try {
             this.refreshWorkflowValidators(event.data.tenant, event.data.item);
             callback(null, {
-                success: true,
                 code: 'SUC_EVNT_00000',
                 msg: success
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error, 'Failed updating workflow validators', 'ERR_EVNT_00000'));
         }
     },
 };

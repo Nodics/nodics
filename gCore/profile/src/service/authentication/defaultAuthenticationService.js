@@ -30,45 +30,6 @@ module.exports = {
         });
     },
 
-    // invalidateEmployeeAuthToken: function (person, isRemoved) {
-    //     let _self = this;
-    //     return new Promise((resolve, reject) => {
-    //         this.invalidateAuthToken({
-    //             tenant: person.tenant,
-    //             loginId: person.loginId,
-    //             type: 'Employee'
-    //         }).then(success => {
-    //             _self.updateAPIKeys({
-    //                 isRemoved: isRemoved,
-    //                 isEnterprise: false,
-    //                 tenant: person.tenant,
-    //                 loginId: person.loginId,
-    //                 apiKey: person.apiKey
-    //             }).then(success => {
-    //                 resolve(success);
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
-
-    // invalidateCustomerAuthToken: function (person) {
-    //     return new Promise((resolve, reject) => {
-    //         this.invalidateAuthToken({
-    //             tenant: person.tenant,
-    //             loginId: person.loginId,
-    //             type: 'Customer'
-    //         }).then(success => {
-    //             resolve(success);
-    //         }).catch(error => {
-    //             reject(error);
-    //         });
-    //     });
-    // },
-
     updateAPIKeys: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -123,54 +84,6 @@ module.exports = {
             }
         });
     },
-
-    // invalidateAuthToken: function (options) {
-    //     return new Promise((resolve, reject) => {
-    //         let moduleObject = NODICS.getModule(CONFIG.get('profileModuleName'));
-    //         if (moduleObject && moduleObject.authCache && moduleObject.authCache.tokens) {
-    //             let authTokens = [];
-    //             _.each(moduleObject.authCache.tokens, (authObj, authToken) => {
-    //                 if (options.isEnterprise) {
-    //                     if (authObj.entCode === options.entCode) {
-    //                         authTokens.push(authToken);
-    //                         delete moduleObject.authCache.tokens[authToken];
-    //                     }
-    //                 } else {
-    //                     if (authObj.entCode === options.entCode &&
-    //                         authObj.tenant === options.tenant &&
-    //                         authObj.loginId === options.loginId &&
-    //                         authObj.type === options.type) {
-    //                         authTokens.push(authToken);
-    //                         delete moduleObject.authCache.tokens[authToken];
-    //                     }
-    //                 }
-    //             });
-    //             if (authTokens.length > 0) {
-    //                 SERVICE.DefaultCacheService.flushCache({
-    //                     moduleName: CONFIG.get('profileModuleName'),
-    //                     channelName: 'auth',
-    //                     keys: authTokens
-    //                 }).then(success => {
-    //                     resolve(authTokens);
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             } else {
-    //                 resolve({
-    //                     success: true,
-    //                     code: 'SUC_SYS_00000',
-    //                     msg: 'None already invalidated invalidated'
-    //                 });
-    //             }
-    //         } else {
-    //             resolve({
-    //                 success: true,
-    //                 code: 'SUC_SYS_00000',
-    //                 msg: 'None already invalidated invalidated'
-    //             });
-    //         }
-    //     });
-    // },
 
     publishAPIKeyChangeEvent: function (eventsData) {
         return new Promise((resolve, reject) => {

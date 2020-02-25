@@ -13,7 +13,7 @@ module.exports = {
 
     getEnterprise: function (request, callback) {
         if (UTILS.isBlank(request.entCode)) {
-            let error = new CLASSES.NodicsError('ERR_ENT_00000');
+            let error = new CLASSES.NodicsError('ERR_PRFL_00003', 'Enterprise code can not be null or empty');
             if (callback) {
                 callback(error);
             } else {

@@ -48,10 +48,10 @@ module.exports = {
                         code: responseId
                     }
                 }).then(response => {
-                    if (response.success && response.result.length > 0) {
+                    if (response.result && response.result.length > 0) {
                         resolve(response.result[0]);
                     } else {
-                        reject('Invalid request, none workflow action response found for code: ' + responseId);
+                        reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, none workflow action response found for code: ' + responseId));
                     }
                 }).catch(error => {
                     reject(error);

@@ -44,10 +44,10 @@ module.exports = {
                     code: actionCode
                 }
             }).then(response => {
-                if (response.success && response.result.length > 0) {
+                if (response.result && response.result.length > 0) {
                     resolve(response.result[0]);
                 } else {
-                    resolve();
+                    reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, none workflow action found for code: ' + actionCode));
                 }
             }).catch(error => {
                 reject(error);

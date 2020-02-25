@@ -38,13 +38,13 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request for default error handler');
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, Tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Tenant can not be null or empty'));
         } else if (!request.error || UTILS.isBlank(request.error)) {
-            process.error(request, response, 'Invalid request, Error detail can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Error detail can not be null or empty'));
         } else if (!request.error.code) {
-            process.error(request, response, 'Invalid request, Error detail should hole mandate properties');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Error detail should hole mandate properties'));
         } else if (!request.workflowItem) {
-            process.error(request, response, 'Invalid request, Workflow item can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Workflow item can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -67,6 +67,8 @@ module.exports = {
             models: [request.errorItem]
         }).then(success => {
             this.LOG.info('Item: has been moved to error pool successfully');
+            if (!response.success) response.success = [];
+            response.success.push('Item: has been moved to error pool successfully: ' + request.workflowItem.code);
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -76,27 +78,11 @@ module.exports = {
         this.LOG.debug('updating item pool');
         SERVICE.DefaultWorkflowItemService.removeById([request.workflowItem._id], request.tenant).then(success => {
             this.LOG.info('Item: has been removed from item pool successfully');
+            if (!response.success) response.success = [];
+            response.success.push('Item: has been removed from item pool successfully: ' + request.workflowItem.code);
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
-        });
-    },
-    successEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve({
-            success: true,
-            code: 'SUC_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
-            result: response.success
-        });
-    },
-    handleError: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        process.reject({
-            success: false,
-            code: 'ERR_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
-            errors: response.error || response.errors
         });
     }
 };

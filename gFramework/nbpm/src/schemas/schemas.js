@@ -24,12 +24,12 @@ module.exports = {
                 workflowCode: {
                     type: 'string',
                     required: true,
-                    description: 'Required step code, it could be workflow head code or any of the action code'
+                    description: 'Required workflow code, which needs to be associated with schema'
                 },
                 schemaName: {
                     type: 'string',
                     required: true,
-                    description: 'Required step code, it could be workflow head code or any of the action code'
+                    description: 'Required schema name to auto start workflow for the item'
                 },
                 moduleName: {
                     type: 'string',

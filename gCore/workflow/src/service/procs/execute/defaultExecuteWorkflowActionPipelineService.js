@@ -44,7 +44,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to perform workflow action');
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -52,21 +52,21 @@ module.exports = {
     validateOperation: function (request, response, process) {
         let workflowItem = request.workflowItem;
         if (workflowItem.activeHead.code !== request.workflowHead.code) {
-            process.error(request, response, 'Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code);
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code));
         } else if (workflowItem.activeAction.code !== request.workflowAction.code) {
-            process.error(request, response, 'Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code);
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code));
         } else if ((workflowItem.activeAction.type === ENUMS.WorkflowActionType.MANUAL.key ||
             workflowItem.activeAction.type === ENUMS.WorkflowActionType.PARALLEL.key) &&
             (!request.actionResponse || UTILS.isBlank(request.actionResponse))) {
-            process.error(request, response, 'Invalid request, action response can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, action response can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
     },
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
-        if (!response.success) response.success = {};
-        if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
+        response.success = [];
+        //if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
         process.nextSuccess(request, response);
     },
     preActionInterceptors: function (request, response, process) {
@@ -76,11 +76,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preAction), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed action interceptors', 'ERR_WF_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -93,11 +89,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preAction), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed action validators', 'ERR_WF_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -121,12 +113,12 @@ module.exports = {
     },
     createStepResponse: function (request, response, process) {
         if (response.actionResponse && !UTILS.isBlank(response.actionResponse)) {
-            response.success[request.workflowAction.code].push({
+            response.success.push({
                 action: 'autoActionPerformed',
                 target: request.workflowAction.code,
                 item: request.workflowItem.code || request.workflowItem._id,
                 timestamp: new Date(),
-                msg: 'Auto action has been performed'
+                message: 'Auto action has been performed'
             });
         }
         request.actionResponse = _.merge(
@@ -141,9 +133,9 @@ module.exports = {
     validateResponse: function (request, response, process) {
         this.LOG.debug('Validating action response');
         if (!request.actionResponse.decision) {
-            process.error(request, response, 'Decision value can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Decision value can not be null or empty'));
         } else if (request.workflowAction.allowedDecisions && !request.workflowAction.allowedDecisions.includes(request.actionResponse.decision)) {
-            process.error(request, response, 'Invalid decision value, action don not allow value: ' + request.actionResponse.decision);
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid decision value, action don not allow value: ' + request.actionResponse.decision));
         } else {
             process.nextSuccess(request, response);
         }
@@ -154,12 +146,12 @@ module.exports = {
             models: [request.actionResponse]
         }).then(success => {
             request.actionResponse = success.result[0];
-            response.success[request.workflowAction.code].push({
+            response.success.push({
                 action: 'actionResponseCreated',
                 target: request.workflowAction.code,
                 item: request.workflowItem.code || request.workflowItem._id,
                 timestamp: new Date(),
-                msg: 'Action response updated: ' + request.actionResponse._id
+                message: 'Action response updated: ' + request.actionResponse._id
             });
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -177,29 +169,12 @@ module.exports = {
                 target: request.workflowAction.code,
                 item: request.workflowItem.code || request.workflowItem._id,
                 timestamp: new Date(),
-                msg: 'Item has been updated with response id: ' + request.actionResponse._id
+                message: 'Item has been updated with response id: ' + request.actionResponse._id
             });
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
-    },
-    postActionInterceptors: function (request, response, process) {
-        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowAction.code);
-        if (interceptors && interceptors.postAction) {
-            this.LOG.debug('Applying postAction interceptors for workflow action execution');
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postAction), request, response).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
     },
     postActionValidators: function (request, response, process) {
         let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowAction.code);
@@ -208,11 +183,20 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postAction), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed action validators', 'ERR_WF_00006'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+    postActionInterceptors: function (request, response, process) {
+        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowAction.code);
+        if (interceptors && interceptors.postAction) {
+            this.LOG.debug('Applying postAction interceptors for workflow action execution');
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postAction), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed action interceptors', 'ERR_WF_00006'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -232,39 +216,10 @@ module.exports = {
             workflowAction: request.workflowAction,
             actionResponse: request.actionResponse
         }).then(success => {
-            try {
-                if (success && success.result && !UTILS.isBlank(success.result)) {
-                    Object.keys(success.result).forEach(actionCode => {
-                        let actionOutput = success.result[actionCode];
-                        actionOutput.forEach(output => {
-                            response.success[actionCode].push(output);
-                        });
-                    });
-                }
-                process.nextSuccess(request, response);
-            } catch (error) {
-                process.error(request, response, error);
-            }
+            response.success = response.success.concat(success);
+            process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
-        });
-    },
-    successEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve({
-            success: true,
-            code: 'SUC_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
-            result: response.success
-        });
-    },
-    handleError: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        process.reject({
-            success: false,
-            code: 'ERR_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
-            errors: response.error || response.errors
         });
     }
 };

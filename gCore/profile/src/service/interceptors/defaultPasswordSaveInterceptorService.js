@@ -18,7 +18,7 @@ module.exports = {
                     request.model.password = hash;
                     resolve(true);
                 }).catch(error => {
-                    next(error);
+                    reject(error);
                 });
             } else {
                 resolve(true);

@@ -11,37 +11,5 @@
 
 module.exports = {
 
-    SUC_JOB_00000: {
-        code: '200',
-        message: 'Job successfully processed'
-    },
-    SUC_JOB_00001: {
-        code: '200',
-        message: 'Job partially processed'
-    },
-    SUC_JOB_00002: {
-        code: '200',
-        message: 'Jobs removed successfully'
-    },
 
-    ERR_JOB_00000: {
-        code: '500',
-        message: 'Job internal server error'
-    },
-    ERR_JOB_00001: {
-        code: '501',
-        message: 'Job not implemented'
-    },
-    ERR_JOB_00002: {
-        code: '503',
-        message: 'Job unavailable currently'
-    },
-    ERR_JOB_00003: {
-        code: '400',
-        message: 'Invalid job request'
-    },
-    ERR_JOB_00004: {
-        code: '404',
-        message: 'Job not found'
-    }
 };

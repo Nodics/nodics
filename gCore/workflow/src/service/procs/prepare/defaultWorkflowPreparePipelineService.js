@@ -36,7 +36,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to init item with workflow');
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }

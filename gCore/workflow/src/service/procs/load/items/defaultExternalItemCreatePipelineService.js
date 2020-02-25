@@ -36,7 +36,7 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         if (!request.itemType && (request.itemType !== ENUMS.WorkflowItemType.INTERNAL.key || request.itemType !== ENUMS.WorkflowItemType.EXTERNAL.key)) {
-            process.error(request, response, 'Invalid request, itemType can not be other than [INTERNAL or EXTERNAL]');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, itemType can not be other than [INTERNAL or EXTERNAL]'));
         } else {
             process.nextSuccess(request, response);
         }

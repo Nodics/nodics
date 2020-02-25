@@ -39,18 +39,22 @@ module.exports = {
     */
     processChannels: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
-                tenant: request.tenant,
-                itemCode: request.itemCode,
-                workflowItem: request.workflowItem,
-                workflowHead: request.workflowHead,
-                workflowAction: request.workflowAction,
-                actionResponse: request.actionResponse
-            }, {}).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+            try {
+                SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
+                    tenant: request.tenant,
+                    itemCode: request.itemCode,
+                    workflowItem: request.workflowItem,
+                    workflowHead: request.workflowHead,
+                    workflowAction: request.workflowAction,
+                    actionResponse: request.actionResponse
+                }, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
+            }
         });
     },
 
@@ -64,7 +68,7 @@ module.exports = {
             rawChannels = rawChannels.concat(workflowAction.channels || []);
             this.evaluateChannels(rawChannels, request).then(qualifiedChannels => {
                 if (qualifiedChannels.length <= 0 && workflowAction.position !== ENUMS.WorkflowActionPosition.END.key) {
-                    reject('Invalid channels configuration: either no channels or not qualified for action: ' + workflowAction.code);
+                    reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid channels configuration: either no channels or not qualified for action: ' + workflowAction.code));
                 } else {
                     resolve(qualifiedChannels);
                 }
@@ -117,10 +121,10 @@ module.exports = {
                         }
                     }
                 }).then(response => {
-                    if (response.success && response.result.length > 0) {
+                    if (response.result && response.result.length > 0) {
                         resolve(response.result);
                     } else {
-                        reject('Invalid channels, could not found any channels for: ' + channelCodes);
+                        reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid channels, could not found any channels for: ' + channelCodes));
                     }
                 }).catch(error => {
                     reject(error);
@@ -131,36 +135,44 @@ module.exports = {
 
     executeChannels: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
-                tenant: request.tenant,
-                itemCode: request.itemCode,
-                workflowItem: request.workflowItem,
-                workflowHead: request.workflowHead,
-                workflowAction: request.workflowAction,
-                actionResponse: request.actionResponse,
-                channels: request.channels
-            }, {}).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+            try {
+                SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
+                    tenant: request.tenant,
+                    itemCode: request.itemCode,
+                    workflowItem: request.workflowItem,
+                    workflowHead: request.workflowHead,
+                    workflowAction: request.workflowAction,
+                    actionResponse: request.actionResponse,
+                    channels: request.channels
+                }, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
+            }
         });
     },
 
     executeChannel: function (request) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('executeChannelPipeline', {
-                tenant: request.tenant,
-                workflowItem: request.workflowItem,
-                workflowHead: request.workflowHead,
-                workflowAction: request.workflowAction,
-                actionResponse: request.actionResponse,
-                channel: request.channel
-            }, {}).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+            try {
+                SERVICE.DefaultPipelineService.start('executeChannelPipeline', {
+                    tenant: request.tenant,
+                    workflowItem: request.workflowItem,
+                    workflowHead: request.workflowHead,
+                    workflowAction: request.workflowAction,
+                    actionResponse: request.actionResponse,
+                    channel: request.channel
+                }, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
+            }
         });
     }
 };

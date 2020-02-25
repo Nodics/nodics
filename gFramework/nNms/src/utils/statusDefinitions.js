@@ -11,23 +11,5 @@
 
 module.exports = {
 
-    SUC_RES_00000: {
-        code: '170000',
-        description: 'Successfully processed',
-        message: 'Successfully processed',
-    },
 
-
-
-    ERR_RES_00000: {
-        code: '170000',
-        description: 'Failed due to some internal error',
-        message: 'Failed due to some internal error',
-    },
-
-    ERR_RES_00001: {
-        code: '170001',
-        description: 'Rejected responsibility',
-        message: 'Rejected responsibility',
-    }
 };

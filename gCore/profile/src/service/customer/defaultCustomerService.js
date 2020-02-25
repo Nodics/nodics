@@ -22,7 +22,7 @@ module.exports = {
                 }
             }).then(customers => {
                 if (customers.result.length !== 1) {
-                    reject(new CLASSES.NodicsError('ERR_LIN_00000', 'Multiple customers can not hold same apiKey'));
+                    reject(new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid login id'));
                 } else {
                     resolve(customers.result[0]);
                 }

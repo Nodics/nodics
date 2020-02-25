@@ -18,7 +18,7 @@ module.exports = {
                 }
                 resolve(true);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error));
             }
         });
     }

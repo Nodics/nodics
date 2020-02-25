@@ -165,14 +165,6 @@ module.exports = {
                 type: 'process',
                 handler: 'assignWorkflowItemPipeline',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultInitWorkflowItemPipelineService.successEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultInitWorkflowItemPipelineService.handleError'
             }
         }
     },
@@ -197,14 +189,6 @@ module.exports = {
                 type: 'process',
                 handler: 'assignWorkflowItemPipeline',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultNextWorkflowActionPipelineService.successEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultNextWorkflowActionPipelineService.handleError'
             }
         }
     },
@@ -321,21 +305,21 @@ module.exports = {
             updateActionResponse: {
                 type: 'function',
                 handler: 'DefaultExecuteWorkflowActionPipelineService.updateActionResponse',
-                success: 'postActionInterceptors'
+                success: 'updateWorkflowItem'
             },
             updateWorkflowItem: {
                 type: 'function',
                 handler: 'DefaultExecuteWorkflowActionPipelineService.updateWorkflowItem',
-                success: 'postActionInterceptors'
-            },
-            postActionInterceptors: {
-                type: 'function',
-                handler: 'DefaultExecuteWorkflowActionPipelineService.postActionInterceptors',
                 success: 'postActionValidators'
             },
             postActionValidators: {
                 type: 'function',
                 handler: 'DefaultExecuteWorkflowActionPipelineService.postActionValidators',
+                success: 'triggerActionPerformedEvent'
+            },
+            postActionInterceptors: {
+                type: 'function',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.postActionInterceptors',
                 success: 'triggerActionPerformedEvent'
             },
             triggerActionPerformedEvent: {
@@ -347,14 +331,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultExecuteWorkflowActionPipelineService.processChannels',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultExecuteWorkflowActionPipelineService.successEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultExecuteWorkflowActionPipelineService.handleError'
             }
         }
     },
@@ -542,10 +518,6 @@ module.exports = {
             successEnd: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelsPipelineService.successEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultExecuteChannelsPipelineService.handleError'
             }
         }
     },
@@ -589,25 +561,17 @@ module.exports = {
             triggerTarget: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelPipelineService.triggerTarget',
+                success: 'postChannelValidators'
+            },
+            postChannelValidators: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelPipelineService.postChannelValidators',
                 success: 'postChannelInterceptors'
             },
             postChannelInterceptors: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelPipelineService.postChannelInterceptors',
                 success: 'postChannelValidators'
-            },
-            postChannelValidators: {
-                type: 'function',
-                handler: 'DefaultExecuteChannelPipelineService.postChannelValidators',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultExecuteChannelPipelineService.successEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultExecuteChannelPipelineService.handleError'
             }
         }
     },
@@ -637,14 +601,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultWorkflowSuccessPipelineService.updateItemPool',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultWorkflowSuccessPipelineService.successEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultWorkflowSuccessPipelineService.handleError'
             }
         }
     },
@@ -674,14 +630,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultWorkflowErrorPipelineService.updateItemPool',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultWorkflowErrorPipelineService.successEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultWorkflowErrorPipelineService.handleError'
             }
         }
     }

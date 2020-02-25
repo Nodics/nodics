@@ -102,7 +102,7 @@ module.exports = {
                         active: true
                     }
                 }).then(success => {
-                    if (success.success && (!success.result || success.result.length <= 0)) {
+                    if (!success.result || success.result.length <= 0) {
                         SERVICE.DefaultTenantHandlerService.removeTenants([enterprise.tenant.code]).then(success => {
                             NODICS.removeInternalAuthToken(enterprise.tenant.code);
                             NODICS.removeActiveEnterprise(enterprise.code);

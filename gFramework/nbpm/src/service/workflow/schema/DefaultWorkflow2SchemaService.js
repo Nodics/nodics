@@ -11,16 +11,16 @@
 module.exports = {
 
     remove: function (request) {
-        return Promise.reject('This operation is not supported, please use save operation with value active: false');
+        return Promise.reject(new CLASSES.WorkflowError('ERR_WF_00002', 'Please use save operation with value active: false'));
     },
     removeById: function (ids, tenant) {
-        return Promise.reject('This operation is not supported, please use save operation with value active: false');
+        return Promise.reject(new CLASSES.WorkflowError('ERR_WF_00002', 'Please use save operation with value active: false'));
     },
     removeByCode: function (codes, tenant) {
-        return Promise.reject('This operation is not supported, please use save operation with value active: false');
+        return Promise.reject(new CLASSES.WorkflowError('ERR_WF_00002', 'Please use save operation with value active: false'));
     },
     update: function (request) {
-        return Promise.reject('This operation is not supported, please use save operation with value active: false');
+        return Promise.reject(new CLASSES.WorkflowError('ERR_WF_00002', 'Please use save operation with value active: false'));
     },
 
     workflow2SchemaUpdateEventHandler: function (request) {
@@ -35,7 +35,7 @@ module.exports = {
                 }
                 resolve('Workflow code updated on cluster: ' + CONFIG.get('clusterId'));
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.WorkflowError(error, null, 'ERR_WF_00000'));
             }
         });
     }

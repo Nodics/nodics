@@ -36,9 +36,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request for executing action handler');
         if (!request.workflowAction) {
-            process.error(request, response, 'Invalid request, workflow action not found');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action not found'));
         } else if (!request.workflowAction.handler) {
-            process.error(request, response, 'Invalid request, workflow action handler not found');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action handler not found'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -63,10 +63,10 @@ module.exports = {
                 });
             } else {
                 this.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
-                process.error(request, response, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
+                process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00002', 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)'));
             }
         } catch (error) {
-            process.error(request, response, error);
+            process.error(request, response, new CLASSES.WorkflowError(error));
         }
     }
 };

@@ -36,13 +36,13 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to assign item with workflow');
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else if (!request.workflowItem) {
-            process.error(request, response, 'Invalid request, workflowItem can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflowItem can not be null or empty'));
         } else if (!request.workflowAction) {
-            process.error(request, response, 'Invalid request, workflowAction can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflowAction can not be null or empty'));
         } else if (!request.workflowHead) {
-            process.error(request, response, 'Invalid request, workflowHead can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflowHead can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -81,11 +81,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.put), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed put interceptors', 'ERR_WF_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -98,11 +94,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.put), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed put validators', 'ERR_WF_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -121,7 +113,7 @@ module.exports = {
                 target: request.workflowAction.code,
                 item: request.workflowItem.code || request.workflowItem._id,
                 timestamp: new Date(),
-                msg: 'Item: ' + request.workflowItem.code || request.workflowItem._id + ' has been assign to action: ' + request.workflowAction.code
+                message: 'Item: ' + request.workflowItem.code || request.workflowItem._id + ' has been assign to action: ' + request.workflowAction.code
             });
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -138,7 +130,7 @@ module.exports = {
                 workflowItem: request.workflowItem
             }).then(success => {
                 try {
-                    if (success && success.result && !UTILS.isBlank(success.result)) {
+                    if (success.result && !UTILS.isBlank(success.result)) {
                         Object.keys(success.result).forEach(actionCode => {
                             let actionOutput = success.result[actionCode];
                             actionOutput.forEach(output => {
@@ -151,8 +143,7 @@ module.exports = {
                     process.error(request, response, error);
                 }
             }).catch(error => {
-                response.errors = error.errors || error;
-                process.error(request, response);
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);

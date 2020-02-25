@@ -100,7 +100,7 @@ module.exports = {
                         type: 'Customer'
                     }).then(success => {
                         resolve({
-                            code: 'SUC_AUTH_00000',
+                            code: 'SUC_AUTH_00001',
                             result: success
                         });
                     }).catch(error => {
@@ -159,7 +159,7 @@ module.exports = {
                                     state: state,
                                     tenant: options.enterprise.tenant.code
                                 });
-                                reject(new CLASSES.NodicsError('ERR_LIN_00003'));
+                                reject(new CLASSES.NodicsError('ERR_AUTH_00002', 'Invalid login attampt'));
                             }
                         }).catch(error => {
                             reject(new CLASSES.NodicsError('ERR_AUTH_00000'));

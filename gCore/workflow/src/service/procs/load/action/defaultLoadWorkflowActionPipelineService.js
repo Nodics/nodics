@@ -36,9 +36,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to load workflow action');
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else if (!request.workflowCode && !request.workflowAction && !request.actionCode) {
-            process.error(request, response, 'Invalid request, actionCode can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, actionCode can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -55,7 +55,7 @@ module.exports = {
                     process.error(request, response, error);
                 });
             } else {
-                process.error(request, response, 'Invalid request, could not load workflow action');
+                process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not load workflow action'));
             }
         } else {
             process.nextSuccess(request, response);
@@ -76,7 +76,7 @@ module.exports = {
     },
     validateAction: function (request, response, process) {
         if (!request.workflowAction) {
-            process.error(request, response, 'Cound not load workflow action, please validate your request');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Cound not load workflow action, please validate your request'));
         } else {
             process.nextSuccess(request, response);
         }

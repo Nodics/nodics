@@ -36,32 +36,14 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to assogn item to next action');
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else if (!request.actionCode) {
-            process.error(request, response, 'Invalid request, actionCode can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, actionCode can not be null or empty'));
         } else if (!request.itemCode && !request.workflowItem) {
-            process.error(request, response, 'Invalid request, item detail can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, item detail can not be null or empty'));
         } else {
             request.optType = 'nextAction';
             process.nextSuccess(request, response);
         }
-    },
-    successEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve({
-            success: true,
-            code: 'SUC_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
-            result: response.success
-        });
-    },
-    handleError: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        process.reject({
-            success: false,
-            code: 'ERR_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
-            errors: response.error || response.errors
-        });
     }
 };

@@ -9,9 +9,9 @@
 
  */
 
-module.exports = {
-
-    defaultErrorCodes: {
-        CronJobError: 'ERR_WF_00000'
+module.exports = class WorkflowError extends CLASSES.NodicsError {
+    constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').WorkflowError) {
+        super(error, message, defaultCode);
+        super.name = 'WorkflowError';
     }
 };

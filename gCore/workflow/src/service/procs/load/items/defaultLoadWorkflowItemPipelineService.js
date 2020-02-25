@@ -36,9 +36,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to assign item with workflow');
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else if (!request.workflowItem && !request.item && !request.itemCode) {
-            process.error(request, response, 'Invalid request, item detail can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, item detail can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -51,11 +51,11 @@ module.exports = {
                     code: request.itemCode
                 }
             }).then(success => {
-                if (success.success && success.result && success.result.length > 0) {
+                if (success.result && success.result.length > 0) {
                     request.workflowItem = success.result;
                     process.nextSuccess(request, response);
                 } else {
-                    process.error(request, response, 'Invalid request, could not found workflow item for code: ' + request.itemCode);
+                    process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not found workflow item for code: ' + request.itemCode));
                 }
             }).catch(error => {
                 process.error(request, response, error);

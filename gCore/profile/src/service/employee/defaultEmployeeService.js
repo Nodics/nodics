@@ -23,7 +23,7 @@ module.exports = {
                 }
             }).then(employees => {
                 if (employees.result.length !== 1) {
-                    reject(new CLASSES.NodicsError('ERR_LIN_00000'));
+                    reject(new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid login id: ' + request.loginId));
                 } else {
                     resolve(employees.result[0]);
                 }
@@ -42,7 +42,7 @@ module.exports = {
                 }
             }).then(employees => {
                 if (employees.result.length !== 1) {
-                    reject(new CLASSES.NodicsError('ERR_LIN_00000', 'Multiple employees can not hold same apiKey'));
+                    reject(new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid apiKey'));
                 } else {
                     resolve(employees.result[0]);
                 }

@@ -43,17 +43,17 @@ module.exports = {
      */
     validateRequest: function (request, response, process) {
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else if (!request.channel) {
-            process.error(request, response, 'Invalid request, could not found a valid channel');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not found a valid channel'));
         } else {
             process.nextSuccess(request, response);
         }
     },
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
-        if (!response.success) response.success = {};
-        if (!response.success[request.channel.target]) response.success[request.channel.target] = [];
+        //if (!response.success) response.success = {};
+        //if (!response.success[request.channel.target]) response.success[request.channel.target] = [];
         //if (!response.errors[request.channel.target]) response.errors[request.channel.target] = [];
         process.nextSuccess(request, response);
     },
@@ -72,7 +72,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preChannel), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed channel interceptors', 'ERR_WF_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -85,7 +85,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preChannel), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed channel validators', 'ERR_WF_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -97,34 +97,12 @@ module.exports = {
             workflowItem: request.workflowItem,
             actionCode: request.channel.target
         }).then(success => {
-            // if (success && success.result && !UTILS.isBlank(success.result)) {
-            //     Object.keys(success.result).forEach(actionCode => {
-            //         let actionOutput = success.result[actionCode];
-            //         actionOutput.forEach(output => {
-            //             response.success[actionCode].push(output);
-            //         });
-            //     });
-            // }
             response.success = success;
             process.nextSuccess(request, response);
         }).catch(error => {
             response.errors = error;
             process.error(request, response);
         });
-    },
-
-    postChannelInterceptors: function (request, response, process) {
-        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.channel.code);
-        if (interceptors && interceptors.postChannel) {
-            this.LOG.debug('Applying postChannel interceptors for workflow channel execution');
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postChannel), request, response).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
     },
     postChannelValidators: function (request, response, process) {
         let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.channel.code);
@@ -133,30 +111,23 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postChannel), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed channel validators', 'ERR_WF_00006'));
             });
         } else {
             process.nextSuccess(request, response);
         }
     },
-    successEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve({
-            success: true,
-            code: 'SUC_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
-            errors: response.error || response.errors,
-            result: response.success
-        });
-    },
-    handleError: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        process.reject({
-            success: false,
-            code: 'ERR_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
-            errors: response.error || response.errors,
-            result: response.success
-        });
+    postChannelInterceptors: function (request, response, process) {
+        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.channel.code);
+        if (interceptors && interceptors.postChannel) {
+            this.LOG.debug('Applying postChannel interceptors for workflow channel execution');
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postChannel), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed channel interceptors', 'ERR_WF_00006'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     }
 };

@@ -201,7 +201,7 @@ module.exports = {
 
     handleNestedModel: function (request, response, property) {
         return new Promise((resolve, reject) => {
-            throw new Error('take care');
+
             try {
                 let model = request.model;
                 let models = model[property];
@@ -214,7 +214,7 @@ module.exports = {
                     tenant: request.tenant,
                     models: models
                 }).then(success => {
-                    if (success.success) {
+                    if (success.result && success.result.length > 0) {
                         if (propDef.type === 'one') {
                             let key = (propDef.propertyName) ? success.result[0][propDef.propertyName] : success.result[0]._id;
                             if (UTILS.isObjectId(key)) {
@@ -233,17 +233,7 @@ module.exports = {
                         }
                         resolve(true);
                     } else {
-                        let response = {
-                            success: false,
-                            code: 'ERR_SAVE_00006'
-                        };
-                        if (success.result) {
-                            response.result = success.result;
-                        }
-                        if (success.error) {
-                            response.error = success.error;
-                        }
-                        reject(response);
+                        reject(new CLASSES.NodicsError('ERR_SAVE_00006'));
                     }
                 }).catch(error => {
                     reject(error);

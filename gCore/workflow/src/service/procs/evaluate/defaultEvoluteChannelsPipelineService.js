@@ -44,9 +44,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to evaluate channels');
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else if (!request.itemCode && !request.workflowItem) {
-            process.error(request, response, 'Invalid request, workflow item detail can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow item detail can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -61,19 +61,19 @@ module.exports = {
     },
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
-        if (!response.success) response.success = {};
-        if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
-        if (!response.errors[request.workflowAction.code]) response.errors[request.workflowAction.code] = [];
+        response.success = [];
+        // if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
+        // if (!response.errors[request.workflowAction.code]) response.errors[request.workflowAction.code] = [];
         process.nextSuccess(request, response);
     },
     validateOperation: function (request, response, process) {
         let workflowItem = request.workflowItem;
         if (workflowItem.workflowHead.code !== request.workflowHead.code) {
-            process.error(request, response, 'Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code);
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code));
         } else if (workflowItem.activeAction.code !== request.workflowAction.code) {
-            process.error(request, response, 'Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code);
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code));
         } else if (!request.actionResponse) {
-            process.error(request, response, 'Invalid request, action response can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, action response can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -88,23 +88,25 @@ module.exports = {
             actionResponse: request.actionResponse
         }).then(qualifiedChannels => {
             request.qualifiedChannels = qualifiedChannels;
+            let responseComment = {
+                action: 'qualifiedChannels',
+                target: request.workflowAction.code,
+                item: request.workflowItem.code || request.workflowItem._id,
+                timestamp: new Date()
+            };
             if (request.qualifiedChannels.length > 0) {
                 request.qualifiedChannels.forEach(channel => {
                     if (!request.actionResponse.channels) request.actionResponse.channels = [];
                     request.actionResponse.channels.push(channel.code);
                 });
+                responseComment.message = 'Qualified channels: ' + request.actionResponse.channels;
+            } else {
+                responseComment.message = 'This is end action for workflow';
             }
-            response.success[request.workflowAction.code].push({
-                action: 'qualifiedChannels',
-                target: request.workflowAction.code,
-                item: request.workflowItem.code || request.workflowItem._id,
-                timestamp: new Date(),
-                msg: 'Qualified channels: ' + request.actionResponse.channels
-            });
+            response.success.push(responseComment);
             process.nextSuccess(request, response);
         }).catch(error => {
-            response.errors[request.workflowAction.code] = error;
-            process.error(request, response);
+            process.error(request, response, error);
         });
     },
     updateActionResponse: function (request, response, process) {
@@ -112,12 +114,12 @@ module.exports = {
             tenant: request.tenant,
             models: [request.actionResponse]
         }).then(success => {
-            response.success[request.workflowAction.code].push({
+            response.success.push({
                 action: 'actionResponseUpdated',
                 target: request.workflowAction.code,
                 item: request.workflowItem.code || request.workflowItem._id,
                 timestamp: new Date(),
-                msg: 'Action response updated: ' + request.actionResponse._id
+                message: 'Action response updated: ' + request.actionResponse._id
             });
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -135,53 +137,26 @@ module.exports = {
                 actionResponse: request.actionResponse,
                 channels: request.qualifiedChannels
             }).then(success => {
-                try {
-                    if (success && success.result && !UTILS.isBlank(success.result)) {
-                        Object.keys(success.result).forEach(channelCode => {
-                            response.success[channelCode].push(success.result[channelCode]);
-                        });
-                    }
-                    if (success && success.errors && !UTILS.isBlank(success.errors)) {
-                        Object.keys(success.errors).forEach(channelCode => {
-                            response.errors[channelCode].push(success.errors[channelCode]);
-                        });
-                    }
-                    process.nextSuccess(request, response);
-                } catch (error) {
-                    process.error(request, response, error);
-                }
-            }).catch(errResponse => {
-                try {
-                    if (errResponse && errResponse.errors && !UTILS.isBlank(errResponse.errors)) {
-                        Object.keys(errResponse.errors).forEach(channelCode => {
-                            response.errors[channelCode].push(success.result[channelCode]);
-                        });
-                    }
-                    process.error(request, response);
-                } catch (error) {
-                    process.error(request, response, error);
-                }
+                response.success.concat(success);
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                // try {
+                //     if (errResponse && errResponse.errors && !UTILS.isBlank(errResponse.errors)) {
+                //         Object.keys(errResponse.errors).forEach(channelCode => {
+                //             response.errors[channelCode].push(success.result[channelCode]);
+                //         });
+                //     }
+                //     process.error(request, response);
+                // } catch (error) {
+                //     process.error(request, response, error);
+                // }
+                process.error(request, response, error);
             });
         } else {
+            response.success.push({
+                message: 'This is last action for the workflow'
+            });
             process.nextSuccess(request, response);
         }
-    },
-    successEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve({
-            success: true,
-            code: 'SUC_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
-            result: response.success
-        });
-    },
-    handleError: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        process.reject({
-            success: false,
-            code: 'ERR_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
-            errors: response.error || response.errors
-        });
     }
 };

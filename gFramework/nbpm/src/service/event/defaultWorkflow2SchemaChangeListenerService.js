@@ -39,23 +39,14 @@ module.exports = {
         try {
             SERVICE.DefaultWorkflow2SchemaService.workflow2SchemaUpdateEventHandler(event.data).then(success => {
                 callback(null, {
-                    success: true,
                     code: 'SUC_EVNT_00000',
                     msg: success
                 });
             }).catch(error => {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    msg: (error instanceof Object) ? JSON.stringify(error) : error
-                });
+                callback(new CLASSES.EventError(error, 'Unable to handle workflow2schema update handler', 'ERR_EVNT_00000'));
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: (error instanceof Object) ? JSON.stringify(error) : error
-            });
+            callback(new CLASSES.EventError(error, 'Unable to handle workflow2schema update handler', 'ERR_EVNT_00000'));
         }
     }
 };

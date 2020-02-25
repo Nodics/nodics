@@ -109,9 +109,9 @@ module.exports = {
 
     removeTenantDatabase: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.NodicsError('Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new NodicsError('Invalid tenant name: ' + tenant);
         } else if (this.dbs[moduleName] && this.dbs[moduleName][tenant]) {
             delete this.dbs[moduleName][tenant];
         }

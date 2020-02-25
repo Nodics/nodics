@@ -37,9 +37,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request for default success handler');
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, Tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Tenant can not be null or empty'));
         } else if (!request.workflowItem) {
-            process.error(request, response, 'Invalid request, Workflow item can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Workflow item can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -69,24 +69,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
-        });
-    },
-    successEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve({
-            success: true,
-            code: 'SUC_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
-            result: response.success
-        });
-    },
-    handleError: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        process.reject({
-            success: false,
-            code: 'ERR_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
-            errors: response.error || response.errors
         });
     }
 };

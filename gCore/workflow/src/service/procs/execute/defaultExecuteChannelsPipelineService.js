@@ -43,9 +43,9 @@ module.exports = {
      */
     validateRequest: function (request, response, process) {
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else if (!request.channels) {
-            process.error(request, response, 'Invalid request, could not found a valid channel');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not found a valid channel'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -77,12 +77,11 @@ module.exports = {
         try {
             request.channels.forEach(channel => {
                 if (targets.includes(channel.target)) {
-                    throw new Error('Target error: Multiple channels can not hold same target');
+                    throw new CLASSES.WorkflowError('Target error: Multiple channels can not hold same target');
                 }
             });
             process.nextSuccess(request, response);
         } catch (error) {
-            this.LOG.error(error);
             process.error(request, response, error);
         }
     },
@@ -122,11 +121,9 @@ module.exports = {
                 tenant: request.tenant,
                 models: [itemModels]
             }).then(success => {
-                if (success.success && success.result && success.result.length > 0) {
-                    success.result.forEach(newModel => {
-                        request.channelRequests[newModel.code].workflowItem = newModel;
-                    });
-                }
+                success.result.forEach(newModel => {
+                    request.channelRequests[newModel.code].workflowItem = newModel;
+                });
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
@@ -145,21 +142,8 @@ module.exports = {
     successEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         process.resolve({
-            success: true,
-            code: 'SUC_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
-            result: response.success,
-            errors: response.error || response.errors
-        });
-    },
-    handleError: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        process.reject({
-            success: false,
-            code: 'ERR_SYS_00000',
-            msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000').message,
-            result: response.success,
-            errors: response.error || response.errors
+            success: response.success,
+            error: response.errors
         });
     },
 

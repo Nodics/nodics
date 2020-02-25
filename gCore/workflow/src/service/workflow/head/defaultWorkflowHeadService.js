@@ -59,10 +59,10 @@ module.exports = {
                     code: workflowCode
                 }
             }).then(response => {
-                if (response.success && response.result.length > 0) {
+                if (response.result && response.result.length > 0) {
                     resolve(response.result[0]);
                 } else {
-                    reject('Invalid request, none workflows found for code: ' + workflowCode);
+                    reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, none workflows found for code: ' + workflowCode));
                 }
             }).catch(error => {
                 reject(error);

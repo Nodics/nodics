@@ -44,9 +44,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to evaluate channels');
         if (!request.tenant) {
-            process.error(request, response, 'Invalid request, tenant can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else if (!request.actionResponse) {
-            process.error(request, response, 'Invalid request, actionResponse can not be null or empty');
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, actionResponse can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -83,7 +83,7 @@ module.exports = {
                     });
                 } else {
                     this.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
-                    process.error(request, response, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response)');
+                    process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00007', 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response)'));
                 }
             } catch (error) {
                 process.error(request, response, error);
@@ -104,7 +104,7 @@ module.exports = {
                 let result = eval(request.channel.qualifier.script);
                 process.stop(request, response, result);
             } catch (error) {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.WorkflowError(error, null, 'ERR_WF_00007'));
             }
         } else {
             process.nextSuccess(request, response);
@@ -112,6 +112,6 @@ module.exports = {
     },
     invalidChannel: function (request, response, process) {
         this.LOG.debug('Please validate your channel, It should contain one of [decision, handler or script]');
-        process.error(request, response, 'Please validate your channel, It should contain one of [decision, handler or script]');
+        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00009', 'Please validate your channel, It should contain one of [decision, handler or script]'));
     }
 };

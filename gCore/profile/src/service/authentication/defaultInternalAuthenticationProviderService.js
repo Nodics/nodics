@@ -17,13 +17,13 @@ module.exports = {
             try {
                 let authToken = NODICS.getInternalAuthToken(request.tenant);
                 resolve({
-                    code: 'SUC_SYS_00000',
+                    code: 'SUC_AUTH_00000',
                     result: {
                         authToken: authToken
                     }
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error));
             }
         });
     }
