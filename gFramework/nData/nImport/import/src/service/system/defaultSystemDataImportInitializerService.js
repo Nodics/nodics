@@ -162,7 +162,7 @@ module.exports = {
             process.nextSuccess(request, response);
         } else {
             process.stop(request, response, {
-                code: 'SUC_DATA_00001',
+                code: 'SUC_IMP_00001',
                 msg: 'Could not find any data to import for given modules'
             });
         }

@@ -11,6 +11,23 @@
 
 module.exports = {
 
+    SUC_IMP_00000: {
+        code: '200',
+        message: 'Successfully processed'
+    },
+    SUC_IMP_00001: {
+        code: '200',
+        message: 'Could not find any data to import for given modules'
+    },
 
 
+    ERR_IMP_00000: {
+        code: '400',
+        message: 'Data import validation error'
+    },
+
+    ERR_IMP_00001: {
+        code: '400',
+        message: 'Could not found any model to import'
+    }
 };

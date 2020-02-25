@@ -10,5 +10,13 @@
  */
 
 module.exports = {
+    SUC_HLP_00000: {
+        code: '200',
+        message: 'Help notation successfully provided',
+    },
 
+    ERR_HLP_00000: {
+        code: '500',
+        message: 'Failed to serve help notation',
+    },
 };

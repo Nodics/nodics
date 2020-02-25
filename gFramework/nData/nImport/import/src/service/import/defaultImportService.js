@@ -36,7 +36,7 @@ module.exports = {
         request.dataType = 'init';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                if (success && success.code && success.code === 'SUC_DATA_00001') {
+                if (success && success.code && success.code === 'SUC_IMP_00001') {
                     resolve(success);
                 } else {
                     let result = {
@@ -66,7 +66,7 @@ module.exports = {
         request.dataType = 'core';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                if (success && success.code && success.code === 'SUC_DATA_00001') {
+                if (success.code && success.code === 'SUC_IMP_00001') {
                     resolve(success);
                 } else {
                     let result = {
@@ -96,7 +96,7 @@ module.exports = {
         request.dataType = 'sample';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                if (success && success.code && success.code === 'SUC_DATA_00001') {
+                if (success.code && success.code === 'SUC_IMP_00001') {
                     resolve(success);
                 } else {
                     let result = {
@@ -126,7 +126,7 @@ module.exports = {
         if (request.importFinalizeData) {
             return new Promise((resolve, reject) => {
                 SERVICE.DefaultPipelineService.start('localDataImportInitializerPipeline', request, {}).then(success => {
-                    if (success && success.code && success.code === 'SUC_DATA_00001') {
+                    if (success && success.code && success.code === 'SUC_IMP_00001') {
                         resolve(success);
                     } else {
                         let result = {

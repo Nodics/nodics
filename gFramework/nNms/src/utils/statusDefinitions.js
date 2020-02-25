@@ -11,5 +11,22 @@
 
 module.exports = {
 
+    SUC_RES_00000: {
+        code: '200',
+        message: 'Successfully processed',
+    },
+    SUC_RES_00001: {
+        code: '200',
+        message: 'Successfully granted responsibility',
+    },
 
+    ERR_RES_00000: {
+        code: '400',
+        message: 'Failed due to some internal error',
+    },
+
+    ERR_RES_00001: {
+        code: '400',
+        message: 'Rejected responsibility',
+    }
 };
