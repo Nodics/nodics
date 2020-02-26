@@ -37,11 +37,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.header) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_IMP_00000', 'Please validate request. Mandate property header not have valid value'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property header not have valid value'));
         } else if (!request.dataModel) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_IMP_00000', 'Please validate request. Mandate property dataModel not have valid value'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property dataModel not have valid value'));
         } else if (!request.header.options.schemaName && !request.header.options.indexName) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_IMP_00000', 'Please validate request. Both schemaName and indexName can not be null or empty'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Both schemaName and indexName can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -199,17 +199,17 @@ module.exports = {
                 tenant: request.tenant,
                 query: query
             }).then(result => {
-                if (result && result.result && result.result.length > 0) {
+                if (result.result && result.result.length > 0) {
                     let data = [];
                     result.result.forEach(element => {
                         data.push(element[options.macro.options.returnProperty || '_id']);
                     });
                     resolve(data);
                 } else {
-                    reject(new CLASSES.NodicsError('ERR_IMP_00001', 'None ' + options.macro.options.model.toUpperCaseFirstChar() + 's found'));
+                    reject(new CLASSES.DataImportError('ERR_IMP_00001', 'None ' + options.macro.options.model.toUpperCaseFirstChar() + 's found'));
                 }
             }).catch(error => {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_IMP_00000'));
+                reject(new CLASSES.DataImportError(error, null, 'ERR_IMP_00000'));
             });
         });
     },
@@ -242,17 +242,17 @@ module.exports = {
                     response.success = success;
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, error);
+                    process.error(request, response, new CLASSES.DataImportError(error));
                 });
             } else {
-                process.error(request, response, new CLASSES.NodicsError('ERR_IMP_00000', 'Invalid header options, should contain either schemaName or indexName'));
+                process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00000', 'Invalid header options, should contain either schemaName or indexName'));
             }
         } else {
             this.insertRemoteModel(request, models).then(success => {
                 response.success = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.DataImportError(error));
             });
         }
     },
@@ -267,10 +267,10 @@ module.exports = {
                 if (result && result.result.length > 0) {
                     resolve(success.concat(result.result));
                 } else {
-                    reject(new CLASSES.NodicsError('ERR_IMP_00001', 'Could not found any response from data access layer'));
+                    reject(new CLASSES.DataImportError('ERR_IMP_00001', 'Could not found any response from data access layer'));
                 }
             }).catch(error => {
-                reject(new CLASSES.NodicsError(error));
+                reject(new CLASSES.DataImportError(error));
             });
         });
     },
@@ -289,10 +289,10 @@ module.exports = {
                 if (result && result.result > 1) {
                     resolve(result.result);
                 } else {
-                    reject(new CLASSES.NodicsError('ERR_IMP_00001', 'Could not found any response from data access layer'));
+                    reject(new CLASSES.DataImportError('ERR_IMP_00001', 'Could not found any response from data access layer'));
                 }
             }).catch(error => {
-                reject(new CLASSES.NodicsError(error));
+                reject(new CLASSES.DataImportError(error));
             });
         });
     },

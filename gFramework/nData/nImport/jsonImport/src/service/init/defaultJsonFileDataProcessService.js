@@ -39,9 +39,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process JS file');
         if (!request.files || !(request.files instanceof Array) || request.files.length <= 0) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid file path to read data'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Invalid file path to read data'));
         } else if (!request.outputPath || UTILS.isBlank(request.outputPath)) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid output path to write data'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Invalid output path to write data'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -52,7 +52,7 @@ module.exports = {
         this.handleFiles(request, response, [].concat(request.files), 0).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, error);
+            process.error(request, response, new CLASSES.DataImportError(error));
         });
     },
 

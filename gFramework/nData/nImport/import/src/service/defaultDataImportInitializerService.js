@@ -37,11 +37,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.data.headers) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property headers not have valid value'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property headers not have valid value'));
         } else if (!request.inputPath) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property inputPath not have valid value'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property inputPath not have valid value'));
         } else if (!request.outputPath) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property outputPath not have valid value'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property outputPath not have valid value'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -63,7 +63,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SYS_00000'));
+            process.error(request, response, new CLASSES.DataImportError(error));
         }
     },
 
@@ -118,11 +118,6 @@ module.exports = {
         });
     },
 
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
         let errorFiles = [];
@@ -144,16 +139,6 @@ module.exports = {
                 this.LOG.error('Facing issued while moving file to error bucket: ', error);
             });
         }
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
+        SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
     }
 };

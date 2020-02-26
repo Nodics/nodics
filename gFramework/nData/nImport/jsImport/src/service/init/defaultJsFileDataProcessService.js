@@ -36,9 +36,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process JS file');
         if (!request.files || !(request.files instanceof Array) || request.files.length <= 0) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Invalid file path to read data'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_DATA_00003', 'Invalid file path to read data'));
         } else if (!request.outputPath || UTILS.isBlank(request.outputPath)) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Invalid output path to write data'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_DATA_00003', 'Invalid output path to write data'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -64,7 +64,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }
         }).catch(error => {
-            process.error(request, response, error);
+            process.error(request, response, new CLASSES.DataImportError(error));
         });
     },
 

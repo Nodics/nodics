@@ -38,7 +38,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.modules && !UTILS.isArray(request.modules) && request.modules.length <= 0) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property modules not have valid value'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property modules not have valid value'));
         } else {
             request.data = {};
             process.nextSuccess(request, response);

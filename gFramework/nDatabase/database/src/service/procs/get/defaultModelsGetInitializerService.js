@@ -112,7 +112,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -127,7 +127,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
             });
         } else {
             process.nextSuccess(request, response);

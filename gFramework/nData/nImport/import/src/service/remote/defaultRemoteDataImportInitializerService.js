@@ -37,9 +37,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.connectionOptions) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property connectionOptions not have valid value'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property connectionOptions not have valid value'));
         } else if (!request.localDir) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property localDir not have valid value'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property localDir not have valid value'));
         } else {
             process.nextSuccess(request, response);
         }

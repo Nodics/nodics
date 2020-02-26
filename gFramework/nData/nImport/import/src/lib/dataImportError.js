@@ -9,13 +9,9 @@
 
  */
 
-module.exports = {
-
-    data: {
-        dataDirName: 'temp'
-    },
-
-    defaultErrorCodes: {
-        DataError: 'ERR_DATA_00000'
+module.exports = class DataImportError extends CLASSES.NodicsError {
+    constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').DataImportError) {
+        super(error, message, defaultCode);
+        super.name = 'DataImportError';
     }
 };

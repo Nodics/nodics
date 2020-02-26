@@ -34,24 +34,5 @@ module.exports = {
 
     processData: function (request, response, process) {
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

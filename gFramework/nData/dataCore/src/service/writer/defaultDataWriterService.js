@@ -54,14 +54,14 @@ module.exports = {
                         header: options.header,
                         models: options.finalData
                     };
-                    this.LOG.debug('  Writing data into file: ' + fileName.replace(NODICS.getNodicsHome(), '.'));
+                    this.LOG.debug('Writing data into file: ' + fileName.replace(NODICS.getNodicsHome(), '.'));
                     fs.writeFileSync(fileName, 'module.exports = ' + JSON.stringify(finalObject, null, 4) + ';', CONFIG.get('data').importDataConvertEncoding || 'utf8');
                     resolve(true);
                 }).catch(error => {
-                    reject(error);
+                    reject(new CLASSES.DataError(error, 'failed to write data into file: ' + options.outputPath.fileName));
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.DataError(error, 'failed to write data into file'));
             }
         });
     }

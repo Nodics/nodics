@@ -75,7 +75,6 @@ module.exports = {
             }
         }
     },
-
     localDataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -165,18 +164,9 @@ module.exports = {
                 type: 'process',
                 handler: 'dataImportInitializerPipeline',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultRemoteDataImportInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultRemoteDataImportInitializerService.handleErrorEnd'
             }
         }
     },
-
     dataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -198,7 +188,6 @@ module.exports = {
             }
         }
     },
-
     headerProcessPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -224,7 +213,6 @@ module.exports = {
             }
         }
     },
-
     processDataImportPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -260,7 +248,6 @@ module.exports = {
             }
         }
     },
-
     processFileDataImportPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -275,18 +262,9 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultFileDataImportProcessService.processModels',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultFileDataImportProcessService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultFileDataImportProcessService.handleErrorEnd'
             }
         }
     },
-
     processModelImportPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -316,14 +294,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultModelImportProcessService.insertModel',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultModelImportProcessService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultModelImportProcessService.handleErrorEnd'
             }
         }
     }

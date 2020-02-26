@@ -39,7 +39,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.inputPath.rootPath) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Please validate request. Mandate property modules not have valid value'));
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property modules not have valid value'));
         } else {
             request.data = {};
             process.nextSuccess(request, response);
@@ -118,7 +118,7 @@ module.exports = {
                                 if (!request.data.headers[headerName]) {
                                     request.data.headers[headerName] = headerObj;
                                 } else {
-                                    throw new CLASSES.NodicsError('ERR_SYS_00000', 'Same header: ' + headerName + 'can not be in two different header files');
+                                    throw new CLASSES.DataImportError('ERR_IMP_00003', 'Same header: ' + headerName + 'can not be in two different header files');
                                 }
                             });
                         });
@@ -128,7 +128,7 @@ module.exports = {
             delete request.data.headerFiles;
             process.nextSuccess(request, response);
         } catch (error) {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SYS_00000'));
+            process.error(request, response, new CLASSES.DataImportError(error));
         }
 
     },

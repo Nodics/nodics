@@ -43,6 +43,9 @@ module.exports = {
         }
     },
 
+    /**
+     * This pipeline define target as schema to import data
+     */
     schemaDataHandlerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -78,14 +81,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultSchemaDataHandlerService.processData',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultSchemaDataHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultSchemaDataHandlerService.handleErrorEnd'
             }
         }
     },
@@ -103,15 +98,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultImportDataFilterProcessService.processData',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultImportDataFilterProcessService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultImportDataFilterProcessService.handleErrorEnd'
             }
         }
     },
@@ -136,15 +122,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultFileWriterProcessService.writeIntoFile',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultFileWriterProcessService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultFileWriterProcessService.handleErrorEnd'
             }
         }
     }
