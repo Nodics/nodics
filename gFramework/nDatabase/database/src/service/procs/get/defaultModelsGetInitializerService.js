@@ -36,11 +36,11 @@ module.exports = {
         this.LOG.debug('Validating get request ');
         let options = request.options;
         if (!request.schemaModel) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Model not available within tenant: ' + request.tenant));
+            process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00003', 'Model not available within tenant: ' + request.tenant));
         } else if (options && options.projection && !UTILS.isObject(options.projection)) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid projection object'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00003', 'Invalid projection object'));
         } else if (options && options.sort && !UTILS.isObject(options.sort)) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid sort object'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00003', 'Invalid sort object'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -112,7 +112,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -127,7 +127,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -185,7 +185,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00006'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -200,7 +200,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00006'));
             });
         } else {
             process.nextSuccess(request, response);

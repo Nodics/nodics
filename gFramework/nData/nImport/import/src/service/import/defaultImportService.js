@@ -36,7 +36,7 @@ module.exports = {
         request.dataType = 'init';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                if (success && success.code && success.code === 'SUC_IMP_00001') {
+                if (success.code === 'SUC_IMP_00001') {
                     resolve(success);
                 } else {
                     let result = {
@@ -54,10 +54,11 @@ module.exports = {
                         resolve(result);
                     }).catch(error => {
                         NODICS.LOG.error('Initial data import failed : ', error);
+                        reject(new CLASSES.DataImportError(error, 'Initial data import failed'));
                     });
                 }
             }).catch(error => {
-                reject(error);
+                reject(new CLASSES.DataImportError(error, 'Initial data import failed'));
             });
         });
     },
@@ -66,7 +67,7 @@ module.exports = {
         request.dataType = 'core';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                if (success.code && success.code === 'SUC_IMP_00001') {
+                if (success.code === 'SUC_IMP_00001') {
                     resolve(success);
                 } else {
                     let result = {
@@ -83,11 +84,12 @@ module.exports = {
                         result.import = success;
                         resolve(result);
                     }).catch(error => {
-                        NODICS.LOG.error('Initial data import failed : ', error);
+                        NODICS.LOG.error('Core data import failed : ', error);
+                        reject(new CLASSES.DataImportError(error, 'Core data import failed'));
                     });
                 }
             }).catch(error => {
-                reject(error);
+                reject(new CLASSES.DataImportError(error, 'Core data import failed'));
             });
         });
     },
@@ -96,7 +98,7 @@ module.exports = {
         request.dataType = 'sample';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                if (success.code && success.code === 'SUC_IMP_00001') {
+                if (success.code === 'SUC_IMP_00001') {
                     resolve(success);
                 } else {
                     let result = {
@@ -113,11 +115,12 @@ module.exports = {
                         result.import = success;
                         resolve(result);
                     }).catch(error => {
-                        NODICS.LOG.error('Initial data import failed : ', error);
+                        NODICS.LOG.error('Sample data import failed : ', error);
+                        reject(new CLASSES.DataImportError(error, 'Sample data import failed'));
                     });
                 }
             }).catch(error => {
-                reject(error);
+                reject(new CLASSES.DataImportError(error, 'Sample data import failed'));
             });
         });
     },
@@ -156,11 +159,11 @@ module.exports = {
                             result.import = success;
                             resolve(result);
                         }).catch(error => {
-                            reject(error);
+                            reject(new CLASSES.DataImportError(error, 'Local data import failed'));
                         });
                     }
                 }).catch(error => {
-                    reject(error);
+                    reject(new CLASSES.DataImportError(error, 'Local data import failed'));
                 });
             });
         } else {

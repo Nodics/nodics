@@ -79,13 +79,9 @@ module.exports = {
             }
         } catch (error) {
             _self.LOG.error('While collecting properties from module: ' + moduleName + ' and schema: ' + schemaName);
-            throw error;
+            throw new CLASSES.SearchError(error);
         }
         return searchSchema;
-    },
-
-    getPropertyDataType: function (rawSchema, name) {
-
     },
 
     prepareFromDefinitions: function (moduleName, tntCode, source, target, typeName) {
@@ -95,7 +91,7 @@ module.exports = {
         } catch (error) {
             _self.LOG.error('Failed while loading search schema from schema definitions');
             _self.LOG.error(error);
-            throw error;
+            throw new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions');
         }
     },
 
@@ -106,7 +102,7 @@ module.exports = {
         } catch (error) {
             _self.LOG.error('Failed while loading search schema from schema definitions');
             _self.LOG.error(error);
-            throw error;
+            throw new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions from database');
         }
     },
 

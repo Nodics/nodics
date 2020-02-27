@@ -35,7 +35,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do refresh request');
         if (!request.searchModel) {
-            process.error(request, response, new CLASSES.NodicsNodics('ERR_FIND_00001', 'Invalid search model or search is not active for this schema'));
+            process.error(request, response, new CLASSES.SearchNodics('ERR_FIND_00001', 'Invalid search model or search is not active for this schema'));
         } else {
             process.nextSuccess(request, response);
         }

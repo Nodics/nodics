@@ -8,6 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
+const _ = require('lodash');
 const fileLoader = require('./defaultFilesLoaderService');
 
 module.exports = {

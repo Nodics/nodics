@@ -50,7 +50,7 @@ module.exports = {
                     }
                 });
                 if (allPayloads.length > 0) {
-                    SERVICE.DefaultPromiseService.all(allPayloads).then(response => {
+                    SERVICE.DefaultNodicsPromiseService.all(allPayloads).then(response => {
                         if (failed.length > 0) {
                             if (!response.errors) response.errors = [];
                             response.errors = response.errors.concat(failed);

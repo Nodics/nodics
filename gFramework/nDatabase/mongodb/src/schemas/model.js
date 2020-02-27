@@ -18,13 +18,13 @@ module.exports = {
                 try {
                     this.find(input.query, input.options).toArray((error, result) => {
                         if (error) {
-                            reject(error);
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                         } else {
                             resolve(result);
                         }
                     });
                 } catch (error) {
-                    reject(error);
+                    reject(new CLASSES.NodicsError(error, 'While executing find operation', 'ERR_MDL_00000'));
                 }
             });
         },
@@ -46,13 +46,13 @@ module.exports = {
                                 if (result && result.value) {
                                     resolve(result.value);
                                 } else {
-                                    reject(new CLASSES.NodicsError('ERR_MDL_00002'));
+                                    reject(new CLASSES.NodicsError('ERR_MDL_00005'));
                                 }
                             }).catch(error => {
                                 reject(error);
                             });
                     } catch (error) {
-                        reject(error);
+                        reject(new CLASSES.NodicsError(error, 'While saving items', 'ERR_MDL_00000'));
                     }
                 } else {
                     try {
@@ -64,7 +64,7 @@ module.exports = {
                                     if (result.ops && result.ops.length > 0) {
                                         resolve(result.ops[0]);
                                     } else {
-                                        reject(new CLASSES.NodicsError('ERR_MDL_00002'));
+                                        reject(new CLASSES.NodicsError('ERR_MDL_00005'));
                                     }
                                 }).catch(error => {
                                     reject(error);
@@ -75,9 +75,8 @@ module.exports = {
                         }).catch(error => {
                             reject(error);
                         });
-
                     } catch (error) {
-                        reject(error);
+                        reject(new CLASSES.NodicsError(error, 'While saving new items', 'ERR_MDL_00000'));
                     }
                 }
             });
@@ -86,14 +85,14 @@ module.exports = {
         updateItems: function (input) {
             return new Promise((resolve, reject) => {
                 if (!input.model) {
-                    reject(new CLASSES.NodicsError('ERR_MDL_00001'));
+                    reject(new CLASSES.NodicsError('ERR_MDL_00003'));
                 } else if (!input.query || UTILS.isBlank(input.query)) {
                     reject(new CLASSES.NodicsError('ERR_MDL_00003'));
                 } else {
                     if (input.options && input.options.returnModified) {
                         this.find(input.query, input.options).toArray((error, response) => {
                             if (error) {
-                                reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00003'));
+                                reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                             } else {
                                 this.updateMany(input.query, {
                                     $set: input.model
@@ -108,7 +107,7 @@ module.exports = {
                                     result.models = response;
                                     resolve(result);
                                 }).catch(error => {
-                                    reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00003'));
+                                    reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                                 });
                             }
                         });
@@ -121,7 +120,7 @@ module.exports = {
                         }).then(success => {
                             resolve(success.result);
                         }).catch(error => {
-                            reject(error);
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                         });
                     }
                 }
@@ -134,7 +133,7 @@ module.exports = {
                     if (input.options && input.options.returnModified) {
                         this.find(input.query, input.options).toArray((error, response) => {
                             if (error) {
-                                reject(error);
+                                reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                             } else {
                                 this.deleteMany(input.query,
                                     this.dataBase.getOptions().modelRemoveOptions || {
@@ -144,7 +143,7 @@ module.exports = {
                                         result.models = response;
                                         resolve(result);
                                     }).catch(error => {
-                                        reject(error);
+                                        reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                                     });
                             }
                         });
@@ -154,7 +153,7 @@ module.exports = {
                         }).then(success => {
                             resolve(success.result);
                         }).catch(error => {
-                            reject(error);
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                         });
                     }
                 } else {

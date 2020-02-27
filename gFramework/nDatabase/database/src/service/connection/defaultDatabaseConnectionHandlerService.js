@@ -68,7 +68,7 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'MongoDB default connection error', 'ERR_DBS_00000'));
             }
         });
     },
@@ -132,16 +132,16 @@ module.exports = {
                                 resolve();
                             }
                         }).catch(error => {
-                            reject('Could not connect master database : ' + error);
+                            reject(error);
                         });
                     } else {
-                        reject('Invalid database configuration for connection handler found for module: ' + moduleName + ', and tenant: ' + tntCode);
+                        reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database configuration for connection handler found for module: ' + moduleName + ', and tenant: ' + tntCode));
                     }
                 } else {
-                    reject('Invalid database configuration found for module: ' + moduleName + ', and tenant: ' + tntCode);
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database configuration found for module: ' + moduleName + ', and tenant: ' + tntCode));
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'MongoDB default connection error', 'ERR_DBS_00000'));
             }
         });
     },
@@ -164,10 +164,10 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        reject('Invalid database configuration for connection handler found for module: ' + CONFIG.get('profileModuleName') + ', and tenant: default');
+                        reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database configuration for connection handler found for module: ' + CONFIG.get('profileModuleName') + ', and tenant: default'));
                     }
                 } else {
-                    reject('Invalid database connection handler found for module: ' + CONFIG.get('profileModuleName') + ', and tenant: default');
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database connection handler found for module: ' + CONFIG.get('profileModuleName') + ', and tenant: default'));
                 }
             } else {
                 resolve(true);
@@ -201,10 +201,10 @@ module.exports = {
                         reject(error);
                     });
                 } else {
-                    reject('Invalid database configuration for connection handler found for module: default, and tenant: default');
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database configuration for connection handler found for module: default, and tenant: default'));
                 }
             } else {
-                reject('Invalid database connection handler found for module: default, and tenant: default');
+                reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database connection handler found for module: default, and tenant: default'));
             }
         });
     },

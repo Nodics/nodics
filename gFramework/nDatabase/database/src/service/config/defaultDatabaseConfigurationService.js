@@ -62,9 +62,9 @@ module.exports = {
 
     getDatabaseConfiguration: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
         } else {
             let defaultConfig = CONFIG.get('database', tenant);
             let dbConfig = _.merge(_.merge({}, defaultConfig.default), defaultConfig[moduleName] || {});
@@ -73,16 +73,16 @@ module.exports = {
                 connConfig.options = _.merge(_.merge({}, dbConfig.options), connConfig.options);
                 return connConfig;
             } else {
-                throw new Error('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
+                throw new CLASSES.NodicsError('ERR_DBS_00003', 'Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
             }
         }
     },
 
     addTenantDatabase: function (moduleName, tenant, database) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
         } else {
             if (!this.dbs[moduleName]) {
                 this.dbs[moduleName] = {};
@@ -93,9 +93,9 @@ module.exports = {
 
     getTenantDatabase: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
         } else {
             let database = {};
             if (moduleName && this.dbs[moduleName]) {
@@ -109,9 +109,9 @@ module.exports = {
 
     removeTenantDatabase: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new CLASSES.NodicsError('Invalid module name: ' + moduleName);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new NodicsError('Invalid tenant name: ' + tenant);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
         } else if (this.dbs[moduleName] && this.dbs[moduleName][tenant]) {
             delete this.dbs[moduleName][tenant];
         }
@@ -157,16 +157,11 @@ module.exports = {
             let schemaName = event.data.item;
             this.refreshSchemaInterceptors(schemaName);
             callback(null, {
-                success: true,
                 code: 'SUC_EVNT_00000',
-                msg: success
+                message: success
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error, null, 'ERR_EVNT_00000'));
         }
     },
 
@@ -200,16 +195,11 @@ module.exports = {
         try {
             this.refreshSchemaValidators(event.data.tenant, event.data.item);
             callback(null, {
-                success: true,
                 code: 'SUC_EVNT_00000',
-                msg: success
+                message: success
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error, null, 'ERR_EVNT_00000'));
         }
     },
 };

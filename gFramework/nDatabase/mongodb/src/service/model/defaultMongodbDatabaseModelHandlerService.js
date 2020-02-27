@@ -94,11 +94,9 @@ module.exports = {
                     });
                 }
                 if (primaryKeys.length > 1) {
-                    _self.LOG.error('Multiple primary keys are not supported: ' + primaryKeys.length);
-                    reject('Multiple primary keys are not supported: ' + primaryKeys.length);
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Multiple primary keys are not supported: ' + primaryKeys.length));
                 } else if (schema.versioned && primaryKeys.length <= 0) {
-                    _self.LOG.error('Versioned schema: ' + options.schemaName + ' without primary keys not valid');
-                    reject('Versioned schema: ' + options.schemaName + ' without primary keys not valid');
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Versioned schema: ' + options.schemaName + ' without primary keys not valid'));
                 } else {
                     let individualIndexes = [];
                     if (primaryKeys.length > 0) {
@@ -190,7 +188,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'while preparing database options', 'ERR_DBS_00000'));
             }
         });
     },
@@ -219,9 +217,8 @@ module.exports = {
                     resolve(schemaModel);
                 }).catch(error => {
                     _self.LOG.error('Indexes failed for: ' + schemaModel.schemaName + ' : ', error);
-                    reject(error);
+                    reject(new CLASSES.NodicsError(error, 'Indexes failed for: ' + schemaModel.schemaName, 'ERR_DBS_00000'));
                 });
-                //resolve(schemaModel);
             } else {
                 _self.createModel(options, dataBase).then(success => {
                     resolve(success);
@@ -255,14 +252,20 @@ module.exports = {
                     schemaModel.primaryKey = schemaOptions.primaryKeys[0];
                 }
                 _self.createIndexes(schemaModel).then(success => {
-                    _self.LOG.debug('Indexes created for: ' + schemaModel.schemaName);
+                    if (success.success) {
+                        _self.LOG.info('Successfully updated indexes');
+                        _self.LOG.info(success.success);
+                    }
+                    if (success.errors) {
+                        _self.LOG.info('Failed updating indexes');
+                        _self.LOG.info(success.errors);
+                    }
                     resolve(schemaModel);
                 }).catch(error => {
-                    _self.LOG.error('Indexes failed for: ' + schemaModel.schemaName + ' : ', error);
                     reject(error);
                 });
             }).catch(error => {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_DBS_00005'));
             });
         });
     },
@@ -289,60 +292,25 @@ module.exports = {
                                 });
                             }
                             let finalIndexes = _self.finalizeIndexes(schemaOptions.indexedFields, indexes, cleanOrphan);
-                            let response = {
-                                success: {},
-                                failed: {}
-                            };
+                            let allPromises = [];
                             if (finalIndexes.create && finalIndexes.create.length > 0) {
-                                let allCreatePromises = [];
                                 finalIndexes.create.forEach(indexData => {
-                                    allCreatePromises.push(_self.createIndex(model, indexData));
+                                    allPromises.push(_self.createIndex(model, indexData));
                                 });
-                                if (allCreatePromises.length > 0) {
-                                    Promise.all(allCreatePromises).then(success => {
-                                        response.success['Create_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
-                                        if (finalIndexes.drop && finalIndexes.drop.length > 0) {
-                                            let allDropPromises = [];
-                                            finalIndexes.drop.forEach(name => {
-                                                allDropPromises.push(_self.dropIndex(model, name));
-                                            });
-                                            if (allDropPromises.length > 0) {
-                                                Promise.all(allDropPromises).then(success => {
-                                                    response.success['Drop_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
-                                                    resolve(response);
-                                                }).catch(error => {
-                                                    response.failed['Drop_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
-                                                    reject(response);
-                                                });
-                                            } else {
-                                                resolve(response);
-                                            }
-                                        } else {
-                                            resolve(response);
-                                        }
-                                    }).catch(error => {
-                                        response.failed['Create_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
-                                        reject(response);
-                                    });
-                                }
-                            } else if (finalIndexes.drop && finalIndexes.drop.length > 0) {
-                                let allDropPromises = [];
+                            }
+                            if (finalIndexes.drop && finalIndexes.drop.length > 0) {
                                 finalIndexes.drop.forEach(name => {
-                                    allDropPromises.push(_self.dropIndex(model, name));
+                                    allPromises.push(_self.dropIndex(model, name));
                                 });
-                                if (allDropPromises.length > 0) {
-                                    Promise.all(allDropPromises).then(success => {
-                                        response.success['Drop_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = success;
-                                        resolve(response);
-                                    }).catch(error => {
-                                        response.failed['Drop_' + model.schemaName + '_' + model.tenant + '_' + model.channel] = error;
-                                        reject(response);
-                                    });
-                                } else {
-                                    resolve(response);
-                                }
+                            }
+                            if (allPromises.length > 0) {
+                                SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {
+                                    resolve(success);
+                                }).catch(error => {
+                                    reject(error);
+                                });
                             } else {
-                                resolve(response);
+                                resolve({});
                             }
                         });
                     } else {
@@ -351,12 +319,10 @@ module.exports = {
                         resolve(response);
                     }
                 } else {
-                    let response = {};
-                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Invalid schema value to update indexes';
-                    reject(response);
+                    reject(new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid schema value to update indexes'));
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'while creating indexes for model: ' + model.schemaName, 'ERR_DBS_00000'));
             }
         });
     },
@@ -404,10 +370,10 @@ module.exports = {
                 model.dataBase.getConnection().createIndex(model.modelName, indexConfig.fields, indexConfig.options).then(success => {
                     resolve('Index updated for ' + indexConfig.fields);
                 }).catch(error => {
-                    reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Index failed for ' + indexConfig.fields + ' : ' + error.toString()));
+                    reject(new CLASSES.NodicsError(error, 'Index failed for ' + indexConfig.fields, 'ERR_DBS_00006'));
                 });
             } catch (error) {
-                reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Index failed for ' + indexConfig.fields + ' : ' + error.toString()));
+                reject(new CLASSES.NodicsError(error, 'Index failed for ' + indexConfig.fields, 'ERR_DBS_00006'));
             }
         });
     },
@@ -418,32 +384,36 @@ module.exports = {
                 model.dropIndex(indexName).then(success => {
                     resolve('Index deleted for ' + indexName);
                 }).catch(error => {
-                    reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Index deleting failed for ' + indexName + ' : ' + error.toString()));
+                    reject(new CLASSES.NodicsError(error, 'Index failed for ' + indexConfig.fields, 'ERR_DBS_00007'));
                 });
             } catch (error) {
-                reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Index deleting failed for ' + indexName + ' : ' + error.toString()));
+                reject(new CLASSES.NodicsError(error, 'Index failed for ' + indexConfig.fields, 'ERR_DBS_00007'));
             }
         });
     },
 
     updateValidator: function (model) {
         return new Promise((resolve, reject) => {
-            let schema = model.rawSchema;
-            let schemaOptions = model.rawSchema.schemaOptions[model.tenant];
-            let tmpOptions = { collMod: model.modelName };
-            tmpOptions = _.merge(tmpOptions, schema.options || {});
-            if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
-                tmpOptions = _.merge(tmpOptions, schemaOptions.options);
+            if (model) {
+                let schema = model.rawSchema;
+                let schemaOptions = model.rawSchema.schemaOptions[model.tenant];
+                let tmpOptions = { collMod: model.modelName };
+                tmpOptions = _.merge(tmpOptions, schema.options || {});
+                if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
+                    tmpOptions = _.merge(tmpOptions, schemaOptions.options);
+                }
+                model.dataBase.getConnection().command(tmpOptions).then(success => {
+                    let response = {};
+                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator updated';
+                    resolve(response);
+                }).catch(error => {
+                    let response = {};
+                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator update failed';
+                    reject(response);
+                });
+            } else {
+                reject(new CLASSES.NodicsError('ERR_DBS_00003', 'model can not be null to update validators'));
             }
-            model.dataBase.getConnection().command(tmpOptions).then(success => {
-                let response = {};
-                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator updated';
-                resolve(response);
-            }).catch(error => {
-                let response = {};
-                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Validator update failed';
-                reject(response);
-            });
         });
     },
 

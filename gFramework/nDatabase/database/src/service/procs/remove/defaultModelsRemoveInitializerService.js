@@ -38,7 +38,7 @@ module.exports = {
         if ((request.ids && request.ids.length > 0) || (request.codes && request.codes.length > 0)) {
             process.nextSuccess(request, response);
         } else {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid value for ids or codes'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_DEL_00003', 'Invalid value for ids or codes'));
         }
 
     },
@@ -84,7 +84,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_DEL_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -99,7 +99,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00005'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_DEL_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -108,19 +108,15 @@ module.exports = {
 
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing remove query');
-        try {
-            request.schemaModel.removeItems(request).then(result => {
-                response.success = {
-                    code: 'SUC_DEL_00000',
-                    result: result
-                };
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_DEL_00000'));
-            });
-        } catch (error) {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_DEL_00000'));
-        }
+        request.schemaModel.removeItems(request).then(result => {
+            response.success = {
+                code: 'SUC_DEL_00000',
+                result: result
+            };
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
 
     populateSubModels: function (request, response, process) {
@@ -234,7 +230,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00005'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_DEL_00006'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -250,7 +246,7 @@ module.exports = {
                 SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postRemove), request, response).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00005'));
+                    process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_DEL_00006'));
                 });
             } else {
                 process.nextSuccess(request, response);

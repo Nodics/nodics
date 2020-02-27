@@ -41,24 +41,14 @@ module.exports = {
                 dataModel: event.data.models
             }, {}).then(success => {
                 callback(null, {
-                    success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: 'Event handled successfully',
                     result: success
                 });
             }).catch(error => {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    error: error
-                });
+                callback(error);
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                error: error
-            });
+            callback(new CLASSES.EventError(error));
         }
 
     }

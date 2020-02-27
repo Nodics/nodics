@@ -37,7 +37,7 @@ module.exports = {
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for saving model');
         if (!request.model) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SAVE_00001'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_SAVE_00003', 'Model can not be null or empty for save operation'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -63,8 +63,7 @@ module.exports = {
             }
             process.nextSuccess(request, response);
         } catch (error) {
-            console.log(error);
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00002'));
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00000'));
         }
     },
 
@@ -233,7 +232,7 @@ module.exports = {
                         }
                         resolve(true);
                     } else {
-                        reject(new CLASSES.NodicsError('ERR_SAVE_00006'));
+                        reject(new CLASSES.NodicsError('ERR_SAVE_00007'));
                     }
                 }).catch(error => {
                     reject(error);
@@ -253,7 +252,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 console.log(error);
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00009'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -268,7 +267,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00009'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -286,7 +285,7 @@ module.exports = {
                         let functionName = value.substring(value.indexOf('.') + 1, value.length);
                         SERVICE[serviceName][functionName](request.model[property]);
                     } catch (error) {
-                        process.error(request, response, error);
+                        process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00011'));
                     }
                 }
             });
@@ -309,7 +308,7 @@ module.exports = {
             response.success = model;
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00000'));
+            process.error(request, response, error);
         });
     },
 
@@ -321,7 +320,7 @@ module.exports = {
             this.populateModels(request, response, [response.success.result], 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00002'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00003'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -433,7 +432,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00010'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -448,7 +447,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00010'));
             });
         } else {
             process.nextSuccess(request, response);

@@ -56,7 +56,7 @@ module.exports = {
                 });
                 resolve(true);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_DBS_00000'));
             }
 
         });
@@ -83,8 +83,7 @@ module.exports = {
                     let moduleRawSchema = NODICS.getModule(runtimeSchema.moduleName).rawSchema;
                     if (runtimeSchema.super) {
                         if (!moduleRawSchema[runtimeSchema.super]) {
-                            _self.LOG.error('Invalid super schema definition, could not found in current module');
-                            reject('Invalid super schema definition, could not found in current module');
+                            reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid super schema definition, could not found in current module'));
                         } else {
                             finalSchema = _.merge(_.merge({}, moduleRawSchema[runtimeSchema.super]), runtimeSchema);
                         }
@@ -93,7 +92,7 @@ module.exports = {
                 }
                 resolve(true);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_DBS_00000'));
             }
         });
     },
@@ -144,7 +143,7 @@ module.exports = {
                 options.mergedSchema[options.schemaName].parents = parents;
                 return options.mergedSchema[options.schemaName];
             } else {
-                throw new Error('Invalid super schema definition for: ' + options.schemaName);
+                throw new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid super schema definition for: ' + options.schemaName);
             }
         } else {
             options.mergedSchema[options.schemaName] = options.schema;

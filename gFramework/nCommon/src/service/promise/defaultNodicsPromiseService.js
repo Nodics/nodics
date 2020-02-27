@@ -38,7 +38,11 @@ module.exports = {
                 let ops = promises.shift();
                 Promise.all([ops]).then(success => {
                     if (!response.success) response.success = [];
-                    response.success = response.success.concat(success);
+                    if (success instanceof Array) {
+                        response.success = response.success.concat(success);
+                    } else {
+                        response.success.push(success);
+                    }
                     nodicsPromise(promises, response).then(response => {
                         resolve(response);
                     }).catch(error => {
@@ -46,7 +50,11 @@ module.exports = {
                     });
                 }).catch(error => {
                     if (!response.errors) response.errors = [];
-                    response.errors.push(error);
+                    if (error instanceof Array) {
+                        response.errors = response.errors.concat(error);
+                    } else {
+                        response.errors.push(error);
+                    }
                     nodicsPromise(promises, response).then(response => {
                         resolve(response);
                     }).catch(error => {

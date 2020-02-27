@@ -37,7 +37,7 @@ module.exports = {
     validateInput: function (request, response, process) {
         this.LOG.debug('Validating input for saving models');
         if (!request.models && !request.model) {
-            process.error(request, response, new CLASSES.NodicsError('Models to be saved can not be null in request'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_SAVE_00003', 'Models can not be null or empty for save operation'));
         } else {
             let models = [];
             if (request.models) {
@@ -125,7 +125,7 @@ module.exports = {
             SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.postSaveProcessor), request, response, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00005'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00006'));
             });
         } else {
             process.nextSuccess(request, response);

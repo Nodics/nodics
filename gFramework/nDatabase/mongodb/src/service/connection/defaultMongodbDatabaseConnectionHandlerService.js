@@ -46,8 +46,9 @@ module.exports = {
                     nameOnly: true
                 }).toArray((error, collections) => {
                     if (error) {
-                        _self.LOG.error('While fetching list of collections: ', error);
-                        reject('While fetching list of collections: ' + error);
+                        // _self.LOG.error('While fetching list of collections: ', error);
+                        // reject('While fetching list of collections: ' + error);
+                        reject(new CLASSES.NodicsError(error, 'While fetching list of collections', 'ERR_DBS_00000'));
                     } else {
                         resolve({
                             client: mongoClient,
@@ -57,8 +58,7 @@ module.exports = {
                     }
                 });
             }).catch(error => {
-                _self.LOG.error('MongoDB default connection error: ', error);
-                reject('MongoDB default connection error: ' + error);
+                reject(new CLASSES.NodicsError(error, 'MongoDB default connection error', 'ERR_DBS_00000'));
             });
         });
     },
@@ -89,7 +89,7 @@ module.exports = {
                     resolve(false);
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'MongoDB default connection error', 'ERR_DBS_00000'));
             }
         });
     },
@@ -103,17 +103,16 @@ module.exports = {
                     db.master.getConnection().collection('SchemaConfigurationModel').find({}, {}).toArray((err, result) => {
                         if (err) {
                             _self.LOG.error('Not able to fetch runtime schema update data');
-                            reject(err);
+                            reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Not able to fetch runtime schema update data'));
                         } else {
                             resolve(result);
                         }
                     });
                 } else {
-                    _self.LOG.error('Invalid database connection');
-                    reject('Invalid database connection');
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database connection'));
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'MongoDB default connection error', 'ERR_DBS_00000'));
             }
         });
     },

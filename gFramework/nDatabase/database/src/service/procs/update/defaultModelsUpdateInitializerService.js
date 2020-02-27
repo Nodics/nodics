@@ -35,12 +35,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating remove request: ');
         if (!request.query || UTILS.isBlank(request.query)) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_UPD_00001'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_UPD_00003', 'Query can not be null or empty for update operation'));
         } else if (!request.model || UTILS.isBlank(request.model)) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_UPD_00002'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_UPD_00003', 'Model can not be null or empty for update operation'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -69,7 +66,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preUpdate), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00003'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_UPD_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -84,7 +81,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preUpdate), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00003'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_UPD_00005'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -93,19 +90,15 @@ module.exports = {
 
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing remove query');
-        try {
-            request.schemaModel.updateItems(request).then(result => {
-                response.success = {
-                    code: 'SUC_UPD_00000',
-                    result: result
-                };
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_UPD_00000'));
-            });
-        } catch (error) {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_UPD_00000'));
-        }
+        request.schemaModel.updateItems(request).then(result => {
+            response.success = {
+                code: 'SUC_UPD_00000',
+                result: result
+            };
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
 
     populateSubModels: function (request, response, process) {
@@ -118,7 +111,7 @@ module.exports = {
             this.populateModels(request, response, response.success.result.models, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00002'));
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -219,7 +212,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postUpdate), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_UPD_00006'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -235,7 +228,7 @@ module.exports = {
                 SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postUpdate), request, response).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00004'));
+                    process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_UPD_00006'));
                 });
             } else {
                 process.nextSuccess(request, response);

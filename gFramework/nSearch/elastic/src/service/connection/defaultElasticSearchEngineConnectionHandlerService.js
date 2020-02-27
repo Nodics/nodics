@@ -56,7 +56,7 @@ module.exports = {
                     requestTimeout: defaultSearchConfig.requestTimeout
                 }, function (error) {
                     if (error) {
-                        reject(new CLASSES.NodicsError(error, null, 'ERR_SRCH_00001'));
+                        reject(new CLASSES.SearchError(error, null, 'ERR_SRCH_00001'));
                     } else {
                         searchEngine.setConnection(client);
                         searchEngine.setActive(true);
@@ -69,7 +69,7 @@ module.exports = {
                     }
                 });
             } catch (err) {
-                reject(new CLASSES.NodicsError(err, null, 'ERR_SRCH_00000'));
+                reject(new CLASSES.SearchError(err, null, 'ERR_SRCH_00000'));
             }
         });
     },
@@ -81,13 +81,13 @@ module.exports = {
                 _self.LOG.debug('Retrieving list of available indexes for');
                 searchEngine.getConnection().cluster.state({}, function (error, response) {
                     if (error) {
-                        reject(new CLASSES.NodicsError(error, null, 'ERR_SRCH_00000'));
+                        reject(new CLASSES.SearchError(error, null, 'ERR_SRCH_00000'));
                     } else {
                         resolve(response.metadata.indices || {});
                     }
                 });
             } catch (error) {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_SRCH_00000'));
+                reject(new CLASSES.SearchError(error, null, 'ERR_SRCH_00000'));
             }
         });
     },

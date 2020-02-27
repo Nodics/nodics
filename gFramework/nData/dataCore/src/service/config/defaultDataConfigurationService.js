@@ -82,16 +82,11 @@ module.exports = {
             let entityName = event.data.item;
             this.refreshImportInterceptors(entityName);
             callback(null, {
-                success: true,
                 code: 'SUC_EVNT_00000',
                 msg: success
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error));
         }
     },
 
@@ -114,16 +109,11 @@ module.exports = {
             let entityName = event.data.item;
             this.refreshExportInterceptors(entityName);
             callback(null, {
-                success: true,
                 code: 'SUC_EVNT_00000',
                 msg: success
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error));
         }
     },
 
@@ -158,16 +148,11 @@ module.exports = {
         try {
             this.refreshImportValidators(event.data.tenant, event.data.item);
             callback(null, {
-                success: true,
                 code: 'SUC_EVNT_00000',
                 msg: success
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error));
         }
     },
 
@@ -201,16 +186,11 @@ module.exports = {
         try {
             this.refreshExportValidators(event.data.tenant, event.data.item);
             callback(null, {
-                success: true,
                 code: 'SUC_EVNT_00000',
                 msg: success
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error));
         }
     }
 };
