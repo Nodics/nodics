@@ -15,7 +15,7 @@ module.exports = {
         type: 'schema',
         //item: 'customer', // not required, because it should be common
         trigger: 'preSave',
-        active: 'true',
+        active: true,
         index: 0,
         handler: 'DefaultSampleValidatorService.handlePreSave'
     },
@@ -25,7 +25,7 @@ module.exports = {
         type: 'schema',
         item: 'address', // not required, because it should be common
         trigger: 'preSave',
-        active: 'true',
+        active: true,
         index: 0,
         handler: 'DefaultSampleValidatorService.handlePreAddressSave'
     }

@@ -36,11 +36,6 @@ module.exports = {
                     required: true,
                     description: 'Mandate trigger name like, preSave, postSave'
                 },
-                active: {
-                    type: 'string',
-                    required: true,
-                    description: 'Mandate whether this needs to be applied'
-                },
                 index: {
                     type: 'int',
                     required: true,

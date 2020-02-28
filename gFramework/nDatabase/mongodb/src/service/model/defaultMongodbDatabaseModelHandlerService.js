@@ -238,6 +238,7 @@ module.exports = {
             if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
                 tmpOptions = _.merge(tmpOptions, schemaOptions.options);
             }
+            //console.log(options.modelName, '  :  ', util.inspect(tmpOptions.validator, true, 4));
             dataBase.getConnection().createCollection(options.modelName, tmpOptions).then(schemaModel => {
                 schemaModel.moduleName = options.moduleName;
                 schemaModel.versioned = schema.versioned || false;
@@ -368,12 +369,12 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 model.dataBase.getConnection().createIndex(model.modelName, indexConfig.fields, indexConfig.options).then(success => {
-                    resolve('Index updated for ' + indexConfig.fields);
+                    resolve('Index updated for model: ' + model.modelName + ', properties: ' + Object.keys(indexConfig.fields));
                 }).catch(error => {
-                    reject(new CLASSES.NodicsError(error, 'Index failed for ' + indexConfig.fields, 'ERR_DBS_00006'));
+                    reject(new CLASSES.NodicsError(error, 'Index create failed for ' + Object.keys(indexConfig.fields), 'ERR_DBS_00006'));
                 });
             } catch (error) {
-                reject(new CLASSES.NodicsError(error, 'Index failed for ' + indexConfig.fields, 'ERR_DBS_00006'));
+                reject(new CLASSES.NodicsError(error, 'Index create failed for ' + Object.keys(indexConfig.fields), 'ERR_DBS_00006'));
             }
         });
     },
@@ -382,12 +383,12 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 model.dropIndex(indexName).then(success => {
-                    resolve('Index deleted for ' + indexName);
+                    resolve('Index drop for model: ' + model.modelName + ', propertie: ' + indexName);
                 }).catch(error => {
-                    reject(new CLASSES.NodicsError(error, 'Index failed for ' + indexConfig.fields, 'ERR_DBS_00007'));
+                    reject(new CLASSES.NodicsError(error, 'Index drop failed for ' + indexName, 'ERR_DBS_00007'));
                 });
             } catch (error) {
-                reject(new CLASSES.NodicsError(error, 'Index failed for ' + indexConfig.fields, 'ERR_DBS_00007'));
+                reject(new CLASSES.NodicsError(error, 'Index drop failed for ' + indexName, 'ERR_DBS_00007'));
             }
         });
     },
