@@ -43,7 +43,7 @@ module.exports = {
                     } else {
                         response.success.push(success);
                     }
-                    nodicsPromise(promises, response).then(response => {
+                    this.all(promises, response).then(response => {
                         resolve(response);
                     }).catch(error => {
                         reject(error);
@@ -55,7 +55,7 @@ module.exports = {
                     } else {
                         response.errors.push(error);
                     }
-                    nodicsPromise(promises, response).then(response => {
+                    this.all(promises, response).then(response => {
                         resolve(response);
                     }).catch(error => {
                         reject(error);

@@ -55,7 +55,6 @@ module.exports = {
         this.LOG.info('###   Initializing Nodics, Node based enterprise application solution   ###');
         this.LOG.info('---------------------------------------------------------------------------');
         this.LOG.info('NODICS_HOME   : ' + NODICS.getNodicsHome());
-        //this.LOG.info('NODICS_APP        : '+ NODICS.getApplicationPath());
         this.LOG.info('NODICS_ENV    : ' + NODICS.getEnvironmentPath());
         this.LOG.info('SERVER_PATH   : ' + NODICS.getServerPath());
         if (NODICS.getNodePath()) {

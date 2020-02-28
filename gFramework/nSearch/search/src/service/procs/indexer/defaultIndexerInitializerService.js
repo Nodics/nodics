@@ -36,11 +36,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating indexer request');
         if (request.indexerConfig.state === ENUMS.IndexerState.RUNNING.key) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Currently indexer: ' + request.indexerConfig.code + ' is on RUNNING state'));
+            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Currently indexer: ' + request.indexerConfig.code + ' is on RUNNING state'));
         } else if (!request.moduleName) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid module name'));
+            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid module name'));
         } else if (!request.indexerConfig) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid indexer configuration found'));
+            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid indexer configuration found'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -58,7 +58,7 @@ module.exports = {
         }).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SRCH_00006'));
+            process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00014'));
         });
     },
 
@@ -75,11 +75,11 @@ module.exports = {
                 };
                 request.schemaModel = NODICS.getModels(request.source.moduleName, request.source.tenant)[request.source.schemaName.toUpperCaseFirstChar() + 'Model'];
                 if (!request.schemaModel) {
-                    throw new Error('Invalid schema name: ' + request.source.schemaName + ' within indexer configuration');
+                    throw new CLASSES.SearchNodics('Invalid schema name: ' + request.source.schemaName + ' within indexer configuration');
                 }
                 request.schemaService = SERVICE['Default' + request.source.schemaName.toUpperCaseFirstChar() + 'Service'];
                 if (!request.schemaService) {
-                    throw new Error('Invalid schema service name: ' + request.source.schemaName + ' within indexer configuration');
+                    throw new CLASSES.SearchNodics('Invalid schema service name: ' + request.source.schemaName + ' within indexer configuration');
                 }
             } else if (indexerConfig.path && !UTILS.isBlank(indexerConfig.path)) {
                 request.source = {
@@ -104,7 +104,7 @@ module.exports = {
                 request.target.errorPath = indexerConfig.target.errorPath || tempRootPath + '/error';
                 request.searchModel = NODICS.getSearchModel(request.moduleName, request.tenant, request.target.indexName);
                 if (!request.searchModel) {
-                    throw new Error('Invalid index name: ' + request.target.indexName + ' within indexer configuration');
+                    throw new CLASSES.SearchNodics('Invalid index name: ' + request.target.indexName + ' within indexer configuration');
                 }
                 if (request.target.indexName) {
                     request.searchService = SERVICE['Default' + request.target.indexName.toUpperCaseFirstChar() + 'Service'] || SERVICE.DefaultSearchService;
@@ -112,10 +112,10 @@ module.exports = {
                     request.searchService = SERVICE.DefaultSearchService;
                 }
             } else {
-                throw new Error('Target object within indexer can not be null or empty');
+                throw new CLASSES.SearchNodics('Target object within indexer can not be null or empty');
             }
         } catch (err) {
-            error = new CLASSES.NodicsError(error, null, 'ERR_SRCH_00006');
+            error = new CLASSES.SearchNodics(err, null, 'ERR_SRCH_00015');
         }
         if (error) {
             process.error(request, response, error);
@@ -133,7 +133,7 @@ module.exports = {
             response.targetNode = 'externalIndexerInitializer';
             process.nextSuccess(request, response);
         } else {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid type value in indexer: ' + request.indexerConfig.type));
+            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00000', 'Invalid type value in indexer: ' + request.indexerConfig.type));
         }
     },
 
@@ -150,7 +150,7 @@ module.exports = {
         }).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SRCH_00006'));
+            process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00000'));
         });
     },
 
@@ -170,7 +170,7 @@ module.exports = {
         }).then(success => {
             process.error(request, response);
         }).catch(error => {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SRCH_00006'));
+            process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00000'));
         });
     }
 };

@@ -60,7 +60,7 @@ module.exports = {
             };
             process.nextSuccess(request, response);
         }).catch(error => {
-            reject(new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
+            process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00000'));
         });
     },
 

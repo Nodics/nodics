@@ -68,7 +68,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_SRCH_00000'));
+                reject(new CLASSES.SearchError(error));
             }
         });
     },
@@ -92,7 +92,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_SRCH_00000'));
+                reject(new CLASSES.SearchError(error));
             }
         });
     },
@@ -116,8 +116,7 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        _self.LOG.error('Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode);
-                        reject(new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode));
+                        reject(new CLASSES.SearchError('ERR_SRCH_00000', 'Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode));
                     }
                 } else {
                     _self.LOG.warn('Search is not enabled for module: ' + moduleName);
@@ -126,7 +125,7 @@ module.exports = {
             } catch (err) {
                 _self.LOG.error('Facing issue to connect with search cluster');
                 _self.LOG.error(err);
-                reject(new CLASSES.NodicsError(error, null, 'ERR_SRCH_00000'));
+                reject(new CLASSES.SearchError(error));
             }
         });
     },

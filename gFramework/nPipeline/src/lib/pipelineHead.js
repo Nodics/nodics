@@ -126,22 +126,22 @@ module.exports = function (name, pipelineDefinition) {
             if (error && !(error instanceof CLASSES.NodicsError)) {
                 error = new CLASSES.NodicsError(error);
             }
+            if (!response.error) {
+                response.error = error;
+            } else {
+                response.error.add(error);
+            }
+            _preNode = _currentNode;
+            if (_currentNode.getError() && _nodeList[_currentNode.getError()]) {
+                _currentNode = _nodeList[_currentNode.getError()];
+            } else {
+                _currentNode = _handleError;
+            }
+            this.next(request, response);
         } catch (err) {
-            error = err;
+            this.LOG.error('Pipeline: ' + this.getPipelineName() + ' is broken, Please validate');
+            SERVICE.DefaultPipelineService.handleError(request, response, this);
         }
-
-        if (!response.error) {
-            response.error = error;
-        } else {
-            response.error.add(error);
-        }
-        _preNode = _currentNode;
-        if (_currentNode.getError() && _nodeList[_currentNode.getError()]) {
-            _currentNode = _nodeList[_currentNode.getError()];
-        } else {
-            _currentNode = _handleError;
-        }
-        this.next(request, response);
     };
 
     this.resolve = function (response) {
@@ -170,17 +170,13 @@ module.exports = function (name, pipelineDefinition) {
         if (_currentNode) {
             this.prepareNextNode(request, response);
             if (_currentNode.getType() === 'function') {
+                let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
+                let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
                 try {
-                    let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
-                    let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
-                    try {
-                        SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response, this);
-                    } catch (err) {
-                        _self.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
-                        throw new CLASSES.NodicsError(err, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
-                    }
-                } catch (error) {
-                    _self.error(request, response, new CLASSES.NodicsError(error));
+                    SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response, this);
+                } catch (err) {
+                    _self.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
+                    throw new CLASSES.NodicsError(err, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
                 }
             } else {
                 try {

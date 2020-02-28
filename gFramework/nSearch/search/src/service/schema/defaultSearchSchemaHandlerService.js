@@ -47,7 +47,7 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject(new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
+                reject(new CLASSES.SearchNodics(error, ' Failed preparing search schema'));
             }
         });
     },
@@ -61,8 +61,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
             throw error;
         }
     },
@@ -78,8 +76,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            _self.LOG.error('While collecting properties from module: ' + moduleName);
-            throw error;
+            throw new CLASSES.SearchNodics(error, 'While collecting properties from module: ' + moduleName);
         }
     },
 
@@ -145,9 +142,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
-            throw error;
+            throw new CLASSES.SearchNodics(error, 'Failed while loading search schema from schema definitions');
         }
     },
 
@@ -179,12 +174,11 @@ module.exports = {
                         }
                         resolve(true);
                     }).catch(error => {
-                        _self.LOG.error('Failed while loading search schema from schema definitions');
                         reject(error);
                     });
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.SearchNodics(error));
             }
         });
     },

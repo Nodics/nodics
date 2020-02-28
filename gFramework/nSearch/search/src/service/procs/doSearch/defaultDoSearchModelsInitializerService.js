@@ -35,7 +35,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do get request');
         if (!request.searchModel) {
-            process.error(request, response, new CLASSES.NodicsNodics('ERR_FIND_00001', 'Invalid search model or search is not active for this schema'));
+            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid search model or search is not active for this schema'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -86,7 +86,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoSearch), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00009'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -101,7 +101,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoSearch), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00009'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -117,7 +117,7 @@ module.exports = {
             };
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
+            process.error(request, response, error);
         });
     },
 
@@ -137,20 +137,10 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
         if (validators && validators.postDoSearch) {
-            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoSearch), {
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexName: request.searchModel.indexName,
-                typeName: request.searchModel.typeName,
-                tenant: request.tenant,
-                options: request.options,
-                query: request.query,
-                originalModel: request.model,
-                model: response.success.result
-            }, {}).then(success => {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoSearch), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00010'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -162,20 +152,10 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.postDoSearch) {
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoSearch), {
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexName: request.searchModel.indexName,
-                typeName: request.searchModel.typeName,
-                tenant: request.tenant,
-                options: request.options,
-                query: request.query,
-                originalModel: request.model,
-                model: response.success.result
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoSearch), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00010'));
+                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);

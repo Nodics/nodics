@@ -49,7 +49,7 @@ module.exports = {
             nodeId: nodeId,
             moduleName: 'workflow',
             methodName: 'put',
-            apiName: '/item/add',
+            apiName: '/init',
             requestBody: definition.requestBody,
             responseType: true,
             header: {

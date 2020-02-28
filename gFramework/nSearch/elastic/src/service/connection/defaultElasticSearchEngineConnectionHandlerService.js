@@ -56,7 +56,7 @@ module.exports = {
                     requestTimeout: defaultSearchConfig.requestTimeout
                 }, function (error) {
                     if (error) {
-                        reject(new CLASSES.SearchError(error, null, 'ERR_SRCH_00001'));
+                        reject(new CLASSES.SearchError(error, null, 'ERR_SRCH_00009'));
                     } else {
                         searchEngine.setConnection(client);
                         searchEngine.setActive(true);
@@ -81,7 +81,7 @@ module.exports = {
                 _self.LOG.debug('Retrieving list of available indexes for');
                 searchEngine.getConnection().cluster.state({}, function (error, response) {
                     if (error) {
-                        reject(new CLASSES.SearchError(error, null, 'ERR_SRCH_00000'));
+                        reject(new CLASSES.SearchError(error, 'While retrieving cluster state information', 'ERR_SRCH_00000'));
                     } else {
                         resolve(response.metadata.indices || {});
                     }

@@ -28,7 +28,7 @@ module.exports = {
             if (options.apiKey) payload.apiKey = options.apiKey;
             token = jwt.sign(payload, CONFIG.get('jwtSecretKey') || 'nodics', jwtSignOptions);
         } catch (error) {
-            throw error;
+            throw new CLASSES.NodicsError(error, 'While generating auth token', 'ERR_AUTH_00000');
         }
         return token;
     }

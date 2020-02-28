@@ -169,7 +169,7 @@ module.exports = {
                     });
                 }
             } catch (error) {
-                reject(new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
+                reject(new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00016'));
             }
         });
     },
@@ -234,7 +234,7 @@ module.exports = {
                 reject(data);
             }
         } catch (error) {
-            reject(new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
+            reject(new CLASSES.SearchNodics(error));
         }
     },
     importFinalizeData: function (request, response, process) {
@@ -257,7 +257,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
+            process.error(request, response, new CLASSES.SearchNodics(error));
         }
     }
 };

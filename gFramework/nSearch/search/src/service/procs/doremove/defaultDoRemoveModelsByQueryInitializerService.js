@@ -35,9 +35,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do remove request');
         if (!request.searchModel) {
-            process.error(request, response, new CLASSES.NodicsNodics('ERR_FIND_00001', 'Invalid search model or search is not active for this schema'));
+            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid search model or search is not active for this schema'));
         } else if (!request.query || UTILS.isBlank(request.query)) {
-            process.error(request, response, new CLASSES.NodicsNodics('ERR_FIND_00001', 'Invalid search request, query can not be null or conatian invalid property'));
+            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid search request, query can not be null or conatian invalid property'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -56,7 +56,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00003'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -71,7 +71,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00003'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -88,7 +88,7 @@ module.exports = {
             };
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
+            process.error(request, response, error);
         });
     },
 
@@ -108,18 +108,10 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
         if (validators && validators.postDoRemove) {
-            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoRemove), {
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexName: request.searchModel.indexName,
-                typeName: request.searchModel.typeName,
-                tenant: request.tenant,
-                query: request.query,
-                model: response.success.result
-            }, {}).then(success => {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00004'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -131,18 +123,10 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.postDoRemove) {
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoRemove), {
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexName: request.searchModel.indexName,
-                typeName: request.searchModel.typeName,
-                tenant: request.tenant,
-                query: request.query,
-                model: response.success.result
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_FIND_00004'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);

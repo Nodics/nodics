@@ -64,14 +64,6 @@ module.exports = {
                 type: 'process',
                 handler: 'dataImportInitializerPipeline',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultSystemDataImportInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultSystemDataImportInitializerService.handleErrorEnd'
             }
         }
     },
@@ -124,14 +116,6 @@ module.exports = {
                 type: 'process',
                 handler: 'dataImportInitializerPipeline',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultLocalDataImportInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultLocalDataImportInitializerService.handleErrorEnd'
             }
         }
     },
@@ -202,14 +186,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.processHeaderFiles',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultHeaderProcessService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultHeaderProcessService.handleErrorEnd'
             }
         }
     },
@@ -237,10 +213,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDataImportProcessService.processDataFiles',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDataImportProcessService.handleSucessEnd'
             },
             handleError: {
                 type: 'function',

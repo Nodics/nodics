@@ -265,7 +265,7 @@ module.exports = {
                 models: models
             }).then(result => {
                 if (result && result.result.length > 0) {
-                    resolve(success.concat(result.result));
+                    resolve(result.result);
                 } else {
                     reject(new CLASSES.DataImportError('ERR_IMP_00001', 'Could not found any response from data access layer'));
                 }

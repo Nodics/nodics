@@ -35,7 +35,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process Indexer data handler');
         if (!request.models) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid data object to process'));
+            process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid data object to process'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -54,7 +54,7 @@ module.exports = {
             SERVICE.DefaultProcessorHandlerService.executeSearchProcessors([].concat(indexerConfig.processors), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00009'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -70,7 +70,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.index), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00009'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -85,7 +85,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.index), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00009'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -107,7 +107,7 @@ module.exports = {
                     process.error(request, response, error);
                 });
             } catch (error) {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00008'));
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00000'));
             }
         } else {
             process.nextSuccess(request, response);
@@ -127,7 +127,7 @@ module.exports = {
                 }, {}).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
+                    process.error(request, response, error);
                 });
             } else {
                 _self.processModels(request, {
@@ -139,7 +139,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00000'));
+            process.error(request, response, error);
         }
     },
 

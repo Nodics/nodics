@@ -78,8 +78,7 @@ module.exports = {
                 _self.LOG.warn('Configuration is not proper for module: ' + moduleName + ' and schema: ' + schemaName);
             }
         } catch (error) {
-            _self.LOG.error('While collecting properties from module: ' + moduleName + ' and schema: ' + schemaName);
-            throw new CLASSES.SearchError(error);
+            throw new CLASSES.SearchError(error, 'While collecting properties from module: ' + moduleName + ' and schema: ' + schemaName);
         }
         return searchSchema;
     },
@@ -89,8 +88,6 @@ module.exports = {
         try {
             return _self.mergeIndexMetaData(moduleName, tntCode, source, target, typeName);
         } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
             throw new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions');
         }
     },
@@ -100,8 +97,6 @@ module.exports = {
         try {
             return _self.mergeIndexMetaData(moduleName, tntCode, source, target, typeName);
         } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
             throw new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions from database');
         }
     },

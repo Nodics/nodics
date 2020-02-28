@@ -67,9 +67,9 @@ module.exports = {
      */
     getSearchConfiguration: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant name: ' + tenant);
         } else {
             let defaultSearchConfig = CONFIG.get('search', tenant);
             let searchConfig = _.merge(_.merge({}, defaultSearchConfig.default), defaultSearchConfig[moduleName] || {});
@@ -78,7 +78,7 @@ module.exports = {
                 connConfig.options = _.merge(_.merge({}, searchConfig.options), connConfig.options);
                 return connConfig;
             } else {
-                throw new Error('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
+                throw new CLASSES.SearchError('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
             }
         }
     },
@@ -107,9 +107,9 @@ module.exports = {
 
     getTenantSearchEngine: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant name: ' + tenant);
         } else {
             let searchEngine = this.searchEngines[moduleName] || this.searchEngines.default;
             return searchEngine ? searchEngine[tenant] : null;
@@ -118,9 +118,9 @@ module.exports = {
 
     addTenantRawSearchSchema: function (moduleName, tenant, definition) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant name: ' + tenant);
         } else {
             if (!this.searchSchema[moduleName]) {
                 this.searchSchema[moduleName] = {};
@@ -138,9 +138,9 @@ module.exports = {
 
     getRawSearchSchema: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant name: ' + tenant);
         } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
             return this.searchSchema[moduleName][tenant];
         } else {
@@ -150,9 +150,9 @@ module.exports = {
 
     getTenantRawSearchSchema: function (moduleName, tenant, typeName) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant name: ' + tenant);
         } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
             return this.searchSchema[moduleName][tenant][typeName];
         } else {
@@ -197,16 +197,11 @@ module.exports = {
             let indexName = event.data.item;
             this.refreshSearchInterceptors(indexName);
             callback(null, {
-                success: true,
                 code: 'SUC_EVNT_00000',
-                msg: success
+                message: success
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error, 'While handling search interceptor update', 'ERR_EVNT_00000'));
         }
     },
 
@@ -240,16 +235,11 @@ module.exports = {
         try {
             this.refreshSearchValidators(event.data.tenant, event.data.item);
             callback(null, {
-                success: true,
                 code: 'SUC_EVNT_00000',
-                msg: success
+                message: success
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error, 'While handling search validator update', 'ERR_EVNT_00000'));
         }
     },
 };

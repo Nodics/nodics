@@ -38,9 +38,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating external indexer request');
         if (!request.source && !request.source.dataPath) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid data file to locate data'));
+            process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid data file to locate data'));
         } else if (!request.target) {
-            process.error(request, response, new CLASSES.NodicsError('ERR_SRCH_00000', 'Invalid index definition information'));
+            process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid index definition information'));
         } else {
             process.nextSuccess(request, response);
         }

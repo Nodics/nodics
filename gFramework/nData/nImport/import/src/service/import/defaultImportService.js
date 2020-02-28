@@ -53,12 +53,11 @@ module.exports = {
                         result.import = success;
                         resolve(result);
                     }).catch(error => {
-                        NODICS.LOG.error('Initial data import failed : ', error);
-                        reject(new CLASSES.DataImportError(error, 'Initial data import failed'));
+                        reject(error);
                     });
                 }
             }).catch(error => {
-                reject(new CLASSES.DataImportError(error, 'Initial data import failed'));
+                reject(error);
             });
         });
     },
@@ -84,12 +83,11 @@ module.exports = {
                         result.import = success;
                         resolve(result);
                     }).catch(error => {
-                        NODICS.LOG.error('Core data import failed : ', error);
-                        reject(new CLASSES.DataImportError(error, 'Core data import failed'));
+                        reject(error);
                     });
                 }
             }).catch(error => {
-                reject(new CLASSES.DataImportError(error, 'Core data import failed'));
+                reject(error);
             });
         });
     },
@@ -115,12 +113,11 @@ module.exports = {
                         result.import = success;
                         resolve(result);
                     }).catch(error => {
-                        NODICS.LOG.error('Sample data import failed : ', error);
-                        reject(new CLASSES.DataImportError(error, 'Sample data import failed'));
+                        reject(error);
                     });
                 }
             }).catch(error => {
-                reject(new CLASSES.DataImportError(error, 'Sample data import failed'));
+                reject(error);
             });
         });
     },
@@ -159,11 +156,11 @@ module.exports = {
                             result.import = success;
                             resolve(result);
                         }).catch(error => {
-                            reject(new CLASSES.DataImportError(error, 'Local data import failed'));
+                            reject(error);
                         });
                     }
                 }).catch(error => {
-                    reject(new CLASSES.DataImportError(error, 'Local data import failed'));
+                    reject(error);
                 });
             });
         } else {

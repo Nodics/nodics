@@ -34,20 +34,21 @@ module.exports = {
 
     handlePreSave: function (request, responce) {
         return new Promise((resolve, reject) => {
-            let schemaName = request.model.schemaName;
-            let moduleName = request.schemaModel.moduleName;
-            throw new Error('Check module name from item model object in request');
-            Object.keys(NODICS.getModules()).forEach(moduleName => {
-                let moduleObject = NODICS.getModule(moduleName);
-                if (moduleObject.rawSchema && moduleObject.rawSchema[schemaName]) {
-                    request.model.moduleName = moduleName;
-                }
-            });
-            if (request.model.moduleName) {
-                resolve(true);
-            } else {
-                reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid schemaName, please validate your request: ' + CONFIG.get('clusterId')));
-            }
+            //let schemaName = request.model.schemaName;
+            request.model.moduleName = request.schemaModel.moduleName;
+            resolve(true);
+            // throw new Error('Check module name from item model object in request');
+            // Object.keys(NODICS.getModules()).forEach(moduleName => {
+            //     let moduleObject = NODICS.getModule(moduleName);
+            //     if (moduleObject.rawSchema && moduleObject.rawSchema[schemaName]) {
+            //         request.model.moduleName = moduleName;
+            //     }
+            // });
+            // if (request.model.moduleName) {
+            //     resolve(true);
+            // } else {
+            //     reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid schemaName, please validate your request: ' + CONFIG.get('clusterId')));
+            // }
         });
     }
 
