@@ -295,6 +295,7 @@ module.exports = {
 
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model ');
+        console.log(request.model);
         request.schemaModel.saveItems(request).then(success => {
             let model = {
                 success: true,
@@ -308,6 +309,7 @@ module.exports = {
             response.success = model;
             process.nextSuccess(request, response);
         }).catch(error => {
+            console.log(error);
             process.error(request, response, error);
         });
     },

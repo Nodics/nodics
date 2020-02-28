@@ -11,7 +11,7 @@
 
 module.exports = {
     workflow: {
-        defaultWorkflowChannelHeader: {
+        sampleWorkflowChannelHeader: {
             options: {
                 enabled: true,
                 schemaName: 'workflowChannel',

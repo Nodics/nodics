@@ -11,7 +11,7 @@
 
 module.exports = {
     workflow: {
-        defaultWorkflowHeadHeader: {
+        sampleWorkflowHeadHeader: {
             options: {
                 enabled: true,
                 schemaName: 'workflowHead',

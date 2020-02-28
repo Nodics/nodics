@@ -11,7 +11,7 @@
 
 module.exports = {
     workflow: {
-        defaultWorkflowActionHeader: {
+        sampleWorkflowActionHeader: {
             options: {
                 enabled: true,
                 schemaName: 'workflowAction',

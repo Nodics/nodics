@@ -11,8 +11,8 @@
 
 module.exports = {
     record0: {
-        code: "sampleChannelError",
-        name: "sampleChannelError",
+        code: 'sampleChannelError',
+        name: 'sampleChannelError',
         active: true,
         qualifier: {
             decision: 'ERROR'
@@ -21,8 +21,8 @@ module.exports = {
     },
 
     record1: {
-        code: "sampleChannelSuccess",
-        name: "sampleChannelSuccess",
+        code: 'sampleChannelSuccess',
+        name: 'sampleChannelSuccess',
         active: true,
         qualifier: {
             decision: 'SUCCESS'

@@ -189,7 +189,7 @@ module.exports = {
     },
 
     extractFromError: function (error, message, defaultCode) {
-        let errMsg = SERVICE.DefaultStatusService.get(defaultCode).message;
+        let errMsg = error.message || SERVICE.DefaultStatusService.get(defaultCode).message;
         if (message) errMsg = errMsg + ' : ' + message;
         errMsg = errMsg + ' : ' + error.message;
         return {

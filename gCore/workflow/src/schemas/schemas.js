@@ -283,7 +283,7 @@ module.exports = {
                 },
                 channels: {
                     type: 'array',
-                    required: true,
+                    required: false,
                     description: 'List of channels for the item'
                 },
                 eventDetail: {
@@ -323,7 +323,7 @@ module.exports = {
                 },
                 successChannel: {
                     type: 'string',
-                    required: true,
+                    required: false,
                     description: 'Required channel name for success handler'
                 },
                 errorChannel: {

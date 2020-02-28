@@ -11,24 +11,24 @@
 
 module.exports = {
     record0: {
-        code: "defaultSuccessAction",
-        name: "defaultSuccessAction",
+        code: 'defaultSuccessAction',
+        name: 'defaultSuccessAction',
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.END.key,
         handler: 'DefaultWorkflowSuccessActionService.handleSuccessProcess',
         userGroups: ['enployeeAdminGroup'],
-        isLeafAction: true
+        allowedDecisions: ['SUCSESS', 'ERROR']
     },
 
     record1: {
-        code: "defaultErrorAction",
-        name: "defaultErrorAction",
+        code: 'defaultErrorAction',
+        name: 'defaultErrorAction',
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.END.key,
         handler: 'DefaultWorkflowErrorActionService.handleErrorProcess',
         userGroups: ['enployeeAdminGroup'],
-        isLeafAction: true
+        allowedDecisions: ['SUCSESS', 'ERROR']
     }
 };

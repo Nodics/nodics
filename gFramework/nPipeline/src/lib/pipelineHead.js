@@ -123,13 +123,15 @@ module.exports = function (name, pipelineDefinition) {
 
     this.error = function (request, response, error) {
         try {
-            if (error && !(error instanceof CLASSES.NodicsError)) {
-                error = new CLASSES.NodicsError(error);
-            }
-            if (!response.error) {
-                response.error = error;
-            } else {
-                response.error.add(error);
+            if (error) {
+                if (error && !(error instanceof CLASSES.NodicsError)) {
+                    error = new CLASSES.NodicsError(error);
+                }
+                if (!response.error) {
+                    response.error = error;
+                } else {
+                    response.error.add(error);
+                }
             }
             _preNode = _currentNode;
             if (_currentNode.getError() && _nodeList[_currentNode.getError()]) {
@@ -140,7 +142,7 @@ module.exports = function (name, pipelineDefinition) {
             this.next(request, response);
         } catch (err) {
             this.LOG.error('Pipeline: ' + this.getPipelineName() + ' is broken, Please validate');
-            SERVICE.DefaultPipelineService.handleError(request, response, this);
+            SERVICE.DefaultPipelineService.handleErrorEnd(request, response, this);
         }
     };
 

@@ -90,6 +90,7 @@ module.exports = {
         if (error instanceof Error && !(error instanceof CLASSES.NodicsError)) {
             error = new CLASSES.NodicsError(error);
         }
+        //this.LOG.error(error);
         process.reject(error);
     },
 

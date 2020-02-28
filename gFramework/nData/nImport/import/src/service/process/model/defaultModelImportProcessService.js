@@ -266,6 +266,8 @@ module.exports = {
             }).then(result => {
                 if (result && result.result.length > 0) {
                     resolve(result.result);
+                } else if (result && result.errors.length > 0) {
+                    reject(new CLASSES.DataImportError(result.errors[0]));
                 } else {
                     reject(new CLASSES.DataImportError('ERR_IMP_00001', 'Could not found any response from data access layer'));
                 }

@@ -38,12 +38,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             jwt.verify(request.authToken, CONFIG.get('jwtSecretKey') || 'nodics', (error, payload) => {
                 if (error) {
-                    reject(new NodicsError({
-                        code: 'ERR_AUTH_00001',
-                        name: error.name,
-                        message: error.message + ' at: ' + error.expiredAt,
-                        stack: error.stack
-                    }));
+                    reject(new CLASSES.NodicsError(error, null, 'ERR_AUTH_00001'));
                 } else {
                     resolve({
                         code: 'SUC_SYS_00000',
