@@ -58,5 +58,9 @@ module.exports = {
     ERR_WF_00009: {
         code: '404',
         message: 'Invalid channel definition'
+    },
+    ERR_WF_00010: {
+        code: '200',
+        message: 'No data found'
     }
 };

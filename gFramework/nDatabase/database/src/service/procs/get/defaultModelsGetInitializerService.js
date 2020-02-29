@@ -279,6 +279,7 @@ module.exports = {
                     options: options,
                     query: query
                 };
+                console.log(property, '  :  ', input.query);
                 SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {
                     if (success.result.length > 0) {
                         if (propertyObject.type === 'one') {

@@ -184,7 +184,7 @@ module.exports = {
                     required: true,
                     description: 'Mandate workflow head state [PASS, SUCCESS, ERROR]'
                 },
-                response: {
+                feedback: {
                     type: 'object',
                     required: true,
                     description: 'Required response message, which contain all the data approval send for next step'

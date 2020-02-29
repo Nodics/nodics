@@ -40,6 +40,9 @@ module.exports = {
             this.LOG.debug('Loading workflow action: ' + actionCode);
             this.get({
                 tenant: tenant,
+                options: {
+                    recursive: true
+                },
                 query: {
                     code: actionCode
                 }
@@ -47,7 +50,7 @@ module.exports = {
                 if (response.result && response.result.length > 0) {
                     resolve(response.result[0]);
                 } else {
-                    reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, none workflow action found for code: ' + actionCode));
+                    reject(new CLASSES.WorkflowError('ERR_WF_00010', 'Invalid request, none workflow action found for code: ' + actionCode));
                 }
             }).catch(error => {
                 reject(error);

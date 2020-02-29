@@ -81,7 +81,14 @@ module.exports = {
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Pipeline: ' + process.getPipelineName() + ' with Id: ' + process.getPipelineId() + ' processed successfully');
-        process.resolve(response.success);
+        if (response.success === undefined) {
+            process.resolve({
+                code: 'SUC_SYS_00000'
+            });
+        } else {
+            process.resolve(response.success);
+        }
+
     },
 
     handleErrorEnd: function (request, response, process) {

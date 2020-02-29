@@ -81,12 +81,12 @@ module.exports = function (name, pipelineDefinition) {
             this.LOG.error('Node link is broken for node : ' + _startNode + ' for pipeline : ' + _pipelineName);
             pipeline.exit(CONFIG.get('errorExitCode'));
         }
-        if (!response.success) {
-            response.success = [];
-        }
-        if (!response.errors) {
-            response.errors = [];
-        }
+        // if (!response.success) {
+        //     response.success = [];
+        // }
+        // if (!response.errors) {
+        //     response.errors = [];
+        // }
         this.next(request, response);
     };
 
@@ -159,8 +159,8 @@ module.exports = function (name, pipelineDefinition) {
             if (_nodeList[_currentNode.getSuccess()]) {
                 _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
             } else {
-                this.LOG.error('Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess());
-                this.error(request, response, 'Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess());
+                //this.LOG.error('Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess());
+                this.error(request, response, 'Pipeline:' + this.getPipelineName() + ' link is broken : invalid node line : ' + _currentNode.getSuccess());
             }
         } else {
             _nextSuccessNode = null;
@@ -178,12 +178,13 @@ module.exports = function (name, pipelineDefinition) {
                     SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response, this);
                 } catch (err) {
                     _self.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
-                    throw new CLASSES.NodicsError(err, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
+                    _self.error(request, response, new CLASSES.NodicsError(err, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)'));
                 }
             } else {
                 try {
                     SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(result => {
-                        response.success = _.merge(response.success || {}, result.success);
+                        console.log(_currentNode.getHandler());
+                        response.success = _.merge(response.success || {}, result);
                         if (!response.error) {
                             response.error = result.error;
                         } else {

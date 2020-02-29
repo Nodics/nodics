@@ -115,6 +115,7 @@ module.exports = {
                             header: request.fileData.header,
                             dataModel: dataModel
                         }, {}).then(success => {
+                            if (!response.success) response.success = [];
                             if (success && UTILS.isArray(success)) {
                                 success.forEach(element => {
                                     response.success.push(element);

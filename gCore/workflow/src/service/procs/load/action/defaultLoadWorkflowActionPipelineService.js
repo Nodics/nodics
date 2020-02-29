@@ -52,7 +52,11 @@ module.exports = {
                     if (request.workflowAction) request.workflowAction.isHead = false;
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, error);
+                    if (error.code && error.code === 'ERR_WF_00010') {
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, error);
+                    }
                 });
             } else {
                 process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not load workflow action'));

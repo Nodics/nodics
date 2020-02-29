@@ -68,7 +68,7 @@ module.exports = {
     },
     validateOperation: function (request, response, process) {
         let workflowItem = request.workflowItem;
-        if (workflowItem.workflowHead.code !== request.workflowHead.code) {
+        if (workflowItem.activeHead.code !== request.workflowHead.code) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow head mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowHead.code));
         } else if (workflowItem.activeAction.code !== request.workflowAction.code) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action mismatch, for item ' + workflowItem.code + ' with workflow head: ' + request.workflowAction.code));
@@ -137,7 +137,7 @@ module.exports = {
                 actionResponse: request.actionResponse,
                 channels: request.qualifiedChannels
             }).then(success => {
-                response.success.concat(success);
+                response.success.push(success);
                 process.nextSuccess(request, response);
             }).catch(error => {
                 // try {

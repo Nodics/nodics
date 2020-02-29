@@ -129,19 +129,21 @@ module.exports = {
                 workflowAction: request.workflowAction,
                 workflowItem: request.workflowItem
             }).then(success => {
-                try {
-                    if (success.result && !UTILS.isBlank(success.result)) {
-                        Object.keys(success.result).forEach(actionCode => {
-                            let actionOutput = success.result[actionCode];
-                            actionOutput.forEach(output => {
-                                response.success[actionCode].push(output);
-                            });
-                        });
-                    }
-                    process.nextSuccess(request, response);
-                } catch (error) {
-                    process.error(request, response, error);
-                }
+                response.success[request.workflowAction.code].push(success);
+                process.nextSuccess(request, response);
+                // try {
+                //     if (success.result && !UTILS.isBlank(success.result)) {
+                //         Object.keys(success.result).forEach(actionCode => {
+                //             let actionOutput = success.result[actionCode];
+                //             actionOutput.forEach(output => {
+                //                 response.success[actionCode].push(output);
+                //             });
+                //         });
+                //     }
+                //     process.nextSuccess(request, response);
+                // } catch (error) {
+                //     process.error(request, response, error);
+                // }
             }).catch(error => {
                 process.error(request, response, error);
             });

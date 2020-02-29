@@ -78,7 +78,7 @@ module.exports = {
         });
     },
 
-    evaluateChannels: function (rawChannels, options, qualifiedChannels = []) {
+    evaluateChannels: function (rawChannels, request, qualifiedChannels = []) {
         return new Promise((resolve, reject) => {
             if (rawChannels && rawChannels.length > 0) {
                 let channel = rawChannels.shift();
@@ -93,7 +93,7 @@ module.exports = {
                     if (success) {
                         qualifiedChannels.push(channel);
                     }
-                    this.evaluateChannels(rawChannels, options, qualifiedChannels).then(qualifiedChannels => {
+                    this.evaluateChannels(rawChannels, request, qualifiedChannels).then(qualifiedChannels => {
                         resolve(qualifiedChannels);
                     }).catch(error => {
                         reject(error);

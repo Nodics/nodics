@@ -55,6 +55,9 @@ module.exports = {
             this.LOG.debug('Loading workflow head: ' + workflowCode);
             this.get({
                 tenant: tenant,
+                options: {
+                    recursive: true
+                },
                 query: {
                     code: workflowCode
                 }
@@ -62,7 +65,7 @@ module.exports = {
                 if (response.result && response.result.length > 0) {
                     resolve(response.result[0]);
                 } else {
-                    reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, none workflows found for code: ' + workflowCode));
+                    reject(new CLASSES.WorkflowError('ERR_WF_00010', 'Invalid request, none workflows found for code: ' + workflowCode));
                 }
             }).catch(error => {
                 reject(error);

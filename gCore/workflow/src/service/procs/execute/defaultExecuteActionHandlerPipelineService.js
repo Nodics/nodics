@@ -47,6 +47,7 @@ module.exports = {
     executeHandler: function (request, response, process) {
         this.LOG.debug('Executing action handler');
         try {
+            console.log('----------------->>>> ', request.workflowAction);
             let handler = request.workflowAction.handler;
             let serviceName = handler.substring(0, handler.lastIndexOf('.'));
             let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
@@ -56,7 +57,9 @@ module.exports = {
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction
                 }).then(success => {
-                    response.actionResponse = success;
+                    response.success = {
+                        actionResponse: success
+                    };
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);

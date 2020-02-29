@@ -315,7 +315,7 @@ module.exports = {
             postActionValidators: {
                 type: 'function',
                 handler: 'DefaultExecuteWorkflowActionPipelineService.postActionValidators',
-                success: 'triggerActionPerformedEvent'
+                success: 'postActionInterceptors'
             },
             postActionInterceptors: {
                 type: 'function',
@@ -417,15 +417,7 @@ module.exports = {
             executeChannels: {
                 type: 'function',
                 handler: 'DefaultEvoluteChannelsPipelineService.executeChannels',
-                success: 'postActionInterceptors'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultEvoluteChannelsPipelineService.successEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultEvoluteChannelsPipelineService.handleError'
+                success: 'successEnd'
             }
         }
     },
@@ -439,7 +431,7 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelQualifierPipelineService.validateRequest',
-                success: 'loadWorkflowItem'
+                success: 'checkDecision'
             },
             checkDecision: {
                 type: 'function',
@@ -498,7 +490,7 @@ module.exports = {
             validateChannels: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelsPipelineService.validateChannels',
-                success: 'validateOperation'
+                success: 'handleMultiChannelRequest'
             },
             handleMultiChannelRequest: {
                 type: 'function',
@@ -571,7 +563,7 @@ module.exports = {
             postChannelInterceptors: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelPipelineService.postChannelInterceptors',
-                success: 'postChannelValidators'
+                success: 'successEnd'
             }
         }
     },

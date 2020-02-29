@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     /**
@@ -100,7 +102,7 @@ module.exports = {
             request.channelRequests[request.workflowItem.code] = {
                 workflowItem: request.workflowItem,
                 originalCode: request.workflowItem.code,
-                channel: channels[0]
+                channel: request.channels[0]
             };
         }
         process.nextSuccess(request, response);

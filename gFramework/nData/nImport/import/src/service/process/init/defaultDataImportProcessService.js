@@ -89,7 +89,7 @@ module.exports = {
                     phaseLimit: CONFIG.get('data').dataImportPhasesLimit || 5,
                     pendingFiles: Object.keys(request.dataFiles)
                 }).then(success => {
-                    if (response.errors.length > 0) {
+                    if (response.errors && response.errors.length > 0) {
                         process.error(request, response);
                     } else {
                         process.nextSuccess(request, response);

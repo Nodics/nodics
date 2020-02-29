@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     /**
@@ -112,7 +114,7 @@ module.exports = {
         }
     },
     createStepResponse: function (request, response, process) {
-        if (response.actionResponse && !UTILS.isBlank(response.actionResponse)) {
+        if (response.success.actionResponse && !UTILS.isBlank(response.success.actionResponse)) {
             response.success.push({
                 action: 'autoActionPerformed',
                 target: request.workflowAction.code,
@@ -122,11 +124,12 @@ module.exports = {
             });
         }
         request.actionResponse = _.merge(
-            _.merge(response.actionResponse || {}, request.actionResponse || {}), {
+            _.merge(response.success.actionResponse || {}, request.actionResponse || {}), {
             itemCode: request.workflowItem.code,
             originalCode: request.workflowItem.originalCode,
             workflowCode: request.workflowHead.code,
-            actionCode: request.workflowAction.code
+            actionCode: request.workflowAction.code,
+            type: ENUMS.WorkflowActionResponseType.SUCCESS.key
         });
         process.nextSuccess(request, response);
     },
@@ -164,7 +167,7 @@ module.exports = {
             tenant: request.tenant,
             models: [request.workflowItem]
         }).then(success => {
-            response.success[request.workflowAction.code].push({
+            response.success.push({
                 action: 'itemUpdated',
                 target: request.workflowAction.code,
                 item: request.workflowItem.code || request.workflowItem._id,
