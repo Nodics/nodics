@@ -185,10 +185,12 @@ module.exports = function (name, pipelineDefinition) {
                     SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(result => {
                         console.log(_currentNode.getHandler());
                         response.success = _.merge(response.success || {}, result);
-                        if (!response.error) {
-                            response.error = result.error;
-                        } else {
-                            response.error.add(result.error);
+                        if (result && result.error) {
+                            if (!response.error) {
+                                response.error = result.error;
+                            } else {
+                                response.error.add(result.error);
+                            }
                         }
                         _self.nextSuccess(request, response, this);
                     }).catch(error => {

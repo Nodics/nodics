@@ -68,7 +68,16 @@ module.exports = {
             if (!workflowItem.actions) workflowItem.actions = [];
             workflowItem.actions.push(request.workflowAction.code);
         }
-        if (workflowItem.activeAction) workflowItem.lastAction = workflowItem.activeAction.code;
+        if (workflowItem.activeAction) {
+            if (workflowItem.lastAction) {
+                workflowItem.lastAction.code = workflowItem.activeAction.code;
+            } else {
+                workflowItem.lastAction = {
+                    code: workflowItem.activeAction.code,
+                    state: NUMS.WorkflowActionState.NEW.key
+                };
+            }
+        }
         workflowItem.activeAction = {
             code: request.workflowAction.code
         };
@@ -131,19 +140,6 @@ module.exports = {
             }).then(success => {
                 response.success[request.workflowAction.code].push(success);
                 process.nextSuccess(request, response);
-                // try {
-                //     if (success.result && !UTILS.isBlank(success.result)) {
-                //         Object.keys(success.result).forEach(actionCode => {
-                //             let actionOutput = success.result[actionCode];
-                //             actionOutput.forEach(output => {
-                //                 response.success[actionCode].push(output);
-                //             });
-                //         });
-                //     }
-                //     process.nextSuccess(request, response);
-                // } catch (error) {
-                //     process.error(request, response, error);
-                // }
             }).catch(error => {
                 process.error(request, response, error);
             });

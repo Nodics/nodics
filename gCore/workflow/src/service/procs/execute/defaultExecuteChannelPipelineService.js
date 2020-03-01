@@ -93,15 +93,14 @@ module.exports = {
     },
     triggerTarget: function (request, response, process) {
         SERVICE.DefaultWorkflowService.nextAction({
-            tenant: itemDetail.tenant,
+            tenant: request.tenant,
             workflowItem: request.workflowItem,
             actionCode: request.channel.target
         }).then(success => {
             response.success = success;
             process.nextSuccess(request, response);
         }).catch(error => {
-            response.errors = error;
-            process.error(request, response);
+            process.error(request, response, error);
         });
     },
     postChannelValidators: function (request, response, process) {

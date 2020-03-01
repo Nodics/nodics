@@ -55,7 +55,7 @@ module.exports = {
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
         if (!response.success) response.success = {};
-        if (!response.errors) response.errors = {};
+        //if (!response.errors) response.errors = {};
         process.nextSuccess(request, response);
     },
     loadActionResponse: function (request, response, process) {
@@ -143,10 +143,7 @@ module.exports = {
     },
     successEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        process.resolve({
-            success: response.success,
-            error: response.errors
-        });
+        process.resolve(response.success);
     },
 
     walkThroughChannels: function (itemCodes, request, response) {
@@ -162,14 +159,21 @@ module.exports = {
                     actionResponse: request.actionResponse,
                     channel: channelRequest.channel
                 }).then(success => {
-                    response.success[channelRequest.channel.code] = success;
+                    response.success[channelRequest.channel.code] = {
+                        success: success
+                    };
                     this.walkThroughChannels(itemCodes, request, response).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
-                    response.errors[channelRequest.channel.code] = error;
+                    if (!(error instanceof CLASSES.NodicsError)) {
+                        error = new CLASSES.WorkflowError(error);
+                    }
+                    response.success[channelRequest.channel.code] = {
+                        error: error.toJson()
+                    };
                     this.walkThroughChannels(itemCodes, request, response).then(success => {
                         resolve(success);
                     }).catch(error => {

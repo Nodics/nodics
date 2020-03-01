@@ -53,6 +53,7 @@ module.exports = {
             let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
             if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
                 SERVICE[serviceName.toUpperCaseFirstChar()][operation]({
+                    tenant: request.tenant,
                     workflowItem: request.workflowItem,
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction

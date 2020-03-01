@@ -140,16 +140,6 @@ module.exports = {
                 response.success.push(success);
                 process.nextSuccess(request, response);
             }).catch(error => {
-                // try {
-                //     if (errResponse && errResponse.errors && !UTILS.isBlank(errResponse.errors)) {
-                //         Object.keys(errResponse.errors).forEach(channelCode => {
-                //             response.errors[channelCode].push(success.result[channelCode]);
-                //         });
-                //     }
-                //     process.error(request, response);
-                // } catch (error) {
-                //     process.error(request, response, error);
-                // }
                 process.error(request, response, error);
             });
         } else {

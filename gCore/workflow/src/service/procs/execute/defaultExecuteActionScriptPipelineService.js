@@ -48,6 +48,7 @@ module.exports = {
     executeScript: function (request, response, process) {
         this.LOG.debug('Executing action script');
         try {
+            let tenant = request.tenant;
             let workflowAction = request.workflowAction;
             let workflowHead = request.workflowHead;
             let workflowItem = request.workflowItem;

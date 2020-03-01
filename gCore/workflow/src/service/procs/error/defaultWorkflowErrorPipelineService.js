@@ -39,10 +39,6 @@ module.exports = {
         this.LOG.debug('Validating request for default error handler');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Tenant can not be null or empty'));
-        } else if (!request.error || UTILS.isBlank(request.error)) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Error detail can not be null or empty'));
-        } else if (!request.error.code) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Error detail should hole mandate properties'));
         } else if (!request.workflowItem) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Workflow item can not be null or empty'));
         } else {

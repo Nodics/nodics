@@ -64,6 +64,7 @@ module.exports = {
             let rawChannels = [];
             if (workflowAction.position === ENUMS.WorkflowActionPosition.LEAF.key) {
                 rawChannels.push(workflowAction.successChannel);
+                rawChannels.push(workflowAction.errorChannel);
             }
             rawChannels = rawChannels.concat(workflowAction.channels || []);
             this.evaluateChannels(rawChannels, request).then(qualifiedChannels => {
