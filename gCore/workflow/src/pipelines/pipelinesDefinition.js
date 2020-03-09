@@ -233,6 +233,10 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultAssignWorkflowItemPipelineService.performAction',
                 success: 'successEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultAssignWorkflowItemPipelineService.handleError'
             }
         }
     },
@@ -279,17 +283,22 @@ module.exports = {
                 success: {
                     executeActionHandler: 'executeActionHandler',
                     executeActionScript: 'executeActionScript',
-                    default: 'createStepResponse'
+                    default: 'markActionExecuted'
                 }
             },
             executeActionHandler: {
                 type: 'process',
                 handler: 'executeActionHandlerPipeline',
-                success: 'createStepResponse'
+                success: 'markActionExecuted'
             },
             executeActionScript: {
                 type: 'process',
                 handler: 'executeActionScriptPipeline',
+                success: 'markActionExecuted'
+            },
+            markActionExecuted: {
+                type: 'function',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.markActionExecuted',
                 success: 'createStepResponse'
             },
             createStepResponse: {
@@ -331,6 +340,10 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultExecuteWorkflowActionPipelineService.processChannels',
                 success: 'successEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.handleError'
             }
         }
     },

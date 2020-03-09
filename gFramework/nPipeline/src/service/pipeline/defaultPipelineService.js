@@ -81,13 +81,6 @@ module.exports = {
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Pipeline: ' + process.getPipelineName() + ' with Id: ' + process.getPipelineId() + ' processed successfully');
-        // if (response.success === undefined) {
-        //     process.resolve({
-        //         code: 'SUC_SYS_00000'
-        //     });
-        // } else {
-        //     process.resolve(response.success);
-        // }
         process.resolve(response.success);
 
     },
@@ -98,7 +91,6 @@ module.exports = {
         if (error instanceof Error && !(error instanceof CLASSES.NodicsError)) {
             error = new CLASSES.NodicsError(error);
         }
-        //this.LOG.error(error);
         process.reject(error);
     },
 

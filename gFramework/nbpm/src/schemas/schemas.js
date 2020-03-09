@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    bpm: {
+    system: {
         workflow2Schema: {
             super: 'super',
             model: true,
@@ -36,6 +36,24 @@ module.exports = {
                     required: true,
                     description: 'Required step code, it could be workflow head code or any of the action code'
                 },
+            },
+            indexes: {
+                composite: {
+                    workflowCode: {
+                        enabled: true,
+                        name: 'workflowCode',
+                        options: {
+                            unique: true
+                        }
+                    },
+                    schemaName: {
+                        enabled: true,
+                        name: 'schemaName',
+                        options: {
+                            unique: true
+                        }
+                    }
+                }
             }
         }
     }

@@ -112,26 +112,15 @@ module.exports = {
                     default: ENUMS.WorkflowItemState.NEW.key,
                     description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, FATAL]'
                 },
-                error: {
-                    type: 'object',
+                errorCount: {
+                    type: 'int',
+                    default: 0,
+                    required: true
+                },
+                errors: {
+                    type: 'array',
                     required: false
-                },
-                'error.code': {
-                    type: 'string',
-                    required: false,
-                    description: 'Optional error code'
-                },
-                'error.message': {
-                    type: 'string',
-                    required: false,
-                    description: 'Optional error message'
-                },
-                'error.stackTrace': {
-                    type: 'string',
-                    required: false,
-                    description: 'Optional error stack trace'
-                },
-
+                }
             }
         },
 

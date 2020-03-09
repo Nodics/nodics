@@ -10,10 +10,23 @@
  */
 
 module.exports = {
-    workflow: {
-        defaultSuccessChannel: 'defaultSuccessChannel',
-        defaultErrorChannel: 'defaultErrorChannel',
+    cres: {
+        reviewTest: {
+            super: 'base',
+            model: true,
+            service: true,
+            router: true,
+            cache: {
+                enabled: false,
+                ttl: 10
+            },
+            search: {
+                enabled: false,
+                idPropertyName: 'code',
+            },
+            definition: {
 
-        itemErrorLimit: 2
+            }
+        },
     }
 };

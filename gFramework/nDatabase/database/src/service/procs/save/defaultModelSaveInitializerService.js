@@ -517,11 +517,7 @@ module.exports = {
                     type: schemaModel.rawSchema.event.type || "ASYNC",
                     targetType: schemaModel.rawSchema.event.targetType || ENUMS.TargetType.MODULE_NODES.key,
                     active: true,
-                    data: {
-                        schemaName: schemaModel.schemaName,
-                        modelName: schemaModel.modelName,
-                        result: response.success.result
-                    }
+                    data: response.success.result
                 };
                 this.LOG.debug('Pushing event for item created : ' + schemaModel.schemaName);
                 SERVICE.DefaultEventService.publish(event).then(success => {

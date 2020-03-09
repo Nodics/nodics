@@ -37,7 +37,7 @@ module.exports = {
 
     handleWorkflow2SchemaUpdateEventHandler: function (event, callback) {
         try {
-            SERVICE.DefaultWorkflow2SchemaService.workflow2SchemaUpdateEventHandler(event.data).then(success => {
+            SERVICE.DefaultWorkflow2SchemaService.workflow2SchemaUpdateEventHandler(event).then(success => {
                 callback(null, {
                     code: 'SUC_EVNT_00000',
                     msg: success

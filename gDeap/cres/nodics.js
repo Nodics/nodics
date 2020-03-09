@@ -10,9 +10,8 @@
  */
 
 module.exports = {
-
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
      * defined it that with Promise way
      * @param {*} options 
      */
@@ -23,7 +22,7 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * This function is used to finalize module loading process. If there is any functionalities, required to be executed after module loading. 
      * defined it that with Promise way
      * @param {*} options 
      */
@@ -32,14 +31,4 @@ module.exports = {
             resolve(true);
         });
     },
-
-    handleErrorProcess: function (request, response) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('handleWorkflowErrorsPipeline', request, response).then(success => {
-                reject(success);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
 };

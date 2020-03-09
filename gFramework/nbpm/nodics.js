@@ -35,9 +35,9 @@ module.exports = {
                     SERVICE.DefaultWorkflow2SchemaService.get({
                         tenant: tntCode
                     }).then(response => {
-                        if (response.success && response.result.length > 0) {
+                        if (response.result && response.result.length > 0) {
                             response.result.forEach(data => {
-                                if (data.active) {
+                                if (data.active && NODICS.isModuleActive(data.moduleName)) {
                                     let modelObject = NODICS.getModels(data.moduleName, tntCode)[UTILS.createModelName(data.schemaName)];
                                     if (modelObject) {
                                         if (!modelObject.workflowCodes) modelObject.workflowCodes = [];

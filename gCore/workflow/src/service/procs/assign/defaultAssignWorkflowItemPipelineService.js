@@ -79,7 +79,8 @@ module.exports = {
             }
         }
         workflowItem.activeAction = {
-            code: request.workflowAction.code
+            code: request.workflowAction.code,
+            state: ENUMS.WorkflowActionState.NEW.key
         };
         process.nextSuccess(request, response);
     },
@@ -145,6 +146,26 @@ module.exports = {
             });
         } else {
             process.nextSuccess(request, response);
+        }
+    },
+
+    handleError: function (request, response, process) {
+        if (!response.error || response.error.isProcessed()) {
+            SERVICE.DefaultPipelineService.handleError(request, response, process);
+        } else {
+            SERVICE.DefaultWorkflowErrorActionService.handleErrorProcess(request, response).then(success => {
+                if (success instanceof Array) {
+                    success.forEach(error => {
+                        response.error.add(error);
+                    });
+                } else {
+                    response.error.add(success);
+                }
+                response.error.setProcessed(true);
+                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, this);
+            }).catch(error => {
+                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, this);
+            });
         }
     }
 };

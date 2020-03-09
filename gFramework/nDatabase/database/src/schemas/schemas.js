@@ -77,9 +77,11 @@ module.exports = {
                 }
             },
             indexes: {
+                // will be composite for composite and individual
                 common: {
 
                 },
+                // When we need to defined multiple combined field
                 composite: {
 
                 },

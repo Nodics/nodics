@@ -10,10 +10,5 @@
  */
 
 module.exports = {
-    workflow: {
-        defaultSuccessChannel: 'defaultSuccessChannel',
-        defaultErrorChannel: 'defaultErrorChannel',
 
-        itemErrorLimit: 2
-    }
 };

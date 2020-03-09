@@ -57,6 +57,15 @@ module.exports = class NodicsError extends Error {
         if (error.stack) {
             this.stack = error.stack;
         }
+        this.isProcessed = false;
+    }
+
+    isProcessed() {
+        return this.processed;
+    }
+
+    setProcessed(isProcessed) {
+        this.isProcessed = isProcessed;
     }
 
     addAll(errors) {

@@ -68,7 +68,6 @@ module.exports = {
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
         response.success = [];
-        //if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
         process.nextSuccess(request, response);
     },
     preActionInterceptors: function (request, response, process) {
@@ -98,8 +97,9 @@ module.exports = {
         }
     },
     handleAutoAction: function (request, response, process) {
-        if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key ||
-            request.workflowAction.type === ENUMS.WorkflowActionType.PARALLEL.key) {
+        if ((request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key ||
+            request.workflowAction.type === ENUMS.WorkflowActionType.PARALLEL.key) &&
+            request.workflowItem.activeAction.state !== ENUMS.WorkflowActionState.FINISHED.key) {
             if (request.workflowAction.handler) {
                 response.targetNode = 'executeActionHandler';
                 process.nextSuccess(request, response);
@@ -113,16 +113,11 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    markActionExecuted: function (request, response, process) {
+        request.workflowItem.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
+        process.nextSuccess(request, response);
+    },
     createStepResponse: function (request, response, process) {
-        if (response.success.actionResponse && !UTILS.isBlank(response.success.actionResponse)) {
-            response.success.push({
-                action: 'autoActionPerformed',
-                target: request.workflowAction.code,
-                item: request.workflowItem.code || request.workflowItem._id,
-                timestamp: new Date(),
-                message: 'Auto action has been performed'
-            });
-        }
         request.actionResponse = _.merge(
             _.merge(response.success.actionResponse || {}, request.actionResponse || {}), {
             itemCode: request.workflowItem.code,
@@ -149,13 +144,6 @@ module.exports = {
             models: [request.actionResponse]
         }).then(success => {
             request.actionResponse = success.result[0];
-            response.success.push({
-                action: 'actionResponseCreated',
-                target: request.workflowAction.code,
-                item: request.workflowItem.code || request.workflowItem._id,
-                timestamp: new Date(),
-                message: 'Action response updated: ' + request.actionResponse._id
-            });
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -167,13 +155,6 @@ module.exports = {
             tenant: request.tenant,
             models: [request.workflowItem]
         }).then(success => {
-            response.success.push({
-                action: 'itemUpdated',
-                target: request.workflowAction.code,
-                item: request.workflowItem.code || request.workflowItem._id,
-                timestamp: new Date(),
-                message: 'Item has been updated with response id: ' + request.actionResponse._id
-            });
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -224,5 +205,27 @@ module.exports = {
         }).catch(error => {
             process.error(request, response, error);
         });
+    },
+    handleError: function (request, response, process) {
+        if (!response.error || response.error.isProcessed()) {
+            SERVICE.DefaultPipelineService.handleError(request, response, process);
+        } else {
+            SERVICE.DefaultWorkflowErrorActionService.handleErrorProcess(request, response).then(success => {
+                if (success) {
+                    if (success instanceof Array) {
+                        success.forEach(error => {
+                            response.error.add(error);
+                        });
+                    } else {
+                        response.error.add(success);
+                    }
+                }
+                response.error.setProcessed(true);
+                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, this);
+            }).catch(error => {
+                response.error.add(error);
+                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, this);
+            });
+        }
     }
 };

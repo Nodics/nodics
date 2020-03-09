@@ -30,22 +30,5 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
-    },
-
-    handlePreSave: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            let schemaName = request.model.schemaName;
-            Object.keys(NODICS.getModules()).forEach(moduleName => {
-                let moduleObject = NODICS.getModule(moduleName);
-                if (moduleObject.rawSchema && moduleObject.rawSchema[schemaName]) {
-                    request.model.moduleName = moduleName;
-                }
-            });
-            if (request.model.moduleName) {
-                resolve(true);
-            } else {
-                reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid schemaName, please validate your request: ' + CONFIG.get('clusterId')));
-            }
-        });
     }
 };

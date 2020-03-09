@@ -39,8 +39,26 @@ module.exports = {
         this.LOG.debug('Validating request for default error handler');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Tenant can not be null or empty'));
-        } else if (!request.workflowItem) {
+        } else if (!request.workflowItem || !request.workflowItem._id) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Workflow item can not be null or empty'));
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+    updateError: function (request, response, process) {
+        if (request.workflowItem.errorCounts < CONFIG.get('workflow').itemErrorLimit || 5) {
+            if (!request.workflowItem.errors) request.workflowItem.errors = [];
+            request.workflowItem.errors.push(response.error.toJson());
+            request.workflowItem.errorCounts = request.workflowItem.errorCounts + 1;
+            SERVICE.DefaultWorkflowItemService.save({
+                tenant: request.tenant,
+                models: [request.workflowItem]
+            }).then(success => {
+                this.LOG.debug('Error been updated for item: ' + request.workflowItem.code);
+            }).catch(error => {
+                this.LOG.debug('Failed updating error for item: ' + request.workflowItem.code);
+            });
+            process.stop(request, response, new CLASSES.WorkflowError('Error has been updated into workflow item'));
         } else {
             process.nextSuccess(request, response);
         }

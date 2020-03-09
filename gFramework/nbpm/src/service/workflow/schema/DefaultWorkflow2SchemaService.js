@@ -26,12 +26,13 @@ module.exports = {
     workflow2SchemaUpdateEventHandler: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                let modelObject = NODICS.getModels(request.moduleName, tntCode)[UTILS.createModelName(request.schemaName)];
+                let data = request.data;
+                let modelObject = NODICS.getModels(data.moduleName, request.tenant)[UTILS.createModelName(data.schemaName)];
                 if (!modelObject.workflowCodes) modelObject.workflowCodes = [];
-                if (!request.active && modelObject.workflowCodes.includes(request.workflowCode)) {
-                    modelObject.workflowCodes.splice(modelObject.workflowCodes.indexOf(request.workflowCode), 1);
-                } else if (request.active && !modelObject.workflowCodes.includes(request.workflowCode)) {
-                    modelObject.workflowCodes.push(request.workflowCode);
+                if (!data.active && modelObject.workflowCodes.includes(data.workflowCode)) {
+                    modelObject.workflowCodes.splice(modelObject.workflowCodes.indexOf(data.workflowCode), 1);
+                } else if (data.active && !modelObject.workflowCodes.includes(data.workflowCode)) {
+                    modelObject.workflowCodes.push(data.workflowCode);
                 }
                 resolve('Workflow code updated on cluster: ' + CONFIG.get('clusterId'));
             } catch (error) {
