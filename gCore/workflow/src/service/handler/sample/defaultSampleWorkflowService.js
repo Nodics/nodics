@@ -38,20 +38,53 @@ module.exports = {
     performHeadOperation: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
-                decision: 'ERROR',
+                decision: 'TWO',
                 feedback: {
-                    msg: 'Testing error from head itself'
+                    msg: 'Testing Single channel process'
                 }
             });
         });
     },
 
-    performErrorAction: function (request, response) {
+    performActionOne: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
-                decision: 'ERROR',
+                decision: 'THREE',
                 feedback: {
-                    msg: 'Testing error from Error Action'
+                    msg: 'Action one response .............'
+                }
+            });
+        });
+    },
+
+    performActionTwo: function (request, response) {
+        return new Promise((resolve, reject) => {
+            resolve({
+                decision: 'SUCCESS',
+                feedback: {
+                    msg: 'Action two response .............'
+                }
+            });
+        });
+    },
+
+    performActionThree: function (request, response) {
+        return new Promise((resolve, reject) => {
+            resolve({
+                decision: 'SUCCESS',
+                feedback: {
+                    msg: 'Action three response .............'
+                }
+            });
+        });
+    },
+
+    performActionSuccess: function (request, response) {
+        return new Promise((resolve, reject) => {
+            resolve({
+                decision: 'SUCCESS',
+                feedback: {
+                    msg: 'Action sample success response .............'
                 }
             });
         });

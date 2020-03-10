@@ -10,18 +10,41 @@
  */
 
 module.exports = {
+
     record0: {
-        code: "sampleActionError",
-        name: "sampleActionError",
+        code: "sampleActionOne",
+        name: "sampleActionOne",
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
-        position: ENUMS.WorkflowActionPosition.LEAF.key,
-        handler: 'DefaultSampleWorkflowService.performErrorAction',
+        handler: 'DefaultSampleWorkflowService.performActionOne',
         userGroups: ['adminUserGroup'],
-        allowedDecisions: ['ERROR']
+        allowedDecisions: ['THREE'],
+        channels: ['threeChannel']
     },
 
     record1: {
+        code: "sampleActionTwo",
+        name: "sampleActionTwo",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        handler: 'DefaultSampleWorkflowService.performActionTwo',
+        userGroups: ['adminUserGroup'],
+        allowedDecisions: ['SUCCESS'],
+        channels: ['sampleChannelSuccess']
+    },
+
+    record2: {
+        code: "sampleActionThree",
+        name: "sampleActionThree",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        handler: 'DefaultSampleWorkflowService.performActionThree',
+        userGroups: ['adminUserGroup'],
+        allowedDecisions: ['SUCCESS'],
+        channels: ['sampleChannelSuccess']
+    },
+
+    record3: {
         code: "sampleActionSuccess",
         name: "sampleActionSuccess",
         active: true,
@@ -29,39 +52,6 @@ module.exports = {
         position: ENUMS.WorkflowActionPosition.LEAF.key,
         handler: 'DefaultSampleWorkflowService.performActionSuccess',
         userGroups: ['adminUserGroup'],
-        allowedDecisions: ['SUCSESS', 'ERROR']
-    },
-
-    record2: {
-        code: "sampleActionOne",
-        name: "sampleActionOne",
-        active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        handler: 'DefaultSampleWorkflowService.performActionOne',
-        userGroups: ['adminUserGroup'],
-        allowedDecisions: ['THREE', 'ERROR'],
-        channels: ['threeChannel', 'sampleChannelError']
-    },
-
-    record3: {
-        code: "sampleActionTwo",
-        name: "sampleActionTwo",
-        active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        handler: 'DefaultSampleWorkflowService.performActionTwo',
-        userGroups: ['adminUserGroup'],
-        allowedDecisions: ['SUCCESS', 'ERROR'],
-        channels: ['sampleChannelSuccess', 'sampleChannelError']
-    },
-
-    record4: {
-        code: "sampleActionThree",
-        name: "sampleActionThree",
-        active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        handler: 'DefaultSampleWorkflowService.performActionThree',
-        userGroups: ['adminUserGroup'],
-        allowedDecisions: ['SUCCESS', 'ERROR'],
-        channels: ['sampleChannelSuccess', 'sampleChannelError']
+        allowedDecisions: ['SUCCESS'],
     }
 };

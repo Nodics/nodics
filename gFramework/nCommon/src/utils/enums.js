@@ -20,10 +20,10 @@ module.exports = {
         },
         definition: [
             'EXTERNAL',
-            'EACH_MODULE_NODES',
-            'EACH_MODULE',
-            'MODULE_NODES',
-            'MODULE'
+            'EACH_MODULE_NODES',// Publish to all nodes in each modules
+            'EACH_MODULE', // publish to each modules
+            'MODULE_NODES', // publish to each nodes for the module
+            'MODULE' // publish to a module
         ]
     },
 

@@ -10,14 +10,10 @@
  */
 
 module.exports = {
-    record0: {
-        code: "sampleWorkflow",
-        name: "sampleWorkflow",
-        active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        handler: 'DefaultSampleWorkflowService.performHeadOperation',
-        userGroups: ['adminUserGroup'],
-        allowedDecisions: ['ONE', 'TWO'],
-        channels: ['oneChannel', 'twoChannel']
+    workflow: {
+        initializeInternalItem: {
+            event: 'initiateWorkflow',
+            listener: 'DefaultWorkflowItemChangeListenerService.handleItemChangeEvent'
+        }
     }
 };

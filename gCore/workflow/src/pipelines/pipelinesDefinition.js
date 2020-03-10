@@ -154,7 +154,21 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultInitWorkflowItemPipelineService.validateRequest',
-                success: 'prepareWorkflowProcessPipeline'
+                success: 'checkUpdateRequest'
+            },
+            checkUpdateRequest: {
+                type: 'function',
+                handler: 'DefaultInitWorkflowItemPipelineService.checkUpdateRequest',
+                success: {
+                    itemUpdate: 'itemUpdateProcessPipeline',
+                    itemInit: 'prepareWorkflowProcessPipeline',
+                    default: 'prepareWorkflowProcessPipeline'
+                }
+            },
+            itemUpdateProcessPipeline: {
+                type: 'process',
+                handler: 'itemUpdateProcessPipeline',
+                success: 'successEnd'
             },
             prepareWorkflowProcessPipeline: {
                 type: 'process',
@@ -164,6 +178,69 @@ module.exports = {
             assignWorkflowItemPipeline: {
                 type: 'process',
                 handler: 'assignWorkflowItemPipeline',
+                success: 'successEnd'
+            }
+        }
+    },
+
+    itemUpdateProcessPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowItemPipelineService.validateRequest',
+                success: 'loadWorkflowItem'
+            },
+            redirectCreateItem: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowItemPipelineService.redirectCreateItem',
+                success: {
+                    loadInternalItem: 'handleInternalItem',
+                    loadExternalItem: 'handleExternalItem',
+                    default: 'applyPreUpdateInterceptors'
+                }
+            },
+            handleInternalItem: {
+                type: 'process',
+                handler: 'handleInternalItemCreatePipeline',
+                success: 'applyPreUpdateInterceptors'
+            },
+            handleExternalItem: {
+                type: 'process',
+                handler: 'handleExternalItemCreatePipeline',
+                success: 'applyPreUpdateInterceptors'
+            },
+            applyPreUpdateInterceptors: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowItemPipelineService.applyPreUpdateInterceptors',
+                success: 'applyPreUpdateValidators'
+            },
+            applyPreUpdateValidators: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowItemPipelineService.applyPreUpdateValidators',
+                success: 'updateWorkflowItem'
+            },
+            updateWorkflowItem: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowItemPipelineService.updateWorkflowItem',
+                success: 'applyPostUpdateValidators'
+            },
+            applyPostUpdateValidators: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowItemPipelineService.applyPostUpdateValidators',
+                success: 'applyPostUpdateInterceptors'
+            },
+            applyPostUpdateInterceptors: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowItemPipelineService.applyPostUpdateInterceptors',
+                success: 'triggerItemUpdateEvent'
+            },
+            triggerItemUpdateEvent: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowItemPipelineService.triggerItemUpdateEvent',
                 success: 'successEnd'
             }
         }

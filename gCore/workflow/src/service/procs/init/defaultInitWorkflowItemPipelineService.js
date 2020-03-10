@@ -46,5 +46,28 @@ module.exports = {
         } else {
             process.nextSuccess(request, response);
         }
+    },
+    checkUpdateRequest: function (request, response, process) {
+        let item = request.item;
+        try {
+            SERVICE.DefaultWorkflowItemService.get({
+                tenant: request.tenant,
+                query: {
+                    code: item.code
+                }
+            }).then(success => {
+                if (success.result && success.result.length > 0) {
+                    response.targetNode = 'itemUpdate';
+                } else {
+                    response.targetNode = 'itemInit';
+                }
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } catch (error) {
+            process.error(request, response, error);
+        }
+
     }
 };

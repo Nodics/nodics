@@ -538,24 +538,39 @@ module.exports = {
             let schemaModel = request.schemaModel;
             let savedModel = response.success.result;
             if (response.success.result && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
-                let itemDetails = [];
+                let event = {
+                    tenant: request.tenant,
+                    event: 'initiateWorkflow',
+                    sourceName: schemaModel.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
+                    target: 'workflow',
+                    state: "NEW",
+                    type: "SYNC",
+                    targetType: ENUMS.TargetType.MODULE.key,
+                    active: true,
+                    data: []
+                };
                 schemaModel.workflowCodes.forEach(workflowCode => {
-                    itemDetails.push({
-                        tenant: request.tenant,
-                        itemCode: savedModel.code || savedModel._id,
-                        schemaName: schemaModel.schemaName,
-                        moduleName: schemaModel.moduleName,
-                        workflowCode: workflowCode
+                    event.data.push({
+                        workflowCode: workflowCode,
+                        itemType: 'INTERNAL',
+                        item: {
+                            code: savedModel.code || savedModel._id,
+                            refId: savedModel.code || savedModel._id,
+                            schemaName: schemaModel.schemaName,
+                            moduleName: schemaModel.moduleName,
+                        }
                     });
                 });
-                SERVICE.DefaultWorkflowService.publishToWorkflow(itemDetails, tenant).then(success => {
+                this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaModel.schemaName);
+                SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Workflow associated successfully');
                 }).catch(error => {
                     this.LOG.error('While associating workflow : ', error);
                 });
             }
         } catch (error) {
-            this.LOG.error('Facing issue while pushing save event : ', error);
+            this.LOG.error('Facing issue while pushing workflow init event : ', error);
         }
         process.nextSuccess(request, response);
     }

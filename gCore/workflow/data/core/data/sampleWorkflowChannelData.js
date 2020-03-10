@@ -11,26 +11,6 @@
 
 module.exports = {
     record0: {
-        code: 'sampleChannelError',
-        name: 'sampleChannelError',
-        active: true,
-        qualifier: {
-            decision: 'ERROR'
-        },
-        target: 'sampleActionError'
-    },
-
-    record1: {
-        code: 'sampleChannelSuccess',
-        name: 'sampleChannelSuccess',
-        active: true,
-        qualifier: {
-            decision: 'SUCCESS'
-        },
-        target: 'sampleActionSuccess'
-    },
-
-    record2: {
         code: "oneChannel",
         name: "oneChannel",
         active: true,
@@ -40,7 +20,7 @@ module.exports = {
         target: 'sampleActionOne'
     },
 
-    record3: {
+    record1: {
         code: "twoChannel",
         name: "twoChannel",
         active: true,
@@ -50,7 +30,7 @@ module.exports = {
         target: 'sampleActionTwo'
     },
 
-    record4: {
+    record2: {
         code: "threeChannel",
         name: "threeChannel",
         active: true,
@@ -58,7 +38,15 @@ module.exports = {
             decision: 'THREE'
         },
         target: 'sampleActionThree'
+    },
+
+    record3: {
+        code: 'sampleChannelSuccess',
+        name: 'sampleChannelSuccess',
+        active: true,
+        qualifier: {
+            decision: 'SUCCESS'
+        },
+        target: 'sampleActionSuccess'
     }
-
-
 };

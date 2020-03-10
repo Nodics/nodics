@@ -17,8 +17,7 @@ module.exports = {
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.END.key,
         handler: 'DefaultWorkflowSuccessActionService.handleSuccessProcess',
-        userGroups: ['adminUserGroup'],
-        allowedDecisions: ['SUCSESS', 'ERROR']
+        userGroups: ['adminUserGroup']
     },
 
     record1: {
@@ -28,7 +27,6 @@ module.exports = {
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.END.key,
         handler: 'DefaultWorkflowErrorActionService.handleErrorProcess',
-        userGroups: ['adminUserGroup'],
-        allowedDecisions: ['SUCSESS', 'ERROR']
+        userGroups: ['adminUserGroup']
     }
 };

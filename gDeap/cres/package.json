@@ -1,7 +1,7 @@
 {
     "name": "cres",
     "index": "400.30",
-    "type": "core",
+    "type": "router",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cres",
     "homepage": "http://www.nodics.com/",
     "keywords": [

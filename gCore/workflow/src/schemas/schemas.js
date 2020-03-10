@@ -267,7 +267,7 @@ module.exports = {
                 },
                 allowedDecisions: {
                     type: 'array',
-                    required: true,
+                    required: false,
                     description: 'List of decisions can be taken'
                 },
                 channels: {

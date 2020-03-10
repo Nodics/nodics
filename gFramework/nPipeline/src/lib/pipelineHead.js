@@ -177,6 +177,7 @@ module.exports = function (name, pipelineDefinition) {
                 try {
                     SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response, this);
                 } catch (err) {
+                    console.log(err);
                     _self.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
                     _self.error(request, response, new CLASSES.NodicsError(err, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)'));
                 }

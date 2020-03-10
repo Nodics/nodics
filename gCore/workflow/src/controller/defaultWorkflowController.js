@@ -66,6 +66,7 @@ module.exports = {
 
     nextAction: function (request, callback) {
         request.itemCode = request.httpRequest.params.itemCode;
+        request.actionCode = request.httpRequest.params.actionCode;
         if (callback) {
             FACADE.DefaultWorkflowFacade.nextAction(request).then(success => {
                 callback(null, success);

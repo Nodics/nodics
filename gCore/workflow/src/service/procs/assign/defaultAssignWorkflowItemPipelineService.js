@@ -117,15 +117,25 @@ module.exports = {
             moduleName: request.moduleName,
             models: [request.workflowItem]
         }).then(success => {
-            request.workflowItem = success.result[0];
-            response.success[request.workflowAction.code].push({
-                action: 'itemAssignToAction',
-                target: request.workflowAction.code,
-                item: request.workflowItem.code || request.workflowItem._id,
-                timestamp: new Date(),
-                message: 'Item: ' + request.workflowItem.code || request.workflowItem._id + ' has been assign to action: ' + request.workflowAction.code
-            });
-            process.nextSuccess(request, response);
+            if (success.result && success.result.length > 0) {
+                request.workflowItem = success.result[0];
+                response.success[request.workflowAction.code].push({
+                    action: 'itemAssignToAction',
+                    target: request.workflowAction.code,
+                    item: request.workflowItem.code || request.workflowItem._id,
+                    timestamp: new Date(),
+                    message: 'Item: ' + request.workflowItem.code || request.workflowItem._id + ' has been assign to action: ' + request.workflowAction.code
+                });
+                process.nextSuccess(request, response);
+            } else {
+                let error = new CLASSES.WorkflowError('While saving workflow item');
+                if (success.errors && success.errors.length > 0) {
+                    success.errors.forEach(err => {
+                        error.add(new CLASSES.WorkflowError(err));
+                    });
+                }
+                process.error(request, response, error);
+            }
         }).catch(error => {
             process.error(request, response, error);
         });
@@ -150,7 +160,7 @@ module.exports = {
     },
 
     handleError: function (request, response, process) {
-        if (!response.error || response.error.isProcessed()) {
+        if (!response.error || response.error.isProcessed) {
             SERVICE.DefaultPipelineService.handleError(request, response, process);
         } else {
             SERVICE.DefaultWorkflowErrorActionService.handleErrorProcess(request, response).then(success => {
@@ -162,9 +172,9 @@ module.exports = {
                     response.error.add(success);
                 }
                 response.error.setProcessed(true);
-                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, this);
+                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
             }).catch(error => {
-                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, this);
+                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
             });
         }
     }

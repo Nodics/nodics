@@ -41,15 +41,15 @@ module.exports = {
 
             nextAction: {
                 secured: true,
-                key: '/action/next/:itemCode',
-                method: 'PUT',
+                key: '/action/next/:itemCode/:actionCode',
+                method: 'POST',
                 controller: 'DefaultWorkflowController',
                 operation: 'nextAction',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'put',
-                    url: 'http://host:port/nodics/workflow/action/next/:itemCode'
+                    url: 'http://host:port/nodics/workflow/action/next/:itemCode/:actionCode'
                 }
             },
 

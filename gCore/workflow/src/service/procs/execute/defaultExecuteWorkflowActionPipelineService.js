@@ -221,10 +221,10 @@ module.exports = {
                     }
                 }
                 response.error.setProcessed(true);
-                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, this);
+                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
             }).catch(error => {
                 response.error.add(error);
-                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, this);
+                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
             });
         }
     }

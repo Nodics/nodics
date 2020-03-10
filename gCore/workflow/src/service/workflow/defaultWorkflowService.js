@@ -44,9 +44,9 @@ module.exports = {
             try {
                 SERVICE.DefaultPipelineService.start('initWorkflowItemPipeline', {
                     tenant: request.tenant,
+                    workflowCode: request.workflowCode,
                     itemType: request.itemType,
-                    item: request.item,
-                    workflowCode: request.workflowCode
+                    item: request.item
                 }, {}).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -110,5 +110,28 @@ module.exports = {
                 reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
             }
         });
-    }
+    },
+
+    handleItemChangeEvent: function (request) {
+        return new Promise((resolve, reject) => {
+            let data = request.data;
+            let allPromises = [];
+            data.forEach(workflowItem => {
+                workflowItem.tenant = workflowItem.tenant || request.tenant;
+                allPromises.push(this.initItem(workflowItem));
+            });
+            if (allPromises.length > 0) {
+                SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {
+                    console.log('-----------------------------------------------------------------------------');
+                    console.log(success);
+                    console.log('-----------------------------------------------------------------------------');
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve({});
+            }
+        });
+    },
 };

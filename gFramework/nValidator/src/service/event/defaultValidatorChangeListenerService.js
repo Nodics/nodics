@@ -7,23 +7,14 @@ module.exports = {
                 validator: event.data
             }).then(success => {
                 callback(null, {
-                    success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: success
+                    message: success
                 });
             }).catch(error => {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    msg: error
-                });
+                callback(new CLASSES.EventError(error, 'Unable to handle validator change', 'ERR_EVNT_00000'));
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                msg: error
-            });
+            callback(new CLASSES.EventError(error, 'Unable to handle validator change', 'ERR_EVNT_00000'));
         }
     }
 };

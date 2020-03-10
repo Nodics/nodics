@@ -21,7 +21,7 @@ module.exports = class EventService extends EventEmitter {
             try {
                 SERVICE[serviceName][operation](event, callback, request);
             } catch (error) {
-                callback(new CLASSES.EventError(error));
+                callback(new CLASSES.EventError(error, 'Service: ' + serviceName + ' operation: ' + operation + ' not valid'));
             }
         });
     }
