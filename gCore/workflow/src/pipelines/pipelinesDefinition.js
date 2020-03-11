@@ -192,7 +192,7 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultUpdateWorkflowItemPipelineService.validateRequest',
-                success: 'loadWorkflowItem'
+                success: 'redirectCreateItem'
             },
             redirectCreateItem: {
                 type: 'function',
@@ -580,6 +580,11 @@ module.exports = {
             validateChannels: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelsPipelineService.validateChannels',
+                success: 'handleMultiChannelRequest'
+            },
+            handleMultiChannelRequest: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelsPipelineService.handleMultiChannelRequest',
                 success: 'triggerChannelExecution'
             },
             triggerChannelExecution: {
@@ -618,13 +623,13 @@ module.exports = {
             loadActionResponse: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelPipelineService.loadActionResponse',
-                success: 'handleMultiChannelRequest'
-            },
-            handleMultiChannelRequest: {
-                type: 'function',
-                handler: 'DefaultExecuteChannelPipelineService.handleMultiChannelRequest',
                 success: 'preChannelInterceptors'
             },
+            // handleMultiChannelRequest: {
+            //     type: 'function',
+            //     handler: 'DefaultExecuteChannelPipelineService.handleMultiChannelRequest',
+            //     success: 'preChannelInterceptors'
+            // },
             preChannelInterceptors: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelPipelineService.preChannelInterceptors',

@@ -125,6 +125,7 @@ module.exports = {
                 timestamp: new Date(),
                 message: 'Item: ' + request.workflowItem.code || request.workflowItem._id + ' has been assign to action: ' + request.workflowAction.code
             });
+            process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
@@ -149,8 +150,8 @@ module.exports = {
     },
 
     handleError: function (request, response, process) {
-        if (!response.error || response.error.isProcessed) {
-            SERVICE.DefaultPipelineService.handleError(request, response, process);
+        if (!response.error || response.error.isProcessed()) {
+            SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
         } else {
             SERVICE.DefaultWorkflowErrorActionService.handleErrorProcess(request, response).then(success => {
                 if (success instanceof Array) {

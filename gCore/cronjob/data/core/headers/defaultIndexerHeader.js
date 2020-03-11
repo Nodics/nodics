@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'indexer',
-                operation: 'save', //save, update and saveOrUpdate
+                operation: 'saveAll', //save, update and saveOrUpdate
                 dataFilePrefix: 'defaultIndexerData'
             },
             query: {

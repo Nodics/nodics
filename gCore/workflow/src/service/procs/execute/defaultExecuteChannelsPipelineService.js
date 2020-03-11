@@ -87,36 +87,52 @@ module.exports = {
             process.error(request, response, error);
         }
     },
-    triggerChannelExecution: function (request, response, process) {
-        request.splitItem = false;
+    handleMultiChannelRequest: function (request, response, process) {
+        request.channelRequests = [];
         if (request.channels.length > 1) {
-            for (let counter = 1; counter <= request.channels.length; counter++) {
-                request.channels[counter].count = counter;
+            for (let count = 1; count <= request.channels.length; count++) {
+                let channelItem = _.merge({}, request.workflowItem);
+                delete channelItem._id;
+                channelItem.originalCode = channelItem.code;
+                channelItem.code = channelItem.code + '_' + count;
+                channelItem.itemSplitted = true;
+                request.channelRequests.push({
+                    tenant: request.tenant,
+                    workflowItem: channelItem,
+                    workflowHead: request.workflowHead,
+                    workflowAction: request.workflowAction,
+                    actionResponse: request.actionResponse,
+                    channel: request.channels[count - 1]
+                });
             }
+        } else {
+            request.channelRequests.push({
+                tenant: request.tenant,
+                workflowItem: request.workflowItem,
+                workflowHead: request.workflowHead,
+                workflowAction: request.workflowAction,
+                actionResponse: request.actionResponse,
+                channel: request.channels[0]
+            });
         }
-        this.walkThroughChannels(request.channels, request, response).then(success => {
+        process.nextSuccess(request, response);
+    },
+    triggerChannelExecution: function (request, response, process) {
+        this.walkThroughChannels(request.channelRequests, request, response).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
-    walkThroughChannels: function (channels, request, response) {
+    walkThroughChannels: function (channelRequests, request, response) {
         return new Promise((resolve, reject) => {
-            if (channels && channels.length > 0) {
-                let channel = channels.shift();
-                SERVICE.DefaultWorkflowChannelService.executeChannel({
-                    tenant: request.tenant,
-                    workflowItem: request.workflowItem,
-                    workflowHead: request.workflowHead,
-                    workflowAction: request.workflowAction,
-                    actionResponse: request.actionResponse,
-                    channel: channel,
-                    splitItem: request.splitItem
-                }).then(success => {
+            if (channelRequests && channelRequests.length > 0) {
+                let channelRequest = channelRequests.shift();
+                SERVICE.DefaultWorkflowChannelService.executeChannel(channelRequest).then(success => {
                     response.success[channelRequest.channel.code] = {
                         success: success
                     };
-                    this.walkThroughChannels(itemCodes, request, response).then(success => {
+                    this.walkThroughChannels(channelRequests, request, response).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
@@ -128,7 +144,7 @@ module.exports = {
                     response.success[channelRequest.channel.code] = {
                         error: error.toJson()
                     };
-                    this.walkThroughChannels(itemCodes, request, response).then(success => {
+                    this.walkThroughChannels(channelRequests, request, response).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);

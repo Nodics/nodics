@@ -29,11 +29,12 @@ module.exports = {
                         item: {
                             code: 'Required item code',
                             refId: 'external item reference id',
-                            schemaName: 'Either schema name or index name',
-                            indexName: 'Either schema name or index name',
-                            moduleName: 'Required module name',
                             callbackData: 'Any JSON object needs to be send back along with each events',
-                            detail: 'JSON object if item is external'
+                            detail: {//'JSON object if item is external'
+                                schemaName: 'Either schema name or index name, in case internal',
+                                indexName: 'Either schema name or index name, in case internal',
+                                moduleName: 'Required module name, in case internal',
+                            }
                         }
                     }
                 }

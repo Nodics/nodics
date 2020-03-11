@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'workflowAction',
-                operation: 'save',
+                operation: 'saveAll',
                 dataFilePrefix: 'defaultWorkflowActionData'
             },
             query: {

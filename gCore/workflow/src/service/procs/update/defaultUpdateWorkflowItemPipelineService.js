@@ -55,7 +55,7 @@ module.exports = {
         }
     },
     applyPreUpdateInterceptors: function (request, response, process) {
-        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowAction.code);
+        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowItem.code);
         if (interceptors && interceptors.preUpdate) {
             this.LOG.debug('Applying preUpdate interceptors for workflow item update');
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preUpdate), request, response).then(success => {
@@ -68,7 +68,7 @@ module.exports = {
         }
     },
     applyPreUpdateValidators: function (request, response, process) {
-        let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowAction.code);
+        let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowItem.code);
         if (validators && validators.preUpdate) {
             this.LOG.debug('Applying preUpdate validators for workflow item update');
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preUpdate), request, response).then(success => {
@@ -80,11 +80,15 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    saveActiveItem: function (request, response, process) {
-        this.LOG.debug('Creating active workflow item');
-        SERVICE.DefaultWorkflowItemService.save({
+    updateWorkflowItem: function (request, response, process) {
+        this.LOG.debug('Updating active workflow item');
+        SERVICE.DefaultWorkflowItemService.update({
             tenant: request.tenant,
             moduleName: request.moduleName,
+            query: {
+                code: request.workflowItem.code,
+                refId: request.workflowItem.refId
+            },
             model: request.workflowItem
         }).then(success => {
             response.success = success;
@@ -94,7 +98,7 @@ module.exports = {
         });
     },
     applyPostUpdateValidators: function (request, response, process) {
-        let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowAction.code);
+        let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowItem.code);
         if (validators && validators.postUpdate) {
             this.LOG.debug('Applying postUpdate validators for workflow item update');
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postUpdate), request, response).then(success => {
@@ -107,7 +111,7 @@ module.exports = {
         }
     },
     applyPostUpdateInterceptors: function (request, response, process) {
-        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowAction.code);
+        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowItem.code);
         if (interceptors && interceptors.postUpdate) {
             this.LOG.debug('Applying postUpdate interceptors for workflow item update');
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postUpdate), request, response).then(success => {

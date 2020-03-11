@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'workflowHead',
-                operation: 'save',
+                operation: 'saveAll',
                 dataFilePrefix: 'sampleWorkflowHeadData'
             },
             query: {

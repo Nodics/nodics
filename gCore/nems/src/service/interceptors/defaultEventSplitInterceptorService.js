@@ -89,6 +89,20 @@ module.exports = {
         });
     },
 
+    handleSyncEvent: function (request, response) {
+        return new Promise((resolve, reject) => {
+            if (response.success && response.success.result && response.success.result.type === ENUMS.EventType.SYNC.key) {
+                SERVICE.DefaultEventHandlerService.processSyncEvents([response.success.result]).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
     handleSyncEvents: function (request, response) {
         return new Promise((resolve, reject) => {
             let events = response.success;

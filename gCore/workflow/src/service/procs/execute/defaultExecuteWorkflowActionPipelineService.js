@@ -208,7 +208,7 @@ module.exports = {
     },
     handleError: function (request, response, process) {
         if (!response.error || response.error.isProcessed()) {
-            SERVICE.DefaultPipelineService.handleError(request, response, process);
+            SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
         } else {
             SERVICE.DefaultWorkflowErrorActionService.handleErrorProcess(request, response).then(success => {
                 if (success) {
@@ -223,7 +223,7 @@ module.exports = {
                 response.error.setProcessed(true);
                 SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
             }).catch(error => {
-                response.error.add(error);
+                response.error.setProcessed(true);
                 SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
             });
         }

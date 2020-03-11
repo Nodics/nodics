@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'cronJob',
-                operation: 'save',
+                operation: 'saveAll',
                 //tenants: ['default'],
                 dataFilePrefix: 'defaultIndexerJobsData'
             },

@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'employee',
-                operation: 'save', //save, update and saveOrUpdate
+                operation: 'saveAll', //saveAll, update and saveOrUpdate
                 dataFilePrefix: 'defaultEmployeeData'
             },
             query: {
@@ -54,7 +54,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'customer',
-                operation: 'save', //save, update and saveOrUpdate
+                operation: 'saveAll', //saveAll, update and saveOrUpdate
                 dataFilePrefix: 'defaultCutomerData'
             },
             query: {

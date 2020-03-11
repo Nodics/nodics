@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'enterprise',
-                operation: 'save', //save, update and saveOrUpdate
+                operation: 'saveAll', //saveAll, update and saveOrUpdate
                 tenants: ['default'],
                 dataFilePrefix: 'defaultEnterpriseData'
             },

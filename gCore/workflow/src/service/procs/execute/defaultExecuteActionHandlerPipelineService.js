@@ -47,7 +47,6 @@ module.exports = {
     executeHandler: function (request, response, process) {
         this.LOG.debug('Executing action handler');
         try {
-            console.log('----------------->>>> ', request.workflowAction);
             let handler = request.workflowAction.handler;
             let serviceName = handler.substring(0, handler.lastIndexOf('.'));
             let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
@@ -57,7 +56,7 @@ module.exports = {
                     workflowItem: request.workflowItem,
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction
-                }).then(success => {
+                }, response).then(success => {
                     response.success = {
                         actionResponse: success
                     };
@@ -66,7 +65,6 @@ module.exports = {
                     process.error(request, response, error);
                 });
             } else {
-                this.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
                 process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00002', 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)'));
             }
         } catch (error) {

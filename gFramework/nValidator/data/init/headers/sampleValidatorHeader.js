@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'validator',
-                operation: 'save',
+                operation: 'saveAll',
                 dataFilePrefix: 'sampleValidatorData'
             },
             query: {

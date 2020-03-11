@@ -38,7 +38,12 @@ module.exports = {
     handleSuccessProcess: function (request, response) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('handleWorkflowSuccessPipeline', request, response).then(success => {
-                reject(success);
+                resolve({
+                    decision: 'SUCCESS',
+                    feedback: {
+                        message: 'Item has been processed successfully'
+                    }
+                });
             }).catch(error => {
                 reject(error);
             });

@@ -62,25 +62,6 @@ module.exports = {
             process.error(request, response, error);
         });
     },
-    handleMultiChannelRequest: function (request, response, process) {
-        if (request.splitItem) {
-            let workflowItem = _.merge({}, request.workflowItem);
-            delete workflowItem._id;
-            workflowItem.code = workflowItem.code + '_' + request.channel.count;
-            workflowItem.originalCode = channelRequest.originalCode;
-            SERVICE.DefaultWorkflowItemService.save({
-                tenant: request.tenant,
-                model: workflowItem
-            }).then(success => {
-                request.workflowItem = success.result;
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
     preChannelInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.channel.code);
         if (interceptors && interceptors.preChannel) {

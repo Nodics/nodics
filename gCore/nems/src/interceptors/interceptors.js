@@ -24,14 +24,14 @@ module.exports = {
         trigger: 'postSave',
         active: 'true',
         index: 0,
-        handler: 'DefaultEventSplitInterceptorService.eventSplitPostSave'
+        handler: 'DefaultEventSplitInterceptorService.handleSyncEvent'
     },
-    eventSplitPostProcessor: {
-        type: 'schema',
-        item: 'event',
-        trigger: 'postSaveProcessor',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultEventSplitInterceptorService.handleSyncEvents'
-    }
+    // eventSplitPostProcessor: {
+    //     type: 'schema',
+    //     item: 'event',
+    //     trigger: 'postSaveProcessor',
+    //     active: 'true',
+    //     index: 0,
+    //     handler: 'DefaultEventSplitInterceptorService.handleSyncEvents'
+    // }
 };

@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'address',
-                operation: 'save', //save, update and saveOrUpdate
+                operation: 'saveAll', //save, update and saveOrUpdate
                 tenants: ['default'],
                 dataFilePrefix: 'defaultAddressData'
             },
@@ -28,7 +28,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'address',
-                operation: 'save', //save, update and saveOrUpdate
+                operation: 'saveAll', //save, update and saveOrUpdate
                 dataFilePrefix: 'tenantDefaultAddressesData'
             },
             query: {

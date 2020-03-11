@@ -45,17 +45,17 @@ module.exports = {
     createExternalItem: function (request, response, process) {
         this.LOG.debug('Creating new external workflow item');
         let item = request.item;
-        if (!item.event) item.event = {};
         request.workflowItem = {
             code: item.code, //Allways unique code
             originalCode: item.originalCode || item.code,
             refId: item.refId, // reference to source of item
             active: true,
             type: ENUMS.WorkflowItemType.EXTERNAL.key,
-            detail: item.detail,
+            detail: item.detail || {},
             event: item.event || {},
-            callbackData: item.callbackData
+            callbackData: item.callbackData || {}
         };
+        request.workflowItem.event.enabled = request.workflowItem.event.enabled || false;
         process.nextSuccess(request, response);
     }
 };

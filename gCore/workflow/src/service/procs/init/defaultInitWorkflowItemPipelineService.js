@@ -53,7 +53,8 @@ module.exports = {
             SERVICE.DefaultWorkflowItemService.get({
                 tenant: request.tenant,
                 query: {
-                    code: item.code
+                    code: item.code,
+                    refId: item.refId
                 }
             }).then(success => {
                 if (success.result && success.result.length > 0) {

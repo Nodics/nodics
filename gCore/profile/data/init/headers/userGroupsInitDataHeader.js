@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'userGroup',
-                operation: 'save', //save, update and saveOrUpdate
+                operation: 'saveAll', //saveAll, update and saveOrUpdate
                 dataFilePrefix: 'defaultUserGroupData'
             },
             query: {

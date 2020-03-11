@@ -159,15 +159,7 @@ module.exports = {
     executeChannel: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultPipelineService.start('executeChannelPipeline', {
-                    tenant: request.tenant,
-                    workflowItem: request.workflowItem,
-                    workflowHead: request.workflowHead,
-                    workflowAction: request.workflowAction,
-                    actionResponse: request.actionResponse,
-                    channel: request.channel,
-                    splitItem: request.splitItem
-                }, {}).then(success => {
+                SERVICE.DefaultPipelineService.start('executeChannelPipeline', request, {}).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);

@@ -409,9 +409,9 @@ module.exports = {
     },
 
     populateVirtualProperties: function (request, response, process) {
-        this.LOG.debug('Populating virtual properties');
         let virtualProperties = request.schemaModel.rawSchema.virtualProperties;
         if (response.success.result && virtualProperties && !UTILS.isBlank(virtualProperties)) {
+            this.LOG.debug('Populating virtual properties');
             SERVICE.DefaultSchemaVirtualPropertiesHandlerService.populateVirtualProperties(virtualProperties, response.success.result);
             process.nextSuccess(request, response);
         } else {
@@ -420,10 +420,10 @@ module.exports = {
     },
 
     applyPostValidators: function (request, response, process) {
-        this.LOG.debug('Applying post model validator');
         let schemaName = request.schemaModel.schemaName;
         let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
         if (validators && validators.postSave) {
+            this.LOG.debug('Applying post model validator');
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -435,10 +435,10 @@ module.exports = {
     },
 
     applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post save model interceptors');
         let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.postSave) {
+            this.LOG.debug('Applying post save model interceptors');
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -450,10 +450,10 @@ module.exports = {
     },
 
     invalidateRouterCache: function (request, response, process) {
-        this.LOG.debug('Invalidating router cache for modified model');
         try {
             let schemaModel = request.schemaModel;
             if (response.success) {
+                this.LOG.debug('Invalidating router cache for modified model');
                 SERVICE.DefaultCacheService.flushCache({
                     moduleName: schemaModel.moduleName,
                     channelName: 'router',
@@ -473,10 +473,10 @@ module.exports = {
     },
 
     invalidateItemCache: function (request, response, process) {
-        this.LOG.debug('Invalidating item cache for modified model');
         try {
             let schemaModel = request.schemaModel;
             if (response.success && schemaModel.cache && schemaModel.cache.enabled) {
+                this.LOG.debug('Invalidating item cache for modified model');
                 SERVICE.DefaultCacheService.flushCache({
                     moduleName: schemaModel.moduleName,
                     channelName: 'schema',
@@ -496,10 +496,10 @@ module.exports = {
     },
 
     triggerModelChangeEvent: function (request, response, process) {
-        this.LOG.debug('Triggering event for modified model');
         try {
             let schemaModel = request.schemaModel;
             if (response.success.result && schemaModel.rawSchema.event && schemaModel.rawSchema.event.enabled) {
+                this.LOG.debug('Triggering event for modified model');
                 let event = {
                     tenant: request.tenant,
                     event: schemaModel.schemaName + 'Save',
@@ -526,11 +526,11 @@ module.exports = {
     },
 
     handleWorkflowProcess: function (request, response, process) {
-        this.LOG.debug('Triggering event for modified model');
         try {
             let schemaModel = request.schemaModel;
             let savedModel = response.success.result;
             if (response.success.result && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
+                this.LOG.debug('Triggering event for workflow association');
                 let event = {
                     tenant: request.tenant,
                     event: 'initiateWorkflow',

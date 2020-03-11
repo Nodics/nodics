@@ -15,7 +15,7 @@ module.exports = {
             options: {
                 enabled: true,
                 schemaName: 'workflowChannel',
-                operation: 'save',
+                operation: 'saveAll',
                 dataFilePrefix: 'sampleWorkflowChannelData'
             },
             query: {
