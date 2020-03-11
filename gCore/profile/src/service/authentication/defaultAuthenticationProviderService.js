@@ -16,7 +16,7 @@ module.exports = {
         options.state.lastAttempt = new Date();
         SERVICE.DefaultUserStateService.save({
             tenant: options.tenant,
-            models: [options.state]
+            model: options.state
         }).then(success => {
             _self.LOG.debug('State data has been updated with current time');
         }).catch(error => {

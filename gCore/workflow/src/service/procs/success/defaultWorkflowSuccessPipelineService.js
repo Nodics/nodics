@@ -54,7 +54,7 @@ module.exports = {
         this.LOG.debug('updating archive pool');
         SERVICE.DefaultWorkflowArchivedItemService.save({
             tenant: request.tenant,
-            models: [response.successItem]
+            model: response.successItem
         }).then(success => {
             this.LOG.info('Item: has been moved to archived pool successfully');
             process.nextSuccess(request, response);

@@ -115,27 +115,16 @@ module.exports = {
         SERVICE.DefaultWorkflowItemService.save({
             tenant: request.tenant,
             moduleName: request.moduleName,
-            models: [request.workflowItem]
+            model: request.workflowItem
         }).then(success => {
-            if (success.result && success.result.length > 0) {
-                request.workflowItem = success.result[0];
-                response.success[request.workflowAction.code].push({
-                    action: 'itemAssignToAction',
-                    target: request.workflowAction.code,
-                    item: request.workflowItem.code || request.workflowItem._id,
-                    timestamp: new Date(),
-                    message: 'Item: ' + request.workflowItem.code || request.workflowItem._id + ' has been assign to action: ' + request.workflowAction.code
-                });
-                process.nextSuccess(request, response);
-            } else {
-                let error = new CLASSES.WorkflowError('While saving workflow item');
-                if (success.errors && success.errors.length > 0) {
-                    success.errors.forEach(err => {
-                        error.add(new CLASSES.WorkflowError(err));
-                    });
-                }
-                process.error(request, response, error);
-            }
+            request.workflowItem = success.result;
+            response.success[request.workflowAction.code].push({
+                action: 'itemAssignToAction',
+                target: request.workflowAction.code,
+                item: request.workflowItem.code || request.workflowItem._id,
+                timestamp: new Date(),
+                message: 'Item: ' + request.workflowItem.code || request.workflowItem._id + ' has been assign to action: ' + request.workflowAction.code
+            });
         }).catch(error => {
             process.error(request, response, error);
         });

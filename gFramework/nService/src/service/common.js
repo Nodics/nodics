@@ -59,6 +59,12 @@ module.exports = {
     save: function (request) {
         request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
         request.moduleName = request.moduleName || request.schemaModel.moduleName;
+        return SERVICE.DefaultPipelineService.start('modelSaveInitializerPipeline', request, {});
+    },
+
+    saveAll: function (request) {
+        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
+        request.moduleName = request.moduleName || request.schemaModel.moduleName;
         return SERVICE.DefaultPipelineService.start('modelsSaveInitializerPipeline', request, {});
     },
 

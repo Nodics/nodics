@@ -36,20 +36,9 @@ module.exports = {
 
     validateInput: function (request, response, process) {
         this.LOG.debug('Validating input for saving models');
-        if (!request.models && !request.model) {
+        if (!request.models) {
             process.error(request, response, new CLASSES.NodicsError('ERR_SAVE_00003', 'Models can not be null or empty for save operation'));
         } else {
-            let models = [];
-            if (request.models) {
-                if (UTILS.isObject(request.models)) {
-                    models.push(request.models);
-                } else {
-                    models = [].concat(request.models);
-                }
-            } else {
-                models.push(request.model);
-            }
-            request.models = models;
             process.nextSuccess(request, response);
         }
     },
@@ -88,11 +77,7 @@ module.exports = {
                 try {
                     SERVICE.DefaultPipelineService.start('modelSaveInitializerPipeline', request, {}).then(success => {
                         if (!response.success) response.success = [];
-                        if (success.result instanceof Array) {
-                            response.success = response.success.concat(success.result);
-                        } else {
-                            response.success.push(success.result);
-                        }
+                        response.success.push(success.result);
                         this.handleModelsSave(request, response, models).then(success => {
                             resolve(true);
                         }).catch(error => {

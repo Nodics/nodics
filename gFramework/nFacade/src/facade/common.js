@@ -48,6 +48,10 @@ module.exports = {
         return SERVICE.srvcName.save(request);
     },
 
+    saveAll: function (request) {
+        return SERVICE.srvcName.saveAll(request);
+    },
+
     remove: function (request) {
         return SERVICE.srvcName.remove(request);
     },

@@ -112,7 +112,7 @@ module.exports = {
     updateActionResponse: function (request, response, process) {
         SERVICE.DefaultActionResponseService.save({
             tenant: request.tenant,
-            models: [request.actionResponse]
+            model: request.actionResponse
         }).then(success => {
             response.success.push({
                 action: 'actionResponseUpdated',

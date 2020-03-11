@@ -165,7 +165,8 @@ module.exports = {
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction,
                     actionResponse: request.actionResponse,
-                    channel: request.channel
+                    channel: request.channel,
+                    splitItem: request.splitItem
                 }, {}).then(success => {
                     resolve(success);
                 }).catch(error => {

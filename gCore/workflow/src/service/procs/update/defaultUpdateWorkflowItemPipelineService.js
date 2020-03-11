@@ -85,7 +85,7 @@ module.exports = {
         SERVICE.DefaultWorkflowItemService.save({
             tenant: request.tenant,
             moduleName: request.moduleName,
-            models: [request.workflowItem]
+            model: request.workflowItem
         }).then(success => {
             response.success = success;
             process.nextSuccess(request, response);

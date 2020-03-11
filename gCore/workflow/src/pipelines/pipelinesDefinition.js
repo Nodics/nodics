@@ -580,16 +580,6 @@ module.exports = {
             validateChannels: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelsPipelineService.validateChannels',
-                success: 'handleMultiChannelRequest'
-            },
-            handleMultiChannelRequest: {
-                type: 'function',
-                handler: 'DefaultExecuteChannelsPipelineService.handleMultiChannelRequest',
-                success: 'createChannelRequest'
-            },
-            createChannelRequest: {
-                type: 'function',
-                handler: 'DefaultExecuteChannelsPipelineService.createChannelRequest',
                 success: 'triggerChannelExecution'
             },
             triggerChannelExecution: {
@@ -628,6 +618,11 @@ module.exports = {
             loadActionResponse: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelPipelineService.loadActionResponse',
+                success: 'handleMultiChannelRequest'
+            },
+            handleMultiChannelRequest: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelPipelineService.handleMultiChannelRequest',
                 success: 'preChannelInterceptors'
             },
             preChannelInterceptors: {

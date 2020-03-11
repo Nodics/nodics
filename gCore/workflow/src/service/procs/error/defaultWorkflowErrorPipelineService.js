@@ -52,7 +52,7 @@ module.exports = {
             request.workflowItem.errorCounts = request.workflowItem.errorCounts + 1;
             SERVICE.DefaultWorkflowItemService.save({
                 tenant: request.tenant,
-                models: [request.workflowItem]
+                model: request.workflowItem
             }).then(success => {
                 this.LOG.debug('Error been updated for item: ' + request.workflowItem.code);
             }).catch(error => {
@@ -78,7 +78,7 @@ module.exports = {
         this.LOG.debug('updating error pool');
         SERVICE.DefaultWorkflowErrorItemService.save({
             tenant: request.tenant,
-            models: [request.errorItem]
+            model: request.errorItem
         }).then(success => {
             this.LOG.info('Item: has been moved to error pool successfully');
             if (!response.success) response.success = [];

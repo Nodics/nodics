@@ -95,11 +95,11 @@ module.exports = {
             this.finalizeClass(className, request.body).then(success => {
                 this.save({
                     tenant: 'default',
-                    models: [{
+                    model: {
                         code: className,
                         type: type,
                         body: success
-                    }]
+                    }
                 }).then(success => {
                     resolve(success);
                 }).catch(error => {

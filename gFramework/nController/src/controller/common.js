@@ -116,7 +116,7 @@ module.exports = {
     },
 
     save: function (request, callback) {
-        request.models = request.httpRequest.body;
+        request.model = request.httpRequest.body;
         if (callback) {
             FACADE.dsdName.save(request).then(success => {
                 callback(null, success);
@@ -125,6 +125,19 @@ module.exports = {
             });
         } else {
             return FACADE.dsdName.save(request);
+        }
+    },
+
+    saveAll: function (request, callback) {
+        request.models = request.httpRequest.body;
+        if (callback) {
+            FACADE.dsdName.saveAll(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.saveAll(request);
         }
     },
 

@@ -209,7 +209,7 @@ module.exports = {
                 if (propDef.type === 'one') {
                     models = [models];
                 }
-                SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].save({
+                SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].saveAll({
                     tenant: request.tenant,
                     models: models
                 }).then(success => {
@@ -295,18 +295,11 @@ module.exports = {
 
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model ');
-        console.log(request.model);
         request.schemaModel.saveItems(request).then(success => {
-            let model = {
-                success: true,
-                code: 'SUC_SAVE_00000'
+            response.success = {
+                code: 'SUC_SAVE_00000',
+                result: success
             };
-            if (success && UTILS.isArray(success) && success.length > 0) {
-                model.result = success[0];
-            } else {
-                model.result = success;
-            }
-            response.success = model;
             process.nextSuccess(request, response);
         }).catch(error => {
             console.log(error);

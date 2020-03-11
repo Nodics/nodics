@@ -87,77 +87,31 @@ module.exports = {
             process.error(request, response, error);
         }
     },
-    handleMultiChannelRequest: function (request, response, process) {
-        request.channelRequests = {};
-        if (request.channels.length > 1) {
-            let count = 1;
-            request.channels.forEach(channel => {
-                let itemCode = request.workflowItem.code + '_' + count++;
-                request.channelRequests[itemCode] = {
-                    originalCode: request.workflowItem.code,
-                    channel: channel
-                };
-            });
-        } else {
-            request.channelRequests[request.workflowItem.code] = {
-                workflowItem: request.workflowItem,
-                originalCode: request.workflowItem.code,
-                channel: request.channels[0]
-            };
-        }
-        process.nextSuccess(request, response);
-    },
-    createChannelRequest: function (request, response, process) {
-        if (request.channelRequests.length > 1) {
-            let itemModels = [];
-            let workflowItem = _.merge({}, request.workflowItem);
-            delete workflowItem._id;
-            Object.keys(request.channelRequests).forEach(itemCode => {
-                let channelRequest = request.channelRequests[itemCode];
-                let itemModel = _.merge({}, workflowItem);
-                itemModel.code = itemCode;
-                itemModel.originalCode = channelRequest.originalCode;
-                itemModels.push(itemModel);
-            });
-            SERVICE.DefaultWorkflowItemService.save({
-                tenant: request.tenant,
-                models: [itemModels]
-            }).then(success => {
-                success.result.forEach(newModel => {
-                    request.channelRequests[newModel.code].workflowItem = newModel;
-                });
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
     triggerChannelExecution: function (request, response, process) {
-        this.walkThroughChannels(Object.keys(request.channelRequests), request, response).then(success => {
+        request.splitItem = false;
+        if (request.channels.length > 1) {
+            for (let counter = 1; counter <= request.channels.length; counter++) {
+                request.channels[counter].count = counter;
+            }
+        }
+        this.walkThroughChannels(request.channels, request, response).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
-    successEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    walkThroughChannels: function (itemCodes, request, response) {
+    walkThroughChannels: function (channels, request, response) {
         return new Promise((resolve, reject) => {
-            if (itemCodes && itemCodes.length > 0) {
-                let itemCode = itemCodes.shift();
-                let channelRequest = request.channelRequests[itemCode];
+            if (channels && channels.length > 0) {
+                let channel = channels.shift();
                 SERVICE.DefaultWorkflowChannelService.executeChannel({
                     tenant: request.tenant,
-                    workflowItem: channelRequest.workflowItem,
+                    workflowItem: request.workflowItem,
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction,
                     actionResponse: request.actionResponse,
-                    channel: channelRequest.channel
+                    channel: channel,
+                    splitItem: request.splitItem
                 }).then(success => {
                     response.success[channelRequest.channel.code] = {
                         success: success
@@ -184,5 +138,9 @@ module.exports = {
                 resolve(true);
             }
         });
-    }
+    },
+    successEnd: function (request, response, process) {
+        this.LOG.debug('Request has been processed successfully');
+        process.resolve(response.success);
+    },
 };

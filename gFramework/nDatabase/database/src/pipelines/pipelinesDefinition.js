@@ -98,11 +98,7 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.updateCache',
                 success: 'successEnd'
-            },
-            // successEnd: {
-            //     type: 'function',
-            //     handler: 'DefaultModelsGetInitializerService.handleSucessEnd'
-            // },
+            }
         }
     },
 

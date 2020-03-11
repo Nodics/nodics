@@ -84,10 +84,10 @@ module.exports = {
         if (definition.logResult) {
             SERVICE.DefaultCronJobLogService.save({
                 tenant: definition.tenant,
-                models: [{
+                model: {
                     jobCode: definition.code,
                     log: log
-                }]
+                }
             }).then(response => {
                 _self.LOG.debug('Log for job: ' + definition.code + ' saved');
             }).catch(error => {
@@ -100,11 +100,11 @@ module.exports = {
         let _self = this;
         SERVICE.DefaultCronJobService.save({
             tenant: definition.tenant,
-            models: [{
+            model: {
                 code: definition.code,
                 lastResult: definition.lastResult,
                 state: definition.state
-            }]
+            }
         }).then(response => {
             _self.LOG.debug('Job : executed successfuly');
         }).catch(error => {

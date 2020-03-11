@@ -88,7 +88,6 @@ module.exports = function (definition, trigger, context, timeZone) {
                             }, {}).then(success => {
                                 _running = false;
                                 let endTime = new Date();
-                                //_self.LOG.warn('Job : '+ _definition.code+ ' completed its execution successfully');
                                 if (_definition.logResult) {
                                     SERVICE.DefaultCronJobLogService.save({
                                         tenant: _definition.tenant,

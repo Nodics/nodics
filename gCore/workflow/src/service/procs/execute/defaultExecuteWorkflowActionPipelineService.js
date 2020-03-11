@@ -141,9 +141,9 @@ module.exports = {
     updateActionResponse: function (request, response, process) {
         SERVICE.DefaultActionResponseService.save({
             tenant: request.tenant,
-            models: [request.actionResponse]
+            model: request.actionResponse
         }).then(success => {
-            request.actionResponse = success.result[0];
+            request.actionResponse = success.result;
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -153,7 +153,7 @@ module.exports = {
         request.workflowItem.activeAction.responseId = request.actionResponse._id;
         SERVICE.DefaultWorkflowItemService.save({
             tenant: request.tenant,
-            models: [request.workflowItem]
+            model: request.workflowItem
         }).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {

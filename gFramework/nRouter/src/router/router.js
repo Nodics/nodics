@@ -173,7 +173,21 @@ module.exports = {
                     message: 'authToken need to set within header',
                     method: 'PUT',
                     url: 'http://host:port/nodics/{moduleName}/schemaName',
-                    body: '{ complete model object } or [{}, {}] array of models'
+                    body: '{ complete model object }'
+                }
+            },
+            saveAll: {
+                secured: true,
+                key: '/schemaName/all',
+                method: 'PUT',
+                controller: 'DefaultctrlName',
+                operation: 'saveAll',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/all',
+                    body: '[{}, {}] array of models'
                 }
             }
         },

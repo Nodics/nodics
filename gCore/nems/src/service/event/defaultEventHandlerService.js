@@ -156,7 +156,7 @@ module.exports = {
                 if (event.logEvent === undefined || event.logEvent === true) {
                     SERVICE.DefaultEventLogService.save({
                         tenant: event.tenant,
-                        models: [event]
+                        model: event
                     }).then(success => {
                         _self.LOG.debug('Event has been moved to success log');
                     }).catch(error => {

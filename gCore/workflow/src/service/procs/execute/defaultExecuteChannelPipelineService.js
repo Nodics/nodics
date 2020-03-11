@@ -52,9 +52,6 @@ module.exports = {
     },
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
-        //if (!response.success) response.success = {};
-        //if (!response.success[request.channel.target]) response.success[request.channel.target] = [];
-        //if (!response.errors[request.channel.target]) response.errors[request.channel.target] = [];
         process.nextSuccess(request, response);
     },
     loadActionResponse: function (request, response, process) {
@@ -64,6 +61,25 @@ module.exports = {
         }).catch(error => {
             process.error(request, response, error);
         });
+    },
+    handleMultiChannelRequest: function (request, response, process) {
+        if (request.splitItem) {
+            let workflowItem = _.merge({}, request.workflowItem);
+            delete workflowItem._id;
+            workflowItem.code = workflowItem.code + '_' + request.channel.count;
+            workflowItem.originalCode = channelRequest.originalCode;
+            SERVICE.DefaultWorkflowItemService.save({
+                tenant: request.tenant,
+                model: workflowItem
+            }).then(success => {
+                request.workflowItem = success.result;
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
     preChannelInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.channel.code);
