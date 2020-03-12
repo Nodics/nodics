@@ -207,10 +207,9 @@ module.exports = {
         });
     },
     successEnd: function (request, response, process) {
-        console.log('SUCCESS: ', request.workflowAction.code, '  :  ', request.actionResponse);
-        if (request.workflowAction.type !== ENUMS.WorkflowActionPosition.END.key) {
+        let handler = request.workflowAction.successHandler;
+        if (handler) {
             try {
-                let handler = request.workflowAction.successHandler || CONFIG.get('workflow').defaultSuccessHandler;
                 let serviceName = handler.substring(0, handler.lastIndexOf('.'));
                 let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
                 if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
@@ -240,7 +239,6 @@ module.exports = {
         }
     },
     handleError: function (request, response, process) {
-        console.log('ERROR: ', request.workflowAction.code, '  :  ', request.actionResponse);
         if (!response.error || response.error.isProcessed()) {
             SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
         } else {

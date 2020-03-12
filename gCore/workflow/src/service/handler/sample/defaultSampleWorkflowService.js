@@ -71,7 +71,7 @@ module.exports = {
     performActionThree: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
-                decision: 'ERROR',
+                decision: 'SUCCESS',
                 feedback: {
                     msg: 'Action three response .............'
                 }

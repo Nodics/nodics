@@ -123,6 +123,24 @@ module.exports = {
         }).catch(error => {
             process.error(request, response, error);
         });
+        // try {
+        //     let allChannels = [];
+        //     if (request.channelRequests && request.channelRequests.length > 0) {
+        //         request.channelRequests.forEach(channelRequest => {
+        //             allChannels.push(SERVICE.DefaultWorkflowChannelService.executeChannel(channelRequest));
+        //         });
+        //         SERVICE.DefaultNodicsPromiseService.all(allChannels).then(success => {
+        //             response.success = success;
+        //             process.nextSuccess(request, response);
+        //         }).catch(error => {
+        //             process.error(request, response, error);
+        //         });
+        //     } else {
+        //         process.nextSuccess(request, response);
+        //     }
+        // } catch (error) {
+        //     process.error(request, response, error);
+        // }
     },
     walkThroughChannels: function (channelRequests, request, response) {
         return new Promise((resolve, reject) => {
