@@ -99,7 +99,6 @@ module.exports = {
         definition: [
             'HEAD',
             'ACTION',
-            'LEAF',
             'END'
         ]
     }

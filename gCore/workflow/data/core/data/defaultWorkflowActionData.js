@@ -10,23 +10,23 @@
  */
 
 module.exports = {
-    record0: {
-        code: 'defaultSuccessAction',
-        name: 'defaultSuccessAction',
-        active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        position: ENUMS.WorkflowActionPosition.END.key,
-        handler: 'DefaultWorkflowSuccessActionService.handleSuccessProcess',
-        userGroups: ['adminUserGroup']
-    },
+    // record0: {
+    //     code: 'defaultSuccessAction',
+    //     name: 'defaultSuccessAction',
+    //     active: true,
+    //     type: ENUMS.WorkflowActionType.AUTO.key,
+    //     position: ENUMS.WorkflowActionPosition.END.key,
+    //     handler: 'DefaultWorkflowSuccessActionService.handleSuccessProcess',
+    //     userGroups: ['adminUserGroup']
+    // },
 
-    record1: {
-        code: 'defaultErrorAction',
-        name: 'defaultErrorAction',
-        active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        position: ENUMS.WorkflowActionPosition.END.key,
-        handler: 'DefaultWorkflowErrorActionService.handleErrorProcess',
-        userGroups: ['adminUserGroup']
-    }
+    // record1: {
+    //     code: 'defaultErrorAction',
+    //     name: 'defaultErrorAction',
+    //     active: true,
+    //     type: ENUMS.WorkflowActionType.AUTO.key,
+    //     position: ENUMS.WorkflowActionPosition.END.key,
+    //     handler: 'DefaultWorkflowErrorActionService.handleErrorProcess',
+    //     userGroups: ['adminUserGroup']
+    // }
 };

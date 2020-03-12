@@ -11,8 +11,8 @@
 
 module.exports = {
     workflow: {
-        defaultSuccessChannel: 'defaultSuccessChannel',
-        defaultErrorChannel: 'defaultErrorChannel',
+        defaultSuccessHandler: 'DefaultWorkflowSuccessActionService.handleSuccessProcess',
+        defaultErrorHandler: 'DefaultWorkflowErrorActionService.handleErrorProcess',
 
         itemErrorLimit: 2
     }

@@ -62,8 +62,6 @@ module.exports = {
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
         response.success = [];
-        // if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
-        // if (!response.errors[request.workflowAction.code]) response.errors[request.workflowAction.code] = [];
         process.nextSuccess(request, response);
     },
     validateOperation: function (request, response, process) {
@@ -143,9 +141,6 @@ module.exports = {
                 process.error(request, response, error);
             });
         } else {
-            response.success.push({
-                message: 'This is last action for the workflow'
-            });
             process.nextSuccess(request, response);
         }
     }

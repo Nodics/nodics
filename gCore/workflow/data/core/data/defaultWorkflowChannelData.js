@@ -10,23 +10,23 @@
  */
 
 module.exports = {
-    record0: {
-        code: "defaultSuccessChannel",
-        name: "defaultSuccessChannel",
-        active: true,
-        qualifier: {
-            decision: 'SUCCESS'
-        },
-        target: 'defaultSuccessAction'
-    },
+    // record0: {
+    //     code: "defaultSuccessChannel",
+    //     name: "defaultSuccessChannel",
+    //     active: true,
+    //     qualifier: {
+    //         decision: 'SUCCESS'
+    //     },
+    //     target: 'defaultSuccessAction'
+    // },
 
-    record1: {
-        code: "defaultErrorChannel",
-        name: "defaultErrorChannel",
-        active: true,
-        qualifier: {
-            decision: 'ERROR'
-        },
-        target: 'defaultErrorAction'
-    }
+    // record1: {
+    //     code: "defaultErrorChannel",
+    //     name: "defaultErrorChannel",
+    //     active: true,
+    //     qualifier: {
+    //         decision: 'ERROR'
+    //     },
+    //     target: 'defaultErrorAction'
+    // }
 };

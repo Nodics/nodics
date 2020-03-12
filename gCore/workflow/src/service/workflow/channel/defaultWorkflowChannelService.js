@@ -61,13 +61,7 @@ module.exports = {
     getQalifiedChannel: function (request) {
         return new Promise((resolve, reject) => {
             let workflowAction = request.workflowAction;
-            let rawChannels = [];
-            if (workflowAction.position === ENUMS.WorkflowActionPosition.LEAF.key) {
-                rawChannels.push(workflowAction.successChannel);
-                rawChannels.push(workflowAction.errorChannel);
-            }
-            rawChannels = rawChannels.concat(workflowAction.channels || []);
-            this.evaluateChannels(rawChannels, request).then(qualifiedChannels => {
+            this.evaluateChannels([].concat(workflowAction.channels || []), request).then(qualifiedChannels => {
                 if (qualifiedChannels.length <= 0 && workflowAction.position !== ENUMS.WorkflowActionPosition.END.key) {
                     reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid channels configuration: either no channels or not qualified for action: ' + workflowAction.code));
                 } else {

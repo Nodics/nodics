@@ -418,6 +418,10 @@ module.exports = {
                 handler: 'DefaultExecuteWorkflowActionPipelineService.processChannels',
                 success: 'successEnd'
             },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultExecuteWorkflowActionPipelineService.successEnd'
+            },
             handleError: {
                 type: 'function',
                 handler: 'DefaultExecuteWorkflowActionPipelineService.handleError'
@@ -592,10 +596,10 @@ module.exports = {
                 handler: 'DefaultExecuteChannelsPipelineService.triggerChannelExecution',
                 success: 'successEnd'
             },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultExecuteChannelsPipelineService.successEnd'
-            }
+            // successEnd: {
+            //     type: 'function',
+            //     handler: 'DefaultExecuteChannelsPipelineService.successEnd'
+            // }
         }
     },
 

@@ -34,11 +34,11 @@ module.exports = {
 
     handlePreSave: function (request, responce) {
         return new Promise((resolve, reject) => {
-            if (request.model.position === ENUMS.WorkflowActionPosition.LEAF.key && !request.model.successChannel) {
-                request.model.successChannel = CONFIG.get('workflow').defaultSuccessChannel;
+            if (request.model.position === ENUMS.WorkflowActionPosition.END.key && !request.model.successHandler) {
+                request.model.successHandler = CONFIG.get('workflow').defaultSuccessHandler;
             }
-            if (!request.model.errorChannel) {
-                request.model.errorChannel = CONFIG.get('workflow').defaultErrorChannel;
+            if (!request.model.errorHandler) {
+                request.model.errorHandler = CONFIG.get('workflow').defaultErrorHandler;
             }
             resolve(true);
         });

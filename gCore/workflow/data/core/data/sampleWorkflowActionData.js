@@ -49,7 +49,7 @@ module.exports = {
         name: "sampleActionSuccess",
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
-        position: ENUMS.WorkflowActionPosition.LEAF.key,
+        position: ENUMS.WorkflowActionPosition.END.key,
         handler: 'DefaultSampleWorkflowService.performActionSuccess',
         userGroups: ['adminUserGroup'],
         allowedDecisions: ['SUCCESS'],

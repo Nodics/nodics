@@ -58,7 +58,7 @@ module.exports = {
             }).catch(error => {
                 this.LOG.debug('Failed updating error for item: ' + request.workflowItem.code);
             });
-            process.stop(request, response, new CLASSES.WorkflowError('Error has been updated into workflow item'));
+            process.error(request, response, new CLASSES.WorkflowError('Error has been updated into workflow item'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -78,7 +78,7 @@ module.exports = {
         this.LOG.debug('updating error pool');
         SERVICE.DefaultWorkflowErrorItemService.save({
             tenant: request.tenant,
-            model: request.errorItem
+            model: response.errorItem
         }).then(success => {
             this.LOG.info('Item: has been moved to error pool successfully');
             if (!response.success) response.success = [];
@@ -94,7 +94,7 @@ module.exports = {
             this.LOG.info('Item: has been removed from item pool successfully');
             if (!response.success) response.success = [];
             response.success.push('Item: has been removed from item pool successfully: ' + request.workflowItem.code);
-            process.nextSuccess(request, response);
+            process.error(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });

@@ -245,9 +245,9 @@ module.exports = {
                     description: 'Mandate workflow head state [MANUAL, AUTO, PARALLEL]'
                 },
                 position: {
-                    enum: [ENUMS.WorkflowActionPosition.HEAD.key, ENUMS.WorkflowActionPosition.ACTION.key, ENUMS.WorkflowActionPosition.LEAF.key, ENUMS.WorkflowActionPosition.END.key],
+                    enum: [ENUMS.WorkflowActionPosition.HEAD.key, ENUMS.WorkflowActionPosition.ACTION.key, ENUMS.WorkflowActionPosition.END.key],
                     required: true,
-                    description: 'Mandate workflow head state [HEAD, ACTION, LEAF, END]'
+                    description: 'Mandate workflow head state [HEAD, ACTION, END]'
                 },
                 handler: {
                     type: 'string',
@@ -310,12 +310,12 @@ module.exports = {
                 position: {
                     default: ENUMS.WorkflowActionPosition.ACTION.key
                 },
-                successChannel: {
+                successHandler: {
                     type: 'string',
                     required: false,
                     description: 'Required channel name for success handler'
                 },
-                errorChannel: {
+                errorHandler: {
                     type: 'string',
                     required: true,
                     description: 'Required channel name for error handler'

@@ -38,7 +38,7 @@ module.exports = {
     performHeadOperation: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
-                decision: 'TWO',
+                decision: 'ONE',
                 feedback: {
                     msg: 'Testing Single channel process'
                 }
@@ -71,7 +71,7 @@ module.exports = {
     performActionThree: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
-                decision: 'SUCCESS',
+                decision: 'ERROR',
                 feedback: {
                     msg: 'Action three response .............'
                 }
