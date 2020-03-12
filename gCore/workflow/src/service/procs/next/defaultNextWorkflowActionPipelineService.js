@@ -45,5 +45,15 @@ module.exports = {
             request.optType = 'nextAction';
             process.nextSuccess(request, response);
         }
+    },
+    handleSuccess: function (request, response, process) {
+        let result = response.success;
+        if (response.success.result) {
+            result = response.success.result;
+        }
+        process.resolve({
+            code: 'SUC_WF_00000',
+            result: result
+        });
     }
 };

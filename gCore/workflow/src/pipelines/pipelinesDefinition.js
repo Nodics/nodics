@@ -179,6 +179,10 @@ module.exports = {
                 type: 'process',
                 handler: 'assignWorkflowItemPipeline',
                 success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultInitWorkflowItemPipelineService.handleSuccess'
             }
         }
     },
@@ -266,6 +270,10 @@ module.exports = {
                 type: 'process',
                 handler: 'assignWorkflowItemPipeline',
                 success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultNextWorkflowActionPipelineService.handleSuccess'
             }
         }
     },

@@ -49,8 +49,10 @@ module.exports = {
     },
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for iten assignmnet');
-        if (!response.success) response.success = {};
-        if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
+        if (!response.success) response.success = {
+            messages: []
+        };
+        //if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
         process.nextSuccess(request, response);
     },
     updateWorkflowItem: function (request, response, process) {
@@ -118,35 +120,30 @@ module.exports = {
             model: request.workflowItem
         }).then(success => {
             request.workflowItem = success.result;
-            response.success[request.workflowAction.code].push({
-                action: 'itemAssignToAction',
-                target: request.workflowAction.code,
-                item: request.workflowItem.code || request.workflowItem._id,
-                timestamp: new Date(),
-                message: 'Item: ' + request.workflowItem.code || request.workflowItem._id + ' has been assign to action: ' + request.workflowAction.code
-            });
+            response.success.messages.push('Item: ' + (request.workflowItem.code || request.workflowItem._id) + ' assign to workflow: ' + request.workflowAction.code + ' @: ' + new Date());
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
     },
     performAction: function (request, response, process) {
-        if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
-            this.LOG.debug('Triggering action for auto workflow head');
-            SERVICE.DefaultWorkflowService.performAction({
-                tenant: request.tenant,
-                workflowHead: request.workflowHead,
-                workflowAction: request.workflowAction,
-                workflowItem: request.workflowItem
-            }).then(success => {
-                response.success[request.workflowAction.code].push(success);
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
+        // if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
+        //     this.LOG.debug('Triggering action for auto workflow head');
+        //     SERVICE.DefaultWorkflowService.performAction({
+        //         tenant: request.tenant,
+        //         workflowHead: request.workflowHead,
+        //         workflowAction: request.workflowAction,
+        //         workflowItem: request.workflowItem
+        //     }).then(success => {
+        //         response.success[request.workflowAction.code].push(success);
+        //         process.nextSuccess(request, response);
+        //     }).catch(error => {
+        //         process.error(request, response, error);
+        //     });
+        // } else {
+        //     process.nextSuccess(request, response);
+        // }
+        process.nextSuccess(request, response);
     },
 
     handleError: function (request, response, process) {

@@ -12,45 +12,42 @@
 module.exports = {
 
     record0: {
-        code: "sampleActionOne",
-        name: "sampleActionOne",
+        code: "manualActionOne",
+        name: "manualActionOne",
         active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        handler: 'DefaultSampleWorkflowService.performActionOne',
+        type: ENUMS.WorkflowActionType.MANUAL.key,
         userGroups: ['adminUserGroup'],
-        allowedDecisions: ['THREE'],
-        channels: ['threeChannel']
+        allowedDecisions: ['MTHREE'],
+        channels: ['manualThreeChannel']
     },
 
     record1: {
-        code: "sampleActionTwo",
-        name: "sampleActionTwo",
+        code: "manualActionTwo",
+        name: "manualActionTwo",
         active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        handler: 'DefaultSampleWorkflowService.performActionTwo',
+        type: ENUMS.WorkflowActionType.MANUAL.key,
         userGroups: ['adminUserGroup'],
         allowedDecisions: ['SUCCESS'],
-        channels: ['sampleChannelSuccess']
+        channels: ['manualSuccessChannel']
     },
 
     record2: {
-        code: "sampleActionThree",
-        name: "sampleActionThree",
+        code: "manualActionThree",
+        name: "manualActionThree",
         active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        handler: 'DefaultSampleWorkflowService.performActionThree',
+        type: ENUMS.WorkflowActionType.MANUAL.key,
         userGroups: ['adminUserGroup'],
         allowedDecisions: ['SUCCESS'],
-        channels: ['sampleChannelSuccess']
+        channels: ['manualSuccessChannel']
     },
 
     record3: {
-        code: "sampleActionSuccess",
-        name: "sampleActionSuccess",
+        code: "manualActionSuccess",
+        name: "manualActionSuccess",
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.END.key,
-        handler: 'DefaultSampleWorkflowService.performActionSuccess',
+        handler: 'DefaultSampleWorkflowService.performActionThree',
         userGroups: ['adminUserGroup'],
         allowedDecisions: ['SUCCESS'],
     }

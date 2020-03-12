@@ -10,17 +10,14 @@
  */
 
 module.exports = {
-    workflow: {
-        sampleWorkflowActionHeader: {
-            options: {
-                enabled: true,
-                schemaName: 'workflowAction',
-                operation: 'saveAll',
-                dataFilePrefix: 'sampleWorkflowActionData'
-            },
-            query: {
-                code: '$code'
-            }
-        }
+
+    record1: {
+        code: "manualWorkflow",
+        name: "manualWorkflow",
+        active: true,
+        type: ENUMS.WorkflowActionType.MANUAL.key,
+        userGroups: ['adminUserGroup'],
+        allowedDecisions: ['MONE', 'MTWO'],
+        channels: ['manualOneChannel', 'manualTwoChannel']
     }
 };

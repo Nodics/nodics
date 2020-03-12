@@ -11,12 +11,12 @@
 
 module.exports = {
     workflow: {
-        sampleWorkflowHeadHeader: {
+        manualWorkflowActionData: {
             options: {
                 enabled: true,
-                schemaName: 'workflowHead',
+                schemaName: 'workflowAction',
                 operation: 'saveAll',
-                dataFilePrefix: 'sampleWorkflowHeadData'
+                dataFilePrefix: 'manualWorkflowActionData'
             },
             query: {
                 code: '$code'

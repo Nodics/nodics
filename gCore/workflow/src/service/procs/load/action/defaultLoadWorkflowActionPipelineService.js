@@ -45,22 +45,17 @@ module.exports = {
     },
     loadWorkflowAction: function (request, response, process) {
         if (!request.workflowAction) {
-            request.actionCode = request.actionCode || ((request.workflowItem.activeAction) ? request.workflowItem.activeAction.code : undefined) || request.workflowCode;
-            if (request.actionCode) {
-                SERVICE.DefaultWorkflowActionService.getWorkflowAction(request.actionCode, request.tenant).then(workflowAction => {
-                    request.workflowAction = workflowAction;
-                    if (request.workflowAction) request.workflowAction.isHead = false;
+            SERVICE.DefaultWorkflowActionService.getWorkflowAction(request.actionCode, request.tenant).then(workflowAction => {
+                request.workflowAction = workflowAction;
+                if (request.workflowAction) request.workflowAction.isHead = false;
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                if (error.code && error.code === 'ERR_WF_00010') {
                     process.nextSuccess(request, response);
-                }).catch(error => {
-                    if (error.code && error.code === 'ERR_WF_00010') {
-                        process.nextSuccess(request, response);
-                    } else {
-                        process.error(request, response, error);
-                    }
-                });
-            } else {
-                process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not load workflow action'));
-            }
+                } else {
+                    process.error(request, response, error);
+                }
+            });
         } else {
             process.nextSuccess(request, response);
         }

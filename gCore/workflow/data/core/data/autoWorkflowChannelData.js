@@ -11,42 +11,39 @@
 
 module.exports = {
     record0: {
-        code: "oneChannel",
-        name: "oneChannel",
+        code: "autoOneChannel",
+        name: "autoOneChannel",
         active: true,
         qualifier: {
-            decision: 'ONE'
+            decision: 'AUTOONE'
         },
-        target: 'sampleActionOne'
+        target: 'autoActionOne'
     },
-
     record1: {
-        code: "twoChannel",
-        name: "twoChannel",
+        code: "autoTwoChannel",
+        name: "autoTwoChannel",
         active: true,
         qualifier: {
-            decision: 'TWO'
+            decision: 'AUTOTWO'
         },
-        target: 'sampleActionTwo'
+        target: 'autoActionTwo'
     },
-
     record2: {
-        code: "threeChannel",
-        name: "threeChannel",
+        code: "autoThreeChannel",
+        name: "autoThreeChannel",
         active: true,
         qualifier: {
-            decision: 'THREE'
+            decision: 'AUTOTHREE'
         },
-        target: 'sampleActionThree'
+        target: 'autoActionThree'
     },
-
     record3: {
-        code: 'sampleChannelSuccess',
-        name: 'sampleChannelSuccess',
+        code: 'autoSuccessChannel',
+        name: 'autoSuccessChannel',
         active: true,
         qualifier: {
             decision: 'SUCCESS'
         },
-        target: 'sampleActionSuccess'
+        target: 'autoActionSuccess'
     }
 };

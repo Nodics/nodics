@@ -10,17 +10,14 @@
  */
 
 module.exports = {
-    workflow: {
-        sampleWorkflowChannelHeader: {
-            options: {
-                enabled: true,
-                schemaName: 'workflowChannel',
-                operation: 'saveAll',
-                dataFilePrefix: 'sampleWorkflowChannelData'
-            },
-            query: {
-                code: '$code'
-            }
-        }
+    record0: {
+        code: "autoWorkflow",
+        name: "autoWorkflow",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        handler: 'DefaultSampleWorkflowService.performHeadOperation',
+        userGroups: ['adminUserGroup'],
+        allowedDecisions: ['AUTOONE', 'AUTOTWO'],
+        channels: ['autoOneChannel', 'autoTwoChannel']
     }
 };

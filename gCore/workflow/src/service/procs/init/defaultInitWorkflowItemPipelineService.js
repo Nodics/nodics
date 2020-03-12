@@ -32,7 +32,6 @@ module.exports = {
             resolve(true);
         });
     },
-
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to init item with workflow');
         if (!request.tenant) {
@@ -69,6 +68,15 @@ module.exports = {
         } catch (error) {
             process.error(request, response, error);
         }
-
+    },
+    handleSuccess: function (request, response, process) {
+        let result = response.success;
+        if (response.success.result) {
+            result = response.success.result;
+        }
+        process.resolve({
+            code: 'SUC_WF_00000',
+            result: result
+        });
     }
 };

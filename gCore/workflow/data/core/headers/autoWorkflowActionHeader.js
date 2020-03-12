@@ -11,12 +11,12 @@
 
 module.exports = {
     workflow: {
-        defaultWorkflowChannelHeader: {
+        autoWorkflowActionData: {
             options: {
                 enabled: true,
-                schemaName: 'workflowChannel',
+                schemaName: 'workflowAction',
                 operation: 'saveAll',
-                dataFilePrefix: 'defaultWorkflowChannelData'
+                dataFilePrefix: 'autoWorkflowActionData'
             },
             query: {
                 code: '$code'
