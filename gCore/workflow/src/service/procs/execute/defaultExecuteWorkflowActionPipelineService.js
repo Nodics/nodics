@@ -128,6 +128,7 @@ module.exports = {
             actionCode: request.workflowAction.code,
             type: ENUMS.WorkflowActionResponseType.SUCCESS.key
         });
+        delete response.success.actionResponse;
         response.success.messages.push('Decision: ' + request.actionResponse.decision + ' been finalized');
         response.success.decision = request.actionResponse.decision;
         process.nextSuccess(request, response);
@@ -213,9 +214,11 @@ module.exports = {
             if (success.qualifiedChannels) {
                 response.success.qualifiedChannels = success.qualifiedChannels;
             }
-            Object.keys(success.channels).forEach(channel => {
-                response.success[channel] = success.channels[channel];
-            });
+            if (!UTILS.isBlank(success.channels)) {
+                Object.keys(success.channels).forEach(channel => {
+                    response.success[channel] = success.channels[channel];
+                });
+            }
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);

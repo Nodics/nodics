@@ -96,10 +96,11 @@ module.exports = {
                     request.actionResponse.channels.push(channel.code);
                 });
                 response.success.messages.push('Qualified channels: ' + request.actionResponse.channels + ' @: ' + new Date());
+                process.nextSuccess(request, response);
             } else {
                 response.success.messages.push('This is end action for workflow @: ' + new Date());
+                process.stop(request, response);
             }
-            process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });
@@ -117,22 +118,18 @@ module.exports = {
     },
     executeChannels: function (request, response, process) {
         this.LOG.debug('Starting channels execution process');
-        if (request.qualifiedChannels.length > 0) {
-            SERVICE.DefaultWorkflowChannelService.executeChannels({
-                tenant: request.tenant,
-                workflowItem: request.workflowItem,
-                workflowHead: request.workflowHead,
-                workflowAction: request.workflowAction,
-                actionResponse: request.actionResponse,
-                channels: request.qualifiedChannels
-            }).then(success => {
-                response.success.channels = success;
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
+        SERVICE.DefaultWorkflowChannelService.executeChannels({
+            tenant: request.tenant,
+            workflowItem: request.workflowItem,
+            workflowHead: request.workflowHead,
+            workflowAction: request.workflowAction,
+            actionResponse: request.actionResponse,
+            channels: request.qualifiedChannels
+        }).then(success => {
+            response.success.channels = success;
             process.nextSuccess(request, response);
-        }
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     }
 };

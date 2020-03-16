@@ -56,24 +56,6 @@ module.exports = {
             callbackData: item.callbackData || {}
         };
         request.workflowItem.event.enabled = request.workflowItem.event.enabled || false;
-        // if (item.moduleName) {
-        //     request.workflowItem.detail.moduleName = item.moduleName;
-        // }
-        // if (item.schemaName) {
-        //     request.workflowItem.detail.schemaName = item.schemaName;
-        // }
-        // if (item.indexName) {
-        //     request.workflowItem.detail.indexName = item.indexName;
-        // }
-        // if (item.event && item.event.config) {
-        //     request.workflowItem.event.config = item.event.config;
-        // }
-        // if (item.callbackData) {
-        //     request.workflowItem.callbackData = item.callbackData;
-        // }
-        console.log('=================================================================');
-        console.log(request.workflowItem);
-        console.log('=================================================================');
         process.nextSuccess(request, response);
     }
 };

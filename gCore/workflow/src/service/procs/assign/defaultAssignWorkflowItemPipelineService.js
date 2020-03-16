@@ -52,7 +52,6 @@ module.exports = {
         if (!response.success) response.success = {
             messages: []
         };
-        //if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
         process.nextSuccess(request, response);
     },
     updateWorkflowItem: function (request, response, process) {

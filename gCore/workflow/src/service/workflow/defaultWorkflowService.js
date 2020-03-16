@@ -122,10 +122,11 @@ module.exports = {
             });
             if (allPromises.length > 0) {
                 SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {
-                    console.log('-----------------------------------------------------------------------------');
-                    console.log(success);
-                    console.log('-----------------------------------------------------------------------------');
-                    resolve(success);
+                    resolve({
+                        result: success.success,
+                        errors: success.errors
+
+                    });
                 }).catch(error => {
                     reject(error);
                 });
