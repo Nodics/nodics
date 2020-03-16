@@ -708,6 +708,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultWorkflowErrorPipelineService.validateRequest',
+                success: 'updateError'
+            },
+            updateError: {
+                type: 'function',
+                handler: 'DefaultWorkflowErrorPipelineService.updateError',
                 success: 'createErrorItem'
             },
             createErrorItem: {

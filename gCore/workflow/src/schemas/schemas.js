@@ -294,18 +294,6 @@ module.exports = {
             model: true,
             service: true,
             router: true,
-            refSchema: {
-                successChannel: {
-                    schemaName: "workflowChannel",
-                    type: 'one',
-                    propertyName: 'code'
-                },
-                errorChannel: {
-                    schemaName: "workflowChannel",
-                    type: 'one',
-                    propertyName: 'code'
-                }
-            },
             definition: {
                 position: {
                     default: ENUMS.WorkflowActionPosition.ACTION.key

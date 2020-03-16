@@ -67,7 +67,7 @@ module.exports = {
     },
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
-        response.success = [];
+        response.success = {};
         process.nextSuccess(request, response);
     },
     preActionInterceptors: function (request, response, process) {
@@ -115,6 +115,8 @@ module.exports = {
     },
     markActionExecuted: function (request, response, process) {
         request.workflowItem.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
+        if (!response.success.messages) response.success.messages = [];
+        response.success.messages.push('Action performed and marked as done!');
         process.nextSuccess(request, response);
     },
     createStepResponse: function (request, response, process) {
@@ -126,6 +128,8 @@ module.exports = {
             actionCode: request.workflowAction.code,
             type: ENUMS.WorkflowActionResponseType.SUCCESS.key
         });
+        response.success.messages.push('Decision: ' + request.actionResponse.decision + ' been finalized');
+        response.success.decision = request.actionResponse.decision;
         process.nextSuccess(request, response);
     },
     validateResponse: function (request, response, process) {
@@ -144,6 +148,7 @@ module.exports = {
             model: request.actionResponse
         }).then(success => {
             request.actionResponse = success.result;
+            response.success.messages.push('Action response been updated');
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -155,6 +160,7 @@ module.exports = {
             tenant: request.tenant,
             model: request.workflowItem
         }).then(success => {
+            response.success.messages.push('Updated workflow item with response id');
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -188,6 +194,7 @@ module.exports = {
     },
     triggerActionPerformedEvent: function (request, response, process) {
         this.LOG.debug('Publishing success event');
+        response.success.messages.push('Event actionPerformed triggered for action: ' + request.workflowAction.code);
         process.nextSuccess(request, response);
 
     },
@@ -200,7 +207,15 @@ module.exports = {
             workflowAction: request.workflowAction,
             actionResponse: request.actionResponse
         }).then(success => {
-            response.success = response.success.concat(success);
+            success.messages.forEach(message => {
+                response.success.messages.push(message);
+            });
+            if (success.qualifiedChannels) {
+                response.success.qualifiedChannels = success.qualifiedChannels;
+            }
+            Object.keys(success.channels).forEach(channel => {
+                response.success[channel] = success.channels[channel];
+            });
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -214,7 +229,7 @@ module.exports = {
                 let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
                 if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
                     SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response).then(success => {
-                        SERVICE.DefaultPipelineService.handleSucessEnd(request, response, process);
+                        this.prepareSuccessResponse(request, response, process);
                     }).catch(error => {
                         SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
                     });
@@ -235,8 +250,16 @@ module.exports = {
                 SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
             }
         } else {
-            SERVICE.DefaultPipelineService.handleSucessEnd(request, response, process);
+            this.prepareSuccessResponse(request, response, process);
         }
+    },
+    prepareSuccessResponse: function (request, response, process) {
+        response.success = {
+            code: 'SUC_WF_00000',
+            result: response.success
+        }
+        SERVICE.DefaultPipelineService.handleSucessEnd(request, response, process);
+
     },
     handleError: function (request, response, process) {
         if (!response.error || response.error.isProcessed()) {

@@ -55,7 +55,6 @@ module.exports = {
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
         if (!response.success) response.success = {};
-        //if (!response.errors) response.errors = {};
         process.nextSuccess(request, response);
     },
     loadActionResponse: function (request, response, process) {
@@ -123,33 +122,13 @@ module.exports = {
         }).catch(error => {
             process.error(request, response, error);
         });
-        // try {
-        //     let allChannels = [];
-        //     if (request.channelRequests && request.channelRequests.length > 0) {
-        //         request.channelRequests.forEach(channelRequest => {
-        //             allChannels.push(SERVICE.DefaultWorkflowChannelService.executeChannel(channelRequest));
-        //         });
-        //         SERVICE.DefaultNodicsPromiseService.all(allChannels).then(success => {
-        //             response.success = success;
-        //             process.nextSuccess(request, response);
-        //         }).catch(error => {
-        //             process.error(request, response, error);
-        //         });
-        //     } else {
-        //         process.nextSuccess(request, response);
-        //     }
-        // } catch (error) {
-        //     process.error(request, response, error);
-        // }
     },
     walkThroughChannels: function (channelRequests, request, response) {
         return new Promise((resolve, reject) => {
             if (channelRequests && channelRequests.length > 0) {
                 let channelRequest = channelRequests.shift();
                 SERVICE.DefaultWorkflowChannelService.executeChannel(channelRequest).then(success => {
-                    response.success[channelRequest.channel.code] = {
-                        success: success
-                    };
+                    response.success[channelRequest.channel.code] = success;
                     this.walkThroughChannels(channelRequests, request, response).then(success => {
                         resolve(success);
                     }).catch(error => {
@@ -159,9 +138,7 @@ module.exports = {
                     if (!(error instanceof CLASSES.NodicsError)) {
                         error = new CLASSES.WorkflowError(error);
                     }
-                    response.success[channelRequest.channel.code] = {
-                        error: error.toJson()
-                    };
+                    response.success[channelRequest.channel.code] = error.toJson();
                     this.walkThroughChannels(channelRequests, request, response).then(success => {
                         resolve(success);
                     }).catch(error => {
@@ -172,9 +149,5 @@ module.exports = {
                 resolve(true);
             }
         });
-    },
-    // successEnd: function (request, response, process) {
-    //     this.LOG.debug('Request has been processed successfully');
-    //     process.resolve(response.success);
-    // },
+    }
 };

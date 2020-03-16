@@ -61,7 +61,9 @@ module.exports = {
     },
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
-        response.success = [];
+        response.success = {
+            messages: []
+        };
         process.nextSuccess(request, response);
     },
     validateOperation: function (request, response, process) {
@@ -86,22 +88,17 @@ module.exports = {
             actionResponse: request.actionResponse
         }).then(qualifiedChannels => {
             request.qualifiedChannels = qualifiedChannels;
-            let responseComment = {
-                action: 'qualifiedChannels',
-                target: request.workflowAction.code,
-                item: request.workflowItem.code || request.workflowItem._id,
-                timestamp: new Date()
-            };
             if (request.qualifiedChannels.length > 0) {
+                response.success.qualifiedChannels = [];
                 request.qualifiedChannels.forEach(channel => {
+                    response.success.qualifiedChannels.push(channel.code);
                     if (!request.actionResponse.channels) request.actionResponse.channels = [];
                     request.actionResponse.channels.push(channel.code);
                 });
-                responseComment.message = 'Qualified channels: ' + request.actionResponse.channels;
+                response.success.messages.push('Qualified channels: ' + request.actionResponse.channels + ' @: ' + new Date());
             } else {
-                responseComment.message = 'This is end action for workflow';
+                response.success.messages.push('This is end action for workflow @: ' + new Date());
             }
-            response.success.push(responseComment);
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -112,13 +109,7 @@ module.exports = {
             tenant: request.tenant,
             model: request.actionResponse
         }).then(success => {
-            response.success.push({
-                action: 'actionResponseUpdated',
-                target: request.workflowAction.code,
-                item: request.workflowItem.code || request.workflowItem._id,
-                timestamp: new Date(),
-                message: 'Action response updated: ' + request.actionResponse._id
-            });
+            response.success.messages.push('Action response: ' + request.actionResponse._id + ' been updated with qualified channels');
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -135,7 +126,7 @@ module.exports = {
                 actionResponse: request.actionResponse,
                 channels: request.qualifiedChannels
             }).then(success => {
-                response.success.push(success);
+                response.success.channels = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);

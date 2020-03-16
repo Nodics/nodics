@@ -42,7 +42,6 @@ module.exports = {
         } else if (!request.itemCode && !request.workflowItem) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, item detail can not be null or empty'));
         } else {
-            request.optType = 'nextAction';
             process.nextSuccess(request, response);
         }
     },

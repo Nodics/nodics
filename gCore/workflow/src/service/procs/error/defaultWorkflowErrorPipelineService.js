@@ -46,10 +46,10 @@ module.exports = {
         }
     },
     updateError: function (request, response, process) {
-        if (request.workflowItem.errorCounts < CONFIG.get('workflow').itemErrorLimit || 5) {
+        if (request.workflowItem.errorCount < (CONFIG.get('workflow').itemErrorLimit || 5)) {
             if (!request.workflowItem.errors) request.workflowItem.errors = [];
             request.workflowItem.errors.push(response.error.toJson());
-            request.workflowItem.errorCounts = request.workflowItem.errorCounts + 1;
+            request.workflowItem.errorCount = request.workflowItem.errorCount + 1;
             SERVICE.DefaultWorkflowItemService.save({
                 tenant: request.tenant,
                 model: request.workflowItem
@@ -81,8 +81,8 @@ module.exports = {
             model: response.errorItem
         }).then(success => {
             this.LOG.info('Item: has been moved to error pool successfully');
-            if (!response.success) response.success = [];
-            response.success.push('Item: has been moved to error pool successfully: ' + request.workflowItem.code);
+            if (!response.success.messages) response.success.messages = [];
+            response.success.messages.push('Item: has been moved to error pool successfully: ' + request.workflowItem.code);
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -92,8 +92,8 @@ module.exports = {
         this.LOG.debug('updating item pool');
         SERVICE.DefaultWorkflowItemService.removeById([request.workflowItem._id], request.tenant).then(success => {
             this.LOG.info('Item: has been removed from item pool successfully');
-            if (!response.success) response.success = [];
-            response.success.push('Item: has been removed from item pool successfully: ' + request.workflowItem.code);
+            if (!response.success) response.success.messages = [];
+            response.success.messages.push('Item: has been removed from item pool successfully: ' + request.workflowItem.code);
             process.error(request, response);
         }).catch(error => {
             process.error(request, response, error);
