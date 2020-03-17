@@ -113,7 +113,6 @@ module.exports = {
             });
             process.nextSuccess(request, response);
         } catch (error) {
-            console.log(error);
             this.LOG.error('While collecting properties from module: ' + request.runtimeSchema.moduleName);
             process.error(request, response, error);
         }

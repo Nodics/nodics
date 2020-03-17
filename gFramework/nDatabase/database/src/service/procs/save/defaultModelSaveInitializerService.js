@@ -251,7 +251,6 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                console.log(error);
                 process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00009'));
             });
         } else {
@@ -302,7 +301,6 @@ module.exports = {
             };
             process.nextSuccess(request, response);
         }).catch(error => {
-            console.log(error);
             process.error(request, response, error);
         });
     },

@@ -91,21 +91,6 @@ module.exports = {
                     default: ENUMS.WorkflowActionState.NEW.key,
                     description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
                 },
-                lastAction: {
-                    type: 'object',
-                    required: false
-                },
-                'lastAction.code': {
-                    type: 'string',
-                    required: false,
-                    description: 'Optional workflow action code'
-                },
-                'lastAction.state': {
-                    enum: [ENUMS.WorkflowActionState.NEW.key, ENUMS.WorkflowActionState.PROCESSING.key, ENUMS.WorkflowActionState.FINISHED.key, ENUMS.WorkflowActionState.ERROR.key],
-                    required: false,
-                    default: ENUMS.WorkflowActionState.NEW.key,
-                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
-                },
                 state: {
                     enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key, ENUMS.WorkflowItemState.FATAL.key],
                     required: false,

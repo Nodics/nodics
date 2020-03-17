@@ -177,14 +177,12 @@ module.exports = function (name, pipelineDefinition) {
                 try {
                     SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response, this);
                 } catch (err) {
-                    console.log(err);
                     _self.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
                     _self.error(request, response, new CLASSES.NodicsError(err, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)'));
                 }
             } else {
                 try {
                     SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(result => {
-                        console.log(_currentNode.getHandler());
                         response.success = _.merge(response.success || {}, result);
                         if (result && result.error) {
                             if (!response.error) {

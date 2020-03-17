@@ -57,32 +57,17 @@ module.exports = {
     updateWorkflowItem: function (request, response, process) {
         this.LOG.debug('Updating workflow item');
         let workflowItem = request.workflowItem;
-        if (request.workflowAction.isHead) {
-            if (workflowItem.activeHead && workflowItem.activeHead.code) {
-                if (!workflowItem.heads) workflowItem.heads = [];
-                workflowItem.heads.push(workflowItem.activeHead.code);
-            }
-            workflowItem.activeHead = {
-                code: request.workflowAction.code
-            };
-        } else {
-            if (!workflowItem.actions) workflowItem.actions = [];
-            workflowItem.actions.push(request.workflowAction.code);
-        }
-        if (workflowItem.activeAction) {
-            if (workflowItem.lastAction) {
-                workflowItem.lastAction.code = workflowItem.activeAction.code;
-            } else {
-                workflowItem.lastAction = {
-                    code: workflowItem.activeAction.code,
-                    state: NUMS.WorkflowActionState.NEW.key
-                };
-            }
-        }
+
         workflowItem.activeAction = {
             code: request.workflowAction.code,
             state: ENUMS.WorkflowActionState.NEW.key
         };
+        if (request.workflowAction.isHead) {
+            workflowItem.activeHead = {
+                code: request.workflowAction.code,
+                state: ENUMS.WorkflowActionState.NEW.key
+            };
+        }
         process.nextSuccess(request, response);
     },
     applyPutInterceptors: function (request, response, process) {

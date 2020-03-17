@@ -86,6 +86,20 @@ module.exports = {
             process.error(request, response, error);
         }
     },
+    finalizeChannels: function (request, response, process) {
+        if (request.channels.length > 1) {
+            let executedChannel = [];
+            request.channels.forEach(channel => {
+                if (request.workflowItem.actions && request.workflowItem.actions.includes(channel.target)) {
+                    executedChannel.push(channel);
+                }
+            });
+            if (executedChannel.length > 0) {
+                request.channels = executedChannel;
+            }
+        }
+        process.nextSuccess(request, response);
+    },
     handleMultiChannelRequest: function (request, response, process) {
         request.channelRequests = [];
         if (request.channels.length > 1) {

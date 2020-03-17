@@ -157,10 +157,13 @@ module.exports = {
     },
     updateWorkflowItem: function (request, response, process) {
         request.workflowItem.activeAction.responseId = request.actionResponse._id;
+        if (!request.workflowItem.actions) request.workflowItem.actions = [];
+        request.workflowItem.actions.push(request.workflowAction.code);
         SERVICE.DefaultWorkflowItemService.save({
             tenant: request.tenant,
             model: request.workflowItem
         }).then(success => {
+            request.workflowItem = success.result;
             response.success.messages.push('Updated workflow item with response id');
             process.nextSuccess(request, response);
         }).catch(error => {

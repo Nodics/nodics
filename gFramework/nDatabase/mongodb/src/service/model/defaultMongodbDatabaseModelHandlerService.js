@@ -238,7 +238,6 @@ module.exports = {
             if (schemaOptions.options && !UTILS.isBlank(schemaOptions.options)) {
                 tmpOptions = _.merge(tmpOptions, schemaOptions.options);
             }
-            //console.log(options.modelName, '  :  ', util.inspect(tmpOptions.validator, true, 4));
             dataBase.getConnection().createCollection(options.modelName, tmpOptions).then(schemaModel => {
                 schemaModel.moduleName = options.moduleName;
                 schemaModel.versioned = schema.versioned || false;

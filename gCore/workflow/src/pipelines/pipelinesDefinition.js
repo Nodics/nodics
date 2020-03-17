@@ -592,6 +592,11 @@ module.exports = {
             validateChannels: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelsPipelineService.validateChannels',
+                success: 'finalizeChannels'
+            },
+            finalizeChannels: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelsPipelineService.finalizeChannels',
                 success: 'handleMultiChannelRequest'
             },
             handleMultiChannelRequest: {
@@ -603,11 +608,7 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultExecuteChannelsPipelineService.triggerChannelExecution',
                 success: 'successEnd'
-            },
-            // successEnd: {
-            //     type: 'function',
-            //     handler: 'DefaultExecuteChannelsPipelineService.successEnd'
-            // }
+            }
         }
     },
 
