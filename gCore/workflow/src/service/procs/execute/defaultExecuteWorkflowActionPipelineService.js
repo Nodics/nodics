@@ -197,10 +197,25 @@ module.exports = {
         }
     },
     triggerActionPerformedEvent: function (request, response, process) {
-        this.LOG.debug('Publishing success event');
         response.success.messages.push('Event actionPerformed triggered for action: ' + request.workflowAction.code);
+        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(workflowAction, workflowItem);
+        if (eventConfig.enabled) {
+            try {
+                this.LOG.debug('Pushing event for action performed : ' + request.workflowItem.activeAction.code);
+                SERVICE.DefaultWorkflowEventService.publishEvent({
+                    tenant: request.tenant,
+                    event: 'itemAssignedToAction',
+                    type: eventConfig.type || "ASYNC"
+                }, request.workflowAction, request.workflowItem).then(success => {
+                    this.LOG.debug('Event successfully posted');
+                }).catch(error => {
+                    this.LOG.error('While posting action performed event : ', error);
+                });
+            } catch (error) {
+                this.LOG.error('Facing issue posting action performed event : ', error);
+            }
+        }
         process.nextSuccess(request, response);
-
     },
     processChannels: function (request, response, process) {
         this.LOG.debug('Starting channel execution process');

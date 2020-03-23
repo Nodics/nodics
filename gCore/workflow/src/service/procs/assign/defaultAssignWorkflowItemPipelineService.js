@@ -110,24 +110,43 @@ module.exports = {
             process.error(request, response, error);
         });
     },
-    performAction: function (request, response, process) {
-        // if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
-        //     this.LOG.debug('Triggering action for auto workflow head');
-        //     SERVICE.DefaultWorkflowService.performAction({
-        //         tenant: request.tenant,
-        //         workflowHead: request.workflowHead,
-        //         workflowAction: request.workflowAction,
-        //         workflowItem: request.workflowItem
-        //     }).then(success => {
-        //         response.success[request.workflowAction.code].push(success);
-        //         process.nextSuccess(request, response);
-        //     }).catch(error => {
-        //         process.error(request, response, error);
-        //     });
-        // } else {
-        //     process.nextSuccess(request, response);
-        // }
+    triggerAssignedEvent: function (request, response, process) {
+        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(request.workflowAction, request.workflowItem);
+        if (eventConfig.enabled) {
+            try {
+                this.LOG.debug('Pushing event for item assign to action : ' + request.workflowItem.activeAction.code);
+                SERVICE.DefaultWorkflowEventService.publishEvent({
+                    tenant: request.tenant,
+                    event: 'itemAssignedToAction',
+                    type: eventConfig.type || "ASYNC"
+                }, request.workflowAction, request.workflowItem).then(success => {
+                    this.LOG.debug('Event successfully posted');
+                }).catch(error => {
+                    this.LOG.error('While posting item assigned event : ', error);
+                });
+            } catch (error) {
+                this.LOG.error('Facing issue posting item assigned event : ', error);
+            }
+        }
         process.nextSuccess(request, response);
+    },
+    performAction: function (request, response, process) {
+        if (request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
+            this.LOG.debug('Triggering action for auto workflow head');
+            SERVICE.DefaultWorkflowService.performAction({
+                tenant: request.tenant,
+                workflowHead: request.workflowHead,
+                workflowAction: request.workflowAction,
+                workflowItem: request.workflowItem
+            }).then(success => {
+                response.success[request.workflowAction.code].push(success);
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     handleError: function (request, response, process) {

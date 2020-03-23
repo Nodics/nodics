@@ -130,6 +130,30 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    triggerItemSplitEvent: function (request, response, process) {
+        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(workflowAction, workflowItem);
+        if (request.channelRequests.length > 1 && eventConfig.enabled) {
+            try {
+                this.LOG.debug('Pushing event for item split : ' + request.workflowItem.activeAction.code);
+                SERVICE.DefaultWorkflowEventService.publishEvent({
+                    tenant: request.tenant,
+                    event: 'itemSplitted',
+                    type: "SYNC",
+                    data: {
+                        newItems: request.channelRequests.map(channelRequest => {
+                            return channelRequest.workflowItem;
+                        })
+                    }
+                }, request.workflowAction, request.workflowItem).then(success => {
+                    process.nextSuccess(request, response);
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            } catch (error) {
+                process.error(request, response, error);
+            }
+        }
+    },
     triggerChannelExecution: function (request, response, process) {
         this.walkThroughChannels(request.channelRequests, request, response).then(success => {
             process.nextSuccess(request, response);

@@ -31,6 +31,8 @@ module.exports = {
 
         saveItems: function (input) {
             return new Promise((resolve, reject) => {
+                console.log('--------------------------');
+                console.log(input.model);
                 if (!input.model) {
                     reject(new CLASSES.NodicsError('ERR_MDL_00001'));
                 } else if (input.query && !UTILS.isBlank(input.query)) {

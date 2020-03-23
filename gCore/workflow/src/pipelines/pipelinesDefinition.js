@@ -312,6 +312,11 @@ module.exports = {
             saveActiveItem: {
                 type: 'function',
                 handler: 'DefaultAssignWorkflowItemPipelineService.saveActiveItem',
+                success: 'triggerAssignedEvent'
+            },
+            triggerAssignedEvent: {
+                type: 'function',
+                handler: 'DefaultAssignWorkflowItemPipelineService.triggerAssignedEvent',
                 success: 'performAction'
             },
             performAction: {
@@ -602,6 +607,11 @@ module.exports = {
             handleMultiChannelRequest: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelsPipelineService.handleMultiChannelRequest',
+                success: 'triggerItemSplitEvent'
+            },
+            triggerItemSplitEvent: {
+                type: 'function',
+                handler: 'DefaultExecuteChannelsPipelineService.triggerItemSplitEvent',
                 success: 'triggerChannelExecution'
             },
             triggerChannelExecution: {
@@ -695,6 +705,11 @@ module.exports = {
             updateItemPool: {
                 type: 'function',
                 handler: 'DefaultWorkflowSuccessPipelineService.updateItemPool',
+                success: 'triggerSuccessEvent'
+            },
+            triggerSuccessEvent: {
+                type: 'function',
+                handler: 'DefaultWorkflowSuccessPipelineService.triggerSuccessEvent',
                 success: 'successEnd'
             }
         }
@@ -714,7 +729,10 @@ module.exports = {
             updateError: {
                 type: 'function',
                 handler: 'DefaultWorkflowErrorPipelineService.updateError',
-                success: 'createErrorItem'
+                success: {
+                    createErrorItem: 'createErrorItem',
+                    triggerErrorOccuredEvent: 'triggerErrorOccuredEvent'
+                }
             },
             createErrorItem: {
                 type: 'function',
@@ -729,6 +747,11 @@ module.exports = {
             updateItemPool: {
                 type: 'function',
                 handler: 'DefaultWorkflowErrorPipelineService.updateItemPool',
+                success: 'triggerErrorOccuredEvent'
+            },
+            triggerErrorOccuredEvent: {
+                type: 'function',
+                handler: 'DefaultWorkflowErrorPipelineService.triggerErrorOccuredEvent',
                 success: 'successEnd'
             }
         }

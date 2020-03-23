@@ -70,5 +70,26 @@ module.exports = {
         }).catch(error => {
             process.error(request, response, error);
         });
+    },
+    triggerSuccessEvent: function (request, response, process) {
+        response.success.messages.push('Event errorOccured triggered for action: ' + request.workflowAction.code);
+        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(workflowAction, workflowItem);
+        if (eventConfig.enabled) {
+            try {
+                this.LOG.debug('Pushing event for item processed : ' + request.workflowItem.code);
+                SERVICE.DefaultWorkflowEventService.publishEvent({
+                    tenant: request.tenant,
+                    event: 'itemProcessed',
+                    type: eventConfig.type || "ASYNC"
+                }, request.workflowAction, request.workflowItem).then(success => {
+                    this.LOG.debug('Event successfully posted');
+                }).catch(error => {
+                    this.LOG.error('While posting item processed event : ', error);
+                });
+            } catch (error) {
+                this.LOG.error('Facing issue posting item processed event : ', error);
+            }
+        }
+        process.nextSuccess(request, response);
     }
 };

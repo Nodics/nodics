@@ -53,7 +53,9 @@ module.exports = {
             type: ENUMS.WorkflowItemType.EXTERNAL.key,
             detail: item.detail || {},
             event: item.event || {},
-            callbackData: item.callbackData || {}
+            endPoint: item.endPoint || {},
+            callbackData: item.callbackData || {},
+
         };
         request.workflowItem.event.enabled = request.workflowItem.event.enabled || false;
         process.nextSuccess(request, response);

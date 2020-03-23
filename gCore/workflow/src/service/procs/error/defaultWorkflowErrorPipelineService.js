@@ -58,10 +58,16 @@ module.exports = {
             }).catch(error => {
                 this.LOG.debug('Failed updating error for item: ' + request.workflowItem.code);
             });
-            process.error(request, response, new CLASSES.WorkflowError('Error has been updated into workflow item'));
+            if (response.error) {
+                response.error.add(new CLASSES.WorkflowError('Error has been updated into workflow item'));
+            } else {
+                response.error = new CLASSES.WorkflowError('Error has been updated into workflow item');
+            }
+            response.targetNode = 'triggerErrorOccuredEvent';
         } else {
-            process.nextSuccess(request, response);
+            response.targetNode = 'createErrorItem';
         }
+        process.nextSuccess(request, response);
     },
     createErrorItem: function (request, response, process) {
         this.LOG.debug('Creating error item');
@@ -98,5 +104,29 @@ module.exports = {
         }).catch(error => {
             process.error(request, response, error);
         });
+    },
+    triggerErrorOccuredEvent: function (request, response, process) {
+        response.success.messages.push('Event errorOccured triggered for action: ' + request.workflowAction.code);
+        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(workflowAction, workflowItem);
+        if (eventConfig.enabled) {
+            try {
+                this.LOG.debug('Pushing event for error occured : ' + request.workflowItem.code);
+                SERVICE.DefaultWorkflowEventService.publishEvent({
+                    tenant: request.tenant,
+                    event: 'workflowErrorOccured',
+                    type: eventConfig.type || "ASYNC",
+                    data: {
+                        error: response.error.toJson()
+                    }
+                }, request.workflowAction, request.workflowItem).then(success => {
+                    this.LOG.debug('Event successfully posted');
+                }).catch(error => {
+                    this.LOG.error('While posting error occured event : ', error);
+                });
+            } catch (error) {
+                this.LOG.error('Facing issue posting error occured event : ', error);
+            }
+        }
+        process.error(request, response);
     }
 };

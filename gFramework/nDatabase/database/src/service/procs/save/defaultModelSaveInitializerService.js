@@ -548,8 +548,13 @@ module.exports = {
                         item: {
                             code: savedModel.code || savedModel._id,
                             refId: savedModel.code || savedModel._id,
-                            schemaName: schemaModel.schemaName,
-                            moduleName: schemaModel.moduleName,
+                            detail: {
+                                schemaName: schemaModel.schemaName,
+                                moduleName: schemaModel.moduleName,
+                            },
+                            event: {
+                                enabled: true
+                            }
                         }
                     });
                 });

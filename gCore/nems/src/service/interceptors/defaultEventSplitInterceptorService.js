@@ -24,10 +24,13 @@ module.exports = {
                     }
                     model.targets = [];
                     if (model.targetType === ENUMS.TargetType.EXTERNAL.key) {
-                        model.targets.push({
-                            targetNodeId: model.targetNodeId,
+                        let tmpTarget = {
                             target: _.merge({}, model.target)
-                        });
+                        };
+                        if (model.targetNodeId !== undefined) {
+                            tmpTarget.targetNodeId = model.targetNodeId;
+                        }
+                        model.targets.push(tmpTarget);
                     } else if (model.targetType === ENUMS.TargetType.MODULE_NODES.key) {
                         let modules = SERVICE.DefaultRouterService.getModulesPool().getModules();
                         let targetModule = modules[model.target] || modules.default;

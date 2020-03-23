@@ -44,10 +44,10 @@ module.exports = {
                     description: 'Where this event needs to be pushed [SYSNC, ASYNC]'
                 },
                 targetType: {
-                    enum: [ENUMS.TargetType.EACH_MODULE_NODES.key, ENUMS.TargetType.EACH_MODULE.key, ENUMS.TargetType.MODULE_NODES.key, ENUMS.TargetType.MODULE.key],
+                    enum: [ENUMS.TargetType.EXTERNAL.key, ENUMS.TargetType.EACH_MODULE_NODES.key, ENUMS.TargetType.EACH_MODULE.key, ENUMS.TargetType.MODULE_NODES.key, ENUMS.TargetType.MODULE.key],
                     required: true,
                     default: ENUMS.TargetType.MODULE.key,
-                    description: 'Where this event needs to be pushed [EACH_MODULE_NODES, EACH_MODULE, MODULE_NODES,MODULE]'
+                    description: 'Where this event needs to be pushed [EXTERNAL, EACH_MODULE_NODES, EACH_MODULE, MODULE_NODES,MODULE]'
                 },
                 targetNodeId: {
                     type: 'string',
