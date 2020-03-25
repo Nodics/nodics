@@ -36,6 +36,11 @@ module.exports = {
                     required: true,
                     description: 'Required step code, it could be workflow head code or any of the action code'
                 },
+                events: {
+                    type: 'object',
+                    required: true,
+                    description: 'Required event configuration for all possible workflow action events'
+                },
             },
             indexes: {
                 composite: {

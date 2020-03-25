@@ -204,7 +204,7 @@ module.exports = {
                 this.LOG.debug('Pushing event for action performed : ' + request.workflowItem.activeAction.code);
                 SERVICE.DefaultWorkflowEventService.publishEvent({
                     tenant: request.tenant,
-                    event: 'itemAssignedToAction',
+                    event: 'actionPerformed',
                     type: eventConfig.type || "ASYNC"
                 }, request.workflowAction, request.workflowItem).then(success => {
                     this.LOG.debug('Event successfully posted');

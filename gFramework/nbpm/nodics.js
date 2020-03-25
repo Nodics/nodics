@@ -43,6 +43,7 @@ module.exports = {
                                         if (!modelObject.workflowCodes) modelObject.workflowCodes = [];
                                         if (!modelObject.workflowCodes.includes(data.workflowCode)) modelObject.workflowCodes.push(data.workflowCode);
                                     }
+                                    SERVICE.DefaultEventService.registerModuleEvents(data.moduleName, data.events);
                                 }
                             });
                         }

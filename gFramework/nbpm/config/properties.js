@@ -12,6 +12,34 @@
 module.exports = {
 
     defaultErrorCodes: {
-        CronJobError: 'ERR_WF_00000'
+        WorkflowError: 'ERR_WF_00000'
+    },
+
+    defaultWorkflowEvents: {
+        workflowItemAssigned: {
+            enabled: true,
+            event: 'itemAssigned',
+            listener: 'DefaultWorkflowItemAssignedEventListenerService.handleWorkflowItemAssignedEvent'
+        },
+        workflowErrorOccurred: {
+            enabled: true,
+            event: 'errorOccurred',
+            listener: 'DefaultWorkflowErrorOccurredEventListenerService.handleWorkflowErrorOccurredEvent'
+        },
+        workflowItemSplitted: {
+            enabled: true,
+            event: 'itemSplitted',
+            listener: 'DefaultWorkflowItemSplittedEventListenerService.handleWorkflowItemSplittedEvent'
+        },
+        workflowActionPerformed: {
+            enabled: true,
+            event: 'actionPerformed',
+            listener: 'DefaultWorkflowActionPerformedEventListenerService.handleWorkflowActionPerformedEvent'
+        },
+        workflowItemProcessed: {
+            enabled: true,
+            event: 'itemProcessed',
+            listener: 'DefaultWorkflowItemProcessedEventListenerService.handleWorkflowItemProcessedEvent'
+        }
     }
 };

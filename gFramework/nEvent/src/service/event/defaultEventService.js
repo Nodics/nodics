@@ -126,42 +126,54 @@ module.exports = {
 
     registerEventListeners: function (listeners = this.getListeners()) {
         this.LOG.debug('Registering events');
+        let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                let commonListeners = listeners.common;
                 _.each(NODICS.getModules(), (value, moduleName) => {
-                    value.eventService = new CLASSES.EventService();
-                    if (commonListeners) {
-                        _.each(commonListeners, (listenerDefinition, listenerName) => {
-                            if (listenerDefinition.nodeId === undefined || listenerDefinition.nodeId === CONFIG.get('nodeId')) {
-                                listenerDefinition.moduleName = moduleName;
-                                if (listenerDefinition.active === undefined || listenerDefinition.active) {
-                                    value.eventService.registerListener(listenerDefinition);
-                                } else if (Object.keys(value.eventService._events).includes(listenerDefinition.event)) {
-                                    value.eventService.removeListener(listenerDefinition);
-                                }
-                            }
-                        });
-                    }
-                    let moduleListeners = this.listeners[moduleName];
-                    if (moduleListeners) {
-                        _.each(moduleListeners, (listenerDefinition, listenerName) => {
-                            if (listenerDefinition.nodeId === undefined || listenerDefinition.nodeId === CONFIG.get('nodeId')) {
-                                listenerDefinition.moduleName = moduleName;
-                                if (listenerDefinition.active === undefined || listenerDefinition.active) {
-                                    value.eventService.registerListener(listenerDefinition);
-                                } else if (Object.keys(value.eventService._events).includes(listenerDefinition.event)) {
-                                    value.eventService.removeListener(listenerDefinition);
-                                }
-                            }
-                        });
-                    }
+                    _self.registerCommonEvents(moduleName, listeners.common);
+                    _self.registerModuleEvents(moduleName, listeners[moduleName]);
                 });
                 resolve(true);
             } catch (error) {
                 reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
             }
         });
+    },
+
+    registerCommonEvents: function (moduleName, commonListeners) {
+        let moduleObject = NODICS.getModule(moduleName);
+        if (!moduleObject.eventService) moduleObject.eventService = new CLASSES.EventService();
+        if (commonListeners) {
+            _.each(commonListeners, (listenerDefinition, listenerName) => {
+                if (listenerDefinition.active === undefined) listenerDefinition.active = true;
+                if (listenerDefinition.nodeId === undefined || listenerDefinition.nodeId === CONFIG.get('nodeId')) {
+                    listenerDefinition.moduleName = moduleName;
+                    if (listenerDefinition.active && !Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
+                        moduleObject.eventService.registerListener(listenerDefinition);
+                    } else if (Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
+                        moduleObject.eventService.removeListener(listenerDefinition);
+                    }
+                }
+            });
+        }
+    },
+
+    registerModuleEvents: function (moduleName, moduleListeners) {
+        let moduleObject = NODICS.getModule(moduleName);
+        if (!moduleObject.eventService) moduleObject.eventService = new CLASSES.EventService();
+        if (moduleListeners) {
+            _.each(moduleListeners, (listenerDefinition, listenerName) => {
+                if (listenerDefinition.active === undefined) listenerDefinition.active = true;
+                if (listenerDefinition.nodeId === undefined || listenerDefinition.nodeId === CONFIG.get('nodeId')) {
+                    listenerDefinition.moduleName = moduleName;
+                    if (listenerDefinition.active && !Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
+                        moduleObject.eventService.registerListener(listenerDefinition);
+                    } else if (Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
+                        moduleObject.eventService.removeListener(listenerDefinition);
+                    }
+                }
+            });
+        }
     },
 
     handleEvent: function (request) {

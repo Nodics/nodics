@@ -10,5 +10,69 @@
  */
 
 module.exports = {
+    defaultWorkflowItemAssignedPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
 
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemAssignedPipelineService.validateRequest',
+                success: 'successEnd'
+            }
+        }
+    },
+    defaultWorkflowErrorOccurredPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowErrorOccuredPipelineService.validateRequest',
+                success: 'successEnd'
+            }
+        }
+    },
+    defaultWorkflowItemSplittedPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemSplittedPipelineService.validateRequest',
+                success: 'successEnd'
+            }
+        }
+    },
+    defaultWorkflowActionPerformedPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowActionPerformedPipelineService.validateRequest',
+                success: 'successEnd'
+            }
+        }
+    },
+    defaultWorkflowItemProcessedPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemProcessedPipelineService.validateRequest',
+                success: 'successEnd'
+            }
+        }
+    },
 };

@@ -31,9 +31,13 @@ module.exports = {
                 if (!modelObject.workflowCodes) modelObject.workflowCodes = [];
                 if (!data.active && modelObject.workflowCodes.includes(data.workflowCode)) {
                     modelObject.workflowCodes.splice(modelObject.workflowCodes.indexOf(data.workflowCode), 1);
+                    data.events.forEach(event => {
+                        event.enabled = false;
+                    });
                 } else if (data.active && !modelObject.workflowCodes.includes(data.workflowCode)) {
                     modelObject.workflowCodes.push(data.workflowCode);
                 }
+                SERVICE.DefaultEventService.registerModuleEvents(data.moduleName, data.events);
                 resolve('Workflow code updated on cluster: ' + CONFIG.get('clusterId'));
             } catch (error) {
                 reject(new CLASSES.WorkflowError(error, null, 'ERR_WF_00000'));

@@ -102,30 +102,26 @@ module.exports = {
     },
     handleMultiChannelRequest: function (request, response, process) {
         request.channelRequests = [];
-        if (request.channels.length > 1) {
-            for (let count = 1; count <= request.channels.length; count++) {
-                let channelItem = _.merge({}, request.workflowItem);
-                delete channelItem._id;
-                channelItem.originalCode = channelItem.code;
-                channelItem.code = channelItem.code + '_' + count;
-                channelItem.itemSplitted = true;
-                request.channelRequests.push({
-                    tenant: request.tenant,
-                    workflowItem: channelItem,
-                    workflowHead: request.workflowHead,
-                    workflowAction: request.workflowAction,
-                    actionResponse: request.actionResponse,
-                    channel: request.channels[count - 1]
-                });
-            }
-        } else {
+        request.channelRequests.push({
+            tenant: request.tenant,
+            workflowItem: request.workflowItem,
+            workflowHead: request.workflowHead,
+            workflowAction: request.workflowAction,
+            actionResponse: request.actionResponse,
+            channel: request.channels[0]
+        });
+        for (let count = 1; count < request.channels.length; count++) {
+            let channelItem = _.merge({}, request.workflowItem);
+            delete channelItem._id;
+            channelItem.originalCode = channelItem.code;
+            channelItem.code = channelItem.code + '_' + count;
             request.channelRequests.push({
                 tenant: request.tenant,
-                workflowItem: request.workflowItem,
+                workflowItem: channelItem,
                 workflowHead: request.workflowHead,
                 workflowAction: request.workflowAction,
                 actionResponse: request.actionResponse,
-                channel: request.channels[0]
+                channel: request.channels[count - 1]
             });
         }
         process.nextSuccess(request, response);

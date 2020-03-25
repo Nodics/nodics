@@ -71,6 +71,7 @@ module.exports = {
     publishInternalEvent: function (event, workflowItem) {
         return new Promise((resolve, reject) => {
             try {
+                event.event = this.createEventName((workflowItem.detail.schemaName || workflowItem.detail.indexName), workflowItem.activeHead.code, event.event);
                 event.target = workflowItem.detail.moduleName;
                 event.targetType = ENUMS.TargetType.MODULE.key;
                 SERVICE.DefaultEventService.publish(event).then(success => {
@@ -96,8 +97,6 @@ module.exports = {
                     responseType: endPoint.responseType,
                     params: endPoint.params
                 };
-                console.log('------------------------------');
-                console.log(event);
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     resolve(success);
                 }).catch(error => {

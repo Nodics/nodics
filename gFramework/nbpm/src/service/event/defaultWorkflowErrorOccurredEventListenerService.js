@@ -9,7 +9,10 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -32,41 +35,22 @@ module.exports = {
         });
     },
 
-    handleExternalDataPushEvent: function (event, callback, request) {
-        if (event && !UTILS.isBlank(event)) {
-            SERVICE.DefaultPipelineService.start('processExternalDataPushEventPipeline', {
-                tenant: request.tenant,
-                moduleName: event.target,
-                header: event.header,
-                data: event.data,
-                event: event
+    handleWorkflowItemAssignedEvent: function (event, callback) {
+        try {
+            SERVICE.DefaultPipelineService.start('defaultWorkflowErrorOccurredPipeline', {
+                tenant: event.tenant,
+                event: event,
+                data: event.data
             }, {}).then(success => {
                 callback(null, {
-                    success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: 'Event processed successfuly',
-                    result: {
-                        event: event.event,
-                        _id: event._id
-                    }
+                    message: success
                 });
             }).catch(error => {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    error: error,
-                    result: {
-                        event: event.event,
-                        _id: event._id
-                    }
-                });
+                callback(new CLASSES.EventError(error, 'Unable to handle workflow2schema update handler', 'ERR_EVNT_00000'));
             });
-        } else {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                error: 'Event object can not be null or empty'
-            });
+        } catch (error) {
+            callback(new CLASSES.EventError(error, 'Unable to handle workflow2schema update handler', 'ERR_EVNT_00000'));
         }
     }
 };

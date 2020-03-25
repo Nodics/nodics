@@ -113,7 +113,7 @@ module.exports = {
                 this.LOG.debug('Pushing event for error occured : ' + request.workflowItem.code);
                 SERVICE.DefaultWorkflowEventService.publishEvent({
                     tenant: request.tenant,
-                    event: 'workflowErrorOccured',
+                    event: 'errorOccurred',
                     type: eventConfig.type || "ASYNC",
                     data: {
                         error: response.error.toJson()

@@ -12,6 +12,7 @@
 const _ = require('lodash');
 
 module.exports = {
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -34,25 +35,7 @@ module.exports = {
         });
     },
 
-    handlePreSave: function (request, responce) {
-        return new Promise((resolve, reject) => {
-            let schemaName = request.model.schemaName;
-            Object.keys(NODICS.getModules()).forEach(moduleName => {
-                let moduleObject = NODICS.getModule(moduleName);
-                if (moduleObject.rawSchema && moduleObject.rawSchema[schemaName]) {
-                    request.model.moduleName = moduleName;
-                }
-            });
-            request.model.events = _.merge(_.merge({}, CONFIG.get('defaultWorkflowEvents')), request.model.events);
-            Object.keys(request.model.events).forEach(eventName => {
-                let event = request.model.events[eventName];
-                event.event = SERVICE.DefaultWorkflowEventService.createEventName(request.model.schemaName, request.model.workflowCode, event.event);
-            });
-            if (request.model.moduleName) {
-                resolve(true);
-            } else {
-                reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid schemaName, please validate your request: ' + CONFIG.get('clusterId')));
-            }
-        });
+    createEventName: function (preFix, workflowCode, postFix) {
+        return preFix + workflowCode.toUpperCaseFirstChar() + postFix.toUpperCaseFirstChar();
     }
 };

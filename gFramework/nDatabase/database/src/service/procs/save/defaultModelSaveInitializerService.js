@@ -527,7 +527,7 @@ module.exports = {
         try {
             let schemaModel = request.schemaModel;
             let savedModel = response.success.result;
-            if (response.success.result && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
+            if (!request.ignoreWorkflowEvent && response.success.result && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
                 this.LOG.debug('Triggering event for workflow association');
                 let event = {
                     tenant: request.tenant,

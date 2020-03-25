@@ -37,6 +37,8 @@ module.exports = {
     validateRequest: function (request, response, process) {
         if (!request.itemType && (request.itemType !== ENUMS.WorkflowItemType.INTERNAL.key || request.itemType !== ENUMS.WorkflowItemType.EXTERNAL.key)) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, itemType can not be other than [INTERNAL or EXTERNAL]'));
+        } else if (!request.item || !request.item.detail || (!request.item.detail.schemaName && !request.item.detail.indexName)) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, item detail can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
