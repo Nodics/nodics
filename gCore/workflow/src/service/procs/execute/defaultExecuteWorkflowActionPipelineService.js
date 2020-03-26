@@ -198,7 +198,7 @@ module.exports = {
     },
     triggerActionPerformedEvent: function (request, response, process) {
         response.success.messages.push('Event actionPerformed triggered for action: ' + request.workflowAction.code);
-        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(workflowAction, workflowItem);
+        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(request.workflowAction, request.workflowItem);
         if (eventConfig.enabled) {
             try {
                 this.LOG.debug('Pushing event for action performed : ' + request.workflowItem.activeAction.code);

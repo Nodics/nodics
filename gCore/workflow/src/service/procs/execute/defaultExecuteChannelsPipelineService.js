@@ -127,14 +127,14 @@ module.exports = {
         process.nextSuccess(request, response);
     },
     triggerItemSplitEvent: function (request, response, process) {
-        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(workflowAction, workflowItem);
+        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(request.workflowAction, request.workflowItem);
         if (request.channelRequests.length > 1 && eventConfig.enabled) {
             try {
                 this.LOG.debug('Pushing event for item split : ' + request.workflowItem.activeAction.code);
                 SERVICE.DefaultWorkflowEventService.publishEvent({
                     tenant: request.tenant,
                     event: 'itemSplitted',
-                    type: "SYNC",
+                    type: "ASYNC",
                     data: {
                         newItems: request.channelRequests.map(channelRequest => {
                             return channelRequest.workflowItem;
@@ -148,6 +148,8 @@ module.exports = {
             } catch (error) {
                 process.error(request, response, error);
             }
+        } else {
+            process.nextSuccess(request, response);
         }
     },
     triggerChannelExecution: function (request, response, process) {

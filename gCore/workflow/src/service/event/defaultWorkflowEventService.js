@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+const util = require('util');
 
 module.exports = {
 
@@ -74,6 +75,7 @@ module.exports = {
                 event.event = this.createEventName((workflowItem.detail.schemaName || workflowItem.detail.indexName), workflowItem.activeHead.code, event.event);
                 event.target = workflowItem.detail.moduleName;
                 event.targetType = ENUMS.TargetType.MODULE.key;
+                console.log(util.inspect(event, true, 5));
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     resolve(success);
                 }).catch(error => {

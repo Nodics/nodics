@@ -10,12 +10,28 @@
  */
 
 module.exports = {
-    preSaveWorkflow2Schema: {
+    handlePreSaveWTCode: {
+        type: 'schema',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultSaveWorkflow2SchemaInterceptorService.createWorkflowCode'
+    },
+    handlePreSaveModuleAssignment: {
         type: 'schema',
         item: 'workflow2Schema',
         trigger: 'preSave',
         active: 'true',
         index: 0,
-        handler: 'DefaultSaveWorkflow2SchemaInterceptorService.handlePreSave'
+        handler: 'DefaultSaveWorkflow2SchemaInterceptorService.handlePreSaveModuleAssignment'
+    },
+
+    handlePreSaveAssignedDefaultEvents: {
+        type: 'schema',
+        item: 'workflow2Schema',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultSaveWorkflow2SchemaInterceptorService.handlePreSaveAssignedDefaultEvents'
     }
 };

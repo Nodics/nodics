@@ -10,7 +10,7 @@
  */
 
 const _ = require('lodash');
-const util = require('util');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -52,8 +52,6 @@ module.exports = {
                             moduleName: key,
                             rawSchema: _.merge(_.merge({}, defaultSchema), mergedSchema[key])
                         });
-                        //console.log(key, '  :  ', util.inspect(moduleObject.rawSchema, true, 4));
-                        //console.log(moduleObject.rawSchema);
                     }
                 });
                 resolve(true);

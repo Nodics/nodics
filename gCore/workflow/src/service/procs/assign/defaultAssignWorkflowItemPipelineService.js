@@ -139,6 +139,7 @@ module.exports = {
                 workflowAction: request.workflowAction,
                 workflowItem: request.workflowItem
             }).then(success => {
+                if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
                 response.success[request.workflowAction.code].push(success);
                 process.nextSuccess(request, response);
             }).catch(error => {

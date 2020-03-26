@@ -73,7 +73,7 @@ module.exports = {
     },
     triggerSuccessEvent: function (request, response, process) {
         response.success.messages.push('Event errorOccured triggered for action: ' + request.workflowAction.code);
-        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(workflowAction, workflowItem);
+        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(request.workflowAction, request.workflowItem);
         if (eventConfig.enabled) {
             try {
                 this.LOG.debug('Pushing event for item processed : ' + request.workflowItem.code);

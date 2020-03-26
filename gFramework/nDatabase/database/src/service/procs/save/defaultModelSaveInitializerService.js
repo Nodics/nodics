@@ -546,8 +546,8 @@ module.exports = {
                         workflowCode: workflowCode,
                         itemType: 'INTERNAL',
                         item: {
-                            code: savedModel.code || savedModel._id,
-                            refId: savedModel.code || savedModel._id,
+                            code: savedModel.wtRefId,
+                            refId: savedModel.code,
                             detail: {
                                 schemaName: schemaModel.schemaName,
                                 moduleName: schemaModel.moduleName,
