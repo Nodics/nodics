@@ -36,7 +36,7 @@ module.exports = {
             }
         }
     },
-    defaultWorkflowItemSplittedPipeline: {
+    defaultWorkflowChannelsEvaluatedPipeline: {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
@@ -44,7 +44,7 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemSplittedPipelineService.validateRequest',
+                handler: 'DefaultWorkflowChannelsEvaluatedPipelineService.validateRequest',
                 success: 'successEnd'
             }
         }

@@ -26,10 +26,10 @@ module.exports = {
             event: 'errorOccurred',
             listener: 'DefaultWorkflowErrorOccurredEventListenerService.handleWorkflowErrorOccurredEvent'
         },
-        workflowItemSplitted: {
+        workflowChannelsEvaluated: {
             enabled: true,
-            event: 'itemSplitted',
-            listener: 'DefaultWorkflowItemSplittedEventListenerService.handleWorkflowItemSplittedEvent'
+            event: 'channelsEvaluated',
+            listener: 'DefaultWorkflowChannelsEvaluatedEventListenerService.handleWorkflowChannelsEvaluatedEvent'
         },
         workflowActionPerformed: {
             enabled: true,

@@ -128,19 +128,34 @@ module.exports = {
     },
     triggerItemSplitEvent: function (request, response, process) {
         let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(request.workflowAction, request.workflowItem);
-        if (request.channelRequests.length > 1 && eventConfig.enabled) {
+        if (eventConfig.enabled) {
             try {
                 this.LOG.debug('Pushing event for item split : ' + request.workflowItem.activeAction.code);
-                SERVICE.DefaultWorkflowEventService.publishEvent({
+                let event = {
                     tenant: request.tenant,
-                    event: 'itemSplitted',
+                    event: 'channelsEvaluated',
                     type: "ASYNC",
                     data: {
-                        newItems: request.channelRequests.map(channelRequest => {
-                            return channelRequest.workflowItem;
+                        qualifiedChannels: request.channels.map(channel => {
+                            return {
+                                code: channel.code,
+                                decision: channel.qualifier.decision
+                            };
                         })
                     }
-                }, request.workflowAction, request.workflowItem).then(success => {
+                };
+                if (request.channelRequests.length > 1) {
+                    event.data.newItems = [];
+                    request.channelRequests.forEach(channelRequest => {
+                        let item = channelRequest.workflowItem;
+                        event.data.newItems.push({
+                            code: item.code,
+                            refId: item.refId,
+                            originalCode: item.originalCode
+                        });
+                    });
+                }
+                SERVICE.DefaultWorkflowEventService.publishEvent(event, request.workflowAction, request.workflowItem).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);

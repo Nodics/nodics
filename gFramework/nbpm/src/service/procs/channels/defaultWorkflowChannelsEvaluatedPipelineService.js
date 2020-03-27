@@ -9,10 +9,7 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
-
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -35,22 +32,16 @@ module.exports = {
         });
     },
 
-    handleWorkflowItemSplittedEvent: function (event, callback) {
-        try {
-            SERVICE.DefaultPipelineService.start('defaultWorkflowItemSplittedPipeline', {
-                tenant: event.tenant,
-                event: event,
-                data: event.data
-            }, {}).then(success => {
-                callback(null, {
-                    code: 'SUC_EVNT_00000',
-                    message: success
-                });
-            }).catch(error => {
-                callback(new CLASSES.EventError(error, 'Unable to handle workflow2schema update handler', 'ERR_EVNT_00000'));
-            });
-        } catch (error) {
-            callback(new CLASSES.EventError(error, 'Unable to handle workflow2schema update handler', 'ERR_EVNT_00000'));
+    validateRequest: function (request, response, process) {
+        this.LOG.debug('Validating input for workflow channels evaluated process');
+        if (!request.tenant) {
+            process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
+        } else if (!request.data) {
+            process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
+        } else if (!request.data) {
+            process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
+        } else {
+            process.nextSuccess(request, response);
         }
     }
 };

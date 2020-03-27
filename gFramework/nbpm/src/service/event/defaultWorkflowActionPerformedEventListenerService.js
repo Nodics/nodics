@@ -47,10 +47,10 @@ module.exports = {
                     message: success
                 });
             }).catch(error => {
-                callback(new CLASSES.EventError(error, 'Unable to handle workflow2schema update handler', 'ERR_EVNT_00000'));
+                callback(new CLASSES.EventError(error, 'Unable to handle action performed event', 'ERR_EVNT_00000'));
             });
         } catch (error) {
-            callback(new CLASSES.EventError(error, 'Unable to handle workflow2schema update handler', 'ERR_EVNT_00000'));
+            callback(new CLASSES.EventError(error, 'Unable to handle action performed event', 'ERR_EVNT_00000'));
         }
     }
 };
