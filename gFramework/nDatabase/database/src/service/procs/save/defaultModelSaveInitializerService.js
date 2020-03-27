@@ -528,42 +528,46 @@ module.exports = {
             let schemaModel = request.schemaModel;
             let savedModel = response.success.result;
             if (!request.ignoreWorkflowEvent && response.success.result && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
-                this.LOG.debug('Triggering event for workflow association');
-                let event = {
-                    tenant: request.tenant,
-                    event: 'initiateWorkflow',
-                    sourceName: schemaModel.moduleName,
-                    sourceId: CONFIG.get('nodeId'),
-                    target: 'workflow',
-                    state: "NEW",
-                    type: "SYNC",
-                    targetType: ENUMS.TargetType.MODULE.key,
-                    active: true,
-                    data: []
-                };
-                schemaModel.workflowCodes.forEach(workflowCode => {
-                    event.data.push({
-                        workflowCode: workflowCode,
-                        itemType: 'INTERNAL',
-                        item: {
-                            code: savedModel.wtRefId,
-                            refId: savedModel.code,
-                            detail: {
-                                schemaName: schemaModel.schemaName,
-                                moduleName: schemaModel.moduleName,
-                            },
-                            event: {
-                                enabled: true
+                if (!savedModel.workflow || UTILS.isBlank(savedModel.workflow)) {
+                    this.LOG.error('item: ' + (savedModel.code || savedModel._id) + ' is not workflow compatable');
+                } else {
+                    this.LOG.debug('Triggering event for workflow association');
+                    let event = {
+                        tenant: request.tenant,
+                        event: 'initiateWorkflow',
+                        sourceName: schemaModel.moduleName,
+                        sourceId: CONFIG.get('nodeId'),
+                        target: 'workflow',
+                        state: "NEW",
+                        type: "SYNC",
+                        targetType: ENUMS.TargetType.MODULE.key,
+                        active: true,
+                        data: []
+                    };
+                    schemaModel.workflowCodes.forEach(workflowCode => {
+                        event.data.push({
+                            workflowCode: workflowCode,
+                            itemType: 'INTERNAL',
+                            item: {
+                                code: savedModel.workflow.refId,
+                                refId: savedModel.code,
+                                detail: {
+                                    schemaName: schemaModel.schemaName,
+                                    moduleName: schemaModel.moduleName,
+                                },
+                                event: {
+                                    enabled: true
+                                }
                             }
-                        }
+                        });
                     });
-                });
-                this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaModel.schemaName);
-                SERVICE.DefaultEventService.publish(event).then(success => {
-                    this.LOG.debug('Workflow associated successfully');
-                }).catch(error => {
-                    this.LOG.error('While associating workflow : ', error);
-                });
+                    this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaModel.schemaName);
+                    SERVICE.DefaultEventService.publish(event).then(success => {
+                        this.LOG.debug('Workflow associated successfully');
+                    }).catch(error => {
+                        this.LOG.error('While associating workflow : ', error);
+                    });
+                }
             }
         } catch (error) {
             this.LOG.error('Facing issue while pushing workflow init event : ', error);

@@ -39,8 +39,13 @@ module.exports = {
             try {
                 if (request.schemaModel.workflowCodes &&
                     request.schemaModel.workflowCodes.length > 0) {
-                    if (!request.model._id && request.model.code && !request.model.workflowRefId) {
-                        request.model.wtRefId = request.model.code;
+                    if (!request.model._id &&
+                        request.model.code &&
+                        !request.model.workflow) {
+                        request.model.active = false;
+                        request.model.workflow = {
+                            refId: request.model.code
+                        };
                     }
                 }
                 resolve(true);

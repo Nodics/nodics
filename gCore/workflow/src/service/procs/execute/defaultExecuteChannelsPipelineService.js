@@ -113,7 +113,7 @@ module.exports = {
         for (let count = 1; count < request.channels.length; count++) {
             let channelItem = _.merge({}, request.workflowItem);
             delete channelItem._id;
-            channelItem.originalCode = channelItem.code;
+            channelItem.originalCode = channelItem.refId;
             channelItem.code = channelItem.code + '_' + count;
             request.channelRequests.push({
                 tenant: request.tenant,
@@ -144,17 +144,16 @@ module.exports = {
                         })
                     }
                 };
-                if (request.channelRequests.length > 1) {
-                    event.data.newItems = [];
-                    request.channelRequests.forEach(channelRequest => {
-                        let item = channelRequest.workflowItem;
-                        event.data.newItems.push({
-                            code: item.code,
-                            refId: item.refId,
-                            originalCode: item.originalCode
-                        });
+                event.data.newItems = [];
+                request.channelRequests.forEach(channelRequest => {
+                    let item = channelRequest.workflowItem;
+                    event.data.newItems.push({
+                        code: item.code,
+                        refId: item.refId,
+                        originalCode: item.originalCode,
+                        channel: item.channel.code
                     });
-                }
+                });
                 SERVICE.DefaultWorkflowEventService.publishEvent(event, request.workflowAction, request.workflowItem).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {

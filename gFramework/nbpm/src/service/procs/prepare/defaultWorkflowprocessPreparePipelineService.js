@@ -44,51 +44,37 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    prepareModel: function (request, response, process) {
-        this.LOG.debug('Preparing model to update schema item');
-        let data = request.data;
-        request.model = {
-            code: data.refId,
-            workflow: {
-                activeHead: data.activeHead,
-                activeAction: data.activeAction
-            }
-        };
-        if (data.itemDetail.schemName) {
-            response.targetNode = 'schemaOperation';
+    checkOperation: function (request, response, process) {
+        this.LOG.debug('Validating input for workflow item assigned process');
+        let itemDetail = request.data.detail;
+        if (!itemDetail.schemName && !itemDetail.indexName) {
+            process.error(request, response, new CLASSES.WorkflowError('Invalid internal item detail, schemaName and indexName both can not be null'));
         } else {
-            response.targetNode = 'searchOperation';
-        }
-        process.nextSuccess(request, response);
-    },
-    updateSchemaItem: function (request, response, process) {
-        this.LOG.debug('Updating schema item for assigned item');
-        try {
-            request.schemaService.save({
-                tenant: request.tenant,
-                model: request.model
-            }).then(success => {
-                process.stop(request, response, success);
-            }).then(error => {
-                process.error(request, response, error);
-            });
-        } catch (error) {
-            process.error(request, response, new CLASSES.WorkflowError(error, 'while updating schema item'));
+            if (itemDetail.schemName) {
+                response.targetNode = 'schemaOperation';
+            } else {
+                response.targetNode = 'searchOperation';
+            }
+            process.nextSuccess(request, response);
         }
     },
-    updateSearchItem: function (request, response, process) {
-        this.LOG.debug('Updating search item for assigned item');
-        try {
-            request.searchService.doSave({
-                tenant: request.tenant,
-                model: request.model
-            }).then(success => {
-                process.stop(request, response, success);
-            }).then(error => {
-                process.error(request, response, error);
-            });
-        } catch (error) {
-            process.error(request, response, new CLASSES.WorkflowError(error, 'while updating schema item'));
+    loadSchemaService: function (request, response, process) {
+        this.LOG.debug('Validating input for workflow item assigned process');
+        let itemDetail = request.data.detail;
+        request.schemaService = SERVICE['Default' + itemDetail.schemaName.toUpperCaseFirstChar() + 'Service'];
+        if (request.schemaService) {
+            process.nextSuccess(request, response);
+        } else {
+            process.error(request, response, new CLASSES.WorkflowError('Invalid schemaName, could not found any service'));
+        }
+    },
+    loadSearchService: function (request, response, process) {
+        this.LOG.debug('Validating input for workflow item assigned process');
+        request.searchService = SERVICE['Default' + itemDetail.indexName.toUpperCaseFirstChar() + 'Service'];
+        if (request.searchService) {
+            process.nextSuccess(request, response);
+        } else {
+            process.error(request, response, new CLASSES.WorkflowError('Invalid indexName, could not found any service'));
         }
     }
 };
