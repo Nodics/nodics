@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -36,7 +38,7 @@ module.exports = {
         this.LOG.debug('Validating input for workflow error occurred process');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
-        } else if (!request.data || !request.event.detail || UTILS.isBlank(request.event.detail)) {
+        } else if (!request.data || !request.data.detail || UTILS.isBlank(request.data.detail)) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
         } else if (!request.event) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
@@ -47,30 +49,34 @@ module.exports = {
     prepareModel: function (request, response, process) {
         this.LOG.debug('Preparing model to update schema item');
         let data = request.data;
-        request.model = {
-            code: data.refId,
+        request.model = _.merge(request.schemaModel, {
             workflow: {
                 activeHead: data.activeHead,
                 activeAction: data.activeAction,
                 error: data.error
             }
-        };
-        if (data.itemDetail.schemName) {
+        });
+        let detail = data.detail;
+        if (detail.schemaName) {
             response.targetNode = 'schemaOperation';
-        } else {
+            process.nextSuccess(request, response);
+        } else if (detail.indexName) {
             response.targetNode = 'searchOperation';
+            process.nextSuccess(request, response);
+        } else {
+            process.error(request, response, new CLASSES.WorkflowError('Invalid item detail, could not find operation type'));
         }
-        process.nextSuccess(request, response);
     },
     updateSchemaItem: function (request, response, process) {
         this.LOG.debug('Updating schema item for workflow error');
         try {
             request.schemaService.save({
+                ignoreWorkflowEvent: true,
                 tenant: request.tenant,
                 model: request.model
             }).then(success => {
                 process.stop(request, response, success);
-            }).then(error => {
+            }).catch(error => {
                 process.error(request, response, error);
             });
         } catch (error) {
@@ -85,7 +91,7 @@ module.exports = {
                 model: request.model
             }).then(success => {
                 process.stop(request, response, success);
-            }).then(error => {
+            }).catch(error => {
                 process.error(request, response, error);
             });
         } catch (error) {

@@ -45,14 +45,16 @@ module.exports = {
                 active: true,
                 data: {
                     code: workflowItem.code,
-                    refId: workflowItem.refId,
                     activeHead: workflowItem.activeHead.code,
-                    activeAction: workflowItem.activeAction.code,
-                    originalCode: workflowItem.originalCode,
-                    detail: workflowItem.detail,
-                    callbackData: workflowItem.callbackData
+                    activeAction: workflowItem.activeAction.code
                 }
             }, event);
+            if (workflowItem.detail && !UTILS.isBlank(workflowItem.detail)) {
+                event.data.detail = workflowItem.detail;
+            }
+            if (workflowItem.callbackData && !UTILS.isBlank(workflowItem.callbackData)) {
+                event.data.callbackData = workflowItem.callbackData;
+            }
             if (workflowItem.type === ENUMS.WorkflowItemType.EXTERNAL.key) {
                 this.publishExternalEvent(event, workflowItem, workflowAction).then(success => {
                     resolve(success);
@@ -75,7 +77,7 @@ module.exports = {
                 event.event = this.createEventName((workflowItem.detail.schemaName || workflowItem.detail.indexName), workflowItem.activeHead.code, event.event);
                 event.target = workflowItem.detail.moduleName;
                 event.targetType = ENUMS.TargetType.MODULE.key;
-                console.log(util.inspect(event, true, 5));
+                //console.log(util.inspect(event, true, 5));
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     resolve(success);
                 }).catch(error => {

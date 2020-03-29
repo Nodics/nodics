@@ -80,7 +80,7 @@ module.exports = {
                 SERVICE.DefaultWorkflowEventService.publishEvent({
                     tenant: request.tenant,
                     event: 'itemProcessed',
-                    type: eventConfig.type || "ASYNC"
+                    type: eventConfig.type || "SYNC"
                 }, request.workflowAction, request.workflowItem).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {

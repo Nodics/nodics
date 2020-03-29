@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,15 +35,67 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating input for workflow action performed process');
+        this.LOG.debug('Validating input for workflow action performed');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
-        } else if (!request.data) {
+        } else if (!request.data || !request.data.detail || UTILS.isBlank(request.data.detail)) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
-        } else if (!request.data) {
+        } else if (!request.event) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
         } else {
             process.nextSuccess(request, response);
+        }
+    },
+    prepareModel: function (request, response, process) {
+        this.LOG.debug('Preparing model to update schema item');
+        let data = request.data;
+        request.model = _.merge(request.schemaModel, {
+            workflow: {
+                activeHead: data.activeHead,
+                activeAction: data.activeAction,
+                state: ENUMS.WorkflowActionState.FINISHED.key
+            }
+        });
+        let detail = data.detail;
+        if (detail.schemaName) {
+            response.targetNode = 'schemaOperation';
+            process.nextSuccess(request, response);
+        } else if (detail.indexName) {
+            response.targetNode = 'searchOperation';
+            process.nextSuccess(request, response);
+        } else {
+            process.error(request, response, new CLASSES.WorkflowError('Invalid item detail, could not find operation type'));
+        }
+    },
+    updateSchemaItem: function (request, response, process) {
+        this.LOG.debug('Updating schema item for action performed');
+        try {
+            request.schemaService.save({
+                ignoreWorkflowEvent: true,
+                tenant: request.tenant,
+                model: request.model
+            }).then(success => {
+                process.stop(request, response, success);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } catch (error) {
+            process.error(request, response, new CLASSES.WorkflowError(error, 'while updating schema item'));
+        }
+    },
+    updateSearchItem: function (request, response, process) {
+        this.LOG.debug('Updating search item for action performed');
+        try {
+            request.searchService.doSave({
+                tenant: request.tenant,
+                model: request.model
+            }).then(success => {
+                process.stop(request, response, success);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } catch (error) {
+            process.error(request, response, new CLASSES.WorkflowError(error, 'while updating schema item'));
         }
     }
 };

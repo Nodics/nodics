@@ -114,7 +114,7 @@ module.exports = {
                 SERVICE.DefaultWorkflowEventService.publishEvent({
                     tenant: request.tenant,
                     event: 'errorOccurred',
-                    type: eventConfig.type || "ASYNC",
+                    type: eventConfig.type || "SYNC",
                     data: {
                         error: response.error.toJson()
                     }

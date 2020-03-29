@@ -89,8 +89,11 @@ module.exports = {
     finalizeChannels: function (request, response, process) {
         if (request.channels.length > 1) {
             let executedChannel = [];
+            let actionsList = request.workflowItem.actions.map(action => {
+                return action.code;
+            });
             request.channels.forEach(channel => {
-                if (request.workflowItem.actions && request.workflowItem.actions.includes(channel.target)) {
+                if (actionsList && actionsList.includes(channel.target)) {
                     executedChannel.push(channel);
                 }
             });
@@ -113,7 +116,7 @@ module.exports = {
         for (let count = 1; count < request.channels.length; count++) {
             let channelItem = _.merge({}, request.workflowItem);
             delete channelItem._id;
-            channelItem.originalCode = channelItem.refId;
+            channelItem.originalCode = channelItem.code;
             channelItem.code = channelItem.code + '_' + count;
             request.channelRequests.push({
                 tenant: request.tenant,
@@ -121,7 +124,7 @@ module.exports = {
                 workflowHead: request.workflowHead,
                 workflowAction: request.workflowAction,
                 actionResponse: request.actionResponse,
-                channel: request.channels[count - 1]
+                channel: request.channels[count]
             });
         }
         process.nextSuccess(request, response);
@@ -134,24 +137,26 @@ module.exports = {
                 let event = {
                     tenant: request.tenant,
                     event: 'channelsEvaluated',
-                    type: "ASYNC",
+                    type: "SYNC",
                     data: {
                         qualifiedChannels: request.channels.map(channel => {
                             return {
                                 code: channel.code,
                                 decision: channel.qualifier.decision
                             };
-                        })
+                        }),
                     }
                 };
-                event.data.newItems = [];
+                if (request.channelRequests.length > 1) {
+                    event.data.originalCode = request.workflowItem.originalCode;
+                }
+                event.data.items = [];
                 request.channelRequests.forEach(channelRequest => {
                     let item = channelRequest.workflowItem;
-                    event.data.newItems.push({
+                    event.data.items.push({
                         code: item.code,
                         refId: item.refId,
-                        originalCode: item.originalCode,
-                        channel: item.channel.code
+                        channel: channelRequest.channel.code
                     });
                 });
                 SERVICE.DefaultWorkflowEventService.publishEvent(event, request.workflowAction, request.workflowItem).then(success => {

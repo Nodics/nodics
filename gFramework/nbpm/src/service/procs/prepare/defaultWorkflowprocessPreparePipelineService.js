@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -36,7 +38,7 @@ module.exports = {
         this.LOG.debug('Validating input for workflow item assigned process');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
-        } else if (!request.data || !request.event.detail || UTILS.isBlank(request.event.detail)) {
+        } else if (!request.data || !request.data.detail || UTILS.isBlank(request.data.detail)) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
         } else if (!request.event) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
@@ -47,10 +49,10 @@ module.exports = {
     checkOperation: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
         let itemDetail = request.data.detail;
-        if (!itemDetail.schemName && !itemDetail.indexName) {
+        if (!itemDetail.schemaName && !itemDetail.indexName) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid internal item detail, schemaName and indexName both can not be null'));
         } else {
-            if (itemDetail.schemName) {
+            if (itemDetail.schemaName) {
                 response.targetNode = 'schemaOperation';
             } else {
                 response.targetNode = 'searchOperation';
@@ -68,6 +70,31 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError('Invalid schemaName, could not found any service'));
         }
     },
+
+    loadSchemaModel: function (request, response, process) {
+        this.LOG.debug('Loading schema item for triggered workflow');
+        let itemCode = request.data.originalCode || request.data.code;
+        request.schemaService.get({
+            tenant: request.tenant,
+            options: {
+                projection: {
+                    _id: 0
+                }
+            },
+            query: {
+                code: itemCode
+            }
+        }).then(success => {
+            if (success.result && success.result.length > 0) {
+                request.schemaModel = success.result[0];
+                process.nextSuccess(request, response);
+            } else {
+                process.error(request, response, new CLASSES.WorkflowError('Schema item not found for code: ' + itemCode));
+            }
+        }).catch(error => {
+            process.error(request, response, new CLASSES.WorkflowError(error, 'Could not load item for the workflow: ' + itemCode));
+        });
+    },
     loadSearchService: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
         request.searchService = SERVICE['Default' + itemDetail.indexName.toUpperCaseFirstChar() + 'Service'];
@@ -76,5 +103,22 @@ module.exports = {
         } else {
             process.error(request, response, new CLASSES.WorkflowError('Invalid indexName, could not found any service'));
         }
+    },
+    loadSearchModel: function (request, response, process) {
+        this.LOG.debug('Loading search item for triggered workflow');
+        request.searchService.doGet({
+            tenant: request.tenant,
+            query: {
+                code: request.data.originalCode
+            }
+        }).then(success => {
+            if (success.result && success.result.length > 0) {
+                request.schemaModel = success.result[0];
+            } else {
+                process.error(request, response, new CLASSES.WorkflowError('Search item not found for code: ' + request.data.originalCode));
+            }
+        }).catch(error => {
+            process.error(request, response, new CLASSES.WorkflowError(error, 'Could not load item for the workflow: ' + request.data.originalCode));
+        });
     }
 };

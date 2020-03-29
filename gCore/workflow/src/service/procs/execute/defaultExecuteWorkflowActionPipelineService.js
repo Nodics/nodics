@@ -158,7 +158,11 @@ module.exports = {
     updateWorkflowItem: function (request, response, process) {
         request.workflowItem.activeAction.responseId = request.actionResponse._id;
         if (!request.workflowItem.actions) request.workflowItem.actions = [];
-        request.workflowItem.actions.push(request.workflowAction.code);
+        request.workflowItem.actions.push({
+            code: request.workflowAction.code,
+            decision: request.actionResponse.decision,
+            feedback: request.actionResponse.feedback
+        });
         SERVICE.DefaultWorkflowItemService.save({
             tenant: request.tenant,
             model: request.workflowItem
@@ -205,7 +209,7 @@ module.exports = {
                 SERVICE.DefaultWorkflowEventService.publishEvent({
                     tenant: request.tenant,
                     event: 'actionPerformed',
-                    type: eventConfig.type || "ASYNC"
+                    type: eventConfig.type || "SYNC"
                 }, request.workflowAction, request.workflowItem).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {

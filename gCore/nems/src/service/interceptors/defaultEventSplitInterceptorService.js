@@ -36,10 +36,13 @@ module.exports = {
                         let targetModule = modules[model.target] || modules.default;
                         _.each(targetModule.getNodes(), (node, nodeId) => {
                             if (!(model.skipSource && (model.sourceName === model.target && model.sourceId === nodeId))) {
-                                model.targets.push({
-                                    targetNodeId: nodeId,
+                                let tmpTarget = {
                                     target: model.target
-                                });
+                                };
+                                if (nodeId !== undefined) {
+                                    tmpTarget.targetNodeId = nodeId;
+                                }
+                                model.targets.push(tmpTarget);
                             }
                         });
                     } else if (model.targetType === ENUMS.TargetType.EACH_MODULE.key) {
@@ -49,10 +52,13 @@ module.exports = {
                                 if (moduleName !== 'default') {
                                     targetName = moduleName;
                                 }
-                                model.targets.push({
-                                    targetNodeId: model.targetNodeId,
+                                let tmpTarget = {
                                     target: targetName
-                                });
+                                };
+                                if (model.targetNodeId !== undefined) {
+                                    tmpTarget.targetNodeId = model.targetNodeId;
+                                }
+                                model.targets.push(tmpTarget);
                             }
                         });
                     } else if (model.targetType === ENUMS.TargetType.EACH_MODULE_NODES.key) {
@@ -64,19 +70,25 @@ module.exports = {
                                 }
                                 _.each(moduleObj.getNodes(), (node, nodeId) => {
                                     if (!(model.skipSource && (model.sourceName === model.target && model.sourceId === nodeId))) {
-                                        model.targets.push({
-                                            targetNodeId: nodeId,
+                                        let tmpTarget = {
                                             target: targetName
-                                        });
+                                        };
+                                        if (nodeId !== undefined) {
+                                            tmpTarget.targetNodeId = nodeId;
+                                        }
+                                        model.targets.push(tmpTarget);
                                     }
                                 });
                             }
                         });
                     } else {
-                        model.targets.push({
-                            targetNodeId: model.targetNodeId,
+                        let tmpTarget = {
                             target: model.target
-                        });
+                        };
+                        if (model.targetNodeId !== undefined) {
+                            tmpTarget.targetNodeId = model.targetNodeId;
+                        }
+                        model.targets.push(tmpTarget);
                     }
                 }
                 resolve(true);
