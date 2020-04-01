@@ -73,6 +73,7 @@ module.exports = {
         this.LOG.debug('Updating schema item for item processed');
         try {
             request.schemaService.save({
+                ignoreWorkflowEvent: true,
                 tenant: request.tenant,
                 model: request.model
             }).then(success => {

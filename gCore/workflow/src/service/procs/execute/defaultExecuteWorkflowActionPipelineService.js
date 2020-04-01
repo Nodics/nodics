@@ -156,10 +156,10 @@ module.exports = {
         });
     },
     updateWorkflowItem: function (request, response, process) {
-        request.workflowItem.activeAction.responseId = request.actionResponse._id;
         if (!request.workflowItem.actions) request.workflowItem.actions = [];
         request.workflowItem.actions.push({
             code: request.workflowAction.code,
+            responseId: request.actionResponse._id,
             decision: request.actionResponse.decision,
             feedback: request.actionResponse.feedback
         });
@@ -291,7 +291,7 @@ module.exports = {
             SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
         } else {
             try {
-                let handler = request.workflowAction.successHandler || CONFIG.get('workflow').defaultErrorHandler;
+                let handler = request.workflowAction.errorHandler || CONFIG.get('workflow').defaultErrorHandler;
                 let serviceName = handler.substring(0, handler.lastIndexOf('.'));
                 let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
                 if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {

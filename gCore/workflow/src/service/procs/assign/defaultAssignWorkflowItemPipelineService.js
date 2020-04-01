@@ -67,6 +67,8 @@ module.exports = {
                 code: request.workflowAction.code,
                 state: ENUMS.WorkflowActionState.NEW.key
             };
+            if (!workflowItem.heads) workflowItem.heads = [];
+            workflowItem.heads.push(request.workflowAction.code);
         }
         process.nextSuccess(request, response);
     },
@@ -149,7 +151,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     handleError: function (request, response, process) {
         if (!response.error || response.error.isProcessed()) {
             SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);

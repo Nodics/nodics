@@ -52,10 +52,11 @@ module.exports = {
         request.model = _.merge(request.schemaModel, {
             workflow: {
                 activeHead: data.activeHead,
-                activeAction: data.activeAction,
-                error: data.error
+                activeAction: data.activeAction
             }
         });
+        if (!request.model.errors) request.model.errors = [];
+        request.model.errors.push(data.error);
         let detail = data.detail;
         if (detail.schemaName) {
             response.targetNode = 'schemaOperation';

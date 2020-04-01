@@ -48,9 +48,9 @@ module.exports = {
 
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query');
-        if (request.query && request.query._id) {
-            request.query._id = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, request.query._id);
-        }
+        // if (request.query && request.query._id) {
+        //     request.query._id = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, request.query._id);
+        // }
         process.nextSuccess(request, response);
     },
 

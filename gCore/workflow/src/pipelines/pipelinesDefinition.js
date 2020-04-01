@@ -62,17 +62,22 @@ module.exports = {
                 success: {
                     loadInternalItem: 'handleInternalItem',
                     loadExternalItem: 'handleExternalItem',
-                    default: 'successEnd'
+                    default: 'verifyWorkflowItem'
                 }
             },
             handleInternalItem: {
                 type: 'process',
                 handler: 'handleInternalItemCreatePipeline',
-                success: 'successEnd'
+                success: 'verifyWorkflowItem'
             },
             handleExternalItem: {
                 type: 'process',
                 handler: 'handleExternalItemCreatePipeline',
+                success: 'verifyWorkflowItem'
+            },
+            verifyWorkflowItem: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowItemPipelineService.verifyWorkflowItem',
                 success: 'successEnd'
             },
         }
