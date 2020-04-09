@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     /**
@@ -54,7 +56,11 @@ module.exports = {
             }).then(success => {
                 if (success.result && success.result.length > 0) {
                     request.workflowItem = success.result[0];
-                    if (request.workflowItem.errorCount < (CONFIG.get('workflow').itemErrorLimit || 5)) {
+                    if (request.workflowItem.errorCount >= (CONFIG.get('workflow').itemErrorLimit || 5)) {
+                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Item has crossed, error limit. Item: ' + request.workflowItem.code + ' requires manual intervation'));
+                    } else if (!request.workflowItem.active) {
+                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Item : ' + request.workflowItem.code + ' has been de-activated'));
+                    } else {
                         if (!request.workflowCode && !request.workflowHead) {
                             request.workflowCode = request.workflowItem.activeHead.code;
                         }
@@ -62,8 +68,6 @@ module.exports = {
                             request.actionCode = request.workflowItem.activeAction.code;
                         }
                         process.nextSuccess(request, response);
-                    } else {
-                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Item has crossed, error limit. Item: ' + request.workflowItem.code + ' requires manual intervation'));
                     }
                 } else {
                     process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not found workflow item for code: ' + request.itemCode));

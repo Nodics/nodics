@@ -81,19 +81,17 @@ module.exports = {
         request.ids = [];
         if (request.httpRequest.params.id) {
             request.ids.push(request.httpRequest.params.id);
-        } else if (UTILS.isArray(request.httpRequest.body) && request.httpRequest.body.length > 0) {
-            request.httpRequest.body.forEach(element => {
-                request.ids.push(element);
-            });
+        } else {
+            request = _.merge(request, request.httpRequest.body || {});
         }
         if (callback) {
-            FACADE.dsdName.removeById(request.ids, request.tenant).then(success => {
+            FACADE.dsdName.removeById(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.removeById(request.ids, request.tenant);
+            return FACADE.dsdName.removeById(request);
         }
     },
 
@@ -101,17 +99,17 @@ module.exports = {
         request.codes = [];
         if (request.httpRequest.params.code) {
             request.codes.push(request.httpRequest.params.code);
-        } else if (UTILS.isArray(request.httpRequest.body) && request.httpRequest.body.length > 0) {
-            request.codes = request.httpRequest.body;
+        } else {
+            request = _.merge(request, request.httpRequest.body || {});
         }
         if (callback) {
-            FACADE.dsdName.removeByCode(request.codes, request.tenant).then(success => {
+            FACADE.dsdName.removeByCode(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.removeByCode(request.codes, request.tenant);
+            return FACADE.dsdName.removeByCode(request);
         }
     },
 

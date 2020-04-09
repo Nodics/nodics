@@ -550,7 +550,6 @@ module.exports = {
                             itemType: 'INTERNAL',
                             item: {
                                 code: savedModel.code,
-                                refId: savedModel.code,
                                 detail: {
                                     schemaName: schemaModel.schemaName,
                                     moduleName: schemaModel.moduleName,

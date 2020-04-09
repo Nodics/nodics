@@ -104,6 +104,12 @@ module.exports = {
                     message: 'authToken need to set within header',
                     method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
+                    body: {
+                        options: {
+                            returnModified: 'true/false'
+                        },
+                        query: 'query object'
+                    }
                 }
             },
             removeById: {
@@ -130,7 +136,12 @@ module.exports = {
                     message: 'authToken need to set within header',
                     method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/schemaName',
-                    body: ['id1', 'id2', 'id3', '...id n']
+                    body: {
+                        options: {
+                            returnModified: 'true/false'
+                        },
+                        ids: ['id1', 'id2', 'id3', '...id n']
+                    }
                 }
             },
             removeByCode: {
@@ -156,8 +167,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'DELETE',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName',
-                    body: ['id1', 'id2', 'id3', '...id n']
+                    url: 'http://host:port/nodics/{moduleName}/schemaName/code',
+                    body: {
+                        options: {
+                            returnModified: 'true/false'
+                        },
+                        codes: ['code1', 'code2', 'code3', '...code n']
+                    }
                 }
             }
         },

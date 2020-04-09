@@ -10,6 +10,13 @@
  */
 
 module.exports = {
+    preRemoveReturnModified: {
+        type: 'schema',
+        trigger: 'preRemove',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultWorkflowActivityInterceptorService.createWorkflowCode'
+    },
     handlePreSaveWTCode: {
         type: 'schema',
         trigger: 'preSave',
@@ -25,7 +32,6 @@ module.exports = {
         index: 0,
         handler: 'DefaultSaveWorkflow2SchemaInterceptorService.handlePreSaveModuleAssignment'
     },
-
     handlePreSaveAssignedDefaultEvents: {
         type: 'schema',
         item: 'workflow2Schema',

@@ -45,23 +45,24 @@ module.exports = {
 
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query options');
-        if (request.ids && request.ids.length > 0) {
-            let tmpIds = [];
-            request.ids.forEach(id => {
-                tmpIds.push(SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, id));
-            });
-            request.query = {
-                _id: {
-                    $in: tmpIds
-                }
-            };
-        }
-        if (request.codes && request.codes.length > 0) {
-            request.query = {
-                code: {
-                    $in: request.codes
-                }
-            };
+        if (!request.query || UTILS.isBlank(request.query)) {
+            if (request.ids && request.ids.length > 0) {
+                let tmpIds = [];
+                request.ids.forEach(id => {
+                    tmpIds.push(SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, id));
+                });
+                request.query = {
+                    _id: {
+                        $in: tmpIds
+                    }
+                };
+            } else if (request.codes && request.codes.length > 0) {
+                request.query = {
+                    code: {
+                        $in: request.codes
+                    }
+                };
+            }
         }
         let inputOptions = request.options || {};
         inputOptions.explain = inputOptions.explain || false;
@@ -113,6 +114,9 @@ module.exports = {
                 code: 'SUC_DEL_00000',
                 result: result
             };
+            console.log('-------------------- Item Removed Result ------------------------: ' + request.options.returnModified);
+            console.log(response.success.result);
+            console.log('-----------------------------------------------------------------');
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -333,6 +337,53 @@ module.exports = {
             }
         } catch (error) {
             this.LOG.error('Facing issue while pushing save event : ', error);
+        }
+        process.nextSuccess(request, response);
+    },
+
+    handleWorkflowProcess: function (request, response, process) {
+        try {
+            let schemaModel = request.schemaModel;
+            let removedModels = response.success.result.models;
+            if (!request.ignoreWorkflowEvent && removedModels && removedModels.length > 0 && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
+                this.LOG.debug('Triggering event for workflow association');
+                let event = {
+                    tenant: request.tenant,
+                    event: 'initiateWorkflow',
+                    sourceName: schemaModel.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
+                    target: 'workflow',
+                    state: "NEW",
+                    type: "SYNC",
+                    targetType: ENUMS.TargetType.MODULE.key,
+                    active: true,
+                    data: []
+                };
+                schemaModel.workflowCodes.forEach(workflowCode => {
+                    removedModels.forEach(removedItem => {
+                        event.data.push({
+                            workflowCode: workflowCode,
+                            itemType: 'INTERNAL',
+                            item: {
+                                code: removedItem.code,
+                                active: false,
+                                detail: {
+                                    schemaName: schemaModel.schemaName,
+                                    moduleName: schemaModel.moduleName,
+                                }
+                            }
+                        });
+                    });
+                });
+                this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaModel.schemaName);
+                SERVICE.DefaultEventService.publish(event).then(success => {
+                    this.LOG.debug('Workflow associated successfully');
+                }).catch(error => {
+                    this.LOG.error('While associating workflow : ', error);
+                });
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while pushing workflow init event : ', error);
         }
         process.nextSuccess(request, response);
     },

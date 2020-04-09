@@ -56,12 +56,12 @@ module.exports = {
         return SERVICE.srvcName.remove(request);
     },
 
-    removeById: function (ids, tenant) {
-        return SERVICE.srvcName.removeById(ids, tenant);
+    removeById: function (request) {
+        return SERVICE.srvcName.remove(request);
     },
 
-    removeByCode: function (codes, tenant) {
-        return SERVICE.srvcName.removeByCode(codes, tenant);
+    removeByCode: function (request) {
+        return SERVICE.srvcName.remove(request);
     },
 
     update: function (request) {

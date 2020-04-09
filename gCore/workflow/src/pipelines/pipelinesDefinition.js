@@ -35,6 +35,11 @@ module.exports = {
             loadWorkflowHead: {
                 type: 'function',
                 handler: 'DefaultWorkflowPreparePipelineService.loadWorkflowHead',
+                success: 'prepareEndPoint'
+            },
+            prepareEndPoint: {
+                type: 'function',
+                handler: 'DefaultWorkflowPreparePipelineService.prepareEndPoint',
                 success: 'successEnd'
             },
         }

@@ -66,7 +66,7 @@ module.exports = {
                     let interceptor = interceptorList.shift();
                     let serviceName = interceptor.handler.substring(0, interceptor.handler.indexOf('.'));
                     let functionName = interceptor.handler.substring(interceptor.handler.indexOf('.') + 1, interceptor.handler.length);
-                    SERVICE[serviceName][functionName](request, responce).then(success => {
+                    SERVICE[serviceName.toUpperCaseFirstChar()][functionName](request, responce).then(success => {
                         _self.executeInterceptors(interceptorList, request, responce).then(success => {
                             resolve(success);
                         }).catch(error => {

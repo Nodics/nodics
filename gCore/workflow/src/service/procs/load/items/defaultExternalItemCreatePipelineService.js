@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     /**
@@ -35,8 +37,8 @@ module.exports = {
 
 
     validateRequest: function (request, response, process) {
-        if (!request.itemType && (request.itemType !== ENUMS.WorkflowItemType.INTERNAL.key || request.itemType !== ENUMS.WorkflowItemType.EXTERNAL.key)) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, itemType can not be other than [INTERNAL or EXTERNAL]'));
+        if (!request.itemType && request.itemType !== ENUMS.WorkflowItemType.EXTERNAL.key) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, itemType can not be other than [EXTERNAL]'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -45,19 +47,15 @@ module.exports = {
     createExternalItem: function (request, response, process) {
         this.LOG.debug('Creating new external workflow item');
         let item = request.item;
-        request.workflowItem = {
-            code: item.code, //Allways unique code
-            originalCode: item.originalCode || item.code,
-            refId: item.refId, // reference to source of item
-            active: true,
-            type: ENUMS.WorkflowItemType.EXTERNAL.key,
-            detail: item.detail || {},
-            event: item.event || {},
-            endPoint: item.endPoint || {},
-            callbackData: item.callbackData || {},
-
-        };
+        request.workflowItem = _.merge({}, request.item);
+        request.workflowItem.originalCode = item.originalCode || item.code;
+        request.workflowItem.active = (item.active === undefined) ? true : item.active;
+        request.workflowItem.type = ENUMS.WorkflowItemType.EXTERNAL.key;
+        request.workflowItem.event = request.workflowItem.event || {};
         request.workflowItem.event.enabled = request.workflowItem.event.enabled || false;
+        request.workflowItem.detail = request.workflowItem.detail || {};
+        request.workflowItem.callbackData = request.workflowItem.callbackData || {};
+        request.workflowItem.endPoint = request.workflowItem.endPoint || {};
         process.nextSuccess(request, response);
     }
 };

@@ -12,7 +12,6 @@
 const _ = require('lodash');
 
 module.exports = {
-
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -35,13 +34,23 @@ module.exports = {
         });
     },
 
-    handleSuccessProcess: function (request, response) {
+    createWorkflowCode: function (request, responce) {
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('handleWorkflowSuccessPipeline', request, response).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+            try {
+                if (request.schemaModel.workflowCodes &&
+                    request.schemaModel.workflowCodes.length > 0) {
+                    if (!request.options) {
+                        request.options = {
+                            returnModified: true
+                        };
+                    } else if (!request.options.returnModified) {
+                        request.options.returnModified = true;
+                    }
+                }
+                resolve(true);
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('ERR_WF_00000', 'Error while assiging workflow ref id: ' + CONFIG.get('clusterId')));
+            }
         });
     }
 };
