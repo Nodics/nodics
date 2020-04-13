@@ -17,29 +17,39 @@ module.exports = {
 
     defaultWorkflowEvents: {
         workflowItemAssigned: {
-            enabled: true,
+            active: true,
             event: 'itemAssigned',
             listener: 'DefaultWorkflowItemAssignedEventListenerService.handleWorkflowItemAssignedEvent'
         },
         workflowErrorOccurred: {
-            enabled: true,
+            active: true,
             event: 'errorOccurred',
             listener: 'DefaultWorkflowErrorOccurredEventListenerService.handleWorkflowErrorOccurredEvent'
         },
         workflowChannelsEvaluated: {
-            enabled: true,
+            active: true,
             event: 'channelsEvaluated',
             listener: 'DefaultWorkflowChannelsEvaluatedEventListenerService.handleWorkflowChannelsEvaluatedEvent'
         },
         workflowActionPerformed: {
-            enabled: true,
+            active: true,
             event: 'actionPerformed',
             listener: 'DefaultWorkflowActionPerformedEventListenerService.handleWorkflowActionPerformedEvent'
         },
         workflowItemProcessed: {
-            enabled: true,
+            active: true,
             event: 'itemProcessed',
             listener: 'DefaultWorkflowItemProcessedEventListenerService.handleWorkflowItemProcessedEvent'
+        },
+        workflowItemPaused: {
+            active: true,
+            event: 'itemPaused',
+            listener: 'DefaultWorkflowItemPausedEventListenerService.handleWorkflowItemPausedEvent'
+        },
+        workflowItemResumed: {
+            active: true,
+            event: 'itemResumed',
+            listener: 'DefaultWorkflowItemResumedEventListenerService.handleWorkflowItemResumedEvent'
         }
     }
 };

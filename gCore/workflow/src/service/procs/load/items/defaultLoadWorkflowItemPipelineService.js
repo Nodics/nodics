@@ -55,12 +55,13 @@ module.exports = {
                 }
             }).then(success => {
                 if (success.result && success.result.length > 0) {
-                    request.workflowItem = success.result[0];
-                    if (request.workflowItem.errorCount >= (CONFIG.get('workflow').itemErrorLimit || 5)) {
-                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Item has crossed, error limit. Item: ' + request.workflowItem.code + ' requires manual intervation'));
-                    } else if (!request.workflowItem.active) {
-                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Item : ' + request.workflowItem.code + ' has been de-activated'));
+                    let workflowItem = success.result[0];
+                    if (workflowItem.errorCount >= (CONFIG.get('workflow').itemErrorLimit || 5)) {
+                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Item has crossed, error limit. Item: ' + workflowItem.code + ' requires manual intervation'));
+                    } else if (!request.loadInActive && !workflowItem.active) {
+                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00011', 'Item : ' + workflowItem.code + ' has been de-activated'));
                     } else {
+                        request.workflowItem = workflowItem;
                         if (!request.workflowCode && !request.workflowHead) {
                             request.workflowCode = request.workflowItem.activeHead.code;
                         }

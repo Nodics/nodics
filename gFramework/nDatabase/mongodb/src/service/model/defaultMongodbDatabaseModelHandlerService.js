@@ -38,7 +38,6 @@ module.exports = {
     },
 
     prepareDatabaseOptions: function (options) {
-        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 let schema = options.moduleObject.rawSchema[options.schemaName];
@@ -127,6 +126,9 @@ module.exports = {
                                 if (commonIndexData.enabled && !allIndexes.includes(commonIndexData.name)) {
                                     commonIndexes.fields[commonIndexData.name] = 1;
                                     _.merge(commonIndexes.options, commonIndexData.options);
+                                    if (!primaryKeys.includes(commonIndexData.name)) {
+                                        primaryKeys.push(commonIndexData.name);
+                                    }
                                 }
                             });
                         }
@@ -136,6 +138,9 @@ module.exports = {
                                 if (compositeIndexData.enabled && !allIndexes.includes(compositeIndexData.name)) {
                                     conpositeIndexes.fields[compositeIndexData.name] = 1;
                                     _.merge(conpositeIndexes.options, compositeIndexData.options);
+                                    if (!primaryKeys.includes(compositeIndexData.name)) {
+                                        primaryKeys.push(compositeIndexData.name);
+                                    }
                                 }
                             });
                         }
@@ -150,6 +155,9 @@ module.exports = {
                                     tmpIndex.fields[individualIndexData.name] = 1;
                                     _.merge(tmpIndex.options, individualIndexData.options);
                                     individualIndexes.push(tmpIndex);
+                                    if (!primaryKeys.includes(individualIndexData.name)) {
+                                        primaryKeys.push(individualIndexData.name);
+                                    }
                                 }
                             });
                         }

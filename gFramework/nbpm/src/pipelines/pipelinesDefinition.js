@@ -88,6 +88,78 @@ module.exports = {
             }
         }
     },
+    defaultWorkflowItemPausedPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemPausedPipelineService.validateRequest',
+                success: 'prepareProcess'
+            },
+            prepareProcess: {
+                type: 'process',
+                handler: 'defaultWorkflowProcessPreparePipeline',
+                success: 'prepareModel'
+            },
+            prepareModel: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemPausedPipelineService.prepareModel',
+                success: {
+                    schemaOperation: 'updateSchemaItem',
+                    searchOperation: 'updateSearchItem'
+                }
+            },
+            updateSchemaItem: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemPausedPipelineService.updateSchemaItem',
+                success: 'successEnd'
+            },
+            updateSearchItem: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemPausedPipelineService.updateSearchItem',
+                success: 'successEnd'
+            }
+        }
+    },
+    defaultWorkflowItemResumedPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemResumedPipelineService.validateRequest',
+                success: 'prepareProcess'
+            },
+            prepareProcess: {
+                type: 'process',
+                handler: 'defaultWorkflowProcessPreparePipeline',
+                success: 'prepareModel'
+            },
+            prepareModel: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemResumedPipelineService.prepareModel',
+                success: {
+                    schemaOperation: 'updateSchemaItem',
+                    searchOperation: 'updateSearchItem'
+                }
+            },
+            updateSchemaItem: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemResumedPipelineService.updateSchemaItem',
+                success: 'successEnd'
+            },
+            updateSearchItem: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemResumedPipelineService.updateSearchItem',
+                success: 'successEnd'
+            }
+        }
+    },
     defaultWorkflowErrorOccurredPipeline: {
         startNode: "validateRequest",
         hardStop: true,

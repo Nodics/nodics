@@ -59,6 +59,43 @@ module.exports = {
     },
 
     /**
+     * This function is used to assign single or multiple items to the workflow. Here items are restricted to belong same workflow only.
+     * @param {*} request 
+     */
+    pauseItem: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultPipelineService.start('pauseWorkflowItemPipeline', request, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing pause item process'));
+            }
+        });
+    },
+
+    /**
+     * This function is used to assign single or multiple items to the workflow. Here items are restricted to belong same workflow only.
+     * @param {*} request 
+     */
+    resumeItem: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                request.loadInActive = true;
+                SERVICE.DefaultPipelineService.start('resumeWorkflowItemPipeline', request, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing resume item process'));
+            }
+        });
+    },
+
+    /**
      * This funtion is used to assign item to next qalified action, based on evaluated channels 
      * @param {*} request 
      */

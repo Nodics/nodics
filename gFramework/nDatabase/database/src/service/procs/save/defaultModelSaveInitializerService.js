@@ -10,7 +10,7 @@
  */
 
 const _ = require('lodash');
-
+const util = require('util');
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -39,63 +39,9 @@ module.exports = {
         if (!request.model) {
             process.error(request, response, new CLASSES.NodicsError('ERR_SAVE_00003', 'Model can not be null or empty for save operation'));
         } else {
+            //console.log(util.inspect(request.schemaModel.rawSchema, true, 5));
             process.nextSuccess(request, response);
         }
-    },
-
-    buildQuery: function (request, response, process) {
-        this.LOG.debug('Building query to save model');
-        request.query = {};
-        request.options = request.options || {};
-        try {
-            if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {
-                request.query = this.resolveQuery(_.merge({}, request.originalQuery || {}), request.model);
-            } else if (request.model._id) {
-                let objectId = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, request.model._id);
-                request.query = {
-                    _id: objectId
-                };
-                request.model._id = objectId;
-            } else if (request.model.code) {
-                request.query = {
-                    code: request.model.code
-                };
-            }
-            process.nextSuccess(request, response);
-        } catch (error) {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00000'));
-        }
-    },
-
-    resolveQuery: function (query, model) {
-        let queryStr = {};
-        _.each(query, (propertyValue, propertyName) => {
-            if (propertyName.indexOf(".") > 0 && propertyValue.startsWith('$')) {
-                let properties = propertyName.split('.');
-                let value = model;
-                for (let element of properties) {
-                    if (value[element]) {
-                        value = value[element];
-                    } else {
-                        value = null;
-                        break;
-                    }
-                }
-                if (value) {
-                    queryStr[propertyName] = value;
-                }
-            } else if (propertyValue.startsWith('$')) {
-                propertyValue = propertyValue.substring(1, propertyValue.length);
-                if (model[propertyValue]) {
-                    queryStr[propertyName] = model[propertyValue];
-                } else {
-                    throw new Error('could not find a valid property ' + propertyName);
-                }
-            } else {
-                queryStr[propertyName] = propertyValue;
-            }
-        });
-        return queryStr;
     },
 
     applyDefaultValues: function (request, response, process) {

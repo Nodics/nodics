@@ -120,7 +120,9 @@ module.exports = {
 
     toObjectId: function (schemaModel, value) {
         let modelHandlerName = schemaModel.dataBase.getOptions().modelHandler;
-        if (!UTILS.isObjectId(value) && SERVICE[modelHandlerName] && SERVICE[modelHandlerName].toObjectId) {
+        if (UTILS.isObject(value)) {
+            return value;
+        } else if (!UTILS.isObjectId(value) && SERVICE[modelHandlerName] && SERVICE[modelHandlerName].toObjectId) {
             return SERVICE[modelHandlerName].toObjectId(value);
         } else {
             return value;

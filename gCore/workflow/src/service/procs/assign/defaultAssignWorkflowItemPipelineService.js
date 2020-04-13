@@ -152,22 +152,37 @@ module.exports = {
         }
     },
     handleError: function (request, response, process) {
-        if (!response.error || response.error.isProcessed()) {
+        if (!response.error || response.error.isProcessed() || !request.workflowItem || !request.workflowHead || !request.workflowAction) {
             SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
         } else {
-            SERVICE.DefaultWorkflowErrorActionService.handleErrorProcess(request, response).then(success => {
-                if (success instanceof Array) {
-                    success.forEach(error => {
-                        response.error.add(error);
+            try {
+                let handler = request.workflowAction.errorHandler || CONFIG.get('workflow').defaultErrorHandler;
+                let serviceName = handler.substring(0, handler.lastIndexOf('.'));
+                let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
+                if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
+                    SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response).then(success => {
+                        response.error.setProcessed(true);
+                        SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
+                    }).catch(error => {
+                        response.error.setProcessed(true);
+                        SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
                     });
                 } else {
-                    response.error.add(success);
+                    if (response.error) {
+                        response.error.add(new CLASSES.WorkflowError('ERR_WF_00002', 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response)'));
+                    } else {
+                        response.error = new CLASSES.WorkflowError('ERR_WF_00002', 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response)');
+                    }
+                    SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
                 }
-                response.error.setProcessed(true);
+            } catch (error) {
+                if (response.error) {
+                    response.error.add(error);
+                } else {
+                    response.error = error;
+                }
                 SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
-            }).catch(error => {
-                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
-            });
+            }
         }
     }
 };

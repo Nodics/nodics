@@ -341,6 +341,124 @@ module.exports = {
         }
     },
 
+    pauseWorkflowItemPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowItemPipelineService.validateRequest',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowItemPipelineService.buildQuery',
+                success: 'prepareResponse'
+            },
+            prepareResponse: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowItemPipelineService.prepareResponse',
+                success: 'prePauseInterceptors'
+            },
+            prePauseInterceptors: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowItemPipelineService.prePauseInterceptors',
+                success: 'prePauseValidators'
+            },
+            prePauseValidators: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowItemPipelineService.prePauseValidators',
+                success: 'updateWorkflowItems'
+            },
+            updateWorkflowItems: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowItemPipelineService.updateWorkflowItems',
+                success: 'postPauseValidators'
+            },
+            postPauseValidators: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowItemPipelineService.postPauseValidators',
+                success: 'postPauseInterceptors'
+            },
+            postPauseInterceptors: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowItemPipelineService.postPauseInterceptors',
+                success: 'triggerPauseEvent'
+            },
+            triggerPauseEvent: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowItemPipelineService.triggerPauseEvent',
+                success: 'successEnd'
+            }
+        }
+    },
+
+    resumeWorkflowItemPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowItemPipelineService.validateRequest',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowItemPipelineService.buildQuery',
+                success: 'prepareResponse'
+            },
+            prepareResponse: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowItemPipelineService.prepareResponse',
+                success: 'preResumeInterceptors'
+            },
+            preResumeInterceptors: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowItemPipelineService.preResumeInterceptors',
+                success: 'preResumeValidators'
+            },
+            preResumeValidators: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowItemPipelineService.preResumeValidators',
+                success: 'updateWorkflowItems'
+            },
+            updateWorkflowItems: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowItemPipelineService.updateWorkflowItems',
+                success: 'postResumeValidators'
+            },
+            postResumeValidators: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowItemPipelineService.postResumeValidators',
+                success: 'postResumeInterceptors'
+            },
+            postResumeInterceptors: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowItemPipelineService.postResumeInterceptors',
+                success: 'triggerPauseEvent'
+            },
+            triggerPauseEvent: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowItemPipelineService.triggerPauseEvent',
+                success: 'successEnd'
+            }
+        }
+    },
+
     performWorkflowActionPipeline: {
         startNode: "validateRequest",
         hardStop: true,

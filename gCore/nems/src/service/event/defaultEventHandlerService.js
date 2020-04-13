@@ -214,19 +214,27 @@ module.exports = {
                     let target = targets[counter];
                     target.logs = target.logs || [];
                     if (!target.state || target.state === ENUMS.EventState.ERROR.key) {
-                        let finalEvent = _.merge({}, event);
-                        finalEvent.target = target.target;
+                        let finalEvent = _.merge({}, {
+                            sourceName: event.sourceName,
+                            sourceId: event.sourceId,
+                            tenant: event.tenant,
+                            event: event.event,
+                            type: event.type,
+                            data: event.data,
+                        });
+                        let finalTarget = target.target;
                         let requestBody = {};
-                        if (finalEvent.targetType === ENUMS.TargetType.EXTERNAL.key) {
+                        if (event.targetType === ENUMS.TargetType.EXTERNAL.key) {
                             requestBody = SERVICE.DefaultModuleService.buildExternalRequest({
-                                header: finalEvent.target.header,
-                                uri: finalEvent.target.uri,
-                                methodName: finalEvent.target.methodName,
+                                header: finalTarget.header,
+                                uri: finalTarget.uri,
+                                methodName: finalTarget.methodName,
                                 requestBody: finalEvent,
-                                responseType: finalEvent.target.responseType,
-                                params: finalEvent.target.params
+                                responseType: finalTarget.responseType,
+                                params: finalTarget.params
                             });
                         } else {
+                            //finalEvent.target = target.target;
                             requestBody = _self.prepareURL(finalEvent, target);
                         }
                         SERVICE.DefaultModuleService.fetch(requestBody).then(success => {

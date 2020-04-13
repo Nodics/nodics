@@ -11,10 +11,10 @@
 
 module.exports = {
     workflow: {
-        workflowOperations: {
+        workflowItemOperations: {
             initItem: {
                 secured: true,
-                key: '/init',
+                key: '/item/init',
                 method: 'PUT',
                 controller: 'DefaultWorkflowController',
                 operation: 'initItem',
@@ -39,10 +39,38 @@ module.exports = {
                     }
                 }
             },
+            pauseItem: {
+                secured: true,
+                key: '/item/pause/:itemCode',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'pauseItem',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/workflow/pause/:itemCode',
+                    body: 'Comments for this action'
+                }
+            },
+            resumeItem: {
+                secured: true,
+                key: '/item/resume/:itemCode',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'resumeItem',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/workflow/resume/:itemCode',
+                    body: 'Comments for this action'
+                }
+            },
 
             nextAction: {
                 secured: true,
-                key: '/action/next/:itemCode/:actionCode',
+                key: '/item/next/action/:itemCode/:actionCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
                 operation: 'nextAction',
@@ -50,10 +78,11 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'put',
-                    url: 'http://host:port/nodics/workflow/action/next/:itemCode/:actionCode'
+                    url: 'http://host:port/nodics/workflow/item/next/action/:itemCode/:actionCode'
                 }
-            },
-
+            }
+        },
+        workflowActionOperations: {
             performAction: {
                 secured: true,
                 key: '/action/process/:itemCode',
@@ -70,7 +99,7 @@ module.exports = {
                         feedback: 'Either json object or simple message'
                     }
                 }
-            },
+            }
         }
     }
 };

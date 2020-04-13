@@ -77,7 +77,7 @@ module.exports = {
                 }
             },
             indexes: {
-                // will be composite for composite and individual
+                // will be common for composite and individual
                 common: {
 
                 },

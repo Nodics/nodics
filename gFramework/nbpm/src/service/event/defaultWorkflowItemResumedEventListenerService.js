@@ -9,8 +9,10 @@
 
  */
 
+const _ = require('lodash');
 
 module.exports = {
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -33,23 +35,22 @@ module.exports = {
         });
     },
 
-    initItem: function (request) {
-        return SERVICE.DefaultWorkflowService.initItem(request);
-    },
-
-    pauseItem: function (request) {
-        return SERVICE.DefaultWorkflowService.pauseItem(request);
-    },
-
-    resumeItem: function (request) {
-        return SERVICE.DefaultWorkflowService.resumeItem(request);
-    },
-
-    nextAction: function (request) {
-        return SERVICE.DefaultWorkflowService.nextAction(request);
-    },
-
-    performAction: function (request) {
-        return SERVICE.DefaultWorkflowService.performAction(request);
-    },
+    handleWorkflowItemResumedEvent: function (event, callback) {
+        try {
+            SERVICE.DefaultPipelineService.start('defaultWorkflowItemResumedPipeline', {
+                tenant: event.tenant,
+                event: event,
+                data: event.data
+            }, {}).then(success => {
+                callback(null, {
+                    code: 'SUC_EVNT_00000',
+                    message: success
+                });
+            }).catch(error => {
+                callback(new CLASSES.EventError(error, 'Unable to handle item resumed event', 'ERR_EVNT_00000'));
+            });
+        } catch (error) {
+            callback(new CLASSES.EventError(error, 'Unable to handle item resumed event', 'ERR_EVNT_00000'));
+        }
+    }
 };

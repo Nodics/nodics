@@ -103,8 +103,13 @@ module.exports = {
                 if (listener.moduleName === 'common') {
                     _.each(NODICS.getModules(), (moduleObject, moduleName) => {
                         if (moduleObject.eventService) {
-                            moduleObject.eventService.removeListener(listener.event, () => {
-                                _self.LOG.debug('Listener has been removed : ' + listener.event);
+                            moduleObject.eventService.disableListner(listener.event, (error, success) => {
+                                if (error) {
+                                    _self.LOG.error('Failed removing listener : ' + listener.event);
+                                    _self.LOG.error(error);
+                                } else {
+                                    _self.LOG.debug('Listener has been removed : ' + listener.event);
+                                }
                             });
                         }
                     });
@@ -112,8 +117,13 @@ module.exports = {
                 } else {
                     let eventService = NODICS.getModule(listener.moduleName).eventService;
                     if (eventService) {
-                        eventService.removeListener(listener.event, () => {
-                            _self.LOG.debug('Listener has been removed : ' + listener.event);
+                        eventService.disableListner(listener.event, (error, success) => {
+                            if (error) {
+                                _self.LOG.error('Failed removing listener : ' + listener.event);
+                                _self.LOG.error(error);
+                            } else {
+                                _self.LOG.debug('Listener has been removed : ' + listener.event);
+                            }
                         });
                     }
                     resolve('Event listener: ' + listener.event + ' successfully removed from module: ' + listener.moduleName);
@@ -141,6 +151,7 @@ module.exports = {
     },
 
     registerCommonEvents: function (moduleName, commonListeners) {
+        let _self = this;
         let moduleObject = NODICS.getModule(moduleName);
         if (!moduleObject.eventService) moduleObject.eventService = new CLASSES.EventService();
         if (commonListeners) {
@@ -150,8 +161,15 @@ module.exports = {
                     listenerDefinition.moduleName = moduleName;
                     if (listenerDefinition.active && !Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
                         moduleObject.eventService.registerListener(listenerDefinition);
-                    } else if (Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
-                        moduleObject.eventService.removeListener(listenerDefinition);
+                    } else if (!listenerDefinition.active && Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
+                        moduleObject.eventService.disableListner(listenerDefinition.event, (error, success) => {
+                            if (error) {
+                                _self.LOG.error('Failed removing listener : ' + listener.event);
+                                _self.LOG.error(error);
+                            } else {
+                                _self.LOG.debug('Listener has been removed : ' + listener.event);
+                            }
+                        });
                     }
                 }
             });
@@ -159,6 +177,7 @@ module.exports = {
     },
 
     registerModuleEvents: function (moduleName, moduleListeners) {
+        let _self = this;
         let moduleObject = NODICS.getModule(moduleName);
         if (!moduleObject.eventService) moduleObject.eventService = new CLASSES.EventService();
         if (moduleListeners) {
@@ -168,8 +187,15 @@ module.exports = {
                     listenerDefinition.moduleName = moduleName;
                     if (listenerDefinition.active && !Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
                         moduleObject.eventService.registerListener(listenerDefinition);
-                    } else if (Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
-                        moduleObject.eventService.removeListener(listenerDefinition);
+                    } else if (!listenerDefinition.active && Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
+                        moduleObject.eventService.disableListner(listenerDefinition.event, (error, success) => {
+                            if (error) {
+                                _self.LOG.error('Failed removing listener : ' + listener.event);
+                                _self.LOG.error(error);
+                            } else {
+                                _self.LOG.debug('Listener has been removed : ' + listener.event);
+                            }
+                        });
                     }
                 }
             });
@@ -179,13 +205,14 @@ module.exports = {
     handleEvent: function (request) {
         let _self = this;
         let event = request.event;
+        event.moduleName = request.moduleName;
         return new Promise((resolve, reject) => {
-            if (!NODICS.getModule(event.target)) {
-                reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Could not find target module, whithin system: ' + event.target));
-            } else if (!NODICS.getModule(event.target).eventService) {
-                reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Event service has not been initialized for module: ' + event.target));
+            if (!NODICS.getModule(event.moduleName)) {
+                reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Could not find moduleName, whithin system: ' + event.moduleName));
+            } else if (!NODICS.getModule(event.moduleName).eventService) {
+                reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Event service has not been initialized for module: ' + event.moduleName));
             } else {
-                let eventService = NODICS.getModule(event.target).eventService;
+                let eventService = NODICS.getModule(event.moduleName).eventService;
                 if (eventService && eventService.eventNames() &&
                     eventService.eventNames().length > 0 &&
                     eventService.eventNames().includes(event.event)) {

@@ -64,6 +64,34 @@ module.exports = {
         }
     },
 
+    pauseItem: function (request, callback) {
+        request.itemCode = request.httpRequest.params.itemCode;
+        request.comment = request.httpRequest.body.comment;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.pauseItem(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.pauseItem(request);
+        }
+    },
+
+    resumeItem: function (request, callback) {
+        request.itemCode = request.httpRequest.params.itemCode;
+        request.comment = request.httpRequest.body.comment;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.resumeItem(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.resumeItem(request);
+        }
+    },
+
     nextAction: function (request, callback) {
         request.itemCode = request.httpRequest.params.itemCode;
         request.actionCode = request.httpRequest.params.actionCode;

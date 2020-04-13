@@ -33,6 +33,41 @@ module.exports = {
             }
         }
     },
+
+    modelQueryBuilderPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultModelQueryBuilderPipelineService.validateRequest',
+                success: 'buildFromOriginalQuery'
+            },
+            buildFromOriginalQuery: {
+                type: 'function',
+                handler: 'DefaultModelQueryBuilderPipelineService.buildFromOriginalQuery',
+                success: 'skipForCustomQuery'
+            },
+            skipForCustomQuery: {
+                type: 'function',
+                handler: 'DefaultModelQueryBuilderPipelineService.skipForCustomQuery',
+                success: 'buildIdQuery'
+            },
+            buildIdQuery: {
+                type: 'function',
+                handler: 'DefaultModelQueryBuilderPipelineService.buildIdQuery',
+                success: 'buildPrimeryQuery'
+            },
+            buildPrimeryQuery: {
+                type: 'function',
+                handler: 'DefaultModelQueryBuilderPipelineService.buildPrimeryQuery',
+                success: 'successEnd'
+            }
+        }
+    },
+
     modelsGetInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -147,8 +182,8 @@ module.exports = {
                 success: 'buildQuery'
             },
             buildQuery: {
-                type: 'function',
-                handler: 'DefaultModelSaveInitializerService.buildQuery',
+                type: 'process',
+                handler: 'modelQueryBuilderPipeline',
                 success: 'applyDefaultValues'
             },
             applyDefaultValues: {

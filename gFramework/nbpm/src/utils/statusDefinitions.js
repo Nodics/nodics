@@ -62,5 +62,9 @@ module.exports = {
     ERR_WF_00010: {
         code: '200',
         message: 'No data found'
+    },
+    ERR_WF_00011: {
+        code: '200',
+        message: 'Item is not active or paused'
     }
 };

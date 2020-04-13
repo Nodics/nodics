@@ -287,7 +287,7 @@ module.exports = {
 
     },
     handleError: function (request, response, process) {
-        if (!response.error || response.error.isProcessed()) {
+        if (!response.error || response.error.isProcessed() || !request.workflowItem || !request.workflowHead || !request.workflowAction) {
             SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
         } else {
             try {
