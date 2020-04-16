@@ -89,7 +89,7 @@ module.exports = {
         workflowActionOperations: {
             performAction: {
                 secured: true,
-                accessGroups: ['userGroup'],
+                accessGroups: ['workflowUserGroup'],
                 key: '/action/process/:itemCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',

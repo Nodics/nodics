@@ -114,9 +114,6 @@ module.exports = {
                 code: 'SUC_DEL_00000',
                 result: result
             };
-            console.log('-------------------- Item Removed Result ------------------------: ' + request.options.returnModified);
-            console.log(response.success.result);
-            console.log('-----------------------------------------------------------------');
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);

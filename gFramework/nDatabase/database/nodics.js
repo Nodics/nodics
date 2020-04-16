@@ -55,14 +55,14 @@ module.exports = {
             }).then(() => {
                 return new Promise((resolve, reject) => {
                     if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                        let defaultAuthDetail = CONFIG.get('defaultAuthDetail') || {};
-                        let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
-                            entCode: defaultAuthDetail.entCode,
-                            tenant: defaultAuthDetail.tenant,
-                            apiKey: CONFIG.get('defaultAuthDetail').apiKey,
-                            lifetime: true
-                        });
-                        NODICS.addInternalAuthToken('default', authToken);
+                        // let defaultAuthDetail = CONFIG.get('defaultAuthDetail') || {};
+                        // let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
+                        //     entCode: defaultAuthDetail.entCode,
+                        //     tenant: defaultAuthDetail.tenant,
+                        //     apiKey: CONFIG.get('defaultAuthDetail').apiKey,
+                        //     lifetime: true
+                        // });
+                        // NODICS.addInternalAuthToken('default', authToken);
                         resolve(true);
                     } else {
                         resolve(true);

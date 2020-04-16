@@ -51,19 +51,6 @@ module.exports = {
                 return SERVICE.DefaultScriptsHandlerService.executePostScripts();
             }).then(() => {
                 return new Promise((resolve, reject) => {
-                    if (!NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                        SERVICE.DefaultInternalAuthenticationProviderService.fetchInternalAuthToken('default').then(success => {
-                            NODICS.addInternalAuthToken('default', success.authToken);
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        resolve(true);
-                    }
-                });
-            }).then(() => {
-                return new Promise((resolve, reject) => {
                     if (NODICS.isInitRequired()) {
                         SERVICE.DefaultImportService.importInitData({
                             tenant: 'default',
@@ -76,6 +63,34 @@ module.exports = {
                         });
                     } else {
                         resolve(true);
+                    }
+                });
+            }).then(() => {
+                return new Promise((resolve, reject) => {
+                    if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+                        let defaultAuthDetail = CONFIG.get('defaultAuthDetail') || {};
+                        SERVICE.DefaultEmployeeService.findByAPIKey({
+                            tenant: defaultAuthDetail.tenant,
+                            apiKey: CONFIG.get('defaultAuthDetail').apiKey
+                        }).then(employee => {
+                            NODICS.addInternalAuthToken('default', SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
+                                entCode: defaultAuthDetail.entCode,
+                                tenant: defaultAuthDetail.tenant,
+                                apiKey: employee.apiKey,
+                                userGroups: employee.userGroupCodes,
+                                lifetime: true
+                            }));
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        SERVICE.DefaultInternalAuthenticationProviderService.fetchInternalAuthToken('default').then(success => {
+                            NODICS.addInternalAuthToken('default', success.authToken);
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
                     }
                 });
             }).then(() => {
