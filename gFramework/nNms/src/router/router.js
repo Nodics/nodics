@@ -14,7 +14,7 @@ module.exports = {
         nodeStateChanges: {
             nodeActivatedGet: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/node/active/:nodeId',
                 method: 'GET',
                 controller: 'DefaultNodeManagerController',
@@ -29,7 +29,7 @@ module.exports = {
 
             requestResponsibilityGet: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/node/request/responsibility/:nodeId',
                 method: 'GET',
                 controller: 'DefaultNodeManagerController',
@@ -46,7 +46,7 @@ module.exports = {
         stopNodeHealthCheck: {
             stopNodeHealthCheckGet: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/node/health/check/stop',
                 method: 'GET',
                 controller: 'DefaultNodeManagerController',

@@ -14,7 +14,7 @@ module.exports = {
         loadDefaults: {
             getInternalAuthToken: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/auth/token/:tntCode',
                 method: 'GET',
                 controller: 'DefaultInternalAuthenticationProviderController',
@@ -31,7 +31,7 @@ module.exports = {
             },
             getEnterprise: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 cache: {
                     enabled: false,
                     ttl: 20
@@ -49,7 +49,7 @@ module.exports = {
             },
             getTenants: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 cache: {
                     enabled: true,
                     ttl: 200
@@ -69,7 +69,7 @@ module.exports = {
         authenticate: {
             authenticateEmployee: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/employee/authenticate',
                 method: 'POST',
                 handler: 'DefaultAuthenticationProviderController',
@@ -83,7 +83,7 @@ module.exports = {
             },
             authenticateCustomer: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/customer/authenticate',
                 method: 'POST',
                 handler: 'DefaultAuthenticationProviderController',
@@ -100,7 +100,7 @@ module.exports = {
         authorize: {
             authorizeToken: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/token/authorize',
                 method: 'POST',
                 handler: 'DefaultAuthorizationProviderController',

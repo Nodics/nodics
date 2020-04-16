@@ -264,7 +264,6 @@ module.exports = {
                 query: header.query,
                 models: models
             }).then(success => {
-                console.log(success);
                 if (success && success.result && success.result.length > 0) {
                     resolve(success.result);
                 } else if (success && success.errors && success.errors.length > 0) {

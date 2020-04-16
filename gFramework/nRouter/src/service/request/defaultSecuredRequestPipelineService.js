@@ -30,7 +30,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     authorizeAPIKey: function (request, response, process) {
         if (request.apiKey) {
             this.LOG.debug('Authorizing api key : ' + request.apiKey);
@@ -47,7 +46,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     authorizeAuthToken: function (request, response, process) {
         if (request.authToken) {
             this.LOG.debug('Authorizing auth token : ' + request.authToken);
@@ -73,7 +71,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     validateRequestData: function (request, response, process) {
         if (!request.entCode) {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002', 'Invalid secured request'));

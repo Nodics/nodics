@@ -14,7 +14,7 @@ module.exports = {
         workflow2SchemaUpdate: {
             saveWorkflow2Schema: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/workflow/to/schema',
                 method: 'PUT',
                 controller: 'DefaultWorkflow2SchemaController',

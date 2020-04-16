@@ -24,7 +24,7 @@ module.exports = {
             password: 'nodics',
             active: true
         },
-        userGroups: ['employeeUserGroup'],
+        userGroups: ['customerUserGroup'],
         addresses: ['defaultCustomerAddress'],
         contacts: ['defaultCustomerContact']
     }

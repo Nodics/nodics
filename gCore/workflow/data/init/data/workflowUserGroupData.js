@@ -14,7 +14,7 @@ module.exports = {
         code: 'workflowUserGroup',
         name: 'workflowUserGroup',
         active: true,
-        parentGroups: ['adminGroup']
+        parentGroups: ['employeeUserGroup']
     },
     record1: {
         code: 'workflowCreaterGroup',

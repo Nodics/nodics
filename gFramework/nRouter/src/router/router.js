@@ -17,7 +17,7 @@ module.exports = {
         commonGetterOperation: {
             get: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 cache: {
                     enabled: true,
                     ttl: 180,
@@ -35,7 +35,7 @@ module.exports = {
             },
             post: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 cache: {
                     enabled: false,
                     ttl: 20
@@ -61,7 +61,7 @@ module.exports = {
             },
             getById: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 cache: {
                     enabled: false,
                     ttl: 60
@@ -79,7 +79,7 @@ module.exports = {
             },
             getByCode: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 cache: {
                     enabled: false,
                     ttl: 20
@@ -99,7 +99,7 @@ module.exports = {
         commonRemoveOperations: {
             remove: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/schemaName',
                 method: 'DELETE',
                 controller: 'DefaultctrlName',
@@ -119,7 +119,7 @@ module.exports = {
             },
             removeById: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/schemaName/id/:id',
                 method: 'DELETE',
                 controller: 'DefaultctrlName',
@@ -133,7 +133,7 @@ module.exports = {
             },
             removeByIds: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/schemaName/id',
                 method: 'DELETE',
                 controller: 'DefaultctrlName',
@@ -153,7 +153,7 @@ module.exports = {
             },
             removeByCode: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/schemaName/code/:code',
                 method: 'DELETE',
                 controller: 'DefaultctrlName',
@@ -167,7 +167,7 @@ module.exports = {
             },
             removeByCodes: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/schemaName/code',
                 method: 'DELETE',
                 controller: 'DefaultctrlName',
@@ -189,7 +189,7 @@ module.exports = {
         commonSaveOperations: {
             save: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/schemaName',
                 method: 'PUT',
                 controller: 'DefaultctrlName',
@@ -204,7 +204,7 @@ module.exports = {
             },
             saveAll: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/schemaName/all',
                 method: 'PUT',
                 controller: 'DefaultctrlName',
@@ -221,7 +221,7 @@ module.exports = {
         commonUpdateOperations: {
             update: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/schemaName',
                 method: 'PATCH',
                 controller: 'DefaultctrlName',
@@ -241,7 +241,7 @@ module.exports = {
         pingMe: {
             iAmLive: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/ping',
                 method: 'GET',
                 handler: 'DefaultPingMeController',
@@ -259,7 +259,7 @@ module.exports = {
         flushCache: {
             flushKey: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/cache/:channelName/flush/key/:key',
                 method: 'GET',
                 controller: 'DefaultCacheController',
@@ -273,7 +273,7 @@ module.exports = {
             },
             flushPrefix: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/cache/:channelName/flush/prefix/:prefix',
                 method: 'GET',
                 controller: 'DefaultCacheController',
@@ -287,7 +287,7 @@ module.exports = {
             },
             flushAPIAll: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/cache/:channelName/flush',
                 method: 'GET',
                 controller: 'DefaultCacheController',
@@ -301,7 +301,7 @@ module.exports = {
             },
             flushAPIKeys: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/cache/:channelName/flush',
                 method: 'POST',
                 controller: 'DefaultCacheController',
@@ -318,7 +318,7 @@ module.exports = {
         updateRouterCacheConfig: {
             apiConfig: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/cache/api',
                 method: 'POST',
                 controller: 'DefaultCacheController',
@@ -343,7 +343,7 @@ module.exports = {
         updateSchemaCacheConfig: {
             itemConfig: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/cache/item',
                 method: 'POST',
                 controller: 'DefaultCacheController',

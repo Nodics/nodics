@@ -52,26 +52,6 @@ module.exports = {
                 return SERVICE.DefaultDatabaseModelHandlerService.buildModelsForTenant();
             }).then(() => {
                 return SERVICE.DefaultDatabaseConnectionHandlerService.isInitRequired();
-                //return Promise.resolve(true);
-            }).then(() => {
-                return new Promise((resolve, reject) => {
-                    // SERVICE.DefaultInterceptorService.get({
-                    //     tenant: 'default'
-                    // }).then(response => {
-                    //     if (response.success && response.result.length > 0) {
-                    //         let interceptors = {};
-                    //         response.result.forEach(interceptor => {
-                    //             interceptors[interceptor.code] = interceptor;
-                    //         });
-                    //         SERVICE.DefaultInterceptorService.loadRawInterceptors(interceptors);
-                    //         SERVICE.DefaultDatabaseConfigurationService.setSchemaInterceptors({});
-                    //     }
-                    //     resolve(true);
-                    // }).catch(error => {
-                    //     reject(error);
-                    // });
-                    resolve(true);
-                });
             }).then(() => {
                 return new Promise((resolve, reject) => {
                     if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {

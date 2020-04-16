@@ -14,7 +14,7 @@ module.exports = {
         moduleEventRouters: {
             eventTriggered: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/event/handle',
                 method: 'POST',
                 controller: 'DefaultEventController',

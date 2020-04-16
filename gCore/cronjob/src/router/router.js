@@ -14,7 +14,7 @@ module.exports = {
         createJob: {
             createGetJob: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/create',
                 method: 'GET',
                 controller: 'DefaultCronJobController',
@@ -29,7 +29,7 @@ module.exports = {
             },
             createPostJob: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/create',
                 method: 'POST',
                 controller: 'DefaultCronJobController',
@@ -51,7 +51,7 @@ module.exports = {
             },
             createGetJobByCode: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/create/:jobCode',
                 method: 'GET',
                 controller: 'DefaultCronJobController',
@@ -69,7 +69,7 @@ module.exports = {
         updateJob: {
             updateGetJob: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/update',
                 method: 'GET',
                 controller: 'DefaultCronJobController',
@@ -84,7 +84,7 @@ module.exports = {
             },
             updatePostJob: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/update',
                 method: 'POST',
                 controller: 'DefaultCronJobController',
@@ -106,7 +106,7 @@ module.exports = {
             },
             updateGetJobByCode: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/update/:jobCode',
                 method: 'GET',
                 controller: 'DefaultCronJobController',
@@ -124,7 +124,7 @@ module.exports = {
         runJob: {
             runGetJobByCode: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/run/:jobCode',
                 method: 'GET',
                 controller: 'DefaultCronJobController',
@@ -142,7 +142,7 @@ module.exports = {
         startJob: {
             startGetJobByCode: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/start/:jobCode',
                 method: 'GET',
                 controller: 'DefaultCronJobController',
@@ -157,7 +157,7 @@ module.exports = {
             },
             startPostJob: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/start',
                 method: 'POST',
                 controller: 'DefaultCronJobController',
@@ -175,7 +175,7 @@ module.exports = {
         stopJob: {
             stopGetJobByCode: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/stop/:jobCode',
                 method: 'GET',
                 controller: 'DefaultCronJobController',
@@ -190,7 +190,7 @@ module.exports = {
             },
             stopPostJob: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/stop',
                 method: 'POST',
                 controller: 'DefaultCronJobController',
@@ -208,7 +208,7 @@ module.exports = {
         removeJob: {
             removeGetJobByCode: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/remove/:jobCode',
                 method: 'GET',
                 controller: 'DefaultCronJobController',
@@ -223,7 +223,7 @@ module.exports = {
             },
             removePostJob: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/remove',
                 method: 'POST',
                 controller: 'DefaultCronJobController',
@@ -241,7 +241,7 @@ module.exports = {
         pauseJob: {
             pauseGetJobByCode: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/pause/:jobCode',
                 method: 'GET',
                 controller: 'DefaultCronJobController',
@@ -256,7 +256,7 @@ module.exports = {
             },
             pausePostJob: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/pause',
                 method: 'POST',
                 controller: 'DefaultCronJobController',
@@ -274,7 +274,7 @@ module.exports = {
         resumeJob: {
             resumeGetJobByCode: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/resume/:jobCode',
                 method: 'GET',
                 controller: 'DefaultCronJobController',
@@ -289,7 +289,7 @@ module.exports = {
             },
             resumePostJob: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/job/resume',
                 method: 'POST',
                 controller: 'DefaultCronJobController',

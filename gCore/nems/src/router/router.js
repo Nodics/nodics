@@ -14,7 +14,7 @@ module.exports = {
         processEvent: {
             process: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/event/process',
                 method: 'GET',
                 controller: 'DefaultEventHandlerController',
@@ -28,7 +28,7 @@ module.exports = {
             },
             resetAll: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/event/reset',
                 method: 'GET',
                 controller: 'DefaultEventHandlerController',
@@ -43,7 +43,7 @@ module.exports = {
 
             resetQuery: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/event/reset',
                 method: 'POST',
                 controller: 'DefaultEventHandlerController',

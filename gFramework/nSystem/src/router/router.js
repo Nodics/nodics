@@ -36,7 +36,7 @@ module.exports = {
         fileResponses: {
             returnFileContent: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/file/data',
                 method: 'POST',
                 controller: 'DefaultFileController',
@@ -55,7 +55,7 @@ module.exports = {
             },
             downloadFile: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/file/download',
                 method: 'POST',
                 controller: 'DefaultFileController',
@@ -77,7 +77,7 @@ module.exports = {
         importInitData: {
             importInitPost: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/import/init',
                 method: 'POST',
                 controller: 'DefaultImportController',
@@ -98,7 +98,7 @@ module.exports = {
         importCoreData: {
             importCorePost: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/import/core',
                 method: 'POST',
                 controller: 'DefaultImportController',
@@ -119,7 +119,7 @@ module.exports = {
         importSampleData: {
             importSamplePost: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/import/sample',
                 method: 'POST',
                 controller: 'DefaultImportController',
@@ -140,7 +140,7 @@ module.exports = {
         importLocalData: {
             importLocalPost: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/import/local',
                 method: 'POST',
                 controller: 'DefaultImportController',
@@ -166,7 +166,7 @@ module.exports = {
         changeLogLevel: {
             changeLevelPost: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/log/level',
                 method: 'POST',
                 controller: 'DefaultLogController',
@@ -187,7 +187,7 @@ module.exports = {
         changeConfig: {
             changeConfigPost: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/config',
                 method: 'POST',
                 controller: 'DefaultConfigurationController',
@@ -205,7 +205,7 @@ module.exports = {
         updateAllIndexes: {
             updateAllModulesIndexes: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/schema/indexes/all',
                 method: 'GET',
                 controller: 'DefaultSchemaIndexController',
@@ -223,7 +223,7 @@ module.exports = {
         testRunner: {
             runAllUTest: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/test/runUTest',
                 method: 'GET',
                 controller: 'TestExecutionController',
@@ -237,7 +237,7 @@ module.exports = {
             },
             runAllNTest: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/test/runNTest',
                 method: 'GET',
                 controller: 'TestExecutionController',
@@ -255,7 +255,7 @@ module.exports = {
         dataExport: {
             exportGet: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/export',
                 method: 'GET',
                 controller: 'DataExportController',
@@ -269,7 +269,7 @@ module.exports = {
             },
             exportPost: {
                 secured: true,
-                accessGroups: ['adminGroup'],
+                accessGroups: ['userGroup'],
                 key: '/export',
                 method: 'POST',
                 controller: 'DataExportController',

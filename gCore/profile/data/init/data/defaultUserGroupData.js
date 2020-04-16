@@ -28,8 +28,8 @@ module.exports = {
         parentGroups: ['userGroup']
     },
     record3: {
-        code: 'employeeUserGroup',
-        name: 'employeeUserGroup',
+        code: 'customerUserGroup',
+        name: 'customerUserGroup',
         active: true,
         parentGroups: ['userGroup']
     },
@@ -37,7 +37,7 @@ module.exports = {
         code: 'contentUserGroup',
         name: 'contentUserGroup',
         active: true,
-        parentGroups: ['adminGroup']
+        parentGroups: ['employeeUserGroup']
     },
     record5: {
         code: 'contentCreatorUserGroup',
