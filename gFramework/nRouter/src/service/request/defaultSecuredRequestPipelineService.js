@@ -53,11 +53,13 @@ module.exports = {
             this.LOG.debug('Authorizing auth token : ' + request.authToken);
             SERVICE.DefaultAuthorizationProviderService.authorizeToken(request).then(success => {
                 try {
+                    console.log(success);
                     if (success.result && !UTILS.isBlank(success.result)) {
                         request.entCode = success.result.entCode;
                         request.tenant = success.result.tenant;
                         request.loginId = success.result.loginId;
                         request.refreshToken = success.result.refreshToken;
+                        request.userGroups = success.result.userGroups;
                         process.nextSuccess(request, response);
                     } else {
                         process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00001'));
@@ -81,5 +83,8 @@ module.exports = {
         } else {
             process.nextSuccess(request, response);
         }
+    },
+    checkAccess: function (request, response, process) {
+        process.nextSuccess(request, response);
     },
 };

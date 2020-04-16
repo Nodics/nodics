@@ -263,11 +263,18 @@ module.exports = {
                 tenant: request.tenant,
                 query: header.query,
                 models: models
-            }).then(result => {
-                if (result && result.result.length > 0) {
-                    resolve(result.result);
-                } else if (result && result.errors.length > 0) {
-                    reject(new CLASSES.DataImportError(result.errors[0]));
+            }).then(success => {
+                console.log(success);
+                if (success && success.result && success.result.length > 0) {
+                    resolve(success.result);
+                } else if (success && success.errors && success.errors.length > 0) {
+                    let error = new CLASSES.DataImportError(success.errors[0]);
+                    if (success.errors.length > 1) {
+                        for (let count = 1; count < success.errors.length; count++) {
+                            error.add(new CLASSES.DataImportError(success.errors[count]));
+                        }
+                    }
+                    reject(error);
                 } else {
                     reject(new CLASSES.DataImportError('ERR_IMP_00001', 'Could not found any response from data access layer'));
                 }

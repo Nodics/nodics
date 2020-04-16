@@ -146,7 +146,6 @@ module.exports = {
 
     handleNestedModel: function (request, response, property) {
         return new Promise((resolve, reject) => {
-
             try {
                 let model = request.model;
                 let models = model[property];

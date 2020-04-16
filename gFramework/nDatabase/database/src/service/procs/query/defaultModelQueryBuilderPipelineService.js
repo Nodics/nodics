@@ -41,6 +41,8 @@ module.exports = {
 
     buildFromOriginalQuery: function (request, response, process) {
         this.LOG.debug('Building query from original query');
+        request.query = {};
+        request.options = request.options || {};
         if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {
             request.query = this.resolveQuery(_.merge({}, request.originalQuery || {}), request.model);
             process.stop(request, response);

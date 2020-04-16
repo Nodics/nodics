@@ -9,6 +9,8 @@
 
  */
 
+const util = require('util');
+
 module.exports = {
 
     updateAuthData: function (options) {
@@ -119,6 +121,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
+                let userGroupCodes = UTILS.getUserGroupCodes(options.person.userGroups);
                 SERVICE.DefaultUserStateService.findUserState({
                     tenant: options.enterprise.tenant.code,
                     loginId: options.person.loginId,
@@ -139,14 +142,16 @@ module.exports = {
                                     tenant: options.enterprise.tenant.code,
                                     loginId: options.person.loginId,
                                     password: options.request.password,
-                                    type: options.type
+                                    type: options.type,
+                                    userGroups: userGroupCodes
                                 }).then(refreshToken => {
                                     let authToken = _self.generateAuthToken({
                                         entCode: options.enterprise.code,
                                         tenant: options.enterprise.tenant.code,
                                         loginId: options.person.loginId,
                                         tokenLife: options.person.tokenLife,
-                                        refreshToken: refreshToken
+                                        refreshToken: refreshToken,
+                                        userGroups: userGroupCodes
                                     });
                                     resolve({
                                         authToken: authToken
@@ -183,7 +188,8 @@ module.exports = {
                     tenant: options.tenant,
                     loginId: options.loginId,
                     password: options.password,
-                    type: options.type
+                    type: options.type,
+                    userGroups: options.userGroups
                 }).then(success => {
                     resolve(refreshToken);
                 }).catch(error => {

@@ -98,6 +98,11 @@ module.exports = {
             validateRequestData: {
                 type: 'function',
                 handler: 'DefaultSecuredRequestPipelineService.validateRequestData',
+                success: 'checkAccess'
+            },
+            checkAccess: {
+                type: 'function',
+                handler: 'DefaultSecuredRequestPipelineService.checkAccess',
                 success: 'successEnd'
             }
         }

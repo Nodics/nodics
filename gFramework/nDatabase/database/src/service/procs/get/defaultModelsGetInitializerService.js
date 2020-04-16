@@ -253,10 +253,11 @@ module.exports = {
                 let refSchema = request.schemaModel.rawSchema.refSchema;
                 let propertyObject = refSchema[property];
                 let query = {};
-                let options = {};
+                let options = request.options || {};
                 if (request.options && request.options.projection) {
                     options.projection = request.options.projection;
                 }
+                options.recursive = options.recursive || false;
                 if (propertyObject.type === 'one') {
                     if (propertyObject.propertyName === '_id') {
                         query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property]);

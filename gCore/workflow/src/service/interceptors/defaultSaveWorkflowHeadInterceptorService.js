@@ -32,11 +32,8 @@ module.exports = {
         });
     },
 
-    handlePreSaveAction: function (request, responce) {
+    handlePreSaveHead: function (request, responce) {
         return new Promise((resolve, reject) => {
-            if (request.model.position === ENUMS.WorkflowActionPosition.END.key && !request.model.successHandler) {
-                request.model.successHandler = CONFIG.get('workflow').defaultSuccessHandler;
-            }
             if (!request.model.errorHandler) {
                 request.model.errorHandler = CONFIG.get('workflow').defaultErrorHandler;
             }

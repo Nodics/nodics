@@ -285,23 +285,24 @@ module.exports = {
             model: true,
             service: true,
             router: true,
+            refSchema: {
+                parentGroups: {
+                    schemaName: "userGroup",
+                    type: 'many',
+                    propertyName: 'code'
+                },
+            },
             definition: {
                 name: {
                     type: 'string',
                     required: true,
                     description: 'Name of the user group'
-                }
-            },
-            indexes: {
-                individual: {
-                    indexName: {
-                        name: 'name',
-                        enabled: true,
-                        options: {
-                            unique: true
-                        }
-                    }
-                }
+                },
+                parentGroups: {
+                    type: 'array',
+                    required: false,
+                    description: 'List of parent groups'
+                },
             }
         },
 

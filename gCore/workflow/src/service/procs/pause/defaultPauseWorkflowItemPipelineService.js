@@ -134,7 +134,7 @@ module.exports = {
                     event: 'itemPaused',
                     type: eventConfig.type || "SYNC",
                     data: {
-                        active: request.workflowItem.active,
+                        active: false,
                         comments: request.workflowItem.comments
                     }
                 };

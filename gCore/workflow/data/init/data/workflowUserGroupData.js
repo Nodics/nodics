@@ -11,19 +11,8 @@
 
 module.exports = {
     record0: {
-        code: 'adminGroup',
-        name: 'adminGroup',
-        active: true
-    },
-    record1: {
-        code: 'employeeGroup',
-        name: 'employeeGroup',
-        active: true,
-        parentGroups: ['adminGroup']
-    },
-    record2: {
-        code: 'customerGroup',
-        name: 'customerGroup',
+        code: 'workflowUserGroup',
+        name: 'workflowUserGroup',
         active: true,
         parentGroups: ['adminGroup']
     }

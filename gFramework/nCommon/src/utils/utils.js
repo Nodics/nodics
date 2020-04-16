@@ -207,5 +207,20 @@ module.exports = {
             responseCode: SERVICE.DefaultStatusService.get(defaultCode).code,
             message: error
         };
+    },
+
+    getUserGroupCodes: function (userGroups, codes = []) {
+        let _self = this;
+        if (userGroups && userGroups.length > 0) {
+            userGroups.forEach(userGroup => {
+                if (!codes.includes(userGroup.code)) {
+                    codes.push(userGroup.code);
+                }
+                if (userGroup.parentGroups) {
+                    _self.getUserGroupCodes(userGroup.parentGroups, codes);
+                }
+            });
+        }
+        return codes;
     }
 };

@@ -26,6 +26,7 @@ module.exports = {
             };
             if (options.loginId) payload.loginId = options.loginId;
             if (options.apiKey) payload.apiKey = options.apiKey;
+            if (options.userGroups && options.userGroups.length > 0) payload.userGroups = options.userGroups;
             token = jwt.sign(payload, CONFIG.get('jwtSecretKey') || 'nodics', jwtSignOptions);
         } catch (error) {
             throw new CLASSES.NodicsError(error, 'While generating auth token', 'ERR_AUTH_00000');

@@ -264,7 +264,12 @@ module.exports = {
                     type: 'object',
                     required: false,
                     description: 'This hold data for external system, to publish action event'
-                }
+                },
+                errorHandler: {
+                    type: 'string',
+                    required: true,
+                    description: 'Required channel name for error handler'
+                },
             }
         },
 
@@ -287,12 +292,7 @@ module.exports = {
                     type: 'string',
                     required: false,
                     description: 'Required channel name for success handler'
-                },
-                errorHandler: {
-                    type: 'string',
-                    required: true,
-                    description: 'Required channel name for error handler'
-                },
+                }
             }
         },
 

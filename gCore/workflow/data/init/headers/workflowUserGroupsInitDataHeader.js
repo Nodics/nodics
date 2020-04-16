@@ -10,21 +10,17 @@
  */
 
 module.exports = {
-    record0: {
-        code: 'adminGroup',
-        name: 'adminGroup',
-        active: true
-    },
-    record1: {
-        code: 'employeeGroup',
-        name: 'employeeGroup',
-        active: true,
-        parentGroups: ['adminGroup']
-    },
-    record2: {
-        code: 'customerGroup',
-        name: 'customerGroup',
-        active: true,
-        parentGroups: ['adminGroup']
+    profile: {
+        workflowUserGroup: {
+            options: {
+                enabled: true,
+                schemaName: 'userGroup',
+                operation: 'saveAll', //saveAll, update and saveOrUpdate
+                dataFilePrefix: 'workflowUserGroupData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
     }
 };
