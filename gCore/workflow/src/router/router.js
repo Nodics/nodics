@@ -14,6 +14,7 @@ module.exports = {
         workflowItemOperations: {
             initItem: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/item/init',
                 method: 'PUT',
                 controller: 'DefaultWorkflowController',
@@ -41,6 +42,7 @@ module.exports = {
             },
             pauseItem: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/item/pause/:itemCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
@@ -55,6 +57,7 @@ module.exports = {
             },
             resumeItem: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/item/resume/:itemCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
@@ -70,6 +73,7 @@ module.exports = {
 
             nextAction: {
                 secured: true,
+                accessGroups: ['workflowUserGroup'],
                 key: '/item/next/action/:itemCode/:actionCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
@@ -85,6 +89,7 @@ module.exports = {
         workflowActionOperations: {
             performAction: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/action/process/:itemCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',

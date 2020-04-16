@@ -121,7 +121,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                let userGroupCodes = UTILS.getUserGroupCodes(options.person.userGroups);
+                //let userGroupCodes = UTILS.getUserGroupCodes(options.person.userGroups);
                 SERVICE.DefaultUserStateService.findUserState({
                     tenant: options.enterprise.tenant.code,
                     loginId: options.person.loginId,
@@ -143,7 +143,7 @@ module.exports = {
                                     loginId: options.person.loginId,
                                     password: options.request.password,
                                     type: options.type,
-                                    userGroups: userGroupCodes
+                                    userGroups: options.person.userGroupCodes
                                 }).then(refreshToken => {
                                     let authToken = _self.generateAuthToken({
                                         entCode: options.enterprise.code,
@@ -151,7 +151,7 @@ module.exports = {
                                         loginId: options.person.loginId,
                                         tokenLife: options.person.tokenLife,
                                         refreshToken: refreshToken,
-                                        userGroups: userGroupCodes
+                                        userGroups: options.person.userGroupCodes
                                     });
                                     resolve({
                                         authToken: authToken

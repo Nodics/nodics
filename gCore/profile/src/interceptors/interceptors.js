@@ -76,7 +76,38 @@ module.exports = {
         index: 0,
         handler: 'DefaultEmployeeUpdateInterceptorService.employeePreRemove'
     },
-
+    employeeGetRecursice: {
+        type: 'schema',
+        item: 'employee',
+        trigger: 'preGet',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultEmployeeGetInterceptorService.getEmployeeRecursive'
+    },
+    employeeUserGroupCodes: {
+        type: 'schema',
+        item: 'employee',
+        trigger: 'postGet',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultEmployeeGetInterceptorService.getAllUserGroupCodes'
+    },
+    customerGetRecursice: {
+        type: 'schema',
+        item: 'customer',
+        trigger: 'preGet',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultCustomerGetInterceptorService.getCustomerRecursive'
+    },
+    customerUserGroupCodes: {
+        type: 'schema',
+        item: 'customer',
+        trigger: 'postGet',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultCustomerGetInterceptorService.getAllUserGroupCodes'
+    },
     enterprisePreSave: {
         type: 'schema',
         item: 'enterprise',

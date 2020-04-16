@@ -31,6 +31,10 @@ module.exports = {
         code: '400',
         message: 'Invalid authentication parameters'
     },
+    ERR_AUTH_00003: {
+        code: '400',
+        message: 'Access denied'
+    },
 
     ERR_LIN_00000: {
         code: '400',

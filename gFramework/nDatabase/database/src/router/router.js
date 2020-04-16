@@ -14,6 +14,7 @@ module.exports = {
         schemaIndexes: {
             updateSchemaIndexesBySchemaName: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schema/indexes/schema/:schema',
                 method: 'GET',
                 controller: 'DefaultSchemaIndexController',
@@ -27,6 +28,7 @@ module.exports = {
             },
             updateSchemaIndexesByModuleName: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schema/indexes',
                 method: 'GET',
                 controller: 'DefaultSchemaIndexController',
@@ -42,6 +44,7 @@ module.exports = {
         schemaValidation: {
             updateSchemaValidatorBySchemaName: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schema/validator/schema/:schema',
                 method: 'GET',
                 controller: 'DefaultSchemaValidatorController',
@@ -55,6 +58,7 @@ module.exports = {
             },
             updateSchemaValidatorByModuleName: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schema/validator',
                 method: 'GET',
                 controller: 'DefaultSchemaValidatorController',

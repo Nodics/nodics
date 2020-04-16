@@ -14,6 +14,7 @@ module.exports = {
         defaultDoSearch: {
             doGetRefresh: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/refresh',
                 method: 'GET',
                 controller: 'DefaultctrlName',
@@ -28,6 +29,7 @@ module.exports = {
 
             doPostRefresh: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/refresh',
                 method: 'POST',
                 controller: 'DefaultctrlName',
@@ -45,6 +47,7 @@ module.exports = {
 
             doGetCheckHealth: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/check/health',
                 method: 'GET',
                 controller: 'DefaultctrlName',
@@ -59,6 +62,7 @@ module.exports = {
 
             doPostCheckHealth: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/check/health',
                 method: 'POST',
                 controller: 'DefaultctrlName',
@@ -76,6 +80,7 @@ module.exports = {
 
             doGetExists: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/exists/id/:id',
                 method: 'GET',
                 controller: 'DefaultctrlName',
@@ -90,6 +95,7 @@ module.exports = {
 
             doPostExists: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/exists',
                 method: 'POST',
                 controller: 'DefaultctrlName',
@@ -110,6 +116,7 @@ module.exports = {
 
             doGetGet: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/get/id/:id',
                 method: 'GET',
                 controller: 'DefaultctrlName',
@@ -124,6 +131,7 @@ module.exports = {
 
             doPostGet: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/get',
                 method: 'POST',
                 controller: 'DefaultctrlName',
@@ -144,6 +152,7 @@ module.exports = {
 
             doGetSearch: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/id/:id',
                 method: 'GET',
                 controller: 'DefaultctrlName',
@@ -158,6 +167,7 @@ module.exports = {
 
             doPostSearch: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search',
                 method: 'POST',
                 controller: 'DefaultctrlName',
@@ -176,6 +186,7 @@ module.exports = {
 
             doPutSave: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search',
                 method: 'PUT',
                 controller: 'DefaultctrlName',
@@ -194,6 +205,7 @@ module.exports = {
 
             doPostBulk: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/all',
                 method: 'PUT',
                 controller: 'DefaultctrlName',
@@ -234,6 +246,7 @@ module.exports = {
 
             doGetRemove: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/id/:id',
                 method: 'DELETE',
                 controller: 'DefaultctrlName',
@@ -248,6 +261,7 @@ module.exports = {
 
             doPostRemove: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search',
                 method: 'DELETE',
                 controller: 'DefaultctrlName',
@@ -266,6 +280,7 @@ module.exports = {
 
             doGetSchema: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/schema',
                 method: 'GET',
                 controller: 'DefaultctrlName',
@@ -280,6 +295,7 @@ module.exports = {
 
             doPostSchema: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/schema',
                 method: 'POST',
                 controller: 'DefaultctrlName',
@@ -297,6 +313,7 @@ module.exports = {
 
             doGetUpdateSchema: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/schema/update',
                 method: 'GET',
                 controller: 'DefaultctrlName',
@@ -311,6 +328,7 @@ module.exports = {
 
             doPOSTUpdateSchema: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/schema/update',
                 method: 'POST',
                 controller: 'DefaultctrlName',
@@ -328,6 +346,7 @@ module.exports = {
 
             doGetRemoveIndex: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/index',
                 method: 'DELETE',
                 controller: 'DefaultctrlName',
@@ -344,6 +363,7 @@ module.exports = {
             },
             doGetIndex: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/index/:indexerCode',
                 method: 'GET',
                 controller: 'DefaultctrlName',
@@ -357,6 +377,7 @@ module.exports = {
             },
             doPostIndex: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/schemaName/search/index',
                 method: 'POST',
                 controller: 'DefaultctrlName',
@@ -378,6 +399,7 @@ module.exports = {
         commonDoSearch: {
             doGetRefresh: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/refresh',
                 method: 'GET',
                 controller: 'DefaultSearchController',
@@ -392,6 +414,7 @@ module.exports = {
 
             doPostRefresh: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/refresh',
                 method: 'POST',
                 controller: 'DefaultSearchController',
@@ -409,6 +432,7 @@ module.exports = {
 
             doGetCheckHealth: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/check/health',
                 method: 'GET',
                 controller: 'DefaultSearchController',
@@ -423,6 +447,7 @@ module.exports = {
 
             doPostCheckHealth: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/check/health',
                 method: 'POST',
                 controller: 'DefaultSearchController',
@@ -440,6 +465,7 @@ module.exports = {
 
             doGetExists: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/exists/id/:id',
                 method: 'GET',
                 controller: 'DefaultSearchController',
@@ -454,6 +480,7 @@ module.exports = {
 
             doPostExists: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/exists',
                 method: 'POST',
                 controller: 'DefaultSearchController',
@@ -474,6 +501,7 @@ module.exports = {
 
             doGetGet: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/get/id/:id',
                 method: 'GET',
                 controller: 'DefaultSearchController',
@@ -488,6 +516,7 @@ module.exports = {
 
             doPostGet: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/get',
                 method: 'POST',
                 controller: 'DefaultSearchController',
@@ -508,6 +537,7 @@ module.exports = {
 
             doGetSearch: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/id/:id',
                 method: 'GET',
                 controller: 'DefaultSearchController',
@@ -522,6 +552,7 @@ module.exports = {
 
             doPostSearch: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search',
                 method: 'POST',
                 controller: 'DefaultSearchController',
@@ -540,6 +571,7 @@ module.exports = {
 
             doPutSave: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search',
                 method: 'PUT',
                 controller: 'DefaultSearchController',
@@ -558,6 +590,7 @@ module.exports = {
 
             doPostBulk: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/all',
                 method: 'PUT',
                 controller: 'DefaultSearchController',
@@ -598,6 +631,7 @@ module.exports = {
 
             doGetRemove: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/id/:id',
                 method: 'DELETE',
                 controller: 'DefaultSearchController',
@@ -612,6 +646,7 @@ module.exports = {
 
             doPostRemove: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search',
                 method: 'DELETE',
                 controller: 'DefaultSearchController',
@@ -630,6 +665,7 @@ module.exports = {
 
             doGetSchema: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/schema',
                 method: 'GET',
                 controller: 'DefaultSearchController',
@@ -644,6 +680,7 @@ module.exports = {
 
             doPostSchema: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/schema',
                 method: 'POST',
                 controller: 'DefaultSearchController',
@@ -661,6 +698,7 @@ module.exports = {
 
             doGetUpdateSchema: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/schema/update',
                 method: 'GET',
                 controller: 'DefaultSearchController',
@@ -675,6 +713,7 @@ module.exports = {
 
             doPostUpdateSchema: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/schema/update',
                 method: 'POST',
                 controller: 'DefaultSearchController',
@@ -692,6 +731,7 @@ module.exports = {
 
             doGetRemoveIndex: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/index',
                 method: 'DELETE',
                 controller: 'DefaultSearchController',
@@ -708,6 +748,7 @@ module.exports = {
             },
             doGetIndex: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/index/:indexerCode',
                 method: 'GET',
                 controller: 'DefaultSearchController',
@@ -721,6 +762,7 @@ module.exports = {
             },
             doPostIndex: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/:indexName/search/index',
                 method: 'POST',
                 controller: 'DefaultSearchController',
@@ -737,8 +779,5 @@ module.exports = {
                 }
             }
         }
-    },
-    search: {
-
     }
 };

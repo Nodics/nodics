@@ -16,15 +16,39 @@ module.exports = {
         active: true
     },
     record1: {
-        code: 'employeeGroup',
-        name: 'employeeGroup',
+        code: 'userGroup',
+        name: 'userGroup',
         active: true,
         parentGroups: ['adminGroup']
     },
     record2: {
-        code: 'customerGroup',
-        name: 'customerGroup',
+        code: 'employeeUserGroup',
+        name: 'employeeUserGroup',
+        active: true,
+        parentGroups: ['userGroup']
+    },
+    record3: {
+        code: 'employeeUserGroup',
+        name: 'employeeUserGroup',
+        active: true,
+        parentGroups: ['userGroup']
+    },
+    record4: {
+        code: 'contentUserGroup',
+        name: 'contentUserGroup',
         active: true,
         parentGroups: ['adminGroup']
+    },
+    record5: {
+        code: 'contentCreatorUserGroup',
+        name: 'contentCreatorUserGroup',
+        active: true,
+        parentGroups: ['contentUserGroup']
+    },
+    record6: {
+        code: 'contentApproverUserGroup',
+        name: 'contentApproverUserGroup',
+        active: true,
+        parentGroups: ['contentUserGroup']
     }
 };

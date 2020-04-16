@@ -15,6 +15,7 @@ module.exports = {
         classOperations: {
             getClass: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/class/get/:className',
                 method: 'GET',
                 controller: 'DefaultClassConfigurationController',
@@ -28,6 +29,7 @@ module.exports = {
             },
             getSnapshot: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/class/snapshot/:type/:className',
                 method: 'GET',
                 controller: 'DefaultClassConfigurationController',
@@ -41,6 +43,7 @@ module.exports = {
             },
             updateClass: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/class/update/:type/:className',
                 method: 'PUT',
                 controller: 'DefaultClassConfigurationController',
@@ -58,6 +61,7 @@ module.exports = {
 
             executeClass: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/class/execute',
                 method: 'POST',
                 controller: 'DefaultClassConfigurationController',

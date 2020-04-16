@@ -17,7 +17,7 @@ module.exports = {
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         handler: 'DefaultSampleWorkflowService.performActionOne',
-        userGroups: ['adminUserGroup'],
+        userGroups: ['workflowUserGroup'],
         allowedDecisions: ['AUTOTHREE'],
         channels: ['autoThreeChannel']
     },
@@ -27,7 +27,7 @@ module.exports = {
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         handler: 'DefaultSampleWorkflowService.performActionTwo',
-        userGroups: ['adminUserGroup'],
+        userGroups: ['workflowUserGroup'],
         allowedDecisions: ['SUCCESS'],
         channels: ['autoSuccessChannel']
     },
@@ -37,7 +37,7 @@ module.exports = {
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         handler: 'DefaultSampleWorkflowService.performActionThree',
-        userGroups: ['adminUserGroup'],
+        userGroups: ['workflowUserGroup'],
         allowedDecisions: ['SUCCESS'],
         channels: ['autoSuccessChannel']
     },
@@ -48,7 +48,7 @@ module.exports = {
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.END.key,
         handler: 'DefaultSampleWorkflowService.performActionSuccess',
-        userGroups: ['adminUserGroup'],
+        userGroups: ['workflowUserGroup'],
         allowedDecisions: ['SUCCESS'],
     }
 };

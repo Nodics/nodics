@@ -14,6 +14,7 @@ module.exports = {
         publishMessage: {
             postMessage: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/publish',
                 method: 'POST',
                 controller: 'DefaultEmsClientController',
@@ -35,6 +36,7 @@ module.exports = {
         registerConsumers: {
             getRegisterConsumer: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/register/consumer/:consumer',
                 method: 'GET',
                 controller: 'DefaultEmsClientController',
@@ -48,6 +50,7 @@ module.exports = {
             },
             postRegisterConsumers: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/register/consumers',
                 method: 'POST',
                 controller: 'DefaultEmsClientController',
@@ -69,6 +72,7 @@ module.exports = {
         registerPublishers: {
             getRegisterPublisher: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/register/publisher/:publisher',
                 method: 'GET',
                 controller: 'DefaultEmsClientController',
@@ -82,6 +86,7 @@ module.exports = {
             },
             postRegisterPublishers: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/register/publishers',
                 method: 'POST',
                 controller: 'DefaultEmsClientController',
@@ -103,6 +108,7 @@ module.exports = {
         closeConsumers: {
             getCloseConsumer: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/close/consumer/:consumer',
                 method: 'GET',
                 controller: 'DefaultEmsClientController',
@@ -116,6 +122,7 @@ module.exports = {
             },
             postCloseConsumers: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/close/consumers',
                 method: 'POST',
                 controller: 'DefaultEmsClientController',
@@ -135,6 +142,7 @@ module.exports = {
         closePublishers: {
             getClosePublishers: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/close/publisher/:publisher',
                 method: 'GET',
                 controller: 'DefaultEmsClientController',
@@ -148,6 +156,7 @@ module.exports = {
             },
             postClosePublishers: {
                 secured: true,
+                accessGroups: ['adminGroup'],
                 key: '/close/publishers',
                 method: 'POST',
                 controller: 'DefaultEmsClientController',

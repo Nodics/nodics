@@ -123,7 +123,7 @@ module.exports = {
         });
     },
 
-    executeValidators: function (validatorList, request, responce) {
+    executeValidators: function (validatorList, request, response) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -132,8 +132,8 @@ module.exports = {
                     if (validator.handler) {
                         let serviceName = validator.handler.substring(0, validator.handler.indexOf('.'));
                         let functionName = validator.handler.substring(validator.handler.indexOf('.') + 1, validator.handler.length);
-                        SERVICE[serviceName][functionName](request, responce).then(success => {
-                            _self.executeValidators(validatorList, request, responce).then(success => {
+                        SERVICE[serviceName][functionName](request, response).then(success => {
+                            _self.executeValidators(validatorList, request, response).then(success => {
                                 resolve(success);
                             }).catch(error => {
                                 reject(error);
@@ -142,8 +142,8 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        UTILS.evaluateScript(request, responce, validator.script).then(success => {
-                            _self.executeValidators(validatorList, request, responce).then(success => {
+                        UTILS.evaluateScript(request, response, validator.script).then(success => {
+                            _self.executeValidators(validatorList, request, response).then(success => {
                                 resolve(success);
                             }).catch(error => {
                                 reject(error);

@@ -16,7 +16,7 @@ module.exports = {
         name: "multiWorkflow",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
-        userGroups: ['adminUserGroup'],
+        userGroups: ['workflowUserGroup'],
         allowedDecisions: ['MultiOne', 'MultiTwo'],
         channels: ['multiOneChannel', 'multiTwoChannel']
     }

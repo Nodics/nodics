@@ -11,7 +11,7 @@
 
 module.exports = {
 
-    executeSearchProcessors: function (interceptorList, request, responce) {
+    executeSearchProcessors: function (interceptorList, request, response) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -19,8 +19,8 @@ module.exports = {
                     let interceptor = interceptorList.shift();
                     let serviceName = interceptor.substring(0, interceptor.indexOf('.'));
                     let functionName = interceptor.substring(interceptor.indexOf('.') + 1, interceptor.length);
-                    SERVICE[serviceName][functionName](request, responce).then(success => {
-                        _self.executeSearchProcessors(interceptorList, request, responce).then(success => {
+                    SERVICE[serviceName][functionName](request, response).then(success => {
+                        _self.executeSearchProcessors(interceptorList, request, response).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);
@@ -37,7 +37,7 @@ module.exports = {
         });
     },
 
-    executeProcessors: function (interceptorList, request, responce) {
+    executeProcessors: function (interceptorList, request, response) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
@@ -45,8 +45,8 @@ module.exports = {
                     let interceptor = interceptorList.shift();
                     let serviceName = interceptor.handler.substring(0, interceptor.handler.indexOf('.'));
                     let functionName = interceptor.handler.substring(interceptor.handler.indexOf('.') + 1, interceptor.handler.length);
-                    SERVICE[serviceName][functionName](request, responce).then(success => {
-                        _self.executeProcessors(interceptorList, request, responce).then(success => {
+                    SERVICE[serviceName][functionName](request, response).then(success => {
+                        _self.executeProcessors(interceptorList, request, response).then(success => {
                             resolve(success);
                         }).catch(error => {
                             reject(error);

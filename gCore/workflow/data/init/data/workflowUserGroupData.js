@@ -15,5 +15,17 @@ module.exports = {
         name: 'workflowUserGroup',
         active: true,
         parentGroups: ['adminGroup']
+    },
+    record1: {
+        code: 'workflowCreaterGroup',
+        name: 'workflowCreaterGroup',
+        active: true,
+        parentGroups: ['workflowUserGroup']
+    },
+    record2: {
+        code: 'workflowApproverGroup',
+        name: 'workflowApproverGroup',
+        active: true,
+        parentGroups: ['workflowUserGroup']
     }
 };

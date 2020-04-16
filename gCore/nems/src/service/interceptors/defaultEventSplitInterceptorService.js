@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
 
-    eventSplitPreSave: function (request, responce) {
+    eventSplitPreSave: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
                 let model = request.model;
@@ -98,7 +98,7 @@ module.exports = {
         });
     },
 
-    eventSplitPostSave: function (request, responce) {
+    eventSplitPostSave: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });

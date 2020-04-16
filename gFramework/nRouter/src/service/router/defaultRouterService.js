@@ -108,14 +108,14 @@ module.exports = {
                     try {
                         SERVICE.DefaultRouterOperationService.registerWeb(app, moduleObject);
                         _self.activateRouters(moduleRouter, moduleObject, moduleName, routers);
-                        resolve(true);
                     } catch (error) {
                         _self.LOG.error('While registration process of web path for module : ' + moduleName);
                         _self.LOG.error(error);
-                        reject(error);
+                        process.exit(1);
                     }
                 }
             });
+            resolve(true);
         });
     },
 
@@ -140,7 +140,7 @@ module.exports = {
             _.each(routers.common, function (group, groupName) {
                 if (groupName !== 'options') {
                     _.each(group, function (routerDef, routerName) {
-                        if (routerName !== 'options') {
+                        if (routerName !== 'options' && _self.validateRouterDefinition(routerName, routerDef)) {
                             _self.prepareRouter({
                                 routerName: routerName,
                                 routerDef: routerDef,
@@ -158,7 +158,7 @@ module.exports = {
             _.each(routers[moduleName], function (group, groupName) {
                 if (groupName !== 'options') {
                     _.each(group, function (routerDef, routerName) {
-                        if (routerName !== 'options') {
+                        if (routerName !== 'options' && _self.validateRouterDefinition(routerName, routerDef)) {
                             _self.prepareRouter({
                                 routerName: routerName,
                                 routerDef: routerDef,
@@ -174,10 +174,11 @@ module.exports = {
     },
 
     prepareDefaultRouter: function (options) {
+        let _self = this;
         _.each(options.routers.default, function (group, groupName) {
             if (groupName !== 'options') {
                 _.each(group, function (routerDef, routerName) {
-                    if (routerName !== 'options') {
+                    if (routerName !== 'options' && _self.validateRouterDefinition(routerName, routerDef)) {
                         let definition = _.merge({}, routerDef);
                         definition.method = definition.method.toLowerCase();
                         definition.key = definition.key.replaceAll('schemaName', options.schemaName.toLowerCase());
@@ -214,6 +215,14 @@ module.exports = {
         definition.routerName = definition.routerName.toLowerCase();
         NODICS.addRouter(definition.routerName, definition, options.moduleName);
         SERVICE.DefaultRouterOperationService[definition.method](options.moduleRouter, definition);
+    },
+
+    validateRouterDefinition: function (routerName, routerDef) {
+        if (routerDef && routerDef.accessGroups && routerDef.accessGroups.length > 0) {
+            return true;
+        } else {
+            throw new CLASSES.NodicsError('Invalid router definition: accessGroups is not valid for: ' + routerName);
+        }
     },
 
     startServers: function () {

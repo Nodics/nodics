@@ -32,13 +32,13 @@ module.exports = {
         });
     },
 
-    handlePreSave: function (request, responce) {
+    handlePreSave: function (request, response) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('============================= > Default Pre Save');
             resolve(true);
         });
     },
-    handlePreAddressSave: function (request, responce) {
+    handlePreAddressSave: function (request, response) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('============================= > Address Pre Save');
             resolve(true);

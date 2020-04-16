@@ -32,7 +32,7 @@ module.exports = {
         });
     },
 
-    evaluateScript: function (request, responce, script) {
+    evaluateScript: function (request, response, script) {
         return new Promise((resolve, reject) => {
             try {
                 let result = eval(script);

@@ -12,7 +12,7 @@
 module.exports = {
 
     // Enterprise Save Events
-    enterprisePreSave: function (request, responce) {
+    enterprisePreSave: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             request.options.recursive = request.options.recursive || true;
@@ -20,14 +20,14 @@ module.exports = {
         });
     },
 
-    enterprisePreUpdate: function (request, responce) {
+    enterprisePreUpdate: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             request.options.recursive = request.options.recursive || true;
             resolve(true);
         });
     },
-    enterprisePreRemove: function (request, responce) {
+    enterprisePreRemove: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             request.options.recursive = request.options.recursive || true;
@@ -35,7 +35,7 @@ module.exports = {
         });
     },
 
-    enterpriseSaveEvent: function (request, responce) {
+    enterpriseSaveEvent: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve(true);
             this.triggerEnterpriseUpdateEvent(request.model).then(success => {
@@ -47,7 +47,7 @@ module.exports = {
         });
     },
 
-    enterpriseUpdateEvent: function (request, responce) {
+    enterpriseUpdateEvent: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve(true);
             if (request.result && request.result.models && request.result.models.length > 0) {
@@ -63,7 +63,7 @@ module.exports = {
         });
     },
 
-    enterpriseRemoveEvent: function (request, responce) {
+    enterpriseRemoveEvent: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve(true);
             if (request.result && request.result.models && request.result.models.length > 0) {

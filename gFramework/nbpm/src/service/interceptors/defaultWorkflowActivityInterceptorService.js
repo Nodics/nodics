@@ -34,7 +34,7 @@ module.exports = {
         });
     },
 
-    createWorkflowCode: function (request, responce) {
+    createWorkflowCode: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
                 if (request.schemaModel.workflowCodes &&

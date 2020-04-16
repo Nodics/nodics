@@ -16,7 +16,7 @@ module.exports = {
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         handler: 'DefaultSampleWorkflowService.performHeadOperation',
-        userGroups: ['adminUserGroup'],
+        userGroups: ['workflowUserGroup'],
         allowedDecisions: ['AUTOONE', 'AUTOTWO'],
         channels: ['autoOneChannel', 'autoTwoChannel']
     }

@@ -10,15 +10,20 @@
  */
 
 module.exports = {
-    employeePreUpdate: function (request, response) {
+    getEmployeeRecursive: function (request, response) {
         return new Promise((resolve, reject) => {
-            request.options.returnModified = request.options.returnModified || true;
+            request.options.recursive = request.options.recursive || true;
             resolve(true);
         });
     },
-    employeePreRemove: function (request, response) {
+
+    getAllUserGroupCodes: function (request, response) {
         return new Promise((resolve, reject) => {
-            request.options.returnModified = request.options.returnModified || true;
+            if (response.success.result && response.success.result.length > 0) {
+                response.success.result.forEach(itemModel => {
+                    itemModel.userGroupCodes = UTILS.getUserGroupCodes(itemModel.userGroups);
+                });
+            }
             resolve(true);
         });
     }

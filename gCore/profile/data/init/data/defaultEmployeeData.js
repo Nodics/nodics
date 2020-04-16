@@ -25,7 +25,7 @@ module.exports = {
             active: true
         },
         apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bfg',
-        userGroups: ['adminUserGroup'],
+        userGroups: ['employeeUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
@@ -44,7 +44,45 @@ module.exports = {
             active: true
         },
         apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
-        userGroups: ['adminUserGroup'],
+        userGroups: ['employeeUserGroup'],
+        addresses: ['defaultEmployeeAddress'],
+        contacts: ['defaultEmployeeContact']
+    },
+    record2: {
+        code: 'contentCreator',
+        active: true,
+        name: {
+            title: 'Mr.',
+            firstName: 'Content',
+            lastName: 'Creator',
+        },
+        loginId: 'contentCreator',
+        password: {
+            loginId: 'contentCreator',
+            password: 'contentCreator',
+            active: true
+        },
+        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c835ff',
+        userGroups: ['contentCreatorUserGroup'],
+        addresses: ['defaultEmployeeAddress'],
+        contacts: ['defaultEmployeeContact']
+    },
+    record3: {
+        code: 'contentApprover',
+        active: true,
+        name: {
+            title: 'Mr.',
+            firstName: 'Content',
+            lastName: 'Approver',
+        },
+        loginId: 'contentApprover',
+        password: {
+            loginId: 'contentApprover',
+            password: 'contentApprover',
+            active: true
+        },
+        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc835ff',
+        userGroups: ['contentApproverUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     }

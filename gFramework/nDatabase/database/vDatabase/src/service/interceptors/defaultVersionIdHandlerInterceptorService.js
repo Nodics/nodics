@@ -32,7 +32,7 @@ module.exports = {
         });
     },
 
-    updateVersionId: function (request, responce) {
+    updateVersionId: function (request, response) {
         return new Promise((resolve, reject) => {
             let model = request.model;
             model.versionId = model.versionId || 0;

@@ -34,7 +34,7 @@ module.exports = {
         });
     },
 
-    createWorkflowCode: function (request, responce) {
+    createWorkflowCode: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
                 if (request.schemaModel.workflowCodes &&
@@ -55,7 +55,7 @@ module.exports = {
         });
     },
 
-    handlePreSaveModuleAssignment: function (request, responce) {
+    handlePreSaveModuleAssignment: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
                 let schemaName = request.model.schemaName;
@@ -80,7 +80,7 @@ module.exports = {
         });
     },
 
-    handlePreSaveAssignedDefaultEvents: function (request, responce) {
+    handlePreSaveAssignedDefaultEvents: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
                 request.model.events = _.merge(_.merge({}, CONFIG.get('defaultWorkflowEvents')), request.model.events);
