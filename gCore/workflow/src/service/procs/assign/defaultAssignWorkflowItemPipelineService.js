@@ -62,7 +62,7 @@ module.exports = {
             code: request.workflowAction.code,
             state: ENUMS.WorkflowActionState.NEW.key
         };
-        if (request.workflowAction.isHead) {
+        if (request.workflowAction.position === ENUMS.WorkflowActionPosition.HEAD.key) {
             workflowItem.activeHead = {
                 code: request.workflowAction.code,
                 state: ENUMS.WorkflowActionState.NEW.key

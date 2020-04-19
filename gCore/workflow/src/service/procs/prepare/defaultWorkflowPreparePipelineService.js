@@ -45,16 +45,25 @@ module.exports = {
     },
 
     loadWorkflowHead: function (request, response, process) {
-        if (!request.workflowHead && request.workflowAction.isHead) {
-            request.workflowHead = request.workflowAction;
-            process.nextSuccess(request, response);
+        if (!request.workflowHead) {
+            request.workflowCode = request.workflowCode || request.workflowItem.activeHead.code;
+            if (request.workflowCode) {
+                SERVICE.DefaultWorkflowActionService.getWorkflowAction(request.workflowCode, request.tenant).then(workflowHead => {
+                    request.workflowHead = workflowHead;
+                    if (request.workflowHead.position === ENUMS.WorkflowActionPosition.HEAD.key) {
+                        request.workflowHead = workflowHead;
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid workflow head, workflow head : ' + request.workflowCode + ' not defined position as head'));
+                    }
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            } else {
+                process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not load workflow action'));
+            }
         } else {
-            SERVICE.DefaultWorkflowHeadService.getWorkflowHead(request).then(workflowHead => {
-                request.workflowHead = workflowHead;
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
+            process.nextSuccess(request, response);
         }
     },
     prepareEndPoint: function (request, response, process) {

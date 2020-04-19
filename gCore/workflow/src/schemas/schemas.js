@@ -295,16 +295,16 @@ module.exports = {
          * This is header definition for all the workflow item created within system, This also hold 
          * number of items currently associated with this workflow
          */
-        workflowHead: {
-            super: 'workflow',
-            model: true,
-            service: true,
-            router: true,
-            definition: {
-                position: {
-                    default: ENUMS.WorkflowActionPosition.HEAD.key
-                },
-            }
-        }
+        // workflowHead: {
+        //     super: 'workflow',
+        //     model: true,
+        //     service: true,
+        //     router: true,
+        //     definition: {
+        //         position: {
+        //             default: ENUMS.WorkflowActionPosition.HEAD.key
+        //         },
+        //     }
+        // }
     }
 };

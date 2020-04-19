@@ -16,6 +16,7 @@ module.exports = {
         name: "manualWorkflow",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
+        position: ENUMS.WorkflowActionPosition.HEAD.key,
         userGroups: ['workflowUserGroup'],
         allowedDecisions: ['MONE', 'MTWO'],
         channels: ['manualOneChannel', 'manualTwoChannel']

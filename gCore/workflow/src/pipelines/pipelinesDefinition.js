@@ -140,11 +140,6 @@ module.exports = {
             loadWorkflowAction: {
                 type: 'function',
                 handler: 'DefaultLoadWorkflowActionPipelineService.loadWorkflowAction',
-                success: 'handleSubWorkflowAction'
-            },
-            handleSubWorkflowAction: {
-                type: 'function',
-                handler: 'DefaultLoadWorkflowActionPipelineService.handleSubWorkflowAction',
                 success: 'validateAction'
             },
             validateAction: {

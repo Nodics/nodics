@@ -32,12 +32,12 @@ module.exports = {
         });
     },
 
-    handlePreSaveHead: function (request, response) {
-        return new Promise((resolve, reject) => {
-            if (!request.model.errorHandler) {
-                request.model.errorHandler = CONFIG.get('workflow').defaultErrorHandler;
-            }
-            resolve(true);
-        });
-    }
+    // handlePreSaveHead: function (request, response) {
+    //     return new Promise((resolve, reject) => {
+    //         if (!request.model.errorHandler) {
+    //             request.model.errorHandler = CONFIG.get('workflow').defaultErrorHandler;
+    //         }
+    //         resolve(true);
+    //     });
+    // }
 };

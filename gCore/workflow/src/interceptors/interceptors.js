@@ -10,14 +10,14 @@
  */
 
 module.exports = {
-    preSaveWorkflowHead: {
-        type: 'schema',
-        item: 'workflowHead',
-        trigger: 'preSave',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultSaveWorkflowHeadInterceptorService.handlePreSaveHead'
-    },
+    // preSaveWorkflowHead: {
+    //     type: 'schema',
+    //     item: 'workflowHead',
+    //     trigger: 'preSave',
+    //     active: 'true',
+    //     index: 0,
+    //     handler: 'DefaultSaveWorkflowHeadInterceptorService.handlePreSaveHead'
+    // },
     preSaveWorkflowAction: {
         type: 'schema',
         item: 'workflowAction',
@@ -26,7 +26,14 @@ module.exports = {
         index: 0,
         handler: 'DefaultSaveWorkflowActionInterceptorService.handlePreSaveAction'
     },
-
+    workflowUserGroupCodes: {
+        type: 'schema',
+        item: 'workflowAction',
+        trigger: 'postGet',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultWorkflowGetInterceptorService.getAllUserGroupCodes'
+    },
     loadWorkflowItemActionResponses: {
         type: 'schema',
         item: 'workflowItem',
@@ -35,7 +42,6 @@ module.exports = {
         index: 99,
         handler: 'DefaultWorkflowActionResponsesInterceptorService.loadActionResponseForWorkflowItem'
     },
-
     loadWorkflowArchivedItemActionResponses: {
         type: 'schema',
         item: 'workflowArchivedItem',
@@ -44,7 +50,6 @@ module.exports = {
         index: 99,
         handler: 'DefaultWorkflowActionResponsesInterceptorService.loadActionResponseForWorkflowItem'
     },
-
     loadWorkflowErrorItemActionResponses: {
         type: 'schema',
         item: 'workflowErrorItem',
@@ -52,13 +57,5 @@ module.exports = {
         active: 'true',
         index: 99,
         handler: 'DefaultWorkflowActionResponsesInterceptorService.loadActionResponseForWorkflowItem'
-    },
-    workflowUserGroupCodes: {
-        type: 'schema',
-        item: 'workflow',
-        trigger: 'postGet',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultWorkflowGetInterceptorService.getAllUserGroupCodes'
-    },
+    }
 };

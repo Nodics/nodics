@@ -15,6 +15,7 @@ module.exports = {
         name: "autoWorkflow",
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
+        position: ENUMS.WorkflowActionPosition.HEAD.key,
         handler: 'DefaultSampleWorkflowService.performHeadOperation',
         userGroups: ['workflowUserGroup'],
         allowedDecisions: ['AUTOONE', 'AUTOTWO'],

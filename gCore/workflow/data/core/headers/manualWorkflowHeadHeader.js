@@ -14,7 +14,7 @@ module.exports = {
         manualWorkflowHeadData: {
             options: {
                 enabled: true,
-                schemaName: 'workflowHead',
+                schemaName: 'workflowAction',
                 operation: 'saveAll',
                 dataFilePrefix: 'manualWorkflowHeadData'
             },
