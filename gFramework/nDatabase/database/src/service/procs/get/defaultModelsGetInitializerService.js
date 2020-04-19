@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -106,8 +108,16 @@ module.exports = {
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre get model interceptors');
-        let schemaName = request.schemaModel.schemaName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
+        let interceptors = {};
+        let baseSchemas = request.schemaModel.rawSchema.parents;
+        if (baseSchemas && baseSchemas.length > 0) {
+            baseSchemas.push(request.schemaModel.schemaName);
+        } else {
+            baseSchemas = [request.schemaModel.schemaName];
+        }
+        baseSchemas.forEach(schemaName => {
+            interceptors = _.merge(interceptors, SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName));
+        });
         if (interceptors && interceptors.preGet) {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preGet), request, response).then(success => {
                 process.nextSuccess(request, response);
@@ -121,8 +131,16 @@ module.exports = {
 
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre model validator');
-        let schemaName = request.schemaModel.schemaName;
-        let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
+        let validators = {};
+        let baseSchemas = request.schemaModel.rawSchema.parents;
+        if (baseSchemas && baseSchemas.length > 0) {
+            baseSchemas.push(request.schemaModel.schemaName);
+        } else {
+            baseSchemas = [request.schemaModel.schemaName];
+        }
+        baseSchemas.forEach(schemaName => {
+            validators = _.merge(validators, SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName));
+        });
         if (validators && validators.preGet) {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preGet), request, response).then(success => {
                 process.nextSuccess(request, response);
@@ -179,8 +197,16 @@ module.exports = {
 
     applyPostValidators: function (request, response, process) {
         this.LOG.debug('Applying post model validator');
-        let schemaName = request.schemaModel.schemaName;
-        let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
+        let validators = {};
+        let baseSchemas = request.schemaModel.rawSchema.parents;
+        if (baseSchemas && baseSchemas.length > 0) {
+            baseSchemas.push(request.schemaModel.schemaName);
+        } else {
+            baseSchemas = [request.schemaModel.schemaName];
+        }
+        baseSchemas.forEach(schemaName => {
+            validators = _.merge(validators, SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName));
+        });
         if (validators && validators.postGet) {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postGet), request, response).then(success => {
                 process.nextSuccess(request, response);
@@ -194,8 +220,16 @@ module.exports = {
 
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post model interceptors');
-        let schemaName = request.schemaModel.schemaName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
+        let interceptors = {};
+        let baseSchemas = request.schemaModel.rawSchema.parents;
+        if (baseSchemas && baseSchemas.length > 0) {
+            baseSchemas.push(request.schemaModel.schemaName);
+        } else {
+            baseSchemas = [request.schemaModel.schemaName];
+        }
+        baseSchemas.forEach(schemaName => {
+            interceptors = _.merge(interceptors, SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName));
+        });
         if (interceptors && interceptors.postGet) {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postGet), request, response).then(success => {
                 process.nextSuccess(request, response);

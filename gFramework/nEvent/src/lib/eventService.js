@@ -34,9 +34,9 @@ module.exports = class EventService extends EventEmitter {
         let method = listenerDefinition.listener;
         let serviceName = method.substring(0, method.lastIndexOf('.'));
         let operation = method.substring(method.lastIndexOf('.') + 1, method.length);
-        this.addListenerHandler(listenerDefinition.event, (event, callback, request) => {
+        this.addListenerHandler(listenerDefinition.event, (request, callback) => {
             try {
-                SERVICE[serviceName][operation](event, callback, request);
+                SERVICE[serviceName][operation](request, callback);
             } catch (error) {
                 callback(new CLASSES.EventError(error, 'Service: ' + serviceName + ' operation: ' + operation + ' not valid'));
             }

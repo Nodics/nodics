@@ -42,6 +42,7 @@ module.exports = {
             try {
                 SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
                     tenant: request.tenant,
+                    authData: request.authData,
                     itemCode: request.itemCode,
                     workflowItem: request.workflowItem,
                     workflowHead: request.workflowHead,
@@ -79,6 +80,7 @@ module.exports = {
                 let channel = rawChannels.shift();
                 SERVICE.DefaultPipelineService.start('executeChannelQualifierPipeline', {
                     tenant: request.tenant,
+                    authData: request.authData,
                     workflowItem: request.workflowItem,
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction,
@@ -133,6 +135,7 @@ module.exports = {
             try {
                 SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
                     tenant: request.tenant,
+                    authData: request.authData,
                     itemCode: request.itemCode,
                     workflowItem: request.workflowItem,
                     workflowHead: request.workflowHead,

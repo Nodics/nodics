@@ -71,6 +71,7 @@ module.exports = {
                 if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
                     SERVICE[serviceName.toUpperCaseFirstChar()][operation]({
                         tenant: request.tenant,
+                        authData: request.authData,
                         workflowItem: request.workflowItem,
                         workflowHead: request.workflowHead,
                         workflowAction: request.workflowAction,
@@ -96,6 +97,7 @@ module.exports = {
         if (request.channel.qualifier.script) {
             try {
                 let tenant = request.tenant;
+                let authData = request.authData;
                 let workflowItem = request.workflowItem;
                 let workflowHead = request.workflowHead;
                 let workflowAction = request.workflowAction;

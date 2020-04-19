@@ -32,7 +32,8 @@ module.exports = {
         });
     },
 
-    handleInternalDataPushEvent: function (event, callback, request) {
+    handleInternalDataPushEvent: function (request, callback) {
+        let event = request.event;
         if (event && !UTILS.isBlank(event)) {
             SERVICE.DefaultPipelineService.start('processInternalDataPushEventPipeline', {
                 tenant: request.tenant,

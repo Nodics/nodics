@@ -43,7 +43,7 @@ module.exports = {
             password: 'workflowApprover',
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc835ff',
+        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc345ff',
         userGroups: ['workflowApproverGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']

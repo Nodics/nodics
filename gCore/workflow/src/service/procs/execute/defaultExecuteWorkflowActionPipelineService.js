@@ -45,7 +45,9 @@ module.exports = {
      */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to perform workflow action');
-        if (!request.tenant) {
+        if (!request.authData || UTILS.isBlank(request.authData)) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, authorization data can not null or empty'));
+        } else if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
@@ -61,6 +63,9 @@ module.exports = {
             workflowItem.activeAction.type === ENUMS.WorkflowActionType.PARALLEL.key) &&
             (!request.actionResponse || UTILS.isBlank(request.actionResponse))) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, action response can not be null or empty'));
+        } else if ((request.workflowAction.type != ENUMS.WorkflowActionType.AUTO.key) &&
+            (request.authData.userGroups.filter(userGroup => request.workflowAction.userGroupCodes.includes(userGroup)).length <= 0)) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_AUTH_00003', 'Current action: ' + request.workflowAction.code + ' not accessible for this user'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -225,6 +230,7 @@ module.exports = {
         this.LOG.debug('Starting channel execution process');
         SERVICE.DefaultWorkflowChannelService.processChannels({
             tenant: request.tenant,
+            authData: request.authData,
             workflowItem: request.workflowItem,
             workflowHead: request.workflowHead,
             workflowAction: request.workflowAction,

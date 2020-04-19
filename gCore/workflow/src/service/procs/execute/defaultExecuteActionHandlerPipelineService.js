@@ -53,6 +53,7 @@ module.exports = {
             if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
                 SERVICE[serviceName.toUpperCaseFirstChar()][operation]({
                     tenant: request.tenant,
+                    authData: request.authData,
                     workflowItem: request.workflowItem,
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction

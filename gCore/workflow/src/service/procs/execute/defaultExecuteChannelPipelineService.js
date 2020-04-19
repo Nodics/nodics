@@ -91,6 +91,7 @@ module.exports = {
     triggerTarget: function (request, response, process) {
         SERVICE.DefaultWorkflowService.nextAction({
             tenant: request.tenant,
+            authData: request.authData,
             workflowItem: request.workflowItem,
             actionCode: request.channel.target
         }).then(success => {

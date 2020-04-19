@@ -35,8 +35,9 @@ module.exports = {
         });
     },
 
-    handleWorkflowItemPausedEvent: function (event, callback) {
+    handleWorkflowItemPausedEvent: function (request, callback) {
         try {
+            let event = request.event;
             SERVICE.DefaultPipelineService.start('defaultWorkflowItemPausedPipeline', {
                 tenant: event.tenant,
                 event: event,

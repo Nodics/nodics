@@ -32,7 +32,8 @@ module.exports = {
         });
     },
 
-    handleExternalDataPushEvent: function (event, callback, request) {
+    handleExternalDataPushEvent: function (request, callback) {
+        let event = request.event;
         if (event && !UTILS.isBlank(event)) {
             SERVICE.DefaultPipelineService.start('processExternalDataPushEventPipeline', {
                 tenant: request.tenant,

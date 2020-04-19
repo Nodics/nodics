@@ -24,7 +24,7 @@ module.exports = {
         name: "multiActionOne",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
-        userGroups: ['workflowUserGroup'],
+        userGroups: ['workflowCreaterGroup'],
         allowedDecisions: ['SUCCESS'],
         channels: ['multiSuccessChannel']
     },
@@ -33,7 +33,7 @@ module.exports = {
         name: "multiActionTwo",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
-        userGroups: ['workflowUserGroup'],
+        userGroups: ['workflowApproverGroup'],
         allowedDecisions: ['SPLIT'],
         channels: ['multiSplitOneChannel', 'multiSplitTowChannel']
     },
@@ -42,7 +42,7 @@ module.exports = {
         name: "multiSplitActionOne",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
-        userGroups: ['workflowUserGroup'],
+        userGroups: ['workflowApproverGroup'],
         allowedDecisions: ['SUCCESS'],
         channels: ['multiSuccessChannel']
     },
@@ -51,7 +51,7 @@ module.exports = {
         name: "multiSplitActionTwo",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
-        userGroups: ['workflowUserGroup'],
+        userGroups: ['workflowApproverGroup'],
         allowedDecisions: ['SUCCESS', 'MultiSplitReject'],
         channels: ['multiSuccessChannel', 'multiSplitTowRejectChannel']
     }

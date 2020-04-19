@@ -20,10 +20,10 @@ module.exports = {
             listener: 'DefaultCronJobConfigurationService.handleJobValidatorUpdated'
         }
     },
-    cronjob: {
-        testListener: {
-            event: 'testMe',
-            listener: 'DefaultEventTestService.handleTestEvent'
-        }
-    }
+    // cronjob: {
+    //     testListener: {
+    //         event: 'testMe',
+    //         listener: 'DefaultEventTestService.handleTestEvent'
+    //     }
+    // }
 };

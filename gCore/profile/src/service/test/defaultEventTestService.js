@@ -1,6 +1,6 @@
 module.exports = {
 
-    handleTestEvent: function (event, callback) {
+    handleTestEvent: function (request, callback) {
         let _self = this;
         _self.LOG.debug('#Event has been Handled ');
         callback(null, {

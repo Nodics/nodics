@@ -26,7 +26,8 @@ module.exports = {
     workflow2SchemaUpdateEventHandler: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                let data = request.data;
+                let event = request.event;
+                let data = event.data;
                 let modelObject = NODICS.getModels(data.moduleName, request.tenant)[UTILS.createModelName(data.schemaName)];
                 if (!modelObject.workflowCodes) modelObject.workflowCodes = [];
                 if (!data.active && modelObject.workflowCodes.includes(data.workflowCode)) {

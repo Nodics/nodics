@@ -35,8 +35,9 @@ module.exports = {
         });
     },
 
-    handleWorkflowChannelsEvaluatedEvent: function (event, callback) {
+    handleWorkflowChannelsEvaluatedEvent: function (require, callback) {
         try {
+            let event = request.event;
             SERVICE.DefaultPipelineService.start('defaultWorkflowChannelsEvaluatedPipeline', {
                 tenant: event.tenant,
                 event: event,

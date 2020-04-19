@@ -58,6 +58,8 @@ module.exports = {
             }).catch(error => {
                 this.LOG.debug('Failed updating error for item: ' + request.workflowItem.code);
             });
+            if (!response.success) response.success = [];
+            if (!response.success.messages) response.success.messages = [];
             if (response.error) {
                 response.error.add(new CLASSES.WorkflowError('Error has been updated into workflow item'));
             } else {

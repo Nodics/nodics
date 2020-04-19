@@ -35,8 +35,9 @@ module.exports = {
         });
     },
 
-    handleWorkflowErrorOccurredEvent: function (event, callback) {
+    handleWorkflowErrorOccurredEvent: function (request, callback) {
         try {
+            let event = request.event;
             SERVICE.DefaultPipelineService.start('defaultWorkflowErrorOccurredPipeline', {
                 tenant: event.tenant,
                 event: event,

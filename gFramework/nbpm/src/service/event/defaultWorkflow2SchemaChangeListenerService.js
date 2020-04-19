@@ -35,9 +35,9 @@ module.exports = {
         });
     },
 
-    handleWorkflow2SchemaUpdateEventHandler: function (event, callback) {
+    handleWorkflow2SchemaUpdateEventHandler: function (request, callback) {
         try {
-            SERVICE.DefaultWorkflow2SchemaService.workflow2SchemaUpdateEventHandler(event).then(success => {
+            SERVICE.DefaultWorkflow2SchemaService.workflow2SchemaUpdateEventHandler(request).then(success => {
                 callback(null, {
                     code: 'SUC_EVNT_00000',
                     msg: success

@@ -139,7 +139,8 @@ module.exports = {
                 tenant: request.tenant,
                 workflowHead: request.workflowHead,
                 workflowAction: request.workflowAction,
-                workflowItem: request.workflowItem
+                workflowItem: request.workflowItem,
+                authData: request.authData
             }).then(success => {
                 if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
                 response.success[request.workflowAction.code].push(success);

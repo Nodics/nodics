@@ -14,6 +14,6 @@ module.exports = {
         defaultSuccessHandler: 'DefaultWorkflowSuccessActionService.handleSuccessProcess',
         defaultErrorHandler: 'DefaultWorkflowErrorActionService.handleErrorProcess',
 
-        itemErrorLimit: 2
+        itemErrorLimit: 10
     }
 };

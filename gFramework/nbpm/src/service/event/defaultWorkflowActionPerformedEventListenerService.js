@@ -35,8 +35,9 @@ module.exports = {
         });
     },
 
-    handleWorkflowActionPerformedEvent: function (event, callback) {
+    handleWorkflowActionPerformedEvent: function (request, callback) {
         try {
+            let event = request.event;
             SERVICE.DefaultPipelineService.start('defaultWorkflowActionPerformedPipeline', {
                 tenant: event.tenant,
                 event: event,

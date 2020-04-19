@@ -218,30 +218,37 @@ module.exports = {
                     eventService.eventNames().includes(event.event)) {
                     if (CONFIG.get('event').processAsSyncHandler || (event.processSync !== undefined && event.processSync === true)) {
                         try {
-                            eventService.emit(event.event, event, (error, success) => {
+                            eventService.emit(event.event, request, (error, success) => {
                                 if (error) {
+                                    _self.LOG.error('Facing issue while handling event');
+                                    _self.LOG.error(error);
                                     reject(error);
                                 } else {
+                                    _self.LOG.debug('Event has been processed successfully');
                                     resolve(success);
                                 }
-                            }, request);
+                            });
                         } catch (error) {
+                            _self.LOG.error('Facing issue while handling event');
+                            _self.LOG.error(error);
                             reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
                         }
                     } else {
                         try {
-                            eventService.emit(event.event, event, (error, success) => {
-                                if (error || !success.success) {
+                            eventService.emit(event.event, request, (error, success) => {
+                                if (error) {
                                     _self.LOG.error('Facing issue while handling event');
                                     _self.LOG.error(error);
                                 } else {
                                     _self.LOG.debug('Event has been processed successfully');
                                 }
-                            }, request);
+                            });
                             resolve({
                                 code: 'SUC_EVNT_00000'
                             });
                         } catch (error) {
+                            _self.LOG.error('Facing issue while handling event');
+                            _self.LOG.error(error);
                             reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
                         }
                     }

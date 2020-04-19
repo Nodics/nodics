@@ -49,6 +49,7 @@ module.exports = {
         this.LOG.debug('Executing action script');
         try {
             let tenant = request.tenant;
+            let authData = request.authData;
             let workflowAction = request.workflowAction;
             let workflowHead = request.workflowHead;
             let workflowItem = request.workflowItem;

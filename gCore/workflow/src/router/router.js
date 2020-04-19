@@ -42,7 +42,7 @@ module.exports = {
             },
             pauseItem: {
                 secured: true,
-                accessGroups: ['userGroup'],
+                accessGroups: ['workflowUserGroup'],
                 key: '/item/pause/:itemCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
@@ -57,7 +57,7 @@ module.exports = {
             },
             resumeItem: {
                 secured: true,
-                accessGroups: ['userGroup'],
+                accessGroups: ['workflowUserGroup'],
                 key: '/item/resume/:itemCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
@@ -71,26 +71,46 @@ module.exports = {
                 }
             },
 
-            nextAction: {
-                secured: true,
-                accessGroups: ['workflowUserGroup'],
-                key: '/item/next/action/:itemCode/:actionCode',
-                method: 'POST',
-                controller: 'DefaultWorkflowController',
-                operation: 'nextAction',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'put',
-                    url: 'http://host:port/nodics/workflow/item/next/action/:itemCode/:actionCode'
-                }
-            }
+            // nextAction: {
+            //     secured: true,
+            //     accessGroups: ['userGroup'],
+            //     key: '/item/next/action/:itemCode/:actionCode',
+            //     method: 'POST',
+            //     controller: 'DefaultWorkflowController',
+            //     operation: 'nextAction',
+            //     help: {
+            //         requestType: 'secured',
+            //         message: 'authToken need to set within header',
+            //         method: 'put',
+            //         url: 'http://host:port/nodics/workflow/item/next/action/:itemCode/:actionCode'
+            //     }
+            // }
         },
         workflowActionOperations: {
             performAction: {
                 secured: true,
                 accessGroups: ['workflowUserGroup'],
                 key: '/action/process/:itemCode',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'performAction',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/workflow/action/process/:itemCode',
+                    body: {
+                        decision: 'Decision that has been taken',
+                        feedback: 'Either json object or simple message'
+                    }
+                }
+            }
+        },
+        retrieveWorkflow: {
+            getWorkflow: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/head',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
                 operation: 'performAction',

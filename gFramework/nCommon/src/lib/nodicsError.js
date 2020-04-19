@@ -40,7 +40,8 @@ module.exports = class NodicsError extends Error {
             error = {
                 code: error.code,
                 responseCode: SERVICE.DefaultStatusService.get(error.code).code,
-                message: error.message || SERVICE.DefaultStatusService.get(error.code).message
+                message: error.message || SERVICE.DefaultStatusService.get(error.code).message,
+                metadata: error.metadata
             };
             if (message) error.message = error.message + ': ' + message;
         }

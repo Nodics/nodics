@@ -42,12 +42,7 @@ module.exports = {
     initItem: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultPipelineService.start('initWorkflowItemPipeline', {
-                    tenant: request.tenant,
-                    workflowCode: request.workflowCode,
-                    itemType: request.itemType,
-                    item: request.item
-                }, {}).then(success => {
+                SERVICE.DefaultPipelineService.start('initWorkflowItemPipeline', request, {}).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
@@ -102,12 +97,7 @@ module.exports = {
     nextAction: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultPipelineService.start('nextWorkflowActionPipeline', {
-                    tenant: request.tenant,
-                    itemCode: request.itemCode,
-                    workflowItem: request.workflowItem,
-                    actionCode: request.actionCode,
-                }, {}).then(success => {
+                SERVICE.DefaultPipelineService.start('nextWorkflowActionPipeline', request, {}).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
@@ -129,16 +119,7 @@ module.exports = {
     performAction: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', {
-                    tenant: request.tenant,
-                    itemCode: request.itemCode,
-                    actionResponse: request.actionResponse,
-                    workflowItem: request.workflowItem,
-                    actionCode: request.actionCode,
-                    workflowAction: request.workflowAction,
-                    workflowCode: request.workflowCode,
-                    workflowHead: request.workflowHead
-                }, {}).then(success => {
+                SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', request, {}).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
@@ -151,18 +132,20 @@ module.exports = {
 
     handleItemChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
-            let data = request.data;
+            let event = request.event;
+            let data = event.data;
             let allPromises = [];
             data.forEach(workflowItem => {
                 workflowItem.tenant = workflowItem.tenant || request.tenant;
-                allPromises.push(this.initItem(workflowItem));
+                allPromises.push(this.initItem(_.merge({
+                    authData: request.authData
+                }, workflowItem)));
             });
             if (allPromises.length > 0) {
                 SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {
                     resolve({
                         result: success.success,
                         errors: success.errors
-
                     });
                 }).catch(error => {
                     reject(error);

@@ -82,6 +82,7 @@ module.exports = {
         this.LOG.debug('Starting channel evaluation process');
         SERVICE.DefaultWorkflowChannelService.getQalifiedChannel({
             tenant: request.tenant,
+            authData: request.authData,
             workflowItem: request.workflowItem,
             workflowHead: request.workflowHead,
             workflowAction: request.workflowAction,
@@ -120,6 +121,7 @@ module.exports = {
         this.LOG.debug('Starting channels execution process');
         SERVICE.DefaultWorkflowChannelService.executeChannels({
             tenant: request.tenant,
+            authData: request.authData,
             workflowItem: request.workflowItem,
             workflowHead: request.workflowHead,
             workflowAction: request.workflowAction,

@@ -62,9 +62,9 @@ module.exports = {
         }
     },
 
-    handleJobInterceptorUpdated: function (event, callback) {
+    handleJobInterceptorUpdated: function (request, callback) {
         try {
-            let jobCode = event.data.item;
+            let jobCode = request.event.data.item;
             this.refreshJobInterceptors(jobCode);
             callback(null, {
                 code: 'SUC_EVNT_00000'
@@ -100,9 +100,9 @@ module.exports = {
         }
     },
 
-    handleJobValidatorUpdated: function (event, callback) {
+    handleJobValidatorUpdated: function (request, callback) {
         try {
-            this.refreshJobValidators(event.data.tenant, event.data.item);
+            this.refreshJobValidators(request.event.data.tenant, request.event.data.item);
             callback(null, {
                 code: 'SUC_EVNT_00000'
             });

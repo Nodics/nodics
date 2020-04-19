@@ -213,11 +213,15 @@ module.exports = {
         let _self = this;
         if (userGroups && userGroups.length > 0) {
             userGroups.forEach(userGroup => {
-                if (!codes.includes(userGroup.code)) {
-                    codes.push(userGroup.code);
-                }
-                if (userGroup.parentGroups) {
-                    _self.getUserGroupCodes(userGroup.parentGroups, codes);
+                if (UTILS.isObject(userGroup)) {
+                    if (!codes.includes(userGroup.code)) {
+                        codes.push(userGroup.code);
+                    }
+                    if (userGroup.parentGroups) {
+                        _self.getUserGroupCodes(userGroup.parentGroups, codes);
+                    }
+                } else {
+                    codes.push(userGroup);
                 }
             });
         }

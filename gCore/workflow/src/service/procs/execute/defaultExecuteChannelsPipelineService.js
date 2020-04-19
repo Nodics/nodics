@@ -107,6 +107,7 @@ module.exports = {
         request.channelRequests = [];
         request.channelRequests.push({
             tenant: request.tenant,
+            authData: request.authData,
             workflowItem: request.workflowItem,
             workflowHead: request.workflowHead,
             workflowAction: request.workflowAction,
@@ -120,6 +121,7 @@ module.exports = {
             channelItem.code = channelItem.code + '_' + count;
             request.channelRequests.push({
                 tenant: request.tenant,
+                authData: request.authData,
                 workflowItem: channelItem,
                 workflowHead: request.workflowHead,
                 workflowAction: request.workflowAction,

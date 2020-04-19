@@ -52,5 +52,13 @@ module.exports = {
         active: 'true',
         index: 99,
         handler: 'DefaultWorkflowActionResponsesInterceptorService.loadActionResponseForWorkflowItem'
-    }
+    },
+    workflowUserGroupCodes: {
+        type: 'schema',
+        item: 'workflow',
+        trigger: 'postGet',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultWorkflowGetInterceptorService.getAllUserGroupCodes'
+    },
 };

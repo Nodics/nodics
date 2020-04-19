@@ -34,9 +34,13 @@ module.exports = {
         if (request.apiKey) {
             this.LOG.debug('Authorizing api key : ' + request.apiKey);
             SERVICE.DefaultAuthorizationProviderService.authorizeAPIKey(request).then(success => {
-                request.enterprise = success.enterprise;
-                request.entCode = success.enterprise.code;
-                request.person = success.person;
+                request.authData = {
+                    enterprise: success.enterprise,
+                    tenant: success.enterprise.tenant.code,
+                    entCode: success.enterprise.code,
+                    person: success.person,
+                    userGroups: success.person.userGroups
+                };
                 request.tenant = success.enterprise.tenant.code;
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -52,11 +56,8 @@ module.exports = {
             SERVICE.DefaultAuthorizationProviderService.authorizeToken(request).then(success => {
                 try {
                     if (success.result && !UTILS.isBlank(success.result)) {
-                        request.entCode = success.result.entCode;
+                        request.authData = success.result;
                         request.tenant = success.result.tenant;
-                        request.loginId = success.result.loginId;
-                        request.refreshToken = success.result.refreshToken;
-                        request.userGroups = success.result.userGroups;
                         process.nextSuccess(request, response);
                     } else {
                         process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00001'));
@@ -72,7 +73,7 @@ module.exports = {
         }
     },
     validateRequestData: function (request, response, process) {
-        if (!request.entCode) {
+        if (!request.authData || !request.authData.entCode) {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002', 'Invalid secured request'));
         } else if (!request.tenant) {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002', 'Invalid secured request'));
@@ -81,10 +82,10 @@ module.exports = {
         }
     },
     checkAccess: function (request, response, process) {
-        if (request.userGroups.filter(userGroup => request.router.accessGroups.includes(userGroup)).length > 0) {
+        if (request.authData.userGroups.filter(userGroup => request.router.accessGroups.includes(userGroup)).length > 0) {
             process.nextSuccess(request, response);
         } else {
-            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003'));
+            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user do not have access to this resource'));
         }
 
     },

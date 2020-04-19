@@ -211,11 +211,6 @@ module.exports = {
             service: false,
             router: false,
             refSchema: {
-                userGroups: {
-                    schemaName: "userGroup",
-                    type: 'many',
-                    propertyName: 'code'
-                },
                 channels: {
                     schemaName: "workflowChannel",
                     type: 'many',
@@ -247,7 +242,7 @@ module.exports = {
                 userGroups: {
                     type: 'array',
                     required: true,
-                    default: ['adminUserGroup'],
+                    default: ['workflowUserGroup'],
                     description: 'User group code for which this user belongs'
                 },
                 allowedDecisions: {
