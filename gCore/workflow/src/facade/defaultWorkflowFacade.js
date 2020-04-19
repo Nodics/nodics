@@ -52,4 +52,8 @@ module.exports = {
     performAction: function (request) {
         return SERVICE.DefaultWorkflowService.performAction(request);
     },
+
+    getWorkflowChain: function (request) {
+        return SERVICE.DefaultWorkflowService.getWorkflowChain(request);
+    },
 };

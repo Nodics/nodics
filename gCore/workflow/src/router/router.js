@@ -107,21 +107,68 @@ module.exports = {
             }
         },
         retrieveWorkflow: {
-            getWorkflow: {
+            getWorkflowChain: {
                 secured: true,
                 accessGroups: ['workflowUserGroup'],
-                key: '/head',
+                key: '/chain/:workflowCode',
+                method: 'GET',
+                controller: 'DefaultWorkflowController',
+                operation: 'getWorkflowChain',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/workflow/chain/:workflowCode',
+                }
+            },
+            getWorkflowsChain: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/chain',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
-                operation: 'performAction',
+                operation: 'getWorkflowChain',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/workflow/action/process/:itemCode',
+                    url: 'http://host:port/nodics/workflow/chain',
                     body: {
-                        decision: 'Decision that has been taken',
-                        feedback: 'Either json object or simple message'
+                        options: {
+                            recursive: 'true/false and other serach options'
+                        },
+                        query: 'Query object to find workflows'
+                    }
+                }
+            },
+            getActiveWorkflowItem: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/item/active/:itemCode',
+                method: 'GET',
+                controller: 'DefaultWorkflowController',
+                operation: 'getActiveItem',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/workflow/item/active/:itemCode',
+                }
+            },
+            getActiveWorkflowItems: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/items/active',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'getActiveItems',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/workflow/items/active',
+                    body: {
+
                     }
                 }
             }

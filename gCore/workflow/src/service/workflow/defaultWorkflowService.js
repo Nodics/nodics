@@ -130,6 +130,24 @@ module.exports = {
         });
     },
 
+    getWorkflowChain: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultPipelineService.start('loadWorkflowChainPipeline', request, {}).then(success => {
+                    resolve({
+                        code: 'SUC_SYS_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
+            }
+        });
+    },
+
+
     handleItemChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             let event = request.event;

@@ -771,11 +771,6 @@ module.exports = {
                 handler: 'DefaultExecuteChannelPipelineService.loadActionResponse',
                 success: 'preChannelInterceptors'
             },
-            // handleMultiChannelRequest: {
-            //     type: 'function',
-            //     handler: 'DefaultExecuteChannelPipelineService.handleMultiChannelRequest',
-            //     success: 'preChannelInterceptors'
-            // },
             preChannelInterceptors: {
                 type: 'function',
                 handler: 'DefaultExecuteChannelPipelineService.preChannelInterceptors',
@@ -878,5 +873,39 @@ module.exports = {
                 success: 'successEnd'
             }
         }
-    }
+    },
+
+    loadWorkflowChainPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowChainPipelineService.validateRequest',
+                success: 'loadWorkflowAction'
+            },
+            loadWorkflowAction: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowChainPipelineService.loadWorkflowAction',
+                success: 'checkAccess'
+            },
+            checkAccess: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowChainPipelineService.checkAccess',
+                success: 'loadChannelDetail'
+            },
+            loadChannelDetail: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowChainPipelineService.loadChannelDetail',
+                success: 'loadChannelsAction'
+            },
+            loadChannelsAction: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowChainPipelineService.loadChannelsAction',
+                success: 'successEnd'
+            }
+        }
+    },
 };
