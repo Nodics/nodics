@@ -130,7 +130,7 @@ module.exports = {
 
     getWorkflowChain: function (request, callback) {
         request.workflowCode = request.httpRequest.params.workflowCode;
-        //request = _.merge(request || {}, request.httpRequest.body);
+        request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {
             FACADE.DefaultWorkflowFacade.getWorkflowChain(request).then(success => {
                 callback(null, success);

@@ -133,6 +133,7 @@ module.exports = {
     getWorkflowChain: function (request) {
         return new Promise((resolve, reject) => {
             try {
+                request.loadHead = true;
                 SERVICE.DefaultPipelineService.start('loadWorkflowChainPipeline', request, {}).then(success => {
                     resolve({
                         code: 'SUC_SYS_00000',

@@ -884,6 +884,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultLoadWorkflowChainPipelineService.validateRequest',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultLoadWorkflowChainPipelineService.buildQuery',
                 success: 'loadWorkflowAction'
             },
             loadWorkflowAction: {

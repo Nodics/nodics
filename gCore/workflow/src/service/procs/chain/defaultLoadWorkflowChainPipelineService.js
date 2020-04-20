@@ -39,87 +39,164 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else if (!request.authData || UTILS.isBlank(request.authData)) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, authorization data can not null or empty'));
-        } else if (!request.workflowCode) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflowCode can not be null or empty'));
+        } else if (!request.workflowCode && !request.query) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflowCode and query both can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
     },
+    buildQuery: function (request, response, process) {
+        if (!request.options) request.options = {};
+        //request.options.recursive = request.options.recursive || true;
+        if (request.workflowCode) {
+            request.query = {
+                code: request.workflowCode
+            };
+        }
+        if (!request.loadedActions) request.loadedActions = [];
+        process.nextSuccess(request, response);
+    },
     loadWorkflowAction: function (request, response, process) {
-        SERVICE.DefaultWorkflowActionService.getWorkflowAction(request.workflowCode, request.tenant).then(workflowAction => {
-            response.success = workflowAction;
-            if (!request.loadedActions) request.loadedActions = [];
-            request.loadedActions.push(workflowAction.code);
-            process.nextSuccess(request, response);
+        SERVICE.DefaultWorkflowActionService.get({
+            tenant: request.tenant,
+            options: request.options,
+            query: request.query
+        }).then(success => {
+            try {
+                if (success && success.result && success.result.length > 0) {
+                    success.result.forEach(workflowAction => {
+                        if (request.loadHead && workflowAction.position != ENUMS.WorkflowActionPosition.HEAD.key) {
+                            throw new CLASSES.WorkflowError('Invalid workflowHead for: ' + workflowAction.code);
+                        }
+                        request.loadedActions.push(workflowAction.code);
+                    });
+                    request.loadHead = false;
+                    response.success = success.result;
+                    process.nextSuccess(request, response);
+                } else {
+                    process.error(request, response, new CLASSES.WorkflowError('invalid query, could not found any item for query:' + JSON.stringify(request.query)));
+                }
+            } catch (error) {
+                process.error(request, response, error);
+            }
         }).catch(error => {
             process.error(request, response, error);
         });
     },
     checkAccess: function (request, response, process) {
-        let workflowAction = response.success;
-        if (request.authData.userGroups.filter(userGroup => workflowAction.userGroupCodes.includes(userGroup)).length > 0) {
-            workflowAction.access = true;
-        } else {
-            workflowAction.access = false;
-        }
+        response.success.forEach(workflowAction => {
+            if (request.authData.userGroups.filter(userGroup => workflowAction.userGroupCodes.includes(userGroup)).length > 0) {
+                workflowAction.access = true;
+            } else {
+                workflowAction.access = false;
+            }
+        });
         process.nextSuccess(request, response);
     },
     loadChannelDetail: function (request, response, process) {
-        let workflowAction = response.success;
-        let channels = workflowAction.channels;
-        let finalChannels = [];
-        if (channels && channels.length > 0) {
-            let tmpChannels = [];
-            channels.forEach(channel => {
-                if (UTILS.isObject(channel)) {
-                    finalChannels.push(channel);
-                } else {
-                    tmpChannels.push(channel);
-                }
-            });
-            if (tmpChannels.length > 0) {
-                SERVICE.DefaultWorkflowChannelService.get({
-                    tenant: request.tenant,
-                    query: {
-                        code: {
-                            $in: tmpChannels
-                        }
-                    }
-                }).then(success => {
-                    if (success && success.result && success.result.length > 0) {
-                        success.result.forEach(rChannels => {
-                            finalChannels.push(rChannels);
-                        });
-                        workflowAction.channels = finalChannels;
-                        process.nextSuccess(request, response);
-                    } else {
-                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'could not load channels for: ' + tmpChannels));
-                    }
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
-            } else {
-                process.nextSuccess(request, response);
-            }
-        } else {
+        let workflowActions = response.success;
+        this.validateActionsForChannelDetail(request, workflowActions).then(success => {
             process.nextSuccess(request, response);
-        }
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+    validateActionsForChannelDetail: function (request, workflowActions, counter = 0) {
+        return new Promise((resolve, reject) => {
+            if (counter < workflowActions.length) {
+                let workflowAction = workflowActions[counter];
+                if (workflowAction.channels && workflowAction.channels.length > 0) {
+                    let finalChannels = [], pendingChannels = [];
+                    workflowAction.channels.forEach(channel => {
+                        if (UTILS.isObject(channel)) {
+                            finalChannels.push(channel);
+                        } else {
+                            pendingChannels.push(channel);
+                        }
+                    });
+                    if (pendingChannels.length > 0) {
+                        this.fatchChannelDetail(request, workflowAction, pendingChannels, finalChannels).then(success => {
+                            this.validateActionsForChannelDetail(request, workflowActions, ++counter).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        this.validateActionsForChannelDetail(request, workflowActions, ++counter).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }
+                } else {
+                    this.validateActionsForChannelDetail(request, workflowActions, ++counter).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            } else {
+                resolve(true);
+            }
+        });
+    },
+    fatchChannelDetail: function (request, workflowAction, pendingChannels, finalChannels) {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultWorkflowChannelService.get({
+                tenant: request.tenant,
+                query: {
+                    code: {
+                        $in: pendingChannels
+                    }
+                }
+            }).then(success => {
+                if (success && success.result && success.result.length > 0) {
+                    success.result.forEach(rChannels => {
+                        finalChannels.push(rChannels);
+                    });
+                    workflowAction.channels = finalChannels;
+                    resolve(true);
+                } else {
+                    reject(new CLASSES.WorkflowError('ERR_WF_00003', 'could not load channels for: ' + tmpChannels));
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
     loadChannelsAction: function (request, response, process) {
-        let workflowAction = response.success;
-        if (workflowAction.channels && workflowAction.channels.length > 0) {
-            this.loadNextAction(request, workflowAction.channels, 0).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } else {
+        this.validateActionsForChannelTarget(request, response.success).then(success => {
             process.nextSuccess(request, response);
-        }
+        }).catch(error => {
+            process.error(request, response, error);
+        });
     },
-    loadNextAction(request, channels, counter) {
+
+    validateActionsForChannelTarget: function (request, workflowActions, counter = 0) {
         return new Promise((resolve, reject) => {
-            if (counter < channels.length) {
+            if (counter < workflowActions.length) {
+                let workflowAction = workflowActions[counter];
+                this.loadNextAction(request, workflowAction.channels).then(success => {
+                    this.validateActionsForChannelTarget(request, workflowActions, ++counter).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    loadNextAction(request, channels, counter = 0) {
+        return new Promise((resolve, reject) => {
+            if (channels && counter < channels.length) {
                 let channel = channels[counter];
                 if (channel.target) {
                     if (!request.loadedActions.includes(channel.target)) {
