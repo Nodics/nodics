@@ -70,7 +70,9 @@ module.exports = {
         if (!request.workflowAction || !request.workflowHead) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action or head can not be null or empty'));
         } else {
-            request.workflowAction.endPoint = _.merge(_.merge({}, request.workflowHead.endPoint || {}), request.workflowAction.endPoint || {});
+            request.workflowAction.endPoint = _.merge(
+                _.merge({}, (request.workflowHead.sourceDetail) ? request.workflowHead.sourceDetail.endPoint || {} : {}),
+                (request.workflowAction.sourceDetail) ? request.workflowAction.sourceDetail.endPoint || {} : {});
             process.nextSuccess(request, response);
         }
     }

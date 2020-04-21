@@ -39,6 +39,8 @@ module.exports = {
     validateRequest: function (request, response, process) {
         if (!request.itemType && request.itemType !== ENUMS.WorkflowItemType.EXTERNAL.key) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, itemType can not be other than [EXTERNAL]'));
+        } else if (!request.item || !request.item.sourceDetail || !request.item.sourceDetail.endPoint) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, item sourceDetail can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -53,9 +55,7 @@ module.exports = {
         request.workflowItem.type = ENUMS.WorkflowItemType.EXTERNAL.key;
         request.workflowItem.event = request.workflowItem.event || {};
         request.workflowItem.event.enabled = request.workflowItem.event.enabled || false;
-        request.workflowItem.detail = request.workflowItem.detail || {};
         request.workflowItem.callbackData = request.workflowItem.callbackData || {};
-        request.workflowItem.endPoint = request.workflowItem.endPoint || {};
         process.nextSuccess(request, response);
     }
 };

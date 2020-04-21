@@ -115,7 +115,7 @@ module.exports = {
                         }
                     });
                     if (pendingChannels.length > 0) {
-                        this.fatchChannelDetail(request, workflowAction, pendingChannels, finalChannels).then(success => {
+                        this.fetchChannelDetail(request, workflowAction, pendingChannels, finalChannels).then(success => {
                             this.validateActionsForChannelDetail(request, workflowActions, ++counter).then(success => {
                                 resolve(true);
                             }).catch(error => {
@@ -143,7 +143,7 @@ module.exports = {
             }
         });
     },
-    fatchChannelDetail: function (request, workflowAction, pendingChannels, finalChannels) {
+    fetchChannelDetail: function (request, workflowAction, pendingChannels, finalChannels) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultWorkflowChannelService.get({
                 tenant: request.tenant,

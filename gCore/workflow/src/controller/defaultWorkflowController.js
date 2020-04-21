@@ -140,19 +140,5 @@ module.exports = {
         } else {
             return FACADE.DefaultWorkflowFacade.getWorkflowChain(request);
         }
-    },
-
-    getActiveItem: function (request, callback) {
-        request.itemCode = request.httpRequest.params.itemCode;
-        request = _.merge(request || {}, request.httpRequest.body);
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.getActiveItem(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.getActiveItem(request);
-        }
     }
 };

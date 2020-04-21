@@ -36,7 +36,7 @@ module.exports = {
         this.LOG.debug('Validating input for workflow item paused process');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
-        } else if (!request.data || !request.data.detail || UTILS.isBlank(request.data.detail)) {
+        } else if (!request.data || !request.data.sourceDetail || UTILS.isBlank(request.data.sourceDetail)) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
         } else if (!request.event) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
@@ -52,18 +52,19 @@ module.exports = {
                 activeHead: data.activeHead,
                 activeAction: data.activeAction,
                 paused: data.active,
-                comments: data.comments
+                comments: data.comments,
+                state: data.state
             }
         });
-        let detail = data.detail;
-        if (detail.schemaName) {
+        let sourceDetail = data.sourceDetail;
+        if (sourceDetail.schemaName) {
             response.targetNode = 'schemaOperation';
             process.nextSuccess(request, response);
-        } else if (detail.indexName) {
+        } else if (sourceDetail.indexName) {
             response.targetNode = 'searchOperation';
             process.nextSuccess(request, response);
         } else {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid item detail, could not find operation type'));
+            process.error(request, response, new CLASSES.WorkflowError('Invalid item sourceDetail, could not find operation type'));
         }
     },
     updateSchemaItem: function (request, response, process) {

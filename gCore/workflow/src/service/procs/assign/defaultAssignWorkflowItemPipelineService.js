@@ -57,11 +57,15 @@ module.exports = {
     updateWorkflowItem: function (request, response, process) {
         this.LOG.debug('Updating workflow item');
         let workflowItem = request.workflowItem;
-
         workflowItem.activeAction = {
             code: request.workflowAction.code,
-            state: ENUMS.WorkflowActionState.NEW.key
+            state: ENUMS.WorkflowActionState.PROCESSING.key
         };
+        workflowItem.state = ENUMS.WorkflowItemState.PROCESSING.key;
+        if (!workflowItem._id) {
+            workflowItem.state = ENUMS.WorkflowItemState.NEW.key;
+            workflowItem.activeAction.state = ENUMS.WorkflowActionState.NEW.key;
+        }
         if (request.workflowAction.position === ENUMS.WorkflowActionPosition.HEAD.key) {
             workflowItem.activeHead = {
                 code: request.workflowAction.code,
@@ -69,6 +73,8 @@ module.exports = {
             };
             if (!workflowItem.heads) workflowItem.heads = [];
             workflowItem.heads.push(request.workflowAction.code);
+        } else {
+            workflowItem.activeHead.state = ENUMS.WorkflowActionState.PROCESSING.key;
         }
         process.nextSuccess(request, response);
     },

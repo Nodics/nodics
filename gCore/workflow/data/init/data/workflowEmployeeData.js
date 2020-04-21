@@ -11,6 +11,25 @@
 
 module.exports = {
     record0: {
+        code: 'workflowAdmin',
+        active: true,
+        name: {
+            title: 'Mr.',
+            firstName: 'workflow',
+            lastName: 'Admin',
+        },
+        loginId: 'workflowAdmin',
+        password: {
+            loginId: 'workflowAdmin',
+            password: 'workflowAdmin',
+            active: true
+        },
+        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc835ff',
+        userGroups: ['workflowCreaterGroup'],
+        addresses: ['defaultEmployeeAddress'],
+        contacts: ['defaultEmployeeContact']
+    },
+    record1: {
         code: 'workflowCreator',
         active: true,
         name: {
@@ -29,7 +48,7 @@ module.exports = {
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
-    record1: {
+    record2: {
         code: 'workflowApprover',
         active: true,
         name: {

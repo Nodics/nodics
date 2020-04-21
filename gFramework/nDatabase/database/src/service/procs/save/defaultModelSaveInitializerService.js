@@ -472,7 +472,7 @@ module.exports = {
         try {
             let schemaModel = request.schemaModel;
             let savedModel = response.success.result;
-            if (!request.ignoreWorkflowEvent && response.success.result && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
+            if (!request.ignoreWorkflowEvent && response.success.result && schemaModel.workflows && Object.keys(schemaModel.workflows).length > 0) {
                 if (!savedModel.workflow || UTILS.isBlank(savedModel.workflow)) {
                     this.LOG.error('item: ' + (savedModel.code || savedModel._id) + ' is not workflow compatable');
                 } else {
@@ -489,21 +489,10 @@ module.exports = {
                         active: true,
                         data: []
                     };
-                    schemaModel.workflowCodes.forEach(workflowCode => {
-                        event.data.push({
-                            workflowCode: workflowCode,
-                            itemType: 'INTERNAL',
-                            item: {
-                                code: savedModel.code,
-                                detail: {
-                                    schemaName: schemaModel.schemaName,
-                                    moduleName: schemaModel.moduleName,
-                                },
-                                event: {
-                                    enabled: true
-                                }
-                            }
-                        });
+                    Object.keys(schemaModel.workflows).forEach(workflowCode => {
+                        let workflow = schemaModel.workflows[workflowCode];
+                        let itemBuilder = workflow.sourceItemBuilder || CONFIG.get('workflow').sourceItemBuilder;
+                        event.data.push(SERVICE[itemBuilder.serviceName][itemBuilder.operation](request, response, workflow));
                     });
                     this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaModel.schemaName);
                     SERVICE.DefaultEventService.publish(event).then(success => {

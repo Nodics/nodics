@@ -119,6 +119,7 @@ module.exports = {
         }
     },
     markActionExecuted: function (request, response, process) {
+        request.workflowItem.activeHead.state = ENUMS.WorkflowActionState.PROCESSING.key;
         request.workflowItem.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
         if (!response.success.messages) response.success.messages = [];
         response.success.messages.push('Action performed and marked as done!');
@@ -162,6 +163,7 @@ module.exports = {
     },
     updateWorkflowItem: function (request, response, process) {
         if (!request.workflowItem.actions) request.workflowItem.actions = [];
+        request.workflowItem.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
         request.workflowItem.actions.push({
             code: request.workflowAction.code,
             responseId: request.actionResponse._id,
@@ -211,11 +213,19 @@ module.exports = {
         if (eventConfig.enabled) {
             try {
                 this.LOG.debug('Pushing event for action performed : ' + request.workflowItem.activeAction.code);
-                SERVICE.DefaultWorkflowEventService.publishEvent({
+                let event = {
                     tenant: request.tenant,
                     event: 'actionPerformed',
-                    type: eventConfig.type || "SYNC"
-                }, request.workflowAction, request.workflowItem).then(success => {
+                    type: eventConfig.type || "SYNC",
+                };
+                if (request.workflowItem.actions && request.workflowItem.actions.length > 0) {
+                    event.data = {
+                        actions: request.workflowItem.actions.map(action => {
+                            return action.code;
+                        })
+                    };
+                }
+                SERVICE.DefaultWorkflowEventService.publishEvent(event, request.workflowAction, request.workflowItem).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {
                     this.LOG.error('While posting action performed event : ', error);

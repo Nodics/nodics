@@ -38,7 +38,7 @@ module.exports = {
         this.LOG.debug('Validating input for workflow error occurred process');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
-        } else if (!request.data || !request.data.detail || UTILS.isBlank(request.data.detail)) {
+        } else if (!request.data || !request.data.sourceDetail || UTILS.isBlank(request.data.sourceDetail)) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
         } else if (!request.event) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
@@ -52,20 +52,21 @@ module.exports = {
         request.model = _.merge(request.schemaModel, {
             workflow: {
                 activeHead: data.activeHead,
-                activeAction: data.activeAction
+                activeAction: data.activeAction,
+                state: data.state
             }
         });
-        if (!request.model.errors) request.model.errors = [];
-        request.model.errors.push(data.error);
-        let detail = data.detail;
-        if (detail.schemaName) {
+        if (!request.model.workflow.errors) request.model.workflow.errors = [];
+        request.model.workflow.errors.push(data.error);
+        let sourceDetail = data.sourceDetail;
+        if (sourceDetail.schemaName) {
             response.targetNode = 'schemaOperation';
             process.nextSuccess(request, response);
-        } else if (detail.indexName) {
+        } else if (sourceDetail.indexName) {
             response.targetNode = 'searchOperation';
             process.nextSuccess(request, response);
         } else {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid item detail, could not find operation type'));
+            process.error(request, response, new CLASSES.WorkflowError('Invalid item sourceDetail, could not find operation type'));
         }
     },
     updateSchemaItem: function (request, response, process) {

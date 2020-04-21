@@ -38,27 +38,27 @@ module.exports = {
         this.LOG.debug('Validating input for workflow evaluated channels');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
-        } else if (!request.data || !request.data.detail || UTILS.isBlank(request.data.detail)) {
+        } else if (!request.data || !request.data.sourceDetail || UTILS.isBlank(request.data.sourceDetail)) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
         } else if (!request.event) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
         } else if (!request.data.items) {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid channel items detail'));
+            process.error(request, response, new CLASSES.WorkflowError('Invalid channel items'));
         } else {
             process.nextSuccess(request, response);
         }
     },
     prepareModel: function (request, response, process) {
         this.LOG.debug('Preparing model to update schema item');
-        let detail = request.data.detail;
-        if (detail.schemaName) {
+        let sourceDetail = request.data.sourceDetail;
+        if (sourceDetail.schemaName) {
             response.targetNode = 'schemaOperation';
             process.nextSuccess(request, response);
-        } else if (detail.indexName) {
+        } else if (sourceDetail.indexName) {
             response.targetNode = 'searchOperation';
             process.nextSuccess(request, response);
         } else {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid item detail, could not find operation type'));
+            process.error(request, response, new CLASSES.WorkflowError('Invalid item sourceDetail, could not find operation type'));
         }
     },
     prepareSchemaItem: function (request, response, process) {
@@ -74,7 +74,8 @@ module.exports = {
                     workflow: {
                         activeHead: data.activeHead,
                         activeAction: data.activeAction,
-                        qualifiedChannel: item.channel
+                        qualifiedChannel: item.channel,
+                        state: data.state
                     }
                 });
                 if (data.originalCode) {

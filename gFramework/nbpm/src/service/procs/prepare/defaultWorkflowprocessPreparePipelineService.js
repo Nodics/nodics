@@ -38,7 +38,7 @@ module.exports = {
         this.LOG.debug('Validating input for workflow item assigned process');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
-        } else if (!request.data || !request.data.detail || UTILS.isBlank(request.data.detail)) {
+        } else if (!request.data || !request.data.sourceDetail || UTILS.isBlank(request.data.sourceDetail)) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
         } else if (!request.event) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
@@ -48,11 +48,11 @@ module.exports = {
     },
     checkOperation: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
-        let itemDetail = request.data.detail;
-        if (!itemDetail.schemaName && !itemDetail.indexName) {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid internal item detail, schemaName and indexName both can not be null'));
+        let sourceDetail = request.data.sourceDetail;
+        if (!sourceDetail.schemaName && !sourceDetail.indexName) {
+            process.error(request, response, new CLASSES.WorkflowError('Invalid internal item sourceDetail, schemaName and indexName both can not be null'));
         } else {
-            if (itemDetail.schemaName) {
+            if (sourceDetail.schemaName) {
                 response.targetNode = 'schemaOperation';
             } else {
                 response.targetNode = 'searchOperation';
@@ -62,8 +62,8 @@ module.exports = {
     },
     loadSchemaService: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
-        let itemDetail = request.data.detail;
-        request.schemaService = SERVICE['Default' + itemDetail.schemaName.toUpperCaseFirstChar() + 'Service'];
+        let sourceDetail = request.data.sourceDetail;
+        request.schemaService = SERVICE['Default' + sourceDetail.schemaName.toUpperCaseFirstChar() + 'Service'];
         if (request.schemaService) {
             process.nextSuccess(request, response);
         } else {

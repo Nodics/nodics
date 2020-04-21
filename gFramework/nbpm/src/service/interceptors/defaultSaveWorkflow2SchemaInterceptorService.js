@@ -37,8 +37,8 @@ module.exports = {
     createWorkflowCode: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
-                if (request.schemaModel.workflowCodes &&
-                    request.schemaModel.workflowCodes.length > 0) {
+                if (request.schemaModel.workflows &&
+                    Object.keys(request.schemaModel.workflows).length > 0) {
                     if (!request.model._id &&
                         request.model.code &&
                         !request.model.workflow) {
@@ -88,6 +88,7 @@ module.exports = {
                     let event = request.model.events[eventName];
                     event.event = SERVICE.DefaultWorkflowEventService.createEventName(request.model.schemaName, request.model.workflowCode, event.event);
                 });
+                if (!request.model.sourceItemBuilder) request.model.sourceItemBuilder = CONFIG.get('workflow').sourceItemBuilder;
                 resolve(true);
             } catch (error) {
                 reject(new CLASSES.WorkflowError('ERR_WF_00000', 'Error while assiging events with schema: ' + CONFIG.get('clusterId')));

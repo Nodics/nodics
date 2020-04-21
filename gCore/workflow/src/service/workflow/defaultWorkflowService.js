@@ -148,7 +148,6 @@ module.exports = {
         });
     },
 
-
     handleItemChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             let event = request.event;

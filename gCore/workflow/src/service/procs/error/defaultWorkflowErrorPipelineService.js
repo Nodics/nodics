@@ -47,6 +47,9 @@ module.exports = {
     },
     updateError: function (request, response, process) {
         if (request.workflowItem.errorCount < (CONFIG.get('workflow').itemErrorLimit || 5)) {
+            request.workflowItem.state = ENUMS.WorkflowItemState.ERROR.key;
+            request.workflowItem.activeHead.state = ENUMS.WorkflowActionState.ERROR.key;
+            request.workflowItem.activeAction.state = ENUMS.WorkflowActionState.ERROR.key;
             if (!request.workflowItem.errors) request.workflowItem.errors = [];
             request.workflowItem.errors.push(response.error.toJson());
             request.workflowItem.errorCount = request.workflowItem.errorCount + 1;

@@ -46,11 +46,15 @@ module.exports = {
                 data: {
                     code: workflowItem.code,
                     activeHead: workflowItem.activeHead.code,
-                    activeAction: workflowItem.activeAction.code
+                    activeAction: workflowItem.activeAction.code,
+                    state: workflowItem.state
                 }
             }, event);
             if (workflowItem.detail && !UTILS.isBlank(workflowItem.detail)) {
                 event.data.detail = workflowItem.detail;
+            }
+            if (workflowItem.sourceDetail && !UTILS.isBlank(workflowItem.sourceDetail)) {
+                event.data.sourceDetail = workflowItem.sourceDetail;
             }
             if (workflowItem.callbackData && !UTILS.isBlank(workflowItem.callbackData)) {
                 event.data.callbackData = workflowItem.callbackData;
@@ -74,10 +78,9 @@ module.exports = {
     publishInternalEvent: function (event, workflowItem) {
         return new Promise((resolve, reject) => {
             try {
-                event.event = this.createEventName((workflowItem.detail.schemaName || workflowItem.detail.indexName), workflowItem.activeHead.code, event.event);
-                event.target = workflowItem.detail.moduleName;
+                event.event = this.createEventName((workflowItem.sourceDetail.schemaName || workflowItem.sourceDetail.indexName), workflowItem.activeHead.code, event.event);
+                event.target = workflowItem.sourceDetail.moduleName;
                 event.targetType = ENUMS.TargetType.MODULE.key;
-                //console.log(util.inspect(event, true, 5));
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -92,7 +95,7 @@ module.exports = {
     publishExternalEvent: function (event, workflowItem, workflowAction) {
         return new Promise((resolve, reject) => {
             try {
-                let endPoint = _.merge(_.merge({}, workflowAction.endPoint || {}), workflowItem.endPoint || {});
+                let endPoint = _.merge(_.merge({}, workflowAction.sourceDetail.endPoint || {}), workflowItem.sourceDetail.endPoint || {});
                 event.targetType = ENUMS.TargetType.EXTERNAL.key;
                 event.target = {
                     header: endPoint.header,

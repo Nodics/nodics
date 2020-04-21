@@ -36,10 +36,10 @@ module.exports = {
                     required: true,
                     description: 'Mandate item type [INTERNAL, EXTERNAL]'
                 },
-                detail: {
+                sourceDetail: {
                     type: 'object',
                     required: true,
-                    description: 'Required detail of item, either internal or external'
+                    description: 'Required sourceDetail of item, either internal or external'
                 },
                 event: {
                     type: 'object',

@@ -14,7 +14,12 @@ module.exports = {
     defaultErrorCodes: {
         WorkflowError: 'ERR_WF_00000'
     },
-
+    workflow: {
+        sourceItemBuilder: {
+            serviceName: 'DefaultSourceItemDataBuilderService',
+            operation: 'getSourceItemInfo'
+        }
+    },
     defaultWorkflowEvents: {
         workflowItemAssigned: {
             active: true,

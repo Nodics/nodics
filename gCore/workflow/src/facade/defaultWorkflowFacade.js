@@ -55,5 +55,5 @@ module.exports = {
 
     getWorkflowChain: function (request) {
         return SERVICE.DefaultWorkflowService.getWorkflowChain(request);
-    },
+    }
 };

@@ -31,11 +31,13 @@ module.exports = {
                             code: 'Required item code',
                             refId: 'external item reference id',
                             callbackData: 'Any JSON object needs to be send back along with each events',
-                            detail: {
+                            sourceDetail: {
                                 schemaName: 'Either schema name or index name, in case internal',
                                 indexName: 'Either schema name or index name, in case internal',
                                 moduleName: 'Required module name, in case internal',
-                            }
+                                endPoint: 'In case external item'
+                            },
+                            itemDetail: 'Complete item detail, which required on workflow action to perform'
                         }
                     }
                 }
@@ -138,37 +140,6 @@ module.exports = {
                             recursive: 'true/false and other serach options'
                         },
                         query: 'Query object to find workflows'
-                    }
-                }
-            },
-            getActiveWorkflowItem: {
-                secured: true,
-                accessGroups: ['workflowUserGroup'],
-                key: '/item/active/:itemCode',
-                method: 'GET',
-                controller: 'DefaultWorkflowController',
-                operation: 'getActiveItem',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/workflow/item/active/:itemCode',
-                }
-            },
-            getActiveWorkflowItems: {
-                secured: true,
-                accessGroups: ['workflowUserGroup'],
-                key: '/items/active',
-                method: 'POST',
-                controller: 'DefaultWorkflowController',
-                operation: 'getActiveItems',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/workflow/items/active',
-                    body: {
-
                     }
                 }
             }

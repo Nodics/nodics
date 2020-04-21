@@ -29,14 +29,14 @@ module.exports = {
                 let event = request.event;
                 let data = event.data;
                 let modelObject = NODICS.getModels(data.moduleName, request.tenant)[UTILS.createModelName(data.schemaName)];
-                if (!modelObject.workflowCodes) modelObject.workflowCodes = [];
-                if (!data.active && modelObject.workflowCodes.includes(data.workflowCode)) {
-                    modelObject.workflowCodes.splice(modelObject.workflowCodes.indexOf(data.workflowCode), 1);
+                if (!modelObject.workflows) modelObject.workflows = {};
+                if (!data.active && modelObject.workflows[data.workflowCode]) {
+                    delete modelObject.workflows[data.workflowCode];
                     data.events.forEach(event => {
                         event.enabled = false;
                     });
-                } else if (data.active && !modelObject.workflowCodes.includes(data.workflowCode)) {
-                    modelObject.workflowCodes.push(data.workflowCode);
+                } else if (data.active && !modelObject.workflows[data.workflowCode]) {
+                    modelObject.workflows[data.workflowCode] = data;
                 }
                 SERVICE.DefaultEventService.registerModuleEvents(data.moduleName, data.events);
                 resolve('Workflow code updated on cluster: ' + CONFIG.get('clusterId'));

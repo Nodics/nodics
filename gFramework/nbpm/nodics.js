@@ -40,8 +40,8 @@ module.exports = {
                                 if (data.active && NODICS.isModuleActive(data.moduleName)) {
                                     let modelObject = NODICS.getModels(data.moduleName, tntCode)[UTILS.createModelName(data.schemaName)];
                                     if (modelObject) {
-                                        if (!modelObject.workflowCodes) modelObject.workflowCodes = [];
-                                        if (!modelObject.workflowCodes.includes(data.workflowCode)) modelObject.workflowCodes.push(data.workflowCode);
+                                        if (!modelObject.workflows) modelObject.workflows = {};
+                                        if (!modelObject.workflows[data.workflowCode]) modelObject.workflows[data.workflowCode] = data;
                                     }
                                     SERVICE.DefaultEventService.registerModuleEvents(data.moduleName, data.events);
                                 }
