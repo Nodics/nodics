@@ -1,13 +1,13 @@
 {
-    "name": "profile",
-    "index": "5.15",
-    "type": "router",
-    "description": "Nodics applicaion module. It will hold all profile realted information",
+    "name": "catalog",
+    "index": "1.15",
+    "type": "core",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to catalog",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "profile"
+        "catalog"
     ],
-    "author": "Nodics Framework <nodics.framework@gmail.com>",
+    "author": "Himkar Dwivedi",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,

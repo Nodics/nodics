@@ -134,6 +134,10 @@ module.exports = {
             model: true,
             service: true,
             router: true,
+            cache: {
+                enabled: true,
+                ttl: 1000
+            },
             definition: {
                 active: {
                     required: false
@@ -176,6 +180,10 @@ module.exports = {
             model: true,
             service: true,
             router: true,
+            cache: {
+                enabled: true,
+                ttl: 1000
+            },
             definition: {
                 qualifier: {
                     type: 'object',
@@ -210,6 +218,10 @@ module.exports = {
             model: false,
             service: false,
             router: false,
+            cache: {
+                enabled: true,
+                ttl: 1000
+            },
             refSchema: {
                 channels: {
                     schemaName: "workflowChannel",
@@ -289,22 +301,6 @@ module.exports = {
                     description: 'Required channel name for success handler'
                 }
             }
-        },
-
-        /**
-         * This is header definition for all the workflow item created within system, This also hold 
-         * number of items currently associated with this workflow
-         */
-        // workflowHead: {
-        //     super: 'workflow',
-        //     model: true,
-        //     service: true,
-        //     router: true,
-        //     definition: {
-        //         position: {
-        //             default: ENUMS.WorkflowActionPosition.HEAD.key
-        //         },
-        //     }
-        // }
+        }
     }
 };

@@ -1,13 +1,13 @@
 {
-    "name": "profile",
-    "index": "5.15",
+    "name": "cms",
+    "index": "10.20",
     "type": "router",
-    "description": "Nodics applicaion module. It will hold all profile realted information",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to cms",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "profile"
+        "cms"
     ],
-    "author": "Nodics Framework <nodics.framework@gmail.com>",
+    "author": "Himkar Dwivedi",
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,
