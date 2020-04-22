@@ -1,11 +1,11 @@
 {
-    "name": "workflow",
-    "index": "5.30",
-    "type": "router",
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to workflow",
+    "name": "catalog",
+    "index": "5.10",
+    "type": "core",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to catalog",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "workflow"
+        "catalog"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

@@ -129,12 +129,56 @@ module.exports = {
                 serverProperties.activeModules.modules.push(NODICS.getNodeName());
             }
             modules = modules.concat(serverProperties.activeModules.modules);
+            modules.forEach(moduleName => {
+                this.resolveModuleHiererchy(moduleName);
+            });
+            let dependantModules = [];
+            modules.forEach(moduleName => {
+                this.resolveDependancy(moduleName, dependantModules);
+            });
+            dependantModules.forEach(moduleName => {
+                if (!modules.includes(moduleName)) modules.push(moduleName);
+            });
             return modules;
         } catch (error) {
             console.error('While preparing active module list : ', error);
         }
     },
-
+    resolveModuleHiererchy: function (moduleName) {
+        let moduleObject = NODICS.getRawModule(moduleName);
+        let modules = [moduleName];
+        if (!moduleObject.parent) {
+            return modules;
+        } else if (moduleName === NODICS.getEnvironmentName() || NODICS.getEnvironmentPath().includes(moduleObject.path)) {
+            return [];
+        } else {
+            if (!moduleObject.parentModules) {
+                moduleObject.parentModules = this.resolveModuleHiererchy(moduleObject.parent);
+            }
+            modules = modules.concat(moduleObject.parentModules);
+            return modules;
+        }
+    },
+    resolveDependancy: function (moduleName, dependantModules) {
+        let _self = this;
+        let rawModule = NODICS.getRawModule(moduleName);
+        if (!rawModule || !rawModule.metaData) {
+            console.error('Invalid module name : ', moduleName);
+        } else {
+            if (rawModule.metaData.requiredModules && rawModule.metaData.requiredModules.length > 0) {
+                rawModule.metaData.requiredModules.forEach(nxtModuleName => {
+                    if (!dependantModules.includes(nxtModuleName)) dependantModules.push(nxtModuleName);
+                    _self.resolveDependancy(nxtModuleName, dependantModules);
+                });
+            }
+            if (rawModule.parentModules && rawModule.parentModules.length > 0) {
+                rawModule.parentModules.forEach(pModuleName => {
+                    if (!dependantModules.includes(pModuleName)) dependantModules.push(pModuleName);
+                    _self.resolveDependancy(pModuleName, dependantModules);
+                });
+            }
+        }
+    },
     loadModuleIndex: function () {
         let _self = this;
         let moduleIndex = {};

@@ -78,6 +78,9 @@ module.exports = {
     loadRawModuleList: function (homePath) {
         let modulesList = {};
         this.collectModulesList(homePath, modulesList);
+        // Object.keys(modulesList).forEach(moduleName => {
+        //     this.resolveModuleHiererchy(moduleName, modulesList);
+        // });
         if (modulesList && !this.isBlank(modulesList)) {
             NODICS.addRawModules(modulesList);
         }
@@ -117,7 +120,17 @@ module.exports = {
         }
         return moduleName ? moduleName : null;
     },
-
+    resolveModuleHiererchy: function (moduleName, modulesList) {
+        let moduleObject = modulesList[moduleName];
+        let modules = [moduleName];
+        if (moduleObject.parent) {
+            if (!moduleObject.parentModules) {
+                moduleObject.parentModules = this.resolveModuleHiererchy(moduleObject.parent, modulesList);
+            }
+            modules = modules.concat(moduleObject.parentModules);
+        }
+        return modules;
+    },
     getAllMethods: function (envScripts) {
         return Object.getOwnPropertyNames(envScripts).filter(function (prop) {
             return typeof envScripts[prop] == 'function';

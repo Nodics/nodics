@@ -1,6 +1,9 @@
 {
     "name": "profile",
-    "index": "5.20",
+    "index": "5.15",
+    "requiredModules": [
+        "catalog"
+    ],
     "type": "router",
     "description": "Nodics applicaion module. It will hold all profile realted information",
     "homepage": "http://www.nodics.com/",

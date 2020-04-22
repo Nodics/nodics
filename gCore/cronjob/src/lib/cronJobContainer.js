@@ -264,7 +264,7 @@ module.exports = function () {
                     if (jobCodes && jobCodes.length > 0) {
                         jobs = [];
                         Object.keys(_jobPool[tenant]).forEach(jobCode => {
-                            if (jobCodes.include(jobCode)) {
+                            if (jobCodes.includes(jobCode)) {
                                 jobs.push(jobCode);
                             }
                         });
