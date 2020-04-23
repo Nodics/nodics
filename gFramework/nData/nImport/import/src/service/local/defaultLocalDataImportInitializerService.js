@@ -106,6 +106,7 @@ module.exports = {
                         _.each(fileObj, (moduleObject, moduleName) => {
                             _.each(moduleObject, (headerObj, headerName) => {
                                 headerObj.options.moduleName = headerObj.options.moduleName || moduleName;
+                                headerObj.options.userGroups = (request.authData) ? request.authData.userGroups : headerObj.options.userGroups;
                                 headerObj.options.fileName = name;
                                 headerObj.options.filePath = element;
                                 headerObj.options.done = false;

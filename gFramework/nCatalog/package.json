@@ -1,7 +1,7 @@
 {
     "name": "catalog",
     "index": "1.15",
-    "type": "core",
+    "type": "router",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to catalog",
     "homepage": "http://www.nodics.com/",
     "keywords": [

@@ -77,6 +77,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.validateRequest',
+                success: 'checkAccess'
+            },
+            checkAccess: {
+                type: 'function',
+                handler: 'DefaultModelsGetInitializerService.checkAccess',
                 success: 'buildQuery'
             },
             buildQuery: {
@@ -179,6 +184,11 @@ module.exports = {
             validateModel: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.validateModel',
+                success: 'checkAccess'
+            },
+            checkAccess: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.checkAccess',
                 success: 'buildQuery'
             },
             buildQuery: {
@@ -273,6 +283,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultModelsRemoveInitializerService.validateRequest',
+                success: 'checkAccess'
+            },
+            checkAccess: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.checkAccess',
                 success: 'buildQuery'
             },
             buildQuery: {
@@ -347,6 +362,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultModelsUpdateInitializerService.validateRequest',
+                success: 'checkAccess'
+            },
+            checkAccess: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.checkAccess',
                 success: 'buildQuery'
             },
             buildQuery: {

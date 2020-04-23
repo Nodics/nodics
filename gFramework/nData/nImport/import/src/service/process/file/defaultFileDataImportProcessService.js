@@ -109,10 +109,14 @@ module.exports = {
                     let fileObj = request.dataFiles[request.fileName];
                     let modelHash = options.pendingModels.shift();
                     let dataModel = request.fileData.models[modelHash];
+                    let header = request.fileData.header;
                     if (!fileObj.processed.includes(modelHash)) {
                         SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
                             tenant: options.tenant,
-                            header: request.fileData.header,
+                            authData: {
+                                userGroups: header.options.userGroups
+                            },
+                            header: header,
                             dataModel: dataModel
                         }, {}).then(success => {
                             if (!response.success) response.success = [];

@@ -10,24 +10,19 @@
  */
 
 module.exports = {
-
-    defaultPageSize: 10,
-    defaultPageNumber: 1,
-    queryMaxTimeMS: 1000,
-
-    externalSchemaLocation: CONFIG.get('externalDataLocation') + '/schema',
-    accessPoint: {
-        readAccessPoint: 1,
-        writeAccessPoint: 2,
-        removeAccessPoint: 3,
-        fullAccessPoint: 10
-    },
-    database: {
-        default: {
+    catalog: {
+        defaultCatalogData: {
             options: {
-                databaseType: 'mongodb', //for Cassandra use 'cassandra'
-                cleanOrphan: true
+                enabled: true,
+                schemaName: 'catalog',
+                operation: 'saveAll',
+                dataFilePrefix: 'defaultCatalogData',
+                userGroups: ['employeeUserGroup'],
+                finalizeData: false
             },
+            query: {
+                code: '$code'
+            }
         }
     }
 };

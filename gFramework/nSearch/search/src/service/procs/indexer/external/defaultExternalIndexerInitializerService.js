@@ -54,7 +54,8 @@ module.exports = {
                 operation: request.indexerConfig.target.operation || CONFIG.get('search').defaultDoSaveOperation || 'doSave',
                 tenants: [request.tenant],
                 moduleName: request.moduleName,
-                dataHandler: 'indexerDataHandlerPipeline'
+                dataHandler: 'indexerDataHandlerPipeline',
+                userGroups: request.authData ? request.authData.userGroups : []
             },
             local: {
                 indexerConfig: request.indexerConfig,

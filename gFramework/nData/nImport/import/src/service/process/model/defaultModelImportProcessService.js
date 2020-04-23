@@ -197,6 +197,9 @@ module.exports = {
             }
             SERVICE['Default' + options.macro.options.model.toUpperCaseFirstChar() + 'Service'].get({
                 tenant: request.tenant,
+                authData: {
+                    userGroups: request.header.options.userGroups
+                },
                 query: query
             }).then(result => {
                 if (result.result && result.result.length > 0) {
@@ -261,6 +264,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             SERVICE['Default' + header.options.schemaName.toUpperCaseFirstChar() + 'Service'][header.options.operation]({
                 tenant: request.tenant,
+                authData: {
+                    userGroups: header.options.userGroups
+                },
                 query: header.query,
                 models: models
             }).then(success => {
@@ -289,6 +295,9 @@ module.exports = {
             let searchService = SERVICE['Default' + header.options.indexName.toUpperCaseFirstChar() + 'Service'] || SERVICE.DefaultSearchService;
             searchService[header.options.operation]({
                 tenant: request.tenant,
+                authData: {
+                    userGroups: header.options.userGroups
+                },
                 indexName: request.indexName || header.options.indexName,
                 moduleName: request.moduleName || header.options.moduleName,
                 options: request.options || {},

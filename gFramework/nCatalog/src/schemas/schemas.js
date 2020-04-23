@@ -16,6 +16,9 @@ module.exports = {
             model: true,
             service: true,
             router: true,
+            accessGroups: {
+                employeeUserGroup: 3
+            },
             refSchema: {
                 superCatalog: {
                     schemaName: "catalog",
@@ -28,6 +31,12 @@ module.exports = {
                     type: 'array',
                     required: false,
                     description: 'List of sub catalogs if any'
+                },
+                userGroups: {
+                    type: 'array',
+                    required: true,
+                    default: ['contentUserGroup', 'employeeUserGroup'],
+                    description: 'User group code for which this user belongs'
                 },
             }
         }

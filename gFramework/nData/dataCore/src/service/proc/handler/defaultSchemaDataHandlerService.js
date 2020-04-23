@@ -147,6 +147,9 @@ module.exports = {
                 let model = options.pendingModels.shift();
                 SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
                     tenant: request.tenant,
+                    authData: {
+                        userGroups: request.header.options.userGroups
+                    },
                     moduleName: request.moduleName,
                     header: request.header,
                     dataModel: model

@@ -44,7 +44,15 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
+    checkAccess: function (request, response, process) {
+        this.LOG.debug('Checking model access');
+        let rawSchema = request.schemaModel.rawSchema;
+        if (SERVICE.DefaultSchemaAccessHandlerService.getAccessPoint(request.authData, rawSchema.accessGroups) >= CONFIG.get('accessPoint').writeAccessPoint) {
+            process.nextSuccess(request, response);
+        } else {
+            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user do not have access to this resource'));
+        }
+    },
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query options');
         let inputOptions = request.options || {};
