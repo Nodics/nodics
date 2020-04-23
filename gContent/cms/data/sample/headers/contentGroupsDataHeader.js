@@ -10,12 +10,17 @@
  */
 
 module.exports = {
-    // loadCatalogSubCatalogs: {
-    //     type: 'schema',
-    //     item: 'catalog',
-    //     trigger: 'postGet',
-    //     active: 'true',
-    //     index: 0,
-    //     handler: 'DefaultSubCatalogsResolveInterceptorService.loadSubCatalogs'
-    // },
+    profile: {
+        contentUserGroup: {
+            options: {
+                enabled: true,
+                schemaName: 'userGroup',
+                operation: 'saveAll', //saveAll, update and saveOrUpdate
+                dataFilePrefix: 'contentUserGroupData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
+    }
 };

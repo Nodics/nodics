@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,15 +36,11 @@ module.exports = {
 
     loadSubCatalogs: function (request, response) {
         return new Promise((resolve, reject) => {
-            if (request.options.recursive) {
-                this.fatchSubCatalog(request, response.success.result).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(new CLASSES.NodicsError(error, 'while loading sub catalogs'));
-                });
-            } else {
-                resolve(true);
-            }
+            this.fatchSubCatalog(request, response.success.result).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(new CLASSES.NodicsError(error, 'while loading sub catalogs'));
+            });
         });
     },
 
@@ -50,11 +48,14 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (models && counter < models.length) {
                 let model = models[counter];
+                let options = _.merge({}, request.options);
+                options.recursive = false;
                 SERVICE.DefaultCatalogService.get({
                     tenant: request.tenant,
-                    options: request.options,
+                    authData: request.authData,
+                    options: options,
                     query: {
-                        superCatalog: code,
+                        superCatalog: model.code,
                         active: true
                     }
                 }).then(success => {
@@ -69,8 +70,9 @@ module.exports = {
                 }).catch(error => {
                     reject(new CLASSES.NodicsError(error, 'while loading sub catalogs'));
                 });
+            } else {
+                resolve(true);
             }
-
         });
     }
 

@@ -319,6 +319,7 @@ module.exports = {
                 }
                 let input = {
                     tenant: request.tenant,
+                    authData: request.authData,
                     options: options,
                     query: query
                 };

@@ -68,8 +68,8 @@ module.exports = {
     validateAction: function (request, response, process) {
         if (!request.workflowAction) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Cound not load workflow action, please validate your request'));
-        } else if (!request.workflowAction.userGroupCodes || request.workflowAction.userGroupCodes.length <= 0) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid workflow action definition, userGroups can not be null'));
+        } else if (!request.workflowAction.accessGroups || request.workflowAction.accessGroups.length <= 0) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid workflow action definition, accessGroups can not be null'));
         } else {
             process.nextSuccess(request, response);
         }

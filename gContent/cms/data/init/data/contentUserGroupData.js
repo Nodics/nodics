@@ -11,14 +11,21 @@
 
 module.exports = {
     record0: {
-        code: "autoWorkflow",
-        name: "autoWorkflow",
+        code: 'contentManagerGroup',
+        name: 'contentManagerGroup',
         active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        position: ENUMS.WorkflowActionPosition.HEAD.key,
-        handler: 'DefaultSampleWorkflowService.performHeadOperation',
-        userGroups: ['workflowUserGroup'],
-        allowedDecisions: ['AUTOONE', 'AUTOTWO'],
-        channels: ['autoOneChannel', 'autoTwoChannel']
+        parentGroups: ['employeeUserGroup']
+    },
+    record1: {
+        code: 'contentCreaterGroup',
+        name: 'contentCreaterGroup',
+        active: true,
+        parentGroups: ['contentManagerGroup']
+    },
+    record2: {
+        code: 'contentApproverGroup',
+        name: 'contentApproverGroup',
+        active: true,
+        parentGroups: ['contentManagerGroup']
     }
 };

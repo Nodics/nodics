@@ -16,7 +16,7 @@ module.exports = {
         name: "manualActionOne",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
-        userGroups: ['workflowUserGroup'],
+        accessGroups: ['workflowUserGroup'],
         allowedDecisions: ['MTHREE'],
         channels: ['manualThreeChannel']
     },
@@ -26,7 +26,7 @@ module.exports = {
         name: "manualActionTwo",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
-        userGroups: ['workflowUserGroup'],
+        accessGroups: ['workflowUserGroup'],
         allowedDecisions: ['SUCCESS'],
         channels: ['manualSuccessChannel']
     },
@@ -36,7 +36,7 @@ module.exports = {
         name: "manualActionThree",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
-        userGroups: ['workflowUserGroup'],
+        accessGroups: ['workflowUserGroup'],
         allowedDecisions: ['SUCCESS'],
         channels: ['manualSuccessChannel']
     },
@@ -48,7 +48,7 @@ module.exports = {
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.END.key,
         handler: 'DefaultSampleWorkflowService.performActionThree',
-        userGroups: ['workflowUserGroup'],
+        accessGroups: ['workflowUserGroup'],
         allowedDecisions: ['SUCCESS'],
     }
 };

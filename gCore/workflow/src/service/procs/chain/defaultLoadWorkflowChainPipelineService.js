@@ -85,7 +85,7 @@ module.exports = {
     },
     checkAccess: function (request, response, process) {
         response.success.forEach(workflowAction => {
-            if (request.authData.userGroups.filter(userGroup => workflowAction.userGroupCodes.includes(userGroup)).length > 0) {
+            if (request.authData.userGroups.filter(userGroup => workflowAction.accessGroups.includes(userGroup)).length > 0) {
                 workflowAction.access = true;
             } else {
                 workflowAction.access = false;

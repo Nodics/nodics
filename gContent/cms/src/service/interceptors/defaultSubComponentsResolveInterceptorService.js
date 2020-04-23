@@ -34,15 +34,11 @@ module.exports = {
 
     loadSubComponents: function (request, response) {
         return new Promise((resolve, reject) => {
-            if (request.options.recursive) {
-                this.fatchSubComponent(request, response.success.result).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(new CLASSES.NodicsError(error, 'while loading sub components'));
-                });
-            } else {
-                resolve(true);
-            }
+            this.fatchSubComponent(request, response.success.result).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(new CLASSES.NodicsError(error, 'while loading sub components'));
+            });
         });
     },
 
@@ -50,11 +46,14 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (models && counter < models.length) {
                 let model = models[counter];
+                let options = _.merge({}, request.options);
+                options.recursive = false;
                 SERVICE.DefaultCmsComponentService.get({
                     tenant: request.tenant,
-                    options: request.options,
+                    authData: request.authData,
+                    options: options,
                     query: {
-                        superCatalog: code,
+                        superCatalog: model.code,
                         active: true
                     }
                 }).then(success => {

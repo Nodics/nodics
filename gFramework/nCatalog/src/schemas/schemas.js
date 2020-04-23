@@ -20,23 +20,20 @@ module.exports = {
                 employeeUserGroup: 3
             },
             refSchema: {
-                superCatalog: {
+                subCatalogs: {
                     schemaName: "catalog",
                     type: 'many',
                     propertyName: 'code'
                 }
             },
             definition: {
-                superCatalog: {
+                subCatalogs: {
                     type: 'array',
                     required: false,
                     description: 'List of sub catalogs if any'
                 },
-                userGroups: {
-                    type: 'array',
-                    required: true,
-                    default: ['contentUserGroup', 'employeeUserGroup'],
-                    description: 'User group code for which this user belongs'
+                accessGroups: {
+                    default: ['contentUserGroup', 'employeeUserGroup']
                 },
             }
         }

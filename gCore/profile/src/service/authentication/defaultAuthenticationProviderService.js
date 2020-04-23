@@ -121,7 +121,6 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                //let userGroupCodes = UTILS.getUserGroupCodes(options.person.userGroups);
                 SERVICE.DefaultUserStateService.findUserState({
                     tenant: options.enterprise.tenant.code,
                     loginId: options.person.loginId,

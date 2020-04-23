@@ -10,15 +10,22 @@
  */
 
 module.exports = {
-
     record0: {
-        code: "defaultProductCatalog",
-        name: "defaultProductCatalog",
-        active: true
+        code: 'contentManagerGroup',
+        name: 'contentManagerGroup',
+        active: true,
+        parentGroups: ['employeeUserGroup']
     },
     record1: {
-        code: "defaultContentCatalog",
-        name: "defaultContentCatalog",
-        active: true
+        code: 'contentCreaterGroup',
+        name: 'contentCreaterGroup',
+        active: true,
+        parentGroups: ['contentManagerGroup']
+    },
+    record2: {
+        code: 'contentApproverGroup',
+        name: 'contentApproverGroup',
+        active: true,
+        parentGroups: ['contentManagerGroup']
     }
 };

@@ -51,12 +51,6 @@ module.exports = {
             },
             router: false,
             definition: {
-                userGroups: {
-                    type: 'array',
-                    required: true,
-                    default: ['contentUserGroup', 'employeeUserGroup'],
-                    description: 'User group code for which this user belongs'
-                },
             }
         },
         cmsSite: {

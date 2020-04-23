@@ -10,12 +10,15 @@
  */
 
 module.exports = {
-    // loadCatalogSubCatalogs: {
-    //     type: 'schema',
-    //     item: 'catalog',
-    //     trigger: 'postGet',
-    //     active: 'true',
-    //     index: 0,
-    //     handler: 'DefaultSubCatalogsResolveInterceptorService.loadSubCatalogs'
-    // },
+
+    record1: {
+        code: "multiWorkflow",
+        name: "multiWorkflow",
+        active: true,
+        type: ENUMS.WorkflowActionType.MANUAL.key,
+        position: ENUMS.WorkflowActionPosition.HEAD.key,
+        accessGroups: ['workflowUserGroup', 'employeeUserGroup'],
+        allowedDecisions: ['MultiOne', 'MultiTwo'],
+        channels: ['multiOneChannel', 'multiTwoChannel']
+    }
 };

@@ -10,12 +10,15 @@
  */
 
 module.exports = {
-    // loadCatalogSubCatalogs: {
-    //     type: 'schema',
-    //     item: 'catalog',
-    //     trigger: 'postGet',
-    //     active: 'true',
-    //     index: 0,
-    //     handler: 'DefaultSubCatalogsResolveInterceptorService.loadSubCatalogs'
-    // },
+
+    record1: {
+        code: "manualWorkflow",
+        name: "manualWorkflow",
+        active: true,
+        type: ENUMS.WorkflowActionType.MANUAL.key,
+        position: ENUMS.WorkflowActionPosition.HEAD.key,
+        accessGroups: ['workflowUserGroup'],
+        allowedDecisions: ['MONE', 'MTWO'],
+        channels: ['manualOneChannel', 'manualTwoChannel']
+    }
 };

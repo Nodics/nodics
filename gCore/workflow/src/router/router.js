@@ -71,22 +71,7 @@ module.exports = {
                     url: 'http://host:port/nodics/workflow/resume/:itemCode',
                     body: 'Comments for this action'
                 }
-            },
-
-            // nextAction: {
-            //     secured: true,
-            //     accessGroups: ['userGroup'],
-            //     key: '/item/next/action/:itemCode/:actionCode',
-            //     method: 'POST',
-            //     controller: 'DefaultWorkflowController',
-            //     operation: 'nextAction',
-            //     help: {
-            //         requestType: 'secured',
-            //         message: 'authToken need to set within header',
-            //         method: 'put',
-            //         url: 'http://host:port/nodics/workflow/item/next/action/:itemCode/:actionCode'
-            //     }
-            // }
+            }
         },
         workflowActionOperations: {
             performAction: {

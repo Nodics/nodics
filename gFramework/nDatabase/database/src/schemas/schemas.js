@@ -36,6 +36,12 @@ module.exports = {
                         enabled: true, // default is false
                     }
                 },
+                accessGroups: {
+                    type: 'array',
+                    required: false,
+                    default: ['employeeUserGroup'],
+                    description: 'User group code for which this user belongs'
+                },
                 created: {
                     type: 'date',
                     required: true,

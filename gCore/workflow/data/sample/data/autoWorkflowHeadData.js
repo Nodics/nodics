@@ -10,15 +10,15 @@
  */
 
 module.exports = {
-
-    record1: {
-        code: "manualWorkflow",
-        name: "manualWorkflow",
+    record0: {
+        code: "autoWorkflow",
+        name: "autoWorkflow",
         active: true,
-        type: ENUMS.WorkflowActionType.MANUAL.key,
+        type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.HEAD.key,
-        userGroups: ['workflowUserGroup'],
-        allowedDecisions: ['MONE', 'MTWO'],
-        channels: ['manualOneChannel', 'manualTwoChannel']
+        handler: 'DefaultSampleWorkflowService.performHeadOperation',
+        accessGroups: ['workflowUserGroup'],
+        allowedDecisions: ['AUTOONE', 'AUTOTWO'],
+        channels: ['autoOneChannel', 'autoTwoChannel']
     }
 };

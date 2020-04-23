@@ -251,12 +251,6 @@ module.exports = {
                     required: false,
                     description: 'Define script for this action, if its type is AUTO'
                 },
-                userGroups: {
-                    type: 'array',
-                    required: true,
-                    default: ['workflowUserGroup'],
-                    description: 'User group code for which this user belongs'
-                },
                 allowedDecisions: {
                     type: 'array',
                     required: false,

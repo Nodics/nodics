@@ -64,7 +64,7 @@ module.exports = {
             (!request.actionResponse || UTILS.isBlank(request.actionResponse))) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, action response can not be null or empty'));
         } else if ((request.workflowAction.type != ENUMS.WorkflowActionType.AUTO.key) &&
-            (request.authData.userGroups.filter(userGroup => request.workflowAction.userGroupCodes.includes(userGroup)).length <= 0)) {
+            (request.authData.userGroups.filter(userGroup => request.workflowAction.accessGroups.includes(userGroup)).length <= 0)) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_AUTH_00003', 'Current action: ' + request.workflowAction.code + ' not accessible for this user'));
         } else {
             process.nextSuccess(request, response);

@@ -10,15 +10,19 @@
  */
 
 module.exports = {
-
-    record1: {
-        code: "multiWorkflow",
-        name: "multiWorkflow",
-        active: true,
-        type: ENUMS.WorkflowActionType.MANUAL.key,
-        position: ENUMS.WorkflowActionPosition.HEAD.key,
-        userGroups: ['workflowUserGroup', 'employeeUserGroup'],
-        allowedDecisions: ['MultiOne', 'MultiTwo'],
-        channels: ['multiOneChannel', 'multiTwoChannel']
+    catalog: {
+        defaultCatalogData: {
+            options: {
+                enabled: true,
+                schemaName: 'catalog',
+                operation: 'saveAll',
+                dataFilePrefix: 'defaultCatalogData',
+                userGroups: ['employeeUserGroup'],
+                finalizeData: false
+            },
+            query: {
+                code: '$code'
+            }
+        }
     }
 };

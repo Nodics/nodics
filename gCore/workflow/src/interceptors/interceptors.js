@@ -10,14 +10,7 @@
  */
 
 module.exports = {
-    // preSaveWorkflowHead: {
-    //     type: 'schema',
-    //     item: 'workflowHead',
-    //     trigger: 'preSave',
-    //     active: 'true',
-    //     index: 0,
-    //     handler: 'DefaultSaveWorkflowHeadInterceptorService.handlePreSaveHead'
-    // },
+
     preSaveWorkflowAction: {
         type: 'schema',
         item: 'workflowAction',
@@ -25,14 +18,6 @@ module.exports = {
         active: 'true',
         index: 0,
         handler: 'DefaultSaveWorkflowActionInterceptorService.handlePreSaveAction'
-    },
-    workflowUserGroupCodes: {
-        type: 'schema',
-        item: 'workflowAction',
-        trigger: 'postGet',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultWorkflowGetInterceptorService.getAllUserGroupCodes'
     },
     loadWorkflowItemActionResponses: {
         type: 'schema',
