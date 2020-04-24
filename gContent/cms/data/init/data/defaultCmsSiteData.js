@@ -11,21 +11,9 @@
 
 module.exports = {
     record0: {
-        code: 'contentManagerGroup',
-        name: 'contentManagerGroup',
+        code: 'defaultCmsSite',
+        name: 'defaultCmsSite',
+        catalog: 'defaultContentCatalog',
         active: true,
-        parentGroups: ['employeeUserGroup']
-    },
-    record1: {
-        code: 'contentCreaterGroup',
-        name: 'contentCreaterGroup',
-        active: true,
-        parentGroups: ['contentManagerGroup']
-    },
-    record2: {
-        code: 'contentApproverGroup',
-        name: 'contentApproverGroup',
-        active: true,
-        parentGroups: ['contentManagerGroup']
     }
 };

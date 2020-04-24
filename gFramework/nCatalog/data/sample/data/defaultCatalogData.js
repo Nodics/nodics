@@ -16,18 +16,37 @@ module.exports = {
         subCatalogs: ['inProductCatalog', 'uaeProductCatalog', 'deProductCatalog']
     },
     record1: {
+        code: "defaultContentCatalog",
+        subCatalogs: ['inContentCatalog', 'uaeContentCatalog', 'deContentCatalog']
+    },
+    record2: {
         code: "inProductCatalog",
         name: "inProductCatalog",
         active: true
     },
-    record2: {
+    record3: {
         code: "uaeProductCatalog",
         name: "uaeProductCatalog",
         active: true
     },
-    record3: {
+    record4: {
         code: "deProductCatalog",
         name: "deProductCatalog",
+        active: true
+    },
+    record5: {
+        code: "inContentCatalog",
+        name: "inContentCatalog",
+        active: true
+    },
+    record6: {
+        code: "uaeContentCatalog",
+        name: "uaeContentCatalog",
+        active: true
+    },
+    record7: {
+        code: "deContentCatalog",
+        name: "deContentCatalog",
         active: true
     }
 };

@@ -10,13 +10,13 @@
  */
 
 module.exports = {
-    profile: {
-        contentUserGroup: {
+    cms: {
+        sampleHeaderCmsComponentData: {
             options: {
                 enabled: true,
-                schemaName: 'userGroup',
-                operation: 'saveAll', //saveAll, update and saveOrUpdate
-                dataFilePrefix: 'contentUserGroupData'
+                schemaName: 'cmsComponent',
+                operation: 'saveAll',
+                dataFilePrefix: 'sampleHeaderCmsComponentData'
             },
             query: {
                 code: '$code'

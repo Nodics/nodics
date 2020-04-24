@@ -10,12 +10,29 @@
  */
 
 module.exports = {
-    loadComponentSubComponents: {
+    // loadComponentSubComponents: {
+    //     type: 'schema',
+    //     item: 'cmsComponent',
+    //     trigger: 'postGet',
+    //     active: 'true',
+    //     index: 0,
+    //     handler: 'DefaultSubComponentsResolveInterceptorService.loadSubCatalogs'
+    // },
+
+    loadPageItemRenderer: {
+        type: 'schema',
+        item: 'cmsPage',
+        trigger: 'postGet',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultItemRendererInterceptorService.loadItemRenderer'
+    },
+    loadComponentItemRenderer: {
         type: 'schema',
         item: 'cmsComponent',
         trigger: 'postGet',
         active: 'true',
         index: 0,
-        handler: 'DefaultSubComponentsResolveInterceptorService.loadSubCatalogs'
+        handler: 'DefaultItemRendererInterceptorService.loadItemRenderer'
     },
 };

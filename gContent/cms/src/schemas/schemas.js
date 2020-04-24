@@ -11,7 +11,7 @@
 
 module.exports = {
     cms: {
-        typeCode: {
+        cmsTypeCode: {
             super: 'base',
             model: true,
             service: true,
@@ -24,7 +24,7 @@ module.exports = {
 
             }
         },
-        typeCode2Renderer: {
+        cmsTypeCode2Renderer: {
             super: 'base',
             model: true,
             service: true,
@@ -73,7 +73,7 @@ module.exports = {
             definition: {
                 name: {
                     type: 'string',
-                    required: true,
+                    required: false,
                     description: 'Required cms site name',
                     searchOptions: {
                         enabled: true,
@@ -106,8 +106,14 @@ module.exports = {
                     searchEnabled: true
                 },
                 typeCode: {
-                    schemaName: "typeCode",
+                    schemaName: "cmsTypeCode",
                     type: 'one',
+                    propertyName: 'code',
+                    searchEnabled: true
+                },
+                cmsComponents: {
+                    schemaName: "cmsComponent",
+                    type: 'many',
                     propertyName: 'code',
                     searchEnabled: true
                 },
@@ -139,9 +145,17 @@ module.exports = {
                 },
                 renderer: {
                     type: 'string',
-                    required: true,
+                    required: false,
                     description: 'Required renderer, this could be name of js, html file, which render required look and feel for this page',
-                }
+                },
+                cmsComponents: {
+                    type: 'array',
+                    required: true,
+                    description: 'Required Code of associated cmsComponent. One page could be have multiple cmsComponent',
+                    searchOptions: {
+                        enabled: true,
+                    }
+                },
             }
         },
         cmsComponent: {
@@ -158,43 +172,35 @@ module.exports = {
                 ttl: 1000
             },
             refSchema: {
-                cmsPages: {
-                    schemaName: "cmsPage",
-                    type: 'many',
-                    propertyName: 'code',
-                    searchEnabled: true
-                },
-                superComponents: {
+                // cmsPages: {
+                //     schemaName: "cmsPage",
+                //     type: 'many',
+                //     propertyName: 'code',
+                //     searchEnabled: true
+                // },
+                subComponents: {
                     schemaName: "cmsComponent",
                     type: 'many',
                     propertyName: 'code',
                     searchEnabled: true
                 },
                 typeCode: {
-                    schemaName: "typeCode",
+                    schemaName: "cmsTypeCode",
                     type: 'one',
                     propertyName: 'code',
                     searchEnabled: true
                 },
             },
             definition: {
-                name: {
-                    type: 'string',
-                    required: true,
-                    description: 'Required cms site name',
-                    searchOptions: {
-                        enabled: true,
-                    }
-                },
                 cmsPages: {
                     type: 'array',
-                    required: true,
+                    required: false,
                     description: 'Required Code of associated cmsPage. One component could be associated with multiple cmsPage',
                     searchOptions: {
                         enabled: true,
                     }
                 },
-                superComponents: {
+                subComponents: {
                     type: 'array',
                     required: false,
                     description: 'List of sub cmsComponents if any'
@@ -209,14 +215,14 @@ module.exports = {
                 },
                 renderer: {
                     type: 'string',
-                    required: true,
+                    required: false,
                     description: 'Required renderer, this could be name of js, html file, which render required look and feel for this components',
                 },
-                position: {
-                    type: 'int',
-                    required: true,
-                    default: 0
-                },
+                // position: {
+                //     type: 'int',
+                //     required: true,
+                //     default: 0
+                // },
             }
         }
     }
