@@ -171,9 +171,7 @@ module.exports = {
         let rawSchema = request.schemaModel.rawSchema;
         let inputOptions = request.options || {};
 
-        if (response.success.result.length > 0 &&
-            inputOptions.recursive === true &&
-            !UTILS.isBlank(rawSchema.refSchema)) {
+        if (response.success.result.length > 0 && inputOptions.recursive && !UTILS.isBlank(rawSchema.refSchema)) {
             this.populateModels(request, response, response.success.result, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -277,7 +275,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             let property = propertiesList.shift();
-            if (model[property]) {
+            if (model[property] && (request.options.recursive === true || request.options.recursive[property])) {
                 let refSchema = request.schemaModel.rawSchema.refSchema;
                 let propertyObject = refSchema[property];
                 let query = {};
@@ -302,14 +300,13 @@ module.exports = {
                         };
                     }
                 }
-                let input = {
+                SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get({
                     tenant: request.tenant,
                     authData: request.authData,
                     options: request.options,
                     searchOptions: request.searchOptions,
                     query: query
-                };
-                SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {
+                }).then(success => {
                     if (success.result.length > 0) {
                         if (propertyObject.type === 'one') {
                             model[property] = success.result[0];

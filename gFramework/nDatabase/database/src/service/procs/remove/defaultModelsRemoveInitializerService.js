@@ -136,7 +136,7 @@ module.exports = {
         let options = request.options || {};
         if (response.success && response.success.result && response.success.result.n &&
             response.success.result.n > 0 && response.success.result.models &&
-            options.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
+            options.recursive && !UTILS.isBlank(rawSchema.refSchema)) {
             this.populateModels(request, response, response.success.result.models, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -171,7 +171,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             let property = propertiesList.shift();
-            if (model[property]) {
+            if (model[property] && (request.options.recursive === true || request.options.recursive[property])) {
                 let refSchema = request.schemaModel.rawSchema.refSchema;
                 let propertyObject = refSchema[property];
                 let query = {};

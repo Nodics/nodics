@@ -114,20 +114,20 @@ module.exports = {
 
     createItemKey: function (request) {
         let options = _.merge({}, request.options);
+        let hashString = '';
         if (request.options) {
             options.recursive = request.options.recursive || false;
         }
-        options.query = request.query;
+        hashString = JSON.stringify(options) + JSON.stringify(request.searchOptions || {}) + JSON.stringify(request.query || {});
         return request.schemaModel.schemaName + '_' +
             request.tenant + '_' +
-            UTILS.generateHash(JSON.stringify(options));
+            UTILS.generateHash(hashString);
     },
 
     createSearchKey: function (request) {
-        let options = _.merge({}, request.options || {});
-        options.query = request.query;
+        let hashString = JSON.stringify(request.options) + JSON.stringify(request.searchOptions || {}) + JSON.stringify(request.query || {});
         return request.searchModel.indexName + '_' +
             request.tenant + '_' +
-            UTILS.generateHash(JSON.stringify(options));
+            UTILS.generateHash(JSON.stringify(hashString));
     },
 };

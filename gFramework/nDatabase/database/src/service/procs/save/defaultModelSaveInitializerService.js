@@ -270,7 +270,7 @@ module.exports = {
         this.LOG.debug('Populating sub models');
         let rawSchema = request.schemaModel.rawSchema;
         let inputOptions = request.options || {};
-        if (response.success.result && inputOptions.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
+        if (response.success.result && inputOptions.recursive && !UTILS.isBlank(rawSchema.refSchema)) {
             this.populateModels(request, response, [response.success.result], 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -305,7 +305,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             let property = propertiesList.shift();
-            if (model[property]) {
+            if (model[property] && (request.options.recursive === true || request.options.recursive[property])) {
                 let refSchema = request.schemaModel.rawSchema.refSchema;
                 let propertyObject = refSchema[property];
                 let query = {};

@@ -47,7 +47,6 @@ module.exports = {
     },
     buildQuery: function (request, response, process) {
         if (!request.options) request.options = {};
-        //request.options.recursive = request.options.recursive || true;
         if (request.workflowCode) {
             request.query = {
                 code: request.workflowCode

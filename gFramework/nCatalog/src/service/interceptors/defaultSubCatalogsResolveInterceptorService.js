@@ -49,7 +49,7 @@ module.exports = {
             if (models && counter < models.length) {
                 let model = models[counter];
                 let options = _.merge({}, request.options);
-                options.recursive = false;
+                options.recursive = false; //Change it later
                 SERVICE.DefaultCatalogService.get({
                     tenant: request.tenant,
                     authData: request.authData,
