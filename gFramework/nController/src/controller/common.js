@@ -37,6 +37,7 @@ module.exports = {
 
     get: function (request, callback) {
         request.options = request.options || {};
+        request.searchOptions = request.searchOptions || {};
         if (!request.options.recursive && request.httpRequest.get('recursive') && request.httpRequest.get('recursive') === 'true') {
             request.options.recursive = true;
         } else {

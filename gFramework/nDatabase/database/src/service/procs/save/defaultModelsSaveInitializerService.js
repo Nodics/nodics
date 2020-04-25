@@ -133,58 +133,5 @@ module.exports = {
             });
         }
         process.resolve(output);
-    },
-
-    sampleOutput: function () {
-        let result = {
-            "code": "SUC_SAVE_00001",
-            "result": [
-                {
-                    "_id": "5e50f289bd5a895f923f25a2",
-                    "code": "validatorTest2",
-                    "active": "true",
-                    "created": "2020-02-22T09:21:13.644Z",
-                    "handler": "DefaultSampleValidatorService.handlePreAddressSave",
-                    "index": 0,
-                    "item": "address",
-                    "trigger": "preSave",
-                    "type": "schema",
-                    "updated": "2020-02-22T09:21:13.644Z"
-                },
-                {
-                    "_id": "5e50f289bd5a895f923f25a4",
-                    "code": "validatorTest3",
-                    "active": "true",
-                    "created": "2020-02-22T09:21:13.650Z",
-                    "handler": "DefaultSampleValidatorService.handlePreAddressSave",
-                    "index": 0,
-                    "item": "address",
-                    "trigger": "preSave",
-                    "type": "schema",
-                    "updated": "2020-02-22T09:21:13.652Z"
-                }
-            ],
-            "errors": [
-                {
-                    "responseCode": "400",
-                    "code": "ERR_SAVE_00000",
-                    "name": "MongoError",
-                    "message": "Failed to save or update model : Document failed validation",
-                    "metadata": {
-                        "code": "validatorTest1",
-                        "handler": "DefaultSampleValidatorService.handlePreAddressSave",
-                        "index": 0,
-                        "item": "address",
-                        "trigger": "preSave",
-                        "type": "schema",
-                        "created": "2020-02-22T09:21:13.638Z",
-                        "updated": "2020-02-22T09:21:13.640Z"
-                    },
-                    "stack": "MongoError: Failed to save or update model : Document failed validation\n    at request.schemaModel.saveItems.then.catch.error (/Users/himkardwivedi/apps/HimProjects/nodics/gFramework/nDatabase/database/src/service/procs/save/defaultModelSaveInitializerService.js:322:46)\n    at process._tickCallback (internal/process/next_tick.js:68:7)"
-                }
-            ],
-            "responseCode": "200",
-            "message": "Partially success"
-        };
     }
 };

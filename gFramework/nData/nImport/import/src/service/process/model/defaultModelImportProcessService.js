@@ -200,6 +200,8 @@ module.exports = {
                 authData: {
                     userGroups: request.header.options.userGroups
                 },
+                searchOptions: request.searchOptions,
+                options: request.options,
                 query: query
             }).then(result => {
                 if (result.result && result.result.length > 0) {
@@ -267,6 +269,8 @@ module.exports = {
                 authData: {
                     userGroups: header.options.userGroups
                 },
+                options: request.options,
+                searchOptions: request.searchOptions,
                 query: header.query,
                 models: models
             }).then(success => {
@@ -301,6 +305,7 @@ module.exports = {
                 indexName: request.indexName || header.options.indexName,
                 moduleName: request.moduleName || header.options.moduleName,
                 options: request.options || {},
+                searchOptions: request.searchOptions,
                 model: models[0]
             }).then(result => {
                 if (result && result.result > 1) {

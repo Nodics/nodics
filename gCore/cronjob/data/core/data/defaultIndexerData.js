@@ -20,9 +20,11 @@ module.exports = {
         schema: {
             name: "cronJobLog",
             moduleName: "cronjob",
+            searchOptions: {
+                pageSize: 100
+            },
             options: {
                 recursive: true,
-                pageSize: 100
             }
         },
         target: {
@@ -40,9 +42,11 @@ module.exports = {
         schema: {
             name: "cronJobLog",
             moduleName: "cronjob",
+            searchOptions: {
+                pageSize: 100
+            },
             options: {
                 recursive: true,
-                pageSize: 100
             }
         },
         target: {

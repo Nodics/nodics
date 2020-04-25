@@ -43,6 +43,7 @@ module.exports = {
         this.LOG.debug('Building query from original query');
         request.query = {};
         request.options = request.options || {};
+        request.searchOptions = request.searchOptions || {};
         if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {
             request.query = this.resolveQuery(_.merge({}, request.originalQuery || {}), request.model);
             process.stop(request, response);

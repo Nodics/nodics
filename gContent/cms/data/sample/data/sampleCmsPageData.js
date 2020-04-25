@@ -16,30 +16,45 @@ module.exports = {
         active: true,
         cmsSite: ['sampleContentCmsSite', 'sampleInCmsSite'],
         typeCode: 'sampleHomePageType',
-        cmsComponents: ['samplePageHeaderComponent', 'samplePageMainComponent', 'samplePageFooterComponent']
+        cmsComponents: [{
+            //source: 'sampleHomePage',
+            target: 'samplePageHeaderComponent',
+            active: true,
+            index: 1
+        }, {
+            //source: 'sampleHomePage',
+            target: 'samplePageMainComponent',
+            active: true,
+            index: 2
+        }, {
+            //source: 'sampleHomePage',
+            target: 'samplePageFooterComponent',
+            active: true,
+            index: 1
+        }]
     },
-    record1: {
-        code: 'sampleProductDetailPage',
-        name: 'sampleProductDetailPage',
-        active: true,
-        cmsSite: ['sampleInCmsSite', 'sampleDeCmsSite'],
-        typeCode: 'sampleProductDetailPageType',
-        cmsComponents: ['samplePageHeaderComponent', 'samplePageMainComponent', 'samplePageFooterComponent']
-    },
-    record2: {
-        code: 'sampleProductListingPage',
-        name: 'sampleProductListingPage',
-        active: true,
-        cmsSite: ['sampleInCmsSite', 'sampleDeCmsSite'],
-        typeCode: 'sampleProductListingPageType',
-        cmsComponents: ['samplePageHeaderComponent', 'samplePageMainComponent', 'samplePageFooterComponent']
-    },
-    record3: {
-        code: 'sampleCartDetailPage',
-        name: 'sampleCartDetailPage',
-        active: true,
-        cmsSite: ['sampleInCmsSite', 'sampleDeCmsSite'],
-        typeCode: 'sampleCartDetailPageType',
-        cmsComponents: ['samplePageHeaderComponent', 'samplePageMainComponent', 'samplePageFooterComponent']
-    }
+    // record1: {
+    //     code: 'sampleProductDetailPage',
+    //     name: 'sampleProductDetailPage',
+    //     active: true,
+    //     cmsSite: ['sampleInCmsSite', 'sampleDeCmsSite'],
+    //     typeCode: 'sampleProductDetailPageType',
+    //     cmsComponents: ['samplePageHeaderComponent', 'samplePageMainComponent', 'samplePageFooterComponent']
+    // },
+    // record2: {
+    //     code: 'sampleProductListingPage',
+    //     name: 'sampleProductListingPage',
+    //     active: true,
+    //     cmsSite: ['sampleInCmsSite', 'sampleDeCmsSite'],
+    //     typeCode: 'sampleProductListingPageType',
+    //     cmsComponents: ['samplePageHeaderComponent', 'samplePageMainComponent', 'samplePageFooterComponent']
+    // },
+    // record3: {
+    //     code: 'sampleCartDetailPage',
+    //     name: 'sampleCartDetailPage',
+    //     active: true,
+    //     cmsSite: ['sampleInCmsSite', 'sampleDeCmsSite'],
+    //     typeCode: 'sampleCartDetailPageType',
+    //     cmsComponents: ['samplePageHeaderComponent', 'samplePageMainComponent', 'samplePageFooterComponent']
+    // }
 };

@@ -178,6 +178,9 @@ module.exports = {
                 }
                 let input = {
                     tenant: request.tenant,
+                    authData: request.authData,
+                    searchOptions: request.searchOptions,
+                    options: request.options,
                     query: query
                 };
                 SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {

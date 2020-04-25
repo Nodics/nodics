@@ -16,7 +16,7 @@ module.exports = {
         getItems: function (input) {
             return new Promise((resolve, reject) => {
                 try {
-                    this.find(input.query, input.options).toArray((error, result) => {
+                    this.find(input.query, input.searchOptions).toArray((error, result) => {
                         if (error) {
                             reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                         } else {
@@ -90,7 +90,7 @@ module.exports = {
                     reject(new CLASSES.NodicsError('ERR_MDL_00003'));
                 } else {
                     if (input.options && input.options.returnModified) {
-                        this.find(input.query, input.options).toArray((error, response) => {
+                        this.find(input.query, input.searchOptions || {}).toArray((error, response) => {
                             if (error) {
                                 reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                             } else {
@@ -131,7 +131,7 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 if (input.query && !UTILS.isBlank(input.query)) {
                     if (input.options && input.options.returnModified) {
-                        this.find(input.query, input.options).toArray((error, response) => {
+                        this.find(input.query, input.searchOptions).toArray((error, response) => {
                             if (error) {
                                 reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                             } else {

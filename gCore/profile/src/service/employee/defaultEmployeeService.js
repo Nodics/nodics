@@ -16,7 +16,7 @@ module.exports = {
             this.get({
                 tenant: request.tenant,
                 options: {
-                    recursive: true
+                    recursive: true,
                 },
                 query: {
                     loginId: request.loginId

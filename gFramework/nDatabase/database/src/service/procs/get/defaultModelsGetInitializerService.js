@@ -36,12 +36,12 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating get request ');
-        let options = request.options;
+        let searchOptions = request.searchOptions || {};
         if (!request.schemaModel) {
             process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00003', 'Model not available within tenant: ' + request.tenant));
-        } else if (options && options.projection && !UTILS.isObject(options.projection)) {
+        } else if (searchOptions && searchOptions.projection && !UTILS.isObject(searchOptions.projection)) {
             process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00003', 'Invalid projection object'));
-        } else if (options && options.sort && !UTILS.isObject(options.sort)) {
+        } else if (searchOptions && searchOptions.sort && !UTILS.isObject(searchOptions.sort)) {
             process.error(request, response, new CLASSES.NodicsError('ERR_FIND_00003', 'Invalid sort object'));
         } else {
             process.nextSuccess(request, response);
@@ -58,15 +58,12 @@ module.exports = {
     },
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query');
-        // if (request.query && request.query._id) {
-        //     request.query._id = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, request.query._id);
-        // }
+        request.options = request.options || {};
         process.nextSuccess(request, response);
     },
-
     buildOptions: function (request, response, process) {
-        this.LOG.debug('Building query options');
-        let inputOptions = request.options || {};
+        this.LOG.debug('Building query searchOptions');
+        let inputOptions = request.searchOptions || {};
         request.query = request.query || {};
         let pageSize = inputOptions.pageSize || CONFIG.get('defaultPageSize');
         let pageNumber = inputOptions.pageNumber || CONFIG.get('defaultPageNumber');
@@ -79,10 +76,9 @@ module.exports = {
             inputOptions.timeout = true;
             inputOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS');
         }
-        request.options = inputOptions;
+        request.searchOptions = inputOptions;
         process.nextSuccess(request, response);
     },
-
     lookupCache: function (request, response, process) {
         if (request.schemaModel.cache &&
             request.schemaModel.cache.enabled) {
@@ -113,7 +109,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre get model interceptors');
         let interceptors = {};
@@ -136,7 +131,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre model validator');
         let validators = {};
@@ -159,7 +153,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
         request.schemaModel.getItems(request).then(result => {
@@ -173,7 +166,6 @@ module.exports = {
             process.error(request, response, error);
         });
     },
-
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
         let rawSchema = request.schemaModel.rawSchema;
@@ -191,7 +183,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
         let virtualProperties = request.schemaModel.rawSchema.virtualProperties;
@@ -202,7 +193,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     applyPostValidators: function (request, response, process) {
         this.LOG.debug('Applying post model validator');
         let validators = {};
@@ -225,7 +215,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post model interceptors');
         let interceptors = {};
@@ -248,7 +237,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
         if (UTILS.isItemCashable(response.success.result, request.schemaModel)) {
@@ -266,7 +254,6 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
-
     populateModels: function (request, response, models, index) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -286,7 +273,6 @@ module.exports = {
             }
         });
     },
-
     populateProperties: function (request, response, model, propertiesList) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -295,11 +281,10 @@ module.exports = {
                 let refSchema = request.schemaModel.rawSchema.refSchema;
                 let propertyObject = refSchema[property];
                 let query = {};
-                let options = request.options || {};
-                if (request.options && request.options.projection) {
-                    options.projection = request.options.projection;
+                let searchOptions = request.searchOptions || {};
+                if (request.searchOptions && request.searchOptions.projection) {
+                    searchOptions.projection = request.searchOptions.projection;
                 }
-                options.recursive = options.recursive || false;
                 if (propertyObject.type === 'one') {
                     if (propertyObject.propertyName === '_id') {
                         query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property]);
@@ -320,7 +305,8 @@ module.exports = {
                 let input = {
                     tenant: request.tenant,
                     authData: request.authData,
-                    options: options,
+                    options: request.options,
+                    searchOptions: request.searchOptions,
                     query: query
                 };
                 SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {

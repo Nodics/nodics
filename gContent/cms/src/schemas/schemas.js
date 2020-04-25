@@ -89,6 +89,64 @@ module.exports = {
                 }
             }
         },
+
+        cmsComponentDetail: {
+            super: 'base',
+            model: true,
+            service: true,
+            cache: {
+                enabled: true,
+                ttl: 10000
+            },
+            router: false,
+            refSchema: {
+                target: {
+                    schemaName: "cmsComponent",
+                    type: 'one',
+                    propertyName: 'code',
+                    searchEnabled: true
+                },
+            },
+            definition: {
+                source: {
+                    type: 'string',
+                    required: true,
+                    default: 0,
+                    description: 'Required source component, it could be a page or component itself',
+                },
+                target: {
+                    type: 'string',
+                    required: true,
+                    default: 0,
+                    description: 'Required target component, it will be component',
+                },
+                index: {
+                    type: 'int',
+                    required: true,
+                    default: 0,
+                    description: 'Required position of this component in the super component',
+                }
+            },
+            indexes: {
+                composite: {
+                    source: {
+                        enabled: true,
+                        name: 'source',
+                        options: {
+                            unique: true
+                        }
+                    },
+                    target: {
+                        enabled: true,
+                        name: 'target',
+                        options: {
+                            unique: true
+                        }
+                    }
+                }
+            }
+        },
+
         cmsPage: {
             super: 'cmsBase',
             model: true,
@@ -112,7 +170,7 @@ module.exports = {
                     searchEnabled: true
                 },
                 cmsComponents: {
-                    schemaName: "cmsComponent",
+                    schemaName: "cmsComponentDetail",
                     type: 'many',
                     propertyName: 'code',
                     searchEnabled: true
@@ -172,14 +230,8 @@ module.exports = {
                 ttl: 1000
             },
             refSchema: {
-                // cmsPages: {
-                //     schemaName: "cmsPage",
-                //     type: 'many',
-                //     propertyName: 'code',
-                //     searchEnabled: true
-                // },
                 subComponents: {
-                    schemaName: "cmsComponent",
+                    schemaName: "cmsComponentDetail",
                     type: 'many',
                     propertyName: 'code',
                     searchEnabled: true
@@ -192,14 +244,6 @@ module.exports = {
                 },
             },
             definition: {
-                cmsPages: {
-                    type: 'array',
-                    required: false,
-                    description: 'Required Code of associated cmsPage. One component could be associated with multiple cmsPage',
-                    searchOptions: {
-                        enabled: true,
-                    }
-                },
                 subComponents: {
                     type: 'array',
                     required: false,
@@ -217,12 +261,7 @@ module.exports = {
                     type: 'string',
                     required: false,
                     description: 'Required renderer, this could be name of js, html file, which render required look and feel for this components',
-                },
-                // position: {
-                //     type: 'int',
-                //     required: true,
-                //     default: 0
-                // },
+                }
             }
         }
     }

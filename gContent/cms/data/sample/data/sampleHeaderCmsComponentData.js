@@ -15,13 +15,33 @@ module.exports = {
         active: true,
         cmsPages: ['sampleHomePage', 'sampleProductDetailPage', 'sampleProductListingPage', 'sampleCartDetailPage'],
         typeCode: 'headerComponentType',
-        subComponents: ['sampleLogoComponent']
+        subComponents: [{
+            //source: 'samplePageHeaderComponent',
+            target: 'sampleLogoComponent',
+            active: true,
+            index: 1
+        }]
     },
     record1: {
         code: 'sampleLogoComponent',
         active: true,
         typeCode: 'logoComponentType',
-        subComponents: ['sampleLogoImageComponent', 'sampleLogoTextComponent', 'sampleLogoSubTextComponent']
+        subComponents: [{
+            //source: 'sampleLogoComponent',
+            target: 'sampleLogoImageComponent',
+            active: true,
+            index: 1
+        }, {
+            //source: 'sampleLogoComponent',
+            target: 'sampleLogoTextComponent',
+            active: true,
+            index: 1
+        }, {
+            //source: 'sampleLogoComponent',
+            target: 'sampleLogoSubTextComponent',
+            active: true,
+            index: 1
+        }]
     },
     record2: {
         code: 'sampleLogoImageComponent',

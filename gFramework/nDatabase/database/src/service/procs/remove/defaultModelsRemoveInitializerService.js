@@ -54,7 +54,7 @@ module.exports = {
         }
     },
     buildQuery: function (request, response, process) {
-        this.LOG.debug('Building query options');
+        this.LOG.debug('Building search query & searchOptions');
         if (!request.query || UTILS.isBlank(request.query)) {
             if (request.ids && request.ids.length > 0) {
                 let tmpIds = [];
@@ -74,7 +74,7 @@ module.exports = {
                 };
             }
         }
-        let inputOptions = request.options || {};
+        let inputOptions = request.searchOptions || {};
         inputOptions.explain = inputOptions.explain || false;
         inputOptions.explain = inputOptions.explain || false;
         inputOptions.snapshot = inputOptions.snapshot || false;
@@ -83,7 +83,7 @@ module.exports = {
             inputOptions.timeout = true;
             inputOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS');
         }
-        request.options = inputOptions;
+        request.searchOptions = inputOptions;
         process.nextSuccess(request, response);
     },
 
@@ -133,10 +133,10 @@ module.exports = {
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
         let rawSchema = request.schemaModel.rawSchema;
-        let inputOptions = request.options || {};
+        let options = request.options || {};
         if (response.success && response.success.result && response.success.result.n &&
             response.success.result.n > 0 && response.success.result.models &&
-            inputOptions.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
+            options.recursive === true && !UTILS.isBlank(rawSchema.refSchema)) {
             this.populateModels(request, response, response.success.result.models, 0).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -194,6 +194,9 @@ module.exports = {
                 }
                 let input = {
                     tenant: request.tenant,
+                    authData: request.authData,
+                    options: request.options,
+                    searchOptions: request.searchOptions,
                     query: query
                 };
                 SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {

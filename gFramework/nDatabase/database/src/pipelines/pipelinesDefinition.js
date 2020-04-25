@@ -204,11 +204,6 @@ module.exports = {
             removeVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.removeVirtualProperties',
-                success: 'handleNestedModelsSave'
-            },
-            handleNestedModelsSave: {
-                type: 'function',
-                handler: 'DefaultModelSaveInitializerService.handleNestedModelsSave',
                 success: 'applyPreInterceptors'
             },
             applyPreInterceptors: {
@@ -224,6 +219,11 @@ module.exports = {
             applyValidators: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.applyValidators',
+                success: 'handleNestedModelsSave'
+            },
+            handleNestedModelsSave: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.handleNestedModelsSave',
                 success: 'saveModel'
             },
             saveModel: {

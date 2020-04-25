@@ -12,7 +12,6 @@
 module.exports = {
     record0: {
         code: 'samplePageFooterComponent',
-        name: 'samplePageFooterComponent',
         active: true,
         cmsPages: ['sampleHomePage', 'sampleProductDetailPage', 'sampleProductListingPage', 'sampleCartDetailPage'],
         typeCode: 'footerComponentType'

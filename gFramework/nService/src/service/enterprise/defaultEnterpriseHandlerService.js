@@ -42,8 +42,8 @@ module.exports = {
                     SERVICE.DefaultEnterpriseService.get({
                         tenant: 'default',
                         options: {
-                            recursive: true
-                        }
+                            recursive: true,
+                        },
                     }).then(success => {
                         if (success.success || success.result.length > 0) {
                             resolve(success.result);

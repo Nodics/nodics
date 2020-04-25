@@ -39,7 +39,7 @@ module.exports = {
             apiName: '/enterprise',
             requestBody: {
                 options: {
-                    recursive: true
+                    recursive: true,
                 },
                 query: {
                     code: input.entCode
@@ -58,7 +58,7 @@ module.exports = {
                 SERVICE.DefaultEnterpriseService.get({
                     tenant: 'default',
                     options: {
-                        recursive: true
+                        recursive: true,
                     },
                     query: {
                         code: request.entCode

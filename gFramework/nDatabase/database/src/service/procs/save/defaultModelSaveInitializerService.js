@@ -10,7 +10,7 @@
  */
 
 const _ = require('lodash');
-const util = require('util');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -39,7 +39,6 @@ module.exports = {
         if (!request.model) {
             process.error(request, response, new CLASSES.NodicsError('ERR_SAVE_00003', 'Model can not be null or empty for save operation'));
         } else {
-            //console.log(util.inspect(request.schemaModel.rawSchema, true, 5));
             process.nextSuccess(request, response);
         }
     },
@@ -109,6 +108,55 @@ module.exports = {
         });
     },
 
+    applyPreInterceptors: function (request, response, process) {
+        this.LOG.debug('Applying pre save model interceptors');
+        let schemaName = request.schemaModel.schemaName;
+        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
+        if (interceptors && interceptors.preSave) {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preSave), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00009'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre model validator');
+        let schemaName = request.schemaModel.schemaName;
+        let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
+        if (validators && validators.preSave) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preSave), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00009'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyValidators: function (request, response, process) {
+        this.LOG.debug('Applying default values to the model');
+        let validators = request.schemaModel.rawSchema.schemaOptions[request.tenant].validators;
+        if (validators && !UTILS.isBlank(validators)) {
+            _.each(validators, (value, property) => {
+                if (request.model[property]) {
+                    try {
+                        let serviceName = value.substring(0, value.indexOf('.'));
+                        let functionName = value.substring(value.indexOf('.') + 1, value.length);
+                        SERVICE[serviceName][functionName](request.model[property]);
+                    } catch (error) {
+                        process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00011'));
+                    }
+                }
+            });
+        }
+        process.nextSuccess(request, response);
+    },
+
     handleNestedModelsSave: function (request, response, process) {
         this.LOG.debug('Saving nexted models');
         let rawSchema = request.schemaModel.rawSchema;
@@ -164,6 +212,9 @@ module.exports = {
                 }
                 SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].saveAll({
                     tenant: request.tenant,
+                    authData: request.authData,
+                    searchOptions: request.searchOptions,
+                    options: request.options,
                     models: models
                 }).then(success => {
                     if (success.result && success.result.length > 0) {
@@ -185,7 +236,13 @@ module.exports = {
                         }
                         resolve(true);
                     } else {
-                        reject(new CLASSES.NodicsError('ERR_SAVE_00007'));
+                        let error = new CLASSES.NodicsError('ERR_SAVE_00007');
+                        if (success.errors && success.errors.length > 0) {
+                            success.errors.forEach(err => {
+                                error.add(err);
+                            });
+                        }
+                        reject(error);
                     }
                 }).catch(error => {
                     reject(error);
@@ -194,55 +251,6 @@ module.exports = {
                 reject(error);
             }
         });
-    },
-
-    applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying pre save model interceptors');
-        let schemaName = request.schemaModel.schemaName;
-        let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
-        if (interceptors && interceptors.preSave) {
-            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preSave), request, response).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00009'));
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-
-    applyPreValidators: function (request, response, process) {
-        this.LOG.debug('Applying pre model validator');
-        let schemaName = request.schemaModel.schemaName;
-        let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
-        if (validators && validators.preSave) {
-            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preSave), request, response).then(success => {
-                process.nextSuccess(request, response);
-            }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00009'));
-            });
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-
-    applyValidators: function (request, response, process) {
-        this.LOG.debug('Applying default values to the model');
-        let validators = request.schemaModel.rawSchema.schemaOptions[request.tenant].validators;
-        if (validators && !UTILS.isBlank(validators)) {
-            _.each(validators, (value, property) => {
-                if (request.model[property]) {
-                    try {
-                        let serviceName = value.substring(0, value.indexOf('.'));
-                        let functionName = value.substring(value.indexOf('.') + 1, value.length);
-                        SERVICE[serviceName][functionName](request.model[property]);
-                    } catch (error) {
-                        process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00011'));
-                    }
-                }
-            });
-        }
-        process.nextSuccess(request, response);
     },
 
     saveModel: function (request, response, process) {
@@ -320,6 +328,9 @@ module.exports = {
                 }
                 let input = {
                     tenant: request.tenant,
+                    authData: request.authData,
+                    searchOptions: request.searchOptions,
+                    options: request.options,
                     query: query
                 };
                 SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {

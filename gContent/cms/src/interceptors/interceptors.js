@@ -19,6 +19,30 @@ module.exports = {
     //     handler: 'DefaultSubComponentsResolveInterceptorService.loadSubCatalogs'
     // },
 
+    generateCmsComponentDetailCode: {
+        type: 'schema',
+        item: 'cmsComponentDetail',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultCmsComponentDetailInterceptorService.generateCmsComponentDetailCode'
+    },
+    generateCmsComponentDetailSourceForPage: {
+        type: 'schema',
+        item: 'cmsPage',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultCmsComponentDetailInterceptorService.setCompDetailSourceForPage'
+    },
+    generateCmsComponentDetailSourceForComponent: {
+        type: 'schema',
+        item: 'cmsComponent',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultCmsComponentDetailInterceptorService.setCompDetailSourceForComp'
+    },
     loadPageItemRenderer: {
         type: 'schema',
         item: 'cmsPage',

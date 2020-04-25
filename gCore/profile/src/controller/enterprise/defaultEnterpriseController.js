@@ -20,17 +20,12 @@ module.exports = {
                 return Promise.reject(error);
             }
         } else {
-            if (!request.tenant) {
-                request.tenant = 'default';
-            }
-            if (!request.options) {
-                request.options = {
-                    recursive: true,
-                    query: {
-                        code: request.entCode
-                    }
-                };
-            }
+            if (!request.tenant) request.tenant = 'default';
+            if (!request.options) request.options = {};
+            request.options.recursive = request.options.recursive || true;
+            request.query = {
+                code: request.entCode
+            };
             if (callback) {
                 FACADE.DefaultEnterpriseFacade.get(request).then(success => {
                     callback(null, success);
