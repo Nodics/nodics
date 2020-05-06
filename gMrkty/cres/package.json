@@ -1,11 +1,11 @@
 {
-    "name": "creafe",
-    "index": "20.10",
+    "name": "cres",
+    "index": "20.50",
     "type": "core",
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to creafe",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer review system",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "creafe"
+        "cres"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

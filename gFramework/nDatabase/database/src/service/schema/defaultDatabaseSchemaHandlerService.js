@@ -46,6 +46,7 @@ module.exports = {
                         let moduleObject = modules[key];
                         if (!moduleObject) {
                             _self.LOG.error('Module name : ' + key + ' is not valid. Please define a valide module name in schema');
+                            _self.LOG.error('Please package.json file in module: ' + key + ', may be value is name property not valid');
                             process.exit(CONFIG.get('errorExitCode'));
                         }
                         moduleObject.rawSchema = _self.resolveModuleSchemaDependancy({
