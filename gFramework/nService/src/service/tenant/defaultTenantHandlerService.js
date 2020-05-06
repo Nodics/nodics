@@ -58,7 +58,7 @@ module.exports = {
                                     }
                                     resolve({
                                         code: 'SUC_SYS_00000',
-                                        msg: 'Tenant successfully deactivated'
+                                        message: 'Tenant successfully deactivated'
                                     });
                                 }).catch(error => {
                                     reject(error);

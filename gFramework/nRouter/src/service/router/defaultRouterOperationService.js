@@ -69,7 +69,7 @@ module.exports = {
                 res.json({
                     success: false,
                     code: 'ERR_SYS_00000',
-                    msg: 'Process failed with errors',
+                    message: 'Process failed with errors',
                     error: 'This API is no more active currently'
                 });
             }
@@ -78,7 +78,7 @@ module.exports = {
             res.json({
                 success: false,
                 code: 'ERR_SYS_00000',
-                msg: 'Process failed with errors',
+                message: 'Process failed with errors',
                 error: error
             });
         }

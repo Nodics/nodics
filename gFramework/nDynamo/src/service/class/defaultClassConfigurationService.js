@@ -246,7 +246,7 @@ module.exports = {
                         let response = eval(entityString);
                         if (response) {
                             resolve({
-                                msg: 'Successfully executed operation: ' + request.body.operationName + ' from class: ' + request.body.className,
+                                message: 'Successfully executed operation: ' + request.body.operationName + ' from class: ' + request.body.className,
                                 response: response
                             });
                         } else {

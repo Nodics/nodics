@@ -56,7 +56,7 @@ module.exports = {
         } else {
             return Promise.resolve({
                 code: 'SUC_CACHE_00001',
-                msg: 'None schema found for module: ' + moduleName
+                message: 'None schema found for module: ' + moduleName
             });
         }
     },
@@ -67,7 +67,7 @@ module.exports = {
         } else {
             return Promise.resolve({
                 code: 'SUC_CACHE_00001',
-                msg: 'Router is not enabled for module: ' + moduleName
+                message: 'Router is not enabled for module: ' + moduleName
             });
         }
     },

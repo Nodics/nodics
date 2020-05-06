@@ -11,15 +11,6 @@
 
 module.exports = {
     record0: {
-        code: "multiActionSuccess",
-        name: "multiActionSuccess",
-        active: true,
-        type: ENUMS.WorkflowActionType.AUTO.key,
-        position: ENUMS.WorkflowActionPosition.END.key,
-        handler: 'DefaultSampleWorkflowService.performActionThree',
-        accessGroups: ['workflowUserGroup']
-    },
-    record1: {
         code: "multiActionOne",
         name: "multiActionOne",
         active: true,
@@ -28,7 +19,7 @@ module.exports = {
         allowedDecisions: ['SUCCESS'],
         channels: ['multiSuccessChannel']
     },
-    record2: {
+    record1: {
         code: "multiActionTwo",
         name: "multiActionTwo",
         active: true,
@@ -37,22 +28,22 @@ module.exports = {
         allowedDecisions: ['SPLIT'],
         channels: ['multiSplitOneChannel', 'multiSplitTowChannel']
     },
-    record3: {
+    record2: {
         code: "multiSplitActionOne",
         name: "multiSplitActionOne",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
         accessGroups: ['workflowUserGroup'],
-        allowedDecisions: ['SUCCESS'],
-        channels: ['multiSuccessChannel']
+        allowedDecisions: ['SUCCESS', 'REJECT', 'ERROR'],
+        channels: ['defaultSuccessChannel', 'defaultRejectChannel', 'defaultErrorChannel']
     },
-    record4: {
+    record3: {
         code: "multiSplitActionTwo",
         name: "multiSplitActionTwo",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
         accessGroups: ['workflowUserGroup'],
-        allowedDecisions: ['SUCCESS', 'MultiSplitReject'],
-        channels: ['multiSuccessChannel', 'multiSplitTowRejectChannel']
+        allowedDecisions: ['MultiSplitReject', 'SUCCESS', 'REJECT', 'ERROR'],
+        channels: ['multiSplitTowRejectChannel', 'defaultSuccessChannel', 'defaultRejectChannel', 'defaultErrorChannel']
     }
 };

@@ -68,7 +68,7 @@ module.exports = {
             } else {
                 return Promise.reject(new CLASSES.CacheError({
                     code: 'ERR_CACHE_00006',
-                    msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
+                    message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
         } catch (error) {
@@ -101,7 +101,7 @@ module.exports = {
             } else {
                 return Promise.reject(new CLASSES.CacheError({
                     code: 'ERR_CACHE_00006',
-                    msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
+                    message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
         } catch (error) {

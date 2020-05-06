@@ -11,7 +11,7 @@
 
 module.exports = {
     workflow: {
-        multiWorkflowChannelData: {
+        multiWorkflowChannel: {
             options: {
                 enabled: true,
                 schemaName: 'workflowChannel',

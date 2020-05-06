@@ -9,20 +9,20 @@ module.exports = {
                 callback(null, {
                     success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: success
+                    message: success
                 });
             }).catch(error => {
                 callback({
                     success: false,
                     code: 'ERR_EVNT_00000',
-                    msg: error
+                    message: error
                 });
             });
         } catch (error) {
             callback({
                 success: false,
                 code: 'ERR_EVNT_00000',
-                msg: error
+                message: error
             });
         }
     },
@@ -36,20 +36,20 @@ module.exports = {
                 callback(null, {
                     success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: success
+                    message: success
                 });
             }).catch(error => {
                 callback({
                     success: false,
                     code: 'ERR_EVNT_00000',
-                    msg: error
+                    message: error
                 });
             });
         } catch (error) {
             callback({
                 success: false,
                 code: 'ERR_EVNT_00000',
-                msg: error
+                message: error
             });
         }
     }

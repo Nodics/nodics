@@ -51,13 +51,18 @@ module.exports = {
         let data = request.data;
         request.model = _.merge(request.schemaModel, {
             code: data.code,
-            active: true,
             workflow: {
                 activeHead: data.activeHead,
                 activeAction: data.activeAction,
                 state: data.state
             }
         });
+        if (data.actionResponse && !UTILS.isBlank(data.actionResponse)) {
+            request.model.workflow.actionResponse = data.actionResponse;
+            if (data.actionResponse.type === ENUMS.WorkflowActionResponseType.SUCCESS.key) {
+                request.model.active = true;
+            }
+        }
         let sourceDetail = data.sourceDetail;
         if (sourceDetail.schemaName) {
             response.targetNode = 'schemaOperation';

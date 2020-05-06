@@ -39,7 +39,7 @@ module.exports = {
                 this.LOG.debug('Log level have been set successfully');
                 resolve({
                     code: 'SUC_SYS_00000',
-                    msg: 'Log level have been updated successfully'
+                    message: 'Log level have been updated successfully'
                 });
             } else {
                 this.LOG.error('Invalid entity name: ' + request.entityName);

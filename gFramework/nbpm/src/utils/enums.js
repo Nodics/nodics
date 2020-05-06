@@ -25,9 +25,9 @@ module.exports = {
         ]
     },
 
-    WorkflowActionState: {
+    WorkflowItemState: {
         _options: {
-            name: 'WorkflowActionState',
+            name: 'WorkflowState',
             separator: '|',
             endianness: 'BE',
             ignoreCase: false,
@@ -37,13 +37,14 @@ module.exports = {
             'NEW',
             'PROCESSING',
             'FINISHED',
-            'ERROR'
+            'ERROR',
+            'FATAL'
         ]
     },
 
-    WorkflowItemState: {
+    WorkflowState: {
         _options: {
-            name: 'WorkflowItemState',
+            name: 'WorkflowState',
             separator: '|',
             endianness: 'BE',
             ignoreCase: false,
@@ -67,8 +68,8 @@ module.exports = {
             freez: false
         },
         definition: [
-            'PASS',
             'SUCCESS',
+            'REJECTED',
             'ERROR'
         ]
     },

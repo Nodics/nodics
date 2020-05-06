@@ -40,7 +40,7 @@ module.exports = {
             resolve({
                 decision: 'ONE',
                 feedback: {
-                    msg: 'Testing Single channel process'
+                    message: 'Testing Single channel process'
                 }
             });
         });
@@ -51,7 +51,7 @@ module.exports = {
             resolve({
                 decision: 'THREE',
                 feedback: {
-                    msg: 'Action one response .............'
+                    message: 'Action one response .............'
                 }
             });
         });
@@ -62,7 +62,7 @@ module.exports = {
             resolve({
                 decision: 'SUCCESS',
                 feedback: {
-                    msg: 'Action two response .............'
+                    message: 'Action two response .............'
                 }
             });
         });
@@ -73,7 +73,7 @@ module.exports = {
             resolve({
                 decision: 'SUCCESS',
                 feedback: {
-                    msg: 'Action three response .............'
+                    message: 'Action three response .............'
                 }
             });
         });
@@ -84,7 +84,7 @@ module.exports = {
             resolve({
                 decision: 'SUCCESS',
                 feedback: {
-                    msg: 'Action sample success response .............'
+                    message: 'Action sample success response .............'
                 }
             });
         });

@@ -42,7 +42,7 @@ module.exports = {
                         callback(null, {
                             success: true,
                             code: 'SUC_SYS_00000',
-                            msg: 'Successfully updated enterprise'
+                            message: 'Successfully updated enterprise'
                         });
                     }).catch(error => {
                         this.LOG.error('Enterprise: ' + enterprise.code + ' can not be activated');
@@ -58,7 +58,7 @@ module.exports = {
                     callback(null, {
                         success: true,
                         code: 'SUC_SYS_00000',
-                        msg: 'Successfully updated enterprise'
+                        message: 'Successfully updated enterprise'
                     });
                 }
             } else {
@@ -66,7 +66,7 @@ module.exports = {
                 callback({
                     success: false,
                     code: 'ERR_EVNT_00000',
-                    msg: 'Enterprise model dont have tenant associated or wrong tenant object'
+                    message: 'Enterprise model dont have tenant associated or wrong tenant object'
                 });
             }
         } else {
@@ -74,7 +74,7 @@ module.exports = {
             callback({
                 success: false,
                 code: 'ERR_EVNT_00000',
-                msg: 'Invalid enterprise model value'
+                message: 'Invalid enterprise model value'
             });
         }
     },
@@ -90,7 +90,7 @@ module.exports = {
                         callback(null, {
                             success: true,
                             code: 'SUC_SYS_00000',
-                            msg: 'Successfully updated enterprise'
+                            message: 'Successfully updated enterprise'
                         });
                     }).catch(error => {
                         this.LOG.error('Tenant: ' + enterprise.tenant.code + ' can not be deactivated');
@@ -106,7 +106,7 @@ module.exports = {
                     callback(null, {
                         success: true,
                         code: 'SUC_SYS_00000',
-                        msg: 'Successfully updated enterprise'
+                        message: 'Successfully updated enterprise'
                     });
                 }
             } else {
@@ -114,7 +114,7 @@ module.exports = {
                 callback({
                     success: false,
                     code: 'ERR_EVNT_00000',
-                    msg: 'Enterprise model dont have tenant associated or wrong tenant object'
+                    message: 'Enterprise model dont have tenant associated or wrong tenant object'
                 });
             }
         } else {
@@ -122,7 +122,7 @@ module.exports = {
             callback({
                 success: false,
                 code: 'ERR_EVNT_00000',
-                msg: 'Invalid enterprise model value'
+                message: 'Invalid enterprise model value'
             });
         }
     },

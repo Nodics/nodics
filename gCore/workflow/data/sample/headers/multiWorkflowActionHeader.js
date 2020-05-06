@@ -11,7 +11,7 @@
 
 module.exports = {
     workflow: {
-        multiWorkflowActionData: {
+        multiWorkflowAction: {
             options: {
                 enabled: true,
                 schemaName: 'workflowAction',

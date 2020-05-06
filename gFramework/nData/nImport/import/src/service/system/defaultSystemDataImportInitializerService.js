@@ -164,7 +164,7 @@ module.exports = {
         } else {
             process.stop(request, response, {
                 code: 'SUC_IMP_00001',
-                msg: 'Could not find any data to import for given modules'
+                message: 'Could not find any data to import for given modules'
             });
         }
     }

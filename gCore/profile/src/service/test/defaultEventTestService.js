@@ -5,7 +5,7 @@ module.exports = {
         _self.LOG.debug('#Event has been Handled ');
         callback(null, {
             code: 'SUC_EVNT_00000',
-            msg: '====>> Event has been Handled '
+            message: '====>> Event has been Handled '
         });
     }
 };

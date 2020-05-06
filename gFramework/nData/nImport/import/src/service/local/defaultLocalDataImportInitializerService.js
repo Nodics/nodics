@@ -155,7 +155,7 @@ module.exports = {
             this.LOG.debug('Could not found any header to import local data');
             process.stop(request, response, {
                 code: 'SUC_IMP_00001',
-                msg: 'Could not find any data to import for given modules'
+                message: 'Could not find any data to import for given modules'
             });
         }
     },

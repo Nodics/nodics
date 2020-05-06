@@ -40,7 +40,7 @@ module.exports = {
             SERVICE.DefaultWorkflow2SchemaService.workflow2SchemaUpdateEventHandler(request).then(success => {
                 callback(null, {
                     code: 'SUC_EVNT_00000',
-                    msg: success
+                    message: success
                 });
             }).catch(error => {
                 callback(new CLASSES.EventError(error, 'Unable to handle workflow2schema update handler', 'ERR_EVNT_00000'));

@@ -104,7 +104,7 @@ module.exports = {
     handleAutoAction: function (request, response, process) {
         if ((request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key ||
             request.workflowAction.type === ENUMS.WorkflowActionType.PARALLEL.key) &&
-            request.workflowItem.activeAction.state !== ENUMS.WorkflowActionState.FINISHED.key) {
+            request.workflowItem.activeAction.state !== ENUMS.WorkflowState.FINISHED.key) {
             if (request.workflowAction.handler) {
                 response.targetNode = 'executeActionHandler';
                 process.nextSuccess(request, response);
@@ -119,8 +119,8 @@ module.exports = {
         }
     },
     markActionExecuted: function (request, response, process) {
-        request.workflowItem.activeHead.state = ENUMS.WorkflowActionState.PROCESSING.key;
-        request.workflowItem.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
+        request.workflowItem.activeHead.state = ENUMS.WorkflowState.PROCESSING.key;
+        request.workflowItem.activeAction.state = ENUMS.WorkflowState.FINISHED.key;
         if (!response.success.messages) response.success.messages = [];
         response.success.messages.push('Action performed and marked as done!');
         process.nextSuccess(request, response);
@@ -163,7 +163,16 @@ module.exports = {
     },
     updateWorkflowItem: function (request, response, process) {
         if (!request.workflowItem.actions) request.workflowItem.actions = [];
-        request.workflowItem.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
+        if (request.actionResponse.type === ENUMS.WorkflowActionResponseType.ERROR.key) {
+            if (!request.workflowItem.errors) request.workflowItem.errors = [];
+            request.workflowItem.errors.push((new CLASSES.WrkflowError(request.actionResponse.feedback.error || request.actionResponse.feedback.message)).toJson());
+        }
+        request.workflowItem.activeAction.state = ENUMS.WorkflowState.FINISHED.key;
+        request.workflowItem.activeAction.actionResponse = {
+            type: request.actionResponse.type,
+            decision: request.actionResponse.decision,
+            feedback: request.actionResponse.feedback
+        };
         request.workflowItem.actions.push({
             code: request.workflowAction.code,
             responseId: request.actionResponse._id,

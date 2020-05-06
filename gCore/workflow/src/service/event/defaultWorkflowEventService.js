@@ -50,6 +50,9 @@ module.exports = {
                     state: workflowItem.state
                 }
             }, event);
+            if (workflowItem.activeAction && workflowItem.activeAction.actionResponse) {
+                event.data.actionResponse = workflowItem.activeAction.actionResponse;
+            }
             if (workflowItem.detail && !UTILS.isBlank(workflowItem.detail)) {
                 event.data.detail = workflowItem.detail;
             }

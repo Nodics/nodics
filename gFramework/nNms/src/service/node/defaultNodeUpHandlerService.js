@@ -55,7 +55,7 @@ module.exports = {
                     callback(null, {
                         success: true,
                         code: 'SUC_EVNT_00000',
-                        msg: 'Event processed successfuly'
+                        message: 'Event processed successfuly'
                     });
                 }).catch(error => {
                     callback(error);
@@ -64,7 +64,7 @@ module.exports = {
                 callback(null, {
                     success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: 'Nothing to release'
+                    message: 'Nothing to release'
                 });
             }
         }

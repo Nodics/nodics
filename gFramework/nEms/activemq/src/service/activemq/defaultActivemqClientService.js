@@ -121,7 +121,7 @@ module.exports = {
                 resolve({
                     success: true,
                     code: 'SUC_EMS_00000',
-                    msg: 'Message published to queue: ' + payload.queue
+                    message: 'Message published to queue: ' + payload.queue
                 });
             } catch (error) {
                 reject(new CLASSES.NodicsError('ERR_EMS_00000', 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'));

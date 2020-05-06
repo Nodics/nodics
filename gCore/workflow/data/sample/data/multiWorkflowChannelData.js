@@ -10,16 +10,6 @@
  */
 
 module.exports = {
-
-    record0: {
-        code: 'multiSuccessChannel',
-        name: 'multiSuccessChannel',
-        active: true,
-        qualifier: {
-            decision: 'SUCCESS'
-        },
-        target: 'multiActionSuccess'
-    },
     record1: {
         code: "multiOneChannel",
         name: "multiOneChannel",

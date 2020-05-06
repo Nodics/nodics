@@ -66,10 +66,10 @@ module.exports = {
                     description: 'Mandate workflow head code'
                 },
                 'activeHead.state': {
-                    enum: [ENUMS.WorkflowActionState.NEW.key, ENUMS.WorkflowActionState.PROCESSING.key, ENUMS.WorkflowActionState.FINISHED.key, ENUMS.WorkflowActionState.ERROR.key],
+                    enum: [ENUMS.WorkflowState.NEW.key, ENUMS.WorkflowState.PROCESSING.key, ENUMS.WorkflowState.FINISHED.key, ENUMS.WorkflowState.ERROR.key, ENUMS.WorkflowState.FATAL.key],
                     required: true,
-                    default: ENUMS.WorkflowActionState.NEW.key,
-                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
+                    default: ENUMS.WorkflowState.NEW.key,
+                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR, FATAL]'
                 },
                 actions: {
                     type: 'array',
@@ -86,16 +86,16 @@ module.exports = {
                     description: 'Optional workflow action code'
                 },
                 'activeAction.state': {
-                    enum: [ENUMS.WorkflowActionState.NEW.key, ENUMS.WorkflowActionState.PROCESSING.key, ENUMS.WorkflowActionState.FINISHED.key, ENUMS.WorkflowActionState.ERROR.key],
+                    enum: [ENUMS.WorkflowState.NEW.key, ENUMS.WorkflowState.PROCESSING.key, ENUMS.WorkflowState.FINISHED.key, ENUMS.WorkflowState.ERROR.key, ENUMS.WorkflowState.FATAL.key],
                     required: true,
-                    default: ENUMS.WorkflowActionState.NEW.key,
-                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR]'
+                    default: ENUMS.WorkflowState.NEW.key,
+                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR, FATAL]'
                 },
                 state: {
                     enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key, ENUMS.WorkflowItemState.FATAL.key],
                     required: false,
                     default: ENUMS.WorkflowItemState.NEW.key,
-                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, FATAL]'
+                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR, FATAL]'
                 },
                 errorCount: {
                     type: 'int',
@@ -158,9 +158,9 @@ module.exports = {
                     description: 'Required decision, This decide which channel will process this item'
                 },
                 type: {
-                    enum: [ENUMS.WorkflowActionResponseType.PASS.key, ENUMS.WorkflowActionResponseType.SUCCESS.key, ENUMS.WorkflowActionResponseType.ERROR.key],
+                    enum: [ENUMS.WorkflowActionResponseType.SUCCESS.key, ENUMS.WorkflowActionResponseType.REJECTED.key, ENUMS.WorkflowActionResponseType.ERROR.key],
                     required: true,
-                    description: 'Mandate workflow head state [PASS, SUCCESS, ERROR]'
+                    description: 'Mandate workflow head state [SUCCESS, REJECTED, ERROR]'
                 },
                 feedback: {
                     type: 'object',
@@ -266,6 +266,11 @@ module.exports = {
                     required: false,
                     description: 'This hold data for external system, to publish action event'
                 },
+                successHandler: {
+                    type: 'string',
+                    required: false,
+                    description: 'Required channel name for success handler'
+                },
                 errorHandler: {
                     type: 'string',
                     required: true,
@@ -288,11 +293,6 @@ module.exports = {
             definition: {
                 position: {
                     default: ENUMS.WorkflowActionPosition.ACTION.key
-                },
-                successHandler: {
-                    type: 'string',
-                    required: false,
-                    description: 'Required channel name for success handler'
                 }
             }
         }

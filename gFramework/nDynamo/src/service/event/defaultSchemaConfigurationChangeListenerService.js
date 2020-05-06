@@ -41,20 +41,20 @@ module.exports = {
                 callback(null, {
                     success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: success
+                    message: success
                 });
             }).catch(error => {
                 callback({
                     success: false,
                     code: 'ERR_EVNT_00000',
-                    msg: (error instanceof Object) ? JSON.stringify(error) : error
+                    message: (error instanceof Object) ? JSON.stringify(error) : error
                 });
             });
         } catch (error) {
             callback({
                 success: false,
                 code: 'ERR_EVNT_00000',
-                msg: (error instanceof Object) ? JSON.stringify(error) : error
+                message: (error instanceof Object) ? JSON.stringify(error) : error
             });
         }
     }

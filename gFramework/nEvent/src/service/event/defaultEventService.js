@@ -257,7 +257,7 @@ module.exports = {
                     if (CONFIG.get('event').ignoreIfNoLister) {
                         resolve({
                             code: 'SUC_EVNT_00000',
-                            msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
+                            message: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
                         });
                     } else {
                         reject(new CLASSES.NodicsError('ERR_EVNT_00000', 'There is no Listener register for event ' + event.event + ' in module ' + event.target));

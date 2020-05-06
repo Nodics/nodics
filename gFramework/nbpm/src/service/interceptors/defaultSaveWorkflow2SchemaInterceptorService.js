@@ -37,11 +37,8 @@ module.exports = {
     createWorkflowCode: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
-                if (request.schemaModel.workflows &&
-                    Object.keys(request.schemaModel.workflows).length > 0) {
-                    if (!request.model._id &&
-                        request.model.code &&
-                        !request.model.workflow) {
+                if (request.schemaModel.workflows && Object.keys(request.schemaModel.workflows).length > 0) {
+                    if (!request.model._id && request.model.code && !request.model.workflow) {
                         request.model.active = false;
                         request.model.workflow = {
                             refId: request.model.code

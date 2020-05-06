@@ -83,7 +83,7 @@ module.exports = {
             this.refreshImportInterceptors(entityName);
             callback(null, {
                 code: 'SUC_EVNT_00000',
-                msg: success
+                message: success
             });
         } catch (error) {
             callback(new CLASSES.EventError(error));
@@ -110,7 +110,7 @@ module.exports = {
             this.refreshExportInterceptors(entityName);
             callback(null, {
                 code: 'SUC_EVNT_00000',
-                msg: success
+                message: success
             });
         } catch (error) {
             callback(new CLASSES.EventError(error));
@@ -149,7 +149,7 @@ module.exports = {
             this.refreshImportValidators(event.data.tenant, event.data.item);
             callback(null, {
                 code: 'SUC_EVNT_00000',
-                msg: success
+                message: success
             });
         } catch (error) {
             callback(new CLASSES.EventError(error));
@@ -187,7 +187,7 @@ module.exports = {
             this.refreshExportValidators(event.data.tenant, event.data.item);
             callback(null, {
                 code: 'SUC_EVNT_00000',
-                msg: success
+                message: success
             });
         } catch (error) {
             callback(new CLASSES.EventError(error));

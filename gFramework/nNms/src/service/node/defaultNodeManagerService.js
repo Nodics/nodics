@@ -44,7 +44,7 @@ module.exports = {
                 }
                 resolve({
                     code: 'SUC_SYS_00000',
-                    msg: 'Request processed successfuly'
+                    message: 'Request processed successfuly'
                 });
             } catch (error) {
                 reject(new CLASSES.NodicsError(error, null, 'ERR_SYS_00000'));
@@ -62,7 +62,7 @@ module.exports = {
                 SERVICE.DefaultNodeConfigurationService.grantNodeResponsibility(request.moduleName, request.nodeId);
                 resolve({
                     code: 'SUC_RES_00001',
-                    msg: 'Successfully granted request'
+                    message: 'Successfully granted request'
                 });
             } else {
                 reject(new CLASSES.NodicsError({
@@ -85,7 +85,7 @@ module.exports = {
                 SERVICE.DefaultNodeStateChangeHandlerService.handleNodeActive(request.moduleName, request.nodeId).then(success => {
                     resolve({
                         code: 'SUC_SYS_00000',
-                        msg: 'Request processed successfuly'
+                        message: 'Request processed successfuly'
                     });
                 }).catch(error => {
                     reject(error);

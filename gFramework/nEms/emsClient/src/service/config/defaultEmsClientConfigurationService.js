@@ -196,7 +196,7 @@ module.exports = {
                 resolve({
                     success: true,
                     code: 'SUC_SYS_00000',
-                    msg: 'None publishers are active to close'
+                    message: 'None publishers are active to close'
                 });
             }
         });
@@ -336,7 +336,7 @@ module.exports = {
                 resolve({
                     success: true,
                     code: 'SUC_SYS_00000',
-                    msg: 'None consumers are active to close'
+                    message: 'None consumers are active to close'
                 });
             }
         });
