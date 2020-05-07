@@ -10,5 +10,10 @@
  */
 
 module.exports = {
-    nodeId: 'node0',
+    record0: {
+        code: 'samplePageFooterComponent',
+        active: true,
+        cmsPages: ['sampleHomePage', 'sampleProductDetailPage', 'sampleProductListingPage', 'sampleCartDetailPage'],
+        typeCode: 'footerComponentType'
+    }
 };

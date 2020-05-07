@@ -10,5 +10,11 @@
  */
 
 module.exports = {
-    nodeId: 'node0',
+    record0: {
+        code: 'samplePageMainComponent',
+        name: 'samplePageMainComponent',
+        active: true,
+        cmsPages: ['sampleHomePage', 'sampleProductDetailPage', 'sampleProductListingPage', 'sampleCartDetailPage'],
+        typeCode: 'mainComponentType'
+    }
 };

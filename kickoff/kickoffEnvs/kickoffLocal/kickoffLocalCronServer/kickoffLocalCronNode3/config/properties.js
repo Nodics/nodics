@@ -16,10 +16,10 @@ module.exports = {
         default: {
             server: {
                 httpHost: 'localhost',
-                httpPort: 3016,
+                httpPort: 3036,
 
                 httpsHost: 'localhost',
-                httpsPort: 3017
+                httpsPort: 3037
             }
         }
     }

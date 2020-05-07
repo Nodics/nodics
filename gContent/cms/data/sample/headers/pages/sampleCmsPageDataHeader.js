@@ -10,5 +10,17 @@
  */
 
 module.exports = {
-    nodeId: 'node0',
+    cms: {
+        sampleCmsPageData: {
+            options: {
+                enabled: true,
+                schemaName: 'cmsPage',
+                operation: 'saveAll',
+                dataFilePrefix: 'sampleCmsPageData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
+    }
 };

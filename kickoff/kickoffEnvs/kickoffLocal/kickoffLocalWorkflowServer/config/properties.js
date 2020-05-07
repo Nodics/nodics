@@ -11,40 +11,33 @@
 
 module.exports = {
     activeModules: {
-        groups: ['gDeap', 'kickoffModules'], // Group 'framework' will be included automatically
+        groups: ['kickoffModules'], // Group 'framework' will be included automatically
         modules: [
-            'kickoffLocalDeapServer',
+            'workflow',
+            'kickoffLocalWorkflowServer',
             'kickoffLocal'
         ]
     },
 
+    activateNodePing: true,
+    nodePingableModules: {
+        cronjob: {
+            enabled: true
+        }
+    },
+
     log: {
-        level: 'debug'
+        level: 'info'
+    },
+
+    cronjob: {
+        runOnStartup: true
     },
 
     search: {
         default: {
             options: {
                 enabled: false
-            }
-        }
-    },
-
-    emsClient: {
-        logFailedMessages: false,
-        publishers: {
-            kafkaTempPublisher: {
-                enabled: true,
-                client: 'kafka',
-                runOnNode: 'node0'
-            }
-        },
-        clients: {
-            activemq: {
-                enabled: false
-            },
-            kafka: {
-                enabled: true
             }
         }
     },
@@ -56,43 +49,30 @@ module.exports = {
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3010,
+                httpPort: 3050,
 
                 httpsHost: 'localhost',
-                httpsPort: 3011
+                httpsPort: 3051
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3010,
+                httpPort: 3050,
 
                 httpsHost: 'localhost',
-                httpsPort: 3011
+                httpsPort: 3051
             },
             nodes: {
                 node0: {
                     httpHost: 'localhost',
-                    httpPort: 3010,
+                    httpPort: 3050,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3011
-                },
-                node1: {
-                    httpHost: 'localhost',
-                    httpPort: 3012,
-
-                    httpsHost: 'localhost',
-                    httpsPort: 3013
-                },
-                node2: {
-                    httpHost: 'localhost',
-                    httpPort: 3014,
-
-                    httpsHost: 'localhost',
-                    httpsPort: 3015
+                    httpsPort: 3051
                 }
             }
         },
 
+        // This configuration required to load enterprise, tenants and all internal communication
         profile: {
             options: {
                 contextRoot: 'nodics'

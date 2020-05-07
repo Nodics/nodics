@@ -10,5 +10,20 @@
  */
 
 module.exports = {
-    nodeId: 'node0',
+    record0: {
+        code: 'sampleHomePageType',
+        active: true,
+    },
+    record1: {
+        code: 'sampleProductDetailPageType',
+        active: true
+    },
+    record2: {
+        code: 'sampleProductListingPageType',
+        active: true
+    },
+    record3: {
+        code: 'sampleCartDetailPageType',
+        active: true
+    }
 };

@@ -10,5 +10,17 @@
  */
 
 module.exports = {
-    nodeId: 'node0',
+    cms: {
+        sampleCmsComponentData: {
+            options: {
+                enabled: true,
+                schemaName: 'cmsComponent',
+                operation: 'saveAll',
+                dataFilePrefix: 'sampleCmsComponentData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
+    }
 };

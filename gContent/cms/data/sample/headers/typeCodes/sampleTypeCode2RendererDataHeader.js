@@ -10,5 +10,17 @@
  */
 
 module.exports = {
-    nodeId: 'node0',
+    cms: {
+        sampleTypeCode2RendererData: {
+            options: {
+                enabled: true,
+                schemaName: 'cmsTypeCode2Renderer',
+                operation: 'saveAll',
+                dataFilePrefix: 'sampleTypeCode2RendererData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
+    }
 };
