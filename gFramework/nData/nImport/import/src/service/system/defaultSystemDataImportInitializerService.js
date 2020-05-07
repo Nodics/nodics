@@ -78,6 +78,8 @@ module.exports = {
     loadHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of header files from modules to be imported');
         SERVICE.DefaultImportUtilityService.getSystemDataHeaders(request.modules, request.inputPath.dataType).then(success => {
+            console.log('------------------------- Header Files --------------------------------');
+            console.log(success);
             request.data.headerFiles = success;
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -89,6 +91,8 @@ module.exports = {
     loadDataFileList: function (request, response, process) {
         this.LOG.debug('Loading list of data files from modules to be imported');
         SERVICE.DefaultImportUtilityService.getSystemDataFiles(request.modules, request.inputPath.dataType).then(success => {
+            console.log('------------------------- Data Files --------------------------------');
+            console.log(success);
             request.data.dataFiles = success;
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -160,6 +164,8 @@ module.exports = {
             });
             delete request.data.headerFiles;
             delete request.data.dataFiles;
+            console.log('------------------------- Final Data Files --------------------------------');
+            console.log(request.data.headers);
             process.nextSuccess(request, response);
         } else {
             process.stop(request, response, {

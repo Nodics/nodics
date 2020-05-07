@@ -1,17 +1,11 @@
 {
-    "name": "gContent",
-    "index": "10.99",
-    "type": "core",
-    "requiredModules": [
-        "cms",
-        "cmsWorkflow"
-    ],
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gContent",
+    "name": "vquiz",
+    "index": "5.35.50",
+    "type": "publish",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to vquiz",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "server",
-        "environment",
-        "gContent"
+        "vquiz"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

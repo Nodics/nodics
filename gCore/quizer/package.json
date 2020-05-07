@@ -1,17 +1,18 @@
 {
-    "name": "gContent",
-    "index": "10.99",
+    "name": "quizer",
+    "index": "5.35.99",
     "type": "core",
     "requiredModules": [
-        "cms",
-        "cmsWorkflow"
+        "quiz",
+        "quizWorkflow",
+        "vQuiz"
     ],
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gContent",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to quizer",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "server",
         "environment",
-        "gContent"
+        "quizer"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

@@ -2,6 +2,9 @@
     "name": "gMrkty",
     "index": "20.99",
     "type": "core",
+    "requiredModules": [
+        "cres"
+    ],
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to gMrkty",
     "homepage": "http://www.nodics.com/",
     "keywords": [

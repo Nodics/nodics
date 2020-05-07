@@ -63,13 +63,15 @@ module.exports = {
         this.LOG.info('LOG_PATH      : ' + NODICS.getServerPath() + '/temp/logs');
         this.LOG.info('---------------------------------------------------------------------------\n');
         this.LOG.info('###   Sequence in which modules has been loaded (Top to Bottom)   ###\n');
+        let counter = 1;
         let activeModules = [];
         let maxLength = 30;
         let space = ' ';
         NODICS.getIndexedModules().forEach((obj, key) => {
             let spaces = maxLength - obj.name.length;
-            this.LOG.info('  ' + obj.name + space.repeat(spaces) + ' : ' + key);
+            this.LOG.info('  ' + (counter < 10 ? '0' + counter : counter) + '  ' + obj.name + space.repeat(spaces) + ' : ' + key);
             activeModules.push(obj.name);
+            counter++;
         });
         console.log();
         NODICS.setActiveModules(activeModules);
@@ -134,7 +136,8 @@ module.exports = {
             });
             let dependantModules = [];
             modules.forEach(moduleName => {
-                this.resolveDependancy(moduleName, dependantModules);
+                this.resolveSubDependancy(moduleName, dependantModules);
+                this.resolveParentDependancy(moduleName, dependantModules);
             });
             dependantModules.forEach(moduleName => {
                 if (!modules.includes(moduleName)) modules.push(moduleName);
@@ -159,7 +162,7 @@ module.exports = {
             return modules;
         }
     },
-    resolveDependancy: function (moduleName, dependantModules) {
+    resolveSubDependancy: function (moduleName, dependantModules) {
         let _self = this;
         let rawModule = NODICS.getRawModule(moduleName);
         if (!rawModule || !rawModule.metaData) {
@@ -168,13 +171,22 @@ module.exports = {
             if (rawModule.metaData.requiredModules && rawModule.metaData.requiredModules.length > 0) {
                 rawModule.metaData.requiredModules.forEach(nxtModuleName => {
                     if (!dependantModules.includes(nxtModuleName)) dependantModules.push(nxtModuleName);
-                    _self.resolveDependancy(nxtModuleName, dependantModules);
+                    _self.resolveSubDependancy(nxtModuleName, dependantModules);
                 });
             }
+        }
+    },
+
+    resolveParentDependancy: function (moduleName, dependantModules) {
+        let _self = this;
+        let rawModule = NODICS.getRawModule(moduleName);
+        if (!rawModule || !rawModule.metaData) {
+            console.error('Invalid module name : ', moduleName);
+        } else {
             if (rawModule.parentModules && rawModule.parentModules.length > 0) {
                 rawModule.parentModules.forEach(pModuleName => {
                     if (!dependantModules.includes(pModuleName)) dependantModules.push(pModuleName);
-                    _self.resolveDependancy(pModuleName, dependantModules);
+                    _self.resolveParentDependancy(pModuleName, dependantModules);
                 });
             }
         }

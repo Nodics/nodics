@@ -1,17 +1,14 @@
 {
-    "name": "gContent",
-    "index": "10.99",
+    "name": "wcms",
+    "index": "10.25",
     "type": "core",
     "requiredModules": [
-        "cms",
-        "cmsWorkflow"
+        "cms"
     ],
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gContent",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to cms workflows",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "server",
-        "environment",
-        "gContent"
+        "wcms"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

@@ -2,6 +2,9 @@
     "name": "cres",
     "index": "20.50",
     "type": "core",
+    "requiredModules": [
+        "quizer"
+    ],
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer review system",
     "homepage": "http://www.nodics.com/",
     "keywords": [
