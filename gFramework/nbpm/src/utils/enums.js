@@ -20,8 +20,8 @@ module.exports = {
             freez: false
         },
         definition: [
-            'INTERNAL',
-            'EXTERNAL'
+            'FIXED',
+            'FLAXI'
         ]
     },
 

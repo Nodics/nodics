@@ -45,7 +45,7 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    loadItem: function (request, response, process) {
+    loadWorkflowItem: function (request, response, process) {
         if (!request.workflowItem && request.itemCode) {
             SERVICE.DefaultWorkflowItemService.get({
                 tenant: request.tenant,
@@ -80,16 +80,18 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    redirectCreateItem: function (request, response, process) {
+    createNewItem: function (request, response, process) {
+        this.LOG.debug('Creating new external workflow item');
         if (!request.workflowItem && request.item) {
-            request.actionCode = request.actionCode || request.workflowHead;
-            if (request.itemType === ENUMS.WorkflowItemType.INTERNAL.key) {
-                response.targetNode = 'loadInternalItem';
-                process.nextSuccess(request, response);
-            } else {
-                response.targetNode = 'loadExternalItem';
-                process.nextSuccess(request, response);
-            }
+            let item = request.item;
+            request.workflowItem = _.merge({}, request.item);
+            request.workflowItem.refId = item.refId || item.code;
+            request.workflowItem.originalCode = item.originalCode || item.code;
+            request.workflowItem.active = (item.active === undefined) ? true : item.active;
+            request.workflowItem.event = request.workflowItem.event || {};
+            request.workflowItem.event.enabled = request.workflowItem.event.enabled || false;
+            request.workflowItem.callbackData = request.workflowItem.callbackData || {};
+            process.nextSuccess(request, response);
         } else {
             process.nextSuccess(request, response);
         }

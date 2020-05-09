@@ -62,7 +62,7 @@ module.exports = {
             if (workflowItem.callbackData && !UTILS.isBlank(workflowItem.callbackData)) {
                 event.data.callbackData = workflowItem.callbackData;
             }
-            if (workflowItem.type === ENUMS.WorkflowItemType.EXTERNAL.key) {
+            if (workflowItem.event.type === 'EXTERNAL') {
                 this.publishExternalEvent(event, workflowItem, workflowAction).then(success => {
                     resolve(success);
                 }).catch(error => {

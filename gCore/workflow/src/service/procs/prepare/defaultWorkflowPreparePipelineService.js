@@ -66,13 +66,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    prepareEndPoint: function (request, response, process) {
+    finalizeEventType: function (request, response, process) {
         if (!request.workflowAction || !request.workflowHead) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action or head can not be null or empty'));
         } else {
             request.workflowAction.endPoint = _.merge(
                 _.merge({}, (request.workflowHead.sourceDetail) ? request.workflowHead.sourceDetail.endPoint || {} : {}),
                 (request.workflowAction.sourceDetail) ? request.workflowAction.sourceDetail.endPoint || {} : {});
+            process.nextSuccess(request, response);
+            if (!request.workflowItem.event.triggerType) {
+                let endPoint = _.merge(request.workflowAction.endPoint, workflowItem.sourceDetail.endPoint || {});
+                if (!UTILS.isBlank(endPoint)) {
+                    request.workflowItem.event.type = 'EXTERNAL';
+                } else {
+                    request.workflowItem.event.type = 'INTERNAL';
+                }
+            }
             process.nextSuccess(request, response);
         }
     }

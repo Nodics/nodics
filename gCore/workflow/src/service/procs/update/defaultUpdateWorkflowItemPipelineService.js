@@ -41,15 +41,18 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    redirectCreateItem: function (request, response, process) {
+    createNewItem: function (request, response, process) {
+        this.LOG.debug('Creating new external workflow item');
         if (!request.workflowItem && request.item) {
-            if (request.itemType === ENUMS.WorkflowItemType.INTERNAL.key) {
-                response.targetNode = 'loadInternalItem';
-                process.nextSuccess(request, response);
-            } else {
-                response.targetNode = 'loadExternalItem';
-                process.nextSuccess(request, response);
-            }
+            let item = request.item;
+            request.workflowItem = _.merge({}, request.item);
+            request.workflowItem.refId = item.refId || item.code;
+            request.workflowItem.originalCode = item.originalCode || item.code;
+            request.workflowItem.active = (item.active === undefined) ? true : item.active;
+            request.workflowItem.event = request.workflowItem.event || {};
+            request.workflowItem.event.enabled = request.workflowItem.event.enabled || false;
+            request.workflowItem.callbackData = request.workflowItem.callbackData || {};
+            process.nextSuccess(request, response);
         } else {
             process.nextSuccess(request, response);
         }
@@ -124,6 +127,23 @@ module.exports = {
         }
     },
     triggerItemUpdateEvent: function (request, response, process) {
+        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(request.workflowAction, request.workflowItem);
+        if (eventConfig.enabled) {
+            try {
+                this.LOG.debug('Pushing event for item assign to action : ' + request.workflowItem.activeAction.code);
+                SERVICE.DefaultWorkflowEventService.publishEvent({
+                    tenant: request.tenant,
+                    event: 'itemUpdated',
+                    type: eventConfig.type || "SYNC"
+                }, request.workflowAction, request.workflowItem).then(success => {
+                    this.LOG.debug('Event successfully posted');
+                }).catch(error => {
+                    this.LOG.error('While posting item assigned event : ', error);
+                });
+            } catch (error) {
+                this.LOG.error('Facing issue posting item assigned event : ', error);
+            }
+        }
         process.nextSuccess(request, response);
     },
 

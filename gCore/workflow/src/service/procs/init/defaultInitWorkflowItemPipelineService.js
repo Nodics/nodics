@@ -36,8 +36,6 @@ module.exports = {
         this.LOG.debug('Validating request to init item with workflow');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
-        } else if (!request.itemType && (request.itemType !== ENUMS.WorkflowItemType.INTERNAL.key || request.itemType !== ENUMS.WorkflowItemType.EXTERNAL.key)) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, itemType can not be null or empty'));
         } else if (!request.item) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, item can not be null or empty'));
         } else if (!request.workflowCode) {

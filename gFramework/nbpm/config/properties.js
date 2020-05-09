@@ -26,6 +26,11 @@ module.exports = {
             event: 'itemAssigned',
             listener: 'DefaultWorkflowItemAssignedEventListenerService.handleWorkflowItemAssignedEvent'
         },
+        workflowItemUpdated: {
+            active: true,
+            event: 'itemUpdated',
+            listener: 'DefaultWorkflowItemUpdatedEventListenerService.handleWorkflowItemUpdatedEvent'
+        },
         workflowErrorOccurred: {
             active: true,
             event: 'errorOccurred',

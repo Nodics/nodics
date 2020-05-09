@@ -88,6 +88,44 @@ module.exports = {
             }
         }
     },
+
+    defaultWorkflowItemUpdatedPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemUpdatedPipelineService.validateRequest',
+                success: 'prepareProcess'
+            },
+            prepareProcess: {
+                type: 'process',
+                handler: 'defaultWorkflowProcessPreparePipeline',
+                success: 'prepareModel'
+            },
+            prepareModel: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemUpdatedPipelineService.prepareModel',
+                success: {
+                    schemaOperation: 'updateSchemaItem',
+                    searchOperation: 'updateSearchItem'
+                }
+            },
+            updateSchemaItem: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemUpdatedPipelineService.updateSchemaItem',
+                success: 'successEnd'
+            },
+            updateSearchItem: {
+                type: 'function',
+                handler: 'DefaultWorkflowItemUpdatedPipelineService.updateSearchItem',
+                success: 'successEnd'
+            }
+        }
+    },
+
     defaultWorkflowItemPausedPipeline: {
         startNode: "validateRequest",
         hardStop: true,

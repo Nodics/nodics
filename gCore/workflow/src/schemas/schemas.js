@@ -32,9 +32,9 @@ module.exports = {
                     description: 'Mandate item reference id'
                 },
                 type: {
-                    enum: [ENUMS.WorkflowItemType.INTERNAL.key, ENUMS.WorkflowItemType.EXTERNAL.key],
+                    enum: [ENUMS.WorkflowItemType.FIXED.key, ENUMS.WorkflowItemType.FLAXI.key],
                     required: true,
-                    description: 'Mandate item type [INTERNAL, EXTERNAL]'
+                    description: 'Mandate item type [FIXED, FLAXI]'
                 },
                 sourceDetail: {
                     type: 'object',

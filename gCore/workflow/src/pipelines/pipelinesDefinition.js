@@ -35,11 +35,11 @@ module.exports = {
             loadWorkflowHead: {
                 type: 'function',
                 handler: 'DefaultWorkflowPreparePipelineService.loadWorkflowHead',
-                success: 'prepareEndPoint'
+                success: 'finalizeEventType'
             },
-            prepareEndPoint: {
+            finalizeEventType: {
                 type: 'function',
-                handler: 'DefaultWorkflowPreparePipelineService.prepareEndPoint',
+                handler: 'DefaultWorkflowPreparePipelineService.finalizeEventType',
                 success: 'successEnd'
             },
         }
@@ -54,30 +54,16 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultLoadWorkflowItemPipelineService.validateRequest',
-                success: 'loadItem'
+                success: 'loadWorkflowItem'
             },
-            loadItem: {
+            loadWorkflowItem: {
                 type: 'function',
-                handler: 'DefaultLoadWorkflowItemPipelineService.loadItem',
-                success: 'redirectCreateItem'
+                handler: 'DefaultLoadWorkflowItemPipelineService.loadWorkflowItem',
+                success: 'createNewItem'
             },
-            redirectCreateItem: {
+            createNewItem: {
                 type: 'function',
-                handler: 'DefaultLoadWorkflowItemPipelineService.redirectCreateItem',
-                success: {
-                    loadInternalItem: 'handleInternalItem',
-                    loadExternalItem: 'handleExternalItem',
-                    default: 'verifyWorkflowItem'
-                }
-            },
-            handleInternalItem: {
-                type: 'process',
-                handler: 'handleInternalItemCreatePipeline',
-                success: 'verifyWorkflowItem'
-            },
-            handleExternalItem: {
-                type: 'process',
-                handler: 'handleExternalItemCreatePipeline',
+                handler: 'DefaultLoadWorkflowItemPipelineService.createNewItem',
                 success: 'verifyWorkflowItem'
             },
             verifyWorkflowItem: {
@@ -85,44 +71,6 @@ module.exports = {
                 handler: 'DefaultLoadWorkflowItemPipelineService.verifyWorkflowItem',
                 success: 'successEnd'
             },
-        }
-    },
-
-    handleInternalItemCreatePipeline: {
-        startNode: "validateRequest",
-        hardStop: true,
-        handleError: 'handleError',
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultInternalItemCreatePipelineService.validateRequest',
-                success: 'createInternalItem'
-            },
-            createInternalItem: {
-                type: 'function',
-                handler: 'DefaultInternalItemCreatePipelineService.createInternalItem',
-                success: 'successEnd'
-            }
-        }
-    },
-
-    handleExternalItemCreatePipeline: {
-        startNode: "validateRequest",
-        hardStop: true,
-        handleError: 'handleError',
-
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultExternalItemCreatePipelineService.validateRequest',
-                success: 'createExternalItem'
-            },
-            createExternalItem: {
-                type: 'function',
-                handler: 'DefaultExternalItemCreatePipelineService.createExternalItem',
-                success: 'successEnd'
-            }
         }
     },
 
@@ -201,25 +149,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultUpdateWorkflowItemPipelineService.validateRequest',
-                success: 'redirectCreateItem'
+                success: 'createNewItem'
             },
-            redirectCreateItem: {
+            createNewItem: {
                 type: 'function',
-                handler: 'DefaultUpdateWorkflowItemPipelineService.redirectCreateItem',
-                success: {
-                    loadInternalItem: 'handleInternalItem',
-                    loadExternalItem: 'handleExternalItem',
-                    default: 'applyPreUpdateInterceptors'
-                }
-            },
-            handleInternalItem: {
-                type: 'process',
-                handler: 'handleInternalItemCreatePipeline',
-                success: 'applyPreUpdateInterceptors'
-            },
-            handleExternalItem: {
-                type: 'process',
-                handler: 'handleExternalItemCreatePipeline',
+                handler: 'DefaultUpdateWorkflowItemPipelineService.createNewItem',
                 success: 'applyPreUpdateInterceptors'
             },
             applyPreUpdateInterceptors: {
