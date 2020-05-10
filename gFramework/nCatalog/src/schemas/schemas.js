@@ -14,8 +14,12 @@ module.exports = {
         catalog: {
             super: 'base',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             accessGroups: {
                 employeeUserGroup: 3
             },

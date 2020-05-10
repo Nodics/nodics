@@ -14,8 +14,12 @@ module.exports = {
         emsFailedMessages: {
             super: 'super',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             search: {
                 enabled: true,
                 idPropertyName: '_id',

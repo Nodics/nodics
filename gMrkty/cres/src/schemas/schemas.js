@@ -14,8 +14,13 @@ module.exports = {
         reviewTest: {
             super: 'base',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true,
+                alias: 'review'
+            },
             cache: {
                 enabled: false,
                 ttl: 10

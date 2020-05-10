@@ -61,20 +61,15 @@ module.exports = {
             code: request.workflowAction.code,
             state: ENUMS.WorkflowState.PROCESSING.key
         };
-        workflowItem.state = ENUMS.WorkflowItemState.PROCESSING.key;
+        workflowItem.state = ENUMS.WorkflowState.PROCESSING.key;
         if (!workflowItem._id) {
-            workflowItem.state = ENUMS.WorkflowItemState.NEW.key;
-            workflowItem.activeAction.state = ENUMS.WorkflowState.NEW.key;
+            workflowItem.state = ENUMS.WorkflowState.NEW.key;
+            workflowItem.activeAction.state = ENUMS.WorkflowActionState.NEW.key;
         }
         if (request.workflowAction.position === ENUMS.WorkflowActionPosition.HEAD.key) {
-            workflowItem.activeHead = {
-                code: request.workflowAction.code,
-                state: ENUMS.WorkflowState.NEW.key
-            };
+            workflowItem.activeHead = request.workflowAction.code;
             if (!workflowItem.heads) workflowItem.heads = [];
             workflowItem.heads.push(request.workflowAction.code);
-        } else {
-            workflowItem.activeHead.state = ENUMS.WorkflowState.PROCESSING.key;
         }
         process.nextSuccess(request, response);
     },

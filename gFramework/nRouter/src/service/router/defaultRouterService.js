@@ -124,10 +124,12 @@ module.exports = {
         let urlPrefix = moduleObject.metaData.prefix || moduleName;
         if (routers.default) {
             _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
-                if (schemaObject.service && schemaObject.router) {
+                if (schemaObject.service && schemaObject.service.enabled &&
+                    schemaObject.router && schemaObject.router.enabled) {
                     _self.prepareDefaultRouter({
                         routers: routers,
                         urlPrefix: urlPrefix,
+                        alias: schemaObject.router.alias || schemaName,
                         schemaName: schemaName,
                         moduleName: moduleName,
                         moduleRouter: moduleRouter
@@ -181,7 +183,7 @@ module.exports = {
                     if (routerName !== 'options' && _self.validateRouterDefinition(routerName, routerDef)) {
                         let definition = _.merge({}, routerDef);
                         definition.method = definition.method.toLowerCase();
-                        definition.key = definition.key.replaceAll('schemaName', options.schemaName.toLowerCase());
+                        definition.key = definition.key.replaceAll('schemaName', options.alias.toLowerCase());
                         definition.controller = definition.controller.replaceAll('ctrlName', options.schemaName.toUpperCaseEachWord() + 'Controller');
                         definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + definition.key;
                         definition.active = (definition.active === undefined) ? true : definition.active;

@@ -14,8 +14,12 @@ module.exports = {
         cronJobLog: {
             super: 'super',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             search: {
                 enabled: true,
                 idPropertyName: '_id',
@@ -34,12 +38,16 @@ module.exports = {
         cronJob: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             cache: {
                 enabled: false,
                 ttl: 100
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             virtualProperties: {
                 fullname: 'DefaultCronJobVirtualService.getFullName',
             },

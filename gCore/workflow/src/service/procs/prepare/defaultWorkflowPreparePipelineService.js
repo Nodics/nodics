@@ -46,7 +46,7 @@ module.exports = {
 
     loadWorkflowHead: function (request, response, process) {
         if (!request.workflowHead) {
-            request.workflowCode = request.workflowCode || request.workflowItem.activeHead.code;
+            request.workflowCode = request.workflowCode || request.workflowItem.activeHead;
             if (request.workflowCode) {
                 SERVICE.DefaultWorkflowActionService.getWorkflowAction(request.workflowCode, request.tenant).then(workflowHead => {
                     request.workflowHead = workflowHead;

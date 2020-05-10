@@ -14,8 +14,12 @@ module.exports = {
         event: {
             super: 'super',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
                 sourceName: {
                     type: 'string',
@@ -77,8 +81,12 @@ module.exports = {
         eventLog: {
             super: 'event',
             model: true,
-            service: true,
-            router: false
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            }
         }
     }
 };

@@ -14,12 +14,16 @@ module.exports = {
         tenant: {
             super: 'super',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 100
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             tenants: ['default'],
             definition: {
                 properties: {
@@ -36,8 +40,12 @@ module.exports = {
         address: {
             super: 'base',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 360
@@ -110,8 +118,12 @@ module.exports = {
         contact: {
             super: 'base',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
                 prefix: {
                     type: 'string',
@@ -139,12 +151,16 @@ module.exports = {
         enterprise: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 360
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             tenants: ['default'], // if not null, only tenant will be used
             search: {
                 enabled: false,
@@ -250,8 +266,12 @@ module.exports = {
         userState: {
             super: 'super',
             model: true,
-            service: true,
-            router: false,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
             definition: {
                 personId: {
                     type: 'objectId',
@@ -283,8 +303,12 @@ module.exports = {
         userGroup: {
             super: 'base',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             refSchema: {
                 parentGroups: {
                     schemaName: "userGroup",
@@ -309,8 +333,12 @@ module.exports = {
         password: {
             super: 'super',
             model: true,
-            service: true,
-            router: false,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
             definition: {
                 loginId: {
                     type: 'string',
@@ -329,8 +357,12 @@ module.exports = {
         user: {
             super: 'base',
             model: false,
-            service: false,
-            router: false,
+            service: {
+                enabled: false
+            },
+            router: {
+                enabled: false
+            },
             refSchema: {
                 password: {
                     schemaName: "password",
@@ -437,8 +469,12 @@ module.exports = {
         employee: {
             super: 'user',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
                 apiKey: {
                     type: 'string',
@@ -451,8 +487,12 @@ module.exports = {
         customer: {
             super: 'user',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 20

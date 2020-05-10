@@ -14,8 +14,12 @@ module.exports = {
         internalData: {
             super: 'super',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 10
@@ -41,8 +45,12 @@ module.exports = {
         externalData: {
             super: 'super',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 10

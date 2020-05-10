@@ -14,12 +14,16 @@ module.exports = {
         validator: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 3600
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             definition: {
                 type: {
                     enum: [ENUMS.ValidatorType.schema.key, ENUMS.ValidatorType.import.key, ENUMS.ValidatorType.export.key, ENUMS.ValidatorType.search.key, ENUMS.ValidatorType.workflow.key, ENUMS.ValidatorType.job.key],

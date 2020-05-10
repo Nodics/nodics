@@ -45,7 +45,7 @@ module.exports = {
                 active: true,
                 data: {
                     code: workflowItem.code,
-                    activeHead: workflowItem.activeHead.code,
+                    activeHead: workflowItem.activeHead,
                     activeAction: workflowItem.activeAction.code,
                     state: workflowItem.state
                 }
@@ -81,7 +81,7 @@ module.exports = {
     publishInternalEvent: function (event, workflowItem) {
         return new Promise((resolve, reject) => {
             try {
-                event.event = this.createEventName((workflowItem.sourceDetail.schemaName || workflowItem.sourceDetail.indexName), workflowItem.activeHead.code, event.event);
+                event.event = this.createEventName((workflowItem.sourceDetail.schemaName || workflowItem.sourceDetail.indexName), workflowItem.activeHead, event.event);
                 event.target = workflowItem.sourceDetail.moduleName;
                 event.targetType = ENUMS.TargetType.MODULE.key;
                 SERVICE.DefaultEventService.publish(event).then(success => {

@@ -258,7 +258,8 @@ module.exports = {
         try {
             let moduleObject = NODICS.getModule(runtimeSchema.moduleName);
             let schemaObject = moduleObject.rawSchema[runtimeSchema.code];
-            if (schemaObject.service && schemaObject.router && UTILS.isRouterEnabled(runtimeSchema.moduleName)) {
+            if (schemaObject.service && schemaObject.service.enabled &&
+                schemaObject.router && UTILS.isRouterEnabled(runtimeSchema.moduleName)) {
                 SERVICE.DefaultRouterService.prepareDefaultRouter({
                     routers: SERVICE.DefaultRouterConfigurationService.getRawRouters(),
                     urlPrefix: moduleObject.metaData.prefix || runtimeSchema.moduleName,

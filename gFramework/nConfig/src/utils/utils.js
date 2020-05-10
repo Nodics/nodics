@@ -165,7 +165,8 @@ module.exports = {
             _.each(NODICS.getModules(), (moduleObject, moduleName) => {
                 if (moduleObject.rawSchema) {
                     _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
-                        if (schemaObject.model) {
+                        if ((options.type === 'service' && schemaObject.service && schemaObject.service.enabled) ||
+                            (options.type === 'router' && schemaObject.router && schemaObject.router.enabled)) {
                             options.moduleName = moduleName;
                             options.moduleObject = moduleObject;
                             options.schemaName = schemaName;

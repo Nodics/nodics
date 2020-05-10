@@ -46,9 +46,8 @@ module.exports = {
     },
     createSuccessItem: function (request, response, process) {
         this.LOG.debug('Creating success item');
-        request.workflowItem.state = ENUMS.WorkflowItemState.FINISHED.key;
-        request.workflowItem.activeHead.state = ENUMS.WorkflowState.FINISHED.key;
-        request.workflowItem.activeAction.state = ENUMS.WorkflowState.FINISHED.key;
+        request.workflowItem.state = ENUMS.WorkflowState.FINISHED.key;
+        request.workflowItem.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
         response.successItem = _.merge({}, request.workflowItem);
         delete response.successItem._id;
         process.nextSuccess(request, response);

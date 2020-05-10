@@ -11,15 +11,22 @@
 
 module.exports = {
     workflow: {
-        /**
-         * This schema hold all the items, associated with one of the workflow and which state the item is currently.
-         * This item will hold the reference of its actuall stage, I mean, which workflow and where it is currently
-         */
-        workflowItem: {
+        workflowCarrier: {
             super: 'base',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            refSchema: {
+                workflowItems: {
+                    schemaName: "workflowItem",
+                    type: 'many',
+                    propertyName: 'code'
+                }
+            },
             definition: {
                 originalCode: {
                     type: 'string',
@@ -32,8 +39,9 @@ module.exports = {
                     description: 'Mandate item reference id'
                 },
                 type: {
-                    enum: [ENUMS.WorkflowItemType.FIXED.key, ENUMS.WorkflowItemType.FLAXI.key],
+                    enum: [ENUMS.WorkflowCarrierType.FIXED.key, ENUMS.WorkflowCarrierType.FLAXI.key],
                     required: true,
+                    default: ENUMS.WorkflowCarrierType.FIXED.key,
                     description: 'Mandate item type [FIXED, FLAXI]'
                 },
                 sourceDetail: {
@@ -46,10 +54,11 @@ module.exports = {
                     required: false,
                     description: 'Required event configuration'
                 },
-                callbackData: {
-                    type: 'object',
+                state: {
+                    enum: [ENUMS.WorkflowState.NEW.key, ENUMS.WorkflowState.PROCESSING.key, ENUMS.WorkflowState.FINISHED.key, ENUMS.WorkflowState.ERROR.key, ENUMS.WorkflowState.FATAL.key],
                     required: false,
-                    description: 'Required callbackData to sent it along with event'
+                    default: ENUMS.WorkflowState.NEW.key,
+                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR, FATAL]'
                 },
                 heads: {
                     type: 'array',
@@ -57,19 +66,9 @@ module.exports = {
                     description: 'All actions this item passed through'
                 },
                 activeHead: {
-                    type: 'object',
-                    required: true
-                },
-                'activeHead.code': {
                     type: 'string',
                     required: true,
-                    description: 'Mandate workflow head code'
-                },
-                'activeHead.state': {
-                    enum: [ENUMS.WorkflowState.NEW.key, ENUMS.WorkflowState.PROCESSING.key, ENUMS.WorkflowState.FINISHED.key, ENUMS.WorkflowState.ERROR.key, ENUMS.WorkflowState.FATAL.key],
-                    required: true,
-                    default: ENUMS.WorkflowState.NEW.key,
-                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR, FATAL]'
+                    description: 'required workflow head code'
                 },
                 actions: {
                     type: 'array',
@@ -86,15 +85,9 @@ module.exports = {
                     description: 'Optional workflow action code'
                 },
                 'activeAction.state': {
-                    enum: [ENUMS.WorkflowState.NEW.key, ENUMS.WorkflowState.PROCESSING.key, ENUMS.WorkflowState.FINISHED.key, ENUMS.WorkflowState.ERROR.key, ENUMS.WorkflowState.FATAL.key],
+                    enum: [ENUMS.WorkflowActionState.NEW.key, ENUMS.WorkflowActionState.PROCESSING.key, ENUMS.WorkflowActionState.FINISHED.key, ENUMS.WorkflowActionState.ERROR.key, ENUMS.WorkflowActionState.FATAL.key],
                     required: true,
-                    default: ENUMS.WorkflowState.NEW.key,
-                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR, FATAL]'
-                },
-                state: {
-                    enum: [ENUMS.WorkflowItemState.NEW.key, ENUMS.WorkflowItemState.PROCESSING.key, ENUMS.WorkflowItemState.FINISHED.key, ENUMS.WorkflowItemState.ERROR.key, ENUMS.WorkflowItemState.FATAL.key],
-                    required: false,
-                    default: ENUMS.WorkflowItemState.NEW.key,
+                    default: ENUMS.WorkflowActionState.NEW.key,
                     description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR, FATAL]'
                 },
                 errorCount: {
@@ -105,15 +98,42 @@ module.exports = {
                 errors: {
                     type: 'array',
                     required: false
+                },
+                workflowItems: {
+                    type: 'array',
+                    required: false,
+                    description: 'List of workflowItems associated with this carrier'
                 }
+            }
+        },
+
+        /**
+         * This schema hold all the items, associated with one of the workflow and which state the item is currently.
+         * This item will hold the reference of its actuall stage, I mean, which workflow and where it is currently
+         */
+        workflowItem: {
+            super: 'base',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            definition: {
+
             }
         },
 
         workflowArchivedItem: {
             super: 'workflowItem',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
 
             }
@@ -122,8 +142,12 @@ module.exports = {
         workflowErrorItem: {
             super: 'workflowItem',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
 
             }
@@ -132,8 +156,12 @@ module.exports = {
         actionResponse: {
             super: 'super',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 1000
@@ -178,8 +206,12 @@ module.exports = {
         workflowChannel: {
             super: 'base',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 1000
@@ -216,8 +248,12 @@ module.exports = {
         workflow: {
             super: 'base',
             model: false,
-            service: false,
-            router: false,
+            service: {
+                enabled: false
+            },
+            router: {
+                enabled: false
+            },
             cache: {
                 enabled: true,
                 ttl: 1000
@@ -288,8 +324,12 @@ module.exports = {
         workflowAction: {
             super: 'workflow',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
                 position: {
                     default: ENUMS.WorkflowActionPosition.ACTION.key

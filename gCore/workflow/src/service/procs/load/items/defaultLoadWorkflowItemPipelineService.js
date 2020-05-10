@@ -63,7 +63,7 @@ module.exports = {
                     } else {
                         request.workflowItem = workflowItem;
                         if (!request.workflowCode && !request.workflowHead) {
-                            request.workflowCode = request.workflowItem.activeHead.code;
+                            request.workflowCode = request.workflowItem.activeHead;
                         }
                         if (!request.workflowAction && !request.actionCode) {
                             request.actionCode = request.workflowItem.activeAction.code;

@@ -13,8 +13,12 @@ module.exports = {
     default: {
         super: {
             model: false,
-            service: false,
-            router: false,
+            service: {
+                enabled: false
+            },
+            router: {
+                enabled: false
+            },
             event: {
                 enabled: false,
                 type: 'ASYNC'
@@ -69,8 +73,12 @@ module.exports = {
         base: {
             super: 'super',
             model: false,
-            service: false,
-            router: false,
+            service: {
+                enabled: false
+            },
+            router: {
+                enabled: false
+            },
             definition: {
                 code: {
                     type: 'string',

@@ -11,9 +11,9 @@
 
 module.exports = {
 
-    WorkflowItemType: {
+    WorkflowCarrierType: {
         _options: {
-            name: 'WorkflowItemType',
+            name: 'WorkflowCarrierType',
             separator: '|',
             endianness: 'BE',
             ignoreCase: false,
@@ -25,7 +25,8 @@ module.exports = {
         ]
     },
 
-    WorkflowItemState: {
+
+    WorkflowState: {
         _options: {
             name: 'WorkflowState',
             separator: '|',
@@ -42,7 +43,7 @@ module.exports = {
         ]
     },
 
-    WorkflowState: {
+    WorkflowActionState: {
         _options: {
             name: 'WorkflowState',
             separator: '|',

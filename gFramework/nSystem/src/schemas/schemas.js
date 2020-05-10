@@ -14,12 +14,16 @@ module.exports = {
         configuration: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             event: {
                 enabled: true,
                 type: 'SYNC'
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             definition: {
                 config: {
                     type: 'string',
@@ -32,13 +36,17 @@ module.exports = {
         eventListener: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             event: {
                 enabled: true,
                 type: 'SYNC'
             },
             tenants: ['default'],
-            router: true,
+            router: {
+                enabled: true
+            },
             definition: {
                 event: {
                     type: 'string',
@@ -61,13 +69,17 @@ module.exports = {
         interceptor: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             event: {
                 enabled: true,
                 type: 'SYNC'
             },
             tenants: ['default'],
-            router: true,
+            router: {
+                enabled: true
+            },
             definition: {
                 type: {
                     enum: [ENUMS.InterceptorType.schema.key, ENUMS.InterceptorType.import.key, ENUMS.InterceptorType.export.key, ENUMS.InterceptorType.search.key, ENUMS.InterceptorType.workflow.key, ENUMS.InterceptorType.job.key],

@@ -14,8 +14,12 @@ module.exports = {
         workflow2Schema: {
             super: 'super',
             model: true,
-            service: true,
-            router: false,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
             event: {
                 enabled: true,
                 type: 'SYNC'

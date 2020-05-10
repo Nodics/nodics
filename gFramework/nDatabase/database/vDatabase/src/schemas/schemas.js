@@ -14,8 +14,12 @@ module.exports = {
         versioned: {
             super: 'super',
             model: false,
-            service: false,
-            router: false,
+            service: {
+                enabled: false
+            },
+            router: {
+                enabled: false
+            },
             versioned: true,
             definition: {
                 versionId: {

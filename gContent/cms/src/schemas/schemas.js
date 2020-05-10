@@ -14,12 +14,16 @@ module.exports = {
         cmsTypeCode: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 10000
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             definition: {
 
             }
@@ -27,12 +31,16 @@ module.exports = {
         cmsTypeCode2Renderer: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 10000
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             definition: {
                 renderer: {
                     type: 'string',
@@ -44,20 +52,28 @@ module.exports = {
         cmsBase: {
             super: 'base',
             model: false,
-            service: false,
+            service: {
+                enabled: false
+            },
             cache: {
                 enabled: true,
                 ttl: 10000
             },
-            router: false,
+            router: {
+                enabled: false
+            },
             definition: {
             }
         },
         cmsSite: {
             super: 'cmsBase',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             search: {
                 enabled: false,
                 idPropertyName: 'code',
@@ -93,12 +109,16 @@ module.exports = {
         cmsComponentDetail: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 10000
             },
-            router: false,
+            router: {
+                enabled: false
+            },
             refSchema: {
                 target: {
                     schemaName: "cmsComponent",
@@ -150,8 +170,12 @@ module.exports = {
         cmsPage: {
             super: 'cmsBase',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             search: {
                 enabled: false,
                 idPropertyName: 'code',
@@ -219,8 +243,12 @@ module.exports = {
         cmsComponent: {
             super: 'cmsBase',
             model: true,
-            service: true,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             search: {
                 enabled: false,
                 idPropertyName: 'code',

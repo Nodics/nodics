@@ -14,12 +14,16 @@ module.exports = {
         classConfiguration: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             event: {
                 enabled: true,
                 type: 'SYNC'
             },
-            router: false,
+            router: {
+                enabled: false
+            },
             tenants: ['default'],
             definition: {
                 type: {
@@ -33,12 +37,16 @@ module.exports = {
         routerConfiguration: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             event: {
                 enabled: true,
                 type: 'SYNC'
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             tenants: ['default'],
             definition: {
                 moduleName: {
@@ -51,12 +59,16 @@ module.exports = {
         pipeline: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             event: {
                 enabled: true,
                 type: 'SYNC'
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             tenants: ['default'],
             definition: {
 
@@ -66,12 +78,16 @@ module.exports = {
         schemaConfiguration: {
             super: 'base',
             model: true,
-            service: true,
+            service: {
+                enabled: true
+            },
             event: {
                 enabled: true,
                 type: 'SYNC'
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             tenants: ['default'],
             definition: {
                 moduleName: {
