@@ -1,0 +1,20 @@
+{
+    "name": "flowCore",
+    "index": "5.30.10",
+    "type": "core",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to flowCore",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "flowCore"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

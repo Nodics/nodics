@@ -10,6 +10,32 @@
  */
 
 module.exports = {
+    modelSaveInitializerPipeline: {
+        nodes: {
+            triggerModelChangeEvent: {
+                success: 'handleWorkflowProcess'
+            },
+            handleWorkflowProcess: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.handleWorkflowProcess',
+                success: 'successEnd'
+            }
+        }
+    },
+
+    modelsRemoveInitializerPipeline: {
+        nodes: {
+            triggerModelChangeEvent: {
+                success: 'handleWorkflowProcess'
+            },
+            handleWorkflowProcess: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.handleWorkflowProcess',
+                success: 'handleDeepRemove'
+            }
+        }
+    },
+
     defaultWorkflowProcessPreparePipeline: {
         startNode: "validateRequest",
         hardStop: true,

@@ -1,10 +1,17 @@
 {
     "name": "workflow",
-    "index": "5.30",
+    "index": "5.30.99",
     "type": "router",
+    "requiredModules": [
+        "flowSchema",
+        "flowCore",
+        "flowRouter"
+    ],
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to workflow",
     "homepage": "http://www.nodics.com/",
     "keywords": [
+        "server",
+        "environment",
         "workflow"
     ],
     "author": "Himkar Dwivedi",
