@@ -30,5 +30,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
-    }
+    },
+
+    initCarrierItem: function (request) {
+        return FACADE.DefaultWorkflowService.initCarrierItem(request);
+    },
 };

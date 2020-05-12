@@ -25,6 +25,7 @@ module.exports = {
             },
             refSchema: {
                 subCatalogs: {
+                    enabled: true,
                     schemaName: "catalog",
                     type: 'many',
                     propertyName: 'code'

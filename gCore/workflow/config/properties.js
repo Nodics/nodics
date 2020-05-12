@@ -10,5 +10,11 @@
  */
 
 module.exports = {
+    workflow: {
+        defaultEventType: 'SYNC',
+        defaultSuccessHandler: 'DefaultWorkflowSuccessActionService.handleSuccessProcess',
+        defaultErrorHandler: 'DefaultWorkflowErrorActionService.handleErrorProcess',
 
+        itemErrorLimit: 10
+    }
 };

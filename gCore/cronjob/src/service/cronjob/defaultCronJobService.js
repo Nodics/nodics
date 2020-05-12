@@ -81,7 +81,7 @@ module.exports = {
     createAllJobs: function (tenants = NODICS.getActiveTenants()) {
         return new Promise((resolve, reject) => {
             this.getTenantsJobs({
-                options: {
+                searchOptions: {
                     noLimit: true,
                     projection: { _id: 0 }
                 },
@@ -110,10 +110,10 @@ module.exports = {
     createJob: function (request) {
         return new Promise((resolve, reject) => {
             this.getTenantsJobs({
-                options: _.merge({
+                searchOptions: _.merge({
                     noLimit: true,
                     projection: { _id: 0 }
-                }, request.options),
+                }, request.searchOptions),
                 query: _.merge(SERVICE.DefaultCronJobConfigurationService.getDefaultQuery(), request.query)
             }, [request.tenant]).then(jobs => {
                 this.cronJobContainer.createJobs({
@@ -140,10 +140,10 @@ module.exports = {
     updateJob: function (request) {
         return new Promise((resolve, reject) => {
             this.getTenantsJobs({
-                options: _.merge({
+                searchOptions: _.merge({
                     noLimit: true,
                     projection: { _id: 0 }
-                }, request.options),
+                }, request.searchOptions),
                 query: _.merge(SERVICE.DefaultCronJobConfigurationService.getDefaultQuery(), request.query)
             }, [request.tenant]).then(jobs => {
                 this.cronJobContainer.updateJobs({
@@ -169,10 +169,10 @@ module.exports = {
     runJob: function (request) {
         return new Promise((resolve, reject) => {
             this.getTenantsJobs({
-                options: _.merge({
+                searchOptions: _.merge({
                     noLimit: true,
                     projection: { _id: 0 }
-                }, request.options),
+                }, request.searchOptions),
                 query: _.merge(SERVICE.DefaultCronJobConfigurationService.getDefaultQuery(), request.query)
             }, [request.tenant]).then(jobs => {
                 this.cronJobContainer.runJobs({

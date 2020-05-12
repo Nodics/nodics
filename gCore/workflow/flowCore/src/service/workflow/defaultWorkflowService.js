@@ -30,5 +30,19 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
-    }
+    },
+
+    initCarrierItem: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultPipelineService.start('initWorkflowCarrierPipeline', request, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
+            }
+        });
+    },
 };

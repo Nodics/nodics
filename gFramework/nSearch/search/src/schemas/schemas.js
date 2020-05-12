@@ -249,6 +249,7 @@ module.exports = {
             },
             refSchema: {
                 tenant: {
+                    enabled: true,
                     schemaName: "indexer",
                     type: 'one',
                     propertyName: 'code'

@@ -80,6 +80,7 @@ module.exports = {
             },
             refSchema: {
                 catalog: {
+                    enabled: true,
                     schemaName: "catalog",
                     type: 'one',
                     propertyName: 'code',
@@ -121,6 +122,7 @@ module.exports = {
             },
             refSchema: {
                 target: {
+                    enabled: true,
                     schemaName: "cmsComponent",
                     type: 'one',
                     propertyName: 'code',
@@ -182,18 +184,21 @@ module.exports = {
             },
             refSchema: {
                 cmsSite: {
+                    enabled: true,
                     schemaName: "cmsSite",
                     type: 'many',
                     propertyName: 'code',
                     searchEnabled: true
                 },
                 typeCode: {
+                    enabled: true,
                     schemaName: "cmsTypeCode",
                     type: 'one',
                     propertyName: 'code',
                     searchEnabled: true
                 },
                 cmsComponents: {
+                    enabled: true,
                     schemaName: "cmsComponentDetail",
                     type: 'many',
                     propertyName: 'code',
@@ -259,12 +264,14 @@ module.exports = {
             },
             refSchema: {
                 subComponents: {
+                    enabled: true,
                     schemaName: "cmsComponentDetail",
                     type: 'many',
                     propertyName: 'code',
                     searchEnabled: true
                 },
                 typeCode: {
+                    enabled: true,
                     schemaName: "cmsTypeCode",
                     type: 'one',
                     propertyName: 'code',

@@ -207,46 +207,50 @@ module.exports = {
                 let models = model[property];
                 let rawSchema = request.schemaModel.rawSchema;
                 let propDef = rawSchema.refSchema[property];
-                if (propDef.type === 'one') {
-                    models = [models];
-                }
-                SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].saveAll({
-                    tenant: request.tenant,
-                    authData: request.authData,
-                    searchOptions: request.searchOptions,
-                    options: request.options,
-                    models: models
-                }).then(success => {
-                    if (success.result && success.result.length > 0) {
-                        if (propDef.type === 'one') {
-                            let key = (propDef.propertyName) ? success.result[0][propDef.propertyName] : success.result[0]._id;
-                            if (UTILS.isObjectId(key)) {
-                                key = key.toString();
-                            }
-                            model[property] = key;
-                        } else {
-                            model[property] = [];
-                            success.result.forEach(element => {
-                                let key = (propDef.propertyName) ? element[propDef.propertyName] : element._id;
+                if (propDef.enabled) {
+                    if (propDef.type === 'one') {
+                        models = [models];
+                    }
+                    SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].saveAll({
+                        tenant: request.tenant,
+                        authData: request.authData,
+                        searchOptions: request.searchOptions,
+                        options: request.options,
+                        models: models
+                    }).then(success => {
+                        if (success.result && success.result.length > 0) {
+                            if (propDef.type === 'one') {
+                                let key = (propDef.propertyName) ? success.result[0][propDef.propertyName] : success.result[0]._id;
                                 if (UTILS.isObjectId(key)) {
                                     key = key.toString();
                                 }
-                                model[property].push(key);
-                            });
+                                model[property] = key;
+                            } else {
+                                model[property] = [];
+                                success.result.forEach(element => {
+                                    let key = (propDef.propertyName) ? element[propDef.propertyName] : element._id;
+                                    if (UTILS.isObjectId(key)) {
+                                        key = key.toString();
+                                    }
+                                    model[property].push(key);
+                                });
+                            }
+                            resolve(true);
+                        } else {
+                            let error = new CLASSES.NodicsError('ERR_SAVE_00007');
+                            if (success.errors && success.errors.length > 0) {
+                                success.errors.forEach(err => {
+                                    error.add(err);
+                                });
+                            }
+                            reject(error);
                         }
-                        resolve(true);
-                    } else {
-                        let error = new CLASSES.NodicsError('ERR_SAVE_00007');
-                        if (success.errors && success.errors.length > 0) {
-                            success.errors.forEach(err => {
-                                error.add(err);
-                            });
-                        }
+                    }).catch(error => {
                         reject(error);
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
+                    });
+                } else {
+                    resolve(true);
+                }
             } catch (error) {
                 reject(error);
             }

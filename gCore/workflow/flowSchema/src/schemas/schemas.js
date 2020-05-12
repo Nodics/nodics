@@ -27,6 +27,7 @@ module.exports = {
             },
             refSchema: {
                 channels: {
+                    enabled: true,
                     schemaName: "workflowChannel",
                     type: 'many',
                     propertyName: 'code'
@@ -194,6 +195,22 @@ module.exports = {
             }
         },
 
+        workflowCarrierStatus: {
+            super: 'super',
+            model: true,
+            service: {
+                enabled: true
+            },
+            definition: {
+                status: {
+                    enum: [ENUMS.WorkflowCarrierStatus.INIT.key, ENUMS.WorkflowCarrierStatus.RELEASED.key, ENUMS.WorkflowCarrierStatus.BLOCKED.key, ENUMS.WorkflowCarrierStatus.FINISHED.key, ENUMS.WorkflowCarrierStatus.ERROR.key, ENUMS.WorkflowCarrierStatus.FATAL.key],
+                    required: true,
+                    default: ENUMS.WorkflowCarrierStatus.INIT.key,
+                    description: 'Mandate workflow head state [INIT, RELEASED, BLOCKED, FINISHED, ERROR, FATAL]'
+                }
+            }
+        },
+
         workflowCarrier: {
             super: 'base',
             model: true,
@@ -205,22 +222,22 @@ module.exports = {
             },
             refSchema: {
                 workflowItems: {
+                    enabled: true,
                     schemaName: "workflowItem",
                     type: 'many',
-                    propertyName: 'code'
+                    propertyName: 'code',
+                    searchOptions: {
+                        projection: { _id: 0 }
+                    }
+                },
+                statuses: {
+                    enabled: true,
+                    schemaName: "workflowCarrierStatus",
+                    type: 'many',
+                    propertyName: '_id'
                 }
             },
             definition: {
-                originalCode: {
-                    type: 'string',
-                    required: true,
-                    description: 'Mandate item code'
-                },
-                refId: {
-                    type: 'string',
-                    required: true,
-                    description: 'Mandate item reference id'
-                },
                 type: {
                     enum: [ENUMS.WorkflowCarrierType.FIXED.key, ENUMS.WorkflowCarrierType.FLAXI.key],
                     required: true,
@@ -238,9 +255,9 @@ module.exports = {
                     description: 'Required event configuration'
                 },
                 state: {
-                    enum: [ENUMS.WorkflowState.NEW.key, ENUMS.WorkflowState.PROCESSING.key, ENUMS.WorkflowState.FINISHED.key, ENUMS.WorkflowState.ERROR.key, ENUMS.WorkflowState.FATAL.key],
+                    enum: [ENUMS.WorkflowCarrierState.NEW.key, ENUMS.WorkflowCarrierState.PROCESSING.key, ENUMS.WorkflowCarrierState.FINISHED.key, ENUMS.WorkflowCarrierState.ERROR.key, ENUMS.WorkflowCarrierState.FATAL.key],
                     required: false,
-                    default: ENUMS.WorkflowState.NEW.key,
+                    default: ENUMS.WorkflowCarrierState.NEW.key,
                     description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR, FATAL]'
                 },
                 heads: {
@@ -286,7 +303,17 @@ module.exports = {
                     type: 'array',
                     required: false,
                     description: 'List of workflowItems associated with this carrier'
-                }
+                },
+                statuses: {
+                    type: 'array',
+                    required: true,
+                    description: 'List of status items for each status changes'
+                },
+                currentStatus: {
+                    type: 'object',
+                    required: true,
+                    description: 'Last status updated to the carrier'
+                },
             }
         },
 
@@ -296,6 +323,70 @@ module.exports = {
          */
         workflowItem: {
             super: 'base',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            definition: {
+
+            }
+        },
+
+        workflowArchivedCarrier: {
+            super: 'workflowCarrier',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            refSchema: {
+                workflowItems: {
+                    enabled: true,
+                    schemaName: "workflowArchivedItem",
+                    type: 'many',
+                    propertyName: 'code'
+                },
+                statuses: {
+                    enabled: false
+                },
+            },
+            definition: {
+
+            }
+        },
+
+        workflowErrorCarrier: {
+            super: 'workflowCarrier',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            refSchema: {
+                workflowItems: {
+                    enabled: true,
+                    schemaName: "workflowArchivedItem",
+                    type: 'many',
+                    propertyName: 'code'
+                },
+                statuses: {
+                    enabled: false
+                },
+            },
+            definition: {
+
+            }
+        },
+
+        workflowArchivedItem: {
+            super: 'workflowItem',
             model: true,
             service: {
                 enabled: true

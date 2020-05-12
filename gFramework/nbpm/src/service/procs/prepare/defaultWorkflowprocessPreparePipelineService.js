@@ -76,10 +76,8 @@ module.exports = {
         let itemCode = request.data.originalCode || request.data.code;
         request.schemaService.get({
             tenant: request.tenant,
-            options: {
-                projection: {
-                    _id: 0
-                }
+            searchOptions: {
+                projection: { _id: 0 }
             },
             query: {
                 code: itemCode

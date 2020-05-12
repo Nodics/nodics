@@ -56,6 +56,7 @@ module.exports = {
             },
             refSchema: {
                 contacts: {
+                    enabled: true,
                     schemaName: "contact",
                     type: 'many',
                     propertyName: 'code'
@@ -169,6 +170,7 @@ module.exports = {
             },
             refSchema: {
                 tenant: {
+                    enabled: true,
                     schemaName: "tenant",
                     type: 'one',
                     propertyName: 'code',
@@ -176,21 +178,25 @@ module.exports = {
 
                 },
                 superEnterprise: {
+                    enabled: true,
                     schemaName: "enterprise",
                     type: 'one',
                     propertyName: 'code'
                 },
                 subEnterprises: {
+                    enabled: true,
                     schemaName: "enterprise",
                     type: 'many',
                     propertyName: 'code'
                 },
                 addresses: {
+                    enabled: true,
                     schemaName: "address",
                     type: 'many',
                     propertyName: 'code'
                 },
                 contacts: {
+                    enabled: true,
                     schemaName: "contact",
                     type: 'many',
                     propertyName: 'code'
@@ -311,6 +317,7 @@ module.exports = {
             },
             refSchema: {
                 parentGroups: {
+                    enabled: true,
                     schemaName: "userGroup",
                     type: 'many',
                     propertyName: 'code'
@@ -365,21 +372,25 @@ module.exports = {
             },
             refSchema: {
                 password: {
+                    enabled: true,
                     schemaName: "password",
                     type: 'one',
                     propertyName: '_id'
                 },
                 userGroups: {
+                    enabled: true,
                     schemaName: "userGroup",
                     type: 'many',
                     propertyName: 'code'
                 },
                 addresses: {
+                    enabled: true,
                     schemaName: "address",
                     type: 'many',
                     propertyName: 'code'
                 },
                 contacts: {
+                    enabled: true,
                     schemaName: "contact",
                     type: 'many',
                     propertyName: 'code'

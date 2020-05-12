@@ -25,10 +25,28 @@ module.exports = {
         ]
     },
 
-
-    WorkflowState: {
+    WorkflowCarrierStatus: {
         _options: {
-            name: 'WorkflowState',
+            name: 'WorkflowCarrierStatus',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'INIT',
+            'RELEASED',
+            'BLOCKED',
+            'FINISHED',
+            'ERROR',
+            'FATAL'
+        ]
+    },
+
+
+    WorkflowCarrierState: {
+        _options: {
+            name: 'WorkflowCarrierState',
             separator: '|',
             endianness: 'BE',
             ignoreCase: false,
@@ -45,7 +63,7 @@ module.exports = {
 
     WorkflowActionState: {
         _options: {
-            name: 'WorkflowState',
+            name: 'WorkflowActionState',
             separator: '|',
             endianness: 'BE',
             ignoreCase: false,

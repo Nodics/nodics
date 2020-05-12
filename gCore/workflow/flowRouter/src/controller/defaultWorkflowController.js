@@ -12,7 +12,6 @@
 const _ = require('lodash');
 
 module.exports = {
-
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -35,37 +34,16 @@ module.exports = {
         });
     },
 
-
-    checkIfModuleActive: function (request, response) {
-        return new Promise((resolve, reject) => {
-            let moduleName = request.model.moduleName;
-            if (NODICS.isModuleActive(moduleName)) {
-                resolve(true);
-            } else {
-                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid moduleName, it should not be null or inactive'));
-            }
-        });
-    },
-
-    mergeExistingSchema: function (request, response) {
-        return new Promise((resolve, reject) => {
-            let model = request.model;
-            SERVICE.DefaultSchemaConfigurationService.get({
-                tenant: 'default',
-                searchOptions: {
-                    projection: { _id: 0 }
-                },
-                query: {
-                    code: model.code
-                }
-            }).then(success => {
-                if (success.success && success.result.length > 0) {
-                    request.model = _.merge(success.result, model);
-                }
-                resolve(true);
+    initCarrierItem: function (request, callback) {
+        request = _.merge(request || {}, request.httpRequest.body);
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.initCarrierItem(request).then(success => {
+                callback(null, success);
             }).catch(error => {
-                reject(error);
+                callback(error);
             });
-        });
-    }
+        } else {
+            return FACADE.DefaultWorkflowFacade.initCarrierItem(request);
+        }
+    },
 };

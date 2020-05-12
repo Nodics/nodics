@@ -56,7 +56,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let output = {};
             SERVICE.DefaultCronJobService.getTenantsJobs({
-                options: {
+                searchOptions: {
                     noLimit: true,
                     projection: { _id: 0 }
                 },

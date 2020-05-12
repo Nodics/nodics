@@ -35,37 +35,25 @@ module.exports = {
         });
     },
 
-
-    checkIfModuleActive: function (request, response) {
-        return new Promise((resolve, reject) => {
-            let moduleName = request.model.moduleName;
-            if (NODICS.isModuleActive(moduleName)) {
-                resolve(true);
-            } else {
-                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid moduleName, it should not be null or inactive'));
-            }
-        });
+    validateRequest: function (request, response, process) {
+        this.LOG.debug('Validating request to assign item with workflow');
+        if (!request.tenant) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
-
-    mergeExistingSchema: function (request, response) {
-        return new Promise((resolve, reject) => {
-            let model = request.model;
-            SERVICE.DefaultSchemaConfigurationService.get({
-                tenant: 'default',
-                searchOptions: {
-                    projection: { _id: 0 }
-                },
-                query: {
-                    code: model.code
-                }
-            }).then(success => {
-                if (success.success && success.result.length > 0) {
-                    request.model = _.merge(success.result, model);
-                }
-                resolve(true);
-            }).catch(error => {
-                reject(error);
+    createWorkflowItems: function (request, response, process) {
+        this.LOG.debug('Creating new external workflow item');
+        if (!request.items) {
+            let workflowItems = [];
+            request.items.forEach(item => {
+                workflowItems.push(item);
             });
-        });
+            request.workflowCarrier.workflowItems = workflowItems;
+            process.nextSuccess(request, response);
+        } else {
+            process.nextSuccess(request, response);
+        }
     }
 };

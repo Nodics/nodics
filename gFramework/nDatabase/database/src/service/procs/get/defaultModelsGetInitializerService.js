@@ -278,57 +278,61 @@ module.exports = {
             if (model[property] && (request.options.recursive === true || request.options.recursive[property])) {
                 let refSchema = request.schemaModel.rawSchema.refSchema;
                 let propertyObject = refSchema[property];
-                let query = {};
-                let searchOptions = request.searchOptions || {};
-                if (request.searchOptions && request.searchOptions.projection) {
-                    searchOptions.projection = request.searchOptions.projection;
-                }
-                if (propertyObject.type === 'one') {
-                    if (propertyObject.propertyName === '_id') {
-                        query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property]);
-                    } else {
-                        query[propertyObject.propertyName] = model[property];
-                    }
-                } else {
-                    if (propertyObject.propertyName === '_id') {
-                        query[propertyObject.propertyName] = {
-                            '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property])
-                        };
-                    } else {
-                        query[propertyObject.propertyName] = {
-                            '$in': model[property]
-                        };
-                    }
-                }
-                SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get({
-                    tenant: request.tenant,
-                    authData: request.authData,
-                    options: request.options,
-                    searchOptions: request.searchOptions,
-                    query: query
-                }).then(success => {
-                    if (success.result.length > 0) {
-                        if (propertyObject.type === 'one') {
-                            model[property] = success.result[0];
+                if (propertyObject.enabled) {
+                    let query = {};
+                    let searchOptions = _.merge(_.merge({}, request.searchOptions || {}), propertyObject.searchOptions || {});
+                    if (propertyObject.type === 'one') {
+                        if (propertyObject.propertyName === '_id') {
+                            query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property]);
                         } else {
-                            model[property] = success.result;
+                            query[propertyObject.propertyName] = model[property];
                         }
                     } else {
-                        model[property] = null;
+                        if (propertyObject.propertyName === '_id') {
+                            query[propertyObject.propertyName] = {
+                                '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property])
+                            };
+                        } else {
+                            query[propertyObject.propertyName] = {
+                                '$in': model[property]
+                            };
+                        }
                     }
-                    if (propertiesList.length > 0) {
-                        _self.populateProperties(request, response, model, propertiesList).then(success => {
+                    SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get({
+                        tenant: request.tenant,
+                        authData: request.authData,
+                        options: request.options,
+                        searchOptions: searchOptions,
+                        query: query
+                    }).then(success => {
+                        if (success.result.length > 0) {
+                            if (propertyObject.type === 'one') {
+                                model[property] = success.result[0];
+                            } else {
+                                model[property] = success.result;
+                            }
+                        } else {
+                            model[property] = null;
+                        }
+                        if (propertiesList.length > 0) {
+                            _self.populateProperties(request, response, model, propertiesList).then(success => {
+                                resolve(true);
+                            }).catch(error => {
+                                reject(error);
+                            });
+                        } else {
                             resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
+                        }
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    _self.populateProperties(request, response, model, propertiesList).then(success => {
                         resolve(true);
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
             } else {
                 if (propertiesList.length > 0) {
                     _self.populateProperties(request, response, model, propertiesList).then(success => {
