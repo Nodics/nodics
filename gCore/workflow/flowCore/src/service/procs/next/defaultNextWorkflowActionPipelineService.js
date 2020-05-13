@@ -10,6 +10,7 @@
  */
 
 module.exports = {
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -32,35 +33,26 @@ module.exports = {
         });
     },
 
-    initCarrierItem: function (request) {
-        return FACADE.DefaultWorkflowService.initCarrierItem(request);
+    validateRequest: function (request, response, process) {
+        this.LOG.debug('Validating request to assogn item to next action');
+        if (!request.tenant) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
+        } else if (!request.actionCode) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, actionCode can not be null or empty'));
+        } else if (!request.itemCode && !request.workflowItem) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, item detail can not be null or empty'));
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
-
-    blockCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.blockCarrier(request);
-    },
-
-    releaseCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.releaseCarrier(request);
-    },
-
-    pauseCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.pauseCarrier(request);
-    },
-
-    resumeCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.resumeCarrier(request);
-    },
-
-    nextAction: function (request) {
-        return SERVICE.DefaultWorkflowService.nextAction(request);
-    },
-
-    getWorkflowChain: function (request) {
-        return SERVICE.DefaultWorkflowService.getWorkflowChain(request);
-    },
-
-    performAction: function (request) {
-        return SERVICE.DefaultWorkflowService.performAction(request);
-    },
+    handleSuccess: function (request, response, process) {
+        let result = response.success;
+        if (response.success.result) {
+            result = response.success.result;
+        }
+        process.resolve({
+            code: 'SUC_WF_00000',
+            result: result
+        });
+    }
 };

@@ -217,6 +217,34 @@ module.exports = {
         }
     },
 
+    nextWorkflowActionPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultNextWorkflowActionPipelineService.validateRequest',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'assignWorkflowItemPipeline'
+            },
+            assignWorkflowItemPipeline: {
+                type: 'process',
+                handler: 'assignWorkflowItemPipeline',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultNextWorkflowActionPipelineService.handleSuccess'
+            }
+        }
+    },
+
     assignWorkflowItemPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -274,6 +302,202 @@ module.exports = {
             }
         }
     },
+
+    blockWorkflowCarrierPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierBlockPipelineService.validateRequest',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'blockCarrier'
+            },
+            blockCarrier: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.blockCarrier',
+                success: 'updateCarrier'
+            },
+            updateCarrier: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.updateCarrier',
+                success: 'triggerReleasedEvent'
+            },
+            triggerReleasedEvent: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerReleasedEvent',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.handleSuccess'
+            }
+        }
+    },
+
+    releaseWorkflowCarrierPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.validateRequest',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'releaseCarrier'
+            },
+            releaseCarrier: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.releaseCarrier',
+                success: 'updateCarrier'
+            },
+            updateCarrier: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.updateCarrier',
+                success: 'triggerReleasedEvent'
+            },
+            triggerReleasedEvent: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerReleasedEvent',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.handleSuccess'
+            }
+        }
+    },
+
+    pauseWorkflowItemPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.validateRequest',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.buildQuery',
+                success: 'prepareResponse'
+            },
+            prepareResponse: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.prepareResponse',
+                success: 'prePauseInterceptors'
+            },
+            prePauseInterceptors: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.prePauseInterceptors',
+                success: 'prePauseValidators'
+            },
+            prePauseValidators: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.prePauseValidators',
+                success: 'updateWorkflowItems'
+            },
+            updateWorkflowItems: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.updateWorkflowItems',
+                success: 'postPauseValidators'
+            },
+            postPauseValidators: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.postPauseValidators',
+                success: 'postPauseInterceptors'
+            },
+            postPauseInterceptors: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.postPauseInterceptors',
+                success: 'triggerPauseEvent'
+            },
+            triggerPauseEvent: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.triggerPauseEvent',
+                success: 'successEnd'
+            }
+        }
+    },
+
+    resumeWorkflowItemPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.validateRequest',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'buildQuery'
+            },
+            buildQuery: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.buildQuery',
+                success: 'prepareResponse'
+            },
+            prepareResponse: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.prepareResponse',
+                success: 'preResumeInterceptors'
+            },
+            preResumeInterceptors: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.preResumeInterceptors',
+                success: 'preResumeValidators'
+            },
+            preResumeValidators: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.preResumeValidators',
+                success: 'updateWorkflowItems'
+            },
+            updateWorkflowItems: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.updateWorkflowItems',
+                success: 'postResumeValidators'
+            },
+            postResumeValidators: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.postResumeValidators',
+                success: 'postResumeInterceptors'
+            },
+            postResumeInterceptors: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.postResumeInterceptors',
+                success: 'triggerPauseEvent'
+            },
+            triggerPauseEvent: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.triggerPauseEvent',
+                success: 'successEnd'
+            }
+        }
+    },
+
+
 
     handleWorkflowSuccessPipeline: {
         startNode: "validateRequest",

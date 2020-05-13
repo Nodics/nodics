@@ -9,7 +9,10 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -32,35 +35,26 @@ module.exports = {
         });
     },
 
-    initCarrierItem: function (request) {
-        return FACADE.DefaultWorkflowService.initCarrierItem(request);
-    },
-
-    blockCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.blockCarrier(request);
-    },
-
-    releaseCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.releaseCarrier(request);
-    },
-
-    pauseCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.pauseCarrier(request);
-    },
-
-    resumeCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.resumeCarrier(request);
-    },
-
-    nextAction: function (request) {
-        return SERVICE.DefaultWorkflowService.nextAction(request);
-    },
-
-    getWorkflowChain: function (request) {
-        return SERVICE.DefaultWorkflowService.getWorkflowChain(request);
-    },
-
-    performAction: function (request) {
-        return SERVICE.DefaultWorkflowService.performAction(request);
-    },
+    getWorkflowAction: function (actionCode, tenant) {
+        return new Promise((resolve, reject) => {
+            this.LOG.debug('Loading workflow action: ' + actionCode);
+            this.get({
+                tenant: tenant,
+                options: {
+                    recursive: true,
+                },
+                query: {
+                    code: actionCode
+                }
+            }).then(response => {
+                if (response.result && response.result.length > 0) {
+                    resolve(response.result[0]);
+                } else {
+                    reject(new CLASSES.WorkflowError('ERR_WF_00010', 'Invalid request, none workflow action found for code: ' + actionCode));
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
 };

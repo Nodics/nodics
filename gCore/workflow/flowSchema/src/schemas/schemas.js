@@ -195,7 +195,7 @@ module.exports = {
             }
         },
 
-        workflowCarrierStatus: {
+        workflowCarrierState: {
             super: 'super',
             model: true,
             service: {
@@ -203,10 +203,17 @@ module.exports = {
             },
             definition: {
                 status: {
-                    enum: [ENUMS.WorkflowCarrierStatus.INIT.key, ENUMS.WorkflowCarrierStatus.RELEASED.key, ENUMS.WorkflowCarrierStatus.BLOCKED.key, ENUMS.WorkflowCarrierStatus.FINISHED.key, ENUMS.WorkflowCarrierStatus.ERROR.key, ENUMS.WorkflowCarrierStatus.FATAL.key],
+                    enum: [ENUMS.WorkflowCarrierState.INIT.key,
+                    ENUMS.WorkflowCarrierState.RELEASED.key,
+                    ENUMS.WorkflowCarrierState.PROCESSING.key,
+                    ENUMS.WorkflowCarrierState.PAUSED.key,
+                    ENUMS.WorkflowCarrierState.BLOCKED.key,
+                    ENUMS.WorkflowCarrierState.FINISHED.key,
+                    ENUMS.WorkflowCarrierState.ERROR.key,
+                    ENUMS.WorkflowCarrierState.FATAL.key],
                     required: true,
-                    default: ENUMS.WorkflowCarrierStatus.INIT.key,
-                    description: 'Mandate workflow head state [INIT, RELEASED, BLOCKED, FINISHED, ERROR, FATAL]'
+                    default: ENUMS.WorkflowCarrierState.INIT.key,
+                    description: 'Mandate workflow head state [INIT, RELEASED, PROCESSING, PAUSED, BLOCKED, FINISHED, ERROR, FATAL]'
                 }
             }
         },
@@ -230,9 +237,9 @@ module.exports = {
                         projection: { _id: 0 }
                     }
                 },
-                statuses: {
+                states: {
                     enabled: true,
-                    schemaName: "workflowCarrierStatus",
+                    schemaName: "workflowCarrierState",
                     type: 'many',
                     propertyName: '_id'
                 }
@@ -253,12 +260,6 @@ module.exports = {
                     type: 'object',
                     required: false,
                     description: 'Required event configuration'
-                },
-                state: {
-                    enum: [ENUMS.WorkflowCarrierState.NEW.key, ENUMS.WorkflowCarrierState.PROCESSING.key, ENUMS.WorkflowCarrierState.FINISHED.key, ENUMS.WorkflowCarrierState.ERROR.key, ENUMS.WorkflowCarrierState.FATAL.key],
-                    required: false,
-                    default: ENUMS.WorkflowCarrierState.NEW.key,
-                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR, FATAL]'
                 },
                 heads: {
                     type: 'array',
@@ -285,10 +286,17 @@ module.exports = {
                     description: 'Optional workflow action code'
                 },
                 'activeAction.state': {
-                    enum: [ENUMS.WorkflowActionState.NEW.key, ENUMS.WorkflowActionState.PROCESSING.key, ENUMS.WorkflowActionState.FINISHED.key, ENUMS.WorkflowActionState.ERROR.key, ENUMS.WorkflowActionState.FATAL.key],
+                    enum: [ENUMS.WorkflowCarrierState.INIT.key,
+                    ENUMS.WorkflowCarrierState.RELEASED.key,
+                    ENUMS.WorkflowCarrierState.PROCESSING.key,
+                    ENUMS.WorkflowCarrierState.PAUSED.key,
+                    ENUMS.WorkflowCarrierState.BLOCKED.key,
+                    ENUMS.WorkflowCarrierState.FINISHED.key,
+                    ENUMS.WorkflowCarrierState.ERROR.key,
+                    ENUMS.WorkflowCarrierState.FATAL.key],
                     required: true,
                     default: ENUMS.WorkflowActionState.NEW.key,
-                    description: 'Mandate workflow head state [NEW, PROCESSING, FINISHED, ERROR, FATAL]'
+                    description: 'Mandate workflow head state [INIT, RELEASED, PROCESSING, PAUSED, BLOCKED, FINISHED, ERROR, FATALL]'
                 },
                 errorCount: {
                     type: 'int',
@@ -304,12 +312,12 @@ module.exports = {
                     required: false,
                     description: 'List of workflowItems associated with this carrier'
                 },
-                statuses: {
+                states: {
                     type: 'array',
                     required: true,
                     description: 'List of status items for each status changes'
                 },
-                currentStatus: {
+                currentState: {
                     type: 'object',
                     required: true,
                     description: 'Last status updated to the carrier'
@@ -351,7 +359,7 @@ module.exports = {
                     type: 'many',
                     propertyName: 'code'
                 },
-                statuses: {
+                states: {
                     enabled: false
                 },
             },
@@ -376,7 +384,7 @@ module.exports = {
                     type: 'many',
                     propertyName: 'code'
                 },
-                statuses: {
+                states: {
                     enabled: false
                 },
             },

@@ -10,6 +10,7 @@
  */
 
 module.exports = {
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -32,35 +33,15 @@ module.exports = {
         });
     },
 
-    initCarrierItem: function (request) {
-        return FACADE.DefaultWorkflowService.initCarrierItem(request);
-    },
-
-    blockCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.blockCarrier(request);
-    },
-
-    releaseCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.releaseCarrier(request);
-    },
-
-    pauseCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.pauseCarrier(request);
-    },
-
-    resumeCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.resumeCarrier(request);
-    },
-
-    nextAction: function (request) {
-        return SERVICE.DefaultWorkflowService.nextAction(request);
-    },
-
-    getWorkflowChain: function (request) {
-        return SERVICE.DefaultWorkflowService.getWorkflowChain(request);
-    },
-
-    performAction: function (request) {
-        return SERVICE.DefaultWorkflowService.performAction(request);
-    },
+    performHeadOperation: function (request, response) {
+        return new Promise((resolve, reject) => {
+            resolve({
+                type: ENUMS.WorkflowActionResponseType.SUCCESS.key,
+                decision: 'SUCCESS',
+                feedback: {
+                    message: 'This is default head operation for success action'
+                }
+            });
+        });
+    }
 };

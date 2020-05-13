@@ -47,6 +47,122 @@ module.exports = {
                         }]
                     }
                 }
+            },
+            blockCarrier: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/carrier/pause/:carrierCode',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'blockCarrier',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/workflow/carrier/block/:carrierCode',
+                    body: 'Comments for this action'
+                }
+            },
+            releaseCarrier: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/item/resume/:carrierCode',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'releaseCarrier',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/workflow/carrier/release/:carrierCode',
+                    body: 'Comments for this action'
+                }
+            },
+            pauseCarrier: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/carrier/pause/:carrierCode',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'pauseCarrier',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/workflow/carrier/pause/:carrierCode',
+                    body: 'Comments for this action'
+                }
+            },
+            resumeCarrier: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/item/resume/:carrierCode',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'resumeCarrier',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/workflow/carrier/resume/:carrierCode',
+                    body: 'Comments for this action'
+                }
+            }
+        },
+        workflowActionOperations: {
+            performAction: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/action/process/:carrierCode',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'performAction',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/workflow/action/process/:carrierCode',
+                    body: {
+                        decision: 'Decision that has been taken',
+                        feedback: 'Either json object or simple message'
+                    }
+                }
+            }
+        },
+        retrieveWorkflow: {
+            getWorkflowChain: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/chain/:workflowCode',
+                method: 'GET',
+                controller: 'DefaultWorkflowController',
+                operation: 'getWorkflowChain',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/workflow/chain/:workflowCode',
+                }
+            },
+            getWorkflowsChain: {
+                secured: true,
+                accessGroups: ['workflowUserGroup'],
+                key: '/chain',
+                method: 'POST',
+                controller: 'DefaultWorkflowController',
+                operation: 'getWorkflowChain',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/workflow/chain',
+                    body: {
+                        options: {
+                            recursive: 'true/false and other serach options'
+                        },
+                        query: 'Query object to find workflows'
+                    }
+                }
             }
         }
     }

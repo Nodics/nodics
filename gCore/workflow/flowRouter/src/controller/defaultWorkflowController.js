@@ -46,4 +46,110 @@ module.exports = {
             return FACADE.DefaultWorkflowFacade.initCarrierItem(request);
         }
     },
+
+    blockCarrier: function (request, callback) {
+        request.carrierCode = request.httpRequest.params.carrierCode;
+        request.comment = request.httpRequest.body.comment;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.blockCarrier(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.blockCarrier(request);
+        }
+    },
+
+    releaseCarrier: function (request, callback) {
+        request.carrierCode = request.httpRequest.params.carrierCode;
+        request.comment = request.httpRequest.body.comment;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.releaseCarrier(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.releaseCarrier(request);
+        }
+    },
+
+    pauseCarrier: function (request, callback) {
+        request.carrierCode = request.httpRequest.params.carrierCode;
+        request.comment = request.httpRequest.body.comment;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.pauseCarrier(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.pauseCarrier(request);
+        }
+    },
+
+    resumeCarrier: function (request, callback) {
+        request.carrierCode = request.httpRequest.params.carrierCode;
+        request.comment = request.httpRequest.body.comment;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.resumeCarrier(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.resumeCarrier(request);
+        }
+    },
+
+    nextAction: function (request, callback) {
+        request.carrierCode = request.httpRequest.params.carrierCode;
+        request.actionCode = request.httpRequest.params.actionCode;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.nextAction(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.nextAction(request);
+        }
+    },
+
+    getWorkflowChain: function (request, callback) {
+        request.workflowCode = request.httpRequest.params.workflowCode;
+        request = _.merge(request || {}, request.httpRequest.body);
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.getWorkflowChain(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.getWorkflowChain(request);
+        }
+    },
+
+    /**
+     * This function is used to perform an action for item. If action is manual, action response is required
+     * {
+     *  decision: 'Decision that has been taken',
+     *  feedback: 'Either json object or simple message'
+     * }
+     * @param {*} request 
+     */
+    performAction: function (request, callback) {
+        request.carrierCode = request.httpRequest.params.carrierCode;
+        request.actionResponse = request.httpRequest.body;
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.performAction(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.performAction(request);
+        }
+    },
 };

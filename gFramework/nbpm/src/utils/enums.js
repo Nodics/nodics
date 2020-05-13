@@ -25,25 +25,6 @@ module.exports = {
         ]
     },
 
-    WorkflowCarrierStatus: {
-        _options: {
-            name: 'WorkflowCarrierStatus',
-            separator: '|',
-            endianness: 'BE',
-            ignoreCase: false,
-            freez: false
-        },
-        definition: [
-            'INIT',
-            'RELEASED',
-            'BLOCKED',
-            'FINISHED',
-            'ERROR',
-            'FATAL'
-        ]
-    },
-
-
     WorkflowCarrierState: {
         _options: {
             name: 'WorkflowCarrierState',
@@ -53,8 +34,11 @@ module.exports = {
             freez: false
         },
         definition: [
-            'NEW',
+            'INIT',
+            'RELEASED',
             'PROCESSING',
+            'PAUSED',
+            'BLOCKED',
             'FINISHED',
             'ERROR',
             'FATAL'
