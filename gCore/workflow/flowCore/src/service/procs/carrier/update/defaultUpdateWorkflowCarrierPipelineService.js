@@ -41,7 +41,7 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    createCarrierItem: function (request, response, process) {
+    createCarrier: function (request, response, process) {
         this.LOG.debug('Creating new external workflow item');
         request.workflowCarrier = _.merge(request.workflowCarrier, request.carrier);
         if (!request.workflowCode && !request.workflowHead) {
@@ -51,6 +51,28 @@ module.exports = {
             request.actionCode = request.workflowCarrier.activeAction.code;
         }
         process.nextSuccess(request, response);
+    },
+    loadWorkflowHead: function (request, response, process) {
+        if (!request.workflowHead) {
+            request.workflowCode = request.workflowCode || request.workflowCarrier.activeHead;
+            if (request.workflowCode) {
+                SERVICE.DefaultWorkflowActionService.getWorkflowAction(request.workflowCode, request.tenant).then(workflowHead => {
+                    request.workflowHead = workflowHead;
+                    if (request.workflowHead.position === ENUMS.WorkflowActionPosition.HEAD.key) {
+                        request.workflowHead = workflowHead;
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid workflow head, workflow head : ' + request.workflowCode + ' not defined position as head'));
+                    }
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            } else {
+                process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not load workflow action'));
+            }
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
     applyPreUpdateInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowCarrier.code);
@@ -86,7 +108,7 @@ module.exports = {
             query: {
                 code: request.workflowCarrier.code
             },
-            model: request.updatedCarrier
+            model: request.workflowCarrier
         }).then(success => {
             response.success = success;
             process.nextSuccess(request, response);

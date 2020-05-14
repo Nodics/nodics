@@ -46,19 +46,91 @@ module.exports = {
         }
     },
     updateError: function (request, response, process) {
-        request.workflowCarrier.state = ENUMS.WorkflowState.ERROR.key;
-        request.workflowCarrier.activeAction.state = ENUMS.WorkflowState.ERROR.key;
+        request.workflowCarrier.activeAction.state = ENUMS.WorkflowCarrierState.ERROR.key;
         if (!request.workflowCarrier.errors) request.workflowCarrier.errors = [];
         request.workflowCarrier.errors.push(response.error.toJson());
         request.workflowCarrier.errorCount = request.workflowCarrier.errorCount + 1;
-        if (!request.workflowCarrier.statuses) request.workflowCarrier.statuses = [];
-        let carrierStatus = {
-            status: ENUMS.WorkflowCarrierStatus.ERROR.key,
+        if (!request.workflowCarrier.states) request.workflowCarrier.states = [];
+        let carrierState = {
+            state: ENUMS.WorkflowCarrierState.ERROR.key,
             description: 'Error occurred, please last item in errors list'
         };
-        request.workflowCarrier.currentStatus = carrierStatus;
-        request.workflowCarrier.statuses.push(carrierStatus);
-        if (request.workflowCarrier.errorCount < (CONFIG.get('workflow').itemErrorLimit || 5)) {
+        request.workflowCarrier.currentState = carrierState;
+        request.workflowCarrier.states.push(carrierState);
+        process.nextSuccess(request, response);
+    },
+    createErrorItem: function (request, response, process) {
+        this.LOG.debug('Creating error item');
+        if (request.workflowCarrier.errorCount >= (CONFIG.get('workflow').itemErrorLimit || 5)) {
+            response.errorItem = _.merge({}, request.workflowCarrier);
+            delete response.errorItem._id;
+            if (response.errorItem.states && response.errorItem.states.length > 0) {
+                let items = [];
+                response.errorItem.states.forEach(wtItem => {
+                    delete wtItem._id;
+                    items.push(wtItem);
+                });
+                response.errorItem.states = items;
+            }
+        }
+        process.nextSuccess(request, response);
+    },
+    successInterceptors: function (request, response, process) {
+        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowHead.code);
+        if (interceptors && interceptors.error) {
+            this.LOG.debug('Applying  interceptors for workflow carrier error');
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.error), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed carrier error interceptors', 'ERR_WF_00005'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+    successValidators: function (request, response, process) {
+        let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowHead.code);
+        if (validators && validators.error) {
+            this.LOG.debug('Applying prePause validators for workflow carrier error');
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.error), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed carrier error validators', 'ERR_WF_00005'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+    updateErrorPool: function (request, response, process) {
+        this.LOG.debug('updating error pool');
+        if (request.workflowCarrier.errorCount >= (CONFIG.get('workflow').itemErrorLimit || 5)) {
+            SERVICE.DefaultWorkflowErrorCarrierService.save({
+                tenant: request.tenant,
+                model: response.errorItem
+            }).then(success => {
+                this.LOG.info('carrier: has been moved to error pool successfully');
+                if (!response.success.messages) response.success.messages = [];
+                response.success.messages.push('carrier: has been moved to error pool successfully: ' + request.workflowCarrier.code);
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+    updateItemPool: function (request, response, process) {
+        this.LOG.debug('updating item pool');
+        if (request.workflowCarrier.errorCount >= (CONFIG.get('workflow').itemErrorLimit || 5)) {
+            SERVICE.DefaultWorkflowCarrierService.removeById([request.workflowCarrier._id], request.tenant).then(success => {
+                this.LOG.info('carrier: has been removed from item pool successfully');
+                if (!response.success) response.success.messages = [];
+                response.success.messages.push('carrier: has been removed from item pool successfully: ' + request.workflowCarrier.code);
+                process.error(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
             SERVICE.DefaultWorkflowCarrierService.save({
                 tenant: request.tenant,
                 model: request.workflowCarrier
@@ -74,50 +146,8 @@ module.exports = {
             } else {
                 response.error = new CLASSES.WorkflowError('Error has been updated into workflow carrier');
             }
-            response.targetNode = 'triggerErrorOccuredEvent';
-        } else {
-            response.targetNode = 'createErrorItem';
         }
         process.nextSuccess(request, response);
-    },
-    createErrorItem: function (request, response, process) {
-        this.LOG.debug('Creating error item');
-        response.errorItem = _.merge({}, request.workflowCarrier);
-        delete response.errorItem._id;
-        if (response.errorItem.statuses && response.errorItem.statuses.length > 0) {
-            let items = [];
-            response.errorItem.statuses.forEach(wtItem => {
-                delete wtItem._id;
-                items.push(wtItem);
-            });
-            response.errorItem.statuses = items;
-        }
-        process.nextSuccess(request, response);
-    },
-    updateErrorPool: function (request, response, process) {
-        this.LOG.debug('updating error pool');
-        SERVICE.DefaultWorkflowErrorCarrierService.save({
-            tenant: request.tenant,
-            model: response.errorItem
-        }).then(success => {
-            this.LOG.info('carrier: has been moved to error pool successfully');
-            if (!response.success.messages) response.success.messages = [];
-            response.success.messages.push('carrier: has been moved to error pool successfully: ' + request.workflowCarrier.code);
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
-    updateItemPool: function (request, response, process) {
-        this.LOG.debug('updating item pool');
-        SERVICE.DefaultWorkflowCarrierService.removeById([request.workflowCarrier._id], request.tenant).then(success => {
-            this.LOG.info('carrier: has been removed from item pool successfully');
-            if (!response.success) response.success.messages = [];
-            response.success.messages.push('carrier: has been removed from item pool successfully: ' + request.workflowCarrier.code);
-            process.error(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
-        });
     },
     triggerErrorOccuredEvent: function (request, response, process) {
         response.success.messages.push('Event errorOccured triggered for action: ' + request.workflowAction.code);

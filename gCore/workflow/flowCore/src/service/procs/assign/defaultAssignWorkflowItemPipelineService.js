@@ -55,13 +55,13 @@ module.exports = {
     },
     updateSatatus: function (request, response, process) {
         this.LOG.debug('Preparing carrier status for carrier assignmnet');
-        if (request.releaseCarrier && request.workflowCarrier.currentStatus.status != ENUMS.WorkflowCarrierStatus.RELEASED.key) {
-            let carrierStatus = {
-                status: ENUMS.WorkflowCarrierStatus.RELEASED.key,
+        if (request.releaseCarrier && request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.RELEASED.key) {
+            let carrierState = {
+                state: ENUMS.WorkflowCarrierState.RELEASED.key,
                 description: 'Releasing carrier, look only these items required to be processed'
             };
-            request.workflowCarrier.currentStatus = carrierStatus;
-            request.workflowCarrier.statuses.push(carrierStatus);
+            request.workflowCarrier.currentState = carrierState;
+            request.workflowCarrier.states.push(carrierState);
         }
         process.nextSuccess(request, response);
     },
@@ -76,12 +76,10 @@ module.exports = {
             if (!workflowCarrier.heads) workflowCarrier.heads = [];
             workflowCarrier.heads.push(request.workflowAction.code);
         }
-        if (workflowCarrier.currentStatus.status === ENUMS.WorkflowCarrierStatus.NEW.key) {
-            workflowCarrier.state = ENUMS.WorkflowState.NEW.key;
-            workflowCarrier.activeAction.state = ENUMS.WorkflowActionState.NEW.key;
+        if (workflowCarrier.currentState.state === ENUMS.WorkflowCarrierState.INIT.key) {
+            workflowCarrier.activeAction.state = ENUMS.WorkflowCarrierState.INIT.key;
         } else {
-            workflowCarrier.state = ENUMS.WorkflowState.PROCESSING.key;
-            workflowCarrier.activeAction.state = ENUMS.WorkflowActionState.PROCESSING.key;
+            workflowCarrier.activeAction.state = ENUMS.WorkflowCarrierState.PROCESSING.key;
         }
         process.nextSuccess(request, response);
     },
@@ -146,8 +144,7 @@ module.exports = {
         process.nextSuccess(request, response);
     },
     performAction: function (request, response, process) {
-        if (request.workflowCarrier.currentStatus.status != ENUMS.WorkflowCarrierStatus.INIT.key &&
-            request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
+        if (SERVICE.DefaultWorkflowUtilsService.isProcessingAllowed(workflowCarrier) && request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
             this.LOG.debug('Triggering action for auto workflow head');
             SERVICE.DefaultWorkflowService.performAction({
                 tenant: request.tenant,

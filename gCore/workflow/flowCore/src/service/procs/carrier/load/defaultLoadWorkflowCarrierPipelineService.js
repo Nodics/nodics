@@ -92,12 +92,12 @@ module.exports = {
             request.workflowCarrier.event.enabled = request.workflowCarrier.event.enabled || false;
             request.workflowCarrier.type = request.workflowCarrier.type || ENUMS.WorkflowCarrierType.FIXED.key;
             request.workflowCarrier.state = request.workflowCarrier.state || ENUMS.WorkflowActionState.NEW.key;
-            let carrierStatus = {
-                status: ENUMS.WorkflowCarrierStatus.INIT.key,
+            let carrierState = {
+                status: ENUMS.WorkflowCarrierState.INIT.key,
                 description: 'Carrier initialized'
             };
-            request.workflowCarrier.currentStatus = carrierStatus;
-            request.workflowCarrier.statuses = [carrierStatus];
+            request.workflowCarrier.currentState = carrierState;
+            request.workflowCarrier.states = [carrierState];
             process.nextSuccess(request, response);
         } else {
             process.nextSuccess(request, response);

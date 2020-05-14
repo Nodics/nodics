@@ -1,13 +1,13 @@
 /*
-    Nodics - Enterprice Micro-Services Management Framework
+   Nodics - Enterprice Micro-Services Management Framework
 
-    Copyright (c) 2017 Nodics All rights reserved.
+   Copyright (c) 2017 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the 
-    terms of the license agreement you entered into with Nodics.
+   This software is the confidential and proprietary information of Nodics ("Confidential Information").
+   You shall not disclose such Confidential Information and shall use it only in accordance with the 
+   terms of the license agreement you entered into with Nodics.
 
- */
+*/
 
 module.exports = {
 
@@ -34,29 +34,33 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to pause items');
+        this.LOG.debug('Validating request to pause workflow carrier');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
-        } else if (!request.itemCode) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflowItem code can not be null or empty'));
-        } else if (!request.comment) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, comment can not be null or empty'));
+        } else if (!request.carrierCode && !request.workflowCarrier) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, item detail can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
     },
-    buildQuery: function (request, response, process) {
-        this.LOG.debug('Building query to pause items');
-        process.nextSuccess(request, response);
-    },
-    prepareResponse: function (request, response, process) {
-        this.LOG.debug('Preparing response for pause items');
-        process.nextSuccess(request, response);
+    pauseCarrier: function (request, response, process) {
+        if (request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.PAUSED.key) {
+            let carrierState = {
+                status: ENUMS.WorkflowCarrierState.PAUSED.key,
+                description: request.comment || 'Carrier successfully paused'
+            };
+            request.workflowCarrier.currentState = carrierState;
+            request.workflowCarrier.states.push(carrierState);
+            process.nextSuccess(request, response);
+        } else {
+            response.success = 'WorkflowCarrier: ' + request.workflowCarrier.code + ' is already in paused state';
+            process.stop(request, response);
+        }
     },
     prePauseInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowHead.code);
         if (interceptors && interceptors.prePause) {
-            this.LOG.debug('Applying prePause interceptors for workflow item pause');
+            this.LOG.debug('Applying prePause interceptors for workflow carrier paused');
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.prePause), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -69,7 +73,7 @@ module.exports = {
     prePauseValidators: function (request, response, process) {
         let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowHead.code);
         if (validators && validators.prePause) {
-            this.LOG.debug('Applying prePause validators for workflow item pause');
+            this.LOG.debug('Applying prePause validators for workflow carrier pause');
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.prePause), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -79,29 +83,23 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    updateWorkflowItems: function (request, response, process) {
-        this.LOG.debug('Pausing all items');
-        if (!request.workflowItem.comments) request.workflowItem.comments = [];
-        request.workflowItem.comments.push(request.comment);
-        SERVICE.DefaultWorkflowItemService.update({
+    updateCarrier: function (request, response, process) {
+        this.LOG.debug('Creating workflow paused carrier');
+        SERVICE.DefaultWorkflowCarrierService.save({
             tenant: request.tenant,
-            query: {
-                code: request.workflowItem.code
-            },
-            model: {
-                active: false,
-                comment: request.workflowItem.comments
-            }
+            moduleName: request.moduleName,
+            model: request.workflowCarrier
         }).then(success => {
+            response.success = 'WorkflowCarrier: ' + request.workflowCarrier.code + ' has been paused successfully';
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, new CLASSES.WorkflowError(error, 'Could not update items to pause'));
+            process.error(request, response, error);
         });
     },
     postPauseValidators: function (request, response, process) {
         let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowHead.code);
         if (validators && validators.postPause) {
-            this.LOG.debug('Applying postPause validators for workflow item pause');
+            this.LOG.debug('Applying postPause validators for workflow carrier paused');
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postPause), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -114,7 +112,7 @@ module.exports = {
     postPauseInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowHead.code);
         if (interceptors && interceptors.postPause) {
-            this.LOG.debug('Applying postPause interceptors for workflow item pause');
+            this.LOG.debug('Applying postPause interceptors for workflow carrier blocked');
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postPause), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -124,29 +122,35 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    triggerPauseEvent: function (request, response, process) {
-        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(request.workflowAction, request.workflowItem);
+    triggerPausedEvent: function (request, response, process) {
+        let eventConfig = SERVICE.DefaultWorkflowUtilsService.getEventConfiguration(request.workflowAction, request.workflowCarrier);
         if (eventConfig.enabled) {
             try {
-                this.LOG.debug('Pushing event for item paused : ' + request.workflowItem.activeAction.code);
-                let event = {
+                this.LOG.debug('Pushing event for carrier pause : ' + request.workflowCarrier.code);
+                SERVICE.DefaultWorkflowEventService.publishEvent({
                     tenant: request.tenant,
-                    event: 'itemPaused',
-                    type: eventConfig.type || "SYNC",
-                    data: {
-                        active: false,
-                        comments: request.workflowItem.comments
-                    }
-                };
-                SERVICE.DefaultWorkflowEventService.publishEvent(event, request.workflowAction, request.workflowItem).then(success => {
+                    event: 'carrierPaused',
+                    type: eventConfig.type || CONFIG.get('workflow').defaultEventType
+                }, request.workflowAction, request.workflowCarrier).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {
-                    this.LOG.error('While posting item assigned event : ', error);
+                    this.LOG.error('While posting carrier paused event : ', error);
                 });
             } catch (error) {
-                this.LOG.error('Facing issue posting item assigned event : ', error);
+                this.LOG.error('Facing issue posting carrier paused event : ', error);
             }
         }
         process.nextSuccess(request, response);
+    },
+    handleSuccess: function (request, response, process) {
+        let result = response.success;
+        if (response.success.result) {
+            result = response.success.result;
+        }
+        process.resolve({
+            code: 'SUC_WF_00000',
+            result: result
+        });
     }
+
 };

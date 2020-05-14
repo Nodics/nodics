@@ -46,25 +46,50 @@ module.exports = {
     },
     createSuccessItem: function (request, response, process) {
         this.LOG.debug('Creating success carrier');
-        request.workflowCarrier.state = ENUMS.WorkflowState.FINISHED.key;
-        request.workflowCarrier.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
         response.successItem = _.merge({}, request.workflowCarrier);
         delete response.successItem._id;
-        if (response.successItem.statuses && response.successItem.statuses.length > 0) {
+        response.successItem.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
+        let carrierState = {
+            state: ENUMS.WorkflowCarrierState.FINISHED.key,
+            description: 'Carrier successfully processed'
+        };
+        request.successItem.currentState = carrierState;
+        request.successItem.states.push(carrierState);
+        if (response.successItem.states && response.successItem.states.length > 0) {
             let items = [];
-            response.successItem.statuses.forEach(wtItem => {
+            response.successItem.states.forEach(wtItem => {
                 delete wtItem._id;
                 items.push(wtItem);
             });
-            response.successItem.statuses = items;
+            response.successItem.states = items;
         }
-        let carrierStatus = {
-            status: ENUMS.WorkflowCarrierStatus.FINISHED.key,
-            description: 'Carrier successfully processed'
-        };
-        request.successItem.currentStatus = carrierStatus;
-        request.successItem.statuses.push(carrierStatus);
         process.nextSuccess(request, response);
+    },
+    successInterceptors: function (request, response, process) {
+        let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowHead.code);
+        if (interceptors && interceptors.success) {
+            this.LOG.debug('Applying  interceptors for workflow carrier success');
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.success), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed carrier success interceptors', 'ERR_WF_00005'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+    successValidators: function (request, response, process) {
+        let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowHead.code);
+        if (validators && validators.success) {
+            this.LOG.debug('Applying prePause validators for workflow carrier error');
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.success), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Failed carrier success validators', 'ERR_WF_00005'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
     updateArchivePool: function (request, response, process) {
         this.LOG.debug('updating archive pool');

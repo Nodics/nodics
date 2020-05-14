@@ -202,7 +202,7 @@ module.exports = {
                 enabled: true
             },
             definition: {
-                status: {
+                state: {
                     enum: [ENUMS.WorkflowCarrierState.INIT.key,
                     ENUMS.WorkflowCarrierState.RELEASED.key,
                     ENUMS.WorkflowCarrierState.PROCESSING.key,

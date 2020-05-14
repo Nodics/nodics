@@ -61,16 +61,21 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultUpdateWorkflowCarrierPipelineService.validateRequest',
-                success: 'loadWorkflowAction'
+                success: 'createCarrier'
             },
-            createCarrierItem: {
+            createCarrier: {
                 type: 'function',
-                handler: 'DefaultUpdateWorkflowCarrierPipelineService.createCarrierItem',
+                handler: 'DefaultUpdateWorkflowCarrierPipelineService.createCarrier',
                 success: 'loadWorkflowAction'
             },
             loadWorkflowAction: {
                 type: 'process',
                 handler: 'loadWorkflowActionPipeline',
+                success: 'loadWorkflowHead'
+            },
+            loadWorkflowHead: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowCarrierPipelineService.loadWorkflowHead',
                 success: 'applyPreUpdateInterceptors'
             },
             applyPreUpdateInterceptors: {
@@ -322,16 +327,36 @@ module.exports = {
             blockCarrier: {
                 type: 'function',
                 handler: 'DefaultWorkflowCarrierReleasePipelineService.blockCarrier',
+                success: 'preBlockInterceptors'
+            },
+            preBlockInterceptors: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.preBlockInterceptors',
+                success: 'preBlockValidators'
+            },
+            preBlockValidators: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.preBlockValidators',
                 success: 'updateCarrier'
             },
             updateCarrier: {
                 type: 'function',
                 handler: 'DefaultWorkflowCarrierReleasePipelineService.updateCarrier',
-                success: 'triggerReleasedEvent'
+                success: 'postBlockValidators'
             },
-            triggerReleasedEvent: {
+            postBlockValidators: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerReleasedEvent',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.postBlockValidators',
+                success: 'postBlockInterceptors'
+            },
+            postBlockInterceptors: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.postBlockInterceptors',
+                success: 'triggerBlockedEvent'
+            },
+            triggerBlockedEvent: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerBlockedEvent',
                 success: 'successEnd'
             },
             successEnd: {
@@ -360,11 +385,31 @@ module.exports = {
             releaseCarrier: {
                 type: 'function',
                 handler: 'DefaultWorkflowCarrierReleasePipelineService.releaseCarrier',
+                success: 'preReleaseInterceptors'
+            },
+            preReleaseInterceptors: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.preReleaseInterceptors',
+                success: 'preReleaseValidators'
+            },
+            preReleaseValidators: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.preReleaseValidators',
                 success: 'updateCarrier'
             },
             updateCarrier: {
                 type: 'function',
                 handler: 'DefaultWorkflowCarrierReleasePipelineService.updateCarrier',
+                success: 'postReleaseValidators'
+            },
+            postReleaseValidators: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.postReleaseValidators',
+                success: 'postReleaseInterceptors'
+            },
+            postReleaseInterceptors: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.postReleaseInterceptors',
                 success: 'triggerReleasedEvent'
             },
             triggerReleasedEvent: {
@@ -393,16 +438,11 @@ module.exports = {
             prepareWorkflowProcessPipeline: {
                 type: 'process',
                 handler: 'prepareWorkflowProcessPipeline',
-                success: 'buildQuery'
+                success: 'pauseCarrier'
             },
-            buildQuery: {
+            pauseCarrier: {
                 type: 'function',
-                handler: 'DefaultPauseWorkflowCarrierPipelineService.buildQuery',
-                success: 'prepareResponse'
-            },
-            prepareResponse: {
-                type: 'function',
-                handler: 'DefaultPauseWorkflowCarrierPipelineService.prepareResponse',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.pauseCarrier',
                 success: 'prePauseInterceptors'
             },
             prePauseInterceptors: {
@@ -413,27 +453,31 @@ module.exports = {
             prePauseValidators: {
                 type: 'function',
                 handler: 'DefaultPauseWorkflowCarrierPipelineService.prePauseValidators',
-                success: 'updateWorkflowItems'
+                success: 'updateCarrier'
             },
-            updateWorkflowItems: {
+            updateCarrier: {
                 type: 'function',
-                handler: 'DefaultPauseWorkflowCarrierPipelineService.updateWorkflowItems',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.updateCarrier',
                 success: 'postPauseValidators'
             },
             postPauseValidators: {
                 type: 'function',
-                handler: 'DefaultPauseWorkflowCarrierPipelineService.postPauseValidators',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.postReleaseValidators',
                 success: 'postPauseInterceptors'
             },
             postPauseInterceptors: {
                 type: 'function',
                 handler: 'DefaultPauseWorkflowCarrierPipelineService.postPauseInterceptors',
-                success: 'triggerPauseEvent'
+                success: 'triggerPausedEvent'
             },
-            triggerPauseEvent: {
+            triggerPausedEvent: {
                 type: 'function',
-                handler: 'DefaultPauseWorkflowCarrierPipelineService.triggerPauseEvent',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.triggerPausedEvent',
                 success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.handleSuccess'
             }
         }
     },
@@ -452,16 +496,11 @@ module.exports = {
             prepareWorkflowProcessPipeline: {
                 type: 'process',
                 handler: 'prepareWorkflowProcessPipeline',
-                success: 'buildQuery'
+                success: 'resumeCarrier'
             },
-            buildQuery: {
+            resumeCarrier: {
                 type: 'function',
-                handler: 'DefaultResumeWorkflowCarrierPipelineService.buildQuery',
-                success: 'prepareResponse'
-            },
-            prepareResponse: {
-                type: 'function',
-                handler: 'DefaultResumeWorkflowCarrierPipelineService.prepareResponse',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.resumeCarrier',
                 success: 'preResumeInterceptors'
             },
             preResumeInterceptors: {
@@ -472,11 +511,11 @@ module.exports = {
             preResumeValidators: {
                 type: 'function',
                 handler: 'DefaultResumeWorkflowCarrierPipelineService.preResumeValidators',
-                success: 'updateWorkflowItems'
+                success: 'updateCarrier'
             },
-            updateWorkflowItems: {
+            updateCarrier: {
                 type: 'function',
-                handler: 'DefaultResumeWorkflowCarrierPipelineService.updateWorkflowItems',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.updateCarrier',
                 success: 'postResumeValidators'
             },
             postResumeValidators: {
@@ -487,17 +526,19 @@ module.exports = {
             postResumeInterceptors: {
                 type: 'function',
                 handler: 'DefaultResumeWorkflowCarrierPipelineService.postResumeInterceptors',
-                success: 'triggerPauseEvent'
+                success: 'triggerResumedEvent'
             },
-            triggerPauseEvent: {
+            triggerResumedEvent: {
                 type: 'function',
-                handler: 'DefaultResumeWorkflowCarrierPipelineService.triggerPauseEvent',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.triggerResumedEvent',
                 success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultResumeWorkflowCarrierPipelineService.handleSuccess'
             }
         }
     },
-
-
 
     handleWorkflowSuccessPipeline: {
         startNode: "validateRequest",
@@ -513,6 +554,16 @@ module.exports = {
             createSuccessItem: {
                 type: 'function',
                 handler: 'DefaultWorkflowSuccessPipelineService.createSuccessItem',
+                success: 'successInterceptors'
+            },
+            successInterceptors: {
+                type: 'function',
+                handler: 'DefaultWorkflowSuccessPipelineService.successInterceptors',
+                success: 'successValidators'
+            },
+            successValidators: {
+                type: 'function',
+                handler: 'DefaultWorkflowSuccessPipelineService.successValidators',
                 success: 'updateArchivePool'
             },
             updateArchivePool: {
@@ -555,6 +606,16 @@ module.exports = {
             createErrorItem: {
                 type: 'function',
                 handler: 'DefaultWorkflowErrorPipelineService.createErrorItem',
+                success: 'successInterceptors'
+            },
+            successInterceptors: {
+                type: 'function',
+                handler: 'DefaultWorkflowErrorPipelineService.successInterceptors',
+                success: 'successValidators'
+            },
+            successValidators: {
+                type: 'function',
+                handler: 'DefaultWorkflowErrorPipelineService.successValidators',
                 success: 'updateErrorPool'
             },
             updateErrorPool: {
