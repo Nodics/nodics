@@ -78,7 +78,7 @@ module.exports = {
         },
     },
 
-    defaultWorkflowItemAssignedPipeline: {
+    defaultWorkflowCarrierAssignedPipeline: {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
@@ -86,7 +86,7 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemAssignedPipelineService.validateRequest',
+                handler: 'DefaultWorkflowCarrierAssignedPipelineService.validateRequest',
                 success: 'prepareProcess'
             },
             prepareProcess: {
@@ -96,7 +96,7 @@ module.exports = {
             },
             prepareModel: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemAssignedPipelineService.prepareModel',
+                handler: 'DefaultWorkflowCarrierAssignedPipelineService.prepareModel',
                 success: {
                     schemaOperation: 'updateSchemaItem',
                     searchOperation: 'updateSearchItem'
@@ -104,18 +104,18 @@ module.exports = {
             },
             updateSchemaItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemAssignedPipelineService.updateSchemaItem',
+                handler: 'DefaultWorkflowCarrierAssignedPipelineService.updateSchemaItem',
                 success: 'successEnd'
             },
             updateSearchItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemAssignedPipelineService.updateSearchItem',
+                handler: 'DefaultWorkflowCarrierAssignedPipelineService.updateSearchItem',
                 success: 'successEnd'
             }
         }
     },
 
-    defaultWorkflowItemUpdatedPipeline: {
+    defaultWorkflowCarrierUpdatedPipeline: {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
@@ -123,7 +123,7 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemUpdatedPipelineService.validateRequest',
+                handler: 'DefaultWorkflowCarrierUpdatedPipelineService.validateRequest',
                 success: 'prepareProcess'
             },
             prepareProcess: {
@@ -133,7 +133,7 @@ module.exports = {
             },
             prepareModel: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemUpdatedPipelineService.prepareModel',
+                handler: 'DefaultWorkflowCarrierUpdatedPipelineService.prepareModel',
                 success: {
                     schemaOperation: 'updateSchemaItem',
                     searchOperation: 'updateSearchItem'
@@ -141,18 +141,18 @@ module.exports = {
             },
             updateSchemaItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemUpdatedPipelineService.updateSchemaItem',
+                handler: 'DefaultWorkflowCarrierUpdatedPipelineService.updateSchemaItem',
                 success: 'successEnd'
             },
             updateSearchItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemUpdatedPipelineService.updateSearchItem',
+                handler: 'DefaultWorkflowCarrierUpdatedPipelineService.updateSearchItem',
                 success: 'successEnd'
             }
         }
     },
 
-    defaultWorkflowItemPausedPipeline: {
+    defaultWorkflowCarrierPausedPipeline: {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
@@ -160,7 +160,7 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemPausedPipelineService.validateRequest',
+                handler: 'DefaultWorkflowCarrierPausedPipelineService.validateRequest',
                 success: 'prepareProcess'
             },
             prepareProcess: {
@@ -170,7 +170,7 @@ module.exports = {
             },
             prepareModel: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemPausedPipelineService.prepareModel',
+                handler: 'DefaultWorkflowCarrierPausedPipelineService.prepareModel',
                 success: {
                     schemaOperation: 'updateSchemaItem',
                     searchOperation: 'updateSearchItem'
@@ -178,17 +178,17 @@ module.exports = {
             },
             updateSchemaItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemPausedPipelineService.updateSchemaItem',
+                handler: 'DefaultWorkflowCarrierPausedPipelineService.updateSchemaItem',
                 success: 'successEnd'
             },
             updateSearchItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemPausedPipelineService.updateSearchItem',
+                handler: 'DefaultWorkflowCarrierPausedPipelineService.updateSearchItem',
                 success: 'successEnd'
             }
         }
     },
-    defaultWorkflowItemResumedPipeline: {
+    defaultWorkflowCarrierResumedPipeline: {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
@@ -196,7 +196,7 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemResumedPipelineService.validateRequest',
+                handler: 'DefaultWorkflowCarrierResumedPipelineService.validateRequest',
                 success: 'prepareProcess'
             },
             prepareProcess: {
@@ -206,7 +206,7 @@ module.exports = {
             },
             prepareModel: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemResumedPipelineService.prepareModel',
+                handler: 'DefaultWorkflowCarrierResumedPipelineService.prepareModel',
                 success: {
                     schemaOperation: 'updateSchemaItem',
                     searchOperation: 'updateSearchItem'
@@ -214,12 +214,12 @@ module.exports = {
             },
             updateSchemaItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemResumedPipelineService.updateSchemaItem',
+                handler: 'DefaultWorkflowCarrierResumedPipelineService.updateSchemaItem',
                 success: 'successEnd'
             },
             updateSearchItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemResumedPipelineService.updateSearchItem',
+                handler: 'DefaultWorkflowCarrierResumedPipelineService.updateSearchItem',
                 success: 'successEnd'
             }
         }
@@ -342,7 +342,7 @@ module.exports = {
             }
         }
     },
-    defaultWorkflowItemProcessedPipeline: {
+    defaultWorkflowCarrierProcessedPipeline: {
         startNode: "validateRequest",
         hardStop: true,
         handleError: 'handleError',
@@ -350,7 +350,7 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemProcessedPipelineService.validateRequest',
+                handler: 'DefaultWorkflowCarrierProcessedPipelineService.validateRequest',
                 success: 'prepareProcess'
             },
             prepareProcess: {
@@ -360,7 +360,7 @@ module.exports = {
             },
             prepareModel: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemProcessedPipelineService.prepareModel',
+                handler: 'DefaultWorkflowCarrierProcessedPipelineService.prepareModel',
                 success: {
                     schemaOperation: 'updateSchemaItem',
                     searchOperation: 'updateSearchItem'
@@ -368,12 +368,12 @@ module.exports = {
             },
             updateSchemaItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemProcessedPipelineService.updateSchemaItem',
+                handler: 'DefaultWorkflowCarrierProcessedPipelineService.updateSchemaItem',
                 success: 'successEnd'
             },
             updateSearchItem: {
                 type: 'function',
-                handler: 'DefaultWorkflowItemProcessedPipelineService.updateSearchItem',
+                handler: 'DefaultWorkflowCarrierProcessedPipelineService.updateSearchItem',
                 success: 'successEnd'
             }
         }

@@ -38,7 +38,7 @@ module.exports = {
     performHeadOperation: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
-                decision: 'ONE',
+                decision: 'AutoOne',
                 feedback: {
                     message: 'Testing Single channel process'
                 }
@@ -49,7 +49,7 @@ module.exports = {
     performActionOne: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
-                decision: 'THREE',
+                decision: 'AutoTwo',
                 feedback: {
                     message: 'Action one response .............'
                 }
@@ -62,29 +62,7 @@ module.exports = {
             resolve({
                 decision: 'SUCCESS',
                 feedback: {
-                    message: 'Action two response .............'
-                }
-            });
-        });
-    },
-
-    performActionThree: function (request, response) {
-        return new Promise((resolve, reject) => {
-            resolve({
-                decision: 'SUCCESS',
-                feedback: {
-                    message: 'Action three response .............'
-                }
-            });
-        });
-    },
-
-    performActionSuccess: function (request, response) {
-        return new Promise((resolve, reject) => {
-            resolve({
-                decision: 'SUCCESS',
-                feedback: {
-                    message: 'Action sample success response .............'
+                    message: 'Action two response .............SUCCESS'
                 }
             });
         });

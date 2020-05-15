@@ -18,28 +18,28 @@ module.exports = {
         index: 0,
         handler: 'DefaultSaveWorkflowActionInterceptorService.handlePreSaveAction'
     },
-    loadWorkflowItemActionResponses: {
+    loadWorkflowCarrierActionResponses: {
         type: 'schema',
-        item: 'workflowItem',
+        item: 'workflowCarrier',
         trigger: 'postGet',
         active: 'true',
         index: 99,
-        handler: 'DefaultWorkflowActionResponsesInterceptorService.loadActionResponseForWorkflowItem'
+        handler: 'DefaultWorkflowActionResponsesInterceptorService.loadActionResponseForWorkflowCarrier'
     },
-    loadWorkflowArchivedItemActionResponses: {
+    loadWorkflowArchivedCarrierActionResponses: {
         type: 'schema',
-        item: 'workflowArchivedItem',
+        item: 'workflowArchivedCarrier',
         trigger: 'postGet',
         active: 'true',
         index: 99,
-        handler: 'DefaultWorkflowActionResponsesInterceptorService.loadActionResponseForWorkflowItem'
+        handler: 'DefaultWorkflowActionResponsesInterceptorService.loadActionResponseForWorkflowCarrier'
     },
     loadWorkflowErrorItemActionResponses: {
         type: 'schema',
-        item: 'workflowErrorItem',
+        item: 'workflowErrorCarrier',
         trigger: 'postGet',
         active: 'true',
         index: 99,
-        handler: 'DefaultWorkflowActionResponsesInterceptorService.loadActionResponseForWorkflowItem'
+        handler: 'DefaultWorkflowActionResponsesInterceptorService.loadActionResponseForWorkflowCarrier'
     }
 };

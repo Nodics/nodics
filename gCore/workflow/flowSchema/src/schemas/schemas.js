@@ -228,9 +228,9 @@ module.exports = {
                 enabled: true
             },
             refSchema: {
-                workflowItems: {
+                workflowI1tems: {
                     enabled: true,
-                    schemaName: "workflowItem",
+                    schemaName: "workflowI1tem",
                     type: 'many',
                     propertyName: 'code',
                     searchOptions: {
@@ -307,10 +307,10 @@ module.exports = {
                     type: 'array',
                     required: false
                 },
-                workflowItems: {
+                workflowI1tems: {
                     type: 'array',
                     required: false,
-                    description: 'List of workflowItems associated with this carrier'
+                    description: 'List of workflowI1tems associated with this carrier'
                 },
                 states: {
                     type: 'array',
@@ -329,7 +329,7 @@ module.exports = {
          * This schema hold all the items, associated with one of the workflow and which state the item is currently.
          * This item will hold the reference of its actuall stage, I mean, which workflow and where it is currently
          */
-        workflowItem: {
+        workflowI1tem: {
             super: 'base',
             model: true,
             service: {
@@ -353,7 +353,7 @@ module.exports = {
                 enabled: true
             },
             refSchema: {
-                workflowItems: {
+                workflowI1tems: {
                     enabled: true,
                     schemaName: "workflowArchivedItem",
                     type: 'many',
@@ -378,7 +378,7 @@ module.exports = {
                 enabled: true
             },
             refSchema: {
-                workflowItems: {
+                workflowI1tems: {
                     enabled: true,
                     schemaName: "workflowArchivedItem",
                     type: 'many',
@@ -394,7 +394,7 @@ module.exports = {
         },
 
         workflowArchivedItem: {
-            super: 'workflowItem',
+            super: 'workflowI1tem',
             model: true,
             service: {
                 enabled: true

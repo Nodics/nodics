@@ -11,7 +11,7 @@
 
 module.exports = {
     workflow: {
-        workflowItemOperations: {
+        workflowCarrierOperations: {
             initCarrierItem: {
                 secured: true,
                 accessGroups: ['userGroup'],

@@ -35,10 +35,10 @@ module.exports = {
         });
     },
 
-    handleWorkflowItemAssignedEvent: function (request, callback) {
+    handleWorkflowCarrierAssignedEvent: function (request, callback) {
         try {
             let event = request.event;
-            SERVICE.DefaultPipelineService.start('defaultWorkflowItemAssignedPipeline', {
+            SERVICE.DefaultPipelineService.start('defaultWorkflowCarrierAssignedPipeline', {
                 tenant: event.tenant,
                 event: event,
                 data: event.data

@@ -34,24 +34,31 @@ module.exports = {
             resolve(true);
         });
     },
-
-    handleWorkflowCarrierPausedEvent: function (request, callback) {
-        try {
-            let event = request.event;
-            SERVICE.DefaultPipelineService.start('defaultWorkflowCarrierPausedPipeline', {
-                tenant: event.tenant,
-                event: event,
-                data: event.data
-            }, {}).then(success => {
-                callback(null, {
-                    code: 'SUC_EVNT_00000',
-                    message: success
-                });
-            }).catch(error => {
-                callback(new CLASSES.EventError(error, 'Unable to handle item paused event', 'ERR_EVNT_00000'));
+    validateRequest: function (request, response, process) {
+        this.LOG.debug('Validating request to assign item with workflow');
+        if (!request.tenant) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+    loadCarrierItems: function (request, response, process) {
+        process.nextSuccess(request, response);
+    },
+    loadItems: function (request, response, process) {
+        process.nextSuccess(request, response);
+    },
+    createCarrierItems: function (request, response, process) {
+        this.LOG.debug('Creating new external workflow item');
+        if (!request.items) {
+            let carrierItems = [];
+            request.items.forEach(item => {
+                carrierItems.push(item);
             });
-        } catch (error) {
-            callback(new CLASSES.EventError(error, 'Unable to handle item paused event', 'ERR_EVNT_00000'));
+            request.workflowCarrier.items = carrierItems;
+            process.nextSuccess(request, response);
+        } else {
+            process.nextSuccess(request, response);
         }
     }
 };

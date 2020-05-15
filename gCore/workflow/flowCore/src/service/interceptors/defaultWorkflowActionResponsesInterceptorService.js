@@ -32,7 +32,7 @@ module.exports = {
         });
     },
 
-    loadActionResponseForWorkflowItem: function (request, response) {
+    loadActionResponseForWorkflowCarrier: function (request, response) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!request.options || request.options.loadActionResponse === undefined || request.options.loadActionResponse) {

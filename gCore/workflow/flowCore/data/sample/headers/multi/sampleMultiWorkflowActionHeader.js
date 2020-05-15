@@ -11,12 +11,12 @@
 
 module.exports = {
     workflow: {
-        multiWorkflowAction: {
+        sampleMultiWorkflowAction: {
             options: {
                 enabled: true,
                 schemaName: 'workflowAction',
                 operation: 'saveAll',
-                dataFilePrefix: 'multiWorkflowActionData'
+                dataFilePrefix: 'sampleMultiWorkflowActionData'
             },
             query: {
                 code: '$code'

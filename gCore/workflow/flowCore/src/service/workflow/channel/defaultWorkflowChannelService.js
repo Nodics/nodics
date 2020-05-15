@@ -43,8 +43,8 @@ module.exports = {
                 SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
                     tenant: request.tenant,
                     authData: request.authData,
-                    itemCode: request.itemCode,
-                    workflowItem: request.workflowItem,
+                    carrierCode: request.carrierCode,
+                    workflowCarrier: request.workflowCarrier,
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction,
                     actionResponse: request.actionResponse
@@ -81,7 +81,7 @@ module.exports = {
                 SERVICE.DefaultPipelineService.start('executeChannelQualifierPipeline', {
                     tenant: request.tenant,
                     authData: request.authData,
-                    workflowItem: request.workflowItem,
+                    workflowCarrier: request.workflowCarrier,
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction,
                     actionResponse: request.actionResponse,
@@ -136,8 +136,8 @@ module.exports = {
                 SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
                     tenant: request.tenant,
                     authData: request.authData,
-                    itemCode: request.itemCode,
-                    workflowItem: request.workflowItem,
+                    carrierCode: request.carrierCode,
+                    workflowCarrier: request.workflowCarrier,
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction,
                     actionResponse: request.actionResponse,

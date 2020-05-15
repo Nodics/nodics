@@ -9,8 +9,6 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
 
     /**
@@ -35,25 +33,37 @@ module.exports = {
         });
     },
 
+
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to assign item with workflow');
-        if (!request.tenant) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
+        this.LOG.debug('Validating request for executing action script');
+        if (!request.workflowAction) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action not found'));
+        } else if (!request.workflowAction.script) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action script not found'));
         } else {
             process.nextSuccess(request, response);
         }
     },
-    createWorkflowItems: function (request, response, process) {
-        this.LOG.debug('Creating new external workflow item');
-        if (!request.items) {
-            let workflowItems = [];
-            request.items.forEach(item => {
-                workflowItems.push(item);
-            });
-            request.workflowCarrier.workflowItems = workflowItems;
+
+    executeScript: function (request, response, process) {
+        this.LOG.debug('Executing action script');
+        try {
+            let tenant = request.tenant;
+            let authData = request.authData;
+            let workflowAction = request.workflowAction;
+            let workflowHead = request.workflowHead;
+            let workflowCarrier = request.workflowCarrier;
+            let result = eval(request.workflowAction.script);
+            response.actionResponse = {
+                type: ENUMS.WorkflowActionResponseType.SUCCESS.key,
+                decision: result,
+                feedback: {
+                    message: 'This is auto action script executed response'
+                }
+            };
             process.nextSuccess(request, response);
-        } else {
-            process.nextSuccess(request, response);
+        } catch (error) {
+            process.error(request, response, new CLASSES.WorkflowError(error, 'While executing handler script'));
         }
     }
 };

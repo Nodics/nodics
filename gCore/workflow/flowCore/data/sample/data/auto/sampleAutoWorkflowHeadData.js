@@ -10,10 +10,16 @@
  */
 
 module.exports = {
-    workflow: {
-        initializeInternalItem: {
-            event: 'initiateWorkflow',
-            listener: 'DefaultWorkflowCarrierChangeListenerService.handleItemChangeEvent'
-        }
+
+    record1: {
+        code: "autoWorkflow",
+        name: "autoWorkflow",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        position: ENUMS.WorkflowActionPosition.HEAD.key,
+        handler: 'DefaultSampleAutoWorkflowService.performHeadOperation',
+        accessGroups: ['workflowUserGroup', 'employeeUserGroup'],
+        allowedDecisions: ['AutoOne'],
+        channels: ['autoOneChannel']
     }
 };

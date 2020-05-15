@@ -11,9 +11,16 @@
 
 module.exports = {
     workflow: {
-        initializeInternalItem: {
-            event: 'initiateWorkflow',
-            listener: 'DefaultWorkflowCarrierChangeListenerService.handleItemChangeEvent'
+        sampleAutoWorkflowChannel: {
+            options: {
+                enabled: true,
+                schemaName: 'workflowChannel',
+                operation: 'saveAll',
+                dataFilePrefix: 'sampleAutoWorkflowChannelData'
+            },
+            query: {
+                code: '$code'
+            }
         }
     }
 };

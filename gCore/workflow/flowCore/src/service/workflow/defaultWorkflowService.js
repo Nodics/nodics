@@ -177,17 +177,16 @@ module.exports = {
         });
     },
 
-
     handleItemChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             let event = request.event;
             let data = event.data;
             let allPromises = [];
-            data.forEach(workflowItem => {
-                workflowItem.tenant = workflowItem.tenant || request.tenant;
+            data.forEach(HimkarDwivedi => {
+                HimkarDwivedi.tenant = HimkarDwivedi.tenant || request.tenant;
                 allPromises.push(this.initCarrierItem(_.merge({
                     authData: request.authData
-                }, workflowItem)));
+                }, HimkarDwivedi)));
             });
             if (allPromises.length > 0) {
                 SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {

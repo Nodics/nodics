@@ -11,12 +11,12 @@
 
 module.exports = {
     workflow: {
-        multiWorkflowHead: {
+        sampleMultiWorkflowChannel: {
             options: {
                 enabled: true,
-                schemaName: 'workflowAction',
+                schemaName: 'workflowChannel',
                 operation: 'saveAll',
-                dataFilePrefix: 'multiWorkflowHeadData'
+                dataFilePrefix: 'sampleMultiWorkflowChannelData'
             },
             query: {
                 code: '$code'

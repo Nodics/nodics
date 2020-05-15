@@ -10,17 +10,22 @@
  */
 
 module.exports = {
-    workflow: {
-        multiWorkflowChannel: {
-            options: {
-                enabled: true,
-                schemaName: 'workflowChannel',
-                operation: 'saveAll',
-                dataFilePrefix: 'multiWorkflowChannelData'
-            },
-            query: {
-                code: '$code'
-            }
-        }
+    record1: {
+        code: "autoOneChannel",
+        name: "autoOneChannel",
+        active: true,
+        qualifier: {
+            decision: 'MultiOne'
+        },
+        target: 'autoActionOne'
+    },
+    record2: {
+        code: "autoTwoChannel",
+        name: "autoTwoChannel",
+        active: true,
+        qualifier: {
+            decision: 'AutoTwo'
+        },
+        target: 'autoActionTwo'
     }
 };

@@ -35,10 +35,10 @@ module.exports = {
         });
     },
 
-    handleWorkflowItemUpdatedEvent: function (request, callback) {
+    handleWorkflowCarrierUpdatedEvent: function (request, callback) {
         try {
             let event = request.event;
-            SERVICE.DefaultPipelineService.start('defaultWorkflowItemUpdatedPipeline', {
+            SERVICE.DefaultPipelineService.start('defaultWorkflowCarrierUpdatedPipeline', {
                 tenant: event.tenant,
                 event: event,
                 data: event.data

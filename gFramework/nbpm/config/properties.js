@@ -21,15 +21,15 @@ module.exports = {
         }
     },
     defaultWorkflowEvents: {
-        workflowItemAssigned: {
+        workflowCarrierAssigned: {
             active: true,
             event: 'itemAssigned',
-            listener: 'DefaultWorkflowItemAssignedEventListenerService.handleWorkflowItemAssignedEvent'
+            listener: 'DefaultWorkflowCarrierAssignedEventListenerService.handleWorkflowCarrierAssignedEvent'
         },
-        workflowItemUpdated: {
+        workflowCarrierUpdated: {
             active: true,
             event: 'itemUpdated',
-            listener: 'DefaultWorkflowItemUpdatedEventListenerService.handleWorkflowItemUpdatedEvent'
+            listener: 'DefaultWorkflowCarrieUpdatedEventListenerService.handleWorkflowCarrierUpdatedEvent'
         },
         workflowErrorOccurred: {
             active: true,
@@ -46,20 +46,20 @@ module.exports = {
             event: 'actionPerformed',
             listener: 'DefaultWorkflowActionPerformedEventListenerService.handleWorkflowActionPerformedEvent'
         },
-        workflowItemProcessed: {
+        workflowCarrierProcessed: {
             active: true,
             event: 'itemProcessed',
-            listener: 'DefaultWorkflowItemProcessedEventListenerService.handleWorkflowItemProcessedEvent'
+            listener: 'DefaultWorkflowCarrierProcessedEventListenerService.handleWorkflowCarrierProcessedEvent'
         },
-        workflowItemPaused: {
+        workflowCarrierPaused: {
             active: true,
             event: 'itemPaused',
-            listener: 'DefaultWorkflowItemPausedEventListenerService.handleWorkflowItemPausedEvent'
+            listener: 'DefaultWorkflowCarrierPausedEventListenerService.handleWorkflowCarrierPausedEvent'
         },
-        workflowItemResumed: {
+        workflowCarrierResumed: {
             active: true,
             event: 'itemResumed',
-            listener: 'DefaultWorkflowItemResumedEventListenerService.handleWorkflowItemResumedEvent'
+            listener: 'DefaultWorkflowCarrierResumedEventListenerService.handleWorkflowCarrierResumedEvent'
         }
     }
 };

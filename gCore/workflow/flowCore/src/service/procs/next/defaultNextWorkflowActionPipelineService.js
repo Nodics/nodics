@@ -39,8 +39,8 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
         } else if (!request.actionCode) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, actionCode can not be null or empty'));
-        } else if (!request.itemCode && !request.workflowItem) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, item detail can not be null or empty'));
+        } else if (!request.carrierCode && !request.workflowCarrier) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, carrier detail can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
