@@ -129,7 +129,7 @@ module.exports = {
                 this.LOG.debug('Pushing event for carrier blocked : ' + request.workflowCarrier.code);
                 SERVICE.DefaultWorkflowEventService.publishEvent({
                     tenant: request.tenant,
-                    event: 'carrierReleased',
+                    event: 'carrierBlocked',
                     type: eventConfig.type || CONFIG.get('workflow').defaultEventType
                 }, request.workflowAction, request.workflowCarrier).then(success => {
                     this.LOG.debug('Event successfully posted');

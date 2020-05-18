@@ -33,7 +33,7 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating input for workflow error process');
+        this.LOG.debug('Validating input for workflow items paused process');
         process.nextSuccess(request, response);
     },
     prepareModels: function (request, response, process) {
@@ -51,8 +51,6 @@ module.exports = {
                         actions: carrierData.actions
                     }
                 });
-                if (!schemaModel.workflow.errors) schemaModel.workflow.errors = [];
-                schemaModel.workflow.errors.push(request.data.error);
             });
         }
         let sourceDetail = carrierData.sourceDetail;
@@ -67,7 +65,7 @@ module.exports = {
         }
     },
     updateSchemaItems: function (request, response, process) {
-        this.LOG.debug('Updating schema items for blocked item');
+        this.LOG.debug('Updating schema items for paused item');
         try {
             request.schemaService.saveAll({
                 ignoreWorkflowEvent: true,

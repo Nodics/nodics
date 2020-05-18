@@ -38,8 +38,10 @@ module.exports = {
         this.LOG.debug('Validating input for workflow item assigned process');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
-        } else if (!request.data || !request.data.sourceDetail || UTILS.isBlank(request.data.sourceDetail)) {
+        } else if (!request.data || !request.data.carrier || !request.data.carrier.sourceDetail || UTILS.isBlank(request.data.carrier.sourceDetail)) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
+        } else if (request.data.carrier.type === ENUMS.WorkflowCarrierType.FIXED.key && (!request.data.carrier.items || request.data.carrier.items.length <= 0)) {
+            process.error(request, response, new CLASSES.WorkflowError('Invalid data, fix carrier without item is invalid'));
         } else if (!request.event) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
         } else {
@@ -48,7 +50,7 @@ module.exports = {
     },
     checkOperation: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
-        let sourceDetail = request.data.sourceDetail;
+        let sourceDetail = request.data.carrier.sourceDetail;
         if (!sourceDetail.schemaName && !sourceDetail.indexName) {
             process.error(request, response, new CLASSES.WorkflowError('Invalid internal item sourceDetail, schemaName and indexName both can not be null'));
         } else {
@@ -62,7 +64,7 @@ module.exports = {
     },
     loadSchemaService: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
-        let sourceDetail = request.data.sourceDetail;
+        let sourceDetail = request.data.carrier.sourceDetail;
         request.schemaService = SERVICE['Default' + sourceDetail.schemaName.toUpperCaseFirstChar() + 'Service'];
         if (request.schemaService) {
             process.nextSuccess(request, response);
@@ -73,50 +75,73 @@ module.exports = {
 
     loadSchemaModel: function (request, response, process) {
         this.LOG.debug('Loading schema item for triggered workflow');
-        let itemCode = request.data.originalCode || request.data.code;
-        request.schemaService.get({
-            tenant: request.tenant,
-            searchOptions: {
-                projection: { _id: 0 }
-            },
-            query: {
-                code: itemCode
-            }
-        }).then(success => {
-            if (success.result && success.result.length > 0) {
-                request.schemaModel = success.result[0];
-                process.nextSuccess(request, response);
-            } else {
-                process.error(request, response, new CLASSES.WorkflowError('Schema item not found for code: ' + itemCode));
-            }
-        }).catch(error => {
-            process.error(request, response, new CLASSES.WorkflowError(error, 'Could not load item for the workflow: ' + itemCode));
-        });
+        let carrierData = request.data.carrier;
+        if (carrierData.items && carrierData.items.length > 0) {
+            request.schemaService.get({
+                tenant: request.tenant,
+                searchOptions: {
+                    projection: { _id: 0 }
+                },
+                query: {
+                    code: {
+                        $in: carrierData.items.map((item, index) => {
+                            return item.originalCode || item.code;
+                        })
+                    }
+                }
+            }).then(success => {
+                if (success.result && success.result.length > 0) {
+                    request.schemaModels = success.result[0];
+                    process.nextSuccess(request, response);
+                } else {
+                    process.error(request, response, new CLASSES.WorkflowError('Schema item not found for code: ' + itemCode));
+                }
+            }).catch(error => {
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Could not load item for the workflow: ' + itemCode));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+
     },
     loadSearchService: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
-        request.searchService = SERVICE['Default' + itemDetail.indexName.toUpperCaseFirstChar() + 'Service'];
-        if (request.searchService) {
-            process.nextSuccess(request, response);
-        } else {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid indexName, could not found any service'));
-        }
+        process.error(request, response, new CLASSES.WorkflowError('Not yet implemented this functionality loadSearchService: DefaultWorkflowProcessPreparePipelineService'));
+        // request.searchService = SERVICE['Default' + itemDetail.indexName.toUpperCaseFirstChar() + 'Service'];
+        // if (request.searchService) {
+        //     process.nextSuccess(request, response);
+        // } else {
+        //     process.error(request, response, new CLASSES.WorkflowError('Invalid indexName, could not found any service'));
+        // }
     },
     loadSearchModel: function (request, response, process) {
         this.LOG.debug('Loading search item for triggered workflow');
-        request.searchService.doGet({
-            tenant: request.tenant,
-            query: {
-                code: request.data.originalCode
-            }
-        }).then(success => {
-            if (success.result && success.result.length > 0) {
-                request.schemaModel = success.result[0];
+        process.error(request, response, new CLASSES.WorkflowError('Not yet implemented this functionality loadSearchModel: DefaultWorkflowProcessPreparePipelineService'));
+        // request.searchService.doGet({
+        //     tenant: request.tenant,
+        //     query: {
+        //         code: request.data.originalCode
+        //     }
+        // }).then(success => {
+        //     if (success.result && success.result.length > 0) {
+        //         request.schemaModel = success.result[0];
+        //     } else {
+        //         process.error(request, response, new CLASSES.WorkflowError('Search item not found for code: ' + request.data.originalCode));
+        //     }
+        // }).catch(error => {
+        //     process.error(request, response, new CLASSES.WorkflowError(error, 'Could not load item for the workflow: ' + request.data.originalCode));
+        // });
+    },
+    validateresponse: function (request, response, process) {
+        this.LOG.debug('Validating loaded response, number of models');
+        if ((carrierData.items && carrierData.items.length > 0) && (request.schemaModels && request.schemaModels.length === carrierData.items.length)) {
+            if (request.schemaModels && request.schemaModels.length === carrierData.items.length) {
+                process.nextSuccess(request, response);
             } else {
-                process.error(request, response, new CLASSES.WorkflowError('Search item not found for code: ' + request.data.originalCode));
+                process.error(request, response, new CLASSES.WorkflowError('Item count mismatch in carrier items and loaded items'));
             }
-        }).catch(error => {
-            process.error(request, response, new CLASSES.WorkflowError(error, 'Could not load item for the workflow: ' + request.data.originalCode));
-        });
+        } else {
+            process.nextSuccess(request, response);
+        }
     }
 };

@@ -12,6 +12,7 @@
 const _ = require('lodash');
 
 module.exports = {
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -31,6 +32,18 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
+        });
+    },
+
+    performDefaultSplitEndAction: function (request, response) {
+        return new Promise((resolve, reject) => {
+            resolve({
+                type: ENUMS.WorkflowActionResponseType.SUCCESS.key,
+                decision: 'SLIPTEND',
+                feedback: {
+                    message: 'Item has been splitted, so ent this journey'
+                }
+            });
         });
     }
 };

@@ -35,10 +35,10 @@ module.exports = {
         });
     },
 
-    handleWorkflowCarrierResumedEvent: function (request, callback) {
+    handleWorkflowCarrierBlockedEvent: function (request, callback) {
         try {
             let event = request.event;
-            SERVICE.DefaultPipelineService.start('defaultWorkflowCarrierResumedPipeline', {
+            SERVICE.DefaultPipelineService.start('defaultWorkflowCarrierBlockedPipeline', {
                 tenant: event.tenant,
                 event: event,
                 data: event.data
@@ -48,10 +48,10 @@ module.exports = {
                     message: success
                 });
             }).catch(error => {
-                callback(new CLASSES.EventError(error, 'Unable to handle item resumed event', 'ERR_EVNT_00000'));
+                callback(new CLASSES.EventError(error, 'Unable to handle carrier blocked event', 'ERR_EVNT_00000'));
             });
         } catch (error) {
-            callback(new CLASSES.EventError(error, 'Unable to handle item resumed event', 'ERR_EVNT_00000'));
+            callback(new CLASSES.EventError(error, 'Unable to handle carrier blocked event', 'ERR_EVNT_00000'));
         }
     }
 };

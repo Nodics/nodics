@@ -40,5 +40,15 @@ module.exports = {
         handler: 'DefaultErrorActionHandlerService.performDefaultErrorAction',
         accessGroups: ['workflowUserGroup', 'employeeUserGroup'],
         allowedDecisions: ['ERROR']
+    },
+    record3: {
+        code: "defaultSplitEndAction",
+        name: "defaultSplitEndAction",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        position: ENUMS.WorkflowActionPosition.END.key,
+        handler: 'defaultSplitEndActionHandlerService.performDefaultSplitEndAction',
+        accessGroups: ['workflowUserGroup', 'employeeUserGroup'],
+        allowedDecisions: ['SLIPTEND']
     }
 };

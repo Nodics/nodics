@@ -33,28 +33,27 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating input for workflow item assigned process');
-        if (!request.tenant) {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
-        } else if (!request.data || !request.data.sourceDetail || UTILS.isBlank(request.data.sourceDetail)) {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
-        } else if (!request.event) {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
-        } else {
-            process.nextSuccess(request, response);
-        }
+        this.LOG.debug('Validating input for workflow items resumed process');
+        process.nextSuccess(request, response);
     },
-    prepareModel: function (request, response, process) {
-        this.LOG.debug('Preparing model to update schema item');
-        let data = request.data;
-        request.model = _.merge(request.schemaModel, {
-            workflow: {
-                activeHead: data.activeHead,
-                activeAction: data.activeAction,
-                state: data.state
-            }
-        });
-        let sourceDetail = data.sourceDetail;
+    prepareModels: function (request, response, process) {
+        this.LOG.debug('Preparing model to update schema items');
+        let carrierData = request.data.carrier;
+        if (request.schemaModels && request.schemaModels.length > 0) {
+            request.schemaModels.forEach(schemaModel => {
+                _.merge(schemaModel, {
+                    workflow: {
+                        carrierCode: carrierData.code,
+                        activeHead: carrierData.activeHead,
+                        activeAction: carrierData.activeAction,
+                        state: carrierData.state,
+                        heads: carrierData.heads,
+                        actions: carrierData.actions
+                    }
+                });
+            });
+        }
+        let sourceDetail = carrierData.sourceDetail;
         if (sourceDetail.schemaName) {
             response.targetNode = 'schemaOperation';
             process.nextSuccess(request, response);
@@ -65,13 +64,13 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError('Invalid item sourceDetail, could not find operation type'));
         }
     },
-    updateSchemaItem: function (request, response, process) {
-        this.LOG.debug('Updating schema item for assigned item');
+    updateSchemaItems: function (request, response, process) {
+        this.LOG.debug('Updating schema items for resumed item');
         try {
-            request.schemaService.save({
+            request.schemaService.saveAll({
                 ignoreWorkflowEvent: true,
                 tenant: request.tenant,
-                model: request.model
+                models: request.schemaModels
             }).then(success => {
                 process.stop(request, response, success);
             }).catch(error => {
@@ -81,19 +80,20 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError(error, 'while updating schema item'));
         }
     },
-    updateSearchItem: function (request, response, process) {
-        this.LOG.debug('Updating search item for assigned item');
-        try {
-            request.searchService.doSave({
-                tenant: request.tenant,
-                model: request.model
-            }).then(success => {
-                process.stop(request, response, success);
-            }).catch(error => {
-                process.error(request, response, error);
-            });
-        } catch (error) {
-            process.error(request, response, new CLASSES.WorkflowError(error, 'while updating schema item'));
-        }
+    updateSearchItems: function (request, response, process) {
+        this.LOG.debug('Updating search item for resumed item');
+        process.error(request, response, new CLASSES.WorkflowError('Not yet implemented this functionality updateSearchItem: DefaultWorkflowCarrierAssignedPipelineService'));
+        // try {
+        //     request.searchService.doSave({
+        //         tenant: request.tenant,
+        //         model: request.model
+        //     }).then(success => {
+        //         process.stop(request, response, success);
+        //     }).catch(error => {
+        //         process.error(request, response, error);
+        //     });
+        // } catch (error) {
+        //     process.error(request, response, new CLASSES.WorkflowError(error, 'while updating schema item'));
+        // }
     }
 };

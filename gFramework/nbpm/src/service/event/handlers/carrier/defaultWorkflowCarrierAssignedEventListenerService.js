@@ -35,10 +35,10 @@ module.exports = {
         });
     },
 
-    handleWorkflowCarrierProcessedEvent: function (request, callback) {
+    handleWorkflowCarrierAssignedEvent: function (request, callback) {
         try {
             let event = request.event;
-            SERVICE.DefaultPipelineService.start('defaultWorkflowCarrierProcessedPipeline', {
+            SERVICE.DefaultPipelineService.start('defaultWorkflowCarrierAssignedPipeline', {
                 tenant: event.tenant,
                 event: event,
                 data: event.data
@@ -48,10 +48,10 @@ module.exports = {
                     message: success
                 });
             }).catch(error => {
-                callback(new CLASSES.EventError(error, 'Unable to handle item processed event', 'ERR_EVNT_00000'));
+                callback(new CLASSES.EventError(error, 'Unable to handle carrier initiated event', 'ERR_EVNT_00000'));
             });
         } catch (error) {
-            callback(new CLASSES.EventError(error, 'Unable to handle item processed event', 'ERR_EVNT_00000'));
+            callback(new CLASSES.EventError(error, 'Unable to handle carrier initiated event', 'ERR_EVNT_00000'));
         }
     }
 };

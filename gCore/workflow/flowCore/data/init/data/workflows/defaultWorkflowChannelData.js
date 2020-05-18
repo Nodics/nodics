@@ -36,5 +36,14 @@ module.exports = {
             decision: 'ERROR'
         },
         target: 'defaultErrorAction'
+    },
+    record3: {
+        code: "defaultSplitEndChannel",
+        name: "defaultSplitEndChannel",
+        active: true,
+        qualifier: {
+            decision: 'SLIPTEND'
+        },
+        target: 'defaultSplitEndAction'
     }
 };

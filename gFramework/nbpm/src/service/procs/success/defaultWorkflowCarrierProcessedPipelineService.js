@@ -33,12 +33,13 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating input for workflow error process');
+        this.LOG.debug('Validating input for workflow items processed process');
         process.nextSuccess(request, response);
     },
     prepareModels: function (request, response, process) {
         this.LOG.debug('Preparing model to update schema items');
         let carrierData = request.data.carrier;
+        let actionResponse = request.data.actionResponse;
         if (request.schemaModels && request.schemaModels.length > 0) {
             request.schemaModels.forEach(schemaModel => {
                 _.merge(schemaModel, {
@@ -51,8 +52,12 @@ module.exports = {
                         actions: carrierData.actions
                     }
                 });
-                if (!schemaModel.workflow.errors) schemaModel.workflow.errors = [];
-                schemaModel.workflow.errors.push(request.data.error);
+                if (actionResponse && !UTILS.isBlank(actionResponse)) {
+                    schemaModel.workflow.actionResponse = actionResponse;
+                    if (actionResponse.type === ENUMS.WorkflowActionResponseType.SUCCESS.key) {
+                        schemaModel.active = true;
+                    }
+                }
             });
         }
         let sourceDetail = carrierData.sourceDetail;
@@ -67,7 +72,7 @@ module.exports = {
         }
     },
     updateSchemaItems: function (request, response, process) {
-        this.LOG.debug('Updating schema items for blocked item');
+        this.LOG.debug('Updating schema items for items processed item');
         try {
             request.schemaService.saveAll({
                 ignoreWorkflowEvent: true,
@@ -83,7 +88,7 @@ module.exports = {
         }
     },
     updateSearchItems: function (request, response, process) {
-        this.LOG.debug('Updating search item for paused item');
+        this.LOG.debug('Updating search item for items processed item');
         process.error(request, response, new CLASSES.WorkflowError('Not yet implemented this functionality updateSearchItem: DefaultWorkflowCarrierAssignedPipelineService'));
         // try {
         //     request.searchService.doSave({

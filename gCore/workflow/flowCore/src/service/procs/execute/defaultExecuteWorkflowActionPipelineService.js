@@ -239,15 +239,8 @@ module.exports = {
                 let event = {
                     tenant: request.tenant,
                     event: 'actionPerformed',
-                    type: eventConfig.type || CONFIG.get('workflow').defaultEventType,
+                    type: eventConfig.type || CONFIG.get('workflow').defaultEventType
                 };
-                if (request.workflowCarrier.actions && request.workflowCarrier.actions.length > 0) {
-                    event.data = {
-                        actions: request.workflowCarrier.actions.map(action => {
-                            return action.code;
-                        })
-                    };
-                }
                 SERVICE.DefaultWorkflowEventService.publishEvent(event, request.workflowAction, request.workflowCarrier).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {

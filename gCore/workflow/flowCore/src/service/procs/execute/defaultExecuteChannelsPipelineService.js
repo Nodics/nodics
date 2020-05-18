@@ -112,22 +112,34 @@ module.exports = {
             workflowHead: request.workflowHead,
             workflowAction: request.workflowAction,
             actionResponse: request.actionResponse,
-            channel: request.channels[0]
+            channel: (request.channels.length === 1) ? request.channels[0] : CONFIG.get('workflow').defaultSplitEndChannel || 'defaultSplitEndChannel'
         });
-        for (let count = 1; count < request.channels.length; count++) {
-            let channelCarrier = _.merge({}, request.workflowCarrier);
-            delete channelCarrier._id;
-            channelCarrier.originalCode = channelCarrier.code;
-            channelCarrier.code = channelCarrier.code + '_' + count;
-            request.channelRequests.push({
-                tenant: request.tenant,
-                authData: request.authData,
-                workflowCarrier: channelCarrier,
-                workflowHead: request.workflowHead,
-                workflowAction: request.workflowAction,
-                actionResponse: request.actionResponse,
-                channel: request.channels[count]
-            });
+        if (request.channels.length > 1) {
+            for (let count = 0; count < request.channels.length; count++) {
+                let channelItem = _.merge({}, request.workflowItem);
+                delete channelItem._id;
+                channelItem.originalCode = channelItem.code;
+                channelItem.code = channelItem.code + '_' + count;
+                channelItem.workflowItems = channelItem.workflowItems.map((wfItem, index) => {
+                    return _.merge(wfItem, {
+                        originalCode: wfItem.code,
+                        code: wfItem.code + '_' + index
+                    });
+                });
+                channelItem.states = channelItem.states.map((stateItem, index) => {
+                    if (stateItem._id) delete stateItem._id;
+                    return stateItem;
+                });
+                request.channelRequests.push({
+                    tenant: request.tenant,
+                    authData: request.authData,
+                    workflowItem: channelItem,
+                    workflowHead: request.workflowHead,
+                    workflowAction: request.workflowAction,
+                    actionResponse: request.actionResponse,
+                    channel: request.channels[count]
+                });
+            }
         }
         process.nextSuccess(request, response);
     },
@@ -139,7 +151,7 @@ module.exports = {
                 let event = {
                     tenant: request.tenant,
                     event: 'channelsEvaluated',
-                    type: "SYNC",
+                    type: eventConfig.type || CONFIG.get('workflow').defaultEventType,
                     data: {
                         qualifiedChannels: request.channels.map(channel => {
                             return {
@@ -150,17 +162,17 @@ module.exports = {
                     }
                 };
                 if (request.channelRequests.length > 1) {
-                    event.data.originalCode = request.workflowCarrier.originalCode;
-                }
-                event.data.items = [];
-                request.channelRequests.forEach(channelRequest => {
-                    let item = channelRequest.workflowCarrier;
-                    event.data.items.push({
-                        code: item.code,
-                        refId: item.refId,
-                        channel: channelRequest.channel.code
+                    event.data.splitData = [];
+                    request.channelRequests.forEach(channelRequest => {
+                        let item = channelRequest.workflowCarrier;
+                        event.data.splitData.push({
+                            code: item.code,
+                            originalCode: item.originalCode,
+                            refId: item.refId,
+                            channel: channelRequest.channel.code
+                        });
                     });
-                });
+                }
                 SERVICE.DefaultWorkflowEventService.publishEvent(event, request.workflowAction, request.workflowCarrier).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {

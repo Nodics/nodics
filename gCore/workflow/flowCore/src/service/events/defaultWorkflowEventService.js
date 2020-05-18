@@ -44,17 +44,34 @@ module.exports = {
                 state: "NEW",
                 active: true,
                 data: {
-                    code: workflowCarrier.code,
-                    activeHead: workflowCarrier.activeHead,
-                    activeAction: workflowCarrier.activeAction.code,
-                    state: workflowCarrier.state
+                    carrier: {
+                        code: workflowCarrier.code,
+                        originalCode: workflowCarrier.originalCode,
+                        activeHead: workflowCarrier.activeHead,
+                        activeAction: workflowCarrier.activeAction.code,
+                        type: workflowCarrier.type
+                        state: workflowCarrier.currentState,
+                        items: workflowCarrier.workflowItems.map(item => {
+                            return {
+                                code: item.code,
+                                refId: item.refId,
+                                originalCode: item.originalCode
+                            };
+                        }),
+                    }
                 }
             }, event);
-            if (workflowCarrier.activeAction && workflowCarrier.activeAction.actionResponse) {
-                event.data.actionResponse = workflowCarrier.activeAction.actionResponse;
+
+            if (workflowCarrier.actions && workflowCarrier.actions.length > 0) {
+                event.data.carrier.actions = workflowCarrier.actions.map(action => {
+                    return action.code;
+                });
             }
-            if (workflowCarrier.sourceDetail && !UTILS.isBlank(workflowCarrier.sourceDetail)) {
-                event.data.sourceDetail = workflowCarrier.sourceDetail;
+            if (workflowCarrier.heads && workflowCarrier.heads.length > 0) {
+                event.data.carrier.heads = workflowCarrier.heads;
+            }
+            if (workflowCarrier.activeAction.actionResponse) {
+                event.data.actionResponse = workflowCarrier.activeAction.actionResponse;
             }
             if (workflowCarrier.event.type === 'EXTERNAL') {
                 this.publishExternalEvent(event, workflowCarrier, workflowAction).then(success => {
@@ -75,6 +92,7 @@ module.exports = {
     publishInternalEvent: function (event, workflowCarrier) {
         return new Promise((resolve, reject) => {
             try {
+                event.data.sourceDetail = workflowCarrier.sourceDetail;
                 event.event = this.createEventName((workflowCarrier.sourceDetail.schemaName || workflowCarrier.sourceDetail.indexName), workflowCarrier.activeHead, event.event);
                 event.target = workflowCarrier.sourceDetail.moduleName;
                 event.targetType = ENUMS.TargetType.MODULE.key;

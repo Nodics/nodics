@@ -228,9 +228,9 @@ module.exports = {
                 enabled: true
             },
             refSchema: {
-                workflowI1tems: {
+                workflowItems: {
                     enabled: true,
-                    schemaName: "workflowI1tem",
+                    schemaName: "workflowItem",
                     type: 'many',
                     propertyName: 'code',
                     searchOptions: {
@@ -245,6 +245,11 @@ module.exports = {
                 }
             },
             definition: {
+                originalCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional carrier original code'
+                },
                 type: {
                     enum: [ENUMS.WorkflowCarrierType.FIXED.key, ENUMS.WorkflowCarrierType.FLAXI.key],
                     required: true,
@@ -307,7 +312,7 @@ module.exports = {
                     type: 'array',
                     required: false
                 },
-                workflowI1tems: {
+                workflowItems: {
                     type: 'array',
                     required: false,
                     description: 'List of workflowI1tems associated with this carrier'
@@ -329,7 +334,7 @@ module.exports = {
          * This schema hold all the items, associated with one of the workflow and which state the item is currently.
          * This item will hold the reference of its actuall stage, I mean, which workflow and where it is currently
          */
-        workflowI1tem: {
+        workflowItem: {
             super: 'base',
             model: true,
             service: {
