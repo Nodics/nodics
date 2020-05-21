@@ -23,13 +23,7 @@ module.exports = {
     init: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                let statusCodes = SERVICE.DefaultFilesLoaderService.loadFiles('/src/utils/statusDefinitions.js');
-                Object.keys(statusCodes).forEach(errorCode => {
-                    let status = statusCodes[errorCode];
-                    assert.ok(status.code, 'Invalid response code for: ' + errorCode + ', it can not be null or empty');
-                    assert.ok(status.message, 'Invalid error message for: ' + errorCode + ', it can not be null or empty');
-                    this.statusMap[errorCode] = status;
-                });
+                this.loadStatusDefinitions();
                 resolve(true);
             } catch (error) {
                 reject(error);
@@ -45,6 +39,16 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
+        });
+    },
+
+    loadStatusDefinitions: function () {
+        let statusCodes = SERVICE.DefaultFilesLoaderService.loadFiles('/src/utils/statusDefinitions.js');
+        Object.keys(statusCodes).forEach(errorCode => {
+            let status = statusCodes[errorCode];
+            assert.ok(status.code, 'Invalid response code for: ' + errorCode + ', it can not be null or empty');
+            assert.ok(status.message, 'Invalid error message for: ' + errorCode + ', it can not be null or empty');
+            this.statusMap[errorCode] = status;
         });
     },
 

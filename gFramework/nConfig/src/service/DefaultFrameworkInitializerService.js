@@ -342,36 +342,43 @@ module.exports = {
             _self.LOG.debug('Starting process for module : ' + moduleName);
             let moduleObject = NODICS.getRawModule(moduleName);
             let moduleFile = require(moduleObject.path + '/nodics.js');
-            if (moduleFile.init) {
-                moduleFile.LOG = logger.createLogger("Module-" + moduleName);
-                moduleFile.init(moduleObject).then(success => {
-                    _self.loadServices(moduleObject).then(() => {
-                        return _self.loadPipelinesDefinition(moduleObject);
-                    }).then(() => {
-                        return _self.loadFacades(moduleObject);
-                    }).then(() => {
-                        return _self.loadControllers(moduleObject);
-                    }).then(() => {
-                        resolve(true);
-                    }).catch((error) => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                _self.loadServices(moduleObject).then(() => {
-                    return _self.loadPipelinesDefinition(moduleObject);
-                }).then(() => {
-                    return _self.loadFacades(moduleObject);
-                }).then(() => {
-                    return _self.loadControllers(moduleObject);
-                }).then(() => {
-                    resolve(true);
-                }).catch((error) => {
-                    reject(error);
-                });
-            }
+            _self.loadServices(moduleObject).then(() => {
+                return _self.loadPipelinesDefinition(moduleObject);
+            }).then(() => {
+                return _self.loadFacades(moduleObject);
+            }).then(() => {
+                return _self.loadControllers(moduleObject);
+            }).then(() => {
+                if (moduleFile.init) {
+                    return moduleFile.init(moduleObject);
+                } else {
+                    Promise.resolve(true);
+                }
+            }).then(() => {
+                resolve(true);
+            }).catch((error) => {
+                reject(error);
+            });
+            // if (moduleFile.init) {
+            //     moduleFile.LOG = logger.createLogger("Module-" + moduleName);
+            //     moduleFile.init(moduleObject).then(success => {
+            //         _self.loadServices(moduleObject).then(() => {
+            //             return _self.loadPipelinesDefinition(moduleObject);
+            //         }).then(() => {
+            //             return _self.loadFacades(moduleObject);
+            //         }).then(() => {
+            //             return _self.loadControllers(moduleObject);
+            //         }).then(() => {
+            //             resolve(true);
+            //         }).catch((error) => {
+            //             reject(error);
+            //         });
+            //     }).catch(error => {
+            //         reject(error);
+            //     });
+            // } else {
+
+            // }
         });
     },
 

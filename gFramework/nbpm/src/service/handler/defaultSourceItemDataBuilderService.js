@@ -12,8 +12,6 @@
 const _ = require('lodash');
 
 module.exports = {
-    dbs: {},
-    interceptors: {},
 
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -37,22 +35,34 @@ module.exports = {
         });
     },
 
-    getSourceItemInfo: function (request, response, workflow) {
-        let schemaModel = request.schemaModel;
-        let savedModel = response.success.result;
-        return {
-            workflowCode: workflow.workflowCode,
-            itemType: 'INTERNAL',
-            item: {
-                code: savedModel.code,
-                sourceDetail: {
-                    schemaName: schemaModel.schemaName,
-                    moduleName: schemaModel.moduleName,
-                },
-                event: {
-                    enabled: true
-                }
+    buildItems: function (schemaModel, models, workflow) {
+        let items = [];
+        models.forEach(model => {
+            let itemData = {
+                code: model.code,
+                refId: model.workflow.refId
+            };
+            if (workflow.includeProperties && workflow.includeProperties.length > 0) {
+                itemData = _.merge(itemData, this.fatchData(model, [].concat(workflow.includeProperties)));
             }
-        };
+            items.push(itemData);
+        });
+
+        return items;
+    },
+
+    fatchData: function (model, properties = [], itemData = {}) {
+        if (properties.length > 0) {
+            let property = properties.shift();
+            if (property.indexOf(".") > 0) {
+                let firstProp = property.substring(0, property.indexOf(".", 1));
+                let restProps = property.substring(property.indexOf(".", 1) + 1, property.length);
+                itemData[firstProp] = _.merge(itemData[firstProp] || {}, this.fatchData(model[firstProp], [restProps]));
+            } else {
+                itemData[property] = model[property];
+            }
+            this.fatchData(model, properties, itemData);
+        }
+        return itemData;
     }
 };

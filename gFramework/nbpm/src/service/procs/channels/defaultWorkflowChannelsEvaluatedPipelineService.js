@@ -36,17 +36,8 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating input for workflow evaluated channels');
-        if (!request.tenant) {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid tenant value'));
-        } else if (!request.data || !request.data.sourceDetail || UTILS.isBlank(request.data.sourceDetail)) {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid event data value'));
-        } else if (!request.event) {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid event value'));
-        } else if (!request.data.items) {
-            process.error(request, response, new CLASSES.WorkflowError('Invalid channel items'));
-        } else {
-            process.nextSuccess(request, response);
-        }
+        process.stop(request, response, 'This functionlity is not yet implemented');
+        // process.nextSuccess(request, response);
     },
     prepareModel: function (request, response, process) {
         this.LOG.debug('Preparing model to update schema item');

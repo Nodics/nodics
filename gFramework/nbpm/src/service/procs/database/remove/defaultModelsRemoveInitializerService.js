@@ -39,6 +39,25 @@ module.exports = {
         try {
             let schemaModel = request.schemaModel;
             let removedModels = response.success.result.models;
+            if (!request.ignoreWorkflowEvent && response.success.result && schemaModel.workflows && Object.keys(schemaModel.workflows).length > 0) {
+                if (!removedModels.workflow || UTILS.isBlank(removedModels.workflow)) {
+                    this.LOG.error('item: ' + (savedModel.code || savedModel._id) + ' is not workflow compatable');
+                } else {
+                    SERVICE.DefaultWorkflowEventService.publishWorkflowEvent(request, response).then(success => {
+                        this.LOG.debug('Workflow associated successfully');
+                    }).catch(error => {
+                        this.LOG.error('While associating workflow : ', error);
+                    });
+                }
+            }
+        } catch (error) {
+            this.LOG.error('Facing issue while pushing workflow init event : ', error);
+        }
+        process.nextSuccess(request, response);
+
+        try {
+            let schemaModel = request.schemaModel;
+            let removedModels = response.success.result.models;
             if (!request.ignoreWorkflowEvent && removedModels && removedModels.length > 0 && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
                 this.LOG.debug('Triggering event for workflow association');
                 let event = {

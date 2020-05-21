@@ -13,6 +13,12 @@ module.exports = {
     record0: {
         workflowCode: 'customerReviewsWorkflow',
         schemaName: 'reviewTest',
-        active: true
+        active: true,
+        includeProperties: ['name', 'address.city'],
+        carrierDetail: {
+            prefix: 'cr',
+            code: 'workflow',
+            postFix: 'carrier'
+        }
     }
 };

@@ -15,66 +15,79 @@ module.exports = {
         WorkflowError: 'ERR_WF_00000'
     },
     workflow: {
-        sourceItemBuilder: {
-            serviceName: 'DefaultSourceItemDataBuilderService',
-            operation: 'getSourceItemInfo'
+        carrierCodeStrategy2Hnadler: {
+            DEFAULT: 'DefaultCarrierCodeGeneratorService',
+            GROUPINTIME: 'DefaultDurationalCarrierCodeGeneratorService'
         }
     },
-    defaultWorkflowEvents: {
-        workflowCarrierInitiated: {
-            active: true,
-            event: 'carrierInitiated',
-            listener: 'DefaultWorkflowCarrierAssignedEventListenerService.handleWorkflowCarrierAssignedEvent'
+    defaultWorkflowConfig: {
+        sourceBuilder: {
+            itemBuilder: 'DefaultSourceItemDataBuilderService',
+            carrierBuilder: 'DefaultSourceCarrierDataBuilderService',
+            codeStrategy: {
+                name: 'GROUPINTIME',
+                params: {
+                    pattern: 'YYYY_MM_DD_HH_MM_SS',
+                    delimiter: '_'
+                }
+            }
         },
-        workflowCarrierReleased: {
-            active: true,
-            event: 'carrierReleased',
-            listener: 'DefaultWorkflowCarrierReleasedEventListenerService.handleWorkflowCarrierReleasedEvent'
-        },
-        workflowCarrierBlocked: {
-            active: true,
-            event: 'carrierBlocked',
-            listener: 'DefaultWorkflowCarrierBlockedEventListenerService.handleWorkflowCarrierBlockedEvent'
-        },
-        workflowCarrierPaused: {
-            active: true,
-            event: 'carrierPaused',
-            listener: 'DefaultWorkflowCarrierPausedEventListenerService.handleWorkflowCarrierPausedEvent'
-        },
-        workflowCarrierResumed: {
-            active: true,
-            event: 'carrierResumed',
-            listener: 'DefaultWorkflowCarrierResumedEventListenerService.handleWorkflowCarrierResumedEvent'
-        },
-        workflowCarrierUpdated: {
-            active: true,
-            event: 'carrierUpdated',
-            listener: 'DefaultWorkflowCarrierUpdatedEventListenerService.handleWorkflowCarrierUpdatedEvent'
-        },
-        workflowErrorOccurred: {
-            active: true,
-            event: 'errorOccurred',
-            listener: 'DefaultWorkflowErrorOccuredEventListenerService.handleWorkflowErrorOccuredEvent'
-        },
-        // workflowChannelsEvaluated: {
-        //     active: true,
-        //     event: 'channelsEvaluated',
-        //     listener: 'DefaultWorkflowChannelsEvaluatedEventListenerService.handleWorkflowChannelsEvaluatedEvent'
-        // },
-        workflowActionPerformed: {
-            active: true,
-            event: 'actionPerformed',
-            listener: 'DefaultWorkflowActionPerformedEventListenerService.handleWorkflowActionPerformedEvent'
-        },
-        workflowCarrierProcessed: {
-            active: true,
-            event: 'carrierProcessed',
-            listener: 'DefaultWorkflowCarrierProcessedEventListenerService.handleWorkflowCarrierProcessedEvent'
-        },
-        workflowCarrierFilled: {
-            active: true,
-            event: 'carrierFilled',
-            listener: 'DefaultWorkflowCarrierFilledEventListenerService.handleWorkflowCarrierFilledEvent'
+        events: {
+            workflowCarrierInitiated: {
+                active: true,
+                event: 'carrierInitiated',
+                listener: 'DefaultWorkflowCarrierAssignedEventListenerService.handleWorkflowCarrierAssignedEvent'
+            },
+            workflowCarrierReleased: {
+                active: true,
+                event: 'carrierReleased',
+                listener: 'DefaultWorkflowCarrierReleasedEventListenerService.handleWorkflowCarrierReleasedEvent'
+            },
+            workflowCarrierBlocked: {
+                active: true,
+                event: 'carrierBlocked',
+                listener: 'DefaultWorkflowCarrierBlockedEventListenerService.handleWorkflowCarrierBlockedEvent'
+            },
+            workflowCarrierPaused: {
+                active: true,
+                event: 'carrierPaused',
+                listener: 'DefaultWorkflowCarrierPausedEventListenerService.handleWorkflowCarrierPausedEvent'
+            },
+            workflowCarrierResumed: {
+                active: true,
+                event: 'carrierResumed',
+                listener: 'DefaultWorkflowCarrierResumedEventListenerService.handleWorkflowCarrierResumedEvent'
+            },
+            workflowCarrierUpdated: {
+                active: true,
+                event: 'carrierUpdated',
+                listener: 'DefaultWorkflowCarrierUpdatedEventListenerService.handleWorkflowCarrierUpdatedEvent'
+            },
+            workflowErrorOccurred: {
+                active: true,
+                event: 'errorOccurred',
+                listener: 'DefaultWorkflowErrorOccuredEventListenerService.handleWorkflowErrorOccuredEvent'
+            },
+            workflowChannelsEvaluated: {
+                active: true,
+                event: 'channelsEvaluated',
+                listener: 'DefaultWorkflowChannelsEvaluatedEventListenerService.handleWorkflowChannelsEvaluatedEvent'
+            },
+            workflowActionPerformed: {
+                active: true,
+                event: 'actionPerformed',
+                listener: 'DefaultWorkflowActionPerformedEventListenerService.handleWorkflowActionPerformedEvent'
+            },
+            workflowCarrierProcessed: {
+                active: true,
+                event: 'carrierProcessed',
+                listener: 'DefaultWorkflowCarrierProcessedEventListenerService.handleWorkflowCarrierProcessedEvent'
+            },
+            workflowCarrierFilled: {
+                active: true,
+                event: 'carrierFilled',
+                listener: 'DefaultWorkflowCarrierFilledEventListenerService.handleWorkflowCarrierFilledEvent'
+            }
         }
     }
 };

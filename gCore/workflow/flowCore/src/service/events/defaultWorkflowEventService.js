@@ -49,7 +49,7 @@ module.exports = {
                         originalCode: workflowCarrier.originalCode,
                         activeHead: workflowCarrier.activeHead,
                         activeAction: workflowCarrier.activeAction.code,
-                        type: workflowCarrier.type
+                        type: workflowCarrier.type,
                         state: workflowCarrier.currentState,
                         items: workflowCarrier.workflowItems.map(item => {
                             return {

@@ -80,12 +80,11 @@ module.exports = {
     handlePreSaveAssignedDefaultEvents: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
-                request.model.events = _.merge(_.merge({}, CONFIG.get('defaultWorkflowEvents')), request.model.events);
+                request.model = _.merge(_.merge({}, CONFIG.get('defaultWorkflowConfig')), request.model);
                 Object.keys(request.model.events).forEach(eventName => {
                     let event = request.model.events[eventName];
                     event.event = SERVICE.DefaultWorkflowEventService.createEventName(request.model.schemaName, request.model.workflowCode, event.event);
                 });
-                if (!request.model.sourceItemBuilder) request.model.sourceItemBuilder = CONFIG.get('workflow').sourceItemBuilder;
                 resolve(true);
             } catch (error) {
                 reject(new CLASSES.WorkflowError('ERR_WF_00000', 'Error while assiging events with schema: ' + CONFIG.get('clusterId')));

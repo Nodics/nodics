@@ -42,7 +42,6 @@ module.exports = {
                 if (!savedModel.workflow || UTILS.isBlank(savedModel.workflow)) {
                     this.LOG.error('item: ' + (savedModel.code || savedModel._id) + ' is not workflow compatable');
                 } else {
-                    this.LOG.debug('Triggering event for workflow association');
                     let event = {
                         tenant: request.tenant,
                         event: 'initiateWorkflow',
@@ -52,16 +51,9 @@ module.exports = {
                         state: "NEW",
                         type: "SYNC",
                         targetType: ENUMS.TargetType.MODULE.key,
-                        active: true,
-                        data: []
+                        active: true
                     };
-                    Object.keys(schemaModel.workflows).forEach(workflowCode => {
-                        let workflow = schemaModel.workflows[workflowCode];
-                        let itemBuilder = workflow.sourceItemBuilder || CONFIG.get('workflow').sourceItemBuilder;
-                        event.data.push(SERVICE[itemBuilder.serviceName][itemBuilder.operation](request, response, workflow));
-                    });
-                    this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaModel.schemaName);
-                    SERVICE.DefaultEventService.publish(event).then(success => {
+                    SERVICE.DefaultWorkflowEventService.publishWorkflowEvent(event, schemaModel, [savedModel]).then(success => {
                         this.LOG.debug('Workflow associated successfully');
                     }).catch(error => {
                         this.LOG.error('While associating workflow : ', error);

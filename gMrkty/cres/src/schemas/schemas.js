@@ -30,7 +30,22 @@ module.exports = {
                 idPropertyName: 'code',
             },
             definition: {
-
+                name: {
+                    type: 'string',
+                    required: true
+                },
+                address: {
+                    type: 'object',
+                    required: true
+                },
+                'address.city': {
+                    type: 'string',
+                    required: true
+                },
+                'address.state': {
+                    type: 'string',
+                    required: true
+                }
             }
         },
     }

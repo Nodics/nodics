@@ -210,6 +210,11 @@ module.exports = {
             return config.loadModules();
         }).then(() => {
             return new Promise((resolve, reject) => {
+                SERVICE.DefaultStatusService.loadStatusDefinitions();
+                resolve(true);
+            });
+        }).then(() => {
+            return new Promise((resolve, reject) => {
                 SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/schemas.js', null));
                 resolve(true);
             });

@@ -399,7 +399,7 @@ module.exports = {
         },
 
         workflowArchivedItem: {
-            super: 'workflowI1tem',
+            super: 'workflowItem',
             model: true,
             service: {
                 enabled: true

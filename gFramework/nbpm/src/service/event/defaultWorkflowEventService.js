@@ -37,5 +37,29 @@ module.exports = {
 
     createEventName: function (preFix, workflowCode, postFix) {
         return preFix + workflowCode.toUpperCaseFirstChar() + postFix.toUpperCaseFirstChar();
+    },
+
+    publishWorkflowEvent: function (event, schemaDef, models) {
+        return new Promise((resolve, reject) => {
+            if (!event.data) event.data = [];
+            schemaDef.workflows.forEach(workflow => {
+                event.data.push({
+                    workflowCode: workflow.workflowCode,
+                    releaseCarrier: false,
+                    carrier: SERVICE[workflow.sourceBuilder.carrierBuilder].buildCarrier(schemaDef, models[0], workflow),
+                    items: SERVICE[workflow.sourceBuilder.carrierBuilder].buildItems(schemaDef, models, workflow)
+                });
+            });
+            this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaDef.schemaName);
+            console.log('-------------------------------------------------------------');
+            console.log(event);
+            console.log('-------------------------------------------------------------');
+            resolve(true);
+            // SERVICE.DefaultEventService.publish(event).then(success => {
+            //     resolve(success);
+            // }).catch(error => {
+            //     reject(error);
+            // });
+        });
     }
 };
