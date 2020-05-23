@@ -77,6 +77,7 @@ module.exports = {
         if (request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.RELEASED.key) {
             let carrierState = {
                 state: ENUMS.WorkflowCarrierState.PROCESSING.key,
+                action: request.workflowAction.code,
                 description: 'Pushing carrier to processing state'
             };
             request.workflowCarrier.currentState = carrierState;

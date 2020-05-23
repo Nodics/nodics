@@ -47,6 +47,7 @@ module.exports = {
         if (request.workflowCarrier.currentState.state === ENUMS.WorkflowCarrierState.PAUSED.key) {
             let carrierState = {
                 state: ENUMS.WorkflowCarrierState.PROCESSING.key,
+                action: request.workflowAction.code,
                 description: request.comment || 'Carrier successfully resumed'
             };
             request.workflowCarrier.currentState = carrierState;

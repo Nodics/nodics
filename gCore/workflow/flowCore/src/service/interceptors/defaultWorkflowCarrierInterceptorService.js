@@ -32,10 +32,15 @@ module.exports = {
         });
     },
 
-    handlePreSaveState: function (request, response) {
+    loadWorkflowCarrierStates: function (request, response) {
         return new Promise((resolve, reject) => {
-            if (request.model.active === undefined) {
-                request.model.active = true;
+            if (!request.options) request.options = {};
+            if (!request.options.recursive) {
+                request.options.recursive = {
+                    states: true
+                };
+            } else if (UTILS.isObject(request.options.recursive) && request.options.recursive.states === undefined) {
+                request.options.recursive.states = true;
             }
             resolve(true);
         });

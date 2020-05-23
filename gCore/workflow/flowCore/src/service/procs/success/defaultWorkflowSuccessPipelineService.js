@@ -53,7 +53,7 @@ module.exports = {
             state: ENUMS.WorkflowCarrierState.FINISHED.key,
             description: 'Carrier successfully processed'
         };
-        request.successItem.currentState = carrierState;
+        response.successItem.currentState = carrierState;
         response.successItem.states.push(carrierState);
         if (response.successItem.states && response.successItem.states.length > 0) {
             let items = [];
@@ -93,6 +93,8 @@ module.exports = {
     },
     updateArchivePool: function (request, response, process) {
         this.LOG.debug('updating archive pool');
+        console.log('*************************************************************************************');
+        console.log(util.inspect(response.successItem, showHidden = false, depth = 5, colorize = true));
         SERVICE.DefaultWorkflowArchivedCarrierService.save({
             tenant: request.tenant,
             model: response.successItem
@@ -100,6 +102,9 @@ module.exports = {
             this.LOG.info('Carrier: has been moved to archived pool successfully');
             process.nextSuccess(request, response);
         }).catch(error => {
+            console.log('----- Error -----');
+            console.log(util.inspect(response.successItem, showHidden = false, depth = 5, colorize = true));
+            console.log('*************************************************************************************');
             process.error(request, response, error);
         });
     },

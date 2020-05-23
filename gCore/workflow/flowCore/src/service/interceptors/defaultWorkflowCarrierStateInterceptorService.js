@@ -9,11 +9,7 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
-
-    processingAllowedStates: [ENUMS.WorkflowCarrierState.RELEASED.key, ENUMS.WorkflowCarrierState.PROCESSING.key, ENUMS.WorkflowCarrierState.ERROR.key],
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -36,11 +32,12 @@ module.exports = {
         });
     },
 
-    getEventConfiguration: function (workflowAction, workflowCarrier) {
-        return _.merge(_.merge({}, workflowAction.event || {}), workflowCarrier.event);
-    },
-
-    isProcessingAllowed: function (workflowCarrier) {
-        return this.processingAllowedStates.includes(workflowCarrier.currentState.state);
+    applyDefaultActiveProperty: function (request, response) {
+        return new Promise((resolve, reject) => {
+            if (request.model.active === undefined) {
+                request.model.active = true;
+            }
+            resolve(true);
+        });
     }
 };

@@ -47,6 +47,7 @@ module.exports = {
         if (request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.RELEASED.key) {
             let carrierState = {
                 state: ENUMS.WorkflowCarrierState.RELEASED.key,
+                action: request.workflowAction.code,
                 description: request.comment || 'Carrier successfully released'
             };
             request.workflowCarrier.currentState = carrierState;
