@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     /**
@@ -111,9 +113,15 @@ module.exports = {
     },
     saveActiveItem: function (request, response, process) {
         this.LOG.debug('Creating active workflow item');
+        console.log('--------------------------request.workflowCarrier-----------------------------------');
+        console.log(util.inspect(request.workflowCarrier, showHidden = false, depth = 5, colorize = true));
+        console.log('-------------------------------------------------------------');
         SERVICE.DefaultWorkflowCarrierService.save({
             tenant: request.tenant,
             moduleName: request.moduleName,
+            options: {
+                recursive: true
+            },
             model: request.workflowCarrier
         }).then(success => {
             request.workflowCarrier = success.result;
@@ -144,7 +152,7 @@ module.exports = {
         process.nextSuccess(request, response);
     },
     performAction: function (request, response, process) {
-        if (SERVICE.DefaultWorkflowUtilsService.isProcessingAllowed(workflowCarrier) && request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
+        if (SERVICE.DefaultWorkflowUtilsService.isProcessingAllowed(request.workflowCarrier) && request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
             this.LOG.debug('Triggering action for auto workflow head');
             SERVICE.DefaultWorkflowService.performAction({
                 tenant: request.tenant,

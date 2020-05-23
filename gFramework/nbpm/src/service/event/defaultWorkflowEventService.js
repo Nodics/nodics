@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+var util = require('util');
 
 module.exports = {
 
@@ -42,24 +43,24 @@ module.exports = {
     publishWorkflowEvent: function (event, schemaDef, models) {
         return new Promise((resolve, reject) => {
             if (!event.data) event.data = [];
-            schemaDef.workflows.forEach(workflow => {
+            Object.keys(schemaDef.workflows).forEach(workflowCode => {
+                let workflow = schemaDef.workflows[workflowCode];
                 event.data.push({
                     workflowCode: workflow.workflowCode,
-                    releaseCarrier: false,
+                    releaseCarrier: (!workflow.carrierDetail || workflow.carrierDetail.isCarrierReleased === undefined) ? CONFIG.get('workflow').isCarrierReleased : workflow.carrierDetail.isCarrierReleased,
                     carrier: SERVICE[workflow.sourceBuilder.carrierBuilder].buildCarrier(schemaDef, models[0], workflow),
-                    items: SERVICE[workflow.sourceBuilder.carrierBuilder].buildItems(schemaDef, models, workflow)
+                    items: SERVICE[workflow.sourceBuilder.itemBuilder].buildItems(schemaDef, models, workflow)
                 });
             });
+            console.log('-------------------------------------------------------------');
             this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaDef.schemaName);
+            console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
             console.log('-------------------------------------------------------------');
-            console.log(event);
-            console.log('-------------------------------------------------------------');
-            resolve(true);
-            // SERVICE.DefaultEventService.publish(event).then(success => {
-            //     resolve(success);
-            // }).catch(error => {
-            //     reject(error);
-            // });
+            SERVICE.DefaultEventService.publish(event).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };

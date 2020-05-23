@@ -72,7 +72,7 @@ module.exports = {
                     SERVICE[serviceName.toUpperCaseFirstChar()][operation]({
                         tenant: request.tenant,
                         authData: request.authData,
-                        workflowItem: request.workflowItem,
+                        workflowCarrier: request.workflowCarrier,
                         workflowHead: request.workflowHead,
                         workflowAction: request.workflowAction,
                         actionResponse: request.actionResponse,

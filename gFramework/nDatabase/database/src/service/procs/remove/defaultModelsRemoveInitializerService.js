@@ -55,6 +55,7 @@ module.exports = {
     },
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building search query & searchOptions');
+        request.options = request.options || {};
         if (!request.query || UTILS.isBlank(request.query)) {
             if (request.ids && request.ids.length > 0) {
                 let tmpIds = [];
@@ -347,53 +348,6 @@ module.exports = {
             }
         } catch (error) {
             this.LOG.error('Facing issue while pushing save event : ', error);
-        }
-        process.nextSuccess(request, response);
-    },
-
-    handleWorkflowProcess: function (request, response, process) {
-        try {
-            let schemaModel = request.schemaModel;
-            let removedModels = response.success.result.models;
-            if (!request.ignoreWorkflowEvent && removedModels && removedModels.length > 0 && schemaModel.workflowCodes && schemaModel.workflowCodes.length > 0) {
-                this.LOG.debug('Triggering event for workflow association');
-                let event = {
-                    tenant: request.tenant,
-                    event: 'initiateWorkflow',
-                    sourceName: schemaModel.moduleName,
-                    sourceId: CONFIG.get('nodeId'),
-                    target: 'workflow',
-                    state: "NEW",
-                    type: "SYNC",
-                    targetType: ENUMS.TargetType.MODULE.key,
-                    active: true,
-                    data: []
-                };
-                schemaModel.workflowCodes.forEach(workflowCode => {
-                    removedModels.forEach(removedItem => {
-                        event.data.push({
-                            workflowCode: workflowCode,
-                            itemType: 'INTERNAL',
-                            item: {
-                                code: removedItem.code,
-                                active: false,
-                                detail: {
-                                    schemaName: schemaModel.schemaName,
-                                    moduleName: schemaModel.moduleName,
-                                }
-                            }
-                        });
-                    });
-                });
-                this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaModel.schemaName);
-                SERVICE.DefaultEventService.publish(event).then(success => {
-                    this.LOG.debug('Workflow associated successfully');
-                }).catch(error => {
-                    this.LOG.error('While associating workflow : ', error);
-                });
-            }
-        } catch (error) {
-            this.LOG.error('Facing issue while pushing workflow init event : ', error);
         }
         process.nextSuccess(request, response);
     },

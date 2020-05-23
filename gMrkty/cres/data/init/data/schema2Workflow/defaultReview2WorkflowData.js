@@ -19,6 +19,15 @@ module.exports = {
             prefix: 'cr',
             code: 'workflow',
             postFix: 'carrier'
+        },
+        sourceBuilder: {
+            codeStrategy: {
+                name: 'GROUPINTIME',
+                params: {
+                    pattern: 'YYYY_MM_DD_HH_MM_00',
+                    delimiter: '_'
+                }
+            }
         }
     }
 };

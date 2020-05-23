@@ -45,7 +45,7 @@ module.exports = {
         this.LOG.debug('Validating request to evaluate channels');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
-        } else if (!request.itemCode && !request.workflowItem) {
+        } else if (!request.carrierCode && !request.workflowCarrier) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow item detail can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
@@ -83,7 +83,7 @@ module.exports = {
         SERVICE.DefaultWorkflowChannelService.getQalifiedChannel({
             tenant: request.tenant,
             authData: request.authData,
-            workflowItem: request.workflowItem,
+            workflowCarrier: request.workflowCarrier,
             workflowHead: request.workflowHead,
             workflowAction: request.workflowAction,
             actionResponse: request.actionResponse
@@ -122,7 +122,7 @@ module.exports = {
         SERVICE.DefaultWorkflowChannelService.executeChannels({
             tenant: request.tenant,
             authData: request.authData,
-            workflowItem: request.workflowItem,
+            workflowCarrier: request.workflowCarrier,
             workflowHead: request.workflowHead,
             workflowAction: request.workflowAction,
             actionResponse: request.actionResponse,

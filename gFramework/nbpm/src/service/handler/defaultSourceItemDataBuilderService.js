@@ -40,7 +40,8 @@ module.exports = {
         models.forEach(model => {
             let itemData = {
                 code: model.code,
-                refId: model.workflow.refId
+                refId: model.workflow.refId,
+                active: true
             };
             if (workflow.includeProperties && workflow.includeProperties.length > 0) {
                 itemData = _.merge(itemData, this.fatchData(model, [].concat(workflow.includeProperties)));

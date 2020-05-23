@@ -44,10 +44,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
     checkUpdateRequest: function (request, response, process) {
         try {
             SERVICE.DefaultWorkflowCarrierService.get({
                 tenant: request.tenant,
+                options: {
+                    recursive: true
+                },
                 query: {
                     code: request.carrier.code
                 }

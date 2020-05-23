@@ -46,7 +46,7 @@ module.exports = {
     releaseCarrier: function (request, response, process) {
         if (request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.RELEASED.key) {
             let carrierState = {
-                status: ENUMS.WorkflowCarrierState.RELEASED.key,
+                state: ENUMS.WorkflowCarrierState.RELEASED.key,
                 description: request.comment || 'Carrier successfully released'
             };
             request.workflowCarrier.currentState = carrierState;
@@ -88,6 +88,9 @@ module.exports = {
         SERVICE.DefaultWorkflowCarrierService.save({
             tenant: request.tenant,
             moduleName: request.moduleName,
+            options: {
+                recursive: true
+            },
             model: request.workflowCarrier
         }).then(success => {
             response.success = 'WorkflowCarrier: ' + request.workflowCarrier.code + ' has been released successfully';

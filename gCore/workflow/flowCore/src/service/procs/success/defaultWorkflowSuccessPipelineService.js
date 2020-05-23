@@ -54,7 +54,7 @@ module.exports = {
             description: 'Carrier successfully processed'
         };
         request.successItem.currentState = carrierState;
-        request.successItem.states.push(carrierState);
+        response.successItem.states.push(carrierState);
         if (response.successItem.states && response.successItem.states.length > 0) {
             let items = [];
             response.successItem.states.forEach(wtItem => {

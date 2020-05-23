@@ -290,7 +290,9 @@ module.exports = {
                     } else {
                         if (propertyObject.propertyName === '_id') {
                             query[propertyObject.propertyName] = {
-                                '$in': SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property])
+                                '$in': model[property].map(id => {
+                                    return SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, id);
+                                })
                             };
                         } else {
                             query[propertyObject.propertyName] = {

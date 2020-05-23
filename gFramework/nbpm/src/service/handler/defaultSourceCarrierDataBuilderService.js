@@ -37,21 +37,27 @@ module.exports = {
 
     buildCarrier: function (schemaDef, model, workflow) {
         let sourceBuilder = workflow.sourceBuilder;
-        let codeGenerator = sourceBuilder.codeStrategy || CONFIG.get('workflow').carrierCodeStrategy2Hnadler.DEFAULT;
-        return {
-            code: SERVICE[codeGenerator].generateCarrierCode({
-                schemaDef: schemaDef,
-                model: model,
-                workflow: workflow,
-                params: sourceBuilder.codeStrategy.params
-            }),
-            sourceDetail: {
-                schemaName: schemaDef.schemaName,
-                moduleName: schemaDef.moduleName,
-            },
-            event: {
-                enabled: true
-            }
-        };
+        let codeGeneratorKey = (sourceBuilder.codeStrategy) ? sourceBuilder.codeStrategy.name || 'DEFAULT' : 'DEFAULT'; // CONFIG.get('workflow').carrierCodeStrategy2Hnadler.DEFAULT;
+        let codeGeneratorService = CONFIG.get('workflow').carrierCodeStrategy2Hnadler[codeGeneratorKey];
+        if (!codeGeneratorService) {
+            throw new Error('Invalid source builder configuration, check code strategy value');
+        } else {
+            return {
+                code: SERVICE[CONFIG.get('workflow').carrierCodeStrategy2Hnadler[codeGeneratorKey]].generateCarrierCode({
+                    schemaDef: schemaDef,
+                    model: model,
+                    workflow: workflow,
+                    params: sourceBuilder.codeStrategy.params
+                }),
+                sourceDetail: {
+                    schemaName: schemaDef.schemaName,
+                    moduleName: schemaDef.moduleName,
+                },
+                event: {
+                    enabled: true,
+                    type: 'INTERNAL'
+                }
+            };
+        }
     }
 };

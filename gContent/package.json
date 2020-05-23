@@ -4,7 +4,7 @@
     "type": "core",
     "requiredModules": [
         "cms",
-        "cmsWorkflow"
+        "wcms"
     ],
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to gContent",
     "homepage": "http://www.nodics.com/",

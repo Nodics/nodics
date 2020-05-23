@@ -166,7 +166,8 @@ module.exports = {
         let _self = this;
         let rawModule = NODICS.getRawModule(moduleName);
         if (!rawModule || !rawModule.metaData) {
-            console.error('Invalid module name : ', moduleName);
+            console.error('Invalid module name1 : ', moduleName);
+            process.exit(1);
         } else {
             if (rawModule.metaData.requiredModules && rawModule.metaData.requiredModules.length > 0) {
                 rawModule.metaData.requiredModules.forEach(nxtModuleName => {
@@ -182,6 +183,7 @@ module.exports = {
         let rawModule = NODICS.getRawModule(moduleName);
         if (!rawModule || !rawModule.metaData) {
             console.error('Invalid module name : ', moduleName);
+            process.exit(1);
         } else {
             if (rawModule.parentModules && rawModule.parentModules.length > 0) {
                 rawModule.parentModules.forEach(pModuleName => {
@@ -342,43 +344,36 @@ module.exports = {
             _self.LOG.debug('Starting process for module : ' + moduleName);
             let moduleObject = NODICS.getRawModule(moduleName);
             let moduleFile = require(moduleObject.path + '/nodics.js');
-            _self.loadServices(moduleObject).then(() => {
-                return _self.loadPipelinesDefinition(moduleObject);
-            }).then(() => {
-                return _self.loadFacades(moduleObject);
-            }).then(() => {
-                return _self.loadControllers(moduleObject);
-            }).then(() => {
-                if (moduleFile.init) {
-                    return moduleFile.init(moduleObject);
-                } else {
-                    Promise.resolve(true);
-                }
-            }).then(() => {
-                resolve(true);
-            }).catch((error) => {
-                reject(error);
-            });
-            // if (moduleFile.init) {
-            //     moduleFile.LOG = logger.createLogger("Module-" + moduleName);
-            //     moduleFile.init(moduleObject).then(success => {
-            //         _self.loadServices(moduleObject).then(() => {
-            //             return _self.loadPipelinesDefinition(moduleObject);
-            //         }).then(() => {
-            //             return _self.loadFacades(moduleObject);
-            //         }).then(() => {
-            //             return _self.loadControllers(moduleObject);
-            //         }).then(() => {
-            //             resolve(true);
-            //         }).catch((error) => {
-            //             reject(error);
-            //         });
-            //     }).catch(error => {
-            //         reject(error);
-            //     });
-            // } else {
-
-            // }
+            if (moduleFile.init) {
+                moduleFile.LOG = logger.createLogger("Module-" + moduleName);
+                moduleFile.init(moduleObject).then(success => {
+                    _self.loadServices(moduleObject).then(() => {
+                        return _self.loadPipelinesDefinition(moduleObject);
+                    }).then(() => {
+                        return _self.loadFacades(moduleObject);
+                    }).then(() => {
+                        return _self.loadControllers(moduleObject);
+                    }).then(() => {
+                        resolve(true);
+                    }).catch((error) => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                _self.loadServices(moduleObject).then(() => {
+                    return _self.loadPipelinesDefinition(moduleObject);
+                }).then(() => {
+                    return _self.loadFacades(moduleObject);
+                }).then(() => {
+                    return _self.loadControllers(moduleObject);
+                }).then(() => {
+                    resolve(true);
+                }).catch((error) => {
+                    reject(error);
+                });
+            }
         });
     },
 

@@ -15,6 +15,7 @@ module.exports = {
         WorkflowError: 'ERR_WF_00000'
     },
     workflow: {
+        isCarrierReleased: true,
         carrierCodeStrategy2Hnadler: {
             DEFAULT: 'DefaultCarrierCodeGeneratorService',
             GROUPINTIME: 'DefaultDurationalCarrierCodeGeneratorService'
@@ -25,7 +26,6 @@ module.exports = {
             itemBuilder: 'DefaultSourceItemDataBuilderService',
             carrierBuilder: 'DefaultSourceCarrierDataBuilderService',
             codeStrategy: {
-                name: 'GROUPINTIME',
                 params: {
                     pattern: 'YYYY_MM_DD_HH_MM_SS',
                     delimiter: '_'

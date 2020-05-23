@@ -9,10 +9,7 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
-
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -34,30 +31,30 @@ module.exports = {
             resolve(true);
         });
     },
-    validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to assign item with workflow');
-        if (!request.tenant) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
-        } else {
-            process.nextSuccess(request, response);
-        }
-    },
-    loadCarrierItems: function (request, response, process) {
-        process.nextSuccess(request, response);
-    },
-    loadItems: function (request, response, process) {
-        process.nextSuccess(request, response);
-    },
-    createCarrierItems: function (request, response, process) {
-        this.LOG.debug('Creating new external workflow item');
-        if (request.items && request.items.length > 0) {
-            if (!request.workflowCarrier.items) request.workflowCarrier.items = [];
-            request.items.forEach(item => {
-                request.workflowCarrier.items.push(item);
+
+
+    handleItemChangeEvent: function (request, callback) {
+        try {
+            SERVICE.DefaultWorkflowService.handleItemChangeEvent(request).then(success => {
+                if (success.errors && success.errors.length > 0) {
+                    let error = new CLASSES.EventError(success.errors[0]);
+                    if (success.errors.length > 1) {
+                        success.errors.forEach(err => {
+                            error.add(err);
+                        });
+                    }
+                    error.metadata = {
+                        result: success.result,
+                    };
+                    callback(error);
+                } else {
+                    callback(null, success.result);
+                }
+            }).catch(error => {
+                callback(new CLASSES.EventError(error, 'Unable to handle workflow item change', 'ERR_EVNT_00000'));
             });
-            process.nextSuccess(request, response);
-        } else {
-            process.nextSuccess(request, response);
+        } catch (error) {
+            callback(new CLASSES.EventError(error, 'Unable to handle workflow item change', 'ERR_EVNT_00000'));
         }
     }
 };

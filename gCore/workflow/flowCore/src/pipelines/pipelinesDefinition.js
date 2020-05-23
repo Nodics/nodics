@@ -61,6 +61,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultUpdateWorkflowCarrierPipelineService.validateRequest',
+                success: 'updateworkflowItems'
+            },
+            updateworkflowItems: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowCarrierPipelineService.updateworkflowItems',
                 success: 'createCarrier'
             },
             createCarrier: {
@@ -549,7 +554,6 @@ module.exports = {
             }
         }
     },
-    // ---------------------------------------------------------------------
     performWorkflowActionPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -897,7 +901,6 @@ module.exports = {
         }
     },
 
-    // ---------------------------------------------------------------------
     handleWorkflowSuccessPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -956,24 +959,25 @@ module.exports = {
             updateError: {
                 type: 'function',
                 handler: 'DefaultWorkflowErrorPipelineService.updateError',
-                success: {
-                    createErrorItem: 'createErrorItem',
-                    triggerErrorOccuredEvent: 'triggerErrorOccuredEvent'
-                }
+                success: "createErrorItem"
+                // success: {
+                //     createErrorItem: 'createErrorItem',
+                //     triggerErrorOccuredEvent: 'triggerErrorOccuredEvent'
+                // }
             },
             createErrorItem: {
                 type: 'function',
                 handler: 'DefaultWorkflowErrorPipelineService.createErrorItem',
-                success: 'successInterceptors'
+                success: 'errorInterceptors'
             },
-            successInterceptors: {
+            errorInterceptors: {
                 type: 'function',
-                handler: 'DefaultWorkflowErrorPipelineService.successInterceptors',
-                success: 'successValidators'
+                handler: 'DefaultWorkflowErrorPipelineService.errorInterceptors',
+                success: 'errorValidators'
             },
-            successValidators: {
+            errorValidators: {
                 type: 'function',
-                handler: 'DefaultWorkflowErrorPipelineService.successValidators',
+                handler: 'DefaultWorkflowErrorPipelineService.errorValidators',
                 success: 'updateErrorPool'
             },
             updateErrorPool: {

@@ -43,12 +43,17 @@ module.exports = {
             throw new CLASSES.WorkflowError('Invalid pattern should be: "YYYY_MM_DD_HH_MM_SS" and found: ' + options.params.pattern);
         } else {
             let timeData = [];
+            let startZero = false;
             options.params.pattern.split('_').forEach((item, index) => {
+                if (startZero) {
+                    item = '0';
+                }
                 let val = parseInt(item);
                 if (isNaN(val)) {
-                    timeData.push(eval(values[index]));
+                    timeData.push(eval(timeProps[index]));
                 } else {
                     timeData.push(val);
+                    startZero = true;
                 }
             });
             let carrierCode = timeData.join(options.params.pattern.delimiter || '_');

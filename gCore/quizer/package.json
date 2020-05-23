@@ -4,8 +4,8 @@
     "type": "core",
     "requiredModules": [
         "quiz",
-        "quizWorkflow",
-        "vQuiz"
+        "wquiz",
+        "vquiz"
     ],
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to quizer",
     "homepage": "http://www.nodics.com/",

@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -182,11 +184,11 @@ module.exports = {
             let event = request.event;
             let data = event.data;
             let allPromises = [];
-            data.forEach(HimkarDwivedi => {
-                HimkarDwivedi.tenant = HimkarDwivedi.tenant || request.tenant;
+            data.forEach(carrier => {
                 allPromises.push(this.initCarrierItem(_.merge({
-                    authData: request.authData
-                }, HimkarDwivedi)));
+                    authData: request.authData,
+                    tenant: event.tenant || carrier.tenant || request.tenant
+                }, carrier)));
             });
             if (allPromises.length > 0) {
                 SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {

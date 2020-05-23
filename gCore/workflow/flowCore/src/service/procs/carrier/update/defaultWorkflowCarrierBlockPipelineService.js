@@ -46,7 +46,7 @@ module.exports = {
     blockCarrier: function (request, response, process) {
         if (request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.BLOCKED.key) {
             let carrierState = {
-                status: ENUMS.WorkflowCarrierState.BLOCKED.key,
+                state: ENUMS.WorkflowCarrierState.BLOCKED.key,
                 description: request.comment || 'Carrier successfully blocked'
             };
             request.workflowCarrier.currentState = carrierState;
@@ -88,6 +88,9 @@ module.exports = {
         SERVICE.DefaultWorkflowCarrierService.save({
             tenant: request.tenant,
             moduleName: request.moduleName,
+            options: {
+                recursive: true
+            },
             model: request.workflowCarrier
         }).then(success => {
             response.success = 'WorkflowCarrier: ' + request.workflowCarrier.code + ' has been blocked successfully';

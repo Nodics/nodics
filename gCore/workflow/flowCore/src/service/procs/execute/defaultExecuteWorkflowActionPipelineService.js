@@ -49,15 +49,15 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, authorization data can not null or empty'));
         } else if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
-        } else if (!SERVICE.DefaultWorkflowUtilsService.isProcessingAllowed(workflowCarrier)) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Current state not allowed to be execute'));
         } else {
             process.nextSuccess(request, response);
         }
     },
     validateOperation: function (request, response, process) {
         let workflowCarrier = request.workflowCarrier;
-        if (workflowCarrier.activeHead !== request.workflowHead.code) {
+        if (!SERVICE.DefaultWorkflowUtilsService.isProcessingAllowed(request.workflowCarrier)) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, Current state not allowed to be execute'));
+        } else if (workflowCarrier.activeHead !== request.workflowHead.code) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow head mismatch, for item ' + workflowCarrier.code + ' with workflow head: ' + request.workflowHead.code));
         } else if (workflowCarrier.activeAction.code !== request.workflowAction.code) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action mismatch, for item ' + workflowCarrier.code + ' with workflow head: ' + request.workflowAction.code));
@@ -195,6 +195,9 @@ module.exports = {
         });
         SERVICE.DefaultWorkflowCarrierService.save({
             tenant: request.tenant,
+            options: {
+                recursive: true
+            },
             model: request.workflowCarrier
         }).then(success => {
             request.workflowCarrier = success.result;

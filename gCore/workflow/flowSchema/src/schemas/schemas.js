@@ -228,7 +228,7 @@ module.exports = {
                 enabled: true
             },
             refSchema: {
-                workflowItems: {
+                items: {
                     enabled: true,
                     schemaName: "workflowItem",
                     type: 'many',
@@ -312,10 +312,10 @@ module.exports = {
                     type: 'array',
                     required: false
                 },
-                workflowItems: {
+                items: {
                     type: 'array',
                     required: false,
-                    description: 'List of workflowI1tems associated with this carrier'
+                    description: 'List of items associated with this carrier'
                 },
                 states: {
                     type: 'array',
@@ -358,7 +358,7 @@ module.exports = {
                 enabled: true
             },
             refSchema: {
-                workflowI1tems: {
+                items: {
                     enabled: true,
                     schemaName: "workflowArchivedItem",
                     type: 'many',
@@ -383,7 +383,7 @@ module.exports = {
                 enabled: true
             },
             refSchema: {
-                workflowI1tems: {
+                items: {
                     enabled: true,
                     schemaName: "workflowArchivedItem",
                     type: 'many',

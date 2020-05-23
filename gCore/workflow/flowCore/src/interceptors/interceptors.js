@@ -10,6 +10,14 @@
  */
 
 module.exports = {
+    preSaveWorkflowCarrierState: {
+        type: 'schema',
+        item: 'workflowCarrierState',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultSaveWorkflowCarrierStateInterceptorService.handlePreSaveState'
+    },
     preSaveWorkflowAction: {
         type: 'schema',
         item: 'workflowAction',

@@ -51,7 +51,8 @@ module.exports = {
             SERVICE.DefaultWorkflowCarrierService.get({
                 tenant: request.tenant,
                 options: {
-                    loadActionResponse: false
+                    loadActionResponse: false,
+                    recursive: true
                 },
                 query: {
                     code: carrierCode
@@ -71,11 +72,9 @@ module.exports = {
                         if (!request.workflowAction && !request.actionCode) {
                             request.actionCode = request.workflowCarrier.activeAction.code;
                         }
-                        process.nextSuccess(request, response);
                     }
-                } else {
-                    process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not found workflow carrier for code: ' + carrierCode));
                 }
+                process.nextSuccess(request, response);
             }).catch(error => {
                 process.error(request, response, error);
             });
@@ -87,13 +86,12 @@ module.exports = {
         this.LOG.debug('Creating new workflow carrier');
         if (!request.workflowCarrier && request.carrier) {
             request.workflowCarrier = _.merge({}, request.carrier);
-            request.workflowCarrier.active = (item.active === undefined) ? true : item.active;
+            request.workflowCarrier.active = (request.carrier.active === undefined) ? true : request.carrier.active;
             request.workflowCarrier.event = request.workflowCarrier.event || {};
             request.workflowCarrier.event.enabled = request.workflowCarrier.event.enabled || false;
             request.workflowCarrier.type = request.workflowCarrier.type || ENUMS.WorkflowCarrierType.FIXED.key;
-            request.workflowCarrier.state = request.workflowCarrier.state || ENUMS.WorkflowActionState.NEW.key;
             let carrierState = {
-                status: ENUMS.WorkflowCarrierState.INIT.key,
+                state: ENUMS.WorkflowCarrierState.INIT.key,
                 description: 'Carrier initialized'
             };
             request.workflowCarrier.currentState = carrierState;

@@ -41,6 +41,30 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    updateworkflowItems: function (request, response, process) {
+        this.LOG.debug('Updating workflow items in workflow carrier');
+        if (!request.carrier.items || request.carrier.items.length <= 0 ||
+            !request.workflowCarrier.items ||
+            request.workflowCarrier.items.length <= 0) {
+            process.nextSuccess(request, response);
+        } else {
+            let savedWorkflowItems = request.workflowCarrier.items;
+            let newItems = request.carrier.items;
+            let mergedItems = newItems.map((uItem, index) => {
+                for (count = 0; count < savedWorkflowItems.length; count++) {
+                    if (uItem.label === savedWorkflowItems[count].label) {
+                        uItem = _.merge(_.merge({}, savedWorkflowItems[count]), uItem);
+                        savedWorkflowItems.splice(count, 1);
+                        break;
+                    }
+                }
+                return uItem;
+            });
+            delete request.carrier.items;
+            request.workflowCarrier.items = savedWorkflowItems.concat(mergedItems);
+            process.nextSuccess(request, response);
+        }
+    },
     createCarrier: function (request, response, process) {
         this.LOG.debug('Creating new external workflow item');
         request.workflowCarrier = _.merge(request.workflowCarrier, request.carrier);
@@ -104,6 +128,7 @@ module.exports = {
         this.LOG.debug('Updating active workflow item');
         SERVICE.DefaultWorkflowCarrierService.update({
             tenant: request.tenant,
+            authData: request.authData,
             moduleName: request.moduleName,
             query: {
                 code: request.workflowCarrier.code

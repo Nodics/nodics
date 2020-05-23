@@ -75,7 +75,7 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
-    successInterceptors: function (request, response, process) {
+    errorInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowHead.code);
         if (interceptors && interceptors.error) {
             this.LOG.debug('Applying  interceptors for workflow carrier error');
@@ -88,7 +88,7 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    successValidators: function (request, response, process) {
+    errorValidators: function (request, response, process) {
         let validators = SERVICE.DefaultWorkflowConfigurationService.getWorkflowValidators(request.tenant, request.workflowHead.code);
         if (validators && validators.error) {
             this.LOG.debug('Applying prePause validators for workflow carrier error');
@@ -133,6 +133,9 @@ module.exports = {
         } else {
             SERVICE.DefaultWorkflowCarrierService.save({
                 tenant: request.tenant,
+                options: {
+                    recursive: true
+                },
                 model: request.workflowCarrier
             }).then(success => {
                 this.LOG.debug('Error been updated for carrier: ' + request.workflowCarrier.code);

@@ -116,11 +116,11 @@ module.exports = {
         });
         if (request.channels.length > 1) {
             for (let count = 0; count < request.channels.length; count++) {
-                let channelItem = _.merge({}, request.workflowItem);
+                let channelItem = _.merge({}, request.workflowCarrier);
                 delete channelItem._id;
                 channelItem.originalCode = channelItem.code;
                 channelItem.code = channelItem.code + '_' + count;
-                channelItem.workflowItems = channelItem.workflowItems.map((wfItem, index) => {
+                channelItem.items = channelItem.items.map((wfItem, index) => {
                     return _.merge(wfItem, {
                         originalCode: wfItem.code,
                         code: wfItem.code + '_' + index
@@ -133,7 +133,7 @@ module.exports = {
                 request.channelRequests.push({
                     tenant: request.tenant,
                     authData: request.authData,
-                    workflowItem: channelItem,
+                    workflowCarrier: channelItem,
                     workflowHead: request.workflowHead,
                     workflowAction: request.workflowAction,
                     actionResponse: request.actionResponse,
