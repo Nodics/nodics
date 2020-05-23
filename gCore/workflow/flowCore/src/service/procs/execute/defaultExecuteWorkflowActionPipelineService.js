@@ -291,7 +291,7 @@ module.exports = {
                     SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response).then(success => {
                         this.prepareSuccessResponse(request, response, process);
                     }).catch(error => {
-                        SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
+                        this.handleError(request, response, process);
                     });
                 } else {
                     if (response.error) {
@@ -299,7 +299,7 @@ module.exports = {
                     } else {
                         response.error = new CLASSES.WorkflowError('ERR_WF_00002', 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response)');
                     }
-                    SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
+                    this.handleError(request, response, process);
                 }
             } catch (error) {
                 if (response.error) {
@@ -307,7 +307,7 @@ module.exports = {
                 } else {
                     response.error = error;
                 }
-                SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
+                this.handleError(request, response, process);
             }
         } else {
             this.prepareSuccessResponse(request, response, process);

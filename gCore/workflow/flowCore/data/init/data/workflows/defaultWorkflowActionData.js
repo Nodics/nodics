@@ -21,6 +21,15 @@ module.exports = {
         accessGroups: ['workflowUserGroup', 'employeeUserGroup'],
         allowedDecisions: ['SUCCESS']
     },
+    // record0: {
+    //     code: "defaultSuccessAction",
+    //     name: "defaultSuccessAction",
+    //     active: true,
+    //     type: ENUMS.WorkflowActionType.MANUAL.key,
+    //     position: ENUMS.WorkflowActionPosition.END.key,
+    //     accessGroups: ['workflowUserGroup', 'employeeUserGroup'],
+    //     allowedDecisions: ['SUCCESS']
+    // },
     record1: {
         code: "defaultRejectAction",
         name: "defaultRejectAction",
