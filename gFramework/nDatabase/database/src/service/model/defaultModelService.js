@@ -194,4 +194,53 @@ module.exports = {
             }
         });
     },
+
+    removeNestedModels: function (options) {
+        return new Promise((resolve, reject) => {
+            if (options.propertiesList.length > 0) {
+                let request = options.request;
+                let model = options.model;
+                let propertiesList = options.propertiesList;
+                let property = propertiesList.shift();
+                let propertyObject = request.schemaModel.rawSchema.refSchema[property];
+                if (propertyObject.enabled && model[property] && (request.options.deepRemove === true || request.options.deepRemove[property])) {
+                    let query = {};
+                    if (propertyObject.type === 'one') {
+                        query[propertyObject.propertyName] = model[property][propertyObject.propertyName] || model[property];
+                    } else {
+                        query[propertyObject.propertyName] = {
+                            '$in': model[property].map(item => {
+                                return item[propertyObject.propertyName] || item;
+                            })
+                        };
+                    }
+                    let input = {
+                        tenant: request.tenant,
+                        authData: request.authData,
+                        options: request.options,
+                        searchOptions: request.searchOptions,
+                        query: query
+                    };
+                    SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].remove(input).then(success => {
+                        SERVICE.DefaultModelService.populateNestedModels(options).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+
+                } else {
+                    SERVICE.DefaultModelService.populateNestedModels(options).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            } else {
+                resolve(true);
+            }
+        });
+    },
 };

@@ -91,7 +91,7 @@ module.exports = {
                 }
             }).then(success => {
                 if (success.result && success.result.length > 0) {
-                    request.schemaModels = success.result[0];
+                    request.schemaModels = success.result;
                     process.nextSuccess(request, response);
                 } else {
                     process.error(request, response, new CLASSES.WorkflowError('Schema item not found for code: ' + itemCode));
@@ -134,6 +134,7 @@ module.exports = {
     },
     validateresponse: function (request, response, process) {
         this.LOG.debug('Validating loaded response, number of models');
+        let carrierData = request.data.carrier;
         if ((carrierData.items && carrierData.items.length > 0) && (request.schemaModels && request.schemaModels.length === carrierData.items.length)) {
             if (request.schemaModels && request.schemaModels.length === carrierData.items.length) {
                 process.nextSuccess(request, response);

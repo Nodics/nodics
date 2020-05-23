@@ -73,13 +73,9 @@ module.exports = {
                 _.merge({}, (request.workflowHead.sourceDetail) ? request.workflowHead.sourceDetail.endPoint || {} : {}),
                 (request.workflowAction.sourceDetail) ? request.workflowAction.sourceDetail.endPoint || {} : {});
             process.nextSuccess(request, response);
-            if (!request.workflowCarrier.event.type) {
-                let endPoint = _.merge(request.workflowAction.endPoint, workflowCarrier.sourceDetail.endPoint || {});
-                if (!UTILS.isBlank(endPoint)) {
-                    request.workflowCarrier.event.type = 'EXTERNAL';
-                } else {
-                    request.workflowCarrier.event.type = 'INTERNAL';
-                }
+            if (request.workflowCarrier.event.isInternal === undefined) {
+                let endPoint = _.merge(request.workflowAction.endPoint, request.workflowCarrier.sourceDetail.endPoint || {});
+                request.workflowCarrier.event.isInternal = UTILS.isBlank(endPoint) ? true : false;
             }
             process.nextSuccess(request, response);
         }

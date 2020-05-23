@@ -124,7 +124,14 @@ module.exports = {
     updateItemPool: function (request, response, process) {
         this.LOG.debug('updating item pool');
         if (request.workflowCarrier.errorCount >= (CONFIG.get('workflow').itemErrorLimit || 5)) {
-            SERVICE.DefaultWorkflowCarrierService.removeById([request.workflowCarrier._id], request.tenant).then(success => {
+            SERVICE.DefaultWorkflowCarrierService.remove({
+                tenant: request.tenant,
+                options: {
+                    returnModified: true,
+                    deepRemove: true
+                },
+                ids: [request.workflowCarrier._id]
+            }).then(success => {
                 this.LOG.info('carrier: has been removed from item pool successfully');
                 if (!response.success) response.success.messages = [];
                 response.success.messages.push('carrier: has been removed from item pool successfully: ' + request.workflowCarrier.code);

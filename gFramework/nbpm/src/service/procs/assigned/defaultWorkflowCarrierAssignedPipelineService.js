@@ -41,7 +41,7 @@ module.exports = {
         let carrierData = request.data.carrier;
         if (request.schemaModels && request.schemaModels.length > 0) {
             request.schemaModels.forEach(schemaModel => {
-                _.merge(schemaModel, {
+                let newItem = {
                     workflow: {
                         carrierCode: carrierData.code,
                         activeHead: carrierData.activeHead,
@@ -50,7 +50,11 @@ module.exports = {
                         heads: carrierData.heads,
                         actions: carrierData.actions
                     }
-                });
+                };
+                if (carrierData.actions) {
+                    newItem.workflow.actions = carrierData.actions;
+                }
+                _.merge(schemaModel, newItem);
             });
         }
         let sourceDetail = carrierData.sourceDetail;

@@ -71,11 +71,11 @@ module.exports = {
             prepareProcess: {
                 type: 'process',
                 handler: 'defaultWorkflowProcessPreparePipeline',
-                success: 'prepareModel'
+                success: 'prepareModels'
             },
             prepareModels: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierAssignedPipelineService.prepareModel',
+                handler: 'DefaultWorkflowCarrierAssignedPipelineService.prepareModels',
                 success: {
                     schemaOperation: 'updateSchemaItems',
                     searchOperation: 'updateSearchItems'

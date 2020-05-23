@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+const util = require('util');
 
 module.exports = {
     /**
@@ -178,6 +179,7 @@ module.exports = {
             };
             process.nextSuccess(request, response);
         }).catch(error => {
+            console.log(util.inspect(error, showHidden = false, depth = 5, colorize = true));
             process.error(request, response, error);
         });
     },

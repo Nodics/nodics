@@ -55,7 +55,7 @@ module.exports = {
                 },
                 event: {
                     enabled: true,
-                    type: 'INTERNAL'
+                    isInternal: true
                 }
             };
         }

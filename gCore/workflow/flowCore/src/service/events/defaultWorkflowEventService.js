@@ -73,14 +73,14 @@ module.exports = {
             if (workflowCarrier.activeAction.actionResponse) {
                 event.data.actionResponse = workflowCarrier.activeAction.actionResponse;
             }
-            if (workflowCarrier.event.type === 'EXTERNAL') {
-                this.publishExternalEvent(event, workflowCarrier, workflowAction).then(success => {
+            if (workflowCarrier.event.isInternal) {
+                this.publishInternalEvent(event, workflowCarrier).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
                 });
             } else {
-                this.publishInternalEvent(event, workflowCarrier).then(success => {
+                this.publishExternalEvent(event, workflowCarrier, workflowAction).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
@@ -92,19 +92,18 @@ module.exports = {
     publishInternalEvent: function (event, workflowCarrier) {
         return new Promise((resolve, reject) => {
             try {
-                event.data.sourceDetail = workflowCarrier.sourceDetail;
+                event.data.carrier.sourceDetail = workflowCarrier.sourceDetail;
                 event.event = this.createEventName((workflowCarrier.sourceDetail.schemaName || workflowCarrier.sourceDetail.indexName), workflowCarrier.activeHead, event.event);
                 event.target = workflowCarrier.sourceDetail.moduleName;
                 event.targetType = ENUMS.TargetType.MODULE.key;
                 console.log('-------------------------------------------------------------');
                 console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
                 console.log('-------------------------------------------------------------');
-                // SERVICE.DefaultEventService.publish(event).then(success => {
-                //     resolve(success);
-                // }).catch(error => {
-                //     reject(error);
-                // });
-                resolve(true);
+                SERVICE.DefaultEventService.publish(event).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
             } catch (error) {
                 reject(error);
             }

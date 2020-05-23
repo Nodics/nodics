@@ -33,9 +33,9 @@ module.exports = {
             }
         },
         events: {
-            workflowCarrierInitiated: {
+            workflowCarrierAssigned: {//
                 active: true,
-                event: 'carrierInitiated',
+                event: 'carrierAssigned',
                 listener: 'DefaultWorkflowCarrierAssignedEventListenerService.handleWorkflowCarrierAssignedEvent'
             },
             workflowCarrierReleased: {
@@ -58,27 +58,27 @@ module.exports = {
                 event: 'carrierResumed',
                 listener: 'DefaultWorkflowCarrierResumedEventListenerService.handleWorkflowCarrierResumedEvent'
             },
-            workflowCarrierUpdated: {
+            workflowCarrierUpdated: {//
                 active: true,
                 event: 'carrierUpdated',
                 listener: 'DefaultWorkflowCarrierUpdatedEventListenerService.handleWorkflowCarrierUpdatedEvent'
             },
-            workflowErrorOccurred: {
+            workflowErrorOccurred: {//
                 active: true,
                 event: 'errorOccurred',
                 listener: 'DefaultWorkflowErrorOccuredEventListenerService.handleWorkflowErrorOccuredEvent'
             },
-            workflowChannelsEvaluated: {
+            workflowChannelsEvaluated: {//
                 active: true,
                 event: 'channelsEvaluated',
                 listener: 'DefaultWorkflowChannelsEvaluatedEventListenerService.handleWorkflowChannelsEvaluatedEvent'
             },
-            workflowActionPerformed: {
+            workflowActionPerformed: {//
                 active: true,
                 event: 'actionPerformed',
                 listener: 'DefaultWorkflowActionPerformedEventListenerService.handleWorkflowActionPerformedEvent'
             },
-            workflowCarrierProcessed: {
+            workflowCarrierProcessed: {//
                 active: true,
                 event: 'carrierProcessed',
                 listener: 'DefaultWorkflowCarrierProcessedEventListenerService.handleWorkflowCarrierProcessedEvent'

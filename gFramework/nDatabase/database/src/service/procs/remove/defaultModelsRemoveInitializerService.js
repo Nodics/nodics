@@ -37,7 +37,7 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating remove request: ');
-        if ((request.ids && request.ids.length > 0) || (request.codes && request.codes.length > 0)) {
+        if (request.query || (request.ids && request.ids.length > 0) || (request.codes && request.codes.length > 0)) {
             process.nextSuccess(request, response);
         } else {
             process.error(request, response, new CLASSES.NodicsError('ERR_DEL_00003', 'Invalid value for ids or codes'));
@@ -134,7 +134,7 @@ module.exports = {
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
         if (response.success && response.success.result && response.success.result.n &&
-            response.success.result.n > 0 && response.success.result.models && options.recursive) {
+            response.success.result.n > 0 && response.success.result.models && request.options.recursive) {
             SERVICE.DefaultModelService.travelModels({
                 request: request,
                 response: response,
@@ -268,14 +268,18 @@ module.exports = {
 
     handleDeepRemove: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        let rawSchema = request.schemaModel.rawSchema;
-        if (request.options.returnModified &&
-            request.options.deepRemove &&
-            response.success.result &&
-            response.success.result.models &&
-            !UTILS.isBlank(rawSchema.refSchema)) {
-            let models = response.success.result.models;
-            process.nextSuccess(request, response);
+        if (request.options.deepRemove && response.success.result && response.success.result.models) {
+            SERVICE.DefaultModelService.travelModels({
+                request: request,
+                response: response,
+                models: response.success.result.models,
+                index: 0,
+                callback: SERVICE.DefaultModelService.removeNestedModels
+            }).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00003'));
+            });
         } else {
             process.nextSuccess(request, response);
         }

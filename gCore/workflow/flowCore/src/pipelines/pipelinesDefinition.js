@@ -61,26 +61,16 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultUpdateWorkflowCarrierPipelineService.validateRequest',
-                success: 'updateworkflowItems'
+                success: 'prepareWorkflowProcessPipeline'
             },
-            updateworkflowItems: {
-                type: 'function',
-                handler: 'DefaultUpdateWorkflowCarrierPipelineService.updateworkflowItems',
-                success: 'createCarrier'
-            },
-            createCarrier: {
-                type: 'function',
-                handler: 'DefaultUpdateWorkflowCarrierPipelineService.createCarrier',
-                success: 'loadWorkflowAction'
-            },
-            loadWorkflowAction: {
+            prepareWorkflowProcessPipeline: {
                 type: 'process',
-                handler: 'loadWorkflowActionPipeline',
-                success: 'loadWorkflowHead'
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'mergeCarrier'
             },
-            loadWorkflowHead: {
+            mergeCarrier: {
                 type: 'function',
-                handler: 'DefaultUpdateWorkflowCarrierPipelineService.loadWorkflowHead',
+                handler: 'DefaultUpdateWorkflowCarrierPipelineService.mergeCarrier',
                 success: 'applyPreUpdateInterceptors'
             },
             applyPreUpdateInterceptors: {

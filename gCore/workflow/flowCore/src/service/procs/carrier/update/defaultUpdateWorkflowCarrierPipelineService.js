@@ -8,7 +8,7 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-
+const _ = require('lodash');
 module.exports = {
 
     /**
@@ -41,31 +41,7 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    updateworkflowItems: function (request, response, process) {
-        this.LOG.debug('Updating workflow items in workflow carrier');
-        if (!request.carrier.items || request.carrier.items.length <= 0 ||
-            !request.workflowCarrier.items ||
-            request.workflowCarrier.items.length <= 0) {
-            process.nextSuccess(request, response);
-        } else {
-            let savedWorkflowItems = request.workflowCarrier.items;
-            let newItems = request.carrier.items;
-            let mergedItems = newItems.map((uItem, index) => {
-                for (count = 0; count < savedWorkflowItems.length; count++) {
-                    if (uItem.label === savedWorkflowItems[count].label) {
-                        uItem = _.merge(_.merge({}, savedWorkflowItems[count]), uItem);
-                        savedWorkflowItems.splice(count, 1);
-                        break;
-                    }
-                }
-                return uItem;
-            });
-            delete request.carrier.items;
-            request.workflowCarrier.items = savedWorkflowItems.concat(mergedItems);
-            process.nextSuccess(request, response);
-        }
-    },
-    createCarrier: function (request, response, process) {
+    mergeCarrier: function (request, response, process) {
         this.LOG.debug('Creating new external workflow item');
         request.workflowCarrier = _.merge(request.workflowCarrier, request.carrier);
         if (!request.workflowCode && !request.workflowHead) {
@@ -75,28 +51,6 @@ module.exports = {
             request.actionCode = request.workflowCarrier.activeAction.code;
         }
         process.nextSuccess(request, response);
-    },
-    loadWorkflowHead: function (request, response, process) {
-        if (!request.workflowHead) {
-            request.workflowCode = request.workflowCode || request.workflowCarrier.activeHead;
-            if (request.workflowCode) {
-                SERVICE.DefaultWorkflowActionService.getWorkflowAction(request.workflowCode, request.tenant).then(workflowHead => {
-                    request.workflowHead = workflowHead;
-                    if (request.workflowHead.position === ENUMS.WorkflowActionPosition.HEAD.key) {
-                        request.workflowHead = workflowHead;
-                        process.nextSuccess(request, response);
-                    } else {
-                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid workflow head, workflow head : ' + request.workflowCode + ' not defined position as head'));
-                    }
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
-            } else {
-                process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not load workflow action'));
-            }
-        } else {
-            process.nextSuccess(request, response);
-        }
     },
     applyPreUpdateInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowCarrier.code);
@@ -126,15 +80,16 @@ module.exports = {
     },
     updateWorkflowCarrier: function (request, response, process) {
         this.LOG.debug('Updating active workflow item');
-        SERVICE.DefaultWorkflowCarrierService.update({
+        SERVICE.DefaultWorkflowCarrierService.save({
             tenant: request.tenant,
             authData: request.authData,
             moduleName: request.moduleName,
-            query: {
-                code: request.workflowCarrier.code
+            options: {
+                recursive: true
             },
             model: request.workflowCarrier
         }).then(success => {
+            request.workflowCarrier = success.result;
             response.success = success;
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -176,13 +131,13 @@ module.exports = {
                     tenant: request.tenant,
                     event: 'carrierUpdated',
                     type: eventConfig.type || "SYNC"
-                }, request.workflowAction, request.carrier).then(success => {
+                }, request.workflowAction, request.workflowCarrier).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {
-                    this.LOG.error('While posting item assigned event : ', error);
+                    this.LOG.error('While posting item update event : ', error);
                 });
             } catch (error) {
-                this.LOG.error('Facing issue posting item assigned event : ', error);
+                this.LOG.error('Facing issue posting item update event : ', error);
             }
         }
         process.nextSuccess(request, response);

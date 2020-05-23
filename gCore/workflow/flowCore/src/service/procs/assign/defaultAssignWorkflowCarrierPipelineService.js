@@ -115,9 +115,6 @@ module.exports = {
     },
     saveActiveItem: function (request, response, process) {
         this.LOG.debug('Creating active workflow item');
-        console.log('--------------------------request.workflowCarrier-----------------------------------');
-        console.log(util.inspect(request.workflowCarrier, showHidden = false, depth = 5, colorize = true));
-        console.log('-------------------------------------------------------------');
         SERVICE.DefaultWorkflowCarrierService.save({
             tenant: request.tenant,
             moduleName: request.moduleName,
