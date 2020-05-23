@@ -61,7 +61,6 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
-
     resolveDefaultProperty: function (properties, model, value) {
         if (properties && properties.length > 1) {
             let prop = properties.shift();
@@ -78,7 +77,6 @@ module.exports = {
         }
         return model;
     },
-
     removeVirtualProperties: function (request, response, process) {
         this.LOG.debug('Removing virtual properties from model');
         let rawSchema = request.schemaModel.rawSchema;
@@ -87,7 +85,6 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
-
     excludeProperty: function (model, virtualProperties) {
         let _self = this;
         _.each(virtualProperties, (value, property) => {
@@ -107,7 +104,6 @@ module.exports = {
             }
         });
     },
-
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre save model interceptors');
         let schemaName = request.schemaModel.schemaName;
@@ -122,7 +118,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre model validator');
         let schemaName = request.schemaModel.schemaName;
@@ -137,7 +132,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     applyValidators: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
         let validators = request.schemaModel.rawSchema.schemaOptions[request.tenant].validators;
@@ -156,107 +150,25 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
-
     handleNestedModelsSave: function (request, response, process) {
         this.LOG.debug('Saving nexted models');
         let rawSchema = request.schemaModel.rawSchema;
         if (!UTILS.isBlank(rawSchema.refSchema)) {
-            this.handleNestedProperties(request, response, Object.keys(rawSchema.refSchema)).then(success => {
+            SERVICE.DefaultModelService.travelModels({
+                request: request,
+                response: response,
+                models: [request.model],
+                index: 0,
+                callback: SERVICE.DefaultModelService.saveNestedModels
+            }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00003'));
             });
         } else {
             process.nextSuccess(request, response);
         }
     },
-
-    handleNestedProperties: function (request, response, properties) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            if (properties && properties.length > 0) {
-                let property = properties.shift();
-                let models = request.model[property];
-                if (models && ((UTILS.isObject(models) && !UTILS.isObjectId(models)) || UTILS.isArrayOfObject(models))) {
-                    _self.handleNestedModel(request, response, property).then(success => {
-                        _self.handleNestedProperties(request, response, properties).then(success => {
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    _self.handleNestedProperties(request, response, properties).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }
-            } else {
-                resolve(true);
-            }
-        });
-    },
-
-    handleNestedModel: function (request, response, property) {
-        return new Promise((resolve, reject) => {
-            try {
-                let model = request.model;
-                let models = model[property];
-                let rawSchema = request.schemaModel.rawSchema;
-                let propDef = rawSchema.refSchema[property];
-                if (propDef.enabled) {
-                    if (propDef.type === 'one') {
-                        models = [models];
-                    }
-                    SERVICE['Default' + propDef.schemaName.toUpperCaseFirstChar() + 'Service'].saveAll({
-                        tenant: request.tenant,
-                        authData: request.authData,
-                        searchOptions: request.searchOptions,
-                        options: request.options,
-                        models: models
-                    }).then(success => {
-                        if (success.result && success.result.length > 0) {
-                            if (propDef.type === 'one') {
-                                let key = (propDef.propertyName) ? success.result[0][propDef.propertyName] : success.result[0]._id;
-                                if (UTILS.isObjectId(key)) {
-                                    key = key.toString();
-                                }
-                                model[property] = key;
-                            } else {
-                                model[property] = [];
-                                success.result.forEach(element => {
-                                    let key = (propDef.propertyName) ? element[propDef.propertyName] : element._id;
-                                    if (UTILS.isObjectId(key)) {
-                                        key = key.toString();
-                                    }
-                                    model[property].push(key);
-                                });
-                            }
-                            resolve(true);
-                        } else {
-                            let error = new CLASSES.NodicsError('ERR_SAVE_00007');
-                            if (success.errors && success.errors.length > 0) {
-                                success.errors.forEach(err => {
-                                    error.add(err);
-                                });
-                            }
-                            reject(error);
-                        }
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    resolve(true);
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    },
-
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model ');
         request.schemaModel.saveItems(request).then(success => {
@@ -269,113 +181,24 @@ module.exports = {
             process.error(request, response, error);
         });
     },
-
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
-        let rawSchema = request.schemaModel.rawSchema;
-        let inputOptions = request.options || {};
-        if (response.success.result && inputOptions.recursive && !UTILS.isBlank(rawSchema.refSchema)) {
-            this.populateModels(request, response, [response.success.result], 0).then(success => {
+        if (response.success.result && request.options.recursive) {
+            SERVICE.DefaultModelService.travelModels({
+                request: request,
+                response: response,
+                models: [response.success.result],
+                index: 0,
+                callback: SERVICE.DefaultModelService.populateNestedModels
+            }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00003'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00003'));
             });
         } else {
             process.nextSuccess(request, response);
         }
     },
-
-    populateModels: function (request, response, models, index) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            let model = models[index];
-            if (model) {
-                _self.populateProperties(request, response, model, Object.keys(request.schemaModel.rawSchema.refSchema)).then(success => {
-                    _self.populateModels(request, response, models, index + 1).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(true);
-            }
-        });
-    },
-
-    populateProperties: function (request, response, model, propertiesList) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            let property = propertiesList.shift();
-            if (model[property] && (request.options.recursive === true || request.options.recursive[property])) {
-                let refSchema = request.schemaModel.rawSchema.refSchema;
-                let propertyObject = refSchema[property];
-                let query = {};
-                if (propertyObject.type === 'one') {
-                    if (propertyObject.propertyName === '_id') {
-                        query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property]);
-                    } else {
-                        query[propertyObject.propertyName] = model[property];
-                    }
-                } else {
-                    if (propertyObject.propertyName === '_id') {
-                        query[propertyObject.propertyName] = {
-                            '$in': model[property].map(id => {
-                                return SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, id);
-                            })
-                        };
-                    } else {
-                        query[propertyObject.propertyName] = {
-                            '$in': model[property]
-                        };
-                    }
-                }
-                let input = {
-                    tenant: request.tenant,
-                    authData: request.authData,
-                    searchOptions: request.searchOptions,
-                    options: request.options,
-                    query: query
-                };
-                SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get(input).then(success => {
-                    if (success.result.length > 0) {
-                        if (propertyObject.type === 'one') {
-                            model[property] = success.result[0];
-                        } else {
-                            model[property] = success.result;
-                        }
-                    } else {
-                        model[property] = null;
-                    }
-                    if (propertiesList.length > 0) {
-                        _self.populateProperties(request, response, model, propertiesList).then(success => {
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        resolve(true);
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-
-            } else {
-                if (propertiesList.length > 0) {
-                    _self.populateProperties(request, response, model, propertiesList).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    resolve(true);
-                }
-            }
-        });
-    },
-
     populateVirtualProperties: function (request, response, process) {
         let virtualProperties = request.schemaModel.rawSchema.virtualProperties;
         if (response.success.result && virtualProperties && !UTILS.isBlank(virtualProperties)) {
@@ -386,7 +209,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     applyPostValidators: function (request, response, process) {
         let schemaName = request.schemaModel.schemaName;
         let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
@@ -401,7 +223,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     applyPostInterceptors: function (request, response, process) {
         let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
@@ -416,7 +237,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     invalidateRouterCache: function (request, response, process) {
         try {
             let schemaModel = request.schemaModel;
@@ -439,7 +259,6 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
-
     invalidateItemCache: function (request, response, process) {
         try {
             let schemaModel = request.schemaModel;
@@ -462,7 +281,6 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
-
     triggerModelChangeEvent: function (request, response, process) {
         try {
             let schemaModel = request.schemaModel;
@@ -489,46 +307,6 @@ module.exports = {
             }
         } catch (error) {
             this.LOG.error('Facing issue while pushing save event : ', error);
-        }
-        process.nextSuccess(request, response);
-    },
-
-    handleWorkflowProcess: function (request, response, process) {
-        try {
-            let schemaModel = request.schemaModel;
-            let savedModel = response.success.result;
-            if (!request.ignoreWorkflowEvent && response.success.result && schemaModel.workflows && Object.keys(schemaModel.workflows).length > 0) {
-                if (!savedModel.workflow || UTILS.isBlank(savedModel.workflow)) {
-                    this.LOG.error('item: ' + (savedModel.code || savedModel._id) + ' is not workflow compatable');
-                } else {
-                    this.LOG.debug('Triggering event for workflow association');
-                    let event = {
-                        tenant: request.tenant,
-                        event: 'initiateWorkflow',
-                        sourceName: schemaModel.moduleName,
-                        sourceId: CONFIG.get('nodeId'),
-                        target: 'workflow',
-                        state: "NEW",
-                        type: "SYNC",
-                        targetType: ENUMS.TargetType.MODULE.key,
-                        active: true,
-                        data: []
-                    };
-                    Object.keys(schemaModel.workflows).forEach(workflowCode => {
-                        let workflow = schemaModel.workflows[workflowCode];
-                        let itemBuilder = workflow.sourceItemBuilder || CONFIG.get('workflow').sourceItemBuilder;
-                        event.data.push(SERVICE[itemBuilder.serviceName][itemBuilder.operation](request, response, workflow));
-                    });
-                    this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaModel.schemaName);
-                    SERVICE.DefaultEventService.publish(event).then(success => {
-                        this.LOG.debug('Workflow associated successfully');
-                    }).catch(error => {
-                        this.LOG.error('While associating workflow : ', error);
-                    });
-                }
-            }
-        } catch (error) {
-            this.LOG.error('Facing issue while pushing workflow init event : ', error);
         }
         process.nextSuccess(request, response);
     }

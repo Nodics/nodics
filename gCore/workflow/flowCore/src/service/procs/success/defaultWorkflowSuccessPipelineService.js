@@ -51,6 +51,8 @@ module.exports = {
         response.successItem.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
         let carrierState = {
             state: ENUMS.WorkflowCarrierState.FINISHED.key,
+            action: request.workflowAction.code,
+            time: new Date(),
             description: 'Carrier successfully processed'
         };
         response.successItem.currentState = carrierState;
@@ -93,8 +95,6 @@ module.exports = {
     },
     updateArchivePool: function (request, response, process) {
         this.LOG.debug('updating archive pool');
-        console.log('*************************************************************************************');
-        console.log(util.inspect(response.successItem, showHidden = false, depth = 5, colorize = true));
         SERVICE.DefaultWorkflowArchivedCarrierService.save({
             tenant: request.tenant,
             model: response.successItem
@@ -102,15 +102,19 @@ module.exports = {
             this.LOG.info('Carrier: has been moved to archived pool successfully');
             process.nextSuccess(request, response);
         }).catch(error => {
-            console.log('----- Error -----');
-            console.log(util.inspect(response.successItem, showHidden = false, depth = 5, colorize = true));
-            console.log('*************************************************************************************');
             process.error(request, response, error);
         });
     },
     updateItemPool: function (request, response, process) {
         this.LOG.debug('updating item pool');
-        SERVICE.DefaultWorkflowCarrierService.removeById([request.workflowCarrier._id], request.tenant).then(success => {
+        SERVICE.DefaultWorkflowCarrierService.remove({
+            tenant: request.tenant,
+            options: {
+                returnModified: true,
+                deepRemove: true
+            },
+            ids: [request.workflowCarrier._id]
+        }).then(success => {
             this.LOG.info('Carrier: has been removed from carrier pool successfully');
             process.nextSuccess(request, response);
         }).catch(error => {

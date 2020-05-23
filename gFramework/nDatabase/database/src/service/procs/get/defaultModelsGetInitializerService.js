@@ -168,14 +168,17 @@ module.exports = {
     },
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
-        let rawSchema = request.schemaModel.rawSchema;
-        let inputOptions = request.options || {};
-
-        if (response.success.result.length > 0 && inputOptions.recursive && !UTILS.isBlank(rawSchema.refSchema)) {
-            this.populateModels(request, response, response.success.result, 0).then(success => {
+        if (response.success.result.length > 0 && request.options.recursive) {
+            SERVICE.DefaultModelService.travelModels({
+                request: request,
+                response: response,
+                models: response.success.result,
+                index: 0,
+                callback: SERVICE.DefaultModelService.populateNestedModels
+            }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00003'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -251,101 +254,5 @@ module.exports = {
             });
         }
         process.nextSuccess(request, response);
-    },
-    populateModels: function (request, response, models, index) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            let model = models[index];
-            if (model) {
-                _self.populateProperties(request, response, model, Object.keys(request.schemaModel.rawSchema.refSchema)).then(success => {
-                    _self.populateModels(request, response, models, index + 1).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve(true);
-            }
-        });
-    },
-    populateProperties: function (request, response, model, propertiesList) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            let property = propertiesList.shift();
-            if (model[property] && (request.options.recursive === true || request.options.recursive[property])) {
-                let refSchema = request.schemaModel.rawSchema.refSchema;
-                let propertyObject = refSchema[property];
-                if (propertyObject.enabled) {
-                    let query = {};
-                    let searchOptions = _.merge(_.merge({}, request.searchOptions || {}), propertyObject.searchOptions || {});
-                    if (propertyObject.type === 'one') {
-                        if (propertyObject.propertyName === '_id') {
-                            query[propertyObject.propertyName] = SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, model[property]);
-                        } else {
-                            query[propertyObject.propertyName] = model[property];
-                        }
-                    } else {
-                        if (propertyObject.propertyName === '_id') {
-                            query[propertyObject.propertyName] = {
-                                '$in': model[property].map(id => {
-                                    return SERVICE.DefaultDatabaseConfigurationService.toObjectId(request.schemaModel, id);
-                                })
-                            };
-                        } else {
-                            query[propertyObject.propertyName] = {
-                                '$in': model[property]
-                            };
-                        }
-                    }
-                    SERVICE['Default' + propertyObject.schemaName.toUpperCaseFirstChar() + 'Service'].get({
-                        tenant: request.tenant,
-                        authData: request.authData,
-                        options: request.options,
-                        searchOptions: searchOptions,
-                        query: query
-                    }).then(success => {
-                        if (success.result.length > 0) {
-                            if (propertyObject.type === 'one') {
-                                model[property] = success.result[0];
-                            } else {
-                                model[property] = success.result;
-                            }
-                        } else {
-                            model[property] = null;
-                        }
-                        if (propertiesList.length > 0) {
-                            _self.populateProperties(request, response, model, propertiesList).then(success => {
-                                resolve(true);
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        } else {
-                            resolve(true);
-                        }
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    _self.populateProperties(request, response, model, propertiesList).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }
-            } else {
-                if (propertiesList.length > 0) {
-                    _self.populateProperties(request, response, model, propertiesList).then(success => {
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    resolve(true);
-                }
-            }
-        });
     }
 };

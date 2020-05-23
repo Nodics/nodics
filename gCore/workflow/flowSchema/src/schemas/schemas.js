@@ -202,19 +202,7 @@ module.exports = {
                 enabled: true
             },
             definition: {
-                state: {
-                    enum: [ENUMS.WorkflowCarrierState.INIT.key,
-                    ENUMS.WorkflowCarrierState.RELEASED.key,
-                    ENUMS.WorkflowCarrierState.PROCESSING.key,
-                    ENUMS.WorkflowCarrierState.PAUSED.key,
-                    ENUMS.WorkflowCarrierState.BLOCKED.key,
-                    ENUMS.WorkflowCarrierState.FINISHED.key,
-                    ENUMS.WorkflowCarrierState.ERROR.key,
-                    ENUMS.WorkflowCarrierState.FATAL.key],
-                    required: true,
-                    default: ENUMS.WorkflowCarrierState.INIT.key,
-                    description: 'Mandate workflow head state [INIT, RELEASED, PROCESSING, PAUSED, BLOCKED, FINISHED, ERROR, FATAL]'
-                }
+
             }
         },
 
@@ -236,12 +224,6 @@ module.exports = {
                     searchOptions: {
                         projection: { _id: 0 }
                     }
-                },
-                states: {
-                    enabled: true,
-                    schemaName: "workflowCarrierState",
-                    type: 'many',
-                    propertyName: '_id'
                 }
             },
             definition: {
@@ -327,6 +309,35 @@ module.exports = {
                     required: true,
                     description: 'Last status updated to the carrier'
                 },
+                'currentState.state': {
+                    enum: [ENUMS.WorkflowCarrierState.INIT.key,
+                    ENUMS.WorkflowCarrierState.RELEASED.key,
+                    ENUMS.WorkflowCarrierState.PROCESSING.key,
+                    ENUMS.WorkflowCarrierState.PAUSED.key,
+                    ENUMS.WorkflowCarrierState.BLOCKED.key,
+                    ENUMS.WorkflowCarrierState.FINISHED.key,
+                    ENUMS.WorkflowCarrierState.ERROR.key,
+                    ENUMS.WorkflowCarrierState.FATAL.key],
+                    required: true,
+                    default: ENUMS.WorkflowCarrierState.INIT.key,
+                    description: 'Mandate workflow head state [INIT, RELEASED, PROCESSING, PAUSED, BLOCKED, FINISHED, ERROR, FATAL]'
+                },
+                'currentState.description': {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate description of state'
+                },
+                'currentState.action': {
+                    type: 'string',
+                    required: true,
+                    description: 'Mandate action code, where this state added'
+                },
+                'currentState.time': {
+                    type: 'date',
+                    required: true,
+                    description: 'Mandate timestamp, when this state added'
+                }
+
             }
         },
 

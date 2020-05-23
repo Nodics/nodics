@@ -54,6 +54,7 @@ module.exports = {
         let carrierState = {
             state: ENUMS.WorkflowCarrierState.ERROR.key,
             action: request.workflowAction.code,
+            time: new Date(),
             description: 'Error occurred, please last item in errors list'
         };
         request.workflowCarrier.currentState = carrierState;

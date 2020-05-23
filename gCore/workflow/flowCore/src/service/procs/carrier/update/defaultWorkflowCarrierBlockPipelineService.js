@@ -48,6 +48,7 @@ module.exports = {
             let carrierState = {
                 state: ENUMS.WorkflowCarrierState.BLOCKED.key,
                 action: request.workflowAction.code,
+                time: new Date(),
                 description: request.comment || 'Carrier successfully blocked'
             };
             request.workflowCarrier.currentState = carrierState;
