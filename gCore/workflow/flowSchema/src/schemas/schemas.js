@@ -373,14 +373,16 @@ module.exports = {
                     enabled: true,
                     schemaName: "workflowArchivedItem",
                     type: 'many',
-                    propertyName: 'code'
+                    propertyName: '_id'
                 },
                 states: {
                     enabled: false
                 },
             },
             definition: {
-
+                code: {
+                    primary: false
+                }
             }
         },
 
@@ -398,14 +400,16 @@ module.exports = {
                     enabled: true,
                     schemaName: "workflowArchivedItem",
                     type: 'many',
-                    propertyName: 'code'
+                    propertyName: '_id'
                 },
                 states: {
                     enabled: false
                 },
             },
             definition: {
-
+                code: {
+                    primary: false
+                }
             }
         },
 
@@ -419,7 +423,9 @@ module.exports = {
                 enabled: true
             },
             definition: {
-
+                code: {
+                    primary: false
+                }
             }
         }
     }

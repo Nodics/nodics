@@ -24,7 +24,7 @@ module.exports = {
             codeStrategy: {
                 name: 'GROUPINTIME',
                 params: {
-                    pattern: 'YYYY_MM_DD_HH_MM_00',
+                    pattern: 'YYYY_MM_DD_00_MM_SS',
                     delimiter: '_'
                 }
             }

@@ -47,7 +47,7 @@ module.exports = {
     createSuccessItem: function (request, response, process) {
         this.LOG.debug('Creating success carrier');
         response.successItem = _.merge({}, request.workflowCarrier);
-        delete response.successItem._id;
+        //delete response.successItem._id;
         response.successItem.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
         let carrierState = {
             state: ENUMS.WorkflowCarrierState.FINISHED.key,
@@ -57,14 +57,14 @@ module.exports = {
         };
         response.successItem.currentState = carrierState;
         response.successItem.states.push(carrierState);
-        if (response.successItem.states && response.successItem.states.length > 0) {
-            let items = [];
-            response.successItem.states.forEach(wtItem => {
-                delete wtItem._id;
-                items.push(wtItem);
-            });
-            response.successItem.states = items;
-        }
+        // if (response.successItem.items && response.successItem.items.length > 0) {
+        //     let items = [];
+        //     response.successItem.items.forEach(wtItem => {
+        //         delete wtItem._id;
+        //         items.push(wtItem);
+        //     });
+        //     response.successItem.items = items;
+        // }
         process.nextSuccess(request, response);
     },
     successInterceptors: function (request, response, process) {

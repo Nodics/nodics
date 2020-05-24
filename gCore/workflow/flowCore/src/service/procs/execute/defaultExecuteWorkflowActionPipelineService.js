@@ -147,9 +147,9 @@ module.exports = {
             carrierCode: request.workflowCarrier.code,
             originalCode: request.workflowCarrier.originalCode,
             workflowCode: request.workflowHead.code,
-            actionCode: request.workflowAction.code,
-            type: ENUMS.WorkflowActionResponseType.SUCCESS.key
+            actionCode: request.workflowAction.code
         });
+        request.actionResponse.type = request.actionResponse.type || ENUMS.WorkflowActionResponseType.SUCCESS.key;
         delete response.success.actionResponse;
         response.success.messages.push('Decision: ' + request.actionResponse.decision + ' been finalized');
         response.success.decision = request.actionResponse.decision;

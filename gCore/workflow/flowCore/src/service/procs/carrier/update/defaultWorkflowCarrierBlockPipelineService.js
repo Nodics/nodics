@@ -95,6 +95,7 @@ module.exports = {
             },
             model: request.workflowCarrier
         }).then(success => {
+            request.workflowCarrier = success.result;
             response.success = 'WorkflowCarrier: ' + request.workflowCarrier.code + ' has been blocked successfully';
             process.nextSuccess(request, response);
         }).catch(error => {

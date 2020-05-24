@@ -292,11 +292,11 @@ module.exports = {
             prepareProcess: {
                 type: 'process',
                 handler: 'defaultWorkflowProcessPreparePipeline',
-                success: 'prepareModel'
+                success: 'prepareModels'
             },
-            prepareModel: {
+            prepareModels: {
                 type: 'function',
-                handler: 'DefaultWorkflowErrorOccurredPipelineService.prepareModel',
+                handler: 'DefaultWorkflowErrorOccurredPipelineService.prepareModels',
                 success: {
                     schemaOperation: 'updateSchemaItems',
                     searchOperation: 'updateSearchItems'
@@ -329,11 +329,11 @@ module.exports = {
             prepareProcess: {
                 type: 'process',
                 handler: 'defaultWorkflowProcessPreparePipeline',
-                success: 'prepareModel'
+                success: 'prepareModels'
             },
-            prepareModel: {
+            prepareModels: {
                 type: 'function',
-                handler: 'DefaultWorkflowChannelsEvaluatedPipelineService.prepareModel',
+                handler: 'DefaultWorkflowChannelsEvaluatedPipelineService.prepareModels',
                 success: {
                     schemaOperation: 'prepareSchemaItem',
                     searchOperation: 'prepareSearchItem'
@@ -412,11 +412,11 @@ module.exports = {
             prepareProcess: {
                 type: 'process',
                 handler: 'defaultWorkflowProcessPreparePipeline',
-                success: 'prepareModel'
+                success: 'prepareModels'
             },
             prepareModels: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierProcessedPipelineService.prepareModel',
+                handler: 'DefaultWorkflowCarrierProcessedPipelineService.prepareModels',
                 success: {
                     schemaOperation: 'updateSchemaItems',
                     searchOperation: 'updateSearchItems'
@@ -449,11 +449,11 @@ module.exports = {
             prepareProcess: {
                 type: 'process',
                 handler: 'defaultWorkflowProcessPreparePipeline',
-                success: 'prepareModel'
+                success: 'prepareModels'
             },
             prepareModels: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierFilledPipelineService.prepareModel',
+                handler: 'DefaultWorkflowCarrierFilledPipelineService.prepareModels',
                 success: {
                     schemaOperation: 'updateSchemaItems',
                     searchOperation: 'updateSearchItems'

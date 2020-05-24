@@ -331,42 +331,42 @@ module.exports = {
             },
             blockCarrier: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.blockCarrier',
+                handler: 'DefaultWorkflowCarrierBlockPipelineService.blockCarrier',
                 success: 'preBlockInterceptors'
             },
             preBlockInterceptors: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.preBlockInterceptors',
+                handler: 'DefaultWorkflowCarrierBlockPipelineService.preBlockInterceptors',
                 success: 'preBlockValidators'
             },
             preBlockValidators: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.preBlockValidators',
+                handler: 'DefaultWorkflowCarrierBlockPipelineService.preBlockValidators',
                 success: 'updateCarrier'
             },
             updateCarrier: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.updateCarrier',
+                handler: 'DefaultWorkflowCarrierBlockPipelineService.updateCarrier',
                 success: 'postBlockValidators'
             },
             postBlockValidators: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.postBlockValidators',
+                handler: 'DefaultWorkflowCarrierBlockPipelineService.postBlockValidators',
                 success: 'postBlockInterceptors'
             },
             postBlockInterceptors: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.postBlockInterceptors',
+                handler: 'DefaultWorkflowCarrierBlockPipelineService.postBlockInterceptors',
                 success: 'triggerBlockedEvent'
             },
             triggerBlockedEvent: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerBlockedEvent',
+                handler: 'DefaultWorkflowCarrierBlockPipelineService.triggerBlockedEvent',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.handleSuccess'
+                handler: 'DefaultWorkflowCarrierBlockPipelineService.handleSuccess'
             }
         }
     },
@@ -467,7 +467,7 @@ module.exports = {
             },
             postPauseValidators: {
                 type: 'function',
-                handler: 'DefaultPauseWorkflowCarrierPipelineService.postReleaseValidators',
+                handler: 'DefaultPauseWorkflowCarrierPipelineService.postPauseValidators',
                 success: 'postPauseInterceptors'
             },
             postPauseInterceptors: {

@@ -67,6 +67,19 @@ module.exports = {
                 });
             }).then(() => {
                 return new Promise((resolve, reject) => {
+                    if (NODICS.isInitRequired()) {
+                        this.LOG.debug('Updating schema and workflow association');
+                        SERVICE.DefaultWorkflow2SchemaService.buildWorkflow2SchemaAssociations().then(done => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        resolve(true);
+                    }
+                });
+            }).then(() => {
+                return new Promise((resolve, reject) => {
                     if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                         let defaultAuthDetail = CONFIG.get('defaultAuthDetail') || {};
                         SERVICE.DefaultEmployeeService.findByAPIKey({

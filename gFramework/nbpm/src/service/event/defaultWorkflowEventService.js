@@ -52,10 +52,7 @@ module.exports = {
                     items: SERVICE[workflow.sourceBuilder.itemBuilder].buildItems(schemaDef, models, workflow)
                 });
             });
-            console.log('-------------------------------------------------------------');
             this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaDef.schemaName);
-            console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
-            console.log('-------------------------------------------------------------');
             SERVICE.DefaultEventService.publish(event).then(success => {
                 resolve(success);
             }).catch(error => {

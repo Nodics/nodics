@@ -77,6 +77,9 @@ module.exports = {
         this.LOG.debug('Loading schema item for triggered workflow');
         let carrierData = request.data.carrier;
         if (carrierData.items && carrierData.items.length > 0) {
+            let itemCodes = carrierData.items.map((item, index) => {
+                return item.originalCode || item.code;
+            });
             request.schemaService.get({
                 tenant: request.tenant,
                 searchOptions: {
@@ -84,9 +87,7 @@ module.exports = {
                 },
                 query: {
                     code: {
-                        $in: carrierData.items.map((item, index) => {
-                            return item.originalCode || item.code;
-                        })
+                        $in: itemCodes
                     }
                 }
             }).then(success => {
@@ -94,10 +95,10 @@ module.exports = {
                     request.schemaModels = success.result;
                     process.nextSuccess(request, response);
                 } else {
-                    process.error(request, response, new CLASSES.WorkflowError('Schema item not found for code: ' + itemCode));
+                    process.error(request, response, new CLASSES.WorkflowError('Schema item not found for code: ' + itemCodes));
                 }
             }).catch(error => {
-                process.error(request, response, new CLASSES.WorkflowError(error, 'Could not load item for the workflow: ' + itemCode));
+                process.error(request, response, new CLASSES.WorkflowError(error, 'Could not load item for the workflow: ' + itemCodes));
             });
         } else {
             process.nextSuccess(request, response);

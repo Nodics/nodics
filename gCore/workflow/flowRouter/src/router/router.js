@@ -51,7 +51,7 @@ module.exports = {
             blockCarrier: {
                 secured: true,
                 accessGroups: ['workflowUserGroup'],
-                key: '/carrier/pause/:carrierCode',
+                key: '/carrier/block/:carrierCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
                 operation: 'blockCarrier',
@@ -60,13 +60,15 @@ module.exports = {
                     message: 'authToken need to set within header',
                     method: 'POST',
                     url: 'http://host:port/nodics/workflow/carrier/block/:carrierCode',
-                    body: 'Comments for this action'
+                    body: {
+                        comment: 'Comments for this action'
+                    }
                 }
             },
             releaseCarrier: {
                 secured: true,
                 accessGroups: ['workflowUserGroup'],
-                key: '/item/resume/:carrierCode',
+                key: '/carrier/release/:carrierCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
                 operation: 'releaseCarrier',
@@ -75,7 +77,9 @@ module.exports = {
                     message: 'authToken need to set within header',
                     method: 'POST',
                     url: 'http://host:port/nodics/workflow/carrier/release/:carrierCode',
-                    body: 'Comments for this action'
+                    body: {
+                        comment: 'Comments for this action'
+                    }
                 }
             },
             pauseCarrier: {
@@ -90,13 +94,15 @@ module.exports = {
                     message: 'authToken need to set within header',
                     method: 'POST',
                     url: 'http://host:port/nodics/workflow/carrier/pause/:carrierCode',
-                    body: 'Comments for this action'
+                    body: {
+                        comment: 'Comments for this action'
+                    }
                 }
             },
             resumeCarrier: {
                 secured: true,
                 accessGroups: ['workflowUserGroup'],
-                key: '/item/resume/:carrierCode',
+                key: '/carrier/resume/:carrierCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
                 operation: 'resumeCarrier',
@@ -105,7 +111,9 @@ module.exports = {
                     message: 'authToken need to set within header',
                     method: 'POST',
                     url: 'http://host:port/nodics/workflow/carrier/resume/:carrierCode',
-                    body: 'Comments for this action'
+                    body: {
+                        comment: 'Comments for this action'
+                    }
                 }
             }
         },

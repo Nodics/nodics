@@ -29,39 +29,11 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Updating schema and workflow association');
-            let allPromise = [];
-            NODICS.getActiveTenants().forEach(tntCode => {
-                allPromise.push(new Promise((resolve, reject) => {
-                    SERVICE.DefaultWorkflow2SchemaService.get({
-                        tenant: tntCode
-                    }).then(response => {
-                        if (response.result && response.result.length > 0) {
-                            response.result.forEach(data => {
-                                if (data.active && NODICS.isModuleActive(data.moduleName)) {
-                                    let modelObject = NODICS.getModels(data.moduleName, tntCode)[UTILS.createModelName(data.schemaName)];
-                                    if (modelObject) {
-                                        if (!modelObject.workflows) modelObject.workflows = {};
-                                        if (!modelObject.workflows[data.workflowCode]) modelObject.workflows[data.workflowCode] = data;
-                                    }
-                                    SERVICE.DefaultEventService.registerModuleEvents(data.moduleName, data.events);
-                                }
-                            });
-                        }
-                        resolve(true);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                }));
-            });
-            if (allPromise.length > 0) {
-                Promise.all(allPromise).then(done => {
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
+            SERVICE.DefaultWorkflow2SchemaService.buildWorkflow2SchemaAssociations().then(done => {
                 resolve(true);
-            }
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 };

@@ -39,7 +39,7 @@ module.exports = {
         process.stop(request, response, 'This functionlity is not yet implemented');
         // process.nextSuccess(request, response);
     },
-    prepareModel: function (request, response, process) {
+    prepareModels: function (request, response, process) {
         this.LOG.debug('Preparing model to update schema item');
         let sourceDetail = request.data.sourceDetail;
         if (sourceDetail.schemaName) {
