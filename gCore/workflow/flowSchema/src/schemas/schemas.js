@@ -50,6 +50,12 @@ module.exports = {
                     required: false,
                     description: 'Define handler for this action, if its type is AUTO'
                 },
+                isNewItemsAllowed: {
+                    type: 'bool',
+                    required: true,
+                    default: true,
+                    description: 'Define handler for this action, if its type is AUTO'
+                },
                 script: {
                     type: 'string',
                     required: false,

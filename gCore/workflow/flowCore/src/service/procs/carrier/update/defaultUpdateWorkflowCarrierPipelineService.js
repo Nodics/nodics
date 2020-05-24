@@ -41,6 +41,16 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    checkValidRequest: function (request, response, process) {
+        if (request.workflowCarrier.type === ENUMS.WorkflowCarrierType.FIXED.key &&
+            request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.INIT.key) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, items can not be added in FIXED carrier, after its released'));
+        } if (!request.workflowAction.isNewItemsAllowed) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, items can not be added, action not allow this operation'));
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
     mergeCarrier: function (request, response, process) {
         this.LOG.debug('Creating new external workflow item');
         request.workflowCarrier = _.merge(request.workflowCarrier, request.carrier);

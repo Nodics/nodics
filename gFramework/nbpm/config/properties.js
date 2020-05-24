@@ -16,6 +16,7 @@ module.exports = {
     },
     workflow: {
         isCarrierReleased: true,
+        defaultCarrierType: 'FIXED',
         carrierCodeStrategy2Hnadler: {
             DEFAULT: 'DefaultCarrierCodeGeneratorService',
             GROUPINTIME: 'DefaultDurationalCarrierCodeGeneratorService'

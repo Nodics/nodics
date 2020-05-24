@@ -36,6 +36,10 @@ module.exports = {
         return FACADE.DefaultWorkflowService.initCarrierItem(request);
     },
 
+    addItemToCarrier: function (request) {
+        return FACADE.DefaultWorkflowService.addItemToCarrier(request);
+    },
+
     blockCarrier: function (request) {
         return SERVICE.DefaultWorkflowService.blockCarrier(request);
     },

@@ -44,7 +44,6 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-
     checkUpdateRequest: function (request, response, process) {
         try {
             SERVICE.DefaultWorkflowCarrierService.get({
@@ -68,6 +67,14 @@ module.exports = {
             });
         } catch (error) {
             process.error(request, response, error);
+        }
+    },
+    checkValidRequest: function (request, response, process) {
+        if (request.workflowCarrier.type === ENUMS.WorkflowCarrierType.FIXED.key &&
+            request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.INIT.key) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, items can not be added in FIXED carrier, after its released'));
+        } else {
+            process.nextSuccess(request, response);
         }
     },
     handleSuccess: function (request, response, process) {

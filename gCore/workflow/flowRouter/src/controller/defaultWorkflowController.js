@@ -47,6 +47,19 @@ module.exports = {
         }
     },
 
+    addItemToCarrier: function (request, callback) {
+        request = _.merge(request || {}, request.httpRequest.body);
+        if (callback) {
+            FACADE.DefaultWorkflowFacade.addItemToCarrier(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultWorkflowFacade.addItemToCarrier(request);
+        }
+    },
+
     blockCarrier: function (request, callback) {
         request.carrierCode = request.httpRequest.params.carrierCode;
         request.comment = request.httpRequest.body.comment;

@@ -48,6 +48,29 @@ module.exports = {
                     }
                 }
             },
+            fillCarrier: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/carrier/add',
+                method: 'PUT',
+                controller: 'DefaultWorkflowController',
+                operation: 'addItemToCarrier',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'put',
+                    url: 'http://host:port/nodics/workflow/carrier/add',
+                    body: {
+                        code: 'Required carrier code',
+                        items: [{
+                            code: 'Required item code',
+                            refId: 'external item reference id',
+                            callbackData: 'Any JSON object needs to be send back along with each events',
+                            itemDetail: 'Complete item detail, which required on workflow action to perform'
+                        }]
+                    }
+                }
+            },
             blockCarrier: {
                 secured: true,
                 accessGroups: ['workflowUserGroup'],

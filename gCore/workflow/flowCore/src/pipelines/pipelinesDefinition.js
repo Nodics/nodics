@@ -38,6 +38,11 @@ module.exports = {
             prepareWorkflowProcessPipeline: {
                 type: 'process',
                 handler: 'prepareWorkflowProcessPipeline',
+                success: 'checkValidRequest'
+            },
+            checkValidRequest: {
+                type: 'function',
+                handler: 'DefaultInitWorkflowCarrierPipelineService.checkValidRequest',
                 success: 'assignWorkflowCarrierPipeline'
             },
             assignWorkflowCarrierPipeline: {
@@ -66,6 +71,11 @@ module.exports = {
             prepareWorkflowProcessPipeline: {
                 type: 'process',
                 handler: 'prepareWorkflowProcessPipeline',
+                success: 'checkValidRequest'
+            },
+            checkValidRequest: {
+                type: 'function',
+                handler: 'DefaultUpdateWorkflowCarrierPipelineService.checkValidRequest',
                 success: 'mergeCarrier'
             },
             mergeCarrier: {
@@ -309,6 +319,64 @@ module.exports = {
             handleError: {
                 type: 'function',
                 handler: 'DefaultAssignWorkflowCarrierPipelineService.handleError'
+            }
+        }
+    },
+
+    fillWorkflowCarrierPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultFillWorkflowCarrierPipelineService.validateRequest',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'checkValidRequest'
+            },
+            checkValidRequest: {
+                type: 'function',
+                handler: 'DefaultFillWorkflowCarrierPipelineService.checkValidRequest',
+                success: 'preFillInterceptors'
+            },
+            preFillInterceptors: {
+                type: 'function',
+                handler: 'DefaultFillWorkflowCarrierPipelineService.preFillInterceptors',
+                success: 'preFillValidators'
+            },
+            preFillValidators: {
+                type: 'function',
+                handler: 'DefaultFillWorkflowCarrierPipelineService.preFillValidators',
+                success: 'updateCarrier'
+            },
+            updateCarrier: {
+                type: 'function',
+                handler: 'DefaultFillWorkflowCarrierPipelineService.updateCarrier',
+                success: 'postBlockValidators'
+            },
+            postBlockValidators: {
+                type: 'function',
+                handler: 'DefaultFillWorkflowCarrierPipelineService.postBlockValidators',
+                success: 'postBlockInterceptors'
+            },
+            postBlockInterceptors: {
+                type: 'function',
+                handler: 'DefaultFillWorkflowCarrierPipelineService.postBlockInterceptors',
+                success: 'triggerBlockedEvent'
+            },
+            triggerBlockedEvent: {
+                type: 'function',
+                handler: 'DefaultFillWorkflowCarrierPipelineService.triggerBlockedEvent',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultFillWorkflowCarrierPipelineService.handleSuccess'
             }
         }
     },

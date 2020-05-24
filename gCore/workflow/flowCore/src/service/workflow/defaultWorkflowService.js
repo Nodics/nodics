@@ -48,6 +48,20 @@ module.exports = {
         });
     },
 
+    addItemToCarrier: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultPipelineService.start('fillWorkflowCarrierPipeline', request, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while adding item into carrier'));
+            }
+        });
+    },
+
     /**
      * This function is used to pause any carrier for process
      * @param {*} request 

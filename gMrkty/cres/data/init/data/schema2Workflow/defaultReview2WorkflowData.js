@@ -15,6 +15,7 @@ module.exports = {
         schemaName: 'reviewTest',
         active: true,
         includeProperties: ['name', 'address.city'],
+        carrierType: 'FIXED',
         carrierDetail: {
             prefix: 'cr',
             code: 'workflow',

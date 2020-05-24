@@ -53,6 +53,7 @@ module.exports = {
                     schemaName: schemaDef.schemaName,
                     moduleName: schemaDef.moduleName,
                 },
+                type: workflow.carrierType || CONFIG.get('workflow').defaultCarrierType,
                 event: {
                     enabled: true,
                     isInternal: true
