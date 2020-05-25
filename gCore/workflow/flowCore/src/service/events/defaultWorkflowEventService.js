@@ -54,8 +54,7 @@ module.exports = {
                         items: workflowCarrier.items.map(item => {
                             return {
                                 code: item.code,
-                                refId: item.refId,
-                                originalCode: item.originalCode
+                                refId: item.refId
                             };
                         }),
                     }
@@ -96,7 +95,8 @@ module.exports = {
                 event.event = this.createEventName((workflowCarrier.sourceDetail.schemaName || workflowCarrier.sourceDetail.indexName), workflowCarrier.activeHead, event.event);
                 event.target = workflowCarrier.sourceDetail.moduleName;
                 event.targetType = ENUMS.TargetType.MODULE.key;
-                //console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
+                console.log('------------------------------------ Internal event -----------------------------------');
+                console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     resolve(success);
                 }).catch(error => {

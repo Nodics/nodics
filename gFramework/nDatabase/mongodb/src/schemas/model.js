@@ -71,6 +71,7 @@ module.exports = {
                                 }).catch(error => {
                                     console.log(input.query);
                                     console.log(input.model);
+                                    console.log(error);
                                     reject(error);
                                 });
                             });

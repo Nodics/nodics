@@ -100,8 +100,24 @@ module.exports = {
             if (executedChannel.length > 0) {
                 request.channels = executedChannel;
             }
+            SERVICE.DefaultWorkflowChannelService.get({
+                tenant: request.tenant,
+                query: {
+                    code: CONFIG.get('workflow').defaultSplitEndChannel || 'defaultSplitEndChannel'
+                }
+            }).then(success => {
+                if (success.result && success.result.length > 0) {
+                    request.defaultSplitEndChannel = success.result[0];
+                    process.nextSuccess(request, response);
+                } else {
+                    process.error(request, response, 'Invalid channel, Default split channel not found');
+                }
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
         }
-        process.nextSuccess(request, response);
     },
     handleMultiChannelRequest: function (request, response, process) {
         request.channelRequests = [];
@@ -112,7 +128,7 @@ module.exports = {
             workflowHead: request.workflowHead,
             workflowAction: request.workflowAction,
             actionResponse: request.actionResponse,
-            channel: (request.channels.length === 1) ? request.channels[0] : CONFIG.get('workflow').defaultSplitEndChannel || 'defaultSplitEndChannel'
+            channel: (request.channels.length === 1) ? request.channels[0] : request.defaultSplitEndChannel
         });
         if (request.channels.length > 1) {
             for (let count = 0; count < request.channels.length; count++) {
@@ -123,12 +139,9 @@ module.exports = {
                 channelItem.items = channelItem.items.map((wfItem, index) => {
                     return _.merge(wfItem, {
                         originalCode: wfItem.code,
-                        code: wfItem.code + '_' + index
+                        code: wfItem.code + '_' + count + '_' + index,
+                        refId: wfItem.refId
                     });
-                });
-                channelItem.states = channelItem.states.map((stateItem, index) => {
-                    if (stateItem._id) delete stateItem._id;
-                    return stateItem;
                 });
                 request.channelRequests.push({
                     tenant: request.tenant,
@@ -162,15 +175,18 @@ module.exports = {
                     }
                 };
                 if (request.channelRequests.length > 1) {
-                    event.data.splitData = [];
+                    event.data.splitData = {};
                     request.channelRequests.forEach(channelRequest => {
-                        let item = channelRequest.workflowCarrier;
-                        event.data.splitData.push({
-                            code: item.code,
-                            originalCode: item.originalCode,
-                            refId: item.refId,
-                            channel: channelRequest.channel.code
-                        });
+                        let carrier = channelRequest.workflowCarrier;
+                        if (carrier.code != request.workflowCarrier.code) {
+                            event.data.splitData[carrier.code] = carrier.items.map(wfItem => {
+                                return {
+                                    code: wfItem.code,
+                                    originalCode: wfItem.originalCode,
+                                    refId: wfItem.refId,
+                                };
+                            });
+                        }
                     });
                 }
                 SERVICE.DefaultWorkflowEventService.publishEvent(event, request.workflowAction, request.workflowCarrier).then(success => {

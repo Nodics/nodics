@@ -75,8 +75,25 @@ module.exports = {
         });
     },
 
+    getSubModules: function (moduleName) {
+        let modules = [moduleName];
+        let moduleObject = NODICS.getModule(moduleName);
+        if (moduleObject.metaData.requiredModules && moduleObject.metaData.requiredModules.length > 0) {
+            moduleObject.metaData.requiredModules.forEach(mName => {
+                modules = modules.concat(this.getSubModules(mName));
+            });
+        }
+        return modules;
+    },
     loadHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of header files from modules to be imported');
+        if (request.options && request.options.recursive) {
+            let moduleList = [];
+            request.modules.forEach(moduleName => {
+                moduleList = moduleList.concat(this.getSubModules(moduleName));
+            });
+            request.modules = moduleList;
+        }
         SERVICE.DefaultImportUtilityService.getSystemDataHeaders(request.modules, request.inputPath.dataType).then(success => {
             request.data.headerFiles = success;
             process.nextSuccess(request, response);

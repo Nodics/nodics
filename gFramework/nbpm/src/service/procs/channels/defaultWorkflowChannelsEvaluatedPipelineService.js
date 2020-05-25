@@ -36,12 +36,62 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating input for workflow evaluated channels');
-        process.stop(request, response, 'This functionlity is not yet implemented');
-        // process.nextSuccess(request, response);
+        process.nextSuccess(request, response);
     },
     prepareModels: function (request, response, process) {
         this.LOG.debug('Preparing model to update schema item');
-        let sourceDetail = request.data.sourceDetail;
+        let carrierData = request.data.carrier;
+        let splitData = request.data.splitData;
+        request.models = [];
+        if (request.schemaModels && request.schemaModels.length > 0) {
+            if (!UTILS.isBlank(splitData)) {
+                Object.keys(splitData).forEach(newCarrierCode => {
+                    let newModels = splitData[newCarrierCode];
+                    if (newModels && newModels.length > 0) {
+                        newModels.forEach(newModel => {
+                            let originalModel = request.schemaModels.filter(function (model) {
+                                return model.code === newModel.originalCode;
+                            });
+                            if (originalModel) {
+                                let newItem = _.merge(_.merge({}, originalModel), {
+                                    code: newModel.code,
+                                    workflow: {
+                                        carrierCode: carrierData.code,
+                                        activeHead: carrierData.activeHead,
+                                        activeAction: carrierData.activeAction,
+                                        state: carrierData.state,
+                                        heads: carrierData.heads
+                                    }
+                                });
+                                if (carrierData.actions) {
+                                    newItem.workflow.actions = carrierData.actions;
+                                }
+                                delete newItem._id;
+                                request.models.push(newItem);
+                            } else {
+                                throw new Error('Could not found original item for code: ' + newModel.originalCode);
+                            }
+                        });
+                    }
+                });
+            }
+            request.schemaModels.forEach(schemaModel => {
+                let newItem = {
+                    workflow: {
+                        carrierCode: carrierData.code,
+                        activeHead: carrierData.activeHead,
+                        activeAction: carrierData.activeAction,
+                        state: carrierData.state,
+                        heads: carrierData.heads
+                    }
+                };
+                if (carrierData.actions) {
+                    newItem.workflow.actions = carrierData.actions;
+                }
+                request.models.push(_.merge(schemaModel, newItem));
+            });
+        }
+        let sourceDetail = carrierData.sourceDetail;
         if (sourceDetail.schemaName) {
             response.targetNode = 'schemaOperation';
             process.nextSuccess(request, response);
@@ -54,30 +104,31 @@ module.exports = {
     },
     prepareSchemaItem: function (request, response, process) {
         this.LOG.debug('Updating schema item for evaluated channels');
-        try {
-            let data = request.data;
-            request.models = [];
-            let currentModel = _.merge({}, request.schemaModel);
-            delete currentModel._id;
-            data.items.forEach(item => {
-                let dataModel = _.merge(_.merge({}, request.schemaModel), {
-                    code: item.code,
-                    workflow: {
-                        activeHead: data.activeHead,
-                        activeAction: data.activeAction,
-                        qualifiedChannel: item.channel,
-                        state: data.state
-                    }
-                });
-                if (data.originalCode) {
-                    dataModel.originalCode = data.originalCode;
-                }
-                request.models.push(dataModel);
-            });
-            process.nextSuccess(request, response);
-        } catch (error) {
-            process.error(request, response, new CLASSES.WorkflowError(error, 'while preparing for schema update for qualified channels'));
-        }
+        process.nextSuccess(request, response);
+        // try {
+        //     let data = request.data;
+        //     request.models = [];
+        //     let currentModel = _.merge({}, request.schemaModel);
+        //     delete currentModel._id;
+        //     data.items.forEach(item => {
+        //         let dataModel = _.merge(_.merge({}, request.schemaModel), {
+        //             code: item.code,
+        //             workflow: {
+        //                 activeHead: data.activeHead,
+        //                 activeAction: data.activeAction,
+        //                 qualifiedChannel: item.channel,
+        //                 state: data.state
+        //             }
+        //         });
+        //         if (data.originalCode) {
+        //             dataModel.originalCode = data.originalCode;
+        //         }
+        //         request.models.push(dataModel);
+        //     });
+        //     process.nextSuccess(request, response);
+        // } catch (error) {
+        //     process.error(request, response, new CLASSES.WorkflowError(error, 'while preparing for schema update for qualified channels'));
+        // }
     },
     updateSchemaItem: function (request, response, process) {
         this.LOG.debug('Updating schema item for evaluated channels');

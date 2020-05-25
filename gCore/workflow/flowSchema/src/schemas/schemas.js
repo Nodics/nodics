@@ -288,7 +288,7 @@ module.exports = {
                     ENUMS.WorkflowCarrierState.ERROR.key,
                     ENUMS.WorkflowCarrierState.FATAL.key],
                     required: true,
-                    default: ENUMS.WorkflowActionState.NEW.key,
+                    default: ENUMS.WorkflowCarrierState.INIT.key,
                     description: 'Mandate workflow head state [INIT, RELEASED, PROCESSING, PAUSED, BLOCKED, FINISHED, ERROR, FATALL]'
                 },
                 errorCount: {

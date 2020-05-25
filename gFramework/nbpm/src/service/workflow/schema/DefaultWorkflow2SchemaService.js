@@ -44,9 +44,6 @@ module.exports = {
     removeByCode: function (codes, tenant) {
         return Promise.reject(new CLASSES.WorkflowError('ERR_WF_00002', 'Please use save operation with value active: false'));
     },
-    update: function (request) {
-        return Promise.reject(new CLASSES.WorkflowError('ERR_WF_00002', 'Please use save operation with value active: false'));
-    },
 
     workflow2SchemaUpdateEventHandler: function (request) {
         return new Promise((resolve, reject) => {

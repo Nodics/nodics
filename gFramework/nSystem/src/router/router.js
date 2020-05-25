@@ -12,27 +12,6 @@
 module.exports = {
 
     system: {
-        // workflow2SchemaUpdate: {
-        //     saveWorkflow2Schema: {
-        //         secured: true,
-        //         key: '/workflow/to/schema',
-        //         method: 'PUT',
-        //         controller: 'DefaultWorkflow2SchemaController',
-        //         operation: 'save',
-        //         help: {
-        //             requestType: 'secured',
-        //             message: 'authToken need to set within header',
-        //             method: 'GET',
-        //             url: 'http://host:port/nodics/system/workflow/to/schema',
-        //             body: {
-        //                 workflowCode: 'Code of the workflow needs to be triggered for this schema',
-        //                 schemaName: 'Name of schema',
-        //                 moduleName: 'Module Name of the schema'
-        //             }
-        //         }
-        //     }
-        // },
-
         fileResponses: {
             returnFileContent: {
                 secured: true,

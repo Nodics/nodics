@@ -17,7 +17,7 @@ module.exports = {
         type: ENUMS.WorkflowActionType.MANUAL.key,
         accessGroups: ['workflowUserGroup'],
         allowedDecisions: ['SUCCESS'],
-        channels: ['multiSuccessChannel']
+        channels: ['defaultSuccessChannel']
     },
     record1: {
         code: "multiActionTwo",

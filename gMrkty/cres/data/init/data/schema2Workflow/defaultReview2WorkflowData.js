@@ -13,13 +13,36 @@ module.exports = {
     record0: {
         workflowCode: 'customerReviewsWorkflow',
         schemaName: 'reviewTest',
-        active: true,
+        active: false,
         includeProperties: ['name', 'address.city'],
         carrierType: 'FIXED',
         carrierDetail: {
             prefix: 'cr',
             code: 'workflow',
             postFix: 'carrier'
+        },
+        sourceBuilder: {
+            codeStrategy: {
+                name: 'GROUPINTIME',
+                params: {
+                    pattern: 'YYYY_MM_DD_00_MM_SS',
+                    delimiter: '_'
+                }
+            }
+        }
+    },
+
+    record1: {
+        workflowCode: 'multiWorkflow',
+        schemaName: 'reviewTest',
+        active: true,
+        includeProperties: ['name', 'address.city'],
+        carrierType: 'FIXED',
+        carrierDetail: {
+            prefix: 'cr',
+            code: 'workflow',
+            postFix: 'carrier',
+            isCarrierReleased: false
         },
         sourceBuilder: {
             codeStrategy: {

@@ -36,6 +36,7 @@ module.exports = {
         if (!UTILS.isBlank(request.httpRequest.body)) {
             request.modules = request.httpRequest.body.modules || [];
             request.path = request.httpRequest.body.path || null;
+            request.options = request.httpRequest.body.options || {};
         }
         if (callback) {
             FACADE.DefaultImportFacade.importInitData(request).then(success => {
@@ -52,6 +53,7 @@ module.exports = {
         if (!UTILS.isBlank(request.httpRequest.body)) {
             request.modules = request.httpRequest.body.modules || [];
             request.path = request.httpRequest.body.path || null;
+            request.options = request.httpRequest.body.options || {};
         }
         if (callback) {
             FACADE.DefaultImportFacade.importCoreData(request).then(success => {
@@ -68,6 +70,7 @@ module.exports = {
         if (!UTILS.isBlank(request.httpRequest.body)) {
             request.modules = request.httpRequest.body.modules || [];
             request.path = request.httpRequest.body.path || [];
+            request.options = request.httpRequest.body.options || {};
         }
         if (callback) {
             FACADE.DefaultImportFacade.importSampleData(request).then(success => {

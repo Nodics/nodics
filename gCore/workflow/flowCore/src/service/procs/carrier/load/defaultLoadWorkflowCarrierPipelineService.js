@@ -93,7 +93,7 @@ module.exports = {
             let carrierState = {
                 state: ENUMS.WorkflowCarrierState.INIT.key,
                 action: request.workflowCode,
-                date: new Date(),
+                time: new Date(),
                 description: 'Carrier initialized'
             };
             request.workflowCarrier.currentState = carrierState;

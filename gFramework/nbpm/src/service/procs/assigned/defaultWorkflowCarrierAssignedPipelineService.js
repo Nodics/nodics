@@ -47,8 +47,7 @@ module.exports = {
                         activeHead: carrierData.activeHead,
                         activeAction: carrierData.activeAction,
                         state: carrierData.state,
-                        heads: carrierData.heads,
-                        actions: carrierData.actions
+                        heads: carrierData.heads
                     }
                 };
                 if (carrierData.actions) {
