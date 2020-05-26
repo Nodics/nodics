@@ -49,8 +49,6 @@ module.exports = {
                                     reject(new CLASSES.NodicsError('ERR_MDL_00005'));
                                 }
                             }).catch(error => {
-                                console.log(input.query);
-                                console.log(input.model);
                                 reject(error);
                             });
                     } catch (error) {
@@ -69,9 +67,6 @@ module.exports = {
                                         reject(new CLASSES.NodicsError('ERR_MDL_00005'));
                                     }
                                 }).catch(error => {
-                                    console.log(input.query);
-                                    console.log(input.model);
-                                    console.log(error);
                                     reject(error);
                                 });
                             });

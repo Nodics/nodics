@@ -53,7 +53,7 @@ module.exports = {
                 });
             });
             console.log('------------------------------------Create Carrier -----------------------------------');
-            console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
+            //console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
             this.LOG.debug('Pushing event for item initialize in workflow : ' + schemaDef.schemaName);
             SERVICE.DefaultEventService.publish(event).then(success => {
                 resolve(success);

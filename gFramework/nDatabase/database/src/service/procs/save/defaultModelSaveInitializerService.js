@@ -179,6 +179,7 @@ module.exports = {
             };
             process.nextSuccess(request, response);
         }).catch(error => {
+            console.log('model error: ', error);
             process.error(request, response, error);
         });
     },

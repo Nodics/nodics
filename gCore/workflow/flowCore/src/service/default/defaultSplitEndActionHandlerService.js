@@ -38,10 +38,10 @@ module.exports = {
     performDefaultSplitEndAction: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
-                type: ENUMS.WorkflowActionResponseType.SUCCESS.key,
+                type: ENUMS.WorkflowActionResponseType.ERROR.key,
                 decision: 'SLIPTEND',
                 feedback: {
-                    message: 'Item has been splitted, so ent this journey'
+                    message: 'Item has been splitted, so end this journey'
                 }
             });
         });

@@ -52,8 +52,8 @@ module.exports = {
                             let originalModel = request.schemaModels.filter(function (model) {
                                 return model.code === newModel.originalCode;
                             });
-                            if (originalModel) {
-                                let newItem = _.merge(_.merge({}, originalModel), {
+                            if (originalModel && originalModel.length === 1) {
+                                let newItem = _.merge(_.merge({}, originalModel[0]), {
                                     code: newModel.code,
                                     workflow: {
                                         carrierCode: carrierData.code,
@@ -105,30 +105,7 @@ module.exports = {
     prepareSchemaItem: function (request, response, process) {
         this.LOG.debug('Updating schema item for evaluated channels');
         process.nextSuccess(request, response);
-        // try {
-        //     let data = request.data;
-        //     request.models = [];
-        //     let currentModel = _.merge({}, request.schemaModel);
-        //     delete currentModel._id;
-        //     data.items.forEach(item => {
-        //         let dataModel = _.merge(_.merge({}, request.schemaModel), {
-        //             code: item.code,
-        //             workflow: {
-        //                 activeHead: data.activeHead,
-        //                 activeAction: data.activeAction,
-        //                 qualifiedChannel: item.channel,
-        //                 state: data.state
-        //             }
-        //         });
-        //         if (data.originalCode) {
-        //             dataModel.originalCode = data.originalCode;
-        //         }
-        //         request.models.push(dataModel);
-        //     });
-        //     process.nextSuccess(request, response);
-        // } catch (error) {
-        //     process.error(request, response, new CLASSES.WorkflowError(error, 'while preparing for schema update for qualified channels'));
-        // }
+
     },
     updateSchemaItem: function (request, response, process) {
         this.LOG.debug('Updating schema item for evaluated channels');
@@ -138,7 +115,17 @@ module.exports = {
                 tenant: request.tenant,
                 models: request.models
             }).then(success => {
-                process.stop(request, response, success);
+                if (success.success) {
+                    process.stop(request, response, success);
+                } else {
+                    if (!response.error) {
+                        response.error = new CLASSES.WorkflowError('Failed saving channel evaluated items');
+                    }
+                    success.errors.forEach(error => {
+                        response.error.add(error);
+                    });
+                    process.error(request, response);
+                }
             }).catch(error => {
                 process.error(request, response, error);
             });

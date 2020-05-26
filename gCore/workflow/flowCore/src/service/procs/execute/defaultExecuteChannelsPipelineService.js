@@ -137,6 +137,7 @@ module.exports = {
                 channelItem.originalCode = channelItem.code;
                 channelItem.code = channelItem.code + '_' + count;
                 channelItem.items = channelItem.items.map((wfItem, index) => {
+                    delete wfItem._id;
                     return _.merge(wfItem, {
                         originalCode: wfItem.code,
                         code: wfItem.code + '_' + count + '_' + index,

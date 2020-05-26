@@ -123,6 +123,7 @@ module.exports = {
             code = (response.success && response.success.length > 0) ? 'SUC_SAVE_00001' : 'ERR_SAVE_00000';
         }
         let output = {
+            success: code === 'SUC_SAVE_00000' ? true : false,
             code: code,
             result: response.success
         };

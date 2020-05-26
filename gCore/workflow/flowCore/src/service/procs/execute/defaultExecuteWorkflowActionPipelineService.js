@@ -74,7 +74,7 @@ module.exports = {
     },
     updateCarrier: function (request, response, process) {
         this.LOG.debug('Carrier started processing');
-        if (request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.RELEASED.key) {
+        if (request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.PROCESSING.key) {
             let carrierState = {
                 state: ENUMS.WorkflowCarrierState.PROCESSING.key,
                 action: request.workflowAction.code,
@@ -181,9 +181,8 @@ module.exports = {
         if (!request.workflowCarrier.actions) request.workflowCarrier.actions = [];
         if (request.actionResponse.type === ENUMS.WorkflowActionResponseType.ERROR.key) {
             if (!request.workflowCarrier.errors) request.workflowCarrier.errors = [];
-            request.workflowCarrier.errors.push((new CLASSES.WrkflowError(request.actionResponse.feedback.error || request.actionResponse.feedback.message)).toJson());
+            request.workflowCarrier.errors.push((new CLASSES.WorkflowError(request.actionResponse.feedback.error || request.actionResponse.feedback.message)).toJson());
         }
-        request.workflowCarrier.activeAction.state = ENUMS.WorkflowActionState.FINISHED.key;
         request.workflowCarrier.activeAction.actionResponse = {
             type: request.actionResponse.type,
             decision: request.actionResponse.decision,
