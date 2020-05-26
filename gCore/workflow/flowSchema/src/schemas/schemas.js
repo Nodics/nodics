@@ -239,10 +239,10 @@ module.exports = {
                     description: 'Optional carrier original code'
                 },
                 type: {
-                    enum: [ENUMS.WorkflowCarrierType.FIXED.key, ENUMS.WorkflowCarrierType.FLAXI.key],
+                    enum: [ENUMS.WorkflowCarrierType.FIXED.key, ENUMS.WorkflowCarrierType.FLEXI.key],
                     required: true,
                     default: ENUMS.WorkflowCarrierType.FIXED.key,
-                    description: 'Mandate item type [FIXED, FLAXI]'
+                    description: 'Mandate item type [FIXED, FLEXI]'
                 },
                 sourceDetail: {
                     type: 'object',

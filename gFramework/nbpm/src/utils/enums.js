@@ -21,7 +21,7 @@ module.exports = {
         },
         definition: [
             'FIXED',
-            'FLAXI'
+            'FLEXI'
         ]
     },
 

@@ -155,11 +155,14 @@ module.exports = {
     },
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
-        request.schemaModel.getItems(request).then(result => {
+        request.schemaModel.getItems(request).then(success => {
             response.success = {
                 code: 'SUC_FIND_00000',
                 cache: 'item mis',
-                result: result
+                query: success.query,
+                options: success.options,
+                count: success.count,
+                result: success.result
             };
             process.nextSuccess(request, response);
         }).catch(error => {

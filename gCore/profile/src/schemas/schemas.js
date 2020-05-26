@@ -47,7 +47,7 @@ module.exports = {
                 enabled: true
             },
             cache: {
-                enabled: true,
+                enabled: false,
                 ttl: 360
             },
             search: {

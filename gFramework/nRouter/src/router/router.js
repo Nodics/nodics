@@ -19,7 +19,7 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 cache: {
-                    enabled: true,
+                    enabled: false,
                     ttl: 180,
                 },
                 key: '/schemaName',
