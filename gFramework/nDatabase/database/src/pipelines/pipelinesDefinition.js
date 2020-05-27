@@ -407,11 +407,6 @@ module.exports = {
             triggerModelChangeEvent: {
                 type: 'function',
                 handler: 'DefaultModelsUpdateInitializerService.triggerModelChangeEvent',
-                success: 'handleDeepRemove'
-            },
-            handleDeepRemove: {
-                type: 'function',
-                handler: 'DefaultModelsUpdateInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
             }
         }

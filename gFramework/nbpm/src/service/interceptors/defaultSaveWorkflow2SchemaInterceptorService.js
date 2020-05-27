@@ -34,6 +34,13 @@ module.exports = {
         });
     },
 
+    returnModifiedItems: function (request, response) {
+        return new Promise((resolve, reject) => {
+            request.options.returnModified = request.options.returnModified || true;
+            resolve(true);
+        });
+    },
+
     createWorkflowCode: function (request, response) {
         return new Promise((resolve, reject) => {
             try {

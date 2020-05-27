@@ -209,9 +209,8 @@ module.exports = {
         this.LOG.debug('Triggering event for modified model');
         try {
             let schemaModel = request.schemaModel;
-            if (response.success && response.success.result &&
-                schemaModel.rawSchema.event &&
-                schemaModel.rawSchema.event.enabled) {
+            if (response.success && response.success.result && response.success.result.models && response.success.result.models.length > 0 &&
+                schemaModel.rawSchema.event && schemaModel.rawSchema.event.enabled) {
                 let event = {
                     tenant: request.tenant,
                     event: schemaModel.schemaName + 'Updated',
@@ -225,10 +224,16 @@ module.exports = {
                     data: {
                         schemaName: schemaModel.schemaName,
                         modelName: schemaModel.modelName,
-                        result: response.success.result
+                        propertyName: (schemaModel.rawSchema.definition.code) ? 'code' : '_id',
+                        models: response.success.result.models.map(model => {
+                            return model.code || model._id;
+                        })
                     }
                 };
                 this.LOG.debug('Pushing event for item created : ' + schemaModel.schemaName);
+                console.log('================ ' + request.schemaModel.schemaName + ' ===================');
+                console.log(event);
+                console.log('===================================');
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {

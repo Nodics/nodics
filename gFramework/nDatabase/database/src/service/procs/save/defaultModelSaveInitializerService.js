@@ -301,7 +301,8 @@ module.exports = {
                     data: {
                         schemaName: schemaModel.schemaName,
                         modelName: schemaModel.modelName,
-                        result: response.success.result
+                        propertyName: (schemaModel.rawSchema.definition.code) ? 'code' : '_id',
+                        models: [response.success.result.code || response.success.result._id]
                     }
                 };
                 this.LOG.debug('Pushing event for item created : ' + schemaModel.schemaName);

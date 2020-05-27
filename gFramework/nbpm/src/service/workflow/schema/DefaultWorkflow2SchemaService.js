@@ -50,23 +50,55 @@ module.exports = {
             try {
                 let event = request.event;
                 let data = event.data;
-                let modelObject = NODICS.getModels(data.moduleName, request.tenant)[UTILS.createModelName(data.schemaName)];
-                if (!modelObject.workflows) modelObject.workflows = {};
-                if (!data.active && modelObject.workflows[data.workflowCode]) {
-                    delete modelObject.workflows[data.workflowCode];
-                    data.events.forEach(event => {
-                        event.enabled = false;
+                if (data.models && data.models.length > 0) {
+                    let query = {};
+                    let schemaModel = NODICS.getModels(request.moduleName, request.tenant)[data.modelName];
+                    if (data.propertyName === '_id') {
+                        data.models = data.models.map(id => {
+                            return SERVICE.DefaultDatabaseConfigurationService.toObjectId(schemaModel, id);
+                        });
+                    }
+                    query[data.propertyName] = {
+                        $in: data.models
+                    };
+                    SERVICE.DefaultWorkflow2SchemaService.get({
+                        authData: request.authData,
+                        tenant: request.tenant,
+                        searchOptions: {
+                            projection: { _id: 0 }
+                        },
+                        options: {
+                            convertToObjectId: true
+                        },
+                        query: query
+                    }).then(success => {
+                        if (success.result && success.result.length > 0) {
+                            success.result.forEach(model => {
+                                let modelObject = NODICS.getModels(model.moduleName, request.tenant)[UTILS.createModelName(model.schemaName)];
+                                if (!modelObject.workflows) modelObject.workflows = {};
+                                modelObject.workflows[model.workflowCode] = _.merge(modelObject.workflows[model.workflowCode] || {}, model);
+                                if (!model.active && modelObject.workflows[model.workflowCode]) {
+                                    delete modelObject.workflows[model.workflowCode];
+                                    model.events.forEach(event => {
+                                        event.enabled = false;
+                                    });
+                                }
+                                SERVICE.DefaultEventService.registerModuleEvents(model.moduleName, model.events);
+                            });
+                            resolve('Workflow code updated on cluster: ' + CONFIG.get('clusterId'));
+                        } else {
+                            reject(new CLASSES.WorkflowError('ERR_WF_00000', 'Could not found items for ids: ' + data.models));
+                        }
+                    }).catch(error => {
+                        reject(new CLASSES.WorkflowError(error, null, 'ERR_WF_00000'));
                     });
-                } else if (data.active && !modelObject.workflows[data.workflowCode]) {
-                    modelObject.workflows[data.workflowCode] = data;
                 }
-                SERVICE.DefaultEventService.registerModuleEvents(data.moduleName, data.events);
-                resolve('Workflow code updated on cluster: ' + CONFIG.get('clusterId'));
             } catch (error) {
                 reject(new CLASSES.WorkflowError(error, null, 'ERR_WF_00000'));
             }
         });
     },
+
     buildWorkflow2SchemaAssociations: function () {
         return new Promise((resolve, reject) => {
             let allPromise = [];

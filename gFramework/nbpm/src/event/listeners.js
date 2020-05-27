@@ -11,8 +11,12 @@
 
 module.exports = {
     common: {
-        workflow2SchemaUpdatedListener: {
+        workflow2SchemaSaveListener: {
             event: 'workflow2SchemaSave',
+            listener: 'DefaultWorkflow2SchemaChangeListenerService.handleWorkflow2SchemaUpdateEventHandler'
+        },
+        workflow2SchemaUpdatedListener: {
+            event: 'workflow2SchemaUpdated',
             listener: 'DefaultWorkflow2SchemaChangeListenerService.handleWorkflow2SchemaUpdateEventHandler'
         }
     }

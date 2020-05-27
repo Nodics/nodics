@@ -24,6 +24,22 @@ module.exports = {
         index: 0,
         handler: 'DefaultSaveWorkflow2SchemaInterceptorService.createWorkflowCode'
     },
+    preUpdateWorkflow2Schema: {
+        type: 'schema',
+        item: 'workflow2Schema',
+        trigger: 'preUpdate',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultSaveWorkflow2SchemaInterceptorService.returnModifiedItems'
+    },
+    preRemoveWorkflow2Schema: {
+        type: 'schema',
+        item: 'workflow2Schema',
+        trigger: 'preRemove',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultSaveWorkflow2SchemaInterceptorService.returnModifiedItems'
+    },
     handlePreSaveModuleAssignment: {
         type: 'schema',
         item: 'workflow2Schema',
