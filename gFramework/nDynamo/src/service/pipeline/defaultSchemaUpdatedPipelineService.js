@@ -37,7 +37,7 @@ module.exports = {
 
     validateSchema: function (request, response, process) {
         this.LOG.debug('Validating schema update request');
-        if (!request.schemaName) {
+        if (!request.schemaCode) {
             process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00000', 'Schema Name can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
@@ -49,7 +49,7 @@ module.exports = {
         SERVICE.DefaultSchemaConfigurationService.get({
             tenant: 'default',
             query: {
-                code: request.schemaName
+                code: request.schemaCode
             }
         }).then(success => {
             if (success.result && success.result.length > 0) {

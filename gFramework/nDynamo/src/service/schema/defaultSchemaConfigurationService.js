@@ -34,19 +34,39 @@ module.exports = {
     },
 
     schemaUpdateEventHandler: function (request) {
-        let _self = this;
-        let body = request.result;
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultPipelineService.start('schemaUpdatedPipeline', {
-                    schemaName: body.code
-                }, {}).then(success => {
+                this.handleSchemaUpdate(request, request.event.data.models).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);
                 });
             } catch (error) {
                 reject(error);
+            }
+        });
+    },
+
+    handleSchemaUpdate: function (request, schemaList) {
+        return new Promise((resolve, reject) => {
+            if (schemaList && schemaList.length > 0) {
+                let schemaCode = schemaList.shift();
+                SERVICE.DefaultPipelineService.start('schemaUpdatedPipeline', {
+                    tenant: request.tenant,
+                    autData: request.autData,
+                    event: request.event,
+                    schemaCode: schemaCode
+                }, {}).then(success => {
+                    this.handleSchemaUpdate(request, schemaList).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve('Updated all schemas');
             }
         });
     },

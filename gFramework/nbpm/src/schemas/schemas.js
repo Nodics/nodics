@@ -44,7 +44,7 @@ module.exports = {
                     type: 'object',
                     required: true,
                     description: 'Required event configuration for all possible workflow action events'
-                },
+                }
             },
             indexes: {
                 composite: {

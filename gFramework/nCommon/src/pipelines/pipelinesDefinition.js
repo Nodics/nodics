@@ -19,31 +19,31 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultInterceptorUpdatePipelineService.validateRequest',
+                handler: 'DefaultInterceptorUpdatedPipelineService.validateRequest',
                 success: 'loadInterceptor'
             },
             loadInterceptor: {
                 type: 'function',
-                handler: 'DefaultInterceptorUpdatePipelineService.loadInterceptor',
+                handler: 'DefaultInterceptorUpdatedPipelineService.loadInterceptor',
                 success: 'mergeExisting'
             },
             mergeExisting: {
                 type: 'function',
-                handler: 'DefaultInterceptorUpdatePipelineService.mergeExisting',
+                handler: 'DefaultInterceptorUpdatedPipelineService.mergeExisting',
                 success: 'publishCleanup'
             },
             publishCleanup: {
                 type: 'function',
-                handler: 'DefaultInterceptorUpdatePipelineService.publishCleanup',
+                handler: 'DefaultInterceptorUpdatedPipelineService.publishCleanup',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultInterceptorUpdatePipelineService.handleSucessEnd'
+                handler: 'DefaultInterceptorUpdatedPipelineService.handleSucessEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultInterceptorUpdatePipelineService.handleErrorEnd'
+                handler: 'DefaultInterceptorUpdatedPipelineService.handleErrorEnd'
             }
         }
     }

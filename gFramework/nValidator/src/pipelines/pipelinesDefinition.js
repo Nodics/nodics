@@ -18,31 +18,31 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultValidatorUpdatePipelineService.validateRequest',
+                handler: 'DefaultValidatorUpdatedPipelineService.validateRequest',
                 success: 'loadInterceptor'
             },
             loadValidator: {
                 type: 'function',
-                handler: 'DefaultValidatorUpdatePipelineService.loadValidator',
+                handler: 'DefaultValidatorUpdatedPipelineService.loadValidator',
                 success: 'mergeExisting'
             },
             mergeExisting: {
                 type: 'function',
-                handler: 'DefaultValidatorUpdatePipelineService.mergeExisting',
+                handler: 'DefaultValidatorUpdatedPipelineService.mergeExisting',
                 success: 'publishCleanup'
             },
             publishCleanup: {
                 type: 'function',
-                handler: 'DefaultValidatorUpdatePipelineService.publishCleanup',
+                handler: 'DefaultValidatorUpdatedPipelineService.publishCleanup',
                 success: 'successEnd'
             },
             successEnd: {
                 type: 'function',
-                handler: 'DefaultValidatorUpdatePipelineService.handleSucessEnd'
+                handler: 'DefaultValidatorUpdatedPipelineService.handleSucessEnd'
             },
             handleError: {
                 type: 'function',
-                handler: 'DefaultValidatorUpdatePipelineService.handleErrorEnd'
+                handler: 'DefaultValidatorUpdatedPipelineService.handleErrorEnd'
             }
         }
     }

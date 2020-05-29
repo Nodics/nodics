@@ -66,19 +66,25 @@ module.exports = {
         });
     },
 
-    handleListenerUpdateEvent: function (listener) {
+    handleListenerUpdateEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {
+                let event = request.event;
+                let data = event.data;
                 SERVICE.DefaultEventListenerService.get({
                     tenant: 'default',
                     query: {
-                        code: listener.code
+                        code: {
+                            $in: data.models
+                        }
                     }
                 }).then(success => {
                     if (success.result && success.result.length > 0) {
                         let rawListener = {};
-                        rawListener[success.result[0].moduleName] = {};
-                        rawListener[success.result[0].moduleName][success.result[0].code] = success.result[0];
+                        success.result.forEach(listener => {
+                            rawListener[listener.moduleName] = {};
+                            rawListener[listener.moduleName][listener.code] = listener;
+                        });
                         this.registerEventListeners(rawListener).then(success => {
                             resolve(success);
                         }).catch(error => {
@@ -100,10 +106,26 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                if (listener.moduleName === 'common') {
-                    _.each(NODICS.getModules(), (moduleObject, moduleName) => {
-                        if (moduleObject.eventService) {
-                            moduleObject.eventService.disableListner(listener.event, (error, success) => {
+                let messages = [];
+                request.event.data.models.forEach(listener => {
+                    if (listener.moduleName === 'common') {
+                        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                            if (moduleObject.eventService) {
+                                moduleObject.eventService.disableListner(listener.event, (error, success) => {
+                                    if (error) {
+                                        _self.LOG.error('Failed removing listener : ' + listener.event);
+                                        _self.LOG.error(error);
+                                    } else {
+                                        _self.LOG.debug('Listener has been removed : ' + listener.event);
+                                    }
+                                });
+                            }
+                        });
+                        messages.push('Event listener: ' + listener.event + ' successfully removed from common modules');
+                    } else {
+                        let eventService = NODICS.getModule(listener.moduleName).eventService;
+                        if (eventService) {
+                            eventService.disableListner(listener.event, (error, success) => {
                                 if (error) {
                                     _self.LOG.error('Failed removing listener : ' + listener.event);
                                     _self.LOG.error(error);
@@ -112,22 +134,10 @@ module.exports = {
                                 }
                             });
                         }
-                    });
-                    resolve('Event listener: ' + listener.event + ' successfully removed from all modules');
-                } else {
-                    let eventService = NODICS.getModule(listener.moduleName).eventService;
-                    if (eventService) {
-                        eventService.disableListner(listener.event, (error, success) => {
-                            if (error) {
-                                _self.LOG.error('Failed removing listener : ' + listener.event);
-                                _self.LOG.error(error);
-                            } else {
-                                _self.LOG.debug('Listener has been removed : ' + listener.event);
-                            }
-                        });
+                        messages.push('Event listener: ' + listener.event + ' successfully removed from all modules');
                     }
-                    resolve('Event listener: ' + listener.event + ' successfully removed from module: ' + listener.moduleName);
-                }
+                });
+                resolve(messages);
             } catch (error) {
                 reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
             }
@@ -205,7 +215,7 @@ module.exports = {
     handleEvent: function (request) {
         let _self = this;
         let event = request.event;
-        event.moduleName = request.moduleName;
+        event.moduleName = request.moduleName || event.target;
         return new Promise((resolve, reject) => {
             if (!NODICS.getModule(event.moduleName)) {
                 reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Could not find moduleName, whithin system: ' + event.moduleName));

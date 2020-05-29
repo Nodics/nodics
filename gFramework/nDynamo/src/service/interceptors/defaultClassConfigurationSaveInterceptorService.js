@@ -34,6 +34,17 @@ module.exports = {
             resolve(true);
         });
     },
+    checkIfModuleActive: function (request, response) {
+        return new Promise((resolve, reject) => {
+            let moduleName = request.model.moduleName;
+            if (NODICS.isModuleActive(moduleName)) {
+                resolve(true);
+            } else {
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid moduleName, it should not be null or inactive'));
+            }
+        });
+    },
+
     removeBody: function (request, response) {
         return new Promise((resolve, reject) => {
             if (response.model && response.model.result && response.model.result.body) {

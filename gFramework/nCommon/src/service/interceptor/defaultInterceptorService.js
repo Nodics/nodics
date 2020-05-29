@@ -49,7 +49,11 @@ module.exports = {
     handleInterceptorChangeEvent: function (interceptor) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('interceptorUpdatedPipeline', {
-                code: interceptor.code
+                authData: request.authData,
+                tenant: request.tenant,
+                moduleName: request.moduleName,
+                event: request.event,
+                data: request.event.data
             }, {}).then(success => {
                 resolve('Interceptor updated successfully');
             }).catch(error => {

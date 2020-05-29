@@ -56,26 +56,46 @@ module.exports = {
         });
     },
 
-    handlePipelineChangeEvent: function (pipelineObj) {
+    handlePipelineChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             this.get({
-                tenant: 'default',
+                authData: request.authData,
+                tenant: request.tenant,
+                searchOptions: {
+                    projection: { _id: 0 }
+                },
                 query: {
-                    code: pipelineObj.code
+                    code: {
+                        $in: request.event.data.models
+                    }
                 }
             }).then(success => {
                 if (success.result && success.result.length > 0) {
-                    pipelineObj = success.result[0];
-                    if (PIPELINE[pipelineObj.code]) {
-                        PIPELINE[pipelineObj.code] = _.merge(PIPELINE[pipelineObj.code], pipelineObj);
-                    } else {
-                        PIPELINE[pipelineObj.code] = pipelineObj;
-                    }
+                    success.result.forEach(pipeline => {
+                        if (!pipeline.active && PIPELINE[pipeline.code]) {
+                            delete PIPELINE[pipeline.code];
+                        } else if (PIPELINE[pipeline.code]) {
+                            PIPELINE[pipeline.code] = _.merge(PIPELINE[pipeline.code], pipeline);
+                        } else {
+                            PIPELINE[pipeline.code] = pipeline;
+                        }
+                    });
                 }
                 resolve('Successfully pipeline updated');
             }).catch(error => {
                 reject(error);
             });
+        });
+    },
+
+    handlePipelineRemovedEvent: function (request) {
+        return new Promise((resolve, reject) => {
+            if (request.event.data.models && request.event.data.models.length > 0) {
+                request.event.data.models.forEach(pipeline => {
+                    if (PIPELINE[pipeline.code]) delete PIPELINE[pipeline.code];
+                });
+            }
+            resolve('Successfully pipeline removed');
         });
     },
 

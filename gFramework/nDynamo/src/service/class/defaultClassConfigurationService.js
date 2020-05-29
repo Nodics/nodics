@@ -98,6 +98,7 @@ module.exports = {
                     model: {
                         code: className,
                         type: type,
+                        active: true,
                         body: success
                     }
                 }).then(success => {
@@ -136,7 +137,7 @@ module.exports = {
                     finalClassData = 'module.exports = ' + finalClassData.replace(/\\n/gm, '\n').replace(/\\t/gm, '').replaceAll("\"", "") + ';';
                     byteBody = Buffer.from(finalClassData, 'utf8');
                 } else {
-                    byteBody = Buffer.from(body, 'utf8');
+                    byteBody = Buffer.from('module.exports = ' + body + ';', 'utf8');
                 }
                 resolve(byteBody);
             }).catch(error => {
@@ -146,38 +147,39 @@ module.exports = {
     },
 
     classUpdateEventHandler: function (request) {
-        let _self = this;
-        let body = request.result;
         return new Promise((resolve, reject) => {
-            if (!body.code) {
+            if (!request.event.data.models || request.event.data.models.length <= 0) {
                 reject(new CLASSES.NodicsError('ERR_SYS_00001', 'ClassName can not be null or empty'));
             }
             this.get({
                 tenant: 'default',
                 query: {
-                    code: body.code
+                    code: {
+                        $in: request.event.data.models
+                    }
                 }
             }).then(success => {
                 if (success.result && success.result.length > 0) {
-                    let classData = success.result[0];
-                    let classObject = RequireFromString(classData.body.toString('utf8'));
-                    if (global[classData.type]) {
-                        if (global[classData.type][classData.code.toUpperCaseFirstChar()]) {
-                            global[classData.type][classData.code.toUpperCaseFirstChar()] = _.merge(
-                                GLOBAL[classData.type][classData.code.toUpperCaseFirstChar()],
-                                classObject);
+                    success.result.forEach(classData => {
+                        let classObject = RequireFromString(classData.body.toString('utf8'));
+                        if (global[classData.type]) {
+                            if (global[classData.type][classData.code.toUpperCaseFirstChar()]) {
+                                global[classData.type][classData.code.toUpperCaseFirstChar()] = _.merge(
+                                    GLOBAL[classData.type][classData.code.toUpperCaseFirstChar()],
+                                    classObject);
+                            } else {
+                                global[classData.type][classData.code.toUpperCaseFirstChar()] = classObject;
+                            }
+                            this.LOG.debug('Successfully updated class: ' + classData.code);
+                            resolve('Successfully updated class: ' + classData.code);
                         } else {
-                            global[classData.type][classData.code.toUpperCaseFirstChar()] = classObject;
+                            this.LOG.error('Invalid type: ' + classData.code);
+                            reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid type: ' + classData.type));
                         }
-                        _self.LOG.debug('Successfully updated class: ' + body.code);
-                        resolve('Successfully updated class: ' + body.code);
-                    } else {
-                        _self.LOG.error('Invalid type: ' + body.code);
-                        reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid type: ' + request.body.type));
-                    }
+                    });
                 } else {
-                    _self.LOG.error('Could not found any data for class name ' + body.code);
-                    reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Could not found any data for class name ' + body.code));
+                    this.LOG.error('Could not found any data for class name ' + request.event.data.models);
+                    reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Could not found any data for class name ' + request.event.data.models));
                 }
             }).catch(error => {
                 reject(error);
@@ -244,14 +246,11 @@ module.exports = {
                 } else {
                     try {
                         let response = eval(entityString);
-                        if (response) {
-                            resolve({
-                                message: 'Successfully executed operation: ' + request.body.operationName + ' from class: ' + request.body.className,
-                                response: response
-                            });
-                        } else {
-                            resolve('Successfully executed operation: ' + request.body.operationName + ' from class: ' + request.body.className);
-                        }
+                        if (!response) response = 'void';
+                        resolve({
+                            message: 'Successfully executed operation: ' + request.body.operationName + ' from class: ' + request.body.className,
+                            response: response
+                        });
                     } catch (error) {
                         reject(new CLASSES.NodicsError(error, null, 'ERR_SYS_00000'));
                     }

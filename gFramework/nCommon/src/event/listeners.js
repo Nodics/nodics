@@ -11,8 +11,12 @@
 
 module.exports = {
     common: {
-        interceptorChangeListener: {
+        interceptorAddedListener: {
             event: 'interceptorSave',
+            listener: 'DefaultInterceptorChangeListenerService.handleInterceptorChangeEvent'
+        },
+        interceptorUpdatedListener: {
+            event: 'interceptorUpdated',
             listener: 'DefaultInterceptorChangeListenerService.handleInterceptorChangeEvent'
         }
     }

@@ -231,9 +231,6 @@ module.exports = {
                     }
                 };
                 this.LOG.debug('Pushing event for item created : ' + schemaModel.schemaName);
-                console.log('================ ' + request.schemaModel.schemaName + ' ===================');
-                console.log(event);
-                console.log('===================================');
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     this.LOG.debug('Event successfully posted');
                 }).catch(error => {

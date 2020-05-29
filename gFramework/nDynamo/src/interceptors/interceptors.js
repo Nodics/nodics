@@ -11,6 +11,15 @@
 
 module.exports = {
 
+    // preSaveClassConfiguration: {
+    //     type: 'schema',
+    //     item: 'classConfiguration',
+    //     trigger: 'preSave',
+    //     active: 'true',
+    //     index: 0,
+    //     handler: 'DefaultClassConfigurationSaveInterceptorService.checkIfModuleActive'
+    // },
+
     postSaveClassConfiguration: {
         type: 'schema',
         item: 'classConfiguration',
@@ -20,14 +29,15 @@ module.exports = {
         handler: 'DefaultClassConfigurationSaveInterceptorService.removeBody'
     },
 
-    preSaveRouterConfiguration: {
-        type: 'schema',
-        item: 'classConfiguration',
-        trigger: 'preSave',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultRouterConfigurationSaveInterceptorService.checkIfModuleActiveForRouter'
-    },
+    // preSaveRouterConfiguration: {
+    //     type: 'schema',
+    //     item: 'classConfiguration',
+    //     trigger: 'preSave',
+    //     active: 'true',
+    //     index: 0,
+    //     handler: 'DefaultRouterConfigurationSaveInterceptorService.checkIfModuleActiveForRouter'
+    // },
+
 
     preSaveSchemaConfiguration: {
         type: 'schema',
@@ -36,14 +46,5 @@ module.exports = {
         active: 'true',
         index: 0,
         handler: 'DefaultSchemaConfigurationSaveInterceptorService.checkIfModuleActive'
-    },
-
-    // preSaveSchemaConfigurationMerge: {
-    //     type: 'schema',
-    //     item: 'schemaConfiguration',
-    //     trigger: 'preSave',
-    //     active: 'true',
-    //     index: 0,
-    //     handler: 'DefaultSchemaConfigurationSaveInterceptorService.mergeExistingSchema'
-    // },
+    }
 };

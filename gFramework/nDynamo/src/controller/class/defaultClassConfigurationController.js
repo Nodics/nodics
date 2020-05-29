@@ -68,13 +68,13 @@ module.exports = {
         request.type = request.httpRequest.params.type;
         request.body = request.httpRequest.body;
         if (callback) {
-            FACADE.DefaultClassConfigurationFacade.addClass(request).then(success => {
+            FACADE.DefaultClassConfigurationFacade.updateClass(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultClassConfigurationFacade.addClass(request);
+            return FACADE.DefaultClassConfigurationFacade.updateClass(request);
         }
     },
 

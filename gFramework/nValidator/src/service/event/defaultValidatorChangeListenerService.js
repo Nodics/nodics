@@ -2,10 +2,7 @@ module.exports = {
 
     handleValidatorChangeEvent: function (event, callback) {
         try {
-            SERVICE.DefaultValidatorService.handleValidatorChangeEvent({
-                moduleName: request.target,
-                validator: event.data
-            }).then(success => {
+            SERVICE.DefaultValidatorService.handleValidatorChangeEvent(request).then(success => {
                 callback(null, {
                     code: 'SUC_EVNT_00000',
                     message: success

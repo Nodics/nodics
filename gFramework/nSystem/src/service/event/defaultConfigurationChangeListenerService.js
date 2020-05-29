@@ -1,29 +1,14 @@
 module.exports = {
 
-    handleConfigurationChangeEvent: function (event, callback) {
+    handleConfigurationChangeEvent: function (request, callback) {
         try {
-            SERVICE.DefaultConfigurationService.handleConfigurationChangeEvent({
-                tenant: request.tenant,
-                config: event.data
-            }).then(success => {
-                callback(null, {
-                    success: true,
-                    code: 'SUC_EVNT_00000',
-                    message: success
-                });
+            SERVICE.DefaultConfigurationService.handleConfigurationChangeEvent(request).then(success => {
+                callback(null, { code: 'SUC_EVNT_00000', message: success });
             }).catch(error => {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    message: error
-                });
+                callback(new CLASSES.EventError(error, 'Unable to handle configuration update handler', 'ERR_EVNT_00000'));
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                message: error
-            });
+            callback(new CLASSES.EventError(error, 'Unable to handle configuration update handler', 'ERR_EVNT_00000'));
         }
     }
 };

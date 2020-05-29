@@ -110,11 +110,14 @@ module.exports = {
         ));
     },
 
-    handleValidatorChangeEvent: function (validator) {
+    handleValidatorChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('validatorUpdatedPipeline', {
-                code: validator.code,
-                tenant: validator.tenant
+                authData: request.authData,
+                tenant: request.tenant,
+                moduleName: request.moduleName,
+                event: request.event,
+                data: request.event.data
             }, {}).then(success => {
                 resolve('Validator updated successfully');
             }).catch(error => {

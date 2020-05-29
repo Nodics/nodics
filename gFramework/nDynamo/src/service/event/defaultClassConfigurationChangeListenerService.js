@@ -33,27 +33,15 @@ module.exports = {
         });
     },
 
-    handleClassUpdateEventHandler: function (event, callback) {
+    handleClassUpdateEventHandler: function (request, callback) {
         try {
-            SERVICE.DefaultClassConfigurationService.classUpdateEventHandler(event.data).then(success => {
-                callback(null, {
-                    success: true,
-                    code: 'SUC_EVNT_00000',
-                    message: success
-                });
+            SERVICE.DefaultClassConfigurationService.classUpdateEventHandler(request).then(success => {
+                callback(null, { code: 'SUC_EVNT_00000', message: success });
             }).catch(error => {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    message: error
-                });
+                callback(new CLASSES.EventError(error, 'Unable to handle class configuration update', 'ERR_EVNT_00000'));
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                message: error
-            });
+            callback(new CLASSES.EventError(error, 'Unable to handle class configuration update', 'ERR_EVNT_00000'));
         }
     }
 };

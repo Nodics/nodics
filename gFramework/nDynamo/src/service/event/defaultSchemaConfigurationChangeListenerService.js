@@ -35,27 +35,15 @@ module.exports = {
         });
     },
 
-    handleSchemaUpdateEventHandler: function (event, callback) {
+    handleSchemaUpdateEventHandler: function (request, callback) {
         try {
-            SERVICE.DefaultSchemaConfigurationService.schemaUpdateEventHandler(event.data).then(success => {
-                callback(null, {
-                    success: true,
-                    code: 'SUC_EVNT_00000',
-                    message: success
-                });
+            SERVICE.DefaultSchemaConfigurationService.schemaUpdateEventHandler(request).then(success => {
+                callback(null, { code: 'SUC_EVNT_00000', message: success });
             }).catch(error => {
-                callback({
-                    success: false,
-                    code: 'ERR_EVNT_00000',
-                    message: (error instanceof Object) ? JSON.stringify(error) : error
-                });
+                callback(new CLASSES.EventError(error, 'Unable to handle schema configuration update', 'ERR_EVNT_00000'));
             });
         } catch (error) {
-            callback({
-                success: false,
-                code: 'ERR_EVNT_00000',
-                message: (error instanceof Object) ? JSON.stringify(error) : error
-            });
+            callback(new CLASSES.EventError(error, 'Unable to handle schema configuration update', 'ERR_EVNT_00000'));
         }
     }
 };

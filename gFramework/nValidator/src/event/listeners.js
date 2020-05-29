@@ -11,8 +11,12 @@
 
 module.exports = {
     common: {
-        validatorChangeListener: {
+        validatorAddedListener: {
             event: 'validatorSave',
+            listener: 'DefaultValidatorChangeListenerService.handleValidatorChangeEvent'
+        },
+        validatorUpdatedListener: {
+            event: 'validatorUpdated',
             listener: 'DefaultValidatorChangeListenerService.handleValidatorChangeEvent'
         }
     }

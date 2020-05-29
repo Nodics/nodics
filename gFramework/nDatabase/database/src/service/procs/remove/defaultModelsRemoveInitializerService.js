@@ -236,7 +236,8 @@ module.exports = {
         this.LOG.debug('Triggering event for removed models');
         try {
             let schemaModel = request.schemaModel;
-            if (response.success && response.success.result && schemaModel.rawSchema.event && schemaModel.rawSchema.event.enabled) {
+            if (response.success && response.success.result && schemaModel.rawSchema.event &&
+                schemaModel.rawSchema.event.enabled && response.success.result.models && response.success.result.models.length > 0) {
                 let event = {
                     tenant: request.tenant,
                     event: schemaModel.schemaName + 'Removed',
@@ -250,7 +251,7 @@ module.exports = {
                     data: {
                         schemaName: schemaModel.schemaName,
                         modelName: schemaModel.modelName,
-                        result: response.success.result
+                        models: response.success.result.models
                     }
                 };
                 this.LOG.debug('Pushing event for item created : ' + schemaModel.schemaName);

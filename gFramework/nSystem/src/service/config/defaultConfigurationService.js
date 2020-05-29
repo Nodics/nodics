@@ -37,14 +37,21 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 this.get({
+                    authData: request.authData,
                     tenant: request.tenant,
+                    searchOptions: {
+                        projection: { _id: 0 }
+                    },
                     query: {
-                        code: 'currentConfiguration'
+                        code: {
+                            $in: request.event.data.models
+                        }
                     }
                 }).then(success => {
                     if (success.result && success.result.length > 0) {
-                        let configModel = success.result[0];
-                        CONFIG.changeTenantProperties(configModel.configModel, request.tenant);
+                        success.result.forEach(configuration => {
+                            CONFIG.changeTenantProperties(configuration.config, request.tenant);
+                        });
                     }
                     resolve('Configuration update successfully');
                 }).catch(error => {

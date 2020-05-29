@@ -140,30 +140,28 @@ module.exports = {
         return this.interceptors[schemaName];
     },
 
-    refreshSchemaInterceptors: function (schemaName) {
-        if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
-            if (!schemaName || schemaName === 'default') {
-                let tmpInterceptors = {};
-                Object.keys(this.interceptors).forEach(schemaName => {
-                    tmpInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
-                });
-                this.interceptors = tmpInterceptors;
-            } else if (this.interceptors[schemaName]) {
-                this.interceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
-            }
+    refreshSchemaInterceptors: function (schemaNames) {
+        if (this.interceptors && !UTILS.isBlank(this.interceptors) && schemaNames && schemaNames.length > 0) {
+            schemaNames.forEach(schemaName => {
+                if (!schemaName || schemaName === 'default') {
+                    let tmpInterceptors = {};
+                    Object.keys(this.interceptors).forEach(schemaName => {
+                        tmpInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
+                    });
+                    this.interceptors = tmpInterceptors;
+                } else if (this.interceptors[schemaName]) {
+                    this.interceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
+                }
+            });
         }
     },
 
-    handleSchemaInterceptorUpdated: function (event, callback) {
+    handleSchemaInterceptorUpdated: function (request, callback) {
         try {
-            let schemaName = event.data.item;
-            this.refreshSchemaInterceptors(schemaName);
-            callback(null, {
-                code: 'SUC_EVNT_00000',
-                message: success
-            });
+            this.refreshSchemaInterceptors(request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
         } catch (error) {
-            callback(new CLASSES.EventError(error, null, 'ERR_EVNT_00000'));
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
         }
     },
 
@@ -179,29 +177,28 @@ module.exports = {
         return this.validators[tenant][schemaName];
     },
 
-    refreshSchemaValidators: function (tenant, schemaName) {
-        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant])) {
-            if (!schemaName || schemaName === 'default') {
-                let tenantValidators = {};
-                Object.keys(this.validators[tenant]).forEach(schemaName => {
-                    tenantValidators[schemaName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, schemaName, ENUMS.InterceptorType.schema.key);
-                });
-                this.validators[tenant] = tenantValidators;
-            } else if (this.validators[tenant][schemaName]) {
-                this.validators[tenant][schemaName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, schemaName, ENUMS.InterceptorType.schema.key);
-            }
+    refreshSchemaValidators: function (tenant, schemaNames) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant]) && schemaNames && schemaNames.length > 0) {
+            schemaNames.forEach(schemaName => {
+                if (!schemaName || schemaName === 'default') {
+                    let tenantValidators = {};
+                    Object.keys(this.validators[tenant]).forEach(schemaName => {
+                        tenantValidators[schemaName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, schemaName, ENUMS.InterceptorType.schema.key);
+                    });
+                    this.validators[tenant] = tenantValidators;
+                } else if (this.validators[tenant][schemaName]) {
+                    this.validators[tenant][schemaName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, schemaName, ENUMS.InterceptorType.schema.key);
+                }
+            });
         }
     },
 
-    handleSchemaValidatorUpdated: function (event, callback) {
+    handleSchemaValidatorUpdated: function (request, callback) {
         try {
-            this.refreshSchemaValidators(event.data.tenant, event.data.item);
-            callback(null, {
-                code: 'SUC_EVNT_00000',
-                message: success
-            });
+            this.refreshSchemaValidators(request.tenant, request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
         } catch (error) {
-            callback(new CLASSES.EventError(error, null, 'ERR_EVNT_00000'));
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
         }
     },
 };

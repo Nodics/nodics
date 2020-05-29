@@ -15,5 +15,13 @@ module.exports = {
             event: 'pipelineSave',
             listener: 'DefaultPipelineChangeListenerService.handlePipelineChangeEvent'
         },
+        pipelineUpdatedListener: {
+            event: 'pipelineUpdated',
+            listener: 'DefaultPipelineChangeListenerService.handlePipelineChangeEvent'
+        },
+        pipelineRemovedListener: {
+            event: 'pipelineUpdated',
+            listener: 'DefaultPipelineChangeListenerService.handlePipelineRemovedEvent'
+        },
     }
 };

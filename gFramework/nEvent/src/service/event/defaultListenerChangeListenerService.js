@@ -1,32 +1,26 @@
 module.exports = {
 
-    handleListenerUpdateEvent: function (event, callback) {
+    handleListenerUpdateEvent: function (request, callback) {
         try {
-            SERVICE.DefaultEventService.handleListenerUpdateEvent(event.data).then(success => {
-                callback(null, {
-                    code: 'SUC_EVNT_00000',
-                    message: success
-                });
+            SERVICE.DefaultEventService.handleListenerUpdateEvent(request).then(success => {
+                callback(null, { code: 'SUC_EVNT_00000', message: success });
             }).catch(error => {
-                callback(new CLASSES.EventError(error));
+                callback(new CLASSES.EventError(error, 'Unable to handle listener update handler', 'ERR_EVNT_00000'));
             });
         } catch (error) {
-            callback(new CLASSES.EventError(error));
+            callback(new CLASSES.EventError(error, 'Unable to handle listener update handler', 'ERR_EVNT_00000'));
         }
     },
 
-    handleListenerRemovedEvent: function (event, callback) {
+    handleListenerRemovedEvent: function (request, callback) {
         try {
-            SERVICE.DefaultEventService.handleListenerRemovedEvent(event.data).then(success => {
-                callback(null, {
-                    code: 'SUC_EVNT_00000',
-                    message: success
-                });
+            SERVICE.DefaultEventService.handleListenerRemovedEvent(request).then(success => {
+                callback(null, { code: 'SUC_EVNT_00000', message: success });
             }).catch(error => {
-                callback(new CLASSES.EventError(error));
+                callback(new CLASSES.EventError(error, 'Unable to handle listener removed handler', 'ERR_EVNT_00000'));
             });
         } catch (error) {
-            callback(new CLASSES.EventError(error));
+            callback(new CLASSES.EventError(error, 'Unable to handle listener removed handler', 'ERR_EVNT_00000'));
         }
     }
 };

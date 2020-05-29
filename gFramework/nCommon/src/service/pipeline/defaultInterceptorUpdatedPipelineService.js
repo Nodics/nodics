@@ -37,8 +37,11 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating interceptor update request');
-        if (!request.code) {
-            process.error(request, response, 'Interceptor code can not be null or empty');
+        let data = request.data;
+        if (!data.models || data.models.length <= 0) {
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Interceptors list can not be null or empty'));
+        } else if (!request.tenant) {
+            process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'Interceptors tenant can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -47,21 +50,39 @@ module.exports = {
     loadInterceptor: function (request, response, process) {
         this.LOG.debug('Fatching updated interceptor object : ' + request.code);
         try {
-            this.get({
-                tenant: 'default',
-                query: {
-                    code: request.code
+            let event = request.event;
+            let data = event.data;
+            if (data.models && data.models.length > 0) {
+                let query = {};
+                let schemaModel = NODICS.getModels(request.moduleName, request.tenant)[data.modelName];
+                if (data.propertyName === '_id') {
+                    data.models = data.models.map(id => {
+                        return SERVICE.DefaultDatabaseConfigurationService.toObjectId(schemaModel, id);
+                    });
                 }
-            }).then(response => {
-                if (response.success && response.result.length > 0) {
-                    request.interceptor = response.result[0];
-                    process.nextSuccess(request, response);
-                } else {
-                    process.error(request, response, 'None interceptors found for code: ' + request.code);
-                }
-            }).catch(error => {
-                process.error(request, response, error);
-            });
+                query[data.propertyName] = {
+                    $in: data.models
+                };
+                SERVICE.DefaultInterceptorService.get({
+                    authData: request.authData,
+                    tenant: request.tenant,
+                    searchOptions: {
+                        projection: { _id: 0 }
+                    },
+                    query: query
+                }).then(success => {
+                    if (success.result && success.result.length > 0) {
+                        request.interceptorList = success.result;
+                        process.nextSuccess(request, response);
+                    } else {
+                        process.error(request, response, new CLASSES.NodicsError('ERR_SYS_00001', 'None interceptors found for code: ' + request.code));
+                    }
+                }).catch(error => {
+                    process.error(request, response, error);
+                });
+            } else {
+                process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00000', 'Invalid event data, not contain any models'));
+            }
         } catch (error) {
             process.error(request, response, error);
         }
@@ -69,37 +90,48 @@ module.exports = {
 
     mergeExisting: function (request, response, process) {
         this.LOG.debug('Adding updated interceptor with existing one');
-        let rawInterceptor = {};
-        rawInterceptor[request.code] = request.interceptor;
-        this.loadRawInterceptors(rawInterceptor);
+        let rawInterceptors = {};
+        request.interceptorList.forEach(interceptor => {
+            rawInterceptors[interceptor.code] = interceptor;
+        });
+        SERVICE.DefaultInterceptorService.loadRawInterceptors(rawInterceptors);
         process.nextSuccess(request, response);
     },
 
     publishCleanup: function (request, response, process) {
-        this.LOG.debug('Publishing cleanup event for: ' + request.interceptor.type);
-        SERVICE.DefaultEventService.handleEvent({
-            event: request.interceptor.type + 'InterceptorUpdated',
-            target: 'default',
-            data: request.interceptor
-        }).then(success => {
-            response.success = success;
-            process.nextSuccess(request, response);
-        }).catch(error => {
-            process.error(request, response, error);
+        let allPromise = [];
+        let typedInterceptors = _.groupBy(request.interceptorList, interceptor => interceptor.type);
+        Object.keys(typedInterceptors).forEach(type => {
+            this.LOG.debug('Publishing cleanup event for: ' + type);
+            allPromise.push(SERVICE.DefaultEventService.handleEvent({
+                tenant: request.tenant,
+                moduleName: request.modelName,
+                event: {
+                    tenant: request.tenant,
+                    event: type + 'InterceptorUpdated',
+                    sourceName: request.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
+                    target: request.moduleName,
+                    state: "NEW",
+                    type: "SYNC",
+                    targetType: ENUMS.TargetType.MODULE.key,
+                    active: true,
+                    data: typedInterceptors[type].map(interceptor => {
+                        return interceptor.item;
+                    })
+                }
+            }));
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors instanceof Array) {
-            process.reject(response.errors[0]);
+        if (allPromise.length > 0) {
+            Promise.all(allPromise).then(success => {
+                response.success = success;
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
         } else {
-            process.reject(response.error);
+            response.success = 'None interceptors found to process';
+            process.nextSuccess(request, response);
         }
     }
 };

@@ -14,6 +14,10 @@ module.exports = {
         configurationChangeListener: {
             event: 'configurationSave',
             listener: 'DefaultConfigurationChangeListenerService.handleConfigurationChangeEvent'
+        },
+        configurationUpdateListener: {
+            event: 'configurationUpdated',
+            listener: 'DefaultConfigurationChangeListenerService.handleConfigurationChangeEvent'
         }
     }
 };

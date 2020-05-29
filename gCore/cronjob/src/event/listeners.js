@@ -19,11 +19,5 @@ module.exports = {
             event: 'jobValidatorUpdated',
             listener: 'DefaultCronJobConfigurationService.handleJobValidatorUpdated'
         }
-    },
-    // cronjob: {
-    //     testListener: {
-    //         event: 'testMe',
-    //         listener: 'DefaultEventTestService.handleTestEvent'
-    //     }
-    // }
+    }
 };

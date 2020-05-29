@@ -73,23 +73,6 @@ module.exports = {
         return interceptorList;
     },
 
-    arrangeByTigger1: function (interceptors) {
-        let interceptorList = {};
-        if (interceptors && !UTILS.isBlank(interceptors)) {
-            Object.keys(interceptors).forEach(itemName => {
-                let itemInterceptors = interceptors[itemName];
-                if (!interceptorList[itemName]) interceptorList[itemName] = {};
-                Object.keys(itemInterceptors).forEach(intName => {
-                    let interceptor = itemInterceptors[intName];
-                    interceptor.name = intName;
-                    if (!interceptorList[itemName][interceptor.trigger]) interceptorList[itemName][interceptor.trigger] = [];
-                    interceptorList[itemName][interceptor.trigger].push(interceptor);
-                });
-            });
-        }
-        return interceptorList;
-    },
-
     sortInterceptors: function (itemInterceptors) {
         let interceptorList = {};
         if (itemInterceptors && !UTILS.isBlank(itemInterceptors)) {

@@ -178,30 +178,28 @@ module.exports = {
         return this.interceptors[indexName];
     },
 
-    refreshSearchInterceptors: function (indexName) {
-        if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
-            if (!indexName || indexName === 'default') {
-                let tmpInterceptors = {};
-                Object.keys(this.interceptors).forEach(indexName => {
-                    tmpInterceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
-                });
-                this.interceptors = tmpInterceptors;
-            } else if (this.interceptors[indexName]) {
-                this.interceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
-            }
+    refreshSearchInterceptors: function (indexes) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant]) && indexes && indexes.length > 0) {
+            indexes.forEach(indexName => {
+                if (!indexName || indexName === 'default') {
+                    let tmpInterceptors = {};
+                    Object.keys(this.interceptors).forEach(indexName => {
+                        tmpInterceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
+                    });
+                    this.interceptors = tmpInterceptors;
+                } else if (this.interceptors[indexName]) {
+                    this.interceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
+                }
+            });
         }
     },
 
-    handleSearchInterceptorUpdated: function (event, callback) {
+    handleSearchInterceptorUpdated: function (request, callback) {
         try {
-            let indexName = event.data.item;
-            this.refreshSearchInterceptors(indexName);
-            callback(null, {
-                code: 'SUC_EVNT_00000',
-                message: success
-            });
+            this.refreshSearchInterceptors(request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
         } catch (error) {
-            callback(new CLASSES.EventError(error, 'While handling search interceptor update', 'ERR_EVNT_00000'));
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
         }
     },
 
@@ -217,29 +215,28 @@ module.exports = {
         return this.validators[tenant][indexName];
     },
 
-    refreshSearchValidators: function (tenant, indexName) {
-        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant])) {
-            if (!indexName || indexName === 'default') {
-                let tenantValidators = {};
-                Object.keys(this.validators[tenant]).forEach(indexName => {
-                    tenantValidators[indexName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, indexName, ENUMS.InterceptorType.search.key);
-                });
-                this.validators[tenant] = tenantValidators;
-            } else if (this.validators[tenant][indexName]) {
-                this.validators[tenant][indexName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, indexName, ENUMS.InterceptorType.search.key);
-            }
+    refreshSearchValidators: function (tenant, indexes) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant]) && indexes && indexes.length > 0) {
+            indexes.forEach(indexName => {
+                if (!indexName || indexName === 'default') {
+                    let tenantValidators = {};
+                    Object.keys(this.validators[tenant]).forEach(indexName => {
+                        tenantValidators[indexName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, indexName, ENUMS.InterceptorType.search.key);
+                    });
+                    this.validators[tenant] = tenantValidators;
+                } else if (this.validators[tenant][indexName]) {
+                    this.validators[tenant][indexName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, indexName, ENUMS.InterceptorType.search.key);
+                }
+            });
         }
     },
 
-    handleSearchValidatorUpdated: function (event, callback) {
+    handleSearchValidatorUpdated: function (request, callback) {
         try {
-            this.refreshSearchValidators(event.data.tenant, event.data.item);
-            callback(null, {
-                code: 'SUC_EVNT_00000',
-                message: success
-            });
+            this.refreshSearchValidators(request.tenant, request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
         } catch (error) {
-            callback(new CLASSES.EventError(error, 'While handling search validator update', 'ERR_EVNT_00000'));
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
         }
     },
 };

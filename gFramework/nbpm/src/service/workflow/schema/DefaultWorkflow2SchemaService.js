@@ -67,9 +67,6 @@ module.exports = {
                         searchOptions: {
                             projection: { _id: 0 }
                         },
-                        options: {
-                            convertToObjectId: true
-                        },
                         query: query
                     }).then(success => {
                         if (success.result && success.result.length > 0) {
@@ -79,7 +76,8 @@ module.exports = {
                                 modelObject.workflows[model.workflowCode] = _.merge(modelObject.workflows[model.workflowCode] || {}, model);
                                 if (!model.active && modelObject.workflows[model.workflowCode]) {
                                     delete modelObject.workflows[model.workflowCode];
-                                    model.events.forEach(event => {
+                                    Object.keys(model.events).forEach(eventName => {
+                                        let event = model.events[eventName];
                                         event.enabled = false;
                                     });
                                 }
@@ -92,6 +90,8 @@ module.exports = {
                     }).catch(error => {
                         reject(new CLASSES.WorkflowError(error, null, 'ERR_WF_00000'));
                     });
+                } else {
+                    reject(new CLASSES.WorkflowError('ERR_WF_00000', 'Invalid event data, not contain any models'));
                 }
             } catch (error) {
                 reject(new CLASSES.WorkflowError(error, null, 'ERR_WF_00000'));
