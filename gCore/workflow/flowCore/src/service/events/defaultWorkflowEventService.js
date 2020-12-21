@@ -50,17 +50,19 @@ module.exports = {
                         activeHead: workflowCarrier.activeHead,
                         activeAction: workflowCarrier.activeAction.code,
                         type: workflowCarrier.type,
-                        state: workflowCarrier.currentState,
-                        items: workflowCarrier.items.map(item => {
-                            return {
-                                code: item.code,
-                                refId: item.refId
-                            };
-                        }),
+                        state: workflowCarrier.currentState
                     }
                 }
             }, event);
 
+            if ((!event.data.carrier.items || event.data.carrier.items.length <= 0) && workflowCarrier.items && workflowCarrier.items.length > 0) {
+                event.data.carrier.items = workflowCarrier.items.map(item => {
+                    return {
+                        code: item.code,
+                        refId: item.refId
+                    };
+                });
+            }
             if (workflowCarrier.actions && workflowCarrier.actions.length > 0) {
                 event.data.carrier.actions = workflowCarrier.actions.map(action => {
                     return action.code;
@@ -95,7 +97,6 @@ module.exports = {
                 event.event = this.createEventName((workflowCarrier.sourceDetail.schemaName || workflowCarrier.sourceDetail.indexName), workflowCarrier.activeHead, event.event);
                 event.target = workflowCarrier.sourceDetail.moduleName;
                 event.targetType = ENUMS.TargetType.MODULE.key;
-                //console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -119,6 +120,7 @@ module.exports = {
                     responseType: endPoint.responseType,
                     params: endPoint.params
                 };
+                console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     resolve(success);
                 }).catch(error => {

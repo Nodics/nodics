@@ -47,6 +47,17 @@ module.exports = {
         });
     },
 
+    assignDefaultAccessGroup: function (request, response) {
+        return new Promise((resolve, reject) => {
+            if (!request.model.accessGroups || UTILS.isArray(request.model.accessGroups)) {
+                request.model.accessGroups = {
+                    employeeUserGroup: 2
+                };
+            }
+            resolve(true);
+        });
+    },
+
     mergeExistingSchema: function (request, response) {
         return new Promise((resolve, reject) => {
             let model = request.model;

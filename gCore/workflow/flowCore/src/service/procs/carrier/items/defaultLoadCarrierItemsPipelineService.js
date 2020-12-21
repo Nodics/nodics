@@ -51,12 +51,25 @@ module.exports = {
     createCarrierItems: function (request, response, process) {
         this.LOG.debug('Creating new external workflow item');
         if (request.items && request.items.length > 0) {
+            let finalItems = [];
             if (!request.workflowCarrier.items) request.workflowCarrier.items = [];
             request.items.forEach(item => {
-                request.workflowCarrier.items.push(item);
+                let existingItem = request.workflowCarrier.items.filter(eItem => eItem.code === item.code);
+                if (existingItem && existingItem.length > 0) {
+                    finalItems.push(_.merge(existingItem[0], item));
+                } else {
+                    request.addedNewItems = true;
+                    finalItems.push(item);
+                }
             });
+            request.workflowCarrier.items.forEach(eItem => {
+                let existingItem = finalItems.filter(fItem => fItem.code === eItem.code);
+                if (!existingItem || existingItem.length <= 0) finalItems.push(eItem);
+            });
+            request.workflowCarrier.items = finalItems;
             process.nextSuccess(request, response);
         } else {
+            request.addedNewItems = false;
             process.nextSuccess(request, response);
         }
     }

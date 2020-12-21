@@ -61,7 +61,7 @@ module.exports = {
                     method: 'put',
                     url: 'http://host:port/nodics/workflow/carrier/add',
                     body: {
-                        code: 'Required carrier code',
+                        carrierCode: 'Required carrier code',
                         items: [{
                             code: 'Required item code',
                             refId: 'external item reference id',

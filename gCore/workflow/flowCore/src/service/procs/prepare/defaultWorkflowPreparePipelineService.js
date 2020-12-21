@@ -69,12 +69,11 @@ module.exports = {
         if (!request.workflowAction || !request.workflowHead) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action or head can not be null or empty'));
         } else {
-            request.workflowAction.endPoint = _.merge(
-                _.merge({}, (request.workflowHead.sourceDetail) ? request.workflowHead.sourceDetail.endPoint || {} : {}),
-                (request.workflowAction.sourceDetail) ? request.workflowAction.sourceDetail.endPoint || {} : {});
-            process.nextSuccess(request, response);
+            if (!request.workflowAction.sourceDetail) request.workflowAction.sourceDetail = {};
+            if (!request.workflowHead.sourceDetail) request.workflowHead.sourceDetail = {};
+            request.workflowAction.sourceDetail.endPoint = _.merge(request.workflowHead.sourceDetail.endPoint || {}, request.workflowAction.sourceDetail.endPoint || {});
             if (request.workflowCarrier.event.isInternal === undefined) {
-                let endPoint = _.merge(request.workflowAction.endPoint, request.workflowCarrier.sourceDetail.endPoint || {});
+                let endPoint = _.merge(request.workflowAction.sourceDetail.endPoint, request.workflowCarrier.sourceDetail.endPoint || {});
                 request.workflowCarrier.event.isInternal = UTILS.isBlank(endPoint) ? true : false;
             }
             process.nextSuccess(request, response);

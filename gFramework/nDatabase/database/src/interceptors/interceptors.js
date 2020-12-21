@@ -10,60 +10,6 @@
  */
 
 module.exports = {
-    /*    Sample interceptors, will be removed after test    */
-    preGetSample: {
-        type: 'schema',
-        trigger: 'preGet',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultSampleInterceptorService.handlePreGet'
-    },
-    postGetSample: {
-        type: 'schema',
-        trigger: 'postGet',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultSampleInterceptorService.handlePostGet'
-
-    },
-
-    postSaveSample: {
-        type: 'schema',
-        trigger: 'postSave',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultSampleInterceptorService.handlePostSave'
-
-    },
-
-    preRemoveSample: {
-        type: 'schema',
-        trigger: 'preRemove',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultSampleInterceptorService.handlePreRemove'
-
-    },
-
-    postRemoveSample: {
-        type: 'schema',
-        trigger: 'postRemove',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultSampleInterceptorService.handlePostRemove'
-
-    },
-
-    postUpdateSample: {
-        type: 'schema',
-        trigger: 'postUpdate',
-        active: 'true',
-        index: 0,
-        handler: 'DefaultSampleInterceptorService.handlePostUpdate'
-
-    },
-    /*    Sample interceptors, will be removed after test    */
-
     updateModifiedTimeOnSave: {
         type: 'schema',
         trigger: 'preSave',

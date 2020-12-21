@@ -43,6 +43,7 @@ module.exports = {
         } else {
             process.nextSuccess(request, response);
         }
+
     },
     checkUpdateRequest: function (request, response, process) {
         try {
@@ -70,9 +71,13 @@ module.exports = {
         }
     },
     checkValidRequest: function (request, response, process) {
-        if (request.workflowCarrier.type === ENUMS.WorkflowCarrierType.FIXED.key &&
-            request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.INIT.key) {
+        if ((!request.workflowCarrier.sourceDetail.moduleName || (!request.workflowCarrier.sourceDetail.schemaName && !request.workflowCarrier.sourceDetail.indexName)) &&
+            !request.workflowCarrier.sourceDetail.endPoint) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, carrier contain invalid source detail'));
+        } else if (request.addedNewItems && request.workflowCarrier.type === ENUMS.WorkflowCarrierType.FIXED.key && request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.INIT.key) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, items can not be added in FIXED carrier, after its released'));
+        } else if (request.addedNewItems && !request.workflowAction.isNewItemsAllowed) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, items can not be added, action not allow this operation'));
         } else {
             process.nextSuccess(request, response);
         }

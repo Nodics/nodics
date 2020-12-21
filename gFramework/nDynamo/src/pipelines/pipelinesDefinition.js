@@ -45,14 +45,6 @@ module.exports = {
                 type: 'process',
                 handler: 'schemaDeActivatedPipeline',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultSchemaUpdatedPipelineService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultSchemaUpdatedPipelineService.handleErrorEnd'
             }
         }
     },

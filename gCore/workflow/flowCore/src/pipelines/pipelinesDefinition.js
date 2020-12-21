@@ -357,21 +357,21 @@ module.exports = {
             updateCarrier: {
                 type: 'function',
                 handler: 'DefaultFillWorkflowCarrierPipelineService.updateCarrier',
-                success: 'postBlockValidators'
+                success: 'postFillValidators'
             },
-            postBlockValidators: {
+            postFillValidators: {
                 type: 'function',
-                handler: 'DefaultFillWorkflowCarrierPipelineService.postBlockValidators',
-                success: 'postBlockInterceptors'
+                handler: 'DefaultFillWorkflowCarrierPipelineService.postFillValidators',
+                success: 'postFillInterceptors'
             },
-            postBlockInterceptors: {
+            postFillInterceptors: {
                 type: 'function',
-                handler: 'DefaultFillWorkflowCarrierPipelineService.postBlockInterceptors',
-                success: 'triggerBlockedEvent'
+                handler: 'DefaultFillWorkflowCarrierPipelineService.postFillInterceptors',
+                success: 'triggerFilledEvent'
             },
-            triggerBlockedEvent: {
+            triggerFilledEvent: {
                 type: 'function',
-                handler: 'DefaultFillWorkflowCarrierPipelineService.triggerBlockedEvent',
+                handler: 'DefaultFillWorkflowCarrierPipelineService.triggerFilledEvent',
                 success: 'successEnd'
             },
             successEnd: {

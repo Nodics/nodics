@@ -33,11 +33,11 @@ module.exports = {
     },
 
     initCarrierItem: function (request) {
-        return FACADE.DefaultWorkflowService.initCarrierItem(request);
+        return SERVICE.DefaultWorkflowService.initCarrierItem(request);
     },
 
     addItemToCarrier: function (request) {
-        return FACADE.DefaultWorkflowService.addItemToCarrier(request);
+        return SERVICE.DefaultWorkflowService.addItemToCarrier(request);
     },
 
     blockCarrier: function (request) {

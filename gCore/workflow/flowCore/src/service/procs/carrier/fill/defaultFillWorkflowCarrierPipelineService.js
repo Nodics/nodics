@@ -44,10 +44,9 @@ module.exports = {
         }
     },
     checkValidRequest: function (request, response, process) {
-        if (request.workflowCarrier.type === ENUMS.WorkflowCarrierType.FIXED.key &&
-            request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.INIT.key) {
+        if (request.addedNewItems && request.workflowCarrier.type === ENUMS.WorkflowCarrierType.FIXED.key && request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.INIT.key) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, items can not be added in FIXED carrier, after its released'));
-        } if (!request.workflowAction.isNewItemsAllowed) {
+        } else if (request.addedNewItems && !request.workflowAction.isNewItemsAllowed) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, items can not be added, action not allow this operation'));
         } else {
             process.nextSuccess(request, response);
@@ -109,7 +108,7 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
-    postBlockInterceptors: function (request, response, process) {
+    postFillInterceptors: function (request, response, process) {
         let interceptors = SERVICE.DefaultWorkflowConfigurationService.getWorkflowInterceptors(request.workflowHead.code);
         if (interceptors && interceptors.postFill) {
             this.LOG.debug('Applying postFill interceptors for workflow carrier');

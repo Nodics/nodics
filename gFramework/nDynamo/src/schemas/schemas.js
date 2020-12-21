@@ -95,6 +95,12 @@ module.exports = {
                     required: true,
                     description: 'Required moduleName'
                 },
+                accessGroups: {
+                    type: 'object',
+                    required: true,
+                    default: undefined,
+                    description: 'User group code for which this user belongs'
+                },
             }
         }
     }

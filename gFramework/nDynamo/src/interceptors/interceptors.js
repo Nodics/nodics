@@ -11,15 +11,6 @@
 
 module.exports = {
 
-    // preSaveClassConfiguration: {
-    //     type: 'schema',
-    //     item: 'classConfiguration',
-    //     trigger: 'preSave',
-    //     active: 'true',
-    //     index: 0,
-    //     handler: 'DefaultClassConfigurationSaveInterceptorService.checkIfModuleActive'
-    // },
-
     postSaveClassConfiguration: {
         type: 'schema',
         item: 'classConfiguration',
@@ -29,22 +20,21 @@ module.exports = {
         handler: 'DefaultClassConfigurationSaveInterceptorService.removeBody'
     },
 
-    // preSaveRouterConfiguration: {
-    //     type: 'schema',
-    //     item: 'classConfiguration',
-    //     trigger: 'preSave',
-    //     active: 'true',
-    //     index: 0,
-    //     handler: 'DefaultRouterConfigurationSaveInterceptorService.checkIfModuleActiveForRouter'
-    // },
-
-
-    preSaveSchemaConfiguration: {
+    checkModuleSchemaConfiguration: {
         type: 'schema',
         item: 'schemaConfiguration',
         trigger: 'preSave',
         active: 'true',
         index: 0,
         handler: 'DefaultSchemaConfigurationSaveInterceptorService.checkIfModuleActive'
+    },
+
+    accessGroupsSchemaConfiguration: {
+        type: 'schema',
+        item: 'schemaConfiguration',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultSchemaConfigurationSaveInterceptorService.assignDefaultAccessGroup'
     }
 };
