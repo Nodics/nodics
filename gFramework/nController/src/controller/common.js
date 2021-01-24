@@ -37,6 +37,7 @@ module.exports = {
 
     get: function (request, callback) {
         request.options = request.options || {};
+        request.searchOptions = request.searchOptions || {};
         if (!request.options.recursive && request.httpRequest.get('recursive') && request.httpRequest.get('recursive') === 'true') {
             request.options.recursive = true;
         } else {
@@ -81,19 +82,17 @@ module.exports = {
         request.ids = [];
         if (request.httpRequest.params.id) {
             request.ids.push(request.httpRequest.params.id);
-        } else if (UTILS.isArray(request.httpRequest.body) && request.httpRequest.body.length > 0) {
-            request.httpRequest.body.forEach(element => {
-                request.ids.push(element);
-            });
+        } else {
+            request = _.merge(request, request.httpRequest.body || {});
         }
         if (callback) {
-            FACADE.dsdName.removeById(request.ids, request.tenant).then(success => {
+            FACADE.dsdName.removeById(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.removeById(request.ids, request.tenant);
+            return FACADE.dsdName.removeById(request);
         }
     },
 
@@ -101,22 +100,22 @@ module.exports = {
         request.codes = [];
         if (request.httpRequest.params.code) {
             request.codes.push(request.httpRequest.params.code);
-        } else if (UTILS.isArray(request.httpRequest.body) && request.httpRequest.body.length > 0) {
-            request.codes = request.httpRequest.body;
+        } else {
+            request = _.merge(request, request.httpRequest.body || {});
         }
         if (callback) {
-            FACADE.dsdName.removeByCode(request.codes, request.tenant).then(success => {
+            FACADE.dsdName.removeByCode(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.dsdName.removeByCode(request.codes, request.tenant);
+            return FACADE.dsdName.removeByCode(request);
         }
     },
 
     save: function (request, callback) {
-        request.models = request.httpRequest.body;
+        request.model = request.httpRequest.body;
         if (callback) {
             FACADE.dsdName.save(request).then(success => {
                 callback(null, success);
@@ -125,6 +124,19 @@ module.exports = {
             });
         } else {
             return FACADE.dsdName.save(request);
+        }
+    },
+
+    saveAll: function (request, callback) {
+        request.models = request.httpRequest.body;
+        if (callback) {
+            FACADE.dsdName.saveAll(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.dsdName.saveAll(request);
         }
     },
 

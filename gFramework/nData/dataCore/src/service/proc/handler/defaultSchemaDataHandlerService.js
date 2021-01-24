@@ -35,7 +35,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process schema data handler');
         if (!request.models) {
-            process.error(request, response, 'Invalid data object to process');
+            process.error(request, response, new CLASSES.DataError('ERR_DATA_00003', 'Invalid data object to process'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -52,11 +52,7 @@ module.exports = {
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00007',
-                    error: error
-                });
+                process.error(request, response, new CLASSES.DataError(error, 'pre processors execution error', 'ERR_DATA_00009'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -64,19 +60,29 @@ module.exports = {
     },
 
     applyInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying pre processors in models');
+        this.LOG.debug('Applying interceptors in models');
         let schemaName = request.header.options.schemaName;
         let interceptors = SERVICE.DefaultDataConfigurationService.getImportInterceptors(schemaName);
         if (interceptors && interceptors.import && interceptors.import.length > 0) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.import), {
-                tenant: request.tenant,
-                moduleName: request.moduleName,
-                header: request.header,
-                models: request.models
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.import), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.DataImportError(error, 'Failed import interceptors execution', 'ERR_DATA_00007'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyValidators: function (request, response, process) {
+        this.LOG.debug('Applying validators in models');
+        let schemaName = request.header.options.schemaName;
+        let interceptors = SERVICE.DefaultDataConfigurationService.getImportValidators(request.tenant, schemaName);
+        if (interceptors && interceptors.import && interceptors.import.length > 0) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(interceptors.import), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.DataImportError(error, 'Failed import validators execution', 'ERR_DATA_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -96,7 +102,7 @@ module.exports = {
         }, {}).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, error);
+            process.error(request, response, new CLASSES.DataImportError(error, 'Failed executing data filter pileline', 'ERR_DATA_00000'));
         });
     },
 
@@ -114,11 +120,7 @@ module.exports = {
                     }, {}).then(success => {
                         process.nextSuccess(request, response);
                     }).catch(error => {
-                        process.error(request, response, {
-                            success: false,
-                            code: 'ERR_SRCH_00000',
-                            error: error
-                        });
+                        process.error(request, response, error);
                     });
                 } else {
                     _self.processModels(request, {
@@ -134,11 +136,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                error: error
-            });
+            process.error(request, response, new CLASSES.DataImportError(error, 'No data to finalize or process', 'ERR_IMP_00007'));
         }
     },
 
@@ -149,6 +147,9 @@ module.exports = {
                 let model = options.pendingModels.shift();
                 SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
                     tenant: request.tenant,
+                    authData: {
+                        userGroups: request.header.options.userGroups
+                    },
                     moduleName: request.moduleName,
                     header: request.header,
                     dataModel: model
@@ -165,25 +166,5 @@ module.exports = {
                 resolve(true);
             }
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

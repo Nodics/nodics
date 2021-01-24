@@ -70,5 +70,9 @@ module.exports = {
                 }
             }
         }
+    },
+
+    defaultErrorCodes: {
+        CacheError: 'ERR_CACHE_00000'
     }
 };

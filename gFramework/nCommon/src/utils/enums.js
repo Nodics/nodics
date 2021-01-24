@@ -19,9 +19,29 @@ module.exports = {
             freez: false
         },
         definition: [
-            'EACH_NODE',
-            'EACH_MODULE',
-            'MODULE'
+            'EXTERNAL',
+            'EACH_MODULE_NODES',// Publish to all nodes in each modules
+            'EACH_MODULE', // publish to each modules
+            'MODULE_NODES', // publish to each nodes for the module
+            'MODULE' // publish to a module
+        ]
+    },
+
+    InterceptorType: {
+        _options: {
+            name: 'InterceptorType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'schema',
+            'import',
+            'export',
+            'search',
+            'workflow',
+            'job'
         ]
     }
 };

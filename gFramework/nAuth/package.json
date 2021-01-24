@@ -1,6 +1,6 @@
 {
-    "name": "nAuth",
-    "index": "1.12",
+    "name": "auth",
+    "index": "1.13",
     "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nAuth",
     "homepage": "http://www.nodics.com/",

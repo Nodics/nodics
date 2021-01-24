@@ -16,17 +16,14 @@ module.exports = {
             this.get({
                 tenant: request.tenant,
                 options: {
-                    recursive: true
+                    recursive: true,
                 },
                 query: {
                     loginId: request.loginId
                 }
             }).then(employees => {
                 if (employees.result.length !== 1) {
-                    reject({
-                        success: false,
-                        code: 'ERR_LIN_00000'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid login id: ' + request.loginId));
                 } else {
                     resolve(employees.result[0]);
                 }
@@ -45,11 +42,7 @@ module.exports = {
                 }
             }).then(employees => {
                 if (employees.result.length !== 1) {
-                    reject({
-                        success: false,
-                        code: 'ERR_LIN_00000',
-                        msg: 'Multiple employees can not hold same apiKey'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid apiKey'));
                 } else {
                     resolve(employees.result[0]);
                 }

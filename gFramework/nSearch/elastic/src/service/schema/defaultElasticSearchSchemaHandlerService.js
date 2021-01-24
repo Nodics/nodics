@@ -65,12 +65,11 @@ module.exports = {
                             if (rawSchema.refSchema && rawSchema.refSchema[name] && rawSchema.refSchema[name].searchEnabled && !processed.includes(rawSchema.refSchema[name].schemaName)) {
                                 let subSchema = _self.prepareFromSchema(moduleName, rawSchema.refSchema[name].schemaName, true, processed);
                                 if (subSchema && !UTILS.isBlank(subSchema)) {
-                                    searchSchema.properties[propName].type = 'nested';//searchSchema.properties[propName].type || 'text';
+                                    searchSchema.properties[propName].type = 'nested';
                                     searchSchema.properties[propName].properties = subSchema.properties;
                                 }
                             } else {
                                 searchSchema.properties[propName].type = searchSchema.properties[propName].type || CONFIG.get('search').dataTypeMap[propDef.type] || CONFIG.get('search').dataTypeMap.default;
-                                //searchSchema.properties[propName].type || 'text';
                             }
                         }
                     });
@@ -79,14 +78,9 @@ module.exports = {
                 _self.LOG.warn('Configuration is not proper for module: ' + moduleName + ' and schema: ' + schemaName);
             }
         } catch (error) {
-            _self.LOG.error('While collecting properties from module: ' + moduleName + ' and schema: ' + schemaName);
-            throw error;
+            throw new CLASSES.SearchError(error, 'While collecting properties from module: ' + moduleName + ' and schema: ' + schemaName);
         }
         return searchSchema;
-    },
-
-    getPropertyDataType: function (rawSchema, name) {
-
     },
 
     prepareFromDefinitions: function (moduleName, tntCode, source, target, typeName) {
@@ -94,9 +88,7 @@ module.exports = {
         try {
             return _self.mergeIndexMetaData(moduleName, tntCode, source, target, typeName);
         } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
-            throw error;
+            throw new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions');
         }
     },
 
@@ -105,9 +97,7 @@ module.exports = {
         try {
             return _self.mergeIndexMetaData(moduleName, tntCode, source, target, typeName);
         } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
-            throw error;
+            throw new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions from database');
         }
     },
 

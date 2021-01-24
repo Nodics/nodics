@@ -1,6 +1,6 @@
 {
     "name": "nems",
-    "index": "5.5",
+    "index": "5.20",
     "type": "router",
     "description": "Nodics applicaion module. This module works for Even management and Exchange",
     "homepage": "http://www.nodics.com/",

@@ -46,16 +46,11 @@ module.exports = {
                 this.LOG.debug('Putting value in Local cache storage with key: ' + key + ' TTL: ' + ttl);
                 options.channel.client.set(key, options.value, ttl);
                 resolve({
-                    success: true,
                     code: 'SUC_CACHE_00000',
                     result: options.value
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     },
@@ -65,32 +60,17 @@ module.exports = {
             try {
                 let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
                 this.LOG.debug('Getting value from Local cache storage with key: ' + key);
-                options.channel.client.get(key, (error, value) => {
-                    if (error) {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00000',
-                            error: error
-                        });
-                    } else if (value) {
-                        resolve({
-                            success: true,
-                            code: 'SUC_CACHE_00000',
-                            result: value
-                        });
-                    } else {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00001'
-                        });
-                    }
-                });
+                let value = options.channel.client.get(key);
+                if (value) {
+                    resolve({
+                        code: 'SUC_CACHE_00000',
+                        result: value
+                    });
+                } else {
+                    reject(new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key));
+                }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
 
         });
@@ -102,11 +82,7 @@ module.exports = {
             try {
                 options.channel.client.keys(function (err, cacheKeys) {
                     if (err) {
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00000',
-                            error: error
-                        });
+                        reject(new CLASSES.CacheError(err));
                     } else {
                         if (options.prefix) {
                             let prefix = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.prefix;
@@ -119,7 +95,6 @@ module.exports = {
                                 }
                             });
                             resolve({
-                                success: true,
                                 code: 'SUC_CACHE_00000',
                                 result: delKeys
                             });
@@ -127,7 +102,6 @@ module.exports = {
                             _self.LOG.debug('Flushing all values stored in local cache');
                             options.channel.client.flushAll();
                             resolve({
-                                success: true,
                                 code: 'SUC_CACHE_00000',
                                 result: cacheKeys
                             });
@@ -135,11 +109,7 @@ module.exports = {
                     }
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     },
@@ -156,16 +126,11 @@ module.exports = {
                 _self.LOG.debug('Flushing value in local cache stored with keys: ' + tmpKeys);
                 options.channel.client.del(tmpKeys);
                 resolve({
-                    success: true,
                     code: 'SUC_CACHE_00000',
                     result: tmpKeys
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: error
-                });
+                reject(new CLASSES.CacheError(error));
             }
         });
     }

@@ -39,7 +39,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.inputPath.rootPath) {
-            process.error(request, response, 'Please validate request. Mandate property modules not have valid value');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property modules not have valid value'));
         } else {
             request.data = {};
             process.nextSuccess(request, response);
@@ -106,6 +106,7 @@ module.exports = {
                         _.each(fileObj, (moduleObject, moduleName) => {
                             _.each(moduleObject, (headerObj, headerName) => {
                                 headerObj.options.moduleName = headerObj.options.moduleName || moduleName;
+                                headerObj.options.userGroups = (request.authData) ? request.authData.userGroups : headerObj.options.userGroups;
                                 headerObj.options.fileName = name;
                                 headerObj.options.filePath = element;
                                 headerObj.options.done = false;
@@ -118,7 +119,7 @@ module.exports = {
                                 if (!request.data.headers[headerName]) {
                                     request.data.headers[headerName] = headerObj;
                                 } else {
-                                    throw new Error('Same header: ' + headerName + 'can not be in two different header files');
+                                    throw new CLASSES.DataImportError('ERR_IMP_00003', 'Same header: ' + headerName + 'can not be in two different header files');
                                 }
                             });
                         });
@@ -128,7 +129,7 @@ module.exports = {
             delete request.data.headerFiles;
             process.nextSuccess(request, response);
         } catch (error) {
-            process.error(request, response, error);
+            process.error(request, response, new CLASSES.DataImportError(error));
         }
 
     },
@@ -153,9 +154,8 @@ module.exports = {
         } else {
             this.LOG.debug('Could not found any header to import local data');
             process.stop(request, response, {
-                success: true,
-                code: 'SUC_DATA_00001',
-                msg: 'Could not find any data to import for given modules'
+                code: 'SUC_IMP_00001',
+                message: 'Could not find any data to import for given modules'
             });
         }
     },
@@ -178,25 +178,5 @@ module.exports = {
             });
         }
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

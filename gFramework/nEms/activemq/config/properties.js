@@ -16,7 +16,7 @@ module.exports = {
                 enabled: false,
                 handler: 'DefaultActivemqClientService',
                 eventOptions: {
-                    nodeId: '0',
+                    nodeId: 'node0',
                     eventType: 'ASYNC'
                 },
                 publisherOptions: {

@@ -33,7 +33,11 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        process.nextSuccess(request, response);
+        if (!request.inputPath) {
+            process.error(request, response, new CLASSES.DataError('ERR_DATA_00003', 'Invalid source path object'));
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     prepareFileType: function (request, response, process) {
@@ -50,7 +54,7 @@ module.exports = {
                 process.error(request, response, error);
             });
         } else {
-            process.error(request, response, 'Could not find file type process for type: ' + request.inputPath.fileType);
+            process.error(request, response, new CLASSES.DataError('ERR_DATA_00003', 'Could not find file type process for type: ' + request.inputPath.fileType));
         }
     },
 
@@ -64,7 +68,7 @@ module.exports = {
                 this.LOG.error('Facing issued while moving file to success bucket: ', error);
             });
         }
-        process.resolve(response.success);
+        SERVICE.DefaultPipelineService.handleSucessEnd(request, response, process);
     },
 
     handleErrorEnd: function (request, response, process) {
@@ -77,16 +81,6 @@ module.exports = {
                 this.LOG.error('Facing issued while moving file to success bucket: ', error);
             });
         }
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
+        SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
     }
 };

@@ -10,6 +10,26 @@
  */
 
 module.exports = {
+    SUC_SYS_00000: {
+        code: '200',
+        message: 'Successfully processed',
+    },
+    SUC_SYS_00001: {
+        code: '200',
+        message: 'Successfully processed',
+    },
 
+    ERR_SYS_00000: {
+        code: '500',
+        message: 'Failed due to some internal error',
+    },
+    ERR_SYS_00001: {
+        code: '400',
+        message: 'Failed due to validation error',
+    },
+    ERR_SYS_00002: {
+        code: '503',
+        message: 'Service not available',
+    },
 
 };

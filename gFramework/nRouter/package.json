@@ -1,6 +1,6 @@
 {
-    "name": "nRouter",
-    "index": "1.10",
+    "name": "router",
+    "index": "1.11",
     "type": "core",
     "description": "Register routers for all defined items",
     "homepage": "http://www.nodics.com/",

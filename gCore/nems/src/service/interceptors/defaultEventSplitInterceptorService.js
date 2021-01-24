@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 module.exports = {
 
-    eventSplitPreSave: function (request, responce) {
+    eventSplitPreSave: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
                 let model = request.model;
@@ -23,56 +23,72 @@ module.exports = {
                         model.state = ENUMS.EventState.PROCESSING.key;
                     }
                     model.targets = [];
-                    if (!model.targetType || model.targetType === ENUMS.TargetType.MODULE.key) {
-                        model.targets.push({
-                            targetNodeId: model.targetNodeId,
-                            target: model.target
+                    if (model.targetType === ENUMS.TargetType.EXTERNAL.key) {
+                        let tmpTarget = {
+                            target: _.merge({}, model.target)
+                        };
+                        if (model.targetNodeId !== undefined) {
+                            tmpTarget.targetNodeId = model.targetNodeId;
+                        }
+                        model.targets.push(tmpTarget);
+                    } else if (model.targetType === ENUMS.TargetType.MODULE_NODES.key) {
+                        let modules = SERVICE.DefaultRouterService.getModulesPool().getModules();
+                        let targetModule = modules[model.target] || modules.default;
+                        _.each(targetModule.getNodes(), (node, nodeId) => {
+                            if (!(model.skipSource && (model.sourceName === model.target && model.sourceId === nodeId))) {
+                                let tmpTarget = {
+                                    target: model.target
+                                };
+                                if (nodeId !== undefined) {
+                                    tmpTarget.targetNodeId = nodeId;
+                                }
+                                model.targets.push(tmpTarget);
+                            }
                         });
                     } else if (model.targetType === ENUMS.TargetType.EACH_MODULE.key) {
-                        model.targetType = ENUMS.TargetType.MODULE.key;
-                        let includedNems = false;
                         _.each(SERVICE.DefaultRouterService.getModulesPool().getModules(), (moduleObj, moduleName) => {
-                            if (moduleName !== 'default' && !model.excludeModules.includes(moduleName)) {
-                                model.targets.push({
-                                    targetNodeId: model.targetNodeId,
-                                    target: moduleName
-                                });
-                            }
-                            if (moduleName === CONFIG.get('nemsModuleName')) {
-                                includedNems = true;
+                            if (!model.excludeModules.includes(moduleName)) {
+                                let targetName = model.target;
+                                if (moduleName !== 'default') {
+                                    targetName = moduleName;
+                                }
+                                let tmpTarget = {
+                                    target: targetName
+                                };
+                                if (model.targetNodeId !== undefined) {
+                                    tmpTarget.targetNodeId = model.targetNodeId;
+                                }
+                                model.targets.push(tmpTarget);
                             }
                         });
-                        if (!includedNems) {
-                            model.targets.push({
-                                targetNodeId: model.targetNodeId,
-                                target: CONFIG.get('nemsModuleName')
-                            });
-                        }
-                    } else if (model.targetType === ENUMS.TargetType.EACH_NODE.key) {
-                        model.targetType = ENUMS.TargetType.MODULE.key;
-                        let includedNems = false;
+                    } else if (model.targetType === ENUMS.TargetType.EACH_MODULE_NODES.key) {
                         _.each(SERVICE.DefaultRouterService.getModulesPool().getModules(), (moduleObj, moduleName) => {
-                            if (moduleName !== 'default' && !model.excludeModules.includes(moduleName)) {
-                                let nodes = SERVICE.DefaultRouterService.getModulesPool().getModule(moduleName).getNodes();
-                                _.each(nodes, (node, nodeId) => {
-                                    model.targets.push({
-                                        targetNodeId: nodeId,
-                                        target: moduleName
-                                    });
+                            if (!model.excludeModules.includes(moduleName)) {
+                                let targetName = model.target;
+                                if (moduleName !== 'default') {
+                                    targetName = moduleName;
+                                }
+                                _.each(moduleObj.getNodes(), (node, nodeId) => {
+                                    if (!(model.skipSource && (model.sourceName === model.target && model.sourceId === nodeId))) {
+                                        let tmpTarget = {
+                                            target: targetName
+                                        };
+                                        if (nodeId !== undefined) {
+                                            tmpTarget.targetNodeId = nodeId;
+                                        }
+                                        model.targets.push(tmpTarget);
+                                    }
                                 });
                             }
                         });
-                        if (!includedNems) {
-                            let nodes = SERVICE.DefaultRouterService.getModulesPool().getModule('default').getNodes();
-                            _.each(nodes, (node, nodeId) => {
-                                model.targets.push({
-                                    targetNodeId: nodeId,
-                                    target: CONFIG.get('nemsModuleName')
-                                });
-                            });
-                        }
                     } else {
-                        reject('Please validate target type in event definition');
+                        let tmpTarget = {
+                            target: model.target
+                        };
+                        if (model.targetNodeId !== undefined) {
+                            tmpTarget.targetNodeId = model.targetNodeId;
+                        }
+                        model.targets.push(tmpTarget);
                     }
                 }
                 resolve(true);
@@ -82,15 +98,29 @@ module.exports = {
         });
     },
 
-    eventSplitPostSave: function (request, responce) {
+    eventSplitPostSave: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
 
-    handleSyncEvents: function (request, responce) {
+    handleSyncEvent: function (request, response) {
         return new Promise((resolve, reject) => {
-            let events = request.response.success;
+            if (response.success && response.success.result && response.success.result.type === ENUMS.EventType.SYNC.key) {
+                SERVICE.DefaultEventHandlerService.processSyncEvents([response.success.result]).then(success => {
+                    resolve(true);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    },
+
+    handleSyncEvents: function (request, response) {
+        return new Promise((resolve, reject) => {
+            let events = response.success;
             let syncEvents = [];
             events.forEach(element => {
                 if (element.type === ENUMS.EventType.SYNC.key) {

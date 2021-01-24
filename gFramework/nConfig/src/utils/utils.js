@@ -48,9 +48,16 @@ module.exports = {
                     console.error('Invalid initialization, could not load module: ' + moduleName);
                     process.exit(1);
                 }
-                if (props.publishEnabled) {
+                if (moduleName === 'dynamo' && !props.dynamoEnabled) {
+                    let currentdate = new Date();
+                    let datetime = currentdate.getFullYear() + '-' + (currentdate.getMonth() + 1) + '-' + currentdate.getDate() +
+                        ' ' + currentdate.getHours() + ':' + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+                    console.log(datetime, ' info: [DefaultModuleInitializerService] Dynamo module is not activated');
+                } else if ('publish' === moduleObject.metaData.type && props.publishEnabled) {
                     modulesList.push(moduleName);
-                } else if (['group', 'core', 'router', 'web'].includes(moduleObject.metaData.type)) {
+                } else if ('web' === moduleObject.metaData.type && props.webEnabled) {
+                    modulesList.push(moduleName);
+                } else if (['group', 'core', 'router'].includes(moduleObject.metaData.type)) {
                     modulesList.push(moduleName);
                 }
                 if (groupName) {
@@ -71,6 +78,9 @@ module.exports = {
     loadRawModuleList: function (homePath) {
         let modulesList = {};
         this.collectModulesList(homePath, modulesList);
+        // Object.keys(modulesList).forEach(moduleName => {
+        //     this.resolveModuleHiererchy(moduleName, modulesList);
+        // });
         if (modulesList && !this.isBlank(modulesList)) {
             NODICS.addRawModules(modulesList);
         }
@@ -110,7 +120,17 @@ module.exports = {
         }
         return moduleName ? moduleName : null;
     },
-
+    resolveModuleHiererchy: function (moduleName, modulesList) {
+        let moduleObject = modulesList[moduleName];
+        let modules = [moduleName];
+        if (moduleObject.parent) {
+            if (!moduleObject.parentModules) {
+                moduleObject.parentModules = this.resolveModuleHiererchy(moduleObject.parent, modulesList);
+            }
+            modules = modules.concat(moduleObject.parentModules);
+        }
+        return modules;
+    },
     getAllMethods: function (envScripts) {
         return Object.getOwnPropertyNames(envScripts).filter(function (prop) {
             return typeof envScripts[prop] == 'function';
@@ -145,7 +165,8 @@ module.exports = {
             _.each(NODICS.getModules(), (moduleObject, moduleName) => {
                 if (moduleObject.rawSchema) {
                     _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
-                        if (schemaObject.model) {
+                        if ((options.type === 'service' && schemaObject.service && schemaObject.service.enabled) ||
+                            (options.type === 'router' && schemaObject.router && schemaObject.router.enabled)) {
                             options.moduleName = moduleName;
                             options.moduleObject = moduleObject;
                             options.schemaName = schemaName;
@@ -173,16 +194,7 @@ module.exports = {
             if (options.schemaObject.model) {
                 let entityName = options.modelName + options.postFix;
                 let fileName = options.currentDir + '/Default' + entityName + '.js';
-                let data = '/*\n' +
-                    '\tNodics - Enterprice Micro-Services Management Framework\n\n' +
-
-                    '\tCopyright (c) 2017 Nodics All rights reserved.\n\n' +
-
-                    '\tThis software is the confidential and proprietary information of Nodics ("Confidential Information")\n' +
-                    '\tYou shall not disclose such Confidential Information and shall use it only in accordance with the\n' +
-                    '\tterms of the license agreement you entered into with Nodics\n' +
-
-                    '*/\n\n';
+                let data = UTILS.getCopywriteComment();
                 if (!UTILS.isBlank(options.gVar)) {
                     _.each(options.gVar, (value, key) => {
                         data = data + value.value + '\n';
@@ -206,6 +218,19 @@ module.exports = {
                 resolve(true);
             }
         });
+    },
+
+    getCopywriteComment: function () {
+        return '/*\n' +
+            '\tNodics - Enterprice Micro-Services Management Framework\n\n' +
+
+            '\tCopyright (c) 2017 Nodics All rights reserved.\n\n' +
+
+            '\tThis software is the confidential and proprietary information of Nodics ("Confidential Information")\n' +
+            '\tYou shall not disclose such Confidential Information and shall use it only in accordance with the\n' +
+            '\tterms of the license agreement you entered into with Nodics\n' +
+
+            '*/\n\n';
     },
 
     replacePlaceholders: function (options) {
@@ -234,8 +259,8 @@ module.exports = {
         let moduleObject = NODICS.getModule(moduleName);
         if (moduleObject &&
             moduleObject.metaData &&
-            (moduleObject.metaData.type === 'router' ||
-                moduleObject.metaData.type === 'web')) {
+            (moduleObject.metaData.type === 'router' || moduleObject.metaData.type === 'web') &&
+            (moduleName != 'dynamo' || CONFIG.get('dynamoEnabled'))) {
             return true;
         }
         return false;

@@ -1,0 +1,27 @@
+{
+    "name": "quizer",
+    "index": "5.35.99",
+    "type": "core",
+    "requiredModules": [
+        "quiz",
+        "wquiz",
+        "vquiz"
+    ],
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to quizer",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "server",
+        "environment",
+        "quizer"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

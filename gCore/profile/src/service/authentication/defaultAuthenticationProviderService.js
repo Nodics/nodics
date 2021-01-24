@@ -9,6 +9,8 @@
 
  */
 
+const util = require('util');
+
 module.exports = {
 
     updateAuthData: function (options) {
@@ -16,7 +18,7 @@ module.exports = {
         options.state.lastAttempt = new Date();
         SERVICE.DefaultUserStateService.save({
             tenant: options.tenant,
-            models: [options.state]
+            model: options.state
         }).then(success => {
             _self.LOG.debug('State data has been updated with current time');
         }).catch(error => {
@@ -70,9 +72,7 @@ module.exports = {
                         type: 'Employee'
                     }).then(success => {
                         resolve({
-                            success: true,
-                            code: 'SUC_AUTH_00000',
-                            msg: SERVICE.DefaultStatusService.get('SUC_AUTH_00000').message,
+                            code: 'SUC_AUTH_00001',
                             result: success
                         });
                     }).catch(error => {
@@ -102,9 +102,7 @@ module.exports = {
                         type: 'Customer'
                     }).then(success => {
                         resolve({
-                            success: true,
-                            code: 'SUC_AUTH_00000',
-                            msg: SERVICE.DefaultStatusService.get('SUC_AUTH_00000').message,
+                            code: 'SUC_AUTH_00001',
                             result: success
                         });
                     }).catch(error => {
@@ -129,10 +127,7 @@ module.exports = {
                     _id: options.person._id
                 }).then(state => {
                     if (state.locked || !options.person.active) {
-                        reject({
-                            success: false,
-                            code: 'ERR_LIN_00002'
-                        });
+                        reject(new CLASSES.NodicsError('ERR_LIN_00002'));
                     } else {
                         UTILS.compareHash(options.request.password, options.person.password.password).then(match => {
                             if (match) {
@@ -146,14 +141,16 @@ module.exports = {
                                     tenant: options.enterprise.tenant.code,
                                     loginId: options.person.loginId,
                                     password: options.request.password,
-                                    type: options.type
+                                    type: options.type,
+                                    userGroups: options.person.userGroupCodes
                                 }).then(refreshToken => {
                                     let authToken = _self.generateAuthToken({
                                         entCode: options.enterprise.code,
                                         tenant: options.enterprise.tenant.code,
                                         loginId: options.person.loginId,
                                         tokenLife: options.person.tokenLife,
-                                        refreshToken: refreshToken
+                                        refreshToken: refreshToken,
+                                        userGroups: options.person.userGroupCodes
                                     });
                                     resolve({
                                         authToken: authToken
@@ -166,32 +163,17 @@ module.exports = {
                                     state: state,
                                     tenant: options.enterprise.tenant.code
                                 });
-                                reject({
-                                    success: false,
-                                    code: 'ERR_LIN_00003'
-                                });
+                                reject(new CLASSES.NodicsError('ERR_AUTH_00002', 'Invalid login attampt'));
                             }
                         }).catch(error => {
-                            reject({
-                                success: false,
-                                code: 'ERR_AUTH_00000',
-                                error: error
-                            });
+                            reject(new CLASSES.NodicsError('ERR_AUTH_00000'));
                         });
                     }
                 }).catch(error => {
-                    reject({
-                        success: false,
-                        code: 'ERR_AUTH_00000',
-                        error: error
-                    });
+                    reject(new CLASSES.NodicsError('ERR_AUTH_00000'));
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_AUTH_00000',
-                    error: error
-                });
+                reject(new CLASSES.NodicsError('ERR_AUTH_00000'));
             }
         });
     },
@@ -205,18 +187,15 @@ module.exports = {
                     tenant: options.tenant,
                     loginId: options.loginId,
                     password: options.password,
-                    type: options.type
+                    type: options.type,
+                    userGroups: options.userGroups
                 }).then(success => {
                     resolve(refreshToken);
                 }).catch(error => {
                     reject(error);
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_AUTH_00000',
-                    error: error
-                });
+                reject(new CLASSES.NodicsError('ERR_AUTH_00000'));
             }
         });
     }

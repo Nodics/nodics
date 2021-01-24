@@ -108,13 +108,13 @@ module.exports = {
                         });
                     } catch (error) {
                         NODICS.setActiveChannel('master');
-                        reject('got error while starting unit test case execution : ' + error);
+                        reject(new CLASSES.NodicsError(error, 'got error while starting unit test case execution', 'ERR_SYS_00000'));
                     }
                 } else {
-                    reject('There are none test cases to execute, please write some');
+                    reject(new CLASSES.NodicsError('ERR_SYS_00000', 'There are none test cases to execute, please write some'));
                 }
             } else {
-                reject('Test cases are not allowed to be executed, change configuration');
+                reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Test cases are not allowed to be executed, change configuration'));
             }
         });
     },
@@ -140,13 +140,13 @@ module.exports = {
                         });
                     } catch (error) {
                         NODICS.setNTestRunning(false);
-                        reject('got error while starting n-test case execution : ', error);
+                        reject(new CLASSES.NodicsError(error, 'got error while starting n-test case execution', 'ERR_SYS_00000'));
                     }
                 } else {
-                    reject('There are none test cases to execute, please write some');
+                    reject(new CLASSES.NodicsError('ERR_SYS_00000', 'There are none test cases to execute, please write some'));
                 }
             } else {
-                reject('Test cases are not allowed to be executed, change configuration');
+                reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Test cases are not allowed to be executed, change configuration'));
             }
         });
     },

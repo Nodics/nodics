@@ -43,7 +43,7 @@ module.exports = {
                         code: indexerCode
                     }
                 }).then(success => {
-                    if (success.success && success.result && success.result.length > 0) {
+                    if (success.result && success.result.length > 0) {
                         if (success.result.length === 1) {
                             let indexerConfig = success.result[0];
                             if (indexerConfig.target.indexName === indexName) {
@@ -54,36 +54,19 @@ module.exports = {
                                     reject(error);
                                 });
                             } else {
-                                reject({
-                                    success: false,
-                                    code: 'ERR_SRCH_00005'
-                                });
+                                reject(new CLASSES.SearchError('ERR_SRCH_00011'));
                             }
                         } else {
-                            reject({
-                                success: false,
-                                code: 'ERR_SRCH_00003'
-                            });
+                            reject(new CLASSES.SearchError('ERR_SRCH_00012'));
                         }
                     } else {
-                        reject({
-                            success: false,
-                            code: 'ERR_SRCH_00004'
-                        });
+                        reject(new CLASSES.SearchError('ERR_SRCH_00013'));
                     }
                 }).catch(error => {
-                    reject({
-                        success: false,
-                        code: 'ERR_SRCH_00000',
-                        error: error
-                    });
+                    reject(new CLASSES.SearchError(error));
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error
-                });
+                reject(new CLASSES.SearchError(error));
             }
         });
     }

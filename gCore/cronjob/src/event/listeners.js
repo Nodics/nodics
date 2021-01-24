@@ -10,10 +10,14 @@
  */
 
 module.exports = {
-    cronjob: {
-        testListener: {
-            event: 'testMe',
-            listener: 'DefaultEventTestService.handleTestEvent'
+    common: {
+        jobInterceptorUpdatedListener: {
+            event: 'jobInterceptorUpdated',
+            listener: 'DefaultCronJobConfigurationService.handleJobInterceptorUpdated'
+        },
+        jobValidatorUpdatedListener: {
+            event: 'jobValidatorUpdated',
+            listener: 'DefaultCronJobConfigurationService.handleJobValidatorUpdated'
         }
     }
 };

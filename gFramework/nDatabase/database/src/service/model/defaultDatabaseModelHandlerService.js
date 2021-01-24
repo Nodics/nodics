@@ -44,7 +44,27 @@ module.exports = {
                 }
                 resolve(true);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'While removing models for tenant' + tntCode, 'ERR_DBS_00000'));
+            }
+        });
+    },
+
+    removeModelFromModule: function (moduleName, schemaName) {
+        let moduleObject = NODICS.getModule(moduleName);
+        let modelName = UTILS.createModelName(schemaName);
+        NODICS.getActiveTenants().forEach(tntCode => {
+            if (moduleObject.rawSchema[schemaName]) {
+                delete moduleObject.rawSchema[schemaName];
+            }
+            if (moduleObject.models[tntCode] &&
+                moduleObject.models[tntCode].master &&
+                moduleObject.models[tntCode].master[modelName]) {
+                delete moduleObject.models[tntCode].master[modelName];
+            }
+            if (moduleObject.models[tntCode] &&
+                moduleObject.models[tntCode].test &&
+                moduleObject.models[tntCode].test[modelName]) {
+                delete moduleObject.models[tntCode].test[modelName];
             }
         });
     },
@@ -52,11 +72,15 @@ module.exports = {
     buildModelsForTenant: function (tntCode = 'default') {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.buildModelsForModules(tntCode, NODICS.getActiveModules()).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
+            try {
+                _self.buildModelsForModules(tntCode, NODICS.getActiveModules()).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.NodicsError(error, 'while building models for tenant: ' + tntCode, 'ERR_DBS_00000'));
+            }
         });
     },
 
@@ -97,7 +121,6 @@ module.exports = {
                     moduleObject: moduleObject,
                     dataBase: SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(moduleName, tntCode),
                     schemas: Object.keys(moduleObject.rawSchema),
-
                 }).then(success => {
                     resolve(success);
                 }).catch(error => {
@@ -191,37 +214,21 @@ module.exports = {
 
     updateValidator: function (model) {
         return new Promise((resolve, reject) => {
-            if (model) {
-                SERVICE[model.dataBase.getOptions().modelHandler].updateValidator(model).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                let response = {};
-                response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Invalid schema value to update validator';
-                reject(response);
-            }
+            SERVICE[model.dataBase.getOptions().modelHandler].updateValidator(model).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 
     createIndexes: function (model, cleanOrphan) {
         return new Promise((resolve, reject) => {
-            try {
-                if (model) {
-                    SERVICE[model.dataBase.getOptions().modelHandler].createIndexes(model, cleanOrphan).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    let response = {};
-                    response[model.schemaName + '_' + model.tenant + '_' + model.channel] = 'Invalid schema value to update indexes';
-                    reject(response);
-                }
-            } catch (error) {
+            SERVICE[model.dataBase.getOptions().modelHandler].createIndexes(model, cleanOrphan).then(success => {
+                resolve(success);
+            }).catch(error => {
                 reject(error);
-            }
+            });
         });
     },
 };

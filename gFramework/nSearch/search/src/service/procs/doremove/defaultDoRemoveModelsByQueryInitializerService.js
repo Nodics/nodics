@@ -35,9 +35,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do remove request');
         if (!request.searchModel) {
-            process.error(request, response, 'Invalid search model or search is not active for this schema');
+            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid search model or search is not active for this schema'));
         } else if (!request.query || UTILS.isBlank(request.query)) {
-            process.error(request, response, 'Invalid search request, query can not be null or conatian invalid property');
+            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid search request, query can not be null or conatian invalid property'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -49,47 +49,46 @@ module.exports = {
     },
 
     applyPreInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post get model interceptors');
+        this.LOG.debug('Applying pre do remove models interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.preDoRemove) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoRemove), {
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexName: request.searchModel.indexName,
-                typeName: request.searchModel.typeName,
-                tenant: request.tenant,
-                options: request.options,
-                query: request.query,
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
         }
     },
 
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre do remove models validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.preDoRemove) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoRemove), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
         request.searchModel.doRemoveByQuery(request).then(result => {
             response.success = {
-                success: true,
                 code: 'SUC_SRCH_00000',
                 result: result
             };
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                error: error
-            });
+            process.error(request, response, error);
         });
     },
 
@@ -104,27 +103,30 @@ module.exports = {
         }
     },
 
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying post do remove models validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.postDoRemove) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoRemove), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post model interceptors');
+        this.LOG.debug('Applying post do remove models interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.postDoRemove) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoRemove), {
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexName: request.searchModel.indexName,
-                typeName: request.searchModel.typeName,
-                tenant: request.tenant,
-                query: request.query,
-                model: response.success.result
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoRemove), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -186,15 +188,16 @@ module.exports = {
         this.LOG.debug('Triggering event for modified model');
         try {
             let searchModel = request.searchModel;
-            if (response.success.success && searchModel.indexDef.event) {
+            if (response.success.success && searchModel.indexDef.event && searchModel.indexDef.event.enabled) {
                 let event = {
                     tenant: request.tenant || 'default',
                     event: 'searchItemRemoved',
-                    source: searchModel.moduleName,
+                    sourceName: searchModel.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
                     target: searchModel.moduleName,
                     state: "NEW",
-                    type: "ASYNC",
-                    targetType: ENUMS.TargetType.EACH_NODE.key,
+                    type: searchModel.indexDef.event.type || "ASYNC",
+                    targetType: searchModel.indexDef.event.targetType || ENUMS.TargetType.MODULE_NODES.key,
                     active: true,
                     data: {
                         indexName: searchModel.indexName,
@@ -212,26 +215,5 @@ module.exports = {
             this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

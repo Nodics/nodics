@@ -12,8 +12,9 @@
 const _ = require('lodash');
 
 module.exports = {
-    interceptors: {},
 
+    interceptors: {},
+    valodators: {},
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -41,10 +42,71 @@ module.exports = {
     },
 
     getJobInterceptors: function (jobCode) {
-        if (this.interceptors[jobCode]) {
-            return this.interceptors[jobCode];
-        } else {
-            return null;
+        if (!this.interceptors[jobCode]) {
+            this.interceptors[jobCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(jobCode, ENUMS.InterceptorType.job.key);
+        }
+        return this.interceptors[jobCode];
+    },
+
+    refreshJobInterceptors: function (jobCodes) {
+        if (this.interceptors && !UTILS.isBlank(this.interceptors) && jobCodes && jobCodes.length > 0) {
+            jobCodes.forEach(jobCode => {
+                if (!jobCode || jobCode === 'default') {
+                    let tmpInterceptors = {};
+                    Object.keys(this.interceptors).forEach(jobCode => {
+                        tmpInterceptors[jobCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(jobCode, ENUMS.InterceptorType.job.key);
+                    });
+                    this.interceptors = tmpInterceptors;
+                } else if (this.interceptors[jobCode]) {
+                    this.interceptors[jobCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(jobCode, ENUMS.InterceptorType.job.key);
+                }
+            });
+        }
+    },
+
+    handleJobInterceptorUpdated: function (request, callback) {
+        try {
+            this.refreshJobInterceptors(request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
+        } catch (error) {
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+        }
+    },
+
+    setJobValidators: function (validators) {
+        this.validators = validators;
+    },
+
+    getJobValidators: function (tenant, jobCode) {
+        if (!this.validators[tenant] || !this.validators[tenant][jobCode]) {
+            if (!this.validators[tenant]) this.validators[tenant] = {};
+            this.validators[tenant][jobCode] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, jobCode, ENUMS.InterceptorType.schema.key);
+        }
+        return this.validators[tenant][jobCode];
+    },
+
+    refreshJobValidators: function (tenant, jobCodes) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant]) && jobCodes && jobCodes.length > 0) {
+            jobCodes.forEach(jobCode => {
+                if (!jobCode || jobCode === 'default') {
+                    let tenantValidators = {};
+                    Object.keys(this.validators[tenant]).forEach(jobCode => {
+                        tenantValidators[jobCode] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, jobCode, ENUMS.InterceptorType.schema.key);
+                    });
+                    this.validators[tenant] = tenantValidators;
+                } else if (this.validators[tenant][jobCode]) {
+                    this.validators[tenant][jobCode] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, jobCode, ENUMS.InterceptorType.schema.key);
+                }
+            });
+        }
+    },
+
+    handleJobValidatorUpdated: function (request, callback) {
+        try {
+            this.refreshJobValidators(request.tenant, request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000'});
+        } catch (error) {
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
         }
     },
 

@@ -37,11 +37,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.header) {
-            process.error(request, response, 'Please validate request. Mandate property header not have valid value');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property header not have valid value'));
         } else if (!request.dataModel) {
-            process.error(request, response, 'Please validate request. Mandate property dataModel not have valid value');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property dataModel not have valid value'));
         } else if (!request.header.options.schemaName && !request.header.options.indexName) {
-            process.error(request, response, 'Please validate request. Both schemaName and indexName can not be null or empty');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Both schemaName and indexName can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -197,23 +197,24 @@ module.exports = {
             }
             SERVICE['Default' + options.macro.options.model.toUpperCaseFirstChar() + 'Service'].get({
                 tenant: request.tenant,
+                authData: {
+                    userGroups: request.header.options.userGroups
+                },
+                searchOptions: request.searchOptions,
+                options: request.options,
                 query: query
             }).then(result => {
-                if (result && result.success && result.result && result.result.length > 0) {
+                if (result.result && result.result.length > 0) {
                     let data = [];
                     result.result.forEach(element => {
                         data.push(element[options.macro.options.returnProperty || '_id']);
                     });
                     resolve(data);
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_IMP_00000',
-                        msg: 'None ' + options.macro.options.model.toUpperCaseFirstChar() + 's found'
-                    });
+                    reject(new CLASSES.DataImportError('ERR_IMP_00001', 'None ' + options.macro.options.model.toUpperCaseFirstChar() + 's found'));
                 }
             }).catch(error => {
-                reject(error);
+                reject(new CLASSES.DataImportError(error, null, 'ERR_IMP_00000'));
             });
         });
     },
@@ -246,17 +247,17 @@ module.exports = {
                     response.success = success;
                     process.nextSuccess(request, response);
                 }).catch(error => {
-                    process.error(request, response, error);
+                    process.error(request, response, new CLASSES.DataImportError(error));
                 });
             } else {
-                process.error(request, response, 'Invalid header options, should contain either schemaName or indexName');
+                process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00000', 'Invalid header options, should contain either schemaName or indexName'));
             }
         } else {
             this.insertRemoteModel(request, models).then(success => {
                 response.success = success;
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.DataImportError(error));
             });
         }
     },
@@ -265,28 +266,29 @@ module.exports = {
         return new Promise((resolve, reject) => {
             SERVICE['Default' + header.options.schemaName.toUpperCaseFirstChar() + 'Service'][header.options.operation]({
                 tenant: request.tenant,
+                authData: {
+                    userGroups: header.options.userGroups
+                },
+                options: request.options,
+                searchOptions: request.searchOptions,
                 query: header.query,
                 models: models
-            }).then(result => {
-                if (!result) {
-                    reject({
-                        success: false,
-                        code: 'ERR_IMP_00001',
-                        msg: 'Could not found any response from data access layer'
-                    });
-                } else if (result.success) {
-                    let success = [];
-                    if (UTILS.isArray(result.result)) {
-                        success = success.concat(result.result);
-                    } else {
-                        success.push(result.result);
+            }).then(success => {
+                if (success && success.result && success.result.length > 0) {
+                    resolve(success.result);
+                } else if (success && success.errors && success.errors.length > 0) {
+                    let error = new CLASSES.DataImportError(success.errors[0]);
+                    if (success.errors.length > 1) {
+                        for (let count = 1; count < success.errors.length; count++) {
+                            error.add(new CLASSES.DataImportError(success.errors[count]));
+                        }
                     }
-                    resolve(success);
+                    reject(error);
                 } else {
-                    reject(reject);
+                    reject(new CLASSES.DataImportError('ERR_IMP_00001', 'Could not found any response from data access layer'));
                 }
             }).catch(error => {
-                reject(error);
+                reject(new CLASSES.DataImportError(error));
             });
         });
     },
@@ -297,30 +299,22 @@ module.exports = {
             let searchService = SERVICE['Default' + header.options.indexName.toUpperCaseFirstChar() + 'Service'] || SERVICE.DefaultSearchService;
             searchService[header.options.operation]({
                 tenant: request.tenant,
+                authData: {
+                    userGroups: header.options.userGroups
+                },
                 indexName: request.indexName || header.options.indexName,
                 moduleName: request.moduleName || header.options.moduleName,
                 options: request.options || {},
+                searchOptions: request.searchOptions,
                 model: models[0]
             }).then(result => {
-                if (!result) {
-                    reject({
-                        success: false,
-                        code: 'ERR_IMP_00001',
-                        msg: 'Could not found any response from data access layer'
-                    });
-                } else if (result.success) {
-                    let success = [];
-                    if (UTILS.isArray(result.result)) {
-                        success = success.concat(result.result);
-                    } else {
-                        success.push(result.result);
-                    }
-                    resolve(success);
+                if (result && result.result > 1) {
+                    resolve(result.result);
                 } else {
-                    reject(reject);
+                    reject(new CLASSES.DataImportError('ERR_IMP_00001', 'Could not found any response from data access layer'));
                 }
             }).catch(error => {
-                reject(error);
+                reject(new CLASSES.DataImportError(error));
             });
         });
     },
@@ -332,7 +326,8 @@ module.exports = {
                 tenant: request.tenant,
                 active: true,
                 event: 'saveModels',
-                source: header.options.moduleName,
+                sourceName: header.options.moduleName,
+                sourceId: CONFIG.get('nodeId'),
                 target: header.options.moduleName,
                 state: "NEW",
                 type: 'SYNC',
@@ -350,23 +345,5 @@ module.exports = {
                 reject(error);
             });
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

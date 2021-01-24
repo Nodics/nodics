@@ -11,16 +11,5 @@
 
 module.exports = {
 
-    SUC_PIPE_00000: {
-        code: '130000',
-        description: 'Successfully processed',
-        message: 'Successfully processed',
-    },
-
-    ERR_PIPE_00000: {
-        code: '130000',
-        description: 'Failed due to some internal error',
-        message: 'Failed due to some internal error',
-    },
 
 };

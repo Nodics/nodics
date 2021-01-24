@@ -34,5 +34,8 @@ module.exports = {
                 engine: 'elastic', //Engine could be like elastic, solr, googleCommerce, endeca
             }
         }
+    },
+    defaultErrorCodes: {
+        SearchError: 'ERR_SRCH_00000'
     }
 };

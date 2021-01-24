@@ -22,6 +22,8 @@ module.exports = {
             moduleName: "dataConsumer",
             options: {
                 recursive: true,
+            },
+            searchOptions: {
                 pageSize: 100
             }
         },
@@ -41,6 +43,8 @@ module.exports = {
             moduleName: "dataConsumer",
             options: {
                 recursive: true,
+            },
+            searchOptions: {
                 pageSize: 100
             }
         },
@@ -60,6 +64,8 @@ module.exports = {
             moduleName: "dataConsumer",
             options: {
                 recursive: true,
+            },
+            searchOptions: {
                 pageSize: 100
             }
         },
@@ -79,6 +85,8 @@ module.exports = {
             moduleName: "dataConsumer",
             options: {
                 recursive: true,
+            },
+            searchOptions: {
                 pageSize: 100
             }
         },

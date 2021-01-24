@@ -51,10 +51,10 @@ module.exports = {
                         reject(response);
                     });
                 } else {
-                    reject('No schema found on name: ' + schemaName);
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'No schema found on name: ' + schemaName));
                 }
             } catch (error) {
-                reject('Facing issue while updating model Indexes: ' + error.toString());
+                reject(new CLASSES.NodicsError(error, 'Facing issue while updating model Indexes'));
             }
         });
     },
@@ -94,10 +94,10 @@ module.exports = {
                         reject(response);
                     });
                 } else {
-
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'No schema found on name: ' + moduleName));
                 }
             } catch (error) {
-                reject('Facing issue while updating model Indexes: ' + error.toString());
+                reject(new CLASSES.NodicsError(error, 'Facing issue while updating model Indexes'));
             }
         });
     },
@@ -138,10 +138,10 @@ module.exports = {
                         reject(response);
                     });
                 } else {
-                    reject('Please your request, invalid arguments');
+                    reject(new CLASSES.NodicsError('ERR_DBS_00003', 'Please your request, invalid arguments'));
                 }
             } catch (error) {
-                reject('Facing issue while updating model Indexes: ' + error.toString());
+                reject(new CLASSES.NodicsError(error, 'Facing issue while updating model Indexes'));
             }
         });
     }

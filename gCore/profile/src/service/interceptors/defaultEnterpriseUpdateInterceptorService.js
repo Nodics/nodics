@@ -12,7 +12,7 @@
 module.exports = {
 
     // Enterprise Save Events
-    enterprisePreSave: function (request, responce) {
+    enterprisePreSave: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             request.options.recursive = request.options.recursive || true;
@@ -20,14 +20,14 @@ module.exports = {
         });
     },
 
-    enterprisePreUpdate: function (request, responce) {
+    enterprisePreUpdate: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             request.options.recursive = request.options.recursive || true;
             resolve(true);
         });
     },
-    enterprisePreRemove: function (request, responce) {
+    enterprisePreRemove: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             request.options.recursive = request.options.recursive || true;
@@ -35,7 +35,7 @@ module.exports = {
         });
     },
 
-    enterpriseSaveEvent: function (request, responce) {
+    enterpriseSaveEvent: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve(true);
             this.triggerEnterpriseUpdateEvent(request.model).then(success => {
@@ -47,7 +47,7 @@ module.exports = {
         });
     },
 
-    enterpriseUpdateEvent: function (request, responce) {
+    enterpriseUpdateEvent: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve(true);
             if (request.result && request.result.models && request.result.models.length > 0) {
@@ -63,7 +63,7 @@ module.exports = {
         });
     },
 
-    enterpriseRemoveEvent: function (request, responce) {
+    enterpriseRemoveEvent: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve(true);
             if (request.result && request.result.models && request.result.models.length > 0) {
@@ -83,12 +83,13 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let event = {
                 tenant: 'default',
-                source: 'profile',
+                sourceName: 'profile',
+                sourceId: CONFIG.get('nodeId'),
                 target: 'profile',
                 state: "NEW",
                 type: "SYNC",
                 active: true,
-                targetType: ENUMS.TargetType.EACH_NODE.key,
+                targetType: ENUMS.TargetType.MODULE_NODES.key,
                 data: {
                     enterprise: enterprise
                 }
@@ -101,7 +102,7 @@ module.exports = {
                         active: true
                     }
                 }).then(success => {
-                    if (success.success && (!success.result || success.result.length <= 0)) {
+                    if (!success.result || success.result.length <= 0) {
                         SERVICE.DefaultTenantHandlerService.removeTenants([enterprise.tenant.code]).then(success => {
                             NODICS.removeInternalAuthToken(enterprise.tenant.code);
                             NODICS.removeActiveEnterprise(enterprise.code);

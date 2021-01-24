@@ -47,7 +47,7 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.SearchNodics(error, ' Failed preparing search schema'));
             }
         });
     },
@@ -61,8 +61,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
             throw error;
         }
     },
@@ -74,37 +72,41 @@ module.exports = {
             if (moduleObject && moduleObject.rawSchema) {
                 _self.LOG.debug('Collecting data from module: ' + moduleName);
                 Object.keys(moduleObject.rawSchema).forEach(schemaName => {
-                    let rawSchema = moduleObject.rawSchema[schemaName];
-                    if (!rawSchema.tenants || rawSchema.tenants.includes(tntCode)) {
-                        let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(moduleName, tntCode);
-                        if (searchEngine) {
-                            let searchOptions = searchEngine.getOptions();
-                            if (searchOptions.enabled && searchOptions.schemaHandler &&
-                                SERVICE[searchOptions.schemaHandler] &&
-                                SERVICE[searchOptions.schemaHandler].prepareFromSchema &&
-                                typeof SERVICE[searchOptions.schemaHandler].prepareFromSchema === 'function') {
-                                let searchSchema = SERVICE[searchOptions.schemaHandler].prepareFromSchema(moduleName, schemaName);
-                                if (searchSchema && !UTILS.isBlank(searchSchema)) {
-                                    if (rawSchema.cache) {
-                                        searchSchema.cache = _.merge(_.merge({}, rawSchema.cache), rawSchema.search.cache || {});
-                                    }
-                                    searchSchema.event = rawSchema.search.event || rawSchema.event || false;
-                                    let schemaModel = NODICS.getModels(moduleName, tntCode)[schemaName.toUpperCaseFirstChar() + 'Model'];
-                                    if (schemaModel) {
-                                        schemaModel.typeName = searchSchema.typeName;
-                                    }
-                                    SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(moduleName, tntCode, searchSchema);
-                                }
-                            } else {
-                                _self.LOG.error('Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode);
-                            }
-                        }
-                    }
+                    _self.prepareFromSchema(moduleName, schemaName, tntCode);
                 });
             }
         } catch (error) {
-            _self.LOG.error('While collecting properties from module: ' + moduleName);
-            throw error;
+            throw new CLASSES.SearchNodics(error, 'While collecting properties from module: ' + moduleName);
+        }
+    },
+
+    prepareFromSchema: function (moduleName, schemaName, tntCode) {
+        let moduleObject = NODICS.getModule(moduleName);
+        let rawSchema = moduleObject.rawSchema[schemaName];
+        if (!rawSchema.tenants || rawSchema.tenants.includes(tntCode)) {
+            let searchEngine = SERVICE.DefaultSearchConfigurationService.getTenantSearchEngine(moduleName, tntCode);
+            if (searchEngine) {
+                let searchOptions = searchEngine.getOptions();
+                if (searchOptions.enabled && searchOptions.schemaHandler &&
+                    SERVICE[searchOptions.schemaHandler] &&
+                    SERVICE[searchOptions.schemaHandler].prepareFromSchema &&
+                    typeof SERVICE[searchOptions.schemaHandler].prepareFromSchema === 'function') {
+                    let searchSchema = SERVICE[searchOptions.schemaHandler].prepareFromSchema(moduleName, schemaName);
+                    if (searchSchema && !UTILS.isBlank(searchSchema)) {
+                        if (rawSchema.cache) {
+                            searchSchema.cache = _.merge(_.merge({}, rawSchema.cache), rawSchema.search.cache || {});
+                        }
+                        searchSchema.event = rawSchema.search.event || rawSchema.event || false;
+                        let schemaModel = NODICS.getModels(moduleName, tntCode)[schemaName.toUpperCaseFirstChar() + 'Model'];
+                        if (schemaModel) {
+                            schemaModel.typeName = searchSchema.typeName;
+                        }
+                        SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(moduleName, tntCode, searchSchema);
+                    }
+                } else {
+                    _self.LOG.error('Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode);
+                }
+            }
         }
     },
 
@@ -140,9 +142,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            _self.LOG.error('Failed while loading search schema from schema definitions');
-            _self.LOG.error(error);
-            throw error;
+            throw new CLASSES.SearchNodics(error, 'Failed while loading search schema from schema definitions');
         }
     },
 
@@ -174,12 +174,11 @@ module.exports = {
                         }
                         resolve(true);
                     }).catch(error => {
-                        _self.LOG.error('Failed while loading search schema from schema definitions');
                         reject(error);
                     });
                 });
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.SearchNodics(error));
             }
         });
     },

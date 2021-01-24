@@ -22,8 +22,14 @@ module.exports = {
         'initErrorRoutes',
         'initExtras'
     ],
+    bodyParserHandler: {
+        jsonBodyParserHandler: 'DefaultJsonBodyParserHandlerService',
+        textBodyParserHandler: 'DefaultTextBodyParserHandlerService'
+    },
+
     responseHandler: {
         jsonResponseHandler: 'DefaultJsonResponseHandlerService',
+        textResponseHandler: 'DefaultTextResponseHandlerService',
         fileDownloadResponseHandler: 'DefaultFileDownloadResponseHandlerService'
     },
     server: {

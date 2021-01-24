@@ -39,9 +39,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process JS file');
         if (!request.files || !(request.files instanceof Array) || request.files.length <= 0) {
-            process.error(request, response, 'Invalid file path to read data');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Invalid file path to read data'));
         } else if (!request.outputPath || UTILS.isBlank(request.outputPath)) {
-            process.error(request, response, 'Invalid output path to write data');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Invalid output path to write data'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -52,7 +52,7 @@ module.exports = {
         this.handleFiles(request, response, [].concat(request.files), 0).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, error);
+            process.error(request, response, new CLASSES.DataImportError(error));
         });
     },
 
@@ -107,24 +107,5 @@ module.exports = {
                 resolve(true);
             }
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

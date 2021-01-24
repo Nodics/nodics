@@ -38,17 +38,12 @@ module.exports = {
                 logger.level = request.logLevel;
                 this.LOG.debug('Log level have been set successfully');
                 resolve({
-                    success: true,
                     code: 'SUC_SYS_00000',
-                    msg: 'Log level have been updated successfully'
+                    message: 'Log level have been updated successfully'
                 });
             } else {
                 this.LOG.error('Invalid entity name: ' + request.entityName);
-                reject({
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    msg: 'Invalid entity name: ' + request.entityName
-                });
+                reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Invalid entity name: ' + request.entityName));
             }
         });
     }

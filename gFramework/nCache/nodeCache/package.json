@@ -1,6 +1,6 @@
 {
     "name": "nodeCache",
-    "index": "1.11.1",
+    "index": "1.8.1",
     "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nodeCache",
     "homepage": "http://www.nodics.com/",

@@ -37,10 +37,7 @@ module.exports = {
     publish: function (request) {
         return new Promise((resolve, reject) => {
             if (!request.payloads) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00001'
-                });
+                reject(new CLASSES.NodicsError('ERR_EMS_00002'));
             } else if (request.payloads instanceof Array && request.payloads.length > 0) {
                 let allPayloads = [];
                 let failed = [];
@@ -49,33 +46,25 @@ module.exports = {
                     if (publisher && publisher.client && publisher.client.config && publisher.client.config.handler) {
                         allPayloads.push(SERVICE[publisher.client.config.handler].publish(element));
                     } else {
-                        failed.push({
-                            success: false,
-                            code: 'ERR_EMS_00000',
-                            msg: 'Invalid queue name: ' + element.queue
-                        });
+                        failed.push(new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid queue name: ' + element.queue));
                     }
-
                 });
                 if (allPayloads.length > 0) {
-                    Promise.all(allPayloads).then(success => {
+                    SERVICE.DefaultNodicsPromiseService.all(allPayloads).then(response => {
+                        if (failed.length > 0) {
+                            if (!response.errors) response.errors = [];
+                            response.errors = response.errors.concat(failed);
+                        }
                         resolve({
-                            success: true,
                             code: 'SUC_EMS_00000',
-                            result: success,
-                            failed: failed
+                            result: response.success,
+                            failed: response.errors
                         });
                     }).catch(error => {
-                        reject({
-                            success: false,
-                            code: 'ERR_EMS_00000',
-                            error: error,
-                            failed: failed
-                        });
+                        reject(new CLASSES.NodicsError(error, null, 'SUC_EMS_00000'));
                     });
                 } else {
                     resolve({
-                        success: true,
                         code: 'SUC_EMS_00000',
                         failed: failed
                     });
@@ -89,25 +78,16 @@ module.exports = {
                         reject(error);
                     });
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_EMS_00000',
-                        msg: 'Invalid queue name: ' + payloads.queue
-                    });
+                    reject(new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid queue name: ' + payloads.queue));
                 }
             }
         });
     },
 
     registerConsumers: function (request) {
-        let _self = this;
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(request.consumers)) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00005',
-                    error: 'Consumer object can not be null or empty'
-                });
+                reject(new CLASSES.NodicsError('ERR_EMS_00005', 'Consumer object can not be null or empty'));
             } else {
                 try {
                     let consumers = {};
@@ -116,7 +96,7 @@ module.exports = {
                             if (CONFIG.get('emsClient').consumers[consumerName]) {
                                 consumers[consumerName] = CONFIG.get('emsClient').consumers[consumerName];
                             } else {
-                                throw new Error('Invalid consumer name: ' + consumerName);
+                                throw new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid consumer name: ' + consumerName);
                             }
                         });
                     } else {
@@ -128,7 +108,6 @@ module.exports = {
                             _.merge(CONFIG.get('emsClient').consumers, request.consumers);
                         }
                         resolve({
-                            success: true,
                             code: 'SUC_EMS_00000',
                             result: Object.keys(consumers)
                         });
@@ -136,21 +115,16 @@ module.exports = {
                         reject(error);
                     });
                 } catch (error) {
-                    reject(error);
+                    reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
                 }
             }
         });
     },
-
     closeConsumers: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(request.consumers)) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00005',
-                    error: 'Consumer object can not be null or empty'
-                });
+                reject(new CLASSES.NodicsError('ERR_EMS_00005', 'Consumer object can not be null or empty'));
             } else {
                 try {
                     SERVICE.DefaultEmsClientConfigurationService.closeConsumers(request.consumers).then(success => {
@@ -159,7 +133,7 @@ module.exports = {
                         reject(error);
                     });
                 } catch (error) {
-                    reject(error);
+                    reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
                 }
             }
         });
@@ -169,11 +143,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(request.publishers)) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00005',
-                    error: 'Publisher object can not be null or empty'
-                });
+                reject(new CLASSES.NodicsError('ERR_EMS_00005', 'Publisher object can not be null or empty'));
             } else {
                 try {
                     let publishers = {};
@@ -182,7 +152,7 @@ module.exports = {
                             if (CONFIG.get('emsClient').publishers[publisherName]) {
                                 publishers[publisherName] = CONFIG.get('emsClient').publishers[publisherName];
                             } else {
-                                throw new Error('Invalid publisher name: ' + publisherName);
+                                throw new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid publisher name: ' + publisherName);
                             }
                         });
                     } else {
@@ -194,7 +164,6 @@ module.exports = {
                             _.merge(CONFIG.get('emsClient').punlishers, request.publishers);
                         }
                         resolve({
-                            success: true,
                             code: 'SUC_EMS_00000',
                             result: Object.keys(publishers)
                         });
@@ -202,7 +171,7 @@ module.exports = {
                         reject(error);
                     });
                 } catch (error) {
-                    reject(error);
+                    reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
                 }
             }
         });
@@ -212,11 +181,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(request.publishers)) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00005',
-                    error: 'publishers array can not be null or empty'
-                });
+                reject(new CLASSES.NodicsError('ERR_EMS_00005', 'Publishers object can not be null or empty'));
             } else {
                 try {
                     SERVICE.DefaultEmsClientConfigurationService.closePublishers(request.publishers).then(success => {
@@ -225,7 +190,7 @@ module.exports = {
                         reject(error);
                     });
                 } catch (error) {
-                    reject(error);
+                    reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
                 }
             }
         });

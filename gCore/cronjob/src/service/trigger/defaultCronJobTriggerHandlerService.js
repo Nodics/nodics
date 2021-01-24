@@ -35,11 +35,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating job trigger request');
         if (!request.job) {
-            process.error(request, response, 'Invalid job detail to execute');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid job detail to execute'));
         } else if (!request.definition) {
-            process.error(request, response, 'Invalid job definition to execute');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid job definition to execute'));
         } else if (!request.definition.jobDetail || UTILS.isBlank(request.definition.jobDetail)) {
-            process.error(request, response, 'Invalid job detail');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid job detail'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -72,17 +72,31 @@ module.exports = {
         let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
         if (interceptors && interceptors.preRun) {
             this.LOG.debug('Applying pre job execution interceptors');
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preRun), {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preRun), {
                 job: request.job,
                 definition: request.definition
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPreValidators: function (request, response, process) {
+        let jobDefinition = request.definition;
+        let validators = SERVICE.DefaultCronJobConfigurationService.getJobValidators(request.tenant, jobDefinition.code);
+        if (validators && validators.preRun) {
+            this.LOG.debug('Applying job preRun execution validators');
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preRun), {
+                job: request.job,
+                definition: request.definition
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -127,7 +141,7 @@ module.exports = {
                 process.error(request, response, error);
             });
         } else {
-            process.error(request, response, 'Invalid job detail to execute');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00000', 'Invalid job detail to execute'));
         }
     },
 
@@ -146,30 +160,44 @@ module.exports = {
             methodName: jobDetail.method,
             apiName: jobDetail.uri,
             requestBody: jobDetail.body || {},
-            isJsonResponse: true,
+            responseType: true,
             header: {
                 authToken: NODICS.getInternalAuthToken(definition.tenant)
             }
         });
     },
 
-    applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying pre job execution interceptors');
+    applyPostValidators: function (request, response, process) {
         let jobDefinition = request.definition;
-        let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
-        if (interceptors && interceptors.preRun) {
-            this.LOG.debug('Applying pre job execution interceptors');
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preRun), {
+        let validators = SERVICE.DefaultCronJobConfigurationService.getJobValidators(request.tenant, jobDefinition.code);
+        if (validators && validators.postRun) {
+            this.LOG.debug('Applying job postRun execution validators');
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postRun), {
                 job: request.job,
                 definition: request.definition
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error.toString()
-                });
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPostInterceptors: function (request, response, process) {
+        this.LOG.debug('Applying pre job execution interceptors');
+        let jobDefinition = request.definition;
+        let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
+        if (interceptors && interceptors.postRun) {
+            this.LOG.debug('Applying postRun job execution interceptors');
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postRun), {
+                job: request.job,
+                definition: request.definition
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -184,8 +212,9 @@ module.exports = {
                 let event = {//Set tenant from CronJob Himkar
                     tenant: jobDefinition.tenant,
                     active: true,
-                    event: 'jobExecuted',
-                    source: 'cronjob',
+                    event: jobDefinition.code + 'JobExecuted',
+                    sourceName: 'cronjob',
+                    sourceId: CONFIG.get('nodeId'),
                     target: jobDefinition.event.targetModule,
                     state: "NEW",
                     type: (jobDefinition.event && jobDefinition.event.eventType) ? jobDefinition.event.eventType : 'ASYNC',
@@ -226,19 +255,17 @@ module.exports = {
         }).then(success => {
             process.resolve(response.success);
         }).catch(error => {
-            process.resolve(response.success);
+            if (!response.error) {
+                response.error = new CLASSES.CronJobError(error, 'failed to update success response');
+            } else {
+                response.error.add(new CLASSES.CronJobError(error, 'failed to update success response'));
+            }
+            this.handleError(request, response, process);
         });
     },
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
-        let errors = [];
-        if (response.errors && response.errors.length >= 1) {
-            errors = response.errors;
-        } else {
-            errors.push(response.error);
-        }
-        response.errors = errors;
         let definition = request.definition;
         if (definition.jobDetail && definition.jobDetail.errorNode) {
             let errorNode = definition.jobDetail.errorNode;
@@ -247,11 +274,11 @@ module.exports = {
             SERVICE[serviceName][functionName]({
                 job: request.job,
                 definition: definition,
-                errors: errors
+                errors: response.error
             }).then(success => {
                 this.handleError(request, response, process);
             }).catch(error => {
-                response.errors.push(error);
+                response.error.add(error);
                 this.handleError(request, response, process);
             });
         } else {
@@ -263,7 +290,7 @@ module.exports = {
         let jobDefinition = request.definition;
         jobDefinition.state = ENUMS.CronJobState.ACTIVE.key;
         jobDefinition.status = ENUMS.CronJobStatus.ERROR.key;
-        jobDefinition.log = response.errors;
+        jobDefinition.log = response.error.toJson();
         jobDefinition.endTime = new Date();
         SERVICE.DefaultCronJobService.update({
             tenant: jobDefinition.tenant,
@@ -277,9 +304,9 @@ module.exports = {
                 log: response.errors
             }
         }).then(success => {
-            process.reject(response.errors);
+            process.reject(response.error);
         }).catch(error => {
-            process.reject(response.errors);
+            process.reject(response.error);
         });
     }
 };

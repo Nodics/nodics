@@ -10,23 +10,31 @@
  */
 
 const _ = require('lodash');
-const util = require('util');
 
 module.exports = {
     default: {
         getItems: function (input) {
             return new Promise((resolve, reject) => {
                 try {
-                    //console.log(util.inspect(input.query, false, 5));
-                    this.find(input.query, input.options).toArray((error, result) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(result);
-                        }
+                    let cursor = this.find(input.query, input.searchOptions);
+                    cursor.count().then(count => {
+                        cursor.toArray((error, result) => {
+                            if (error) {
+                                reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
+                            } else {
+                                resolve({
+                                    options: input.searchOptions,
+                                    query: input.query,
+                                    count: count,
+                                    result: result
+                                });
+                            }
+                        });
+                    }).catch(error => {
+                        reject(new CLASSES.NodicsError(error, 'While executing count operation', 'ERR_MDL_00000'));
                     });
                 } catch (error) {
-                    reject(error);
+                    reject(new CLASSES.NodicsError(error, 'While executing find operation', 'ERR_MDL_00000'));
                 }
             });
         },
@@ -34,7 +42,7 @@ module.exports = {
         saveItems: function (input) {
             return new Promise((resolve, reject) => {
                 if (!input.model) {
-                    reject('Invalid model value to save');
+                    reject(new CLASSES.NodicsError('ERR_MDL_00001'));
                 } else if (input.query && !UTILS.isBlank(input.query)) {
                     try {
                         this.findOneAndUpdate(input.query,
@@ -48,27 +56,37 @@ module.exports = {
                                 if (result && result.value) {
                                     resolve(result.value);
                                 } else {
-                                    reject('Failed to update doc, Please check your modelSaveOptions');
+                                    reject(new CLASSES.NodicsError('ERR_MDL_00005'));
                                 }
                             }).catch(error => {
                                 reject(error);
                             });
                     } catch (error) {
-                        reject(error);
+                        reject(new CLASSES.NodicsError(error, 'While saving items', 'ERR_MDL_00000'));
                     }
                 } else {
                     try {
-                        this.insertOne(input.model, {}).then(result => {
-                            if (result.ops && result.ops.length > 0) {
-                                resolve(result.ops[0]);
-                            } else {
-                                reject('Failed to create doc, , Please check your modelSaveOptions');
-                            }
+                        SERVICE.DefaultModelValidatorService.validateMandate(input.model, this.rawSchema).then((success) => {
+                            return SERVICE.DefaultModelValidatorService.validateDataType(input.model, this.rawSchema);
+                        }).then((success) => {
+                            return new Promise((resolve, reject) => {
+                                this.insertOne(input.model, {}).then(result => {
+                                    if (result.ops && result.ops.length > 0) {
+                                        resolve(result.ops[0]);
+                                    } else {
+                                        reject(new CLASSES.NodicsError('ERR_MDL_00005'));
+                                    }
+                                }).catch(error => {
+                                    reject(error);
+                                });
+                            });
+                        }).then((success) => {
+                            resolve(success);
                         }).catch(error => {
                             reject(error);
                         });
                     } catch (error) {
-                        reject(error);
+                        reject(new CLASSES.NodicsError(error, 'While saving new items', 'ERR_MDL_00000'));
                     }
                 }
             });
@@ -77,46 +95,43 @@ module.exports = {
         updateItems: function (input) {
             return new Promise((resolve, reject) => {
                 if (!input.model) {
-                    reject('Invalid model value to save');
+                    reject(new CLASSES.NodicsError('ERR_MDL_00003'));
                 } else if (!input.query || UTILS.isBlank(input.query)) {
-                    reject('Blank query is not supported');
+                    reject(new CLASSES.NodicsError('ERR_MDL_00003'));
                 } else {
                     if (input.options && input.options.returnModified) {
-                        this.find(input.query, input.options).toArray((error, response) => {
+                        this.find(input.query, input.searchOptions || {}).toArray((error, response) => {
                             if (error) {
-                                reject(error);
+                                reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                             } else {
-                                this.updateMany(input.query,
-                                    {
-                                        $set: input.model
-                                    }, this.dataBase.getOptions().modelUpdateOptions || {
-                                        upsert: false,
-                                        returnOriginal: false
-                                    }).then(success => {
-                                        let result = success.result;
-                                        response.forEach(element => {
-                                            _.merge(element, input.model);
-                                        });
-                                        result.models = response;
-                                        resolve(result);
-                                    }).catch(error => {
-                                        reject(error);
+                                this.updateMany(input.query, {
+                                    $set: input.model
+                                }, this.dataBase.getOptions().modelUpdateOptions || {
+                                    upsert: false,
+                                    returnOriginal: false
+                                }).then(success => {
+                                    let result = success.result;
+                                    response.forEach(element => {
+                                        _.merge(element, input.model);
                                     });
+                                    result.models = response;
+                                    resolve(result);
+                                }).catch(error => {
+                                    reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
+                                });
                             }
                         });
                     } else {
-                        this.updateMany(input.query,
-                            {
-                                $set: input.model
-                            },
-                            this.dataBase.getOptions().modelUpdateOptions || {
-                                upsert: false,
-                                returnOriginal: false
-                            }).then(success => {
-                                resolve(success.result);
-                            }).catch(error => {
-                                reject(error);
-                            });
+                        this.updateMany(input.query, {
+                            $set: input.model
+                        }, this.dataBase.getOptions().modelUpdateOptions || {
+                            upsert: false,
+                            returnOriginal: false
+                        }).then(success => {
+                            resolve(success.result);
+                        }).catch(error => {
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
+                        });
                     }
                 }
             });
@@ -126,9 +141,9 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 if (input.query && !UTILS.isBlank(input.query)) {
                     if (input.options && input.options.returnModified) {
-                        this.find(input.query, input.options).toArray((error, response) => {
+                        this.find(input.query, input.searchOptions).toArray((error, response) => {
                             if (error) {
-                                reject(error);
+                                reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                             } else {
                                 this.deleteMany(input.query,
                                     this.dataBase.getOptions().modelRemoveOptions || {
@@ -138,7 +153,7 @@ module.exports = {
                                         result.models = response;
                                         resolve(result);
                                     }).catch(error => {
-                                        reject(error);
+                                        reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                                     });
                             }
                         });
@@ -148,11 +163,11 @@ module.exports = {
                         }).then(success => {
                             resolve(success.result);
                         }).catch(error => {
-                            reject(error);
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                         });
                     }
                 } else {
-                    reject('Blank query is not supported');
+                    reject(new CLASSES.NodicsError('ERR_MDL_00003'));
                 }
             });
         }

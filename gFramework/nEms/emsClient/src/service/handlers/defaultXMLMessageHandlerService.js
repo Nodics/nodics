@@ -37,9 +37,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating internal indexer request');
         if (!request.queue) {
-            process.error(request, response, 'Invalid queue detail');
+            process.error(request, response, new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid queue detail'));
         } else if (!request.message) {
-            process.error(request, response, 'Invalid message');
+            process.error(request, response, new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid message'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -51,38 +51,12 @@ module.exports = {
             let jsonData = JSON.parse(parser.xml2json(request.message, { compact: true, spaces: 4 }));
             jsonData = jsonData[Object.keys(jsonData)[0]];
             response.success = {
-                success: true,
                 code: 'SUC_EMS_00000',
                 result: jsonData
             };
             process.nextSuccess(request, response);
         } catch (error) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_EMS_00004',
-                error: error.message || error
-            });
-        }
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_EMS_00005'));
         }
     }
 };

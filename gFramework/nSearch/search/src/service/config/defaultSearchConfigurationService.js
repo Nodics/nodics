@@ -17,6 +17,7 @@ module.exports = {
     searchSchema: {},
     rawSearchModel: {},
     interceptors: {},
+    validators: {},
 
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -66,9 +67,9 @@ module.exports = {
      */
     getSearchConfiguration: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant name: ' + tenant);
         } else {
             let defaultSearchConfig = CONFIG.get('search', tenant);
             let searchConfig = _.merge(_.merge({}, defaultSearchConfig.default), defaultSearchConfig[moduleName] || {});
@@ -77,7 +78,7 @@ module.exports = {
                 connConfig.options = _.merge(_.merge({}, searchConfig.options), connConfig.options);
                 return connConfig;
             } else {
-                throw new Error('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
+                throw new CLASSES.SearchError('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
             }
         }
     },
@@ -85,6 +86,7 @@ module.exports = {
     getSearchEngines: function () {
         return this.searchEngines;
     },
+
     addTenantSearchEngine: function (moduleName, tenant, searchEngine) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new Error('Invalid module name: ' + moduleName);
@@ -105,9 +107,9 @@ module.exports = {
 
     getTenantSearchEngine: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant name: ' + tenant);
         } else {
             let searchEngine = this.searchEngines[moduleName] || this.searchEngines.default;
             return searchEngine ? searchEngine[tenant] : null;
@@ -116,9 +118,9 @@ module.exports = {
 
     addTenantRawSearchSchema: function (moduleName, tenant, definition) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant name: ' + tenant);
         } else {
             if (!this.searchSchema[moduleName]) {
                 this.searchSchema[moduleName] = {};
@@ -136,9 +138,9 @@ module.exports = {
 
     getRawSearchSchema: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant name: ' + tenant);
         } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
             return this.searchSchema[moduleName][tenant];
         } else {
@@ -148,9 +150,9 @@ module.exports = {
 
     getTenantRawSearchSchema: function (moduleName, tenant, typeName) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant name: ' + tenant);
         } else if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
             return this.searchSchema[moduleName][tenant][typeName];
         } else {
@@ -170,10 +172,71 @@ module.exports = {
     },
 
     getSearchInterceptors: function (indexName) {
-        if (this.interceptors[indexName]) {
-            return this.interceptors[indexName];
-        } else {
-            return null;
+        if (!this.interceptors[indexName]) {
+            this.interceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
         }
-    }
+        return this.interceptors[indexName];
+    },
+
+    refreshSearchInterceptors: function (indexes) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant]) && indexes && indexes.length > 0) {
+            indexes.forEach(indexName => {
+                if (!indexName || indexName === 'default') {
+                    let tmpInterceptors = {};
+                    Object.keys(this.interceptors).forEach(indexName => {
+                        tmpInterceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
+                    });
+                    this.interceptors = tmpInterceptors;
+                } else if (this.interceptors[indexName]) {
+                    this.interceptors[indexName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(indexName, ENUMS.InterceptorType.search.key);
+                }
+            });
+        }
+    },
+
+    handleSearchInterceptorUpdated: function (request, callback) {
+        try {
+            this.refreshSearchInterceptors(request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
+        } catch (error) {
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+        }
+    },
+
+    setSearchValidators: function (validators) {
+        this.validators = validators;
+    },
+
+    getSearchValidators: function (tenant, indexName) {
+        if (!this.validators[tenant] || !this.validators[tenant][indexName]) {
+            if (!this.validators[tenant]) this.validators[tenant] = {};
+            this.validators[tenant][indexName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, indexName, ENUMS.InterceptorType.search.key);
+        }
+        return this.validators[tenant][indexName];
+    },
+
+    refreshSearchValidators: function (tenant, indexes) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant]) && indexes && indexes.length > 0) {
+            indexes.forEach(indexName => {
+                if (!indexName || indexName === 'default') {
+                    let tenantValidators = {};
+                    Object.keys(this.validators[tenant]).forEach(indexName => {
+                        tenantValidators[indexName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, indexName, ENUMS.InterceptorType.search.key);
+                    });
+                    this.validators[tenant] = tenantValidators;
+                } else if (this.validators[tenant][indexName]) {
+                    this.validators[tenant][indexName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, indexName, ENUMS.InterceptorType.search.key);
+                }
+            });
+        }
+    },
+
+    handleSearchValidatorUpdated: function (request, callback) {
+        try {
+            this.refreshSearchValidators(request.tenant, request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
+        } catch (error) {
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+        }
+    },
 };

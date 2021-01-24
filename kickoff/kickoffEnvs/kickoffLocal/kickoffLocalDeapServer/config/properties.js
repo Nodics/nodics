@@ -56,25 +56,25 @@ module.exports = {
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3002,
+                httpPort: 3010,
 
                 httpsHost: 'localhost',
-                httpsPort: 3003
+                httpsPort: 3011
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3002,
+                httpPort: 3010,
 
                 httpsHost: 'localhost',
-                httpsPort: 3003
+                httpsPort: 3011
             },
             nodes: {
                 node0: {
                     httpHost: 'localhost',
-                    httpPort: 3002,
+                    httpPort: 3010,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3003
+                    httpsPort: 3011
                 },
                 node1: {
                     httpHost: 'localhost',
@@ -122,31 +122,32 @@ module.exports = {
             }
         },
 
+        // This configuration required to push any event needs to be send for other module
         nems: {
             options: {
                 contextRoot: 'nodics'
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3004,
+                httpPort: 3020,
 
                 httpsHost: 'localhost',
-                httpsPort: 3005
+                httpsPort: 3021
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3004,
+                httpPort: 3020,
 
                 httpsHost: 'localhost',
-                httpsPort: 3005
+                httpsPort: 3021
             },
             nodes: {
                 node0: {
                     httpHost: 'localhost',
-                    httpPort: 3004,
+                    httpPort: 3020,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3005
+                    httpsPort: 3021
                 }
             }
         }

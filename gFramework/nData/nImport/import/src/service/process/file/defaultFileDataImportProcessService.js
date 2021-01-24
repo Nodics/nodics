@@ -37,11 +37,11 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.fileName) {
-            process.error(request, response, 'Please validate request. Mandate property fileName not have valid value');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property fileName not have valid value'));
         } else if (!request.fileData) {
-            process.error(request, response, 'Please validate request. Mandate property fileName not have valid value');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property fileName not have valid value'));
         } else if (!request.dataFiles) {
-            process.error(request, response, 'Please validate request. Mandate property dataFiles not have valid value');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property dataFiles not have valid value'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -109,12 +109,17 @@ module.exports = {
                     let fileObj = request.dataFiles[request.fileName];
                     let modelHash = options.pendingModels.shift();
                     let dataModel = request.fileData.models[modelHash];
+                    let header = request.fileData.header;
                     if (!fileObj.processed.includes(modelHash)) {
                         SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
                             tenant: options.tenant,
-                            header: request.fileData.header,
+                            authData: {
+                                userGroups: header.options.userGroups
+                            },
+                            header: header,
                             dataModel: dataModel
                         }, {}).then(success => {
+                            if (!response.success) response.success = [];
                             if (success && UTILS.isArray(success)) {
                                 success.forEach(element => {
                                     response.success.push(element);
@@ -138,28 +143,8 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.DataImportError(error));
             }
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

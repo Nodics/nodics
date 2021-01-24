@@ -49,7 +49,8 @@ module.exports = {
                 operation: request.indexerConfig.target.operation || CONFIG.get('search').defaultDoSaveOperation || 'doSave',
                 tenants: [request.tenant],
                 moduleName: request.moduleName,
-                dataHandler: 'indexerDataHandlerPipeline'
+                dataHandler: 'indexerDataHandlerPipeline',
+                userGroups: request.authData ? request.authData.userGroups : []
             },
             local: {
                 indexerConfig: request.indexerConfig,
@@ -158,7 +159,7 @@ module.exports = {
                             options: options.queryOptions,
                             query: options.query
                         },
-                        isJsonResponse: true,
+                        responseType: true,
                         header: {
                             authToken: request.authToken
                         }
@@ -169,7 +170,7 @@ module.exports = {
                     });
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00016'));
             }
         });
     },
@@ -234,7 +235,7 @@ module.exports = {
                 reject(data);
             }
         } catch (error) {
-            reject(error);
+            reject(new CLASSES.SearchNodics(error));
         }
     },
     importFinalizeData: function (request, response, process) {
@@ -257,28 +258,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            process.error(request, response, error);
-        }
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
+            process.error(request, response, new CLASSES.SearchNodics(error));
         }
     }
 };

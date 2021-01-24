@@ -15,6 +15,9 @@ module.exports = {
     importInterceptors: {},
     exportInterceptors: {},
 
+    importValidators: {},
+    exportValidatos: {},
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -33,8 +36,6 @@ module.exports = {
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
-            //this.LOG.debug('Collecting database middlewares');
-            //NODICS.setRawModels(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/model.js'));
             resolve(true);
         });
     },
@@ -44,11 +45,10 @@ module.exports = {
     },
 
     getImportInterceptors: function (entityName) {
-        if (this.importInterceptors[entityName]) {
-            return this.importInterceptors[entityName];
-        } else {
-            return null;
+        if (!this.importInterceptors[entityName]) {
+            this.importInterceptors[entityName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.import.key);
         }
+        return this.importInterceptors[entityName];
     },
 
     setExportInterceptors: function (interceptors) {
@@ -57,10 +57,134 @@ module.exports = {
     },
 
     getExportInterceptors: function (entityName) {
-        if (this.exportInterceptors[entityName]) {
-            return this.exportInterceptors[entityName];
-        } else {
-            return null;
+        if (!this.exportInterceptors[entityName]) {
+            this.exportInterceptors[entityName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.export.key);
+        }
+        return this.exportInterceptors[entityName];
+    },
+
+    refreshImportInterceptors: function (entities) {
+        if (this.importInterceptors && !UTILS.isBlank(this.importInterceptors) && entities && entities.length > 0) {
+            entities.forEach(entityName => {
+                if (!entityName || entityName === 'default') {
+                    let tmpInterceptors = {};
+                    Object.keys(this.importInterceptors).forEach(entityName => {
+                        tmpInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.import.key);
+                    });
+                    this.importInterceptors = tmpInterceptors;
+                } else if (this.importInterceptors[entityName]) {
+                    this.importInterceptors[entityName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.import.key);
+                }
+            });
+        }
+    },
+
+    handleImportInterceptorUpdated: function (request, callback) {
+        try {
+            this.refreshImportInterceptors(request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
+        } catch (error) {
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+        }
+    },
+
+    refreshExportInterceptors: function (entities) {
+        if (this.exportInterceptors && !UTILS.isBlank(this.exportInterceptors) && entities && entities.length > 0) {
+            entities.forEach(entityName => {
+                if (!entityName || entityName === 'default') {
+                    let tmpInterceptors = {};
+                    Object.keys(this.exportInterceptors).forEach(entityName => {
+                        tmpInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.export.key);
+                    });
+                    this.exportInterceptors = tmpInterceptors;
+                } else if (this.exportInterceptors[entityName]) {
+                    this.exportInterceptors[entityName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(entityName, ENUMS.InterceptorType.export.key);
+                }
+            });
+        }
+    },
+
+    handleExportInterceptorUpdated: function (request, callback) {
+        try {
+            this.refreshExportInterceptors(request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
+        } catch (error) {
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+        }
+    },
+
+
+    setImportValidators: function (validators) {
+        this.importValidators = validators;
+    },
+
+    getImportValidators: function (tenant, entityName) {
+        if (!this.importValidators[tenant] || !this.importValidators[tenant][entityName]) {
+            if (!this.importValidators[tenant]) this.importValidators[tenant] = {};
+            this.importValidators[tenant][entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.import.key);
+        }
+        return this.importValidators[tenant][entityName];
+    },
+
+    refreshImportValidators: function (tenant, entities) {
+        if (this.importValidators[tenant] && !UTILS.isBlank(this.importValidators[tenant]) && entities && entities.length > 0) {
+            entities.forEach(entityName => {
+                if (!entityName || entityName === 'default') {
+                    let tenantValidators = {};
+                    Object.keys(this.importValidators[tenant]).forEach(entityName => {
+                        tenantValidators[entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.import.key);
+                    });
+                    this.importValidators[tenant] = tenantValidators;
+                } else if (this.importValidators[tenant][entityName]) {
+                    this.importValidators[tenant][entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.import.key);
+                }
+            });
+        }
+    },
+
+    handleImportValidatorUpdated: function (request, callback) {
+        try {
+            this.refreshImportValidators(request.tenant, request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
+        } catch (error) {
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+        }
+    },
+
+    setExportValidators: function (validators) {
+        this.exportValidators = validators;
+    },
+
+    getExportValidators: function (tenant, entityName) {
+        if (!this.exportValidators[tenant] || !this.exportValidators[tenant][entityName]) {
+            if (!this.exportValidators[tenant]) this.exportValidators[tenant] = {};
+            this.exportValidators[tenant][entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.export.key);
+        }
+        return this.exportValidators[tenant][entityName];
+    },
+
+    refreshExportValidators: function (tenant, entities) {
+        if (this.exportValidators[tenant] && !UTILS.isBlank(this.exportValidators[tenant]) && entities && entities.length > 0) {
+            entities.forEach(entityName => {
+                if (!entityName || entityName === 'default') {
+                    let tenantValidators = {};
+                    Object.keys(this.exportValidators[tenant]).forEach(entityName => {
+                        tenantValidators[entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.export.key);
+                    });
+                    this.exportValidators[tenant] = tenantValidators;
+                } else if (this.exportValidators[tenant][entityName]) {
+                    this.exportValidators[tenant][entityName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, entityName, ENUMS.InterceptorType.export.key);
+                }
+            });
+        }
+    },
+
+    handleExportValidatorUpdated: function (request, callback) {
+        try {
+            this.refreshExportValidators(request.tenant, request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
+        } catch (error) {
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
         }
     }
 };

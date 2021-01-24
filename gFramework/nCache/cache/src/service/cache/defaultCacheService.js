@@ -45,18 +45,13 @@ module.exports = {
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_CACHE_00010',
-                    msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
-                });
+                return Promise.reject(new CLASSES.CacheError({
+                    code: 'ERR_CACHE_00006',
+                    message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
+                }));
             }
         } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_CACHE_00000',
-                error: error
-            });
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while putting value in cache'));
         }
     },
 
@@ -71,18 +66,13 @@ module.exports = {
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
-                return Promise.reject({
-                    success: false,
-                    code: 'ERR_CACHE_00010',
-                    msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
-                });
+                return Promise.reject(new CLASSES.CacheError({
+                    code: 'ERR_CACHE_00006',
+                    message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
+                }));
             }
         } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_CACHE_00000',
-                error: error
-            });
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while getting value from cache'));
         }
     },
 
@@ -94,11 +84,7 @@ module.exports = {
                 return this.flushByPrefix(options);
             }
         } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_CACHE_00000',
-                error: error
-            });
+            return Promise.reject(new CLASSES.CacheError(error));
         }
     },
 
@@ -113,18 +99,13 @@ module.exports = {
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
-                Promise.reject({
-                    success: false,
-                    code: 'ERR_CACHE_00010',
-                    msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
-                });
+                return Promise.reject(new CLASSES.CacheError({
+                    code: 'ERR_CACHE_00006',
+                    message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
+                }));
             }
         } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_CACHE_00000',
-                error: error
-            });
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while flushing cache'));
         }
     },
 
@@ -139,18 +120,13 @@ module.exports = {
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
             } else {
-                Promise.reject({
-                    success: false,
-                    code: 'ERR_CACHE_00010',
-                    msg: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
-                });
+                return Promise.reject(new CLASSES.CacheError({
+                    code: 'ERR_CACHE_00006',
+                    message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
+                }));
             }
         } catch (error) {
-            return Promise.reject({
-                success: false,
-                code: 'ERR_CACHE_00000',
-                error: error
-            });
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while flushing keys in cache'));
         }
     },
 
@@ -187,23 +163,74 @@ module.exports = {
     },
 
 
-
-
-
-
     updateRouterCacheConfiguration: function (request) {
         return new Promise((resolve, reject) => {
             try {
+                this.publishCacheChangeEvent(request, 'apiCacheChange').then(success => {
+                    resolve({
+                        code: 'SUC_CACHE_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject(new CLASSES.CacheError(error, 'Facing issue while updating router cache'));
+                });
+            } catch (error) {
+                reject(new CLASSES.CacheError(error, 'Facing issue while updating router cache'));
+            }
+        });
+    },
+
+    updateItemCacheConfiguration: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                this.publishCacheChangeEvent(request, 'itemCacheChange').then(success => {
+                    resolve({
+                        code: 'SUC_CACHE_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject(new CLASSES.CacheError(error, 'Facing issue while updating item cache'));
+                });
+            } catch (error) {
+                reject(new CLASSES.CacheError(error, 'Facing issue while updating item cache'));
+            }
+        });
+    },
+
+
+    publishCacheChangeEvent: function (request, eventName) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultEventService.publish({
+                    tenant: request.tenant,
+                    active: true,
+                    event: eventName,
+                    sourceName: request.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
+                    target: request.modelName,
+                    state: "NEW",
+                    type: 'SYNC',
+                    targetType: ENUMS.TargetType.MODULE_NODES.key,
+                    data: request.config
+                }).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.CacheError(error, 'Facing issue while publishing update cache event'));
+            }
+        });
+    },
+
+
+    handleRouterCacheChangeEvent: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
                 if (UTILS.isBlank(request.config)) {
-                    reject({
-                        success: false,
-                        code: 'ERR_CACHE_00005'
-                    });
+                    reject(new CLASSES.CacheError('ERR_CACHE_00002'));
                 } else if (!request.config.routerName) {
-                    reject({
-                        success: false,
-                        code: 'ERR_CACHE_00006'
-                    });
+                    reject(new CLASSES.CacheError('ERR_CACHE_00003'));
                 } else {
                     let key = request.moduleName;
                     if (request.config.schemaName) {
@@ -214,7 +241,6 @@ module.exports = {
                     if (routerDefinition) {
                         routerDefinition.cache = _.merge(routerDefinition.cache || {}, request.config.cache);
                         resolve({
-                            success: true,
                             code: 'SUC_CACHE_00000'
                         });
                     } else {
@@ -222,61 +248,39 @@ module.exports = {
                         if (request.config.schemaName) {
                             msg = msg + ' and schemaName: ' + request.config.schemaName;
                         }
-                        reject({
-                            success: false,
-                            code: 'ERR_CACHE_00007',
-                            msg: msg
-                        });
+                        reject(new CLASSES.CacheError('ERR_CACHE_00005', msg));
                     }
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    msg: 'Facing issue while updating router cache : ' + error.toString()
-                });
+                reject(new CLASSES.CacheError(error, 'Facing issue while updating router cache'));
             }
         });
     },
 
-    updateSchemaCacheConfiguration: function (request) {
+    handleItemCacheChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {
                 if (UTILS.isBlank(request.config)) {
-                    reject({
-                        success: false,
-                        code: 'ERR_CACHE_00005'
-                    });
+                    reject(new CLASSES.CacheError('ERR_CACHE_00002'));
                 } else if (!request.config.schemaName) {
-                    reject({
-                        success: false,
-                        code: 'ERR_CACHE_00008'
-                    });
+                    reject(new CLASSES.CacheError('ERR_CACHE_00004'));
                 } else {
                     let modelName = UTILS.createModelName(request.config.schemaName);
-                    NODICS.getActiveTenants().forEach(tntName => {
-                        let model = NODICS.getModels(request.moduleName, tntName)[modelName];
-                        if (model) {
-                            model.cache = _.merge(model.cache, request.config.cache || {});
-                            resolve({
-                                success: true,
-                                code: 'SUC_CACHE_00000'
-                            });
-                        } else {
-                            reject({
-                                success: false,
-                                code: 'ERR_CACHE_00007',
-                                msg: 'Invalid schemaName: ' + request.config.schemaName + ' to update item cache'
-                            });
-                        }
-                    });
+                    try {
+                        NODICS.getActiveTenants().forEach(tntName => {
+                            let model = NODICS.getModels(request.moduleName, tntName)[modelName];
+                            if (model) {
+                                model.cache = _.merge(model.cache, request.config.cache || {});
+                            } else {
+                                throw new Error('Invalid schemaName: ' + request.config.schemaName + ' to update item cache');
+                            }
+                        });
+                    } catch (error) {
+                        reject(new CLASSES.CacheError(error));
+                    }
                 }
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    msg: 'Facing issue while updating item cache : ' + error.toString()
-                });
+                reject(new CLASSES.CacheError(error, 'Facing issue while updating item cache'));
             }
         });
     },

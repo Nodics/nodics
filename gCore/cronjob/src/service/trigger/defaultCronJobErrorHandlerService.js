@@ -35,9 +35,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating job error request');
         if (!request.job) {
-            process.error(request, response, 'Invalid job detail to error');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid job detail to error'));
         } else if (!request.definition) {
-            process.error(request, response, 'Invalid job definition to error');
+            process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid job definition to error'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -48,17 +48,31 @@ module.exports = {
         let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
         if (interceptors && interceptors.error) {
             this.LOG.debug('Applying job error interceptors');
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.error), {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.error), {
                 job: request.job,
                 definition: request.definition
             }, {}).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00004',
-                    error: error.toString()
-                });
+                process.error(error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyValidators: function (request, response, process) {
+        let jobDefinition = request.definition;
+        let validators = SERVICE.DefaultCronJobConfigurationService.getJobValidators(request.tenant, jobDefinition.code);
+        if (validators && validators.error) {
+            this.LOG.debug('Applying job error execution validators');
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.error), {
+                job: request.job,
+                definition: request.definition
+            }, {}).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
             });
         } else {
             process.nextSuccess(request, response);
@@ -98,8 +112,9 @@ module.exports = {
                 let event = {
                     tenant: jobDefinition.tenant, //Set tenant from CronJob Himkar
                     active: true,
-                    event: 'jobError',
-                    source: 'cronjob',
+                    event: jobDefinition.code + 'JobError',
+                    sourceName: 'cronjob',
+                    sourceId: CONFIG.get('nodeId'),
                     target: jobDefinition.event.targetModule,
                     state: "NEW",
                     type: (jobDefinition.event && jobDefinition.event.eventType) ? jobDefinition.event.eventType : 'ASYNC',
@@ -118,26 +133,5 @@ module.exports = {
             this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

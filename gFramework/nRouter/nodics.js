@@ -30,11 +30,15 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultRouterService.prepareModulesConfiguration().then(() => {
+                SERVICE.DefaultRouterConfigurationService.setRawRouters(SERVICE.DefaultFilesLoaderService.loadFiles('/src/router/router.js'));
+            }).then(() => {
                 return SERVICE.DefaultRouterInitializerService.initializeRouters();
             }).then(() => {
                 return SERVICE.DefaultRouterConfigurationService.configureRouters();
             }).then(() => {
                 return SERVICE.DefaultRouterService.registerRouter();
+            }).then(() => {
+                return SERVICE.DefaultRouterConfigurationService.loadPersistedRouters();
             }).then(() => {
                 resolve(true);
             }).catch(error => {

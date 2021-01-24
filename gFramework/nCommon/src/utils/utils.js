@@ -171,5 +171,60 @@ module.exports = {
             this.getAllFiles(pagesPath, fileList);
             return fileList;
         }
+    },
+
+    evaluateScript: function (request, response, script) {
+        return new Promise((resolve, reject) => {
+            try {
+                let result = eval(script);
+                if (result) {
+                    resolve(true);
+                } else {
+                    reject(false);
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    extractFromError: function (error, message, defaultCode) {
+        let errMsg = error.message || SERVICE.DefaultStatusService.get(defaultCode).message;
+        if (message) errMsg = errMsg + ' : ' + message;
+        errMsg = errMsg + ' : ' + error.message;
+        return {
+            code: defaultCode,
+            name: error.name,
+            responseCode: SERVICE.DefaultStatusService.get(defaultCode).code,
+            message: errMsg,
+            stack: error.stack
+        };
+    },
+
+    extractFromMessage: function (error, defaultCode) {
+        return {
+            code: defaultCode,
+            responseCode: SERVICE.DefaultStatusService.get(defaultCode).code,
+            message: error
+        };
+    },
+
+    getUserGroupCodes: function (userGroups, codes = []) {
+        let _self = this;
+        if (userGroups && userGroups.length > 0) {
+            userGroups.forEach(userGroup => {
+                if (UTILS.isObject(userGroup)) {
+                    if (!codes.includes(userGroup.code)) {
+                        codes.push(userGroup.code);
+                    }
+                    if (userGroup.parentGroups) {
+                        _self.getUserGroupCodes(userGroup.parentGroups, codes);
+                    }
+                } else {
+                    codes.push(userGroup);
+                }
+            });
+        }
+        return codes;
     }
 };

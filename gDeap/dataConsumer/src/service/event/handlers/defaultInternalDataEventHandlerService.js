@@ -32,7 +32,8 @@ module.exports = {
         });
     },
 
-    handleInternalDataPushEvent: function (event, callback, request) {
+    handleInternalDataPushEvent: function (request, callback) {
+        let event = request.event;
         if (event && !UTILS.isBlank(event)) {
             SERVICE.DefaultPipelineService.start('processInternalDataPushEventPipeline', {
                 tenant: request.tenant,
@@ -44,7 +45,7 @@ module.exports = {
                 callback(null, {
                     success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: 'Event processed successfuly',
+                    message: 'Event processed successfuly',
                     result: {
                         event: event.event
                     }

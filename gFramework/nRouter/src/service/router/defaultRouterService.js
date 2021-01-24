@@ -11,6 +11,7 @@
  */
 
 const _ = require('lodash');
+const Express = require('express');
 
 module.exports = {
 
@@ -93,109 +94,136 @@ module.exports = {
         return url;
     },
 
-    registerRouter: function () {
+    registerRouter: function (routers) {
         let _self = this;
         let modules = NODICS.getModules();
-        let routers = SERVICE.DefaultFilesLoaderService.loadFiles('/src/router/router.js');
+        routers = routers || SERVICE.DefaultRouterConfigurationService.getRawRouters();
         return new Promise((resolve, reject) => {
             _.each(modules, function (moduleObject, moduleName) {
                 let app = {};
+                let moduleRouter = {};
                 if (UTILS.isRouterEnabled(moduleName)) {
-                    if (CONFIG.get('server').options.runAsDefault || !moduleObject.app) {
-                        app = modules.default.app;
-                        _self.LOG.debug('Found default App for module : ' + moduleName);
-                    } else {
-                        app = moduleObject.app;
-                        _self.LOG.debug('Found module App for module : ' + moduleName);
-                    }
-                    if (!UTILS.isBlank(app)) {
-                        try {
-                            routers.operations.registerWeb(app, moduleObject);
-                            _self.activateRouters(app, moduleObject, moduleName, routers);
-                            resolve(true);
-                        } catch (error) {
-                            _self.LOG.error('While registration process of web path for module : ' + moduleName);
-                            reject(error);
-                        }
+                    app = moduleObject.app || modules.default.app;
+                    moduleRouter = moduleObject.moduleRouter || modules.default.moduleRouter;
+                    try {
+                        SERVICE.DefaultRouterOperationService.registerWeb(app, moduleObject);
+                        _self.activateRouters(moduleRouter, moduleObject, moduleName, routers);
+                    } catch (error) {
+                        _self.LOG.error('While registration process of web path for module : ' + moduleName);
+                        _self.LOG.error(error);
+                        process.exit(1);
                     }
                 }
             });
+            resolve(true);
         });
     },
 
-    activateRouters: function (app, moduleObject, moduleName, routers) {
+    activateRouters: function (moduleRouter, moduleObject, moduleName, routers) {
+        let _self = this;
         let urlPrefix = moduleObject.metaData.prefix || moduleName;
-        _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
-            if (schemaObject.service && schemaObject.router) {
-                _.each(routers.default, function (group, groupName) {
-                    if (groupName !== 'options') {
-                        _.each(group, function (routerDef, routerName) {
-                            if (routerName !== 'options') {
-                                let definition = _.merge({}, routerDef);
-                                definition.method = definition.method.toLowerCase();
-                                definition.key = definition.key.replaceAll('schemaName', schemaName.toLowerCase());
-                                definition.controller = definition.controller.replaceAll('ctrlName', schemaName.toUpperCaseEachWord() + 'Controller');
-                                definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + urlPrefix + definition.key;
-                                definition.moduleName = moduleName;
-                                definition.prefix = schemaName + '_' + routerName;
-                                definition.routerName = moduleName + '_' + schemaName + '_' + routerName;
-                                definition.routerName = definition.routerName.toLowerCase();
-                                definition.cache = _.merge({}, definition.cache || {});
-                                let routerLevelCache = CONFIG.get('cache').routerLevelCache;
-                                if (routerLevelCache &&
-                                    routerLevelCache[schemaName] &&
-                                    routerLevelCache[schemaName][definition.method]) {
-                                    definition.cache = _.merge(definition.cache, routerLevelCache[schemaName][definition.method]);
-                                }
-                                NODICS.addRouter(definition.routerName, definition, moduleName);
-                                routers.operations[definition.method](app, definition);
-                            }
-                        });
-                    }
-                });
-            }
-        });
-
+        if (routers.default) {
+            _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
+                if (schemaObject.service && schemaObject.service.enabled &&
+                    schemaObject.router && schemaObject.router.enabled) {
+                    _self.prepareDefaultRouter({
+                        routers: routers,
+                        urlPrefix: urlPrefix,
+                        alias: schemaObject.router.alias || schemaName,
+                        schemaName: schemaName,
+                        moduleName: moduleName,
+                        moduleRouter: moduleRouter
+                    });
+                }
+            });
+        }
         // Register module common routers, means routers needs to be available in all modules
         if (!UTILS.isBlank(routers.common)) {
             _.each(routers.common, function (group, groupName) {
                 if (groupName !== 'options') {
                     _.each(group, function (routerDef, routerName) {
-                        if (routerName !== 'options') {
-                            let definition = _.merge({}, routerDef);
-                            definition.method = definition.method.toLowerCase();
-                            definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + urlPrefix + definition.key;
-                            definition.moduleName = moduleName;
-                            definition.prefix = routerName;
-                            definition.routerName = moduleName + '_' + routerName;
-                            definition.routerName = definition.routerName.toLowerCase();
-                            NODICS.addRouter(definition.routerName, definition, moduleName);
-                            routers.operations[definition.method](app, definition);
+                        if (routerName !== 'options' && _self.validateRouterDefinition(routerName, routerDef)) {
+                            _self.prepareRouter({
+                                routerName: routerName,
+                                routerDef: routerDef,
+                                urlPrefix: urlPrefix,
+                                moduleName: moduleName,
+                                moduleRouter: moduleRouter
+                            });
                         }
                     });
                 }
             });
         }
-
         // Register all module specific routers here
         if (!UTILS.isBlank(routers[moduleName])) {
             _.each(routers[moduleName], function (group, groupName) {
                 if (groupName !== 'options') {
                     _.each(group, function (routerDef, routerName) {
-                        if (routerName !== 'options') {
-                            let definition = _.merge({}, routerDef);
-                            definition.method = definition.method.toLowerCase();
-                            definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + urlPrefix + definition.key;
-                            definition.moduleName = moduleName;
-                            definition.prefix = routerName;
-                            definition.routerName = moduleName + '_' + routerName;
-                            definition.routerName = definition.routerName.toLowerCase();
-                            NODICS.addRouter(definition.routerName, definition, moduleName);
-                            routers.operations[definition.method](app, definition);
+                        if (routerName !== 'options' && _self.validateRouterDefinition(routerName, routerDef)) {
+                            _self.prepareRouter({
+                                routerName: routerName,
+                                routerDef: routerDef,
+                                urlPrefix: urlPrefix,
+                                moduleName: moduleName,
+                                moduleRouter: moduleRouter
+                            });
                         }
                     });
                 }
             });
+        }
+    },
+
+    prepareDefaultRouter: function (options) {
+        let _self = this;
+        _.each(options.routers.default, function (group, groupName) {
+            if (groupName !== 'options') {
+                _.each(group, function (routerDef, routerName) {
+                    if (routerName !== 'options' && _self.validateRouterDefinition(routerName, routerDef)) {
+                        let definition = _.merge({}, routerDef);
+                        definition.method = definition.method.toLowerCase();
+                        definition.key = definition.key.replaceAll('schemaName', options.alias.toLowerCase());
+                        definition.controller = definition.controller.replaceAll('ctrlName', options.schemaName.toUpperCaseEachWord() + 'Controller');
+                        definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + definition.key;
+                        definition.active = (definition.active === undefined) ? true : definition.active;
+                        definition.moduleName = options.moduleName;
+                        definition.prefix = options.schemaName + '_' + routerName;
+                        definition.routerName = options.moduleName + '_' + options.schemaName + '_' + routerName;
+                        definition.routerName = definition.routerName.toLowerCase();
+                        definition.cache = _.merge({}, definition.cache || {});
+                        let routerLevelCache = CONFIG.get('cache').routerLevelCache;
+                        if (routerLevelCache &&
+                            routerLevelCache[options.schemaName] &&
+                            routerLevelCache[options.schemaName][definition.method]) {
+                            definition.cache = _.merge(definition.cache, routerLevelCache[options.schemaName][definition.method]);
+                        }
+                        NODICS.addRouter(definition.routerName, definition, options.moduleName);
+                        SERVICE.DefaultRouterOperationService[definition.method](options.moduleRouter, definition);
+                    }
+                });
+            }
+        });
+    },
+
+    prepareRouter: function (options) {
+        let definition = _.merge({}, options.routerDef);
+        definition.method = definition.method.toLowerCase();
+        definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + definition.key;
+        definition.active = (definition.active === undefined) ? true : definition.active;
+        definition.moduleName = options.moduleName;
+        definition.prefix = options.routerName;
+        definition.routerName = options.moduleName + '_' + options.routerName;
+        definition.routerName = definition.routerName.toLowerCase();
+        NODICS.addRouter(definition.routerName, definition, options.moduleName);
+        SERVICE.DefaultRouterOperationService[definition.method](options.moduleRouter, definition);
+    },
+
+    validateRouterDefinition: function (routerName, routerDef) {
+        if (routerDef && routerDef.accessGroups && routerDef.accessGroups.length > 0) {
+            return true;
+        } else {
+            throw new CLASSES.NodicsError('Invalid router definition: accessGroups is not valid for: ' + routerName);
         }
     },
 
@@ -203,49 +231,36 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                if (CONFIG.get('server').options.runAsDefault) {
-                    if (!NODICS.getModules().default || !NODICS.getModules().default.app) {
-                        _self.LOG.error('Server configurations has not be initialized. Please verify.');
-                        process.exit(CONFIG.get('errorExitCode'));
+                _.each(NODICS.getModules(), function (moduleObject, moduleName) {
+                    if (UTILS.isRouterEnabled(moduleName)) {
+                        let app = {};
+                        let moduleConfig;
+                        let displayName = null;
+                        if (_self.getModulesPool().isAvailableModuleConfig(moduleName)) {
+                            moduleConfig = _self.getModuleServerConfig(moduleName);
+                            app = moduleObject.app;
+                            app.use('/', moduleObject.moduleRouter);
+                            displayName = moduleName;
+                        } else {
+                            moduleConfig = _self.getModuleServerConfig('default');
+                            app = NODICS.getModules().default.app;
+                            app.use('/', NODICS.getModules().default.moduleRouter);
+                            displayName = 'default';
+                        }
+                        const httpPort = moduleConfig.getServer().getHttpPort();
+                        const httpsPort = moduleConfig.getServer().getHttpsPort();
+                        if (!httpPort) {
+                            _self.LOG.error('Please define listening PORT for module: ' + moduleName);
+                            process.exit(CONFIG.get('errorExitCode'));
+                        }
+                        if (!moduleConfig.isServerRunning()) {
+                            _self.registerListenEvents(displayName, httpPort, false, http.createServer(app)).listen(httpPort);
+                            _self.registerListenEvents(displayName, httpsPort, true, https.createServer(app)).listen(httpsPort);
+                            moduleConfig.setIsServerRunning(true);
+                        }
                     }
-                    let moduleConfig = _self.getModuleServerConfig('default');
-                    const httpPort = moduleConfig.getServer().getHttpPort();
-                    const httpsPort = moduleConfig.getServer().getHttpsPort();
-                    _self.registerListenEvents('default', httpPort, false, http.createServer(NODICS.getModules().default.app)).listen(httpPort);
-                    _self.registerListenEvents('default', httpsPort, true, https.createServer(NODICS.getModules().default.app)).listen(httpsPort);
-                    moduleConfig.setIsServerRunning(true);
-                    resolve(true);
-                } else {
-                    try {
-                        _.each(NODICS.getModules(), function (value, moduleName) {
-                            if (UTILS.isRouterEnabled(moduleName)) {
-                                let app = {};
-                                let moduleConfig;
-                                if (_self.getModulesPool().isAvailableModuleConfig(moduleName)) {
-                                    moduleConfig = _self.getModuleServerConfig(moduleName);
-                                    app = value.app;
-                                } else {
-                                    moduleConfig = _self.getModuleServerConfig('default');
-                                    app = NODICS.getModules().default.app;
-                                }
-                                const httpPort = moduleConfig.getServer().getHttpPort();
-                                const httpsPort = moduleConfig.getServer().getHttpsPort();
-                                if (!httpPort) {
-                                    _self.LOG.error('Please define listening PORT for module: ' + moduleName);
-                                    process.exit(CONFIG.get('errorExitCode'));
-                                }
-                                if (!moduleConfig.isServerRunning()) {
-                                    _self.registerListenEvents(moduleName, httpPort, false, http.createServer(app)).listen(httpPort);
-                                    _self.registerListenEvents(moduleName, httpsPort, true, https.createServer(app)).listen(httpsPort);
-                                    moduleConfig.setIsServerRunning(true);
-                                }
-                            }
-                        });
-                        resolve(true);
-                    } catch (err) {
-                        reject(err);
-                    }
-                }
+                });
+                resolve(true);
             } catch (error) {
                 reject(error);
             }
@@ -260,6 +275,7 @@ module.exports = {
             } else {
                 _self.LOG.error('Failed to start HTTP Server for module : ' + moduleName + ' on PORT : ' + port);
             }
+            _self.LOG.error(error);
         });
         server.on('listening', function () {
             if (isSecure) {

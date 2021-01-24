@@ -18,16 +18,54 @@ module.exports = {
         return this.cronJobContainer;
     },
 
-    createAllJobs: function (tenants = NODICS.getActiveTenants()) {
-        let _self = this;
+    // getTenantActiveJobs: function (tenants, jobCodes) {
+    //     return new Promise((resolve, reject) => {
+    //         if (!jobCodes) jobCodes = {};
+    //         if (tenants && tenants.length > 0) {
+    //             let tenant = tenants.shift();
+    //             if (!jobCodes[tenant]) jobCodes[tenant] = [];
+    //             SERVICE.DefaultCronJobService.get({
+    //                 tenant: tenant,
+    //                 options: { noLimit: true },
+    //                 query: _.merge({
+    //                     runOnNode: CONFIG.get('nodeId')
+    //                 }, SERVICE.DefaultCronJobConfigurationService.getDefaultQuery())
+    //             }).then(result => {
+    //                 if (result.result && result.result.length >= 0) {
+    //                     result.result.forEach(job => {
+    //                         if (!jobCodes[tenant].includes(job.code)) jobCodes[tenant].push(job.code);
+    //                     });
+    //                 }
+    //                 this.getTenantActiveJobs(tenants, jobCodes).then(jobCodes => {
+    //                     resolve(jobCodes);
+    //                 }).catch(error => {
+    //                     reject(error);
+    //                 });
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         } else {
+    //             resolve(jobCodes);
+    //         }
+    //     });
+    // },
+
+    getTenantsJobs: function (options, tenants = NODICS.getActiveTenants(), jobs = {}) {
         return new Promise((resolve, reject) => {
             if (tenants && tenants.length > 0) {
-                let tenant = tenants.shift();
-                this.createJob({
-                    tenant: tenant
-                }).then(success => {
-                    _self.createAllJobs(tenants).then(success => {
-                        resolve(true);
+                SERVICE.DefaultCronJobService.get({
+                    tenant: tenants.shift(),
+                    options: options.options || {},
+                    query: options.query || {}
+                }).then(result => {
+                    if (result.result && result.result.length > 0) {
+                        result.result.forEach(job => {
+                            job.tenant = job.tenant || tenant;
+                            jobs.push(job);
+                        });
+                    }
+                    this.getTenantsJobs(query, tenants, jobs).then(success => {
+                        resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
@@ -35,70 +73,93 @@ module.exports = {
                     reject(error);
                 });
             } else {
-                resolve(true);
+                resolve(jobs);
             }
         });
     },
 
-    createJob: function (request) {
+    createAllJobs: function (tenants = NODICS.getActiveTenants()) {
         return new Promise((resolve, reject) => {
-            request = _.merge({
-                options: {
+            this.getTenantsJobs({
+                searchOptions: {
                     noLimit: true,
                     projection: { _id: 0 }
                 },
-                query: _.merge({
-                    runOnNode: CONFIG.get('nodeId')
-                }, SERVICE.DefaultCronJobConfigurationService.getDefaultQuery())
-            }, request);
-            request.modelName = request.modelName || 'cronJob';
-            SERVICE['Default' + request.modelName.toUpperCaseFirstChar() + 'Service'].get(request).then(result => {
-                if (result.success && result.result && result.result.length > 0) {
-                    this.cronJobContainer.createJobs({
-                        tenant: request.tenant,
-                        definitions: result.result
-                    }).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00001'
-                    });
-                }
+                query: SERVICE.DefaultCronJobConfigurationService.getDefaultQuery()
+            }, tenants).then(jobs => {
+                this.cronJobContainer.createJobs({
+                    tenant: request.tenant,
+                    definitions: jobs
+                }).then(success => {
+                    let code = 'SUC_JOB_00000';
+                    if (success.result.length > 0 && success.failed.length > 0) {
+                        code = 'SUC_JOB_00001';
+                    } else if (success.result.length <= 0 && success.failed.length > 0) {
+                        code = 'ERR_JOB_00000';
+                    }
+                    resolve(_.merge({ code: code }, success));
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });
         });
     },
 
+    createJob: function (request) {
+        return new Promise((resolve, reject) => {
+            this.getTenantsJobs({
+                searchOptions: _.merge({
+                    noLimit: true,
+                    projection: { _id: 0 }
+                }, request.searchOptions),
+                query: _.merge(SERVICE.DefaultCronJobConfigurationService.getDefaultQuery(), request.query)
+            }, [request.tenant]).then(jobs => {
+                this.cronJobContainer.createJobs({
+                    tenant: request.tenant,
+                    definitions: jobs
+                }).then(success => {
+                    let code = 'SUC_JOB_00000';
+                    if (success.result.length > 0 && success.failed.length > 0) {
+                        code = 'SUC_JOB_00001';
+                    } else if (success.result.length <= 0 && success.failed.length > 0) {
+                        code = 'ERR_JOB_00000';
+                    }
+                    resolve(_.merge({ code: code }, success));
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+
+    },
+
     updateJob: function (request) {
         return new Promise((resolve, reject) => {
-            request = _.merge({
-                options: {
-                    noLimit: true
-                },
-                query: CONFIG.get('cronjob').activeJobsQuery
-            }, request);
-            request.modelName = request.modelName || 'cronJob';
-            SERVICE['Default' + request.modelName.toUpperCaseFirstChar() + 'Service'].get(request).then((result) => {
-                if (result.success && result.result && result.result.length > 0) {
-                    this.cronJobContainer.updateJobs({
-                        tenant: request.tenant,
-                        definitions: result.result
-                    }).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00001'
-                    });
-                }
+            this.getTenantsJobs({
+                searchOptions: _.merge({
+                    noLimit: true,
+                    projection: { _id: 0 }
+                }, request.searchOptions),
+                query: _.merge(SERVICE.DefaultCronJobConfigurationService.getDefaultQuery(), request.query)
+            }, [request.tenant]).then(jobs => {
+                this.cronJobContainer.updateJobs({
+                    tenant: request.tenant,
+                    definitions: jobs
+                }).then(success => {
+                    let code = 'SUC_JOB_00000';
+                    if (success.result.length > 0 && success.failed.length > 0) {
+                        code = 'SUC_JOB_00001';
+                    } else if (success.result.length <= 0 && success.failed.length > 0) {
+                        code = 'ERR_JOB_00000';
+                    }
+                    resolve(_.merge({ code: code }, success));
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });
@@ -107,29 +168,27 @@ module.exports = {
 
     runJob: function (request) {
         return new Promise((resolve, reject) => {
-            request = _.merge({
-                options: {
-                    noLimit: true
-                },
-                query: CONFIG.get('cronjob').activeJobsQuery
-            }, request);
-            request.modelName = request.modelName || 'cronJob';
-            SERVICE.DefaultCronJobService.get(request).then((result) => {
-                if (result.success && result.result && result.result.length > 0) {
-                    this.cronJobContainer.runJobs({
-                        tenant: request.tenant,
-                        definitions: result.result
-                    }).then(success => {
-                        resolve(success);
-                    }).catch(error => {
-                        reject(error);
-                    });
-                } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_JOB_00001'
-                    });
-                }
+            this.getTenantsJobs({
+                searchOptions: _.merge({
+                    noLimit: true,
+                    projection: { _id: 0 }
+                }, request.searchOptions),
+                query: _.merge(SERVICE.DefaultCronJobConfigurationService.getDefaultQuery(), request.query)
+            }, [request.tenant]).then(jobs => {
+                this.cronJobContainer.runJobs({
+                    tenant: request.tenant,
+                    definitions: jobs
+                }).then(success => {
+                    let code = 'SUC_JOB_00000';
+                    if (success.result.length > 0 && success.failed.length > 0) {
+                        code = 'SUC_JOB_00001';
+                    } else if (success.result.length <= 0 && success.failed.length > 0) {
+                        code = 'ERR_JOB_00000';
+                    }
+                    resolve(_.merge({ code: code }, success));
+                }).catch(error => {
+                    reject(error);
+                });
             }).catch(error => {
                 reject(error);
             });

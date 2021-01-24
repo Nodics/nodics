@@ -46,18 +46,19 @@ module.exports = {
                     nameOnly: true
                 }).toArray((error, collections) => {
                     if (error) {
-                        _self.LOG.error('While fetching list of collections: ', error);
-                        reject('While fetching list of collections: ' + error);
+                        // _self.LOG.error('While fetching list of collections: ', error);
+                        // reject('While fetching list of collections: ' + error);
+                        reject(new CLASSES.NodicsError(error, 'While fetching list of collections', 'ERR_DBS_00000'));
                     } else {
                         resolve({
+                            client: mongoClient,
                             connection: db,
                             collections: collections
                         });
                     }
                 });
             }).catch(error => {
-                _self.LOG.error('MongoDB default connection error: ', error);
-                reject('MongoDB default connection error: ' + error);
+                reject(new CLASSES.NodicsError(error, 'MongoDB default connection error', 'ERR_DBS_00000'));
             });
         });
     },
@@ -76,18 +77,47 @@ module.exports = {
                             if (err) {
                                 _self.LOG.error('Not able to fetch if initial data required or not');
                                 _self.LOG.error(err);
+                                resolve(false);
                             } else if (!result) {
                                 resolve(true);
+                            } else {
+                                resolve(false);
                             }
-                            resolve(false);
                         });
                     }
                 } else {
                     resolve(false);
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, 'MongoDB default connection error', 'ERR_DBS_00000'));
             }
         });
+    },
+
+    getRuntimeSchema: function () {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                let db = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase('default', 'default');
+                if (db && db.master) {
+                    db.master.getConnection().collection('SchemaConfigurationModel').find({}, {}).toArray((err, result) => {
+                        if (err) {
+                            _self.LOG.error('Not able to fetch runtime schema update data');
+                            reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Not able to fetch runtime schema update data'));
+                        } else {
+                            resolve(result);
+                        }
+                    });
+                } else {
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database connection'));
+                }
+            } catch (error) {
+                reject(new CLASSES.NodicsError(error, 'MongoDB default connection error', 'ERR_DBS_00000'));
+            }
+        });
+    },
+
+    closeConnection: function (connection) {
+        connection.getClient().close();
     }
 };

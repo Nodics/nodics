@@ -22,5 +22,9 @@ module.exports = {
     cronjob: {
         runOnStartup: false,
         waitTime: 1000,
+    },
+
+    defaultErrorCodes: {
+        CronJobError: 'ERR_JOB_00000'
     }
 };

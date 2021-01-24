@@ -13,9 +13,16 @@ module.exports = {
     default: {
         super: {
             model: false,
-            service: false,
-            event: false,
-            router: false,
+            service: {
+                enabled: false
+            },
+            router: {
+                enabled: false
+            },
+            event: {
+                enabled: false,
+                type: 'ASYNC'
+            },
             definition: {
                 active: {
                     type: 'bool',
@@ -32,6 +39,12 @@ module.exports = {
                     searchOptions: {
                         enabled: true, // default is false
                     }
+                },
+                accessGroups: {
+                    type: 'array',
+                    required: false,
+                    default: ['employeeUserGroup'],
+                    description: 'User group code for which this user belongs'
                 },
                 created: {
                     type: 'date',
@@ -60,9 +73,12 @@ module.exports = {
         base: {
             super: 'super',
             model: false,
-            service: false,
-            event: false,
-            router: false,
+            service: {
+                enabled: false
+            },
+            router: {
+                enabled: false
+            },
             definition: {
                 code: {
                     type: 'string',
@@ -75,9 +91,11 @@ module.exports = {
                 }
             },
             indexes: {
+                // will be common for composite and individual
                 common: {
 
                 },
+                // When we need to defined multiple combined field
                 composite: {
 
                 },

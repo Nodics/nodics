@@ -37,9 +37,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating message handler request');
         if (!request.queue) {
-            process.error(request, response, 'Invalid queue detail');
+            process.error(request, response, new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid queue detail'));
         } else if (!request.message) {
-            process.error(request, response, 'Invalid queue detail');
+            process.error(request, response, new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid queue detail'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -59,14 +59,14 @@ module.exports = {
                     process.nextSuccess(request, response);
                 } else {
                     this.LOG.error('Faild on converting message to JSON format');
-                    process.error(request, response, 'Faild on converting message to JSON format : ' + queue.name);
+                    process.error(request, response, new CLASSES.NodicsError('ERR_EMS_00000', 'Faild on converting message to JSON format : ' + queue.name));
                 }
             }).catch(error => {
                 this.LOG.error('Failed to publish message : ' + queue.name + ' : ERROR is ', error);
-                process.error(request, response, 'Failed to convert message for queue : ' + queue.name);
+                process.error(request, response, new CLASSES.NodicsError('ERR_EMS_00000', 'Failed to convert message for queue : ' + queue.name));
             });
         } else {
-            process.error(request, response, 'Invalid message handller: ' + queue.options.messageHandler);
+            process.error(request, response, new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid message handller: ' + queue.options.messageHandler));
         }
     },
 
@@ -88,7 +88,8 @@ module.exports = {
         let event = {
             tenant: message.tenant,
             event: queue.options.eventName || queue.name,
-            source: queue.options.source,
+            sourceName: queue.options.source,
+            sourceId: CONFIG.get('nodeId'),
             target: queue.options.target,
             nodeId: queue.options.nodeId,
             state: "NEW",
@@ -103,7 +104,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 this.LOG.error('Message publishing failed: ', error);
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_EMS_00001'));
             });
         } else {
             SERVICE.DefaultEventService.handleEvent({
@@ -114,29 +115,8 @@ module.exports = {
                 process.nextSuccess(request, response);
             }).catch(error => {
                 this.LOG.error('Message publishing failed: ', error);
-                process.error(request, response, error);
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_EMS_00001'));
             });
-        }
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
         }
     }
 };

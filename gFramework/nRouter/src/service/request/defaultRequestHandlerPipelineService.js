@@ -33,41 +33,17 @@ module.exports = {
         });
     },
 
-    startRequestHandlerPipeline: function (request, response, routerDef) {
-        let input = {
-            requestId: UTILS.generateUniqueCode(),
-            parentRequestId: request.get('requestId'),
-            router: routerDef,
-            httpRequest: request,
-            httpResponse: response,
-            protocal: request.protocol,
-            host: request.hostname,
-            originalUrl: request.originalUrl,
-            secured: routerDef.secured,
-            moduleName: routerDef.moduleName,
-            special: (routerDef.controller) ? false : true,
-            method: request.method,
-            body: request.body || {}
-        };
-        let responseHandler = CONFIG.get('responseHandler')[routerDef.responseHandler || 'jsonResponseHandler'];
-        SERVICE.DefaultPipelineService.start('requestHandlerPipeline', input, {}).then(success => {
-            SERVICE[responseHandler].handleSuccess(request, response, success);
-        }).catch(error => {
-            SERVICE[responseHandler].handleError(request, response, error);
-        });
-    },
-
     helpRequest: function (request, response, process) {
         if (request.originalUrl.endsWith('?help')) {
-            response.success = true;
-            response.code = 'SUC001';
-            response.msg = 'Processed successfully';
             if (request.router.help) {
-                response.result = request.router.help;
+                response.success = {
+                    code: 'SUC_HLP_00000',
+                    result: request.router.help
+                };
+                process.stop(request, response);
             } else {
-                response.result = 'Not defined';
+                process.error(request, response, new CLASSES.NodicsError('ERR_HLP_00000'));
             }
-            process.stop(request, response);
         } else {
             process.nextSuccess(request, response);
         }
@@ -75,7 +51,6 @@ module.exports = {
 
     parseHeader: function (request, response, process) {
         this.LOG.debug('Parsing request header for : ' + request.originalUrl);
-        request.cache = null;
         if (request.httpRequest.get('apiKey')) {
             request.apiKey = request.httpRequest.get('apiKey');
         }
@@ -86,24 +61,19 @@ module.exports = {
             request.entCode = request.httpRequest.get('entCode');
         }
         if (!request.apiKey && !request.authToken && !request.entCode) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_AUTH_00002'
-            });
+            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002'));
         } else {
             process.nextSuccess(request, response);
         }
     },
 
     parseBody: function (request, response, process) {
-        this.LOG.debug('Parsing request body : ' + request.originalUrl);
         process.nextSuccess(request, response);
     },
 
     handleSpecialRequest: function (request, response, process) {
-        let _self = this;
-        this.LOG.debug('Handling special request : ' + request.originalUrl);
         if (request.special) {
+            this.LOG.debug('Handling special request : ' + request.originalUrl);
             if (!request.tenant) {
                 request.tenant = 'default';
             }
@@ -149,17 +119,15 @@ module.exports = {
                     ttl: request.router.cache.ttl
                 }).then(value => {
                     process.stop(request, response, {
-                        success: true,
-                        code: 'SUC_SYS_00000',
-                        msg: SERVICE.DefaultStatusService.get('SUC_SYS_00000').message,
+                        code: 'SUC_CACHE_00002',
                         cache: 'api hit',
                         result: value.result
                     });
                 }).catch(error => {
-                    if (error.code === 'ERR_CACHE_00010') {
-                        _self.LOG.warn(error.msg);
+                    if (error.code === 'ERR_CACHE_00001') {
                         process.nextSuccess(request, response);
-                    } else if (error.code === 'ERR_CACHE_00001') {
+                    } else if (error.code === 'ERR_CACHE_00006') {
+                        _self.LOG.warn(error.message);
                         process.nextSuccess(request, response);
                     } else {
                         process.error(request, response, error);
@@ -192,7 +160,7 @@ module.exports = {
                         }).then(cuccess => {
                             _self.LOG.debug('Data pushed into cache successfully');
                         }).catch(error => {
-                            _self.LOG.warn(error.msg);
+                            _self.LOG.warn(error.message);
                         });
                     }
                     process.nextSuccess(request, response);
@@ -200,60 +168,6 @@ module.exports = {
             });
         } catch (error) {
             process.error(request, response, error);
-        }
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully : ' + request.originalUrl);
-        let success = response.success;
-        if (!UTILS.isObject(success)) {
-            success = {
-                success: true,
-                code: 'SUC_SYS_00000',
-                result: success
-            };
-        }
-        success.success = success.success || true;
-        success.code = success.code || 'SUC_SYS_00000';
-        if (!success.msg) {
-            success.msg = SERVICE.DefaultStatusService.get(success.code) ? SERVICE.DefaultStatusService.get(success.code).message : 'Successfully processed';
-        }
-        process.resolve(success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            let error = response.errors[0];
-            if (!UTILS.isObject(error)) {
-                error = {
-                    success: false,
-                    code: 'ERR_SYS_00000',
-                    error: error
-                };
-            }
-            error.success = error.success || false;
-            error.code = error.code || 'ERR_SYS_00000';
-            if (!error.msg) {
-                error.msg = SERVICE.DefaultStatusService.get(error.code) ? SERVICE.DefaultStatusService.get(error.code).message : 'Process failed with errors';
-            }
-            if (error.error) {
-                error.msg = error.error.message;
-                if (CONFIG.get('returnErrorStack')) {
-                    error.stack = error.error.stack;
-                }
-            }
-            this.LOG.error(error);
-            process.reject(error);
-        } else {
-            let error = {
-                success: false,
-                code: 'ERR_SYS_00000',
-                msg: SERVICE.DefaultStatusService.get('ERR_SYS_00000') ? SERVICE.DefaultStatusService.get('ERR_SYS_00000').message : 'Process failed with errors',
-                error: response.errors
-            };
-            this.LOG.error(error);
-            process.reject();
         }
     }
 };

@@ -81,19 +81,19 @@ module.exports = function (name, pipelineDefinition) {
             this.LOG.error('Node link is broken for node : ' + _startNode + ' for pipeline : ' + _pipelineName);
             pipeline.exit(CONFIG.get('errorExitCode'));
         }
-        if (!response.success) {
-            response.success = [];
-        }
-        if (!response.errors) {
-            response.errors = [];
-        }
+        // if (!response.success) {
+        //     response.success = [];
+        // }
+        // if (!response.errors) {
+        //     response.errors = [];
+        // }
         this.next(request, response);
     };
 
     this.nextSuccess = function (request, response) {
         _preNode = _currentNode;
         if (!_nextSuccessNode || _nextSuccessNode === null) {
-            let targetNode = response.targetNode;
+            let targetNode = response.targetNode || 'default';
             this.LOG.debug('Processing pipeline target node : ' + targetNode);
             response.targetNode = 'none';
             if (targetNode && targetNode !== 'none' && UTILS.isObject(_currentNode.getSuccess())) {
@@ -113,7 +113,7 @@ module.exports = function (name, pipelineDefinition) {
     };
 
     this.stop = function (request, response, success) {
-        if (success) {
+        if (success !== undefined) {
             response.success = success;
         }
         _preNode = _currentNode;
@@ -122,23 +122,28 @@ module.exports = function (name, pipelineDefinition) {
     };
 
     this.error = function (request, response, error) {
-        if (error) {
-            if (UTILS.isArray(error)) {
-                error.forEach(element => {
-                    response.errors.push(element);
-                });
-            } else {
-                response.errors.push(error);
+        try {
+            if (error) {
+                if (error && !(error instanceof CLASSES.NodicsError)) {
+                    error = new CLASSES.NodicsError(error);
+                }
+                if (!response.error) {
+                    response.error = error;
+                } else {
+                    response.error.add(error);
+                }
             }
+            _preNode = _currentNode;
+            if (_currentNode.getError() && _nodeList[_currentNode.getError()]) {
+                _currentNode = _nodeList[_currentNode.getError()];
+            } else {
+                _currentNode = _handleError;
+            }
+            this.next(request, response);
+        } catch (err) {
+            this.LOG.error('Pipeline: ' + this.getPipelineName() + ' is broken, Please validate');
+            SERVICE.DefaultPipelineService.handleErrorEnd(request, response, this);
         }
-        _preNode = _currentNode;
-        if (_currentNode.getError() && _nodeList[_currentNode.getError()]) {
-            _currentNode = _nodeList[_currentNode.getError()];
-        } else {
-            _currentNode = _handleError;
-        }
-
-        this.next(request, response);
     };
 
     this.resolve = function (response) {
@@ -154,8 +159,8 @@ module.exports = function (name, pipelineDefinition) {
             if (_nodeList[_currentNode.getSuccess()]) {
                 _nextSuccessNode = _nodeList[_currentNode.getSuccess()];
             } else {
-                this.LOG.error('Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess());
-                this.error(request, response, 'Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess());
+                //this.LOG.error('Pipeline link is broken : invalid node line : ' + _currentNode.getSuccess());
+                this.error(request, response, 'Pipeline:' + this.getPipelineName() + ' link is broken : invalid node line : ' + _currentNode.getSuccess());
             }
         } else {
             _nextSuccessNode = null;
@@ -167,36 +172,32 @@ module.exports = function (name, pipelineDefinition) {
         if (_currentNode) {
             this.prepareNextNode(request, response);
             if (_currentNode.getType() === 'function') {
+                let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
+                let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
                 try {
-                    let serviceName = _currentNode.getHandler().substring(0, _currentNode.getHandler().lastIndexOf('.'));
-                    let operation = _currentNode.getHandler().substring(_currentNode.getHandler().lastIndexOf('.') + 1, _currentNode.getHandler().length);
-                    try {
-                        SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response, this);
-                    } catch (err) {
-                        _self.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
-                        throw err;
-                    }
-                } catch (error) {
-                    _self.LOG.error(_currentNode.getHandler());
-                    _self.LOG.error(error);
-                    _self.error(request, response, {
-                        success: false,
-                        code: 'ERR_PIPE_00000',
-                        error: error.toString()
-                    });
+                    SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response, this);
+                } catch (err) {
+                    _self.LOG.error('Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)');
+                    _self.LOG.error(err);
+                    _self.error(request, response, new CLASSES.NodicsError(err, 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)'));
                 }
             } else {
                 try {
-                    SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(success => {
-                        response.success = success;
+                    SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(result => {
+                        response.success = _.merge(response.success || {}, result);
+                        if (result && result.error) {
+                            if (!response.error) {
+                                response.error = result.error;
+                            } else {
+                                response.error.add(result.error);
+                            }
+                        }
                         _self.nextSuccess(request, response, this);
-                    }).catch(errors => {
-                        if (errors && UTILS.isArray(errors)) {
-                            errors.forEach(element => {
-                                response.errors.push(element);
-                            });
+                    }).catch(error => {
+                        if (!response.error) {
+                            response.error = error;
                         } else {
-                            response.errors.push(errors);
+                            response.error.add(error);
                         }
                         if (_hardStop) {
                             _self.error(request, response);
@@ -205,12 +206,7 @@ module.exports = function (name, pipelineDefinition) {
                         }
                     });
                 } catch (error) {
-                    _self.LOG.error(error);
-                    _self.error(request, response, {
-                        success: false,
-                        code: 'ERR_PIPE_00000',
-                        error: error.toString()
-                    });
+                    _self.error(request, response, new CLASSES.NodicsError(error));
                 }
             }
         }

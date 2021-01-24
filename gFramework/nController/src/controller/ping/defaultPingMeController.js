@@ -36,7 +36,7 @@ module.exports = {
         callback(null, {
             success: true,
             code: 'SUC_SYS_00000',
-            msg: request.moduleName + ' is live buddy'
+            message: request.moduleName + ' is live buddy'
         });
     }
 };

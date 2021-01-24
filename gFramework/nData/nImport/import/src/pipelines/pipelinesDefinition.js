@@ -64,18 +64,9 @@ module.exports = {
                 type: 'process',
                 handler: 'dataImportInitializerPipeline',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultSystemDataImportInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultSystemDataImportInitializerService.handleErrorEnd'
             }
         }
     },
-
     localDataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -125,14 +116,6 @@ module.exports = {
                 type: 'process',
                 handler: 'dataImportInitializerPipeline',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultLocalDataImportInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultLocalDataImportInitializerService.handleErrorEnd'
             }
         }
     },
@@ -165,18 +148,9 @@ module.exports = {
                 type: 'process',
                 handler: 'dataImportInitializerPipeline',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultRemoteDataImportInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultRemoteDataImportInitializerService.handleErrorEnd'
             }
         }
     },
-
     dataImportInitializerPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -192,17 +166,12 @@ module.exports = {
                 handler: 'DefaultDataImportInitializerService.processDataHeaders',
                 success: 'successEnd'
             },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDataImportInitializerService.handleSucessEnd'
-            },
             handleError: {
                 type: 'function',
                 handler: 'DefaultDataImportInitializerService.handleErrorEnd'
             }
         }
     },
-
     headerProcessPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -217,18 +186,9 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultHeaderProcessService.processHeaderFiles',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultHeaderProcessService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultHeaderProcessService.handleErrorEnd'
             }
         }
     },
-
     processDataImportPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -254,17 +214,12 @@ module.exports = {
                 handler: 'DefaultDataImportProcessService.processDataFiles',
                 success: 'successEnd'
             },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDataImportProcessService.handleSucessEnd'
-            },
             handleError: {
                 type: 'function',
                 handler: 'DefaultDataImportProcessService.handleErrorEnd'
             }
         }
     },
-
     processFileDataImportPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -279,18 +234,9 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultFileDataImportProcessService.processModels',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultFileDataImportProcessService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultFileDataImportProcessService.handleErrorEnd'
             }
         }
     },
-
     processModelImportPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -320,14 +266,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultModelImportProcessService.insertModel',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultModelImportProcessService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultModelImportProcessService.handleErrorEnd'
             }
         }
     }

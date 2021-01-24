@@ -42,15 +42,10 @@ module.exports = {
             redisCacheConfig.options.db = redisCacheConfig.options.db || 0;
             let client = redis.createClient(redisCacheConfig.options);
             client.on("error", err => {
-                reject({
-                    success: false,
-                    code: 'ERR_CACHE_00000',
-                    error: err
-                });
+                reject(new CLASSES.CacheError(err, 'While creating NodeCache client'));
             });
             client.on("connect", success => {
                 resolve({
-                    success: true,
                     code: 'SUC_CACHE_00000',
                     result: client
                 });
@@ -67,9 +62,8 @@ module.exports = {
             return this.initCache(localCacheConfig, moduleName);
         } else {
             return Promise.resolve({
-                success: true,
                 code: 'SUC_CACHE_00001',
-                msg: 'None schema found for module: ' + moduleName
+                message: 'None schema found for module: ' + moduleName
             });
         }
     },
@@ -79,9 +73,8 @@ module.exports = {
             return this.initCache(localCacheConfig, moduleName);
         } else {
             return Promise.resolve({
-                success: true,
                 code: 'SUC_CACHE_00001',
-                msg: 'Router is not enabled for module: ' + moduleName
+                message: 'Router is not enabled for module: ' + moduleName
             });
         }
     },

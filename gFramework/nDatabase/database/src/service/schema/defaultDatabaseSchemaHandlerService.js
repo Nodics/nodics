@@ -34,12 +34,11 @@ module.exports = {
         });
     },
 
-    buildDatabaseSchema: function () {
+    buildDatabaseSchema: function (mergedSchema) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 _self.LOG.debug('Starting schemas loading process');
-                let mergedSchema = SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/schemas.js', null);
                 let defaultSchema = mergedSchema.default || {};
                 let modules = NODICS.getModules();
                 Object.keys(mergedSchema).forEach(function (key) {
@@ -47,6 +46,7 @@ module.exports = {
                         let moduleObject = modules[key];
                         if (!moduleObject) {
                             _self.LOG.error('Module name : ' + key + ' is not valid. Please define a valide module name in schema');
+                            _self.LOG.error('Please package.json file in module: ' + key + ', may be value is name property not valid');
                             process.exit(CONFIG.get('errorExitCode'));
                         }
                         moduleObject.rawSchema = _self.resolveModuleSchemaDependancy({
@@ -57,9 +57,44 @@ module.exports = {
                 });
                 resolve(true);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_DBS_00000'));
             }
 
+        });
+    },
+
+    buildRuntimeSchema: function (runtimeSchema) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                let schema = {};
+                schema[runtimeSchema.moduleName] = {};
+                schema[runtimeSchema.moduleName][runtimeSchema.code] = runtimeSchema;
+                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(_.merge(
+                    SERVICE.DefaultDatabaseConfigurationService.getRawSchema(), schema
+                ));
+                if (runtimeSchema.moduleName === 'default') {
+                    _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                        if (moduleObject.rawSchema) {
+                            moduleObject.rawSchema = _.merge(moduleObject.rawSchema, schema);
+                        }
+                    });
+                } else {
+                    let finalSchema = runtimeSchema;
+                    let moduleRawSchema = NODICS.getModule(runtimeSchema.moduleName).rawSchema;
+                    if (runtimeSchema.super) {
+                        if (!moduleRawSchema[runtimeSchema.super]) {
+                            reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid super schema definition, could not found in current module'));
+                        } else {
+                            finalSchema = _.merge(_.merge({}, moduleRawSchema[runtimeSchema.super]), runtimeSchema);
+                        }
+                    }
+                    moduleRawSchema[runtimeSchema.code] = _.merge(moduleRawSchema[runtimeSchema.code] || {}, finalSchema);
+                }
+                resolve(true);
+            } catch (error) {
+                reject(new CLASSES.NodicsError(error, null, 'ERR_DBS_00000'));
+            }
         });
     },
 
@@ -109,7 +144,7 @@ module.exports = {
                 options.mergedSchema[options.schemaName].parents = parents;
                 return options.mergedSchema[options.schemaName];
             } else {
-                throw new Error('Invalid super schema definition for: ' + options.schemaName);
+                throw new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid super schema definition for: ' + options.schemaName);
             }
         } else {
             options.mergedSchema[options.schemaName] = options.schema;

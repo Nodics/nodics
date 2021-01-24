@@ -14,6 +14,7 @@ module.exports = function () {
     let _uri = '';
     let _options = {};
     let _connectionOptions = {};
+    let _client = {};
     let _connection = {};
     let _collections = [];
     let _colectionList = [];
@@ -32,6 +33,14 @@ module.exports = function () {
 
     this.getCollectionList = function () {
         return _colectionList;
+    };
+
+    this.setClient = function (client) {
+        _client = client;
+    };
+
+    this.getClient = function () {
+        return _client;
     };
 
     this.setName = function (name) {

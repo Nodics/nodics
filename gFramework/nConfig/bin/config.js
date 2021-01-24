@@ -39,7 +39,13 @@ module.exports = function () {
     };
 
     this.changeTenantProperties = function (config, tenant) {
-        tenant = tenant || 'default';
-        _tntProperties[tenant] = _.merge(_tntProperties[tenant], config);
+        if (tenant) {
+            _tntProperties[tenant] = _.merge(_tntProperties[tenant], config);
+        } else {
+            NODICS.getActiveTanent().forEach(tenant => {
+                _tntProperties[tenant] = _.merge(_tntProperties[tenant], config);
+            });
+        }
+
     };
 };

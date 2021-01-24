@@ -32,8 +32,8 @@ module.exports = {
         });
     },
 
-    handleExternalDataPushEvent: function (event, callback, request) {
-        this.LOG.debug('----------------------------- External Event has been Handled ');
+    handleExternalDataPushEvent: function (request, callback) {
+        let event = request.event;
         if (event && !UTILS.isBlank(event)) {
             SERVICE.DefaultPipelineService.start('processExternalDataPushEventPipeline', {
                 tenant: request.tenant,
@@ -45,7 +45,7 @@ module.exports = {
                 callback(null, {
                     success: true,
                     code: 'SUC_EVNT_00000',
-                    msg: 'Event processed successfuly',
+                    message: 'Event processed successfuly',
                     result: {
                         event: event.event,
                         _id: event._id

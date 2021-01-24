@@ -36,12 +36,15 @@ module.exports = {
                 },
                 master: {
                     URI: 'mongodb://127.0.0.1:27017',
+                    //URI: 'mongodb+srv://nodics:Nodics12345@nodicsmongonode0-wzf8z.gcp.mongodb.net',
+                    //URI: 'mongodb+srv://nodicsMaster:Nodics15021981Master@nodicsmongonode0-q6lyz.gcp.mongodb.net',
                     databaseName: 'nodicsMaster',
                     options: {
                         useNewUrlParser: true,
                         poolSize: 5,
                         ignoreUndefined: true,
-                        connectTimeoutMS: 60000
+                        connectTimeoutMS: 60000,
+                        useUnifiedTopology: true
                     }
                 },
                 test: {
@@ -51,10 +54,22 @@ module.exports = {
                         useNewUrlParser: true,
                         poolSize: 5,
                         ignoreUndefined: true,
-                        connectTimeoutMS: 60000
+                        connectTimeoutMS: 60000,
+                        useUnifiedTopology: true
                     }
                 }
             }
         }
     }
+
+
+    // const MongoClient = require('mongodb').MongoClient;
+    // const uri = "mongodb+srv://<username>:<password>@nodicsmongonode0-wzf8z.gcp.mongodb.net/test?retryWrites=true&w=majority";
+    // const client = new MongoClient(uri, { useNewUrlParser: true });
+    // client.connect(err => {
+    //   const collection = client.db("test").collection("devices");
+    //   // perform actions on the collection object
+    //   client.close();
+    // });
+
 };

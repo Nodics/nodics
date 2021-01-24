@@ -10,18 +10,5 @@
  */
 
 module.exports = {
-
     nodeId: 'node0',
-
-    server: {
-        default: {
-            server: {
-                httpHost: 'localhost',
-                httpPort: 3002,
-
-                httpsHost: 'localhost',
-                httpsPort: 3003
-            }
-        }
-    }
 };

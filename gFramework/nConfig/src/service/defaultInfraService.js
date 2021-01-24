@@ -223,7 +223,7 @@ module.exports = {
             let genDir = path.join(NODICS.getModule('nController').modulePath + '/src/controller/gen');
             UTILS.schemaWalkThrough({
                 commonDefinition: controllerCommon,
-                type: 'router',
+                type: 'service',
                 currentDir: genDir,
                 postFix: 'Controller',
                 gVar: gVar

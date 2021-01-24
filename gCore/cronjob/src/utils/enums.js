@@ -54,22 +54,5 @@ module.exports = {
             'RANGES',
             'STEPS'
         ]
-    },
-    ObjectEnum: {
-        _options: {
-            name: 'ObjectEnum',
-            separator: '|',
-            endianness: 'BE',
-            ignoreCase: false,
-            freez: false
-        },
-        definition: {
-            'None': 0,
-            'Black': 1,
-            'Red': 2,
-            'Red2': 3,
-            'Green': 4,
-            'Blue': 5
-        }
-    },
+    }
 };

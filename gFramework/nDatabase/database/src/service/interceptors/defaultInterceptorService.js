@@ -24,7 +24,7 @@ module.exports = {
     blockNTest: function (request, response) {
         return new Promise((resolve, reject) => {
             if (NODICS.isNTestRunning()) {
-                reject('Save operation not allowed, while running N-Test cases');
+                reject(new CLASSES.NodicsError('ERR_TNT_00005', 'Save operation not allowed, while running N-Test cases'));
             } else {
                 resolve(true);
             }

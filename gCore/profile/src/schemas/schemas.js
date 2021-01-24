@@ -14,13 +14,16 @@ module.exports = {
         tenant: {
             super: 'super',
             model: true,
-            service: true,
-            event: false,
+            service: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 100
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             tenants: ['default'],
             definition: {
                 properties: {
@@ -37,11 +40,14 @@ module.exports = {
         address: {
             super: 'base',
             model: true,
-            service: true,
-            event: false,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             cache: {
-                enabled: true,
+                enabled: false,
                 ttl: 360
             },
             search: {
@@ -50,6 +56,7 @@ module.exports = {
             },
             refSchema: {
                 contacts: {
+                    enabled: true,
                     schemaName: "contact",
                     type: 'many',
                     propertyName: 'code'
@@ -112,9 +119,12 @@ module.exports = {
         contact: {
             super: 'base',
             model: true,
-            service: true,
-            event: false,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
                 prefix: {
                     type: 'string',
@@ -142,13 +152,16 @@ module.exports = {
         enterprise: {
             super: 'base',
             model: true,
-            service: true,
-            event: false,
+            service: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 360
             },
-            router: true,
+            router: {
+                enabled: true
+            },
             tenants: ['default'], // if not null, only tenant will be used
             search: {
                 enabled: false,
@@ -157,6 +170,7 @@ module.exports = {
             },
             refSchema: {
                 tenant: {
+                    enabled: true,
                     schemaName: "tenant",
                     type: 'one',
                     propertyName: 'code',
@@ -164,21 +178,25 @@ module.exports = {
 
                 },
                 superEnterprise: {
+                    enabled: true,
                     schemaName: "enterprise",
                     type: 'one',
                     propertyName: 'code'
                 },
                 subEnterprises: {
+                    enabled: true,
                     schemaName: "enterprise",
                     type: 'many',
                     propertyName: 'code'
                 },
                 addresses: {
+                    enabled: true,
                     schemaName: "address",
                     type: 'many',
                     propertyName: 'code'
                 },
                 contacts: {
+                    enabled: true,
                     schemaName: "contact",
                     type: 'many',
                     propertyName: 'code'
@@ -254,9 +272,12 @@ module.exports = {
         userState: {
             super: 'super',
             model: true,
-            service: true,
-            event: false,
-            router: false,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
             definition: {
                 personId: {
                     type: 'objectId',
@@ -288,35 +309,43 @@ module.exports = {
         userGroup: {
             super: 'base',
             model: true,
-            service: true,
-            event: false,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            refSchema: {
+                parentGroups: {
+                    enabled: true,
+                    schemaName: "userGroup",
+                    type: 'many',
+                    propertyName: 'code'
+                },
+            },
             definition: {
                 name: {
                     type: 'string',
                     required: true,
                     description: 'Name of the user group'
-                }
-            },
-            indexes: {
-                individual: {
-                    indexName: {
-                        name: 'name',
-                        enabled: true,
-                        options: {
-                            unique: true
-                        }
-                    }
-                }
+                },
+                parentGroups: {
+                    type: 'array',
+                    required: false,
+                    description: 'List of parent groups'
+                },
             }
         },
 
         password: {
             super: 'super',
             model: true,
-            service: true,
-            event: false,
-            router: false,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
             definition: {
                 loginId: {
                     type: 'string',
@@ -335,26 +364,33 @@ module.exports = {
         user: {
             super: 'base',
             model: false,
-            service: false,
-            event: false,
-            router: false,
+            service: {
+                enabled: false
+            },
+            router: {
+                enabled: false
+            },
             refSchema: {
                 password: {
+                    enabled: true,
                     schemaName: "password",
                     type: 'one',
                     propertyName: '_id'
                 },
                 userGroups: {
+                    enabled: true,
                     schemaName: "userGroup",
                     type: 'many',
                     propertyName: 'code'
                 },
                 addresses: {
+                    enabled: true,
                     schemaName: "address",
                     type: 'many',
                     propertyName: 'code'
                 },
                 contacts: {
+                    enabled: true,
                     schemaName: "contact",
                     type: 'many',
                     propertyName: 'code'
@@ -444,9 +480,12 @@ module.exports = {
         employee: {
             super: 'user',
             model: true,
-            service: true,
-            event: false,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
                 apiKey: {
                     type: 'string',
@@ -459,9 +498,12 @@ module.exports = {
         customer: {
             super: 'user',
             model: true,
-            service: true,
-            event: false,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             cache: {
                 enabled: true,
                 ttl: 20

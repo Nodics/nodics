@@ -25,7 +25,7 @@ module.exports = {
                     tenantRestricted: false, // Fix this queue to work for header.tenant, so client should not push data to other tenants
                     header: {
                         schemaName: 'internalData',
-                        operation: 'save',
+                        operation: 'saveAll',
                         tenant: 'default'
                     }
                 }
@@ -41,7 +41,7 @@ module.exports = {
                     tenantRestricted: false,
                     header: {
                         schemaName: 'internalData',
-                        operation: 'save',
+                        operation: 'saveAll',
                         tenant: 'default'
                     }
                 }
@@ -59,7 +59,7 @@ module.exports = {
                     tenantRestricted: false,
                     header: {
                         schemaName: 'externalData',
-                        operation: 'save',
+                        operation: 'saveAll',
                         tenant: 'default'
                     }
                 }
@@ -75,7 +75,7 @@ module.exports = {
                     tenantRestricted: false,
                     header: {
                         schemaName: 'externalData',
-                        operation: 'save',
+                        operation: 'saveAll',
                         tenant: 'default'
                     }
                 }
@@ -161,7 +161,7 @@ module.exports = {
                     tenantRestricted: false,
                     header: {
                         schemaName: 'internalData',
-                        operation: 'save',
+                        operation: 'saveAll',
                         tenant: 'default'
                     }
                 }
@@ -177,7 +177,7 @@ module.exports = {
                     tenantRestricted: false,
                     header: {
                         schemaName: 'internalData',
-                        operation: 'save',
+                        operation: 'saveAll',
                         tenant: 'default'
                     }
                 }
@@ -195,7 +195,7 @@ module.exports = {
                     tenantRestricted: false,
                     header: {
                         schemaName: 'externalData',
-                        operation: 'save',
+                        operation: 'saveAll',
                         tenant: 'default'
                     }
                 }
@@ -211,7 +211,7 @@ module.exports = {
                     tenantRestricted: false,
                     header: {
                         schemaName: 'externalData',
-                        operation: 'save',
+                        operation: 'saveAll',
                         tenant: 'default'
                     }
                 }

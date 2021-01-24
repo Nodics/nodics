@@ -36,7 +36,11 @@ module.exports = {
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating Header: ' + request.headerName + ' for processing');
-        process.nextSuccess(request, response);
+        if (!request.header) {
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Invalid header parameter'));
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
 
     processHeaderFiles: function (request, response, process) {
@@ -56,7 +60,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            process.error(request, response, error);
+            process.error(request, response, new CLASSES.DataImportError(error, 'Invalid header parameter'));
         }
     },
 
@@ -84,7 +88,7 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        reject('Could not found valid ext name for file: ' + fileName);
+                        reject(new CLASSES.DataImportError('ERR_IMP_00003', 'Could not found valid ext name for file: ' + fileName));
                     }
                 } else {
                     _self.processFiles(request, response, options).then(success => {
@@ -99,25 +103,5 @@ module.exports = {
                 resolve(true);
             }
         });
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug(' Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

@@ -15,17 +15,14 @@ module.exports = {
             this.get({
                 tenant: request.tenant,
                 options: {
-                    recursive: true
+                    recursive: true,
                 },
                 query: {
                     loginId: request.loginId
                 }
             }).then(customers => {
                 if (customers.result.length !== 1) {
-                    reject({
-                        success: false,
-                        code: 'ERR_LIN_00000'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid login id'));
                 } else {
                     resolve(customers.result[0]);
                 }

@@ -38,7 +38,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.inputPath) {
-            process.error(request, response, 'Please validate request. Mandate property inputPath not have valid value');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property inputPath not have valid value'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -89,7 +89,7 @@ module.exports = {
                     phaseLimit: CONFIG.get('data').dataImportPhasesLimit || 5,
                     pendingFiles: Object.keys(request.dataFiles)
                 }).then(success => {
-                    if (response.errors.length > 0) {
+                    if (response.errors && response.errors.length > 0) {
                         process.error(request, response);
                     } else {
                         process.nextSuccess(request, response);
@@ -102,7 +102,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            process.error(request, response, error);
+            process.error(request, response, new CLASSES.DataImportError(error));
         }
     },
 
@@ -153,7 +153,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error));
             }
         });
     },
@@ -174,42 +174,22 @@ module.exports = {
         });
     },
 
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
     handleErrorEnd: function (request, response, process) {
         let _self = this;
         this.LOG.error('Request has been processed and got errors');
-        try {
-            if (request.dataFiles && !UTILS.isBlank(request.dataFiles)) {
-                Object.keys(request.dataFiles).forEach(fileName => {
-                    let fileObj = request.dataFiles[fileName];
-                    if (!fileObj.done) {
-                        SERVICE.DefaultFileHandlerService.moveFile([fileObj.file], request.inputPath.errorPath).then(success => {
-                            _self.LOG.debug('File has been moved to error folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
-                        }).catch(error => {
-                            _self.LOG.error('Facing issue while moving file to error folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
-                            _self.LOG.error(error);
-                        });
-                    }
-                });
-            }
-        } catch (error) {
-            process.reject(error);
-        }
-
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
+        if (request.dataFiles && !UTILS.isBlank(request.dataFiles)) {
+            Object.keys(request.dataFiles).forEach(fileName => {
+                let fileObj = request.dataFiles[fileName];
+                if (!fileObj.done) {
+                    SERVICE.DefaultFileHandlerService.moveFile([fileObj.file], request.inputPath.errorPath).then(success => {
+                        _self.LOG.debug('File has been moved to error folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
+                    }).catch(error => {
+                        _self.LOG.error('Facing issue while moving file to error folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
+                        _self.LOG.error(error);
+                    });
+                }
             });
-        } else {
-            process.reject(response.error);
         }
+        SERVICE.DefaultPipelineService.handleErrorEnd(request, response, process);
     }
 };

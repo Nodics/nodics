@@ -14,24 +14,27 @@ module.exports = {
         event: {
             super: 'super',
             model: true,
-            service: true,
-            event: false,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
-                source: {
+                sourceName: {
                     type: 'string',
                     required: true,
                     description: 'Source module from where this event is triggered'
+                },
+                sourceId: {
+                    type: 'string',
+                    required: true,
+                    description: 'NodeId from where this event is triggered'
                 },
                 tenant: {
                     type: 'string',
                     required: true,
                     description: 'Required to identify database connection for operations'
-                },
-                target: {
-                    type: 'string',
-                    required: true,
-                    description: 'Target module where this event needs to be send'
                 },
                 event: {
                     type: 'string',
@@ -42,16 +45,16 @@ module.exports = {
                     enum: [ENUMS.EventType.SYNC.key, ENUMS.EventType.ASYNC.key],
                     required: true,
                     default: ENUMS.EventType.ASYNC.key,
-                    description: 'Where this event needs to be pushed [EACH_NODE, EACH_MODULE, MODULE]'
+                    description: 'Where this event needs to be pushed [SYSNC, ASYNC]'
                 },
                 targetType: {
-                    enum: [ENUMS.TargetType.EACH_NODE.key, ENUMS.TargetType.EACH_MODULE.key, ENUMS.TargetType.MODULE.key],
+                    enum: [ENUMS.TargetType.EXTERNAL.key, ENUMS.TargetType.EACH_MODULE_NODES.key, ENUMS.TargetType.EACH_MODULE.key, ENUMS.TargetType.MODULE_NODES.key, ENUMS.TargetType.MODULE.key],
                     required: true,
                     default: ENUMS.TargetType.MODULE.key,
-                    description: 'Where this event needs to be pushed [EACH_NODE, EACH_MODULE, MODULE]'
+                    description: 'Where this event needs to be pushed [EXTERNAL, EACH_MODULE_NODES, EACH_MODULE, MODULE_NODES,MODULE]'
                 },
                 targetNodeId: {
-                    type: 'int',
+                    type: 'string',
                     required: false,
                     description: 'To target direct node or cluster for this event'
                 },
@@ -78,9 +81,12 @@ module.exports = {
         eventLog: {
             super: 'event',
             model: true,
-            service: true,
-            event: false,
-            router: false
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            }
         }
     }
 };

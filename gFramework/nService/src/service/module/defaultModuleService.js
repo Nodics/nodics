@@ -11,6 +11,7 @@
 
 const requestPromise = require('request-promise');
 const _ = require('lodash');
+const util = require('util');
 
 module.exports = {
     /**
@@ -52,7 +53,7 @@ module.exports = {
             uri: url + options.apiName,
             headers: header,
             body: options.requestBody || {},
-            json: options.isJsonResponse || true
+            json: options.responseType || true
         };
     },
 
@@ -79,7 +80,7 @@ module.exports = {
             uri: uri,
             headers: header,
             body: options.requestBody || {},
-            json: options.isJsonResponse || true,
+            json: options.responseType || true,
             rejectUnauthorized: false
         };
     },
@@ -91,18 +92,10 @@ module.exports = {
                 requestPromise(requestUrl).then(response => {
                     resolve(response);
                 }).catch(error => {
-                    if (error.statusCode && error.statusCode === 404) {
-                        reject({
-                            success: false,
-                            code: error.statusCode || error.code || 'ERR_SYS_00000',
-                            error: (error.name || '') + ' ' + (error.statusCode || error.code || 'ERR_SYS_00000') + ' at: ' + requestUrl.uri
-                        });
-                    } else {
-                        reject(error);
-                    }
+                    reject(new CLASSES.NodicsError(error));
                 });
             } catch (error) {
-                reject(error);
+                reject(new NodicsError(error));
             }
         });
     }

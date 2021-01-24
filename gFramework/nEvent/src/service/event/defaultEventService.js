@@ -36,107 +36,241 @@ module.exports = {
         });
     },
 
-    registerEventListeners: function () {
-        this.LOG.debug('Registering events');
+    getListeners: function () {
+        return this.listeners;
+    },
+
+    loadPersistedListeners: function () {
+        return new Promise((resolve, reject) => {
+            let listeners = {};
+            SERVICE.DefaultEventListenerService.get({
+                tenant: 'default'
+            }).then(success => {
+                if (success.result && success.result.length > 0) {
+                    success.result.forEach(listener => {
+                        if (!listeners[listener.moduleName]) listeners[listener.moduleName] = {};
+                        if (listeners[listener.moduleName][listener.code]) {
+                            listeners[listener.moduleName][listener.code] = _.merge(
+                                listeners[listener.moduleName][listener.code], listener
+                            );
+                        } else {
+                            listeners[listener.moduleName][listener.code] = listener;
+                        }
+                    });
+                }
+                this.listeners = _.merge(this.listeners, listeners);
+                resolve(true);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    handleListenerUpdateEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                let commonListeners = this.listeners.common;
+                let event = request.event;
+                let data = event.data;
+                SERVICE.DefaultEventListenerService.get({
+                    tenant: 'default',
+                    query: {
+                        code: {
+                            $in: data.models
+                        }
+                    }
+                }).then(success => {
+                    if (success.result && success.result.length > 0) {
+                        let rawListener = {};
+                        success.result.forEach(listener => {
+                            rawListener[listener.moduleName] = {};
+                            rawListener[listener.moduleName][listener.code] = listener;
+                        });
+                        this.registerEventListeners(rawListener).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        reject(new CLASSES.EventError('ERR_EVNT_00003', 'Invalid eventListner code or data been updated'));
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.EventError(error, null, 'ERR_EVNT_00003'));
+            }
+        });
+    },
+
+    handleListenerRemovedEvent: function (listener) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
+                let messages = [];
+                request.event.data.models.forEach(listener => {
+                    if (listener.moduleName === 'common') {
+                        _.each(NODICS.getModules(), (moduleObject, moduleName) => {
+                            if (moduleObject.eventService) {
+                                moduleObject.eventService.disableListner(listener.event, (error, success) => {
+                                    if (error) {
+                                        _self.LOG.error('Failed removing listener : ' + listener.event);
+                                        _self.LOG.error(error);
+                                    } else {
+                                        _self.LOG.debug('Listener has been removed : ' + listener.event);
+                                    }
+                                });
+                            }
+                        });
+                        messages.push('Event listener: ' + listener.event + ' successfully removed from common modules');
+                    } else {
+                        let eventService = NODICS.getModule(listener.moduleName).eventService;
+                        if (eventService) {
+                            eventService.disableListner(listener.event, (error, success) => {
+                                if (error) {
+                                    _self.LOG.error('Failed removing listener : ' + listener.event);
+                                    _self.LOG.error(error);
+                                } else {
+                                    _self.LOG.debug('Listener has been removed : ' + listener.event);
+                                }
+                            });
+                        }
+                        messages.push('Event listener: ' + listener.event + ' successfully removed from all modules');
+                    }
+                });
+                resolve(messages);
+            } catch (error) {
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+            }
+        });
+    },
+
+    registerEventListeners: function (listeners = this.getListeners()) {
+        this.LOG.debug('Registering events');
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            try {
                 _.each(NODICS.getModules(), (value, moduleName) => {
-                    value.eventService = new CLASSES.EventService();
-                    if (commonListeners) {
-                        _.each(commonListeners, (listenerDefinition, listenerName) => {
-                            listenerDefinition.moduleName = moduleName;
-                            value.eventService.registerListener(listenerDefinition);
-                        });
-                    }
-                    let moduleListeners = this.listeners[moduleName];
-                    if (moduleListeners) {
-                        _.each(moduleListeners, (listenerDefinition, listenerName) => {
-                            listenerDefinition.moduleName = moduleName;
-                            value.eventService.registerListener(listenerDefinition);
-                        });
-                    }
+                    _self.registerCommonEvents(moduleName, listeners.common);
+                    _self.registerModuleEvents(moduleName, listeners[moduleName]);
                 });
                 resolve(true);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
             }
         });
+    },
+
+    registerCommonEvents: function (moduleName, commonListeners) {
+        let _self = this;
+        let moduleObject = NODICS.getModule(moduleName);
+        if (!moduleObject.eventService) moduleObject.eventService = new CLASSES.EventService();
+        if (commonListeners) {
+            _.each(commonListeners, (listenerDefinition, listenerName) => {
+                if (listenerDefinition.active === undefined) listenerDefinition.active = true;
+                if (listenerDefinition.nodeId === undefined || listenerDefinition.nodeId === CONFIG.get('nodeId')) {
+                    listenerDefinition.moduleName = moduleName;
+                    if (listenerDefinition.active && !Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
+                        moduleObject.eventService.registerListener(listenerDefinition);
+                    } else if (!listenerDefinition.active && Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
+                        moduleObject.eventService.disableListner(listenerDefinition.event, (error, success) => {
+                            if (error) {
+                                _self.LOG.error('Failed removing listener : ' + listener.event);
+                                _self.LOG.error(error);
+                            } else {
+                                _self.LOG.debug('Listener has been removed : ' + listener.event);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    },
+
+    registerModuleEvents: function (moduleName, moduleListeners) {
+        let _self = this;
+        let moduleObject = NODICS.getModule(moduleName);
+        if (!moduleObject.eventService) moduleObject.eventService = new CLASSES.EventService();
+        if (moduleListeners) {
+            _.each(moduleListeners, (listenerDefinition, listenerName) => {
+                if (listenerDefinition.active === undefined) listenerDefinition.active = true;
+                if (listenerDefinition.nodeId === undefined || listenerDefinition.nodeId === CONFIG.get('nodeId')) {
+                    listenerDefinition.moduleName = moduleName;
+                    if (listenerDefinition.active && !Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
+                        moduleObject.eventService.registerListener(listenerDefinition);
+                    } else if (!listenerDefinition.active && Object.keys(moduleObject.eventService._events).includes(listenerDefinition.event)) {
+                        moduleObject.eventService.disableListner(listenerDefinition.event, (error, success) => {
+                            if (error) {
+                                _self.LOG.error('Failed removing listener : ' + listener.event);
+                                _self.LOG.error(error);
+                            } else {
+                                _self.LOG.debug('Listener has been removed : ' + listener.event);
+                            }
+                        });
+                    }
+                }
+            });
+        }
     },
 
     handleEvent: function (request) {
         let _self = this;
         let event = request.event;
+        event.moduleName = request.moduleName || event.target;
         return new Promise((resolve, reject) => {
-            if (!NODICS.getModule(event.target)) {
-                reject({
-                    success: false,
-                    code: 'SUC_EVNT_00000',
-                    msg: 'Could not find target module, whithin system: ' + event.target
-                });
-            } else if (!NODICS.getModule(event.target).eventService) {
-                reject({
-                    success: false,
-                    code: 'SUC_EVNT_00000',
-                    msg: 'Event service has not been initialized for module: ' + event.target
-                });
+            if (!NODICS.getModule(event.moduleName)) {
+                reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Could not find moduleName, whithin system: ' + event.moduleName));
+            } else if (!NODICS.getModule(event.moduleName).eventService) {
+                reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Event service has not been initialized for module: ' + event.moduleName));
             } else {
-                let eventService = NODICS.getModule(event.target).eventService;
+                let eventService = NODICS.getModule(event.moduleName).eventService;
                 if (eventService && eventService.eventNames() &&
                     eventService.eventNames().length > 0 &&
                     eventService.eventNames().includes(event.event)) {
                     if (CONFIG.get('event').processAsSyncHandler || (event.processSync !== undefined && event.processSync === true)) {
                         try {
-                            eventService.emit(event.event, event, (error, success) => {
+                            eventService.emit(event.event, request, (error, success) => {
                                 if (error) {
+                                    _self.LOG.error('Facing issue while handling event');
+                                    _self.LOG.error(error);
                                     reject(error);
                                 } else {
+                                    _self.LOG.debug('Event has been processed successfully');
                                     resolve(success);
                                 }
-                            }, request);
-                        } catch (error) {
-                            reject({
-                                success: false,
-                                code: 'SUC_EVNT_00000',
-                                error: error
                             });
+                        } catch (error) {
+                            _self.LOG.error('Facing issue while handling event');
+                            _self.LOG.error(error);
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
                         }
                     } else {
                         try {
-                            eventService.emit(event.event, event, (error, success) => {
-                                if (error || !success.success) {
+                            eventService.emit(event.event, request, (error, success) => {
+                                if (error) {
                                     _self.LOG.error('Facing issue while handling event');
                                     _self.LOG.error(error);
                                 } else {
                                     _self.LOG.debug('Event has been processed successfully');
                                 }
-                            }, request);
+                            });
                             resolve({
-                                success: true,
                                 code: 'SUC_EVNT_00000'
                             });
                         } catch (error) {
-                            reject({
-                                success: false,
-                                code: 'SUC_EVNT_00000',
-                                error: error
-                            });
+                            _self.LOG.error('Facing issue while handling event');
+                            _self.LOG.error(error);
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
                         }
                     }
 
                 } else {
                     if (CONFIG.get('event').ignoreIfNoLister) {
                         resolve({
-                            success: true,
                             code: 'SUC_EVNT_00000',
-                            msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
+                            message: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
                         });
                     } else {
-                        reject({
-                            success: true,
-                            code: 'SUC_EVNT_00000',
-                            msg: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
-                        });
+                        reject(new CLASSES.NodicsError('ERR_EVNT_00000', 'There is no Listener register for event ' + event.event + ' in module ' + event.target));
                     }
                 }
             }
@@ -148,7 +282,7 @@ module.exports = {
             methodName: 'put',
             apiName: '/event',
             requestBody: eventDef,
-            isJsonResponse: true,
+            responseType: true,
             header: {
                 authToken: NODICS.getInternalAuthToken(eventDef.tenant)
             }
@@ -162,46 +296,21 @@ module.exports = {
                     if (CONFIG.get('event').publishAllActive) {
                         this.LOG.debug('Publishing event to event server');
                         SERVICE.DefaultModuleService.fetch(this.prepareURL(event)).then(response => {
-                            if (response.success) {
-                                resolve({
-                                    success: true,
-                                    code: 'SUC_EVNT_00000',
-                                    result: response
-                                });
-                            } else {
-                                reject({
-                                    success: false,
-                                    code: 'ERR_EVNT_00000',
-                                    error: response
-                                });
-                            }
-                        }).catch(error => {
-                            reject({
-                                success: false,
-                                code: 'ERR_EVNT_00000',
-                                error: error
+                            resolve({
+                                code: 'SUC_EVNT_00000',
+                                result: response.result
                             });
+                        }).catch(error => {
+                            reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
                         });
                     } else {
-                        reject({
-                            success: false,
-                            code: 'ERR_EVNT_00002',
-                            msg: 'Currently publishing event is not allowed, pleach check property [event.publishAllActive]'
-                        });
+                        reject(new CLASSES.NodicsError('ERR_EVNT_00002', 'Currently publishing event is not allowed, please check property [event.publishAllActive]'));
                     }
                 } else {
-                    reject({
-                        success: false,
-                        code: 'ERR_EVNT_00002',
-                        msg: 'Currently test channel is running...'
-                    });
+                    reject(new CLASSES.NodicsError('ERR_EVNT_00002', 'Currently test channel is running...'));
                 }
             } else {
-                reject({
-                    success: false,
-                    code: 'ERR_EVNT_00002',
-                    msg: 'Nodics server has not been started yet, please wait..'
-                });
+                reject(new CLASSES.NodicsError('ERR_EVNT_00002', 'Nodics server has not been started yet, please wait..'));
             }
         });
     }

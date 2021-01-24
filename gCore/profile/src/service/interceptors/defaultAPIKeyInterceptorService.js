@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    generateAPIKey: function (request, responce) {
+    generateAPIKey: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
                 if (!UTILS.isBlank(request.model) && (request.tenant !== 'default' || request.model.loginId !== 'apiAdmin' || CONFIG.get('forceAPIKeyGenerate'))) {
@@ -18,7 +18,7 @@ module.exports = {
                 }
                 resolve(true);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error));
             }
         });
     }

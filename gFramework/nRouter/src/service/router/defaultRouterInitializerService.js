@@ -10,17 +10,19 @@
  */
 
 const _ = require('lodash');
+const Express = require('express');
 
 module.exports = {
     initializeRouters: function () {
         let _self = this;
         _self.LOG.info('Initializing servers');
         let modules = NODICS.getModules();
-        _.each(modules, function (value, moduleName) {
+        _.each(modules, function (moduleObject, moduleName) {
             if (UTILS.isRouterEnabled(moduleName)) {
                 if (SERVICE.DefaultRouterService.getModulesPool().isAvailableModuleConfig(moduleName)) {
                     _self.LOG.debug('Initializing server for module : ' + moduleName);
-                    value.app = require('express')();
+                    moduleObject.app = require('express')();
+                    moduleObject.moduleRouter = Express.Router();
                 } else {
                     _self.LOG.warn('Module : ' + moduleName + ' initializing with default');
                     if (!modules.default) {
@@ -28,6 +30,7 @@ module.exports = {
                     }
                     if (!modules.default.app) {
                         modules.default.app = require('express')();
+                        modules.default.moduleRouter = Express.Router();
                     }
                 }
             }

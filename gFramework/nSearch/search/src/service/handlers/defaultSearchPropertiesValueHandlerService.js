@@ -79,14 +79,18 @@ module.exports = {
     processValueProvider: function (model, propName, propDef) {
         return new Promise((resolve, reject) => {
             if (propDef.valueProvider) {
-                let valueProviderServiceName = propDef.valueProvider.substring(0, propDef.valueProvider.indexOf('.'));
-                let valueProviderOperationName = propDef.valueProvider.substring(propDef.valueProvider.indexOf('.') + 1, propDef.valueProvider.length);
-                SERVICE[valueProviderServiceName][valueProviderOperationName](model).then(value => {
-                    model[propName] = value;
-                    resolve(true);
-                }).catch(error => {
-                    reject(error);
-                });
+                try {
+                    let valueProviderServiceName = propDef.valueProvider.substring(0, propDef.valueProvider.indexOf('.'));
+                    let valueProviderOperationName = propDef.valueProvider.substring(propDef.valueProvider.indexOf('.') + 1, propDef.valueProvider.length);
+                    SERVICE[valueProviderServiceName][valueProviderOperationName](model).then(value => {
+                        model[propName] = value;
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } catch (error) {
+                    reject(new CLASSES.SearchError(error, null, 'ERR_SRCH_00010'));
+                }
             } else {
                 resolve(true);
             }

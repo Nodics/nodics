@@ -17,9 +17,12 @@ module.exports = {
         search: {
             super: 'super',
             model: true,
-            service: true,
-            event: false,
-            router: false,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
             definition: {
                 indexName: {
                     type: 'string',
@@ -53,9 +56,12 @@ module.exports = {
         index: {
             super: 'base',
             model: true,
-            service: true,
-            event: false,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
                 indexName: {
                     type: 'string',
@@ -90,9 +96,12 @@ module.exports = {
         indexer: {
             super: 'base',
             model: true,
-            service: true,
-            event: false,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             definition: {
                 name: {
                     type: 'string',
@@ -232,11 +241,15 @@ module.exports = {
         indexerLog: {
             super: 'super',
             model: true,
-            service: true,
-            event: false,
-            router: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
             refSchema: {
                 tenant: {
+                    enabled: true,
                     schemaName: "indexer",
                     type: 'one',
                     propertyName: 'code'

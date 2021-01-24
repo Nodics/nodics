@@ -40,10 +40,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (!config.connectionOptions || !config.reconnectOptions) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00003'
-                });
+                reject(new CLASSES.NodicsError('ERR_EMS_00003'));
             }
             try {
                 let connectionManager = new stompit.ConnectFailover(config.connectionOptions, config.reconnectOptions);
@@ -62,12 +59,7 @@ module.exports = {
                     if (error) {
                         _self.LOG.error('Connection failed to ActiveMQ server');
                         _self.LOG.error(error);
-                        reject({
-                            success: false,
-                            code: 'ERR_EMS_00002',
-                            msg: 'ActiveMQ server is not reachable...',
-                            error: error
-                        });
+                        reject(new CLASSES.CacheError('ERR_EMS_00002', 'ActiveMQ server is not reachable...'));
                     } else {
                         connection.on("error", function (error) {
                             _self.LOG.error("ActiveMQ Connection lost. Reconnecting...");
@@ -82,17 +74,12 @@ module.exports = {
                     }
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00000',
-                    error: error
-                });
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
         });
     },
 
     createProducer: function (client, options) {
-        let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 resolve(client.connection);
@@ -108,7 +95,7 @@ module.exports = {
                 if (options.client && options.client.producer) {
                     resolve(options.client.producer);
                 } else {
-                    reject('Invalid client configuration');
+                    reject(new CLASSES.NodicsError('ERR_EMS_00003', 'Invalid client configuration'));
                 }
             } catch (error) {
                 reject(error);
@@ -134,14 +121,10 @@ module.exports = {
                 resolve({
                     success: true,
                     code: 'SUC_EMS_00000',
-                    msg: 'Message published to queue: ' + payload.queue
+                    message: 'Message published to queue: ' + payload.queue
                 });
             } catch (error) {
-                reject({
-                    success: false,
-                    code: 'ERR_EMS_00000',
-                    msg: 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'
-                });
+                reject(new CLASSES.NodicsError('ERR_EMS_00000', 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher'));
             }
         });
     },
@@ -244,7 +227,7 @@ module.exports = {
                 consumer.consumer.close();
                 resolve('Consumer: ' + consumerName + ' closed successfully');
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
         });
     }

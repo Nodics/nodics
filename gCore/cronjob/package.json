@@ -1,6 +1,6 @@
 {
     "name": "cronjob",
-    "index": "5.0",
+    "index": "5.25",
     "type": "router",
     "description": "Module cronJob, handle schedulled execution process",
     "homepage": "http://www.nodics.com/",

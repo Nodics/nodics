@@ -2,6 +2,13 @@
     "name": "gCore",
     "index": "5.99",
     "type": "group",
+    "requiredModules": [
+        "profile",
+        "nems",
+        "cronjob",
+        "workflow",
+        "quizer"
+    ],
     "description": "Module core, groups all core module in Nodics framework. Index value will be from 200 to 499",
     "homepage": "http://www.nodics.com/",
     "keywords": [

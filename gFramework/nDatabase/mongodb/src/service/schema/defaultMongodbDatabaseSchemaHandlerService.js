@@ -32,12 +32,6 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
-    },
-
-    // buildDatabaseSchema: function () {
-    //     return new Promise((resolve, reject) => {
-    //         resolve(true);
-    //     });
-    // }
+    }
 
 };

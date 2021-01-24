@@ -15,6 +15,13 @@ module.exports = {
     defaultPageNumber: 1,
     queryMaxTimeMS: 1000,
 
+    externalSchemaLocation: CONFIG.get('externalDataLocation') + '/schema',
+    accessPoint: {
+        readAccessPoint: 1,
+        writeAccessPoint: 2,
+        removeAccessPoint: 3,
+        fullAccessPoint: 10
+    },
     database: {
         default: {
             options: {

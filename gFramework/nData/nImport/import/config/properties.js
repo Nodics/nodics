@@ -16,5 +16,9 @@ module.exports = {
         importDataConvertEncoding: 'utf8',
         readBufferSize: 1024,
         headerBatchSize: 0
+    },
+
+    defaultErrorCodes: {
+        DataImportError: 'ERR_IMP_00000'
     }
 };

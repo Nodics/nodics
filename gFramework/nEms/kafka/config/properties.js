@@ -17,7 +17,7 @@ module.exports = {
                 handler: 'DefaultKafkaClientService',
                 publisherType: 1, // 0 for normal, 1 for HighLevel Producer
                 eventOptions: {
-                    nodeId: '0',
+                    nodeId: 'node0',
                     eventType: 'ASYNC'
                 },
                 publisherOptions: {

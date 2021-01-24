@@ -38,7 +38,7 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.modules && !UTILS.isArray(request.modules) && request.modules.length <= 0) {
-            process.error(request, response, 'Please validate request. Mandate property modules not have valid value');
+            process.error(request, response, new CLASSES.DataImportError('ERR_IMP_00003', 'Please validate request. Mandate property modules not have valid value'));
         } else {
             request.data = {};
             process.nextSuccess(request, response);
@@ -75,8 +75,25 @@ module.exports = {
         });
     },
 
+    getSubModules: function (moduleName) {
+        let modules = [moduleName];
+        let moduleObject = NODICS.getModule(moduleName);
+        if (moduleObject.metaData.requiredModules && moduleObject.metaData.requiredModules.length > 0) {
+            moduleObject.metaData.requiredModules.forEach(mName => {
+                modules = modules.concat(this.getSubModules(mName));
+            });
+        }
+        return modules;
+    },
     loadHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of header files from modules to be imported');
+        if (request.options && request.options.recursive) {
+            let moduleList = [];
+            request.modules.forEach(moduleName => {
+                moduleList = moduleList.concat(this.getSubModules(moduleName));
+            });
+            request.modules = moduleList;
+        }
         SERVICE.DefaultImportUtilityService.getSystemDataHeaders(request.modules, request.inputPath.dataType).then(success => {
             request.data.headerFiles = success;
             process.nextSuccess(request, response);
@@ -132,6 +149,7 @@ module.exports = {
                             }
                             request.data.headers[headerName] = _.merge(request.data.headers[headerName], header);
                             request.data.headers[headerName].options.moduleName = moduleName;
+                            request.data.headers[headerName].options.userGroups = (request.authData) ? request.authData.userGroups : request.data.headers[headerName].options.userGroups;
                             request.data.headers[headerName].dataFiles = {};
                             request.data.headers[headerName].options.dataHandler = (request.data.headers[headerName].options.indexName) ? 'indexerDataHandlerPipeline' : 'schemaDataHandlerPipeline';
                             request.data.headers[headerName].local = request.data.headers[headerName].local || {};
@@ -162,31 +180,9 @@ module.exports = {
             process.nextSuccess(request, response);
         } else {
             process.stop(request, response, {
-                success: true,
-                code: 'SUC_DATA_00001',
-                msg: 'Could not find any data to import for given modules'
+                code: 'SUC_IMP_00001',
+                message: 'Could not find any data to import for given modules'
             });
-        }
-
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
         }
     }
 };

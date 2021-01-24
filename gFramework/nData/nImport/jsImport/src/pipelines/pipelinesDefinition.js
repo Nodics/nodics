@@ -25,15 +25,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultJsFileDataProcessService.processDataChunk',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultJsFileDataProcessService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultJsFileDataProcessService.handleErrorEnd'
             }
         }
     },

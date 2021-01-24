@@ -10,13 +10,13 @@
  */
 
 module.exports = {
-    customerPreUpdate: function (request, responce) {
+    customerPreUpdate: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             resolve(true);
         });
     },
-    customerPreRemove: function (request, responce) {
+    customerPreRemove: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             resolve(true);

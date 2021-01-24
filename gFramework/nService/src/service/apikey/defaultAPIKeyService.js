@@ -41,7 +41,7 @@ module.exports = {
     //             methodName: 'GET',
     //             apiName: '/apikey/' + tntCode,
     //             requestBody: {},
-    //             isJsonResponse: true,
+    //             responseType: true,
     //             header: {
     //                 apiKey: CONFIG.get('defaultAuthDetail').apiKey,
     //                 entCode: CONFIG.get('defaultAuthDetail').entCode
@@ -71,20 +71,20 @@ module.exports = {
     //                 callback(null, {
     //                     success: true,
     //                     code: 'SUC_SYS_00000',
-    //                     msg: 'Successfully updated API Key for all running tenants'
+    //                     message: 'Successfully updated API Key for all running tenants'
     //                 });
     //             } else {
     //                 callback(null, {
     //                     success: true,
     //                     code: 'SUC_SYS_00000',
-    //                     msg: 'API key is already updated'
+    //                     message: 'API key is already updated'
     //                 });
     //             }
     //         } else {
     //             callback({
     //                 success: false,
     //                 code: 'ERR_SYS_00000',
-    //                 msg: 'Invalid event, apiKey can not be null or empty'
+    //                 message: 'Invalid event, apiKey can not be null or empty'
     //             });
     //         }
     //     } catch (error) {
@@ -104,20 +104,20 @@ module.exports = {
     //                 callback(null, {
     //                     success: true,
     //                     code: 'SUC_SYS_00000',
-    //                     msg: 'Successfully updated API Key for all running tenants'
+    //                     message: 'Successfully updated API Key for all running tenants'
     //                 });
     //             } else {
     //                 callback(null, {
     //                     success: true,
     //                     code: 'SUC_SYS_00000',
-    //                     msg: 'API key is already updated'
+    //                     message: 'API key is already updated'
     //                 });
     //             }
     //         } else {
     //             callback({
     //                 success: false,
     //                 code: 'ERR_SYS_00000',
-    //                 msg: 'Invalid event, apiKey can not be null or empty'
+    //                 message: 'Invalid event, apiKey can not be null or empty'
     //             });
     //         }
     //     } catch (error) {

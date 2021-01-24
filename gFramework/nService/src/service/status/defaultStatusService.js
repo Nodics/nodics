@@ -9,6 +9,8 @@
 
  */
 
+let assert = require('assert');
+
 module.exports = {
 
     statusMap: {},
@@ -21,7 +23,7 @@ module.exports = {
     init: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultFilesLoaderService.loadFiles('/src/utils/statusDefinitions.js', this.statusMap);
+                this.loadStatusDefinitions();
                 resolve(true);
             } catch (error) {
                 reject(error);
@@ -40,24 +42,25 @@ module.exports = {
         });
     },
 
-    /**
-     * This function is used to setup your service just before routers are getting activated.
-     */
-    postInit: function () {
-        return new Promise((resolve, reject) => {
-            resolve(true);
+    loadStatusDefinitions: function () {
+        let statusCodes = SERVICE.DefaultFilesLoaderService.loadFiles('/src/utils/statusDefinitions.js');
+        Object.keys(statusCodes).forEach(errorCode => {
+            let status = statusCodes[errorCode];
+            assert.ok(status.code, 'Invalid response code for: ' + errorCode + ', it can not be null or empty');
+            assert.ok(status.message, 'Invalid error message for: ' + errorCode + ', it can not be null or empty');
+            this.statusMap[errorCode] = status;
         });
     },
 
-    updateStatus: function (code, definition) {
-        this.statusMap[code] = definition;
+    updateStatus: function (errorCode, status) {
+        this.statusMap[errorCode] = status;
     },
 
-    get: function (code) {
-        if (!UTILS.isBlank(this.statusMap[code])) {
-            return this.statusMap[code];
+    get: function (errorCode) {
+        if (!UTILS.isBlank(this.statusMap[errorCode])) {
+            return this.statusMap[errorCode];
         } else {
-            throw new Error('Invalid status code');
+            throw new CLASSES.NodicsError('ERR_SYS_00000', 'Invalid error code: ' + errorCode);
         }
     },
 };

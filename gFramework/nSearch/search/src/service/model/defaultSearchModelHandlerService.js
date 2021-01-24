@@ -35,6 +35,16 @@ module.exports = {
         });
     },
 
+    removeSearchModelFromModule: function (moduleName, indexName) {
+        let moduleObject = NODICS.getModule(moduleName);
+        let searchModelName = indexName.toUpperCaseFirstChar() + 'SearchModel';
+        NODICS.getActiveTenants().forEach(tntCode => {
+            if (moduleObject.searchModels[tntCode] && moduleObject.searchModels[tntCode][searchModelName]) {
+                delete moduleObject.searchModels[tntCode][searchModelName];
+            }
+        });
+    },
+
     prepareSearchModels: function (modules = Object.keys(NODICS.getModules()), tenants = NODICS.getActiveTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -58,9 +68,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                _self.LOG.error('Failed while loading search schema from schema definitions');
-                _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions'));
             }
         });
     },
@@ -93,9 +101,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                _self.LOG.error('Failed while loading search schema from schema definitions');
-                _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -127,13 +133,11 @@ module.exports = {
                         resolve(true);
                     }
                 } else {
-                    //_self.LOG.warn('Search is not enabled for module: ' + moduleName + ', tenant: ' + tntCode);
+                    _self.LOG.warn('Search is not enabled for module: ' + moduleName + ', tenant: ' + tntCode);
                     resolve(true);
                 }
             } catch (error) {
-                _self.LOG.error('Failed while loading search schema from schema definitions');
-                _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -189,9 +193,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                _self.LOG.error('Failed while loading search schema from schema definitions');
-                _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -227,9 +229,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                _self.LOG.error('Failed while loading search schema from schema definitions');
-                _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -273,9 +273,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                _self.LOG.error('Failed while loading search schema from schema definitions');
-                _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     },
@@ -329,20 +327,17 @@ module.exports = {
                                     reject(error);
                                 });
                             } else {
-                                reject('Please validate your schema handler, looks definitions is not fine: could not found prepareTypeSchema function');
+                                reject(new CLASSES.SearchError('Please validate your schema handler, looks definitions is not fine: could not found prepareTypeSchema function'));
                             }
                         }
                     } else {
-                        _self.LOG.error('Invalid search model definition for indexName: ' + indexName + ', module: ' + options.moduleName + ', tenant: ' + options.tntCode);
-                        reject('Invalid search model definition for indexName: ' + indexName + ', module: ' + options.moduleName + ', tenant: ' + options.tntCode);
+                        reject(new CLASSES.SearchError('Invalid search model definition for indexName: ' + indexName + ', module: ' + options.moduleName + ', tenant: ' + options.tntCode));
                     }
                 } else {
                     resolve(true);
                 }
             } catch (error) {
-                _self.LOG.error('Failed while loading search schema from schema definitions');
-                _self.LOG.error(error);
-                reject(error);
+                reject(new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions', 'ERR_SRCH_00000'));
             }
         });
     }

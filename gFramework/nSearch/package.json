@@ -1,6 +1,6 @@
 {
     "name": "nSearch",
-    "index": "1.13.99",
+    "index": "1.14.99",
     "type": "group",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nSearch",
     "homepage": "http://www.nodics.com/",

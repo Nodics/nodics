@@ -56,11 +56,9 @@ module.exports = {
                                         SERVICE.DefaultSearchConfigurationService.removeTenantRawSearchSchema(moduleName, tenant);
                                         if (moduleObject.searchModels[tenant]) delete moduleObject.searchModels[tenant];
                                     }
-
                                     resolve({
-                                        success: true,
                                         code: 'SUC_SYS_00000',
-                                        msg: 'Tenant successfully deactivated'
+                                        message: 'Tenant successfully deactivated'
                                     });
                                 }).catch(error => {
                                     reject(error);

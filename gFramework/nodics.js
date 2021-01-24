@@ -10,7 +10,6 @@
  */
 
 const _ = require('lodash');
-
 const config = require('./nConfig');
 
 module.exports = {
@@ -52,19 +51,6 @@ module.exports = {
                 return SERVICE.DefaultScriptsHandlerService.executePostScripts();
             }).then(() => {
                 return new Promise((resolve, reject) => {
-                    if (!NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                        SERVICE.DefaultInternalAuthenticationProviderService.fetchInternalAuthToken('default').then(success => {
-                            NODICS.addInternalAuthToken('default', success.authToken);
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    } else {
-                        resolve(true);
-                    }
-                });
-            }).then(() => {
-                return new Promise((resolve, reject) => {
                     if (NODICS.isInitRequired()) {
                         SERVICE.DefaultImportService.importInitData({
                             tenant: 'default',
@@ -77,6 +63,47 @@ module.exports = {
                         });
                     } else {
                         resolve(true);
+                    }
+                });
+            }).then(() => {
+                return new Promise((resolve, reject) => {
+                    if (NODICS.isInitRequired()) {
+                        this.LOG.debug('Updating schema and workflow association');
+                        SERVICE.DefaultWorkflow2SchemaService.buildWorkflow2SchemaAssociations().then(done => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        resolve(true);
+                    }
+                });
+            }).then(() => {
+                return new Promise((resolve, reject) => {
+                    if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+                        let defaultAuthDetail = CONFIG.get('defaultAuthDetail') || {};
+                        SERVICE.DefaultEmployeeService.findByAPIKey({
+                            tenant: defaultAuthDetail.tenant,
+                            apiKey: CONFIG.get('defaultAuthDetail').apiKey
+                        }).then(employee => {
+                            NODICS.addInternalAuthToken('default', SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
+                                entCode: defaultAuthDetail.entCode,
+                                tenant: defaultAuthDetail.tenant,
+                                apiKey: employee.apiKey,
+                                userGroups: employee.userGroupCodes,
+                                lifetime: true
+                            }));
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    } else {
+                        SERVICE.DefaultInternalAuthenticationProviderService.fetchInternalAuthToken('default').then(success => {
+                            NODICS.addInternalAuthToken('default', success.authToken);
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
                     }
                 });
             }).then(() => {
@@ -195,11 +222,38 @@ module.exports = {
         }).then(() => {
             return config.loadModules();
         }).then(() => {
-            return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema();
+            return new Promise((resolve, reject) => {
+                SERVICE.DefaultStatusService.loadStatusDefinitions();
+                resolve(true);
+            });
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/schemas.js', null));
+                resolve(true);
+            });
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection('default', true).then(success => {
+                    SERVICE.DefaultDatabaseConnectionHandlerService.getRuntimeSchema().then(runtimeSchema => {
+                        SERVICE.DefaultDatabaseConfigurationService.setRawSchema(_.merge(
+                            SERVICE.DefaultDatabaseConfigurationService.getRawSchema(),
+                            runtimeSchema
+                        ));
+                        SERVICE.DefaultDatabaseConnectionHandlerService.closeConnection('default', 'default');
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        }).then(() => {
+            return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema(SERVICE.DefaultDatabaseConfigurationService.getRawSchema());
         }).then(() => {
             return config.buildModules();
         }).catch(error => {
             console.error(error);
         });
-    },
+    }
 };

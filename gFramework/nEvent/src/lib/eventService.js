@@ -13,20 +13,40 @@ const EventEmitter = require('events');
 
 module.exports = class EventService extends EventEmitter {
 
+    addListenerHandler(listenerName, handler) {
+        if (!this.handlersPool) this.handlersPool = {};
+        if (this.handlersPool[listenerName]) {
+            throw new CLASSES.EventError('Listener: ' + listenerName + ' already exist');
+        } else {
+            this.handlersPool[listenerName] = handler;
+        }
+    }
+
+    getListenerHandler(listenerName) {
+        return this.handlersPool[listenerName];
+    }
+
+    removeListenerHandler(listenerName) {
+        delete this.handlersPool[listenerName];
+    }
+
     registerListener(listenerDefinition) {
         let method = listenerDefinition.listener;
         let serviceName = method.substring(0, method.lastIndexOf('.'));
         let operation = method.substring(method.lastIndexOf('.') + 1, method.length);
-        this.on(listenerDefinition.event, (event, callback, request) => {
+        this.addListenerHandler(listenerDefinition.event, (request, callback) => {
             try {
-                SERVICE[serviceName][operation](event, callback, request);
+                SERVICE[serviceName][operation](request, callback);
             } catch (error) {
-                callback({
-                    success: false,
-                    code: 'SUC_EVNT_00000',
-                    error: error
-                });
+                callback(new CLASSES.EventError(error, 'Service: ' + serviceName + ' operation: ' + operation + ' not valid'));
             }
         });
+        this.on(listenerDefinition.event, this.getListenerHandler(listenerDefinition.event));
+    }
+
+    disableListner(eventName, callback) {
+        this.removeListener(eventName, this.getListenerHandler(eventName));
+        this.removeListenerHandler(eventName);
+        callback(null, 'Event listener: ' + eventName + ' successfully removed');
     }
 };

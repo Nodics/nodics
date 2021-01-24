@@ -1,0 +1,20 @@
+{
+    "name": "vquiz",
+    "index": "5.35.50",
+    "type": "publish",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to vquiz",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "vquiz"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

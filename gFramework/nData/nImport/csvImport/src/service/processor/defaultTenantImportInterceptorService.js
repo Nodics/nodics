@@ -37,10 +37,10 @@ module.exports = {
         });
     },
 
-    convertActiveValueToBoolean: function (options) {
+    convertActiveValueToBoolean: function (request, response) {
         return new Promise((resolve, reject) => {
-            if (options.models && options.models.length > 0) {
-                options.models.forEach(element => {
+            if (request.models && request.models.length > 0) {
+                request.models.forEach(element => {
                     if (element.active !== undefined && typeof element.active !== 'boolean') {
                         element.active = element.active.toLowerCase() == 'true' ? true : false;
                     }

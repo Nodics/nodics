@@ -12,8 +12,10 @@
 const _ = require('lodash');
 
 module.exports = {
+    rawSchema: {},
     dbs: {},
     interceptors: {},
+    validators: {},
 
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -39,6 +41,14 @@ module.exports = {
         });
     },
 
+    getRawSchema: function () {
+        return this.rawSchema;
+    },
+
+    setRawSchema: function (rawSchema) {
+        this.rawSchema = rawSchema;
+    },
+
     getDatabaseActiveModules: function () {
         let modules = NODICS.getModules();
         let dbModules = [];
@@ -52,9 +62,9 @@ module.exports = {
 
     getDatabaseConfiguration: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
         } else {
             let defaultConfig = CONFIG.get('database', tenant);
             let dbConfig = _.merge(_.merge({}, defaultConfig.default), defaultConfig[moduleName] || {});
@@ -63,16 +73,16 @@ module.exports = {
                 connConfig.options = _.merge(_.merge({}, dbConfig.options), connConfig.options);
                 return connConfig;
             } else {
-                throw new Error('Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
+                throw new CLASSES.NodicsError('ERR_DBS_00003', 'Configuration is not valid for module: ' + moduleName + ', tenant: ' + tntCode);
             }
         }
     },
 
     addTenantDatabase: function (moduleName, tenant, database) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
         } else {
             if (!this.dbs[moduleName]) {
                 this.dbs[moduleName] = {};
@@ -83,9 +93,9 @@ module.exports = {
 
     getTenantDatabase: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
         } else {
             let database = {};
             if (moduleName && this.dbs[moduleName]) {
@@ -99,35 +109,96 @@ module.exports = {
 
     removeTenantDatabase: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new Error('Invalid module name: ' + moduleName);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
         } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new Error('Invalid tenant name: ' + tenant);
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
         } else if (this.dbs[moduleName] && this.dbs[moduleName][tenant]) {
             delete this.dbs[moduleName][tenant];
         }
         return true;
     },
 
-    setSchemaInterceptors: function (interceptors) {
-        this.interceptors = interceptors;
-
-    },
-
-    getSchemaInterceptors: function (schmeaName) {
-        if (this.interceptors[schmeaName]) {
-            return this.interceptors[schmeaName];
-        } else {
-            return null;
-        }
-    },
-
     toObjectId: function (schemaModel, value) {
         let modelHandlerName = schemaModel.dataBase.getOptions().modelHandler;
-        if (!UTILS.isObjectId(value) && SERVICE[modelHandlerName] && SERVICE[modelHandlerName].toObjectId) {
+        if (UTILS.isObject(value)) {
+            return value;
+        } else if (!UTILS.isObjectId(value) && SERVICE[modelHandlerName] && SERVICE[modelHandlerName].toObjectId) {
             return SERVICE[modelHandlerName].toObjectId(value);
         } else {
             return value;
         }
-    }
+    },
 
+    setSchemaInterceptors: function (interceptors) {
+        this.interceptors = interceptors;
+    },
+
+    getSchemaInterceptors: function (schemaName) {
+        if (!this.interceptors[schemaName]) {
+            this.interceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
+        }
+        return this.interceptors[schemaName];
+    },
+
+    refreshSchemaInterceptors: function (schemaNames) {
+        if (this.interceptors && !UTILS.isBlank(this.interceptors) && schemaNames && schemaNames.length > 0) {
+            schemaNames.forEach(schemaName => {
+                if (!schemaName || schemaName === 'default') {
+                    let tmpInterceptors = {};
+                    Object.keys(this.interceptors).forEach(schemaName => {
+                        tmpInterceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
+                    });
+                    this.interceptors = tmpInterceptors;
+                } else if (this.interceptors[schemaName]) {
+                    this.interceptors[schemaName] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(schemaName, ENUMS.InterceptorType.schema.key);
+                }
+            });
+        }
+    },
+
+    handleSchemaInterceptorUpdated: function (request, callback) {
+        try {
+            this.refreshSchemaInterceptors(request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
+        } catch (error) {
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+        }
+    },
+
+    setSchemaValidators: function (validators) {
+        this.validators = validators;
+    },
+
+    getSchemaValidators: function (tenant, schemaName) {
+        if (!this.validators[tenant] || !this.validators[tenant][schemaName]) {
+            if (!this.validators[tenant]) this.validators[tenant] = {};
+            this.validators[tenant][schemaName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, schemaName, ENUMS.InterceptorType.schema.key);
+        }
+        return this.validators[tenant][schemaName];
+    },
+
+    refreshSchemaValidators: function (tenant, schemaNames) {
+        if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant]) && schemaNames && schemaNames.length > 0) {
+            schemaNames.forEach(schemaName => {
+                if (!schemaName || schemaName === 'default') {
+                    let tenantValidators = {};
+                    Object.keys(this.validators[tenant]).forEach(schemaName => {
+                        tenantValidators[schemaName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, schemaName, ENUMS.InterceptorType.schema.key);
+                    });
+                    this.validators[tenant] = tenantValidators;
+                } else if (this.validators[tenant][schemaName]) {
+                    this.validators[tenant][schemaName] = SERVICE.DefaultValidatorConfigurationService.prepareItemValidators(tenant, schemaName, ENUMS.InterceptorType.schema.key);
+                }
+            });
+        }
+    },
+
+    handleSchemaValidatorUpdated: function (request, callback) {
+        try {
+            this.refreshSchemaValidators(request.tenant, request.event.data);
+            callback(null, { code: 'SUC_EVNT_00000' });
+        } catch (error) {
+            callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+        }
+    },
 };

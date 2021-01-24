@@ -25,15 +25,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultExcelFileDataProcessService.processDataChunk',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultExcelFileDataProcessService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultExcelFileDataProcessService.handleErrorEnd'
             }
         }
     }

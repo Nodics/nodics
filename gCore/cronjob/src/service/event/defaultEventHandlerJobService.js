@@ -34,7 +34,7 @@ module.exports = {
             methodName: 'GET',
             apiName: '/event/process',
             requestBody: {},
-            isJsonResponse: true,
+            responseType: true,
             header: {
                 authToken: NODICS.getInternalAuthToken(definition.tenant)
             }
@@ -46,34 +46,35 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 SERVICE.DefaultModuleService.fetch(this.prepareURL(definition, cronJob)).then(success => {
-                    if (!response.SUCCESS) {
-                        logMessage = JSON.stringify(response);
-                        _self.LOG.debug('Event process trigger failed : ' + response.msg);
-                        definition.lastResult = ENUMS.CronJobStatus.ERROR.key;
-                        definition.state = ENUMS.CronJobState.FINISHED.key;
-                    } else {
-                        logMessage = JSON.stringify(response);
-                        definition.lastResult = ENUMS.CronJobStatus.SUCCESS.key;
-                        definition.state = ENUMS.CronJobState.FINISHED.key;
-                        _self.LOG.debug('Event process triggered successfully');
-                    }
-                    _self.updateJobLog(definition, logMessage);
+                    definition.lastResult = ENUMS.CronJobStatus.SUCCESS.key;
+                    definition.state = ENUMS.CronJobState.FINISHED.key;
+                    _self.LOG.debug('Event process triggered successfully');
+                    _self.updateJobLog(definition, success);
                     _self.updateJob(definition);
-                    resolve();
+                    resolve({
+                        code: 'SUC_JOB_00000',
+                        message: 'Job updated with success response'
+                    });
                 }).catch(error => {
-                    logMessage = error.toString();
                     _self.LOG.debug('Event process trigger failed : ', error);
                     definition.lastResult = ENUMS.CronJobStatus.ERROR.key;
                     definition.state = ENUMS.CronJobState.FINISHED.key;
-                    _self.updateJobLog(definition, logMessage);
+                    _self.updateJobLog(definition, error);
                     _self.updateJob(definition);
-                    resolve();
+                    resolve({
+                        code: 'SUC_JOB_00000',
+                        message: 'Job updated with error response'
+                    });
                 });
             } catch (error) {
                 definition.lastResult = ENUMS.CronJobStatus.ERROR.key;
                 definition.state = ENUMS.CronJobState.FINISHED.key;
+                _self.updateJobLog(definition, (new CLASSES.NodicsError(error)).toJson());
                 _self.updateJob(definition);
-                resolve();
+                resolve({
+                    code: 'SUC_JOB_00000',
+                    message: 'Job updated with error response'
+                });
             }
         });
     },
@@ -83,11 +84,11 @@ module.exports = {
         if (definition.logResult) {
             SERVICE.DefaultCronJobLogService.save({
                 tenant: definition.tenant,
-                models: [{
+                model: {
                     jobCode: definition.code,
                     log: log
-                }]
-            }).then(models => {
+                }
+            }).then(response => {
                 _self.LOG.debug('Log for job: ' + definition.code + ' saved');
             }).catch(error => {
                 _self.LOG.error('While saving log for job: ' + definition.code + ' error: ', error);
@@ -99,11 +100,11 @@ module.exports = {
         let _self = this;
         SERVICE.DefaultCronJobService.save({
             tenant: definition.tenant,
-            models: [{
+            model: {
                 code: definition.code,
                 lastResult: definition.lastResult,
                 state: definition.state
-            }]
+            }
         }).then(response => {
             _self.LOG.debug('Job : executed successfuly');
         }).catch(error => {

@@ -55,17 +55,12 @@ module.exports = {
         this.LOG.debug('Executing get query');
         request.searchModel.doBulk(request).then(result => {
             response.success = {
-                success: true,
                 code: 'SUC_SRCH_00000',
                 result: result
             };
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                error: error
-            });
+            process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00000'));
         });
     },
 
@@ -87,26 +82,5 @@ module.exports = {
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_SYS_00000',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

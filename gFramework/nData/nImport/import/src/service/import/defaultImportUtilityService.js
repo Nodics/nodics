@@ -40,7 +40,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 if (!moduleList || moduleList.length == 0) {
-                    reject('Invalid list of modules to be proccesses');
+                    reject(new CLASSES.DataImportError('ERR_IMP_00003', 'Invalid list of modules to be proccesses'));
                 } else {
                     let fileList = {};
                     NODICS.getIndexedModules().forEach((moduleObject, moduleIndex) => {
@@ -59,7 +59,7 @@ module.exports = {
                     resolve(fileList);
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.DataImportError(error, 'while collecting system data headers'));
             }
         });
     },
@@ -89,7 +89,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 if (!moduleList || moduleList.length == 0) {
-                    reject('Invalid list of modules to be proccesses');
+                    reject(new CLASSES.DataImportError('ERR_IMP_00003', 'Invalid list of modules to be proccesses'));
                 } else {
                     let fileList = {};
                     NODICS.getIndexedModules().forEach((moduleObject, moduleIndex) => {
@@ -108,7 +108,7 @@ module.exports = {
                     resolve(fileList);
                 }
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.DataImportError(error, 'while collecting system data files'));
             }
         });
     },
@@ -154,7 +154,7 @@ module.exports = {
                 }
                 resolve(fileList);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.DataImportError(error, 'while collecting local data files'));
             }
         });
     },
@@ -182,7 +182,6 @@ module.exports = {
         }
     },
 
-
     getImportFiles: function (filePath) {
         let fileList = {};
         return new Promise((resolve, reject) => {
@@ -203,7 +202,7 @@ module.exports = {
                 }
                 resolve(fileList);
             } catch (error) {
-                reject(error);
+                reject(new CLASSES.DataImportError(error, 'while collecting import files'));
             }
         });
     },

@@ -30,11 +30,21 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoRefreshInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoRefreshInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultDoRefreshInitializerService.executeQuery',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoRefreshInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -46,14 +56,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoRefreshInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoRefreshInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoRefreshInitializerService.handleErrorEnd'
             }
         }
     },
@@ -72,25 +74,27 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoCheckClusterHealthInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoCheckClusterHealthInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultDoCheckClusterHealthInitializerService.executeQuery',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoCheckClusterHealthInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoCheckClusterHealthInitializerService.applyPostInterceptors',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoCheckClusterHealthInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoCheckClusterHealthInitializerService.handleErrorEnd'
             }
         }
     },
@@ -109,25 +113,27 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoExistModelInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoExistModelInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultDoExistModelInitializerService.executeQuery',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoExistModelInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoExistModelInitializerService.applyPostInterceptors',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoExistModelInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoExistModelInitializerService.handleErrorEnd'
             }
         }
     },
@@ -156,6 +162,11 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoGetModelsInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoGetModelsInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
@@ -166,6 +177,11 @@ module.exports = {
             populateVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultDoGetModelsInitializerService.populateVirtualProperties',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoGetModelsInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -177,14 +193,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoGetModelsInitializerService.updateCache',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoGetModelsInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoGetModelsInitializerService.handleErrorEnd'
             }
         }
     },
@@ -213,6 +221,11 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoSearchModelsInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoSearchModelsInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
@@ -223,6 +236,11 @@ module.exports = {
             populateVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultDoSearchModelsInitializerService.populateVirtualProperties',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoSearchModelsInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -234,14 +252,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoSearchModelsInitializerService.updateCache',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoSearchModelsInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoSearchModelsInitializerService.handleErrorEnd'
             }
         }
     },
@@ -270,15 +280,11 @@ module.exports = {
             postProcessor: {
                 type: 'function',
                 handler: 'DefaultDoSaveModelsInitializerService.postProcessor',
-                success: 'successEnd'
+                success: 'handleSucessEnd'
             },
-            successEnd: {
+            handleSucessEnd: {
                 type: 'function',
                 handler: 'DefaultDoSaveModelsInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelsInitializerService.handleErrorEnd'
             }
         }
     },
@@ -317,6 +323,11 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoSaveModelInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.applyPreValidators',
                 success: 'doSaveModel'
             },
             doSaveModel: {
@@ -327,6 +338,11 @@ module.exports = {
             populateVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultDoSaveModelInitializerService.populateVirtualProperties',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoSaveModelInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -348,14 +364,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoSaveModelInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoSaveModelInitializerService.handleErrorEnd'
             }
         }
     },
@@ -384,6 +392,11 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoBulkModelsInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoBulkModelsInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
@@ -399,6 +412,11 @@ module.exports = {
             populateVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultDoBulkModelsInitializerService.populateVirtualProperties',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoBulkModelsInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -410,14 +428,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoBulkModelsInitializerService.updateCache',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoBulkModelsInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoBulkModelsInitializerService.handleErrorEnd'
             }
         }
     },
@@ -441,6 +451,11 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoRemoveModelsInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoRemoveModelsInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
@@ -451,6 +466,11 @@ module.exports = {
             populateVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultDoRemoveModelsInitializerService.populateVirtualProperties',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoRemoveModelsInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -472,14 +492,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoRemoveModelsInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoRemoveModelsInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoRemoveModelsInitializerService.handleErrorEnd'
             }
         }
     },
@@ -503,6 +515,11 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoRemoveModelsByQueryInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoRemoveModelsByQueryInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
@@ -513,6 +530,11 @@ module.exports = {
             populateVirtualProperties: {
                 type: 'function',
                 handler: 'DefaultDoRemoveModelsByQueryInitializerService.populateVirtualProperties',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoRemoveModelsByQueryInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -534,14 +556,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoRemoveModelsByQueryInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoRemoveModelsByQueryInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoRemoveModelsByQueryInitializerService.handleErrorEnd'
             }
         }
     },
@@ -560,25 +574,27 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoGetSchemaInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoGetSchemaInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultDoGetSchemaInitializerService.executeQuery',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoGetSchemaInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoGetSchemaInitializerService.applyPostInterceptors',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoGetSchemaInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoGetSchemaInitializerService.handleErrorEnd'
             }
         }
     },
@@ -602,6 +618,11 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoUpdateSchemaInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoUpdateSchemaInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
@@ -609,18 +630,15 @@ module.exports = {
                 handler: 'DefaultDoUpdateSchemaInitializerService.executeQuery',
                 success: 'applyPostInterceptors'
             },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoUpdateSchemaInitializerService.applyPostValidators',
+                success: 'applyPostInterceptors'
+            },
             applyPostInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoUpdateSchemaInitializerService.applyPostInterceptors',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoUpdateSchemaInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoUpdateSchemaInitializerService.handleErrorEnd'
             }
         }
     },
@@ -644,11 +662,21 @@ module.exports = {
             applyPreInterceptors: {
                 type: 'function',
                 handler: 'DefaultDoRemoveIndexInitializerService.applyPreInterceptors',
+                success: 'applyPreValidators'
+            },
+            applyPreValidators: {
+                type: 'function',
+                handler: 'DefaultDoRemoveIndexInitializerService.applyPreValidators',
                 success: 'executeQuery'
             },
             executeQuery: {
                 type: 'function',
                 handler: 'DefaultDoRemoveIndexInitializerService.executeQuery',
+                success: 'applyPostValidators'
+            },
+            applyPostValidators: {
+                type: 'function',
+                handler: 'DefaultDoRemoveIndexInitializerService.applyPostValidators',
                 success: 'applyPostInterceptors'
             },
             applyPostInterceptors: {
@@ -670,14 +698,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultDoRemoveIndexInitializerService.triggerModelChangeEvent',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultDoRemoveIndexInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultDoRemoveIndexInitializerService.handleErrorEnd'
             }
         }
     },
@@ -736,14 +756,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultIndexerInitializerService.errorHandler',
                 success: 'handleError'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultIndexerInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultIndexerInitializerService.handleErrorEnd'
             }
         }
     },
@@ -793,14 +805,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultInternalIndexerInitializerService.importFinalizeData',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultInternalIndexerInitializerService.handleErrorEnd'
             }
         }
     },
@@ -855,14 +859,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultExternalIndexerInitializerService.importFinalizeData',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultExternalIndexerInitializerService.handleErrorEnd'
             }
         }
     },
@@ -886,6 +882,11 @@ module.exports = {
             applyInterceptors: {
                 type: 'function',
                 handler: 'DefaultIndexerDataHandlerService.applyInterceptors',
+                success: 'applyValidators'
+            },
+            applyValidators: {
+                type: 'function',
+                handler: 'DefaultIndexerDataHandlerService.applyValidators',
                 success: 'executeIndexerPipeline'
             },
             executeIndexerPipeline: {
@@ -897,14 +898,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultIndexerDataHandlerService.processData',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultIndexerDataHandlerService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultIndexerDataHandlerService.handleErrorEnd'
             }
         }
     }

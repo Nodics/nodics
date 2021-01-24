@@ -1,6 +1,6 @@
 {
     "name": "nController",
-    "index": "1.9",
+    "index": "1.10",
     "type": "core",
     "description": "Build OOTB controllers for Nodics",
     "homepage": "http://www.nodics.com/",

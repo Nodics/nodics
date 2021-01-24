@@ -18,6 +18,11 @@ module.exports = {
     */
     nodeId: 'node0',
 
+    /**
+     * System id is to group all clusters running for same module
+     */
+    systemId: 0,
+
     /*
         These values are used as system values, so can't be used as veriable or class name
     */
@@ -48,7 +53,7 @@ module.exports = {
     // databaseUserURI = mongodb://user:pass@localhost:port,anotherhost:port,yetanother:port/mydatabase
     // databaseUserURI = mongodb://hostA:27501,hostB:27501
     // databaseUserURI = mongodb://nonexistent.domain:27000
-
+    dynamoEnabled: false,
     defaultContentType: 'application/json',
     profileModuleName: 'profile',
     processRetrySleepTime: 2000,

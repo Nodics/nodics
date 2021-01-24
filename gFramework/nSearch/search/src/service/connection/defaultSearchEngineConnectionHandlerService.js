@@ -67,12 +67,8 @@ module.exports = {
                 } else {
                     resolve(true);
                 }
-            } catch (err) {
-                reject({
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: err
-                });
+            } catch (error) {
+                reject(new CLASSES.SearchError(error));
             }
         });
     },
@@ -95,12 +91,8 @@ module.exports = {
                 } else {
                     resolve(true);
                 }
-            } catch (err) {
-                reject({
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: err
-                });
+            } catch (error) {
+                reject(new CLASSES.SearchError(error));
             }
         });
     },
@@ -124,12 +116,7 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        _self.LOG.error('Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode);
-                        reject({
-                            success: false,
-                            code: 'ERR_SRCH_00000',
-                            msg: 'Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode
-                        });
+                        reject(new CLASSES.SearchError('ERR_SRCH_00000', 'Invalid connection handler configuration for : ' + moduleName + ', tenant: ' + tntCode));
                     }
                 } else {
                     _self.LOG.warn('Search is not enabled for module: ' + moduleName);
@@ -138,11 +125,7 @@ module.exports = {
             } catch (err) {
                 _self.LOG.error('Facing issue to connect with search cluster');
                 _self.LOG.error(err);
-                reject({
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: err
-                });
+                reject(new CLASSES.SearchError(error));
             }
         });
     },

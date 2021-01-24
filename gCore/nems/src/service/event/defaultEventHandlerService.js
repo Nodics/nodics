@@ -66,7 +66,7 @@ module.exports = {
             this.LOG.debug('Retrieving events to broadcast');
             input = _.merge(input, this.buildQuery());
             SERVICE.DefaultEventService.update(input).then(response => {
-                if (response.success && response.result && response.result.models) {
+                if (response.result && response.result.models) {
                     resolve(response.result.models);
                 } else {
                     resolve([]);
@@ -84,8 +84,7 @@ module.exports = {
             this.fetchEvents(request).then(events => {
                 if (!events || events.length <= 0) {
                     resolve({
-                        success: true,
-                        code: 'SUC_EVNT_00001'
+                        code: 'SUC_EVNT_00002'
                     });
                 } else {
                     _self.LOG.debug('Total events to be processed : ' + events.length);
@@ -128,6 +127,7 @@ module.exports = {
                             reject(error);
                         });
                     }).catch(error => {
+                        _self.handleProcessedEvent(event);
                         _self.broadcastEvents(events, ++counter).then(success => {
                             resolve(true);
                         }).catch(error => {
@@ -148,18 +148,20 @@ module.exports = {
         try {
             if (event.state === ENUMS.EventState.FINISHED.key) {
                 SERVICE.DefaultEventService.removeById([event._id], event.tenant).then(success => {
-                    _self.LOG.debug('Event has been processed successfully');
+                    _self.LOG.debug('Success event has been removed from event pool');
                 }).catch(error => {
-                    _self.LOG.debug('Facing issue while updating event success log');
+                    _self.LOG.error('Facing issue while removing event from event pool for: ' + event._id);
+                    _self.LOG.error(error);
                 });
                 if (event.logEvent === undefined || event.logEvent === true) {
                     SERVICE.DefaultEventLogService.save({
                         tenant: event.tenant,
-                        models: [event]
+                        model: event
                     }).then(success => {
                         _self.LOG.debug('Event has been moved to success log');
                     }).catch(error => {
-                        _self.LOG.debug('Facing issue while moving to success log');
+                        _self.LOG.debug('Facing issue while moving to success log: ' + event._id);
+                        _self.LOG.error(error);
                     });
                 }
             } else {
@@ -172,7 +174,8 @@ module.exports = {
                 }).then(success => {
                     _self.LOG.debug('Event has been updated for error');
                 }).catch(error => {
-                    _self.LOG.debug('Facing issue while updating event error log');
+                    _self.LOG.debug('Facing issue while updating event error log: ' + event._id);
+                    _self.LOG.error(error);
                 });
             }
         } catch (error) {
@@ -196,8 +199,8 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                _self.LOG.error('While broadcasting event to module : ', error);
-                reject(error);
+                _self.LOG.error('While broadcasting event to module', error);
+                reject(new CLASSES.EventError(error, 'While broadcasting event to module'));
             }
         });
     },
@@ -211,26 +214,32 @@ module.exports = {
                     let target = targets[counter];
                     target.logs = target.logs || [];
                     if (!target.state || target.state === ENUMS.EventState.ERROR.key) {
-                        let finalEvent = _.merge({}, event);
-                        finalEvent.target = target.target;
-                        SERVICE.DefaultModuleService.fetch(_self.prepareURL(finalEvent, target)).then(success => {
-                            if (success.success) {
-                                target.state = ENUMS.EventState.FINISHED.key;
-                                target.logs.push(success.msg);
-                            } else {
-                                event.state = ENUMS.EventState.ERROR.key;
-                                target.state = ENUMS.EventState.ERROR.key;
-                                try {
-                                    if (success.msg) {
-                                        target.logs.push(success.msg);
-                                    } else {
-                                        target.logs.push(JSON.stringify(success.error));
-                                    }
-                                } catch (err) {
-                                    target.logs.push(success.error.toString());
-                                }
-
-                            }
+                        let finalEvent = _.merge({}, {
+                            sourceName: event.sourceName,
+                            sourceId: event.sourceId,
+                            tenant: event.tenant,
+                            event: event.event,
+                            type: event.type,
+                            data: event.data,
+                        });
+                        let finalTarget = target.target;
+                        let requestBody = {};
+                        if (event.targetType === ENUMS.TargetType.EXTERNAL.key) {
+                            requestBody = SERVICE.DefaultModuleService.buildExternalRequest({
+                                header: finalTarget.header,
+                                uri: finalTarget.uri,
+                                methodName: finalTarget.methodName,
+                                requestBody: finalEvent,
+                                responseType: finalTarget.responseType,
+                                params: finalTarget.params
+                            });
+                        } else {
+                            //finalEvent.target = target.target;
+                            requestBody = _self.prepareURL(finalEvent, target);
+                        }
+                        SERVICE.DefaultModuleService.fetch(requestBody).then(success => {
+                            target.state = ENUMS.EventState.FINISHED.key;
+                            target.logs.push(success);
                             _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
                                 resolve(success);
                             }).catch(error => {
@@ -239,11 +248,7 @@ module.exports = {
                         }).catch(error => {
                             target.state = ENUMS.EventState.ERROR.key;
                             event.state = ENUMS.EventState.ERROR.key;
-                            try {
-                                target.logs.push(JSON.stringify(error));
-                            } catch (err) {
-                                target.logs.push(error.toString());
-                            }
+                            target.logs.push(error.toJson());
                             _self.broadcastEventToTarget(event, targets, ++counter).then(success => {
                                 resolve(success);
                             }).catch(error => {
@@ -261,13 +266,10 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
+                let err = new CLASSES.EventError(error, 'While broadcasting event to module');
                 event.state = ENUMS.EventState.ERROR.key;
-                try {
-                    event.logs.push(JSON.stringify(error));
-                } catch (err) {
-                    event.logs.push(error.toString());
-                }
-                reject(error);
+                event.logs.push(err.toJson());
+                reject(err);
             }
         });
     },
@@ -286,7 +288,7 @@ module.exports = {
             methodName: 'POST',
             apiName: '/event/handle',
             requestBody: event,
-            isJsonResponse: true,
+            responseType: true,
             header: {
                 authToken: NODICS.getInternalAuthToken(event.tenant)
             }

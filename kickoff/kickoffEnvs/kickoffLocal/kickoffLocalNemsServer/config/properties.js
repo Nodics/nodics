@@ -29,25 +29,25 @@ module.exports = {
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3004,
+                httpPort: 3020,
 
                 httpsHost: 'localhost',
-                httpsPort: 3005
+                httpsPort: 3021
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3004,
+                httpPort: 3020,
 
                 httpsHost: 'localhost',
-                httpsPort: 3005
+                httpsPort: 3021
             },
             nodes: {
                 node0: {
                     httpHost: 'localhost',
-                    httpPort: 3004,
+                    httpPort: 3020,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3005
+                    httpsPort: 3021
                 }
             }
         },
@@ -81,7 +81,7 @@ module.exports = {
             }
         },
 
-        cronjob: {
+        dataConsumer: {
             options: {
                 contextRoot: 'nodics'
             },
@@ -106,66 +106,131 @@ module.exports = {
 
                     httpsHost: 'localhost',
                     httpsPort: 3011
+                },
+                node1: {
+                    httpHost: 'localhost',
+                    httpPort: 3012,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3013
+                },
+                node2: {
+                    httpHost: 'localhost',
+                    httpPort: 3014,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3015
                 }
             }
         },
 
-        powerTool: {
+        cronjob: {
             options: {
                 contextRoot: 'nodics'
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3008,
+                httpPort: 3030,
 
                 httpsHost: 'localhost',
-                httpsPort: 3009
+                httpsPort: 3031
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3008,
+                httpPort: 3030,
 
                 httpsHost: 'localhost',
-                httpsPort: 3009
+                httpsPort: 3031
             },
             nodes: {
                 node0: {
                     httpHost: 'localhost',
-                    httpPort: 3008,
+                    httpPort: 3030,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3009
+                    httpsPort: 3031
+                },
+                node1: {
+                    httpHost: 'localhost',
+                    httpPort: 3032,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3033
+                },
+                node2: {
+                    httpHost: 'localhost',
+                    httpPort: 3034,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3035
+                },
+                node3: {
+                    httpHost: 'localhost',
+                    httpPort: 3036,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3037
                 }
             }
         },
 
-        dataConsumer: {
+        cms: {
             options: {
                 contextRoot: 'nodics'
             },
             server: {
                 httpHost: 'localhost',
-                httpPort: 3002,
+                httpPort: 3020,
 
                 httpsHost: 'localhost',
-                httpsPort: 3003
+                httpsPort: 3021
             },
             abstract: {
                 httpHost: 'localhost',
-                httpPort: 3002,
+                httpPort: 3020,
 
                 httpsHost: 'localhost',
-                httpsPort: 3003
+                httpsPort: 3021
             },
             nodes: {
                 node0: {
                     httpHost: 'localhost',
-                    httpPort: 3002,
+                    httpPort: 3020,
 
                     httpsHost: 'localhost',
-                    httpsPort: 3003
+                    httpsPort: 3021
+                }
+            }
+        },
+
+        workflow: {
+            options: {
+                contextRoot: 'nodics'
+            },
+            server: {
+                httpHost: 'localhost',
+                httpPort: 3050,
+
+                httpsHost: 'localhost',
+                httpsPort: 3051
+            },
+            abstract: {
+                httpHost: 'localhost',
+                httpPort: 3050,
+
+                httpsHost: 'localhost',
+                httpsPort: 3051
+            },
+            nodes: {
+                node0: {
+                    httpHost: 'localhost',
+                    httpPort: 3050,
+
+                    httpsHost: 'localhost',
+                    httpsPort: 3051
                 }
             }
         }
+
     }
 };

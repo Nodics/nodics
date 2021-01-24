@@ -71,16 +71,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultRequestHandlerPipelineService.handleRequest',
                 success: 'successEnd'
-            },
-
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultRequestHandlerPipelineService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultRequestHandlerPipelineService.handleErrorEnd'
             }
         }
     },
@@ -108,6 +98,11 @@ module.exports = {
             validateRequestData: {
                 type: 'function',
                 handler: 'DefaultSecuredRequestPipelineService.validateRequestData',
+                success: 'checkAccess'
+            },
+            checkAccess: {
+                type: 'function',
+                handler: 'DefaultSecuredRequestPipelineService.checkAccess',
                 success: 'successEnd'
             }
         }

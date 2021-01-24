@@ -13,5 +13,9 @@ module.exports = {
 
     data: {
         dataDirName: 'temp'
+    },
+
+    defaultErrorCodes: {
+        DataError: 'ERR_DATA_00000'
     }
 };

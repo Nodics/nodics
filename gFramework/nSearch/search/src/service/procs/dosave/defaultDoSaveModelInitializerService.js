@@ -37,11 +37,7 @@ module.exports = {
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for doSaving model');
         if (!request.model) {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                msg: 'Invalid data model to save'
-            });
+            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid data model to save'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -59,11 +55,7 @@ module.exports = {
             SERVICE.DefaultSearchValueProviderHandlerService.handleValueProviders(valueProviders, request.model).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error
-                });
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -72,21 +64,30 @@ module.exports = {
 
     applyDefaultValues: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
-        let defaultValues = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(request.moduleName, request.tenant, request.indexName).defaultValues;
+        let defaultValues = request.schemaModel.rawSchema.schemaOptions[request.tenant].defaultValues;
         if (defaultValues && !UTILS.isBlank(defaultValues)) {
             _.each(defaultValues, (value, property) => {
-                if (!request.model[property]) {
-                    try {
-                        let serviceName = value.substring(0, value.indexOf('.'));
-                        let functionName = value.substring(value.indexOf('.') + 1, value.length);
-                        request.model[property] = SERVICE[serviceName][functionName](request.model);
-                    } catch (error) {
-                        request.model[property] = value;
-                    }
-                }
+                request.model = this.resolveDefaultProperty(property.split('.'), request.model, value);
             });
         }
         process.nextSuccess(request, response);
+    },
+
+    resolveDefaultProperty: function (properties, model, value) {
+        if (properties && properties.length > 1) {
+            let prop = properties.shift();
+            if (!model[prop]) model[prop] = {};
+            model[prop] = this.resolveDefaultProperty(properties, model[prop], value);
+        } else if (properties && properties.length === 1 && !model[properties[0]]) {
+            try {
+                let serviceName = value.substring(0, value.indexOf('.'));
+                let functionName = value.substring(value.indexOf('.') + 1, value.length);
+                model[properties[0]] = SERVICE[serviceName][functionName](model);
+            } catch (error) {
+                model[properties[0]] = value;
+            }
+        }
+        return model;
     },
 
     removeVirtualProperties: function (request, response, process) {
@@ -123,24 +124,25 @@ module.exports = {
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.preDoSave) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.preDoSave), {
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexName: request.searchModel.indexName,
-                typeName: request.searchModel.typeName,
-                tenant: request.tenant,
-                options: request.options,
-                query: request.query,
-                originalModel: request.model,
-                model: request.model
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SRCH_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
+    applyPreValidators: function (request, response, process) {
+        this.LOG.debug('Applying pre doSave model validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.preDoSave) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoSave), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -151,17 +153,12 @@ module.exports = {
         this.LOG.debug('Executing doSave operation');
         request.searchModel.doSave(request).then(result => {
             response.success = {
-                success: true,
                 code: 'SUC_SRCH_00000',
                 result: result
             };
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, {
-                success: false,
-                code: 'ERR_SRCH_00000',
-                error: error
-            });
+            process.error(request, response, error);
         });
     },
 
@@ -176,28 +173,30 @@ module.exports = {
         }
     },
 
+    applyPostValidators: function (request, response, process) {
+        this.LOG.debug('Applying post do save model validators');
+        let indexName = request.indexName || request.searchModel.indexName;
+        let validators = SERVICE.DefaultSearchConfigurationService.getSearchValidators(request.tenant, indexName);
+        if (validators && validators.postDoSave) {
+            SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoSave), request, response).then(success => {
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+
     applyPostInterceptors: function (request, response, process) {
-        this.LOG.debug('Applying post save model interceptors');
+        this.LOG.debug('Applying post do save model interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
         let interceptors = SERVICE.DefaultSearchConfigurationService.getSearchInterceptors(indexName);
         if (interceptors && interceptors.postDoSave) {
-            SERVICE.DefaultInterceptorHandlerService.executeInterceptors([].concat(interceptors.postDoSave), {
-                schemaModel: request.schemaModel,
-                searchModel: request.searchModel,
-                indexName: request.searchModel.indexName,
-                typeName: request.searchModel.typeName,
-                tenant: request.tenant,
-                query: request.query,
-                originalModel: request.model,
-                model: response.success.result
-            }, {}).then(success => {
+            SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_FIND_00005',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -259,15 +258,18 @@ module.exports = {
         this.LOG.debug('Triggering event for modified model');
         try {
             let searchModel = request.searchModel;
-            if (response.success.success && searchModel.indexDef.event) {
+            if (response.success.success &&
+                searchModel.indexDef.event &&
+                searchModel.indexDef.event.enabled) {
                 let event = {
                     tenant: request.tenant || 'default',
                     event: 'save',
-                    source: searchModel.moduleName,
+                    sourceName: searchModel.moduleName,
+                    sourceId: CONFIG.get('nodeId'),
                     target: searchModel.moduleName,
                     state: "NEW",
-                    type: "ASYNC",
-                    targetType: ENUMS.TargetType.EACH_NODE.key,
+                    type: searchModel.indexDef.event.type || "ASYNC",
+                    targetType: searchModel.indexDef.event.targetType || ENUMS.TargetType.MODULE_NODES.key,
                     active: true,
                     data: {
                         indexName: searchModel.indexName,
@@ -285,23 +287,5 @@ module.exports = {
             this.LOG.error('Facing issue while pushing save event : ', error);
         }
         process.nextSuccess(request, response);
-    },
-
-    handleSucessEnd: function (request, response, process) {
-        process.resolve(response.success);
-    },
-
-    handleErrorEnd: function (request, response, process) {
-        if (response.errors && response.errors.length === 1) {
-            process.reject(response.errors[0]);
-        } else if (response.errors && response.errors.length > 1) {
-            process.reject({
-                success: false,
-                code: 'ERR_FIND_00005',
-                error: response.errors
-            });
-        } else {
-            process.reject(response.error);
-        }
     }
 };

@@ -25,15 +25,6 @@ module.exports = {
                 type: 'function',
                 handler: 'DefaultCsvFileDataProcessService.processDataChunk',
                 success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultCsvFileDataProcessService.handleSucessEnd'
-            },
-
-            handleError: {
-                type: 'function',
-                handler: 'DefaultCsvFileDataProcessService.handleErrorEnd'
             }
         }
     },
