@@ -36,16 +36,6 @@ module.exports = {
             }).then(() => {
                 return SERVICE.DefaultSearchModelHandlerService.updateIndexesSchema();
             }).then(() => {
-                return new Promise((resolve, reject) => {
-                    // this.LOG.debug('Collecting search validator definitions');
-                    // SERVICE.DefaultSearchConfigurationService.prepareSearchValidators().then(done => {
-                    //     resolve(true);
-                    // }).catch(error => {
-                    //     reject(error);
-                    // });
-                    resolve(true);
-                });
-            }).then(() => {
                 resolve(true);
             }).catch(error => {
                 reject(error);
