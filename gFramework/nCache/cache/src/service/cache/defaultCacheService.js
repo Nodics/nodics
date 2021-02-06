@@ -57,6 +57,7 @@ module.exports = {
 
     get: function (options) {
         try {
+            console.log(options.moduleName, '   :   ', options.channelName);
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
                 let operationName = 'get';

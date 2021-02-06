@@ -99,7 +99,7 @@ module.exports = {
         let modules = NODICS.getModules();
         routers = routers || SERVICE.DefaultRouterConfigurationService.getRawRouters();
         return new Promise((resolve, reject) => {
-            _.each(modules, function (moduleObject, moduleName) {
+            _.each(modules, (moduleObject, moduleName) => {
                 let app = {};
                 let moduleRouter = {};
                 if (UTILS.isRouterEnabled(moduleName)) {
@@ -125,7 +125,8 @@ module.exports = {
         if (routers.default) {
             _.each(moduleObject.rawSchema, (schemaObject, schemaName) => {
                 if (schemaObject.service && schemaObject.service.enabled &&
-                    schemaObject.router && schemaObject.router.enabled) {
+                    schemaObject.router && schemaObject.router.enabled &&
+                    (!schemaObject.router.target || schemaObject.router.target === moduleName)) {
                     _self.prepareDefaultRouter({
                         routers: routers,
                         urlPrefix: urlPrefix,
@@ -135,6 +136,23 @@ module.exports = {
                         moduleRouter: moduleRouter
                     });
                 }
+            });
+            let modules = NODICS.getModules();
+            _.each(modules, (cModuleObject, cModuleName) => {
+                _.each(cModuleObject.rawSchema, (cSchemaObject, cSchemaName) => {
+                    if (cSchemaObject.service && cSchemaObject.service.enabled &&
+                        cSchemaObject.router && cSchemaObject.router.enabled &&
+                        cSchemaObject.router.target && cSchemaObject.router.target === moduleName && cSchemaObject.router.target !== cModuleName) {
+                        _self.prepareDefaultRouter({
+                            routers: routers,
+                            urlPrefix: urlPrefix,
+                            alias: cSchemaObject.router.alias || cSchemaName,
+                            schemaName: cSchemaName,
+                            moduleName: moduleName,
+                            moduleRouter: moduleRouter
+                        });
+                    }
+                });
             });
         }
         // Register module common routers, means routers needs to be available in all modules
@@ -177,6 +195,9 @@ module.exports = {
 
     prepareDefaultRouter: function (options) {
         let _self = this;
+        // console.log('--------------------------------------------');
+        // console.log(options.routers.default);
+        // console.log('--------------------------------------------');
         _.each(options.routers.default, function (group, groupName) {
             if (groupName !== 'options') {
                 _.each(group, function (routerDef, routerName) {

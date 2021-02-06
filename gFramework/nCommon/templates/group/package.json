@@ -1,7 +1,7 @@
 {
     "name": "customApplication",
     "index": "$index",
-    "type": "core",
+    "type": "group",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customApplication",
     "homepage": "http://www.nodics.com/",
     "keywords": [

@@ -85,7 +85,7 @@ module.exports = {
             request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createItemKey(request);
             this.LOG.debug('Model cache lookup for key: ' + request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
-                moduleName: request.moduleName || request.schemaModel.moduleName,
+                moduleName: request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.schemaModel.schemaName),
                 key: request.cacheKeyHash
             }).then(value => {
@@ -245,7 +245,7 @@ module.exports = {
         this.LOG.debug('Updating cache for new Items');
         if (UTILS.isItemCashable(response.success.result, request.schemaModel)) {
             SERVICE.DefaultCacheService.put({
-                moduleName: request.moduleName || request.schemaModel.moduleName,
+                moduleName: request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.schemaModel.schemaName),
                 key: request.cacheKeyHash,
                 value: response.success.result,
