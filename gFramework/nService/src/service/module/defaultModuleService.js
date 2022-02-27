@@ -9,7 +9,7 @@
 
  */
 
-const requestPromise = require('request-promise');
+const requestPromise = require('node-fetch');
 const _ = require('lodash');
 const util = require('util');
 

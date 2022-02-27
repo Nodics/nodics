@@ -41,7 +41,7 @@ module.exports = {
                     databaseName: 'nodicsMaster',
                     options: {
                         useNewUrlParser: true,
-                        poolSize: 5,
+                        maxPoolSize: 5,
                         ignoreUndefined: true,
                         connectTimeoutMS: 60000,
                         useUnifiedTopology: true
@@ -52,7 +52,7 @@ module.exports = {
                     databaseName: 'nodicsTest',
                     options: {
                         useNewUrlParser: true,
-                        poolSize: 5,
+                        maxPoolSize: 5,
                         ignoreUndefined: true,
                         connectTimeoutMS: 60000,
                         useUnifiedTopology: true

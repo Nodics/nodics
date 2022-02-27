@@ -9,7 +9,7 @@
 
  */
 
-const excelProcess = require('excel-as-json');
+// const excelProcess = require('excel-as-json');
 
 module.exports = {
     /**
@@ -59,7 +59,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (files.length > 0) {
                 let file = files.shift();
-                let convertExcel = excelProcess.processFile;
+                let convertExcel = this; //excelProcess.processFile;
                 convertExcel(file, null, CONFIG.get('data').excelTypeParserOptions, (error, jsonData) => {
                     if (error) {
                         reject(error);

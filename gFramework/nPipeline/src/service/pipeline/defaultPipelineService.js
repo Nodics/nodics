@@ -37,6 +37,7 @@ module.exports = {
     loadPipelines: function () {
         return new Promise((resolve, reject) => {
             global.PIPELINE = SERVICE.DefaultFilesLoaderService.loadFiles('/src/pipelines/pipelinesDefinition.js');
+            console.log(this);
             this.get({
                 tenant: 'default'
             }).then(success => {
