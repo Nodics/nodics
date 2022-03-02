@@ -36,8 +36,7 @@ module.exports = {
      * Generate Unique Hash
      */
     generateHash: function (key) {
-        let uuidv5 = uuid.v5();
-        return uuidv5(key, uuidv5.URL);
+        return uuid.v5(key, uuid.v5.URL);
     },
 
     /**

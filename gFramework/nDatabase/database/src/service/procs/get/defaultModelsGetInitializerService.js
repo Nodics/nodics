@@ -70,7 +70,7 @@ module.exports = {
         pageNumber = pageNumber ? (pageNumber <= 0) ? 0 : pageNumber - 1 : 0;
         inputOptions.limit = pageSize;
         inputOptions.skip = pageSize * pageNumber;
-        inputOptions.explain = inputOptions.explain || false;
+        //inputOptions.explain = inputOptions.explain || false;
         inputOptions.snapshot = inputOptions.snapshot || false;
         if (inputOptions.timeout === true) {
             inputOptions.timeout = true;

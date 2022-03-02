@@ -24,11 +24,11 @@ module.exports = {
                     defaultIndexes: ['_id'],
                     modelSaveOptions: {
                         upsert: true,
-                        returnOriginal: false
+                        returnNewDocument: true
                     },
                     modelUpdateOptions: {
                         upsert: false,
-                        returnOriginal: false
+                        returnNewDocument: true
                     },
                     modelRemoveOptions: {
                         j: false

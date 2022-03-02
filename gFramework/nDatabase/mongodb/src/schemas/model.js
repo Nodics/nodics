@@ -51,10 +51,14 @@ module.exports = {
                             },
                             this.dataBase.getOptions().modelSaveOptions || {
                                 upsert: true,
-                                returnOriginal: false
+                                returnNewDocument: true
                             }).then(result => {
-                                if (result && result.value) {
+                                if (result && result.ok > 0 && result.value) {
                                     resolve(result.value);
+                                } else if (result && result.ok > 0) {
+                                    resolve(_.merge({
+                                        _id: result.lastErrorObject.upserted
+                                    }, input.model));
                                 } else {
                                     reject(new CLASSES.NodicsError('ERR_MDL_00005'));
                                 }
@@ -71,8 +75,10 @@ module.exports = {
                         }).then((success) => {
                             return new Promise((resolve, reject) => {
                                 this.insertOne(input.model, {}).then(result => {
-                                    if (result.ops && result.ops.length > 0) {
-                                        resolve(result.ops[0]);
+                                    if (result.acknowledged || (result.ops && result.ops.length > 0)) {
+                                        input.model._id = result.insertedId;
+                                        console.log(input.model);
+                                        resolve(input.model);
                                     } else {
                                         reject(new CLASSES.NodicsError('ERR_MDL_00005'));
                                     }
@@ -108,7 +114,7 @@ module.exports = {
                                     $set: input.model
                                 }, this.dataBase.getOptions().modelUpdateOptions || {
                                     upsert: false,
-                                    returnOriginal: false
+                                    returnNewDocument: true
                                 }).then(success => {
                                     let result = success.result;
                                     response.forEach(element => {
@@ -126,7 +132,7 @@ module.exports = {
                             $set: input.model
                         }, this.dataBase.getOptions().modelUpdateOptions || {
                             upsert: false,
-                            returnOriginal: false
+                            returnNewDocument: true
                         }).then(success => {
                             resolve(success.result);
                         }).catch(error => {
