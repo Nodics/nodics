@@ -24,11 +24,11 @@ module.exports = {
                     defaultIndexes: ['_id'],
                     modelSaveOptions: {
                         upsert: true,
-                        returnOriginal: false
+                        returnNewDocument: true
                     },
                     modelUpdateOptions: {
                         upsert: false,
-                        returnOriginal: false
+                        returnNewDocument: true
                     },
                     modelRemoveOptions: {
                         j: false
@@ -41,7 +41,7 @@ module.exports = {
                     databaseName: 'nodicsMaster',
                     options: {
                         useNewUrlParser: true,
-                        poolSize: 5,
+                        maxPoolSize: 5,
                         ignoreUndefined: true,
                         connectTimeoutMS: 60000,
                         useUnifiedTopology: true
@@ -52,7 +52,7 @@ module.exports = {
                     databaseName: 'nodicsTest',
                     options: {
                         useNewUrlParser: true,
-                        poolSize: 5,
+                        maxPoolSize: 5,
                         ignoreUndefined: true,
                         connectTimeoutMS: 60000,
                         useUnifiedTopology: true

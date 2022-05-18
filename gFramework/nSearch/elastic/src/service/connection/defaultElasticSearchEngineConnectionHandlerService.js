@@ -10,7 +10,7 @@
 */
 
 const _ = require('lodash');
-let elasticsearch = require('elasticsearch');
+let elasticsearch = require('@elastic/elasticsearch');
 
 module.exports = {
 

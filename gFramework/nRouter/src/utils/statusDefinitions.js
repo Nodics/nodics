@@ -18,5 +18,5 @@ module.exports = {
     ERR_HLP_00000: {
         code: '500',
         message: 'Failed to serve help notation',
-    },
+    }
 };

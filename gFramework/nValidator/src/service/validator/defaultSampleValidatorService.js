@@ -34,13 +34,13 @@ module.exports = {
 
     handlePreSave: function (request, response) {
         return new Promise((resolve, reject) => {
-            this.LOG.debug('============================= > Default Pre Save');
+            //this.LOG.debug('============================= > Default Pre Save');
             resolve(true);
         });
     },
     handlePreAddressSave: function (request, response) {
         return new Promise((resolve, reject) => {
-            this.LOG.debug('============================= > Address Pre Save');
+            // this.LOG.debug('============================= > Address Pre Save');
             resolve(true);
         });
     }

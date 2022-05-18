@@ -10,7 +10,7 @@
  */
 
 const util = require('util');
-const clearRequire = require('clear-require');
+const clearRequire = require('clear-module');
 
 module.exports = {
     /**

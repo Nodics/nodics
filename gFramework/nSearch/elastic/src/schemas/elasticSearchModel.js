@@ -365,7 +365,7 @@ module.exports = {
                 let _self = this;
                 return new Promise((resolve, reject) => {
                     try {
-                        let schemaQuery = _.merge({}, _self.searchEngine.getOptions().schemaGetOptions || {});
+                        let schemaQuery = _.merge({}, _self.searchEngine.getOptions().schemaPutOptions || {});
                         schemaQuery = _.merge(schemaQuery, input.options || {});
                         schemaQuery = _.merge(schemaQuery, {
                             index: _self.indexDef.indexName.toLowerCase(),

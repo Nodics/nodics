@@ -9,7 +9,9 @@
 
  */
 
-const excelProcess = require('excel-as-json');
+const excelProcess = require('excel-as-json2');
+const fs = require('fs');
+const util = require('util');
 
 module.exports = {
     /**
@@ -64,6 +66,8 @@ module.exports = {
                     if (error) {
                         reject(error);
                     } else {
+                        //console.log('======================== ');
+                        //console.log(util.inspect(jsonData, showHidden = false, depth = 8, colorize = true));
                         request.models = jsonData;
                         request.outputPath.version = index + '_0';
                         SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {

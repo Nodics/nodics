@@ -12,12 +12,15 @@
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require("bcryptjs");
-const uuidv5 = require('uuid/v5');
-const uuidv4 = require('uuid/v4');
+const uuid = require('uuid');
+
+// const uuidv4 = require('uuid').v4();
+// const uuidv5 = require('uuid').v5();
+
 
 module.exports = {
     generateUniqueCode: function () {
-        return uuidv4();
+        return uuid.v4();
     },
 
     /**
@@ -33,7 +36,7 @@ module.exports = {
      * Generate Unique Hash
      */
     generateHash: function (key) {
-        return uuidv5(key, uuidv5.URL);
+        return uuid.v5(key, uuid.v5.URL);
     },
 
     /**
