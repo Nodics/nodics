@@ -35,45 +35,53 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating otp generation request');
+        this.LOG.debug('Validating Token generation request');
         process.nextSuccess(request, response);
     },
     validateMandateValues: function (request, response, process) {
-        this.LOG.debug('Validating otp generation mandate values');
-        if (!request.model.otpKey || !request.model.ops || !request.model.otpValue) {
-            process.error(request, response, new CLASSES.CronJobError('ERR_OTP_00003', 'Invalid request, please validate'));
+        this.LOG.debug('Validating Token generation mandate values');
+        if (!request.model.key || !request.model.ops || !request.model.value) {
+            process.error(request, response, new CLASSES.CronJobError('ERR_TKN_00003', 'Invalid request, please validate'));
         } else {
             process.nextSuccess(request, response);
         }
     },
     buildQuery: function (request, response, process) {
-        this.LOG.debug('Building otp generation query');
+        this.LOG.debug('Building Token generation query');
         process.nextSuccess(request, response);
     },
-    validateOtp: function (request, response, process) {
-        this.LOG.debug('Fatching existing OTP');
-        request.otpService.get(_.merge(_.merge({}, request), {
+    validateToken: function (request, response, process) {
+        this.LOG.debug('Fatching existing Token');
+        request.tokenService.get(_.merge(_.merge({}, request), {
             query: {
-                otpKey: request.model.otpKey,
+                key: request.model.key,
                 ops: request.model.ops,
                 active: true,
             }
         })).then(result => {
             console.log(result);
             if (result.count > 1 || !result.result || result.result.length != 1) {
-                process.error(request, response, new CLASSES.NodicsError('ERR_OTP_00002', 'OTP data is not valid'));
-            } else if (result.result[0].otpKey === request.model.otpKey
+                process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00002', 'Token data is not valid'));
+            } else if (result.result[0].key === request.model.key
                 && result.result[0].ops === request.model.ops
-                && result.result[0].otpValue === request.model.otpValue) {
+                && result.result[0].value === request.model.value) {
                 response.success = {
-                    code: 'SUC_OTP_00001'
+                    code: 'SUC_TKN_00001'
                 };
                 process.nextSuccess(request, response);
             } else {
-                process.error(request, response, new CLASSES.CronJobError('ERR_OTP_00002', 'OTP data is not valid'));
+                process.error(request, response, new CLASSES.CronJobError('ERR_TKN_00002', 'Token data is not valid'));
             }
         }).catch(error => {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
         });
+    },
+    handleSucessEnd: function (request, response, process) {
+        this.LOG.debug('Request has been processed successfully');
+        process.resolve(response.success);
+    },
+    handleErrorEnd: function (request, response, process) {
+        this.LOG.error('Request has been processed and got errors');
+        process.reject(response.error);
     }
 };

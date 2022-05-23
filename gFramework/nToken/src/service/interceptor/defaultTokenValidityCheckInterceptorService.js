@@ -22,24 +22,17 @@ module.exports = {
         });
     },
 
-    generateOtp: function (request) {
+    fetchValidToken: function (request, response) {
         return new Promise((resolve, reject) => {
-            request.model.type = 'OTP';
-            SERVICE.DefaultTokenService.generateToken(request).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
-            });
+            if (request.options.loadValid) {
+                request.query = _.merge(request.query, {
+                    expireAt: {
+                        "$gte": new Date()
+                    },
+                    active: true
+                });
+            }
+            resolve(true);
         });
-    },
-
-    validateOtp: function (request) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultTokenService.validateToken(request).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
-            });
-        });
-    },
+    }
 };

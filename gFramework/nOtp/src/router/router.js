@@ -26,7 +26,7 @@ module.exports = {
                     method: 'Post',
                     url: 'http://host:port/nodics/otp/generate',
                     body: {
-                        otpKey: 'uniquly identify value',
+                        key: 'uniquly identify value',
                         ops: 'Operation name for that OTP been generated'
                     }
                 }
@@ -47,9 +47,9 @@ module.exports = {
                     method: 'Post',
                     url: 'http://host:port/nodics/otp/validate',
                     body: {
-                        otpKey: 'uniquly identify value',
+                        key: 'uniquly identify value',
                         ops: 'Operation name for that OTP been generated',
-                        otpValue: 'Generated OTP'
+                        value: 'Generated OTP'
                     }
                 }
             },

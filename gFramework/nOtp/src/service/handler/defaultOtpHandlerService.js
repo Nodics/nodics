@@ -32,13 +32,11 @@ module.exports = {
         });
     },
 
-    generateDefaultOTP: function (request) {
+    generateToken: function (request) {
         let _self = this;
         try {
-            let generatedOtp = Math.floor(
-                CONFIG.get('otp').otpRangeStart
-                + (CONFIG.get('otp').otpRangeEnd - CONFIG.get('otp').otpRangeStart)
-                * Math.random());
+            let otpConfig = CONFIG.get('token').OTP;
+            let generatedOtp = Math.floor(otpConfig.rangeStart + (otpConfig.rangeEnd - otpConfig.rangeStart) * Math.random());
             _self.LOG.debug('Generated Otp: ', generatedOtp);
             return generatedOtp;
         } catch (error) {
@@ -48,7 +46,8 @@ module.exports = {
     generateExpiry: function (request) {
         let _self = this;
         try {
-            let life = new Date((new Date()).getTime() + CONFIG.get('otp').validUpTo * 1000);
+            let otpConfig = CONFIG.get('token').OTP;
+            let life = new Date((new Date()).getTime() + otpConfig.validUpTo * 1000);
             _self.LOG.debug(' Otp Expire at: ', life);
             return life;
         } catch (error) {

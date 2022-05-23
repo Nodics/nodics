@@ -35,56 +35,56 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating otp generation request');
+        this.LOG.debug('Validating Token generation request');
         process.nextSuccess(request, response);
     },
     validateMandateValues: function (request, response, process) {
-        this.LOG.debug('Validating otp generation mandate values');
-        if (!request.model.otpKey || !request.model.ops) {
-            process.error(request, response, new CLASSES.CronJobError('ERR_OTP_00003', 'Invalid request, please validate'));
+        this.LOG.debug('Validating Token generation mandate values');
+        if (!request.model.key || !request.model.ops) {
+            process.error(request, response, new CLASSES.CronJobError('ERR_TKN_00003', 'Invalid request, please validate'));
         } else {
             process.nextSuccess(request, response);
         }
     },
     buildQuery: function (request, response, process) {
-        this.LOG.debug('Building otp generation query');
+        this.LOG.debug('Building Token generation query');
         process.nextSuccess(request, response);
     },
-    checkExistingOtp: function (request, response, process) {
-        this.LOG.debug('Fatching existing OTP');
-        request.otpService.get(_.merge(_.merge({}, request), {
+    checkExistingToken: function (request, response, process) {
+        this.LOG.debug('Fatching existing Token');
+        request.tokenService.get(_.merge(_.merge({}, request), {
             query: {
-                otpKey: request.model.otpKey,
+                key: request.model.key,
                 ops: request.model.ops,
                 active: true,
             }
         })).then(result => {
             if (result.count > 1 || !result.result || result.result.length > 1) {
-                process.error(request, response, new CLASSES.NodicsError('ERR_OTP_00002', 'OTP data is not valid'));
+                process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00002', 'Token data is not valid'));
             } else if (result.result.length == 1) {
                 process.stop(request, response, result);
             } else {
                 process.nextSuccess(request, response);
             }
         }).catch(error => {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
         });
     },
 
-    generateNewOtp: function (request, response, process) {
-        this.LOG.debug('Generating new OTP');
-        request.otpService.save(_.merge({}, request)).then(result => {
+    generateNewToken: function (request, response, process) {
+        this.LOG.debug('Generating new Token');
+        request.tokenService.save(_.merge({}, request)).then(result => {
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
         });
     },
 
-    fatchNewOtp: function (request, response, process) {
-        this.LOG.debug('Fatching new OTP');
-        request.otpService.get(_.merge(_.merge({}, request), {
+    fatchNewToken: function (request, response, process) {
+        this.LOG.debug('Fatching new Token');
+        request.tokenService.get(_.merge(_.merge({}, request), {
             query: {
-                otpKey: request.model.otpKey,
+                key: request.model.key,
                 ops: request.model.ops,
                 active: true,
             }
@@ -92,7 +92,25 @@ module.exports = {
             response.success = result;
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
         });
+    },
+    handleSucessEnd: function (request, response, process) {
+        this.LOG.debug('Request has been processed successfully');
+        let success = {
+            code: response.success.code || 'SUC_SYS_00000',
+            cache: response.success.cache,
+            result: {
+                key: response.success.result[0].key,
+                ops: response.success.result[0].ops,
+                value: response.success.result[0].value,
+                valid: response.success.result[0].expireAt
+            }
+        }
+        process.resolve(success);
+    },
+    handleErrorEnd: function (request, response, process) {
+        this.LOG.error('Request has been processed and got errors');
+        process.reject(response.error);
     }
 };

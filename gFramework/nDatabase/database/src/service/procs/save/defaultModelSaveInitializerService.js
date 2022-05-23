@@ -37,8 +37,6 @@ module.exports = {
 
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for saving model');
-        console.log('1input options', request.options);
-        console.log('1input query', request.query);
         if (!request.model) {
             process.error(request, response, new CLASSES.NodicsError('ERR_SAVE_00003', 'Model can not be null or empty for save operation'));
         } else {
@@ -56,8 +54,6 @@ module.exports = {
     },
     applyDefaultValues: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
-        console.log('0input options', request.options);
-        console.log('0input query', request.query);
         let defaultValues = request.schemaModel.rawSchema.schemaOptions[request.tenant].defaultValues;
         if (defaultValues && !UTILS.isBlank(defaultValues)) {
             _.each(defaultValues, (value, property) => {
@@ -234,8 +230,6 @@ module.exports = {
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
         if (interceptors && interceptors.postSave) {
             this.LOG.debug('Applying post save model interceptors');
-            console.log('1input options', request.options);
-            console.log('1input query', request.query);
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {

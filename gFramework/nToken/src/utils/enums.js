@@ -10,13 +10,17 @@
  */
 
 module.exports = {
-
-    token: {
-        OTP: {
-            rangeStart: 1000,
-            rangeEnd: 9000,
-            validUpTo: 300, //this value is in secound
-            tokenHandler: 'DefaultOtpHandlerService'
-        }
+    TokenType: {
+        _options: {
+            name: 'TokenType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'OTP',
+            'ORDER'
+        ]
     }
 };

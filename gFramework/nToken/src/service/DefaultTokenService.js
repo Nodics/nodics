@@ -22,23 +22,24 @@ module.exports = {
         });
     },
 
-    generateOtp: function (request) {
+    generateToken: function (request) {
+        request.tokenService = this;
         return new Promise((resolve, reject) => {
-            request.model.type = 'OTP';
-            SERVICE.DefaultTokenService.generateToken(request).then(success => {
+            SERVICE.DefaultPipelineService.start('generateTokenPipeline', request, {}).then(success => {
                 resolve(success);
             }).catch(error => {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
+                reject(new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
             });
         });
     },
 
-    validateOtp: function (request) {
+    validateToken: function (request) {
+        request.tokenService = this;
         return new Promise((resolve, reject) => {
-            SERVICE.DefaultTokenService.validateToken(request).then(success => {
+            SERVICE.DefaultPipelineService.start('validateTokenPipeline', request, {}).then(success => {
                 resolve(success);
             }).catch(error => {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
+                reject(new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
             });
         });
     },

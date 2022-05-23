@@ -10,13 +10,12 @@
  */
 
 module.exports = {
-
-    token: {
-        OTP: {
-            rangeStart: 1000,
-            rangeEnd: 9000,
-            validUpTo: 300, //this value is in secound
-            tokenHandler: 'DefaultOtpHandlerService'
-        }
-    }
+    tokenPreGet: {
+        type: 'schema',
+        item: 'token',
+        trigger: 'preGet',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultTokenValidityCheckInterceptorService.fetchValidToken'
+    },
 };
