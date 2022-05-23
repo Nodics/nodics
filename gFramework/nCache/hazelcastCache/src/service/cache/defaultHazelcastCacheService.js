@@ -38,18 +38,14 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let key = channel.channelName + '_' + channel.engineOptions.options.prefix + '_' + options.key;
-                // this will allow user to keep value for infinite time
                 let ttl = 0;
                 if (!options.ttl || options.ttl > 0) {
                     ttl = options.ttl || channel.chennalOptions.ttl || channel.engineOptions.ttl || channel.engineOptions.options.ttl;
                 }
                 this.LOG.debug('Putting value is local cache storage with key: ' + key + ' TTL: ' + ttl);
                 options.client.set(key, options.value, ttl || 0);
-                resolve({
-                    success: true,
-                    code: 'SUC_CACHE_00000',
-                    result: value
-                });
+                options.value.code = 'SUC_CACHE_00000';
+                resolve(options.value);
             } catch (error) {
                 reject(new CLASSES.CacheError(error));
             }
@@ -66,11 +62,8 @@ module.exports = {
                     if (error) {
                         reject(new CLASSES.CacheError(error));
                     } else if (value) {
-                        resolve({
-                            success: true,
-                            code: 'SUC_CACHE_00000',
-                            result: value
-                        });
+                        value.code = 'SUC_CACHE_00000';
+                        resolve(value);
                     } else {
                         reject(new CLASSES.CacheError('ERR_CACHE_00001'));
                     }

@@ -77,7 +77,6 @@ module.exports = {
                                 this.insertOne(input.model, {}).then(result => {
                                     if (result.acknowledged || (result.ops && result.ops.length > 0)) {
                                         input.model._id = result.insertedId;
-                                        console.log(input.model);
                                         resolve(input.model);
                                     } else {
                                         reject(new CLASSES.NodicsError('ERR_MDL_00005'));

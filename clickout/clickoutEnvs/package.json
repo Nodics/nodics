@@ -1,0 +1,22 @@
+{
+    "name": "clickoutEnvs",
+    "index": "2000.10.99",
+    "type": "group",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to clickoutEnvs",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "server",
+        "environment",
+        "clickoutEnvs"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

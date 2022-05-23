@@ -45,10 +45,8 @@ module.exports = {
                 }
                 this.LOG.debug('Putting value in Local cache storage with key: ' + key + ' TTL: ' + ttl);
                 options.channel.client.set(key, options.value, ttl);
-                resolve({
-                    code: 'SUC_CACHE_00000',
-                    result: options.value
-                });
+                options.value.code = 'SUC_CACHE_00000';
+                resolve(options.value);
             } catch (error) {
                 reject(new CLASSES.CacheError(error));
             }
@@ -62,10 +60,8 @@ module.exports = {
                 this.LOG.debug('Getting value from Local cache storage with key: ' + key);
                 let value = options.channel.client.get(key);
                 if (value) {
-                    resolve({
-                        code: 'SUC_CACHE_00000',
-                        result: value
-                    });
+                    value.code = 'SUC_CACHE_00000';
+                    resolve(value);
                 } else {
                     reject(new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key));
                 }

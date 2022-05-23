@@ -120,7 +120,7 @@ module.exports = {
                     responseType: endPoint.responseType,
                     params: endPoint.params
                 };
-                console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
+                //console.log(util.inspect(event, showHidden = false, depth = 5, colorize = true));
                 SERVICE.DefaultEventService.publish(event).then(success => {
                     resolve(success);
                 }).catch(error => {

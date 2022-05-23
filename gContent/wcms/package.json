@@ -1,6 +1,6 @@
 {
     "name": "wcms",
-    "index": "10.25",
+    "index": "50.25",
     "type": "core",
     "requiredModules": [
         "cms"

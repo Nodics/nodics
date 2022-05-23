@@ -41,7 +41,7 @@ module.exports = {
 
     buildFromOriginalQuery: function (request, response, process) {
         this.LOG.debug('Building query from original query');
-        request.query = {};
+        request.query = request.query || {};
         request.options = request.options || {};
         request.searchOptions = request.searchOptions || {};
         if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {

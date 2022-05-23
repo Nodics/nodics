@@ -49,10 +49,8 @@ module.exports = {
                 } else {
                     options.channel.client.set(key, JSON.stringify(options.value));
                 }
-                resolve({
-                    code: 'SUC_CACHE_00000',
-                    result: options.value
-                });
+                options.value.code = 'SUC_CACHE_00000';
+                resolve(options.value);
             } catch (error) {
                 reject(new CLASSES.CacheError(error));
             }
@@ -69,10 +67,9 @@ module.exports = {
                     if (error) {
                         reject(new CLASSES.CacheError(error));
                     } else if (value) {
-                        resolve({
-                            code: 'SUC_CACHE_00000',
-                            result: JSON.parse(value)
-                        });
+                        value = JSON.parse(value);
+                        value.code = 'SUC_CACHE_00000';
+                        resolve(value);
                     } else {
                         reject(new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key));
                     }
