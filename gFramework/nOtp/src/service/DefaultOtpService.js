@@ -23,72 +23,25 @@ module.exports = {
     },
 
     generateOtp: function (request) {
-        let _self = this;
+        request.otpService = this;
         return new Promise((resolve, reject) => {
-            if (!request.model.otpKey || !request.model.ops) {
-                reject(new CLASSES.CronJobError('ERR_OTP_00003', 'Invalid request, please validate'));
-            } else {
-                _self.get(_.merge(_.merge({}, request), {
-                    query: {
-                        otpKey: request.model.otpKey,
-                        ops: request.model.ops,
-                        active: true,
-                    }
-                })).then(response => {
-                    if (response.count > 1 || !response.result || response.result.length > 1) {
-                        reject(new CLASSES.CronJobError('ERR_OTP_00002', 'OTP data is not valid'));
-                    } else if (response.result.length == 1) {
-                        resolve(response);
-                    } else {
-                        _self.save(_.merge({}, request)).then(response => {
-                            _self.get(_.merge(_.merge({}, request), {
-                                query: {
-                                    otpKey: request.model.otpKey,
-                                    ops: request.model.ops,
-                                    active: true,
-                                }
-                            })).then(response => {
-                                resolve(response);
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-            }
+            SERVICE.DefaultPipelineService.start('otpGeneratorPipeline', request, {}).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
+            });
         });
     },
 
     validateOtp: function (request) {
-        let _self = this;
+
+        request.otpService = this;
         return new Promise((resolve, reject) => {
-            if (!request.model.otpKey || !request.model.ops || !request.model.otpValue) {
-                reject(new CLASSES.CronJobError('ERR_OTP_00003', 'Invalid request, please validate'));
-            } else {
-                _self.get(_.merge(_.merge({}, request), {
-                    query: {
-                        otpKey: request.model.otpKey,
-                        ops: request.model.ops,
-                        active: true,
-                    }
-                })).then(response => {
-                    if (response.count > 1 || !response.result || response.result.length != 1) {
-                        reject(new CLASSES.CronJobError('ERR_OTP_00002', 'OTP data is not valid'));
-                    } else if (response.result[0].otpValue === request.model.otpValue) {
-                        resolve({
-                            code: 'SUC_OTP_00001'
-                        })
-                    } else {
-                        reject(new CLASSES.CronJobError('ERR_OTP_00002', 'OTP data is not valid'));
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-            }
+            SERVICE.DefaultPipelineService.start('otpValidatorPipeline', request, {}).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
+            });
         });
     },
 };
