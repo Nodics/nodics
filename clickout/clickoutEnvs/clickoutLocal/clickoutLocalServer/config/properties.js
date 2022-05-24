@@ -16,7 +16,7 @@ module.exports = {
     webEnabled: false,
 
     activeModules: {
-        groups: ['gCore', 'gComm', 'gContent', 'gDeap', 'gMrkty', 'kickoffModules', 'clickoutModules'], // Group 'framework' will be included automatically
+        groups: ['gCore', 'gComm', 'gContent', 'gDeap', 'gMrkty', 'clickoutModules'], // Group 'framework' will be included automatically
         modules: [
             'clickoutLocalServer',
             'clickoutLocal'

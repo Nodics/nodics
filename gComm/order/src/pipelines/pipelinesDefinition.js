@@ -10,5 +10,59 @@
  */
 
 module.exports = {
-
+    createOrderPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultCreateOrderPipelineService.validateRequest',
+                success: 'validateMandateValues'
+            },
+            validateMandateValues: {
+                type: 'function',
+                handler: 'DefaultCreateOrderPipelineService.validateMandateValues',
+                success: 'validateItems'
+            },
+            validateItems: {
+                type: 'function',
+                handler: 'DefaultCreateOrderPipelineService.validateItems',
+                success: 'validateConsignments'
+            },
+            validateConsignments: {
+                type: 'function',
+                handler: 'DefaultCreateOrderPipelineService.validateConsignments',
+                success: 'validatePayments'
+            },
+            validatePayments: {
+                type: 'function',
+                handler: 'DefaultCreateOrderPipelineService.validatePayments',
+                success: 'validateOrder'
+            },
+            validateOrder: {
+                type: 'function',
+                handler: 'DefaultCreateOrderPipelineService.validateOrder',
+                success: 'saveOrder'
+            },
+            saveOrder: {
+                type: 'function',
+                handler: 'DefaultCreateOrderPipelineService.saveOrder',
+                success: 'postValidation'
+            },
+            postValidation: {
+                type: 'function',
+                handler: 'DefaultCreateOrderPipelineService.postValidation',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultCreateOrderPipelineService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultCreateOrderPipelineService.handleErrorEnd'
+            }
+        }
+    }
 };

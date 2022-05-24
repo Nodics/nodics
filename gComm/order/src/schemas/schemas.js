@@ -10,6 +10,7 @@
  */
 
 module.exports = {
+
     order: {
         order: {
             super: 'base',
@@ -28,11 +29,15 @@ module.exports = {
                 enabled: false,
                 idPropertyName: 'code'
             },
-            refSchema: {
-
-            },
             definition: {
-
+                entCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Enterprise code that order belongs',
+                    searchOptions: {
+                        enabled: true
+                    }
+                }
             }
         }
     }

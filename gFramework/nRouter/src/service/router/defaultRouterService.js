@@ -195,9 +195,6 @@ module.exports = {
 
     prepareDefaultRouter: function (options) {
         let _self = this;
-        // console.log('--------------------------------------------');
-        // console.log(options.routers.default);
-        // console.log('--------------------------------------------');
         _.each(options.routers.default, function (group, groupName) {
             if (groupName !== 'options') {
                 _.each(group, function (routerDef, routerName) {

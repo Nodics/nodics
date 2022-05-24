@@ -1,5 +1,5 @@
 {
-    "name": "clickout",
+    "name": "clickoutcore",
     "index": "2000.1.1",
     "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to clickoutcore",

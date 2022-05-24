@@ -47,8 +47,8 @@ module.exports = function () {
         _customHome = options.CUSTOM_HOME;
     };
 
-    this.initEnvironment = function () {
-        _serverName = 'kickoffLocalServer';
+    this.initEnvironment = function (options) {
+        _serverName = options.defaultServer || 'kickoffLocalServer';
         _nodeName = null;
         process.argv.forEach(element => {
             if (element.startsWith('S=')) {

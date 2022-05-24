@@ -1,5 +1,5 @@
 {
-    "name": "clickout",
+    "name": "clickoutapp",
     "index": "2000.99",
     "type": "group",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to clickout",

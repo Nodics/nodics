@@ -35,34 +35,34 @@ module.exports = {
     },
 
     start: function () {
-        FRAMEWORK.start({});
+        FRAMEWORK.start();
     },
 
     genApp: function () {
-        FRAMEWORK.genApp({});
+        FRAMEWORK.genApp();
     },
 
     genGroup: function () {
-        FRAMEWORK.genGroup({});
+        FRAMEWORK.genGroup();
     },
 
     genModule: function () {
-        FRAMEWORK.genModule({});
+        FRAMEWORK.genModule();
     },
 
     genReactModule: function () {
-        FRAMEWORK.genReactModule({});
+        FRAMEWORK.genReactModule();
     },
 
     genVueModule: function () {
-        FRAMEWORK.genVueModule({});
+        FRAMEWORK.genVueModule();
     },
 
     cleanAll: function () {
-        FRAMEWORK.cleanAll({});
+        FRAMEWORK.cleanAll();
     },
 
     buildAll: function () {
-        FRAMEWORK.buildAll({});
+        FRAMEWORK.buildAll();
     }
 };

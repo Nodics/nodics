@@ -10,5 +10,12 @@
  */
 
 module.exports = {
-
+    orderPreSaveEntCode: {
+        type: 'schema',
+        item: 'order',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultOrderCodeGeneratorInterceptorService.generateEntCode'
+    }
 };

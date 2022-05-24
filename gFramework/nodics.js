@@ -11,6 +11,7 @@
 
 const _ = require('lodash');
 const config = require('./nConfig');
+const env = require('../env');
 
 module.exports = {
     /**
@@ -124,7 +125,8 @@ module.exports = {
         });
     },
 
-    start: function (options) {
+    start: function () {
+        let options = env.defaultOptions;
         this.initFramework(options).then(success => {
             SERVICE.DefaultRouterService.startServers().then(success => {
                 if (CONFIG.get('activateNodePing')) {
@@ -159,7 +161,8 @@ module.exports = {
         });
     },
 
-    genGroup: function (options) {
+    genGroup: function () {
+        let options = env.defaultOptions;
         config.start(options).then(() => {
             return config.initUtilities(options);
         }).then(() => {
@@ -171,7 +174,8 @@ module.exports = {
         });
     },
 
-    genModule: function (options) {
+    genModule: function () {
+        let options = env.defaultOptions;
         config.start(options).then(() => {
             return config.initUtilities(options);
         }).then(() => {
@@ -182,7 +186,8 @@ module.exports = {
             console.error(error);
         });
     },
-    genReactModule: function (options) {
+    genReactModule: function () {
+        let options = env.defaultOptions;
         config.start(options).then(() => {
             return config.initUtilities(options);
         }).then(() => {
@@ -194,7 +199,8 @@ module.exports = {
         });
     },
 
-    genVueModule: function (options) {
+    genVueModule: function () {
+        let options = env.defaultOptions;
         config.start(options).then(() => {
             return config.initUtilities(options);
         }).then(() => {
@@ -206,7 +212,8 @@ module.exports = {
         });
     },
 
-    cleanAll: function (options) {
+    cleanAll: function () {
+        let options = env.defaultOptions;
         config.prepareClean(options).then(() => {
             return config.initUtilities(options);
         }).then(() => {
@@ -216,7 +223,8 @@ module.exports = {
         });
     },
 
-    buildAll: function (options) {
+    buildAll: function () {
+        let options = env.defaultOptions;
         config.prepareBuild(options).then(() => {
             return config.initUtilities(options);
         }).then(() => {

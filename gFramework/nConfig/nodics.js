@@ -74,7 +74,7 @@ module.exports = {
                 NODICS.init(options);
                 NODICS.setStartTime(startTime);
                 utils.loadRawModuleList(NODICS.getNodicsHome());
-                NODICS.initEnvironment();
+                NODICS.initEnvironment(options);
                 fse.ensureDir(NODICS.getServerPath() + '/temp/logs').then(success => {
                     initService.prepareOptions();
                     initService.loadModuleIndex();

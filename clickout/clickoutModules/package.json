@@ -1,7 +1,7 @@
 {
     "name": "clickoutModules",
     "index": "2000.1.99",
-    "type": "group",
+    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to clickoutModules",
     "homepage": "http://www.nodics.com/",
     "keywords": [
