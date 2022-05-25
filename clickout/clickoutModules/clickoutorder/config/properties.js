@@ -10,10 +10,5 @@
  */
 
 module.exports = {
-    token: {
-        ORDER: {
-            validUpTo: 300, //this value is in minutes 5 hrs
-            tokenHandler: 'ClickoutOrderSchemaValueHandlerService'
-        }
-    }
+
 };

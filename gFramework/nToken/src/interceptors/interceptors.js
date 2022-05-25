@@ -17,5 +17,5 @@ module.exports = {
         active: 'true',
         index: 0,
         handler: 'DefaultTokenValidityCheckInterceptorService.fetchValidToken'
-    },
+    }
 };

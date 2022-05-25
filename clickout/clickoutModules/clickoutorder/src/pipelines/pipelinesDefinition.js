@@ -10,23 +10,5 @@
  */
 
 module.exports = {
-    // createOrderPipeline: {
-    //     nodes: {
-    //         validateOrder: {
-    //             type: 'function',
-    //             handler: 'DefaultGenerateTokenPipelineService.validateMandateValues',
-    //             success: 'buildQuery'
-    //         },
-    //         generateTokenModel: {
-    //             type: 'function',
-    //             handler: 'DefaultGenerateTokenPipelineService.buildQuery',
-    //             success: 'checkExistingToken'
-    //         },
-    //         saveOrder: {
-    //             type: 'function',
-    //             handler: 'DefaultGenerateTokenPipelineService.checkExistingToken',
-    //             success: 'generateNewToken'
-    //         }
-    //     }
-    // }
+
 };

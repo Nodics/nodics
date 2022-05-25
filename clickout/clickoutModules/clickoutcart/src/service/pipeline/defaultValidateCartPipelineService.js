@@ -36,14 +36,20 @@ module.exports = {
 
     prepareToken: function (request, response, process) {
         this.LOG.debug('Validating create order request');
-        if (!request.model.token || UTILS.isBlank(request.model.token)) {
-            request.model.token = {
-                key: request.model.refCode,
-                ops: 'createCart',
-                type: 'ORDER',
-                active: true
-            }
+        if (UTILS.isBlank(request.model.token)) {
+            SERVICE.DefaultTokenService.generateToken(_.merge(_.merge({}, request), {
+                model: {
+                    key: request.model.refCode,
+                    ops: 'createCart',
+                    type: 'ORDER',
+                    active: true
+                }
+            })).then(success => {
+                request.model.token = success.result;
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
+            });
         }
-        process.nextSuccess(request, response);
     }
 };

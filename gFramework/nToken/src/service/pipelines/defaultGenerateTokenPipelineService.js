@@ -57,12 +57,28 @@ module.exports = {
                 key: request.model.key,
                 ops: request.model.ops,
                 active: true,
+            },
+            searchOptions: {
+                pageSize: 1,
+                sort: {
+                    expireAt: -1
+                }
             }
         })).then(result => {
             if (result.count > 1 || !result.result || result.result.length > 1) {
                 process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00002', 'Token data is not valid'));
             } else if (result.result.length == 1) {
-                process.stop(request, response, result);
+                let tokenModel = result.result[0];
+                let currentTime = new Date;
+                if (tokenModel.expireAt.getTime() >= currentTime.getTime()) {
+                    process.stop(request, response, {
+                        code: result.code || 'SUC_SYS_00000',
+                        cache: result.cache || "item mis",
+                        result: result.result[0]
+                    });
+                } else {
+                    process.nextSuccess(request, response);
+                }
             } else {
                 process.nextSuccess(request, response);
             }
@@ -74,6 +90,11 @@ module.exports = {
     generateNewToken: function (request, response, process) {
         this.LOG.debug('Generating new Token');
         request.tokenService.save(_.merge({}, request)).then(result => {
+            response.success = {
+                code: result.code || 'SUC_SYS_00000',
+                cache: result.cache || "item mis",
+                result: result.result
+            };
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
@@ -97,18 +118,7 @@ module.exports = {
     },
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        let success = {
-            code: response.success.code || 'SUC_SYS_00000',
-            cache: response.success.cache,
-            result: {
-                _id: response.success.result[0]._id,
-                key: response.success.result[0].key,
-                ops: response.success.result[0].ops,
-                value: response.success.result[0].value,
-                valid: response.success.result[0].expireAt
-            }
-        }
-        process.resolve(success);
+        process.resolve(response.success);
     },
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');

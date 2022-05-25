@@ -17,6 +17,9 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 try {
                     let cursor = this.find(input.query, input.searchOptions);
+                    if (input.searchOptions && input.searchOptions.sort && !UTILS.isBlank(input.searchOptions.sort)) {
+                        cursor = cursor.sort(input.searchOptions.sort);
+                    }
                     cursor.count().then(count => {
                         cursor.toArray((error, result) => {
                             if (error) {

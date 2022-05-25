@@ -40,8 +40,13 @@ module.exports = {
     },
     saveCart: function (request, response, process) {
         this.LOG.debug('Creating cart');
+        console.log('--------------------------------------------');
+        console.log(request.model);
+        console.log('--------------------------------------------');
         request.cartService.save(request).then(result => {
             response.success = result;
+            console.log(response.success);
+            console.log('--------------------------------------------');
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_ORD_00000'));
@@ -55,9 +60,6 @@ module.exports = {
 
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        console.log('--------------------------------------------');
-        console.log(response.success);
-        console.log('--------------------------------------------');
         process.resolve(response.success);
     },
 

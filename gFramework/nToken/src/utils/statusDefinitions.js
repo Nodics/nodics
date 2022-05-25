@@ -40,6 +40,6 @@ module.exports = {
 
     ERR_TKN_00003: {
         code: '500',
-        message: 'Invalid request, please validate'
+        message: 'Invalid token'
     }
 };

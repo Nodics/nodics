@@ -18,7 +18,7 @@ module.exports = {
                 enabled: true
             },
             cache: {
-                enabled: true,
+                enabled: false,
                 ttl: 1000
             },
             router: {

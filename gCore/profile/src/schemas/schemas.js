@@ -427,7 +427,7 @@ module.exports = {
                     description: 'Required unique login id'
                 },
                 password: {
-                    type: 'string',
+                    type: 'objectId',
                     required: true,
                     description: 'Required password for the login'
                 },

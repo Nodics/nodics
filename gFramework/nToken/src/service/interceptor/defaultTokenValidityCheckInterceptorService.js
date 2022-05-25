@@ -24,14 +24,14 @@ module.exports = {
 
     fetchValidToken: function (request, response) {
         return new Promise((resolve, reject) => {
-            if (request.options.loadValid) {
-                request.query = _.merge(request.query, {
-                    expireAt: {
-                        "$gte": new Date()
-                    },
-                    active: true
-                });
-            }
+            // if (request.options.loadValid) {
+            //     // request.query = _.merge(request.query, {
+            //     //     expireAt: {
+            //     //         "$gte": new Date()
+            //     //     },
+            //     //     active: true
+            //     // });
+            // }
             resolve(true);
         });
     }

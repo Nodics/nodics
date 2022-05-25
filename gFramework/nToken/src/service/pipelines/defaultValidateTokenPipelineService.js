@@ -57,20 +57,33 @@ module.exports = {
                 key: request.model.key,
                 ops: request.model.ops,
                 active: true,
+                // expireAt: {
+                //     "$gte": new Date()
+                // },
+                // value: String(request.model.value)
+            },
+            searchOptions: {
+                pageSize: 1,
+                sort: {
+                    expireAt: -1
+                }
             }
         })).then(result => {
-            console.log(result);
-            if (result.count > 1 || !result.result || result.result.length != 1) {
-                process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00002', 'Token data is not valid'));
-            } else if (result.result[0].key === request.model.key
-                && result.result[0].ops === request.model.ops
-                && result.result[0].value === request.model.value) {
-                response.success = {
-                    code: 'SUC_TKN_00001'
-                };
-                process.nextSuccess(request, response);
+            if (result.count === 1 && result.result && result.result.length === 1) {
+                let tokenModel = result.result[0];
+                let currentTime = new Date;
+                if (tokenModel.expireAt.getTime() >= currentTime.getTime() && tokenModel.value === String(request.model.value)) {
+                    response.success = {
+                        code: 'SUC_TKN_00001'
+                    };
+                    process.nextSuccess(request, response);
+                } else if (tokenModel.expireAt.getTime() < currentTime.getTime()) {
+                    process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00001'));
+                } else if (tokenModel.value != String(request.model.value)) {
+                    process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00003'));
+                }
             } else {
-                process.error(request, response, new CLASSES.CronJobError('ERR_TKN_00002', 'Token data is not valid'));
+                process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00002', 'Token data is not valid'));
             }
         }).catch(error => {
             process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));

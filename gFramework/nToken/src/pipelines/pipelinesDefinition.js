@@ -38,7 +38,7 @@ module.exports = {
             generateNewToken: {
                 type: 'function',
                 handler: 'DefaultGenerateTokenPipelineService.generateNewToken',
-                success: 'fatchNewToken'
+                success: 'successEnd'
             },
             fatchNewToken: {
                 type: 'function',
