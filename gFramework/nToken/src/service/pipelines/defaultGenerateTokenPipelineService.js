@@ -101,6 +101,7 @@ module.exports = {
             code: response.success.code || 'SUC_SYS_00000',
             cache: response.success.cache,
             result: {
+                _id: response.success.result[0]._id,
                 key: response.success.result[0].key,
                 ops: response.success.result[0].ops,
                 value: response.success.result[0].value,

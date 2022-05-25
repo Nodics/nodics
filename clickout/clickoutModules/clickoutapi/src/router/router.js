@@ -11,21 +11,39 @@
 
 module.exports = {
     clickout: {
-        orderOperations: {
-            createOrder: {
+        cartOperations: {
+            createCart: {
                 secured: true,
                 accessGroups: ['userGroup'],
-                key: '/order/create',
+                key: '/cart/create',
                 method: 'PUT',
-                controller: 'DefaultOrderController',
-                operation: 'createOrder',
+                controller: 'DefaultCartController',
+                operation: 'createCart',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'Post',
-                    url: 'http://host:port/nodics/clickout/order/create',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/clickout/cart/create',
                     body: {
-                        //complete order detail
+                        //complete cart detail
+                    }
+                }
+            },
+            createLoad: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/cart/load',
+                method: 'POST',
+                controller: 'DefaultCartController',
+                operation: 'loadCart',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/clickout/cart/load',
+                    body: {
+                        options: {},
+                        query: {}
                     }
                 }
             },

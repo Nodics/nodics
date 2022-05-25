@@ -10,6 +10,12 @@
  */
 
 module.exports = {
-
-
+    cartPreSaveOrderCode: {
+        type: 'schema',
+        item: 'cart',
+        trigger: 'preSave',
+        active: 'true',
+        index: 1,
+        handler: 'ClickoutCartCodeGeneratorInterceptorService.generateCartCode'
+    },
 };

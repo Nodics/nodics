@@ -8,6 +8,8 @@
     terms of the license agreement you entered into with Nodics
 */
 
+const _ = require('lodash');
+
 module.exports = {
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -19,7 +21,13 @@ module.exports = {
             resolve(true);
         });
     },
-    createOrder: function (request) {
-        return SERVICE.DefaultOrderService.createOrder(request);
+
+    generateCartCode: function (request, response) {
+        return new Promise((resolve, reject) => {
+            if (!request.model.code || request.model.code == '') {
+                request.model.code = request.model.entCode.toLowerCaseFirstChar() + '_' + request.model.refCode
+            }
+            resolve(true);
+        });
     }
 };

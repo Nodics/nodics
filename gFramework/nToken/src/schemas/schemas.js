@@ -36,7 +36,7 @@ module.exports = {
                     description: 'Operation name for that Token been generated'
                 },
                 value: {
-                    type: 'int',
+                    type: 'string',
                     required: true,
                     description: 'Generated token value',
                     default: 'DefaultTokenHandlerService.generateToken',

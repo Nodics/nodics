@@ -10,6 +10,21 @@
  */
 
 module.exports = {
+    /**
+         * Exception codes related to Database operations
+         */
+    SUC_ORD_00000: {
+        code: '200',
+        message: 'Operation successfully processed: Order created'
+    },
 
+    ERR_ORD_00000: {
+        code: '500',
+        message: 'Internal server error while creating order'
+    },
 
+    ERR_ORD_00001: {
+        code: '500',
+        message: 'Invalid order creation request'
+    }
 };

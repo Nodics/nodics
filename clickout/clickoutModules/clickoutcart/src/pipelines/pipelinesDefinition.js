@@ -10,6 +10,16 @@
  */
 
 module.exports = {
-
-
+    cartValidatorPipeline: {
+        nodes: {
+            validateCart: {
+                success: 'prepareToken'
+            },
+            prepareToken: {
+                type: 'function',
+                handler: 'defaultValidateCartPipelineService.prepareToken',
+                success: 'successEnd'
+            }
+        }
+    }
 };

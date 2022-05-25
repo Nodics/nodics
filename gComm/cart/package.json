@@ -1,11 +1,11 @@
 {
-    "name": "order",
-    "index": "40.6",
+    "name": "cart",
+    "index": "40.5",
     "type": "core",
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to order",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to cart",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "order"
+        "cart"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

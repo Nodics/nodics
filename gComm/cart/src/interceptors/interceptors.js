@@ -10,6 +10,12 @@
  */
 
 module.exports = {
-
-
+    cartPreSaveEntCode: {
+        type: 'schema',
+        item: 'cart',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultCartSchemaInterceptorService.generateEntCode'
+    }
 };

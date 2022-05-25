@@ -1,11 +1,11 @@
 {
-    "name": "order",
-    "index": "40.6",
+    "name": "clickoutcart",
+    "index": "2000.1.14",
     "type": "core",
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to order",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to clickoutcart",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "order"
+        "clickoutcart"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

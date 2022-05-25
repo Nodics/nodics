@@ -1,7 +1,7 @@
 {
     "name": "clickout",
     "index": "2000.1.20",
-    "type": "core",
+    "type": "router",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to clickoutapi",
     "homepage": "http://www.nodics.com/",
     "keywords": [

@@ -202,9 +202,7 @@ module.exports = {
         let _self = this;
         let moduleIndex = {};
         let indexValue = [];
-        console.log('=====', NODICS.getActiveModules());
         _.each(NODICS.getRawModules(), (moduleObject, moduleName) => {
-            console.log(moduleObject.metaData.name);
             if (NODICS.isModuleActive(moduleObject.metaData.name)) {
                 indexValue.push(moduleObject.index);
                 if (!moduleIndex[moduleObject.index]) {
