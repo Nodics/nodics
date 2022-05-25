@@ -12,14 +12,22 @@
 module.exports = {
     cartValidatorPipeline: {
         nodes: {
-            validateCart: {
+            validatePayments: {
+                type: 'function',
+                handler: 'defaultValidateCartPipelineService.validatePayments',
                 success: 'prepareToken'
             },
             prepareToken: {
                 type: 'function',
                 handler: 'defaultValidateCartPipelineService.prepareToken',
+                success: 'validateCart'
+            },
+            validateCart: {
+                type: 'function',
+                handler: 'defaultValidateCartPipelineService.validateCart',
                 success: 'successEnd'
             }
+
         }
     }
 };

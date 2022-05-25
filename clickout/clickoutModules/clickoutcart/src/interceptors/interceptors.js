@@ -10,12 +10,20 @@
  */
 
 module.exports = {
-    cartPreSaveOrderCode: {
+    cartPreSaveCartCode: {
         type: 'schema',
         item: 'cart',
         trigger: 'preSave',
         active: 'true',
         index: 1,
-        handler: 'ClickoutCartCodeGeneratorInterceptorService.generateCartCode'
+        handler: 'clickoutCartCodeGeneratorInterceptorService.generateCartCode'
+    },
+    cartPostLoadToken: {
+        type: 'schema',
+        item: 'cart',
+        trigger: 'postGet',
+        active: 'true',
+        index: 1,
+        handler: 'clickoutCartTokenDetailInterceptorService.loadCartToken'
     },
 };

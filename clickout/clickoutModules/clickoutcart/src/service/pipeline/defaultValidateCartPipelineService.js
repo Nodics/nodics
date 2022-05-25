@@ -35,21 +35,46 @@ module.exports = {
     },
 
     prepareToken: function (request, response, process) {
-        this.LOG.debug('Validating create order request');
-        if (UTILS.isBlank(request.model.token)) {
-            SERVICE.DefaultTokenService.generateToken(_.merge(_.merge({}, request), {
-                model: {
-                    key: request.model.refCode,
+        this.LOG.debug('Generating token for cart');
+        let cartModel = request.model;
+        if (UTILS.isBlank(cartModel.token)) {
+            SERVICE.DefaultTokenService.get(_.merge(_.merge({}, request), {
+                query: {
+                    key: cartModel.refCode,
                     ops: 'createCart',
-                    type: 'ORDER',
-                    active: true
+                    active: true,
+                },
+                searchOptions: {
+                    pageSize: 1,
+                    sort: {
+                        expireAt: -1
+                    }
                 }
-            })).then(success => {
-                request.model.token = success.result;
-                process.nextSuccess(request, response);
+            })).then(result => {
+                if (result.result && result.result.length == 1) {
+                    cartModel.token = result.result[0].value;
+                    process.nextSuccess(request, response);
+                } else {
+                    SERVICE.DefaultTokenService.save({
+                        tenant: request.tenant,
+                        model: {
+                            key: cartModel.refCode,
+                            ops: 'createCart',
+                            type: 'ORDER',
+                            active: true
+                        }
+                    }).then(result => {
+                        cartModel.token = result.result.value;
+                        process.nextSuccess(request, response);
+                    }).catch(error => {
+                        process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
+                    });
+                }
             }).catch(error => {
                 process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
             });
+        } else {
+            process.nextSuccess(request, response);
         }
     }
 };

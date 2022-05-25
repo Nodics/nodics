@@ -12,28 +12,11 @@
 module.exports = {
     cart: {
         cart: {
-            refSchema: {
-                token: {
-                    enabled: true,
-                    schemaName: "token",
-                    type: 'one',
-                    propertyName: '_id',
-                    searchEnabled: true
-                }
-            },
             definition: {
                 refCode: {
                     type: 'string',
                     required: true,
                     description: 'Merchant unique order code',
-                    searchOptions: {
-                        enabled: true
-                    }
-                },
-                token: {
-                    type: 'objectId',
-                    required: true,
-                    description: 'Required token to set order validity',
                     searchOptions: {
                         enabled: true
                     }

@@ -40,11 +40,9 @@ module.exports = {
     },
     saveCart: function (request, response, process) {
         this.LOG.debug('Creating cart');
-        console.log('--------------------------------------------');
-        console.log(request.model);
-        console.log('--------------------------------------------');
         request.cartService.save(request).then(result => {
             response.success = result;
+            console.log('------------------Cart Created--------------------------');
             console.log(response.success);
             console.log('--------------------------------------------');
             process.nextSuccess(request, response);

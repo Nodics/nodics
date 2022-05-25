@@ -57,10 +57,6 @@ module.exports = {
                 key: request.model.key,
                 ops: request.model.ops,
                 active: true,
-                // expireAt: {
-                //     "$gte": new Date()
-                // },
-                // value: String(request.model.value)
             },
             searchOptions: {
                 pageSize: 1,

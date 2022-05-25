@@ -34,24 +34,40 @@ module.exports = {
             return FACADE.DefaultCartFacade.createCart(request);
         }
     },
-    loadCart: function (request, callback) {
-        request.options = request.options || {};
-        request.searchOptions = request.searchOptions || {};
-        if (!request.options.recursive && request.httpRequest.get('recursive') && request.httpRequest.get('recursive') === 'true') {
-            request.options.recursive = true;
-        } else {
-            request.options.recursive = false;
+    loadCartByRefCode: function (request, callback) {
+        request.query = {
+            refCode: request.httpRequest.params.refCode,
+            entCode: request.authData.entCode
         }
-        if (request.httpRequest.params.id) {
-            request.query = {
-                _id: request.httpRequest.params.id
-            };
-        } else if (request.httpRequest.params.code) {
-            request.query = {
-                code: request.httpRequest.params.code
-            };
-        } else if (!UTILS.isBlank(request.httpRequest.body)) {
-            request = _.merge(request, request.httpRequest.body || {});
+        if (callback) {
+            FACADE.DefaultCartFacade.loadCart(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultCartFacade.loadCart(request);
+        }
+    },
+    loadCartByCode: function (request, callback) {
+        request.query = {
+            code: request.httpRequest.params.code,
+            entCode: request.authData.entCode
+        }
+        if (callback) {
+            FACADE.DefaultCartFacade.loadCart(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultCartFacade.loadCart(request);
+        }
+    },
+    loadCartByToken: function (request, callback) {
+        request.query = {
+            token: request.httpRequest.params.token,
+            entCode: request.authData.entCode
         }
         if (callback) {
             FACADE.DefaultCartFacade.loadCart(request).then(success => {

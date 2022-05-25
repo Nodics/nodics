@@ -29,22 +29,46 @@ module.exports = {
                     }
                 }
             },
-            createLoad: {
+            loadCartByRefCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
-                key: '/cart/load',
-                method: 'POST',
+                key: '/cart/ref/:refCode',
+                method: 'GET',
                 controller: 'DefaultCartController',
-                operation: 'loadCart',
+                operation: 'loadCartByRefCode',
                 help: {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/clickout/cart/load',
-                    body: {
-                        options: {},
-                        query: {}
-                    }
+                    method: 'GET',
+                    url: 'http://host:port/nodics/clickout/cart/ref/:refCode',
+                }
+            },
+            loadCartByCode: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/cart/code/:code',
+                method: 'GET',
+                controller: 'DefaultCartController',
+                operation: 'loadCartByCode',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/clickout/cart/code/:code',
+                }
+            },
+            loadCartByToken: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/cart/token/:token',
+                method: 'GET',
+                controller: 'DefaultCartController',
+                operation: 'loadCartByToken',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/clickout/cart/token/:token',
                 }
             },
         },
