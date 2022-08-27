@@ -10,7 +10,18 @@
  */
 
 module.exports = {
-    defaultOptions: {
-        defaultServer: 'kickoffLocalServer'
+    order: {
+        shippingStatus: {
+            options: {
+                enabled: true,
+                schemaName: 'shippingstatus',
+                operation: 'saveAll',
+                //tenants: ['default'],
+                dataFilePrefix: 'defaultShippingStatusData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
     }
 };

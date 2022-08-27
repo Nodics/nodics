@@ -63,6 +63,17 @@ module.exports = {
                 }
             },
             definition: {
+                type: {
+                    type: 'string',
+                    required: true,
+                    description: 'Type of address, like home, office'
+                },
+                isPrimery: {
+                    type: 'bool',
+                    required: true,
+                    default: false,
+                    description: 'Set if this address is default one'
+                },
                 flatNo: {
                     type: 'string',
                     required: false,

@@ -17,5 +17,13 @@ module.exports = {
         active: 'true',
         index: 0,
         handler: 'DefaultOrderCodeGeneratorInterceptorService.generateEntCode'
-    }
+    },
+    orderPreSaveOrderCode: {
+        type: 'schema',
+        item: 'order',
+        trigger: 'preSave',
+        active: 'true',
+        index: 1,
+        handler: 'DefaultOrderCodeGeneratorInterceptorService.generateOrderCode'
+    },
 };

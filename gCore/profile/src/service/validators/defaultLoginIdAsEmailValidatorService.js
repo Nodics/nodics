@@ -9,8 +9,17 @@
 
  */
 
+const emailValidator = require("email-validator");
+
 module.exports = {
-    defaultOptions: {
-        defaultServer: 'kickoffLocalServer'
+    validateLoginId: function (request, response) {
+        return new Promise((resolve, reject) => {
+            if (emailValidator.validate(request.model.loginId)) {
+                resolve(true);
+            } else {
+                reject('Invalid Login id: ' + request.model.loginId);
+            }
+
+        });
     }
 };

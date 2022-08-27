@@ -17,5 +17,21 @@ module.exports = {
         active: 'true',
         index: 0,
         handler: 'DefaultCartSchemaInterceptorService.generateEntCode'
-    }
+    },
+    cartPreSaveCartCode: {
+        type: 'schema',
+        item: 'cart',
+        trigger: 'preSave',
+        active: 'true',
+        index: 1,
+        handler: 'clickoutCartCodeGeneratorInterceptorService.generateCartCode'
+    },
+    cartPostLoadToken: {
+        type: 'schema',
+        item: 'cart',
+        trigger: 'postGet',
+        active: 'true',
+        index: 1,
+        handler: 'clickoutCartTokenDetailInterceptorService.loadCartToken'
+    },
 };

@@ -22,6 +22,10 @@ module.exports = {
         },
         jwtVerifyOptions: {
             algorithm: ["HS256"]
+        },
+        loginIdFormat: 'default',
+        loginIdFormatValidators: {
+            email: 'DefaultLoginIdAsEmailValidatorService'
         }
     },
 

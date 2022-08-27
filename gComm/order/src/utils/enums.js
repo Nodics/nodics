@@ -10,34 +10,18 @@
  */
 
 module.exports = {
-    AddressType: {
+    ReasonType: {
         _options: {
-            name: 'AddressType',
+            name: 'ReasonType',
             separator: '|',
             endianness: 'BE',
             ignoreCase: false,
             freez: false
         },
         definition: [
-            'EMAIL',
-            'PHONE',
-            'FAX',
-            'PAGER'
-        ]
-    },
-    ContactType: {
-        _options: {
-            name: 'ContactType',
-            separator: '|',
-            endianness: 'BE',
-            ignoreCase: false,
-            freez: false
-        },
-        definition: [
-            'EMAIL',
-            'PHONE',
-            'FAX',
-            'PAGER'
+            'ORDERSTATUS',
+            'PAYMENT',
+            'SHIPMENT'
         ]
     }
 };

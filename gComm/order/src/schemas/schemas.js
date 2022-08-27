@@ -13,6 +13,25 @@ module.exports = {
 
     order: {
         order: {
+            super: 'abstractCart',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            cache: {
+                enabled: false
+            },
+            search: {
+                enabled: false
+            },
+            definition: {
+
+            }
+        },
+        orderstatus: {
             super: 'base',
             model: true,
             service: {
@@ -22,23 +41,66 @@ module.exports = {
                 enabled: true
             },
             cache: {
-                enabled: false,
-                ttl: 360
+                enabled: false
             },
             search: {
-                enabled: false,
-                idPropertyName: 'code'
+                enabled: false
             },
             definition: {
-                entCode: {
+                name: {
                     type: 'string',
                     required: true,
-                    description: 'Enterprise code that order belongs',
+                    description: 'Name of the order status, could be used to display to customer',
                     searchOptions: {
-                        enabled: true
+                        enabled: true, // default is false
+                    }
+                },
+                sequence: {
+                    type: 'string',
+                    required: true,
+                    description: 'Sequence number to track valid next order status ',
+                    searchOptions: {
+                        enabled: true, // default is false
                     }
                 }
             }
-        }
+        },
+        paymentstatus: {
+            super: 'orderstatus'
+        },
+        shippingstatus: {
+            super: 'orderstatus'
+        },
+        reasons: {
+            super: 'super',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            cache: {
+                enabled: false
+            },
+            search: {
+                enabled: false
+            },
+            definition: {
+                orderstatus: {
+                    type: 'string',
+                    required: true,
+                    description: 'Code of the order status',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                type: {
+                    enum: [ENUMS.ReasonType.ORDERSTATUS.key, ENUMS.ReasonType.PAYMENT.key, ENUMS.ReasonType.SHIPMENT.key],
+                    required: true,
+                    description: 'Required value could be only in [ORDERSTATUS, PAYMENT, SHIPMENT]'
+                }
+            }
+        },
     }
 };

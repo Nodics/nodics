@@ -155,5 +155,13 @@ module.exports = {
         active: 'true',
         index: 0,
         handler: 'DefaultEnterpriseUpdateInterceptorService.enterpriseRemoveEvent'
-    }
+    },
+    customerLoginIdValidator: {
+        type: 'schema',
+        item: 'customer',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultCustomerLoginIdInterceptorService.validateLoginId'
+    },
 };

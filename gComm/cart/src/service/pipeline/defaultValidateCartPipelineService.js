@@ -38,6 +38,49 @@ module.exports = {
         this.LOG.debug('Validating create order request');
         process.nextSuccess(request, response);
     },
+    prepareToken: function (request, response, process) {
+        this.LOG.debug('Generating token for cart');
+        let cartModel = request.model;
+        if (UTILS.isBlank(cartModel.token)) {
+            SERVICE.DefaultTokenService.get(_.merge(_.merge({}, request), {
+                query: {
+                    key: cartModel.refCode,
+                    ops: 'createCart',
+                    active: true,
+                },
+                searchOptions: {
+                    pageSize: 1,
+                    sort: {
+                        expireAt: -1
+                    }
+                }
+            })).then(result => {
+                if (result.result && result.result.length == 1) {
+                    cartModel.token = result.result[0].value;
+                    process.nextSuccess(request, response);
+                } else {
+                    SERVICE.DefaultTokenService.save({
+                        tenant: request.tenant,
+                        model: {
+                            key: cartModel.refCode,
+                            ops: 'createCart',
+                            type: 'ORDER',
+                            active: true
+                        }
+                    }).then(result => {
+                        cartModel.token = result.result.value;
+                        process.nextSuccess(request, response);
+                    }).catch(error => {
+                        process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
+                    });
+                }
+            }).catch(error => {
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
     validateMandateValues: function (request, response, process) {
         this.LOG.debug('Validating create order mandate values');
         process.nextSuccess(request, response);

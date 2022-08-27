@@ -10,24 +10,15 @@
  */
 
 module.exports = {
-
-    cart: {
-        cart: {
+    default: {
+        abstractCart: {
             super: 'base',
-            model: true,
+            model: false,
             service: {
-                enabled: true
+                enabled: false
             },
             router: {
-                enabled: true
-            },
-            cache: {
-                enabled: false,
-                ttl: 360
-            },
-            search: {
-                enabled: false,
-                idPropertyName: 'code'
+                enabled: false
             },
             definition: {
                 entCode: {
@@ -37,7 +28,48 @@ module.exports = {
                     searchOptions: {
                         enabled: true
                     }
+                },
+                refCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Merchant unique order code',
+                    searchOptions: {
+                        enabled: true
+                    }
                 }
+            },
+            indexes: {
+                individual: {
+                    refCode: {
+                        name: 'refCode',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    cart: {
+        cart: {
+            super: 'abstractCart',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            cache: {
+                enabled: false
+            },
+            search: {
+                enabled: false
+            },
+            definition: {
+
             }
         }
     }

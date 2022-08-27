@@ -10,7 +10,15 @@
  */
 
 module.exports = {
-    defaultOptions: {
-        defaultServer: 'kickoffLocalServer'
+    order: {
+        orderStatusReasons: {
+            options: {
+                enabled: true,
+                schemaName: 'reasons',
+                operation: 'saveAll',
+                //tenants: ['default'],
+                dataFilePrefix: 'defaultOrderStatusResonData'
+            }
+        }
     }
 };

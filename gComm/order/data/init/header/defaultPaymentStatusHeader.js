@@ -10,7 +10,18 @@
  */
 
 module.exports = {
-    defaultOptions: {
-        defaultServer: 'kickoffLocalServer'
+    order: {
+        paymentStatus: {
+            options: {
+                enabled: true,
+                schemaName: 'paymentstatus',
+                operation: 'saveAll',
+                //tenants: ['default'],
+                dataFilePrefix: 'defaultPaymentStatusData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
     }
 };
