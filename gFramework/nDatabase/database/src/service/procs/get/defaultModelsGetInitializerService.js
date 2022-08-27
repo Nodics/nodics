@@ -82,7 +82,7 @@ module.exports = {
     lookupCache: function (request, response, process) {
         if (request.schemaModel.cache &&
             request.schemaModel.cache.enabled) {
-            request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createItemKey(request);
+            request.cacheKeyHash = request.cacheKeyHash || SERVICE.DefaultCacheConfigurationService.createItemKey(request);
             this.LOG.debug('Model cache lookup for key: ' + request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
                 moduleName: request.schemaModel.moduleName,
@@ -90,11 +90,8 @@ module.exports = {
                 key: request.cacheKeyHash
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
-                process.stop(request, response, {
-                    code: 'SUC_FIND_00000',
-                    cache: 'item hit',
-                    result: value.result
-                });
+                value.cache = 'item hit';
+                process.stop(request, response, value);
             }).catch(error => {
                 if (error.code === 'ERR_CACHE_00001') {
                     process.nextSuccess(request, response);
@@ -213,7 +210,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00006'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, error.code || 'ERR_FIND_00006'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -235,7 +232,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postGet), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_FIND_00006'));
+                process.error(request, response, new CLASSES.NodicsError(error, null, error.code || 'ERR_FIND_00006'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -248,7 +245,7 @@ module.exports = {
                 moduleName: request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSchemaCacheChannel(request.schemaModel.schemaName),
                 key: request.cacheKeyHash,
-                value: response.success.result,
+                value: response.success,
                 ttl: request.schemaModel.cache.ttl
             }).then(success => {
                 this.LOG.info('Item saved in item cache');

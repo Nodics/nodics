@@ -17,6 +17,9 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 try {
                     let cursor = this.find(input.query, input.searchOptions);
+                    if (input.searchOptions && input.searchOptions.sort && !UTILS.isBlank(input.searchOptions.sort)) {
+                        cursor = cursor.sort(input.searchOptions.sort);
+                    }
                     cursor.count().then(count => {
                         cursor.toArray((error, result) => {
                             if (error) {
@@ -77,7 +80,6 @@ module.exports = {
                                 this.insertOne(input.model, {}).then(result => {
                                     if (result.acknowledged || (result.ops && result.ops.length > 0)) {
                                         input.model._id = result.insertedId;
-                                        console.log(input.model);
                                         resolve(input.model);
                                     } else {
                                         reject(new CLASSES.NodicsError('ERR_MDL_00005'));

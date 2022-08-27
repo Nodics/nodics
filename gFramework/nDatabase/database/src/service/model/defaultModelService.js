@@ -83,9 +83,9 @@ module.exports = {
                             if (success.result && success.result.length > 0) {
                                 if (propertyObject.type === 'one') {
                                     let key = (propertyObject.propertyName) ? success.result[0][propertyObject.propertyName] : success.result[0]._id;
-                                    if (UTILS.isObjectId(key)) {
-                                        key = key.toString();
-                                    }
+                                    // if (UTILS.isObjectId(key)) {
+                                    //     key = key.toString();
+                                    // }
                                     model[property] = key;
                                 } else {
                                     model[property] = [];

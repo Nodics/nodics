@@ -24,6 +24,7 @@ module.exports = {
             password: 'nodics',
             active: true
         },
+        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bfg',
         userGroups: ['customerUserGroup'],
         addresses: ['defaultCustomerAddress'],
         contacts: ['defaultCustomerContact']

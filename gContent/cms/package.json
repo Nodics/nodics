@@ -1,6 +1,6 @@
 {
     "name": "cms",
-    "index": "10.20",
+    "index": "50.20",
     "type": "router",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cms",
     "homepage": "http://www.nodics.com/",

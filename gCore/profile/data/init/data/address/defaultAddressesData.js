@@ -11,6 +11,8 @@
 
 module.exports = {
     record0: {
+        type: 'OFFICE',
+        isPrimery: true,
         code: 'defaultEntAddress',
         active: true,
         flatNo: '100',

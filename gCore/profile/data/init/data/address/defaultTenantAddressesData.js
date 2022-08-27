@@ -11,6 +11,8 @@
 
 module.exports = {
     record0: {
+        type: 'OFFICE',
+        isPrimery: true,
         code: 'defaultEmployeeAddress',
         active: true,
         flatNo: '100',
@@ -21,6 +23,8 @@ module.exports = {
         postalCode: '560001'
     },
     record1: {
+        type: 'OFFICE',
+        isPrimery: true,
         code: 'defaultCustomerAddress',
         active: true,
         flatNo: '100',

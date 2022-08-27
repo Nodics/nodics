@@ -251,8 +251,7 @@ module.exports = {
                 }).then(success => {
                     this.LOG.debug('Cache for router: ' + schemaModel.schemaName + ' has been flushed cuccessfully');
                 }).catch(error => {
-                    this.LOG.error('Cache for router: ' + schemaModel.schemaName + ' has not been flushed cuccessfully');
-                    this.LOG.error(error);
+                    this.LOG.warn('Cache for router: ' + schemaModel.schemaName + ' has not been flushed cuccessfully', error.message);
                 });
             }
         } catch (error) {
@@ -273,8 +272,7 @@ module.exports = {
                 }).then(success => {
                     this.LOG.debug('Cache for schema: ' + schemaModel.schemaName + ' has been flushed cuccessfully');
                 }).catch(error => {
-                    this.LOG.error('Cache for schema: ' + schemaModel.schemaName + ' has not been flushed cuccessfully');
-                    this.LOG.error(error);
+                    this.LOG.warn('Cache for schema: ' + schemaModel.schemaName + ' has not been flushed cuccessfully', error.message);
                 });
             }
         } catch (error) {

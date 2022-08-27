@@ -1,0 +1,20 @@
+{
+    "name": "token",
+    "index": "1.16",
+    "type": "core",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to nToken",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "nToken"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

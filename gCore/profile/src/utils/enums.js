@@ -10,6 +10,21 @@
  */
 
 module.exports = {
+    AddressType: {
+        _options: {
+            name: 'AddressType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
+            'EMAIL',
+            'PHONE',
+            'FAX',
+            'PAGER'
+        ]
+    },
     ContactType: {
         _options: {
             name: 'ContactType',

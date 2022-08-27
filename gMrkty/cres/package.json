@@ -1,6 +1,6 @@
 {
     "name": "cres",
-    "index": "20.50",
+    "index": "300.50",
     "type": "router",
     "requiredModules": [
         "quizer"
