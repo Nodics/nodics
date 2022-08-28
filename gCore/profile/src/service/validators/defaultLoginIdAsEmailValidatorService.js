@@ -14,7 +14,9 @@ const emailValidator = require("email-validator");
 module.exports = {
     validateLoginId: function (request, response) {
         return new Promise((resolve, reject) => {
-            if (emailValidator.validate(request.model.loginId)) {
+            if (request.model.loginId === 'guest') {
+                resolve(true);
+            } else if (emailValidator.validate(request.model.loginId)) {
                 resolve(true);
             } else {
                 reject('Invalid Login id: ' + request.model.loginId);

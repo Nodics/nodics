@@ -10,18 +10,6 @@
  */
 
 module.exports = {
-    profileModuleReconnectTimeout: 5000,
 
-    database: {
-        default: {
-            mongodb: {
-                master: {
-                    databaseName: 'grayFramesMaster',
-                },
-                test: {
-                    databaseName: 'grayFramesTest',
-                }
-            }
-        }
-    }
+
 };

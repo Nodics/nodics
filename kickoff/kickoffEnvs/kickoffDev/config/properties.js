@@ -63,11 +63,11 @@ module.exports = {
         default: {
             mongodb: {
                 master: {
-                    URI: 'mongodb://10.21.77.63:27017,10.21.77.64:27017,10.21.77.66:27017/?replicaSet=vms.mongo-01',
+                    //URI: 'mongodb://10.21.77.63:27017,10.21.77.64:27017,10.21.77.66:27017/?replicaSet=vms.mongo-01',
                     databaseName: 'teeDefaultMaster'
                 },
                 test: {
-                    URI: 'mongodb://10.21.77.63:27017,10.21.77.64:27017,10.21.77.66:27017/?replicaSet=vms.mongo-01',
+                    //URI: 'mongodb://10.21.77.63:27017,10.21.77.64:27017,10.21.77.66:27017/?replicaSet=vms.mongo-01',
                     databaseName: 'teeDefaultTest'
                 }
             }

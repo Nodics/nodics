@@ -1,0 +1,20 @@
+{
+    "name": "gfprofile",
+    "index": "2000.1.5",
+    "type": "core",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gfprofile",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "gfprofile"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}
