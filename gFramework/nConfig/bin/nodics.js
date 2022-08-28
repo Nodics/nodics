@@ -60,8 +60,16 @@ module.exports = function () {
             }
         });
         _serverPath = this.getRawModule(_serverName).path;
-        _envName = this.getRawModule(_serverName).parent;
-        _envPath = this.getRawModule(_envName).path;
+        //_envName = this.getRawModule(_serverName).parent;
+        // _envPath = this.getRawModule(_envName).path;
+        // -------------------------------------
+
+        _serverRootName = this.getRawModule(_serverName).parent
+        _serverRootPath = this.getRawModule(_serverRootName).path
+
+        _envName = this.getRawModule(_serverRootName).parent
+        _envPath = this.getRawModule(_envName).path
+        // -------------------------------------
         if (_nodeName) {
             if (this.getRawModule(_nodeName)) {
                 _nodePath = this.getRawModule(_nodeName).path;
@@ -71,7 +79,6 @@ module.exports = function () {
         }
         // _appName = this.getRawModule(_envName).parent;
         // _appPath = this.getRawModule(_appName).path;
-
     };
 
     this.getNodicsHome = function () {
@@ -159,6 +166,14 @@ module.exports = function () {
 
     this.getServerPath = function () {
         return _serverPath;
+    };
+
+    this.getServerRootName = function () {
+        return _serverRootName;
+    };
+
+    this.getServerRootPath = function () {
+        return _serverRootPath;
     };
 
     this.getArguments = function () {

@@ -23,7 +23,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'PUT',
-                    url: 'http://host:port/nodics/clickout/cart/create',
+                    url: 'http://host:port/nodics/cart/create',
                     body: {
                         //complete cart detail
                     }
@@ -40,7 +40,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/clickout/cart/ref/:refCode',
+                    url: 'http://host:port/nodics/cart/ref/:refCode',
                 }
             },
             loadCartByCode: {
@@ -54,7 +54,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/clickout/cart/code/:code',
+                    url: 'http://host:port/nodics/cart/code/:code',
                 }
             },
             loadCartByToken: {
@@ -68,7 +68,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/clickout/cart/token/:token',
+                    url: 'http://host:port/nodics/cart/token/:token',
                 }
             },
         },
@@ -84,7 +84,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/clickout/customer/validate',
+                    url: 'http://host:port/nodics/customer/validate',
                     body: {
                         emailId: 'Login id',
                         orderToken: 'Token that been generated against order',
