@@ -1,11 +1,11 @@
 {
-    "name": "gfapi",
-    "index": "2000.1.20",
-    "type": "router",
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gfapi",
+    "name": "gfcms",
+    "index": "2000.1.6",
+    "type": "core",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gfcms",
     "homepage": "http://www.nodics.com/",
     "keywords": [
-        "gfapi"
+        "gfcms"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",

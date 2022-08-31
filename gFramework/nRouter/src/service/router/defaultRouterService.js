@@ -203,7 +203,8 @@ module.exports = {
                         definition.method = definition.method.toLowerCase();
                         definition.key = definition.key.replaceAll('schemaName', options.alias.toLowerCase());
                         definition.controller = definition.controller.replaceAll('ctrlName', options.schemaName.toUpperCaseEachWord() + 'Controller');
-                        definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + definition.key;
+                        definition.apiVersion = definition.apiVersion ? definition.apiVersion : 'v0';
+                        definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + '/' + definition.apiVersion + definition.key;
                         definition.active = (definition.active === undefined) ? true : definition.active;
                         definition.moduleName = options.moduleName;
                         definition.prefix = options.schemaName + '_' + routerName;
@@ -216,6 +217,7 @@ module.exports = {
                             routerLevelCache[options.schemaName][definition.method]) {
                             definition.cache = _.merge(definition.cache, routerLevelCache[options.schemaName][definition.method]);
                         }
+
                         NODICS.addRouter(definition.routerName, definition, options.moduleName);
                         SERVICE.DefaultRouterOperationService[definition.method](options.moduleRouter, definition);
                     }
@@ -227,7 +229,8 @@ module.exports = {
     prepareRouter: function (options) {
         let definition = _.merge({}, options.routerDef);
         definition.method = definition.method.toLowerCase();
-        definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + definition.key;
+        definition.apiVersion = definition.apiVersion ? definition.apiVersion : 'v0';
+        definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + '/' + definition.apiVersion + definition.key;
         definition.active = (definition.active === undefined) ? true : definition.active;
         definition.moduleName = options.moduleName;
         definition.prefix = options.routerName;

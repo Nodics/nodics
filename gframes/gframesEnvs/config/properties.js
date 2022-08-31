@@ -59,4 +59,9 @@ module.exports = {
             }
         }
     },
+    server: {
+        options: {
+            contextRoot: 'grayframes'
+        }
+    }
 };

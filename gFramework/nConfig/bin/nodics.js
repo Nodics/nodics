@@ -379,6 +379,7 @@ module.exports = function () {
                 moduleObject.routers = {};
             }
             moduleObject.routers[prefix] = router;
+            this.LOG.debug(router.method + '\t : ' + router.url);
         }
     };
 

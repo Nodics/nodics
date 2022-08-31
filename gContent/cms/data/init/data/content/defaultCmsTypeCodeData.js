@@ -53,9 +53,5 @@ module.exports = {
     record10: {
         code: 'logoComponentType',
         active: true
-    },
-    record11: {
-        code: 'headerComponentType',
-        active: true
     }
 };
