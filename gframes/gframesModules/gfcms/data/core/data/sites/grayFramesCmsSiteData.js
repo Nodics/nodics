@@ -13,7 +13,8 @@ module.exports = {
     record0: {
         code: 'grayFramesEnSite',
         name: 'grayFramesEnSite',
-        catalog: 'defaultContentCatalog',
+        catalog: 'grayFramesContentCatalog',
+        accessGroups: ['customerUserGroup', 'employeeUserGroup'],
         active: true,
     }
 };

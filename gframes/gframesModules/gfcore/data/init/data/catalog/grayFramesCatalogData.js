@@ -14,11 +14,13 @@ module.exports = {
     record0: {
         code: "grayFramesProductCatalog",
         name: "grayFramesProductCatalog",
+        accessGroups: ['userGroup'],
         active: true
     },
     record1: {
         code: "grayFramesContentCatalog",
         name: "grayFramesContentCatalog",
+        accessGroups: ['userGroup'],
         active: true
     }
 };

@@ -10,17 +10,5 @@
  */
 
 module.exports = {
-    cms: {
-        sampleCmsPageData: {
-            options: {
-                enabled: true,
-                schemaName: 'cmsPage',
-                operation: 'saveAll',
-                dataFilePrefix: 'grayFramesCmsPageData'
-            },
-            query: {
-                code: '$code'
-            }
-        }
-    }
+
 };

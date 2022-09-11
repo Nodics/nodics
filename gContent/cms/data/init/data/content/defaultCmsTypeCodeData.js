@@ -27,31 +27,71 @@ module.exports = {
         active: true,
     },
     record4: {
+        code: 'htmlComponentType',
+        active: true,
+    },
+    record5: {
         code: 'textComponentType',
         active: true
     },
-    record5: {
+    record6: {
         code: 'imageTextComponentType',
         active: true
     },
-    record6: {
+    record7: {
         code: 'imageComponentType',
         active: true
     },
-    record7: {
+    record8: {
         code: 'imagesComponentType',
         active: true
     },
-    record8: {
+    record9: {
         code: 'menuComponentType',
         active: true
     },
-    record9: {
+    record10: {
         code: 'navigationalComponentType',
         active: true
     },
-    record10: {
+    record11: {
         code: 'logoComponentType',
         active: true
-    }
+    },
+    record12: {
+        code: 'loginHomePageType',
+        active: true,
+    },
+    record13: {
+        code: 'signUpHomePageType',
+        active: true,
+    },
+    record14: {
+        code: 'oneHomePageType',
+        active: true,
+    },
+    record15: {
+        code: 'titleComponentType',
+        active: true,
+    },
+    record16: {
+        code: 'buttonComponentType',
+        active: true,
+    },
+    record17: {
+        code: 'headerStickyComponentType',
+        active: true,
+    },
+    record18: {
+        code: 'approachBoxComponentType',
+        active: true,
+    },
+    record19: {
+        code: 'homePageBannerComponentType',
+        active: true,
+    },
+    record20: {
+        code: 'homePageSectionComponentType',
+        active: true,
+    },
 };

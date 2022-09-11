@@ -47,7 +47,7 @@ module.exports = {
     checkAccess: function (request, response, process) {
         this.LOG.debug('Checking model access');
         let rawSchema = request.schemaModel.rawSchema;
-        if (SERVICE.DefaultSchemaAccessHandlerService.getAccessPoint(request.authData, rawSchema.accessGroups) >= CONFIG.get('accessPoint').writeAccessPoint) {
+        if (SERVICE.DefaultSchemaAccessHandlerService.getAccessPoint(request.authData, rawSchema.accessGroups) >= CONFIG.get('accessPoints').writeAccessPoint) {
             process.nextSuccess(request, response);
         } else {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user do not have access to this resource'));

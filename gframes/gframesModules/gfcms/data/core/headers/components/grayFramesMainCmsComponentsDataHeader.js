@@ -10,8 +10,17 @@
  */
 
 module.exports = {
-    record0: {
-        code: 'loginHomePageType',
-        active: true,
+    cms: {
+        grayFramesMainCmsComponentsData: {
+            options: {
+                enabled: true,
+                schemaName: 'cmsComponent',
+                operation: 'saveAll',
+                dataFilePrefix: 'grayFramesMainCmsComponentsData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
     }
 };

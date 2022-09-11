@@ -11,7 +11,7 @@
 
 module.exports = {
     catalog: {
-        defaultCatalogData: {
+        grayFramesCatalogData: {
             options: {
                 enabled: true,
                 schemaName: 'catalog',

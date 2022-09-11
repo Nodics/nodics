@@ -37,7 +37,7 @@ module.exports = {
     getAccessPoint: function (authData, modelAccessGroups) {
         try {
             if (!modelAccessGroups || UTILS.isBlank(modelAccessGroups)) {
-                return CONFIG.get('accessPoint').fullAccessPoint;
+                return CONFIG.get('accessPoints').fullAccessPoint;
             } else if (!authData || !authData.userGroups) {
                 throw new CLASSES.NodicsError('Invalid request, could not found user groups');
             } else {

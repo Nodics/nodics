@@ -43,7 +43,7 @@ module.exports = {
                 accessGroups: {
                     type: 'array',
                     required: false,
-                    default: ['employeeUserGroup'],
+                    default: ['userGroup'],
                     description: 'User group code for which this user belongs'
                 },
                 created: {

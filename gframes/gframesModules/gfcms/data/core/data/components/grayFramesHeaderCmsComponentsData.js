@@ -11,11 +11,17 @@
 
 module.exports = {
     record0: {
-        code: 'fullInfoHeaderComponent',
+        code: 'gfFullInfoHeaderComponent',
         active: true,
-        typeCode: 'headerComponentType',
+        typeCode: 'headerStickyComponentType',
+
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
         subComponents: [{
             target: 'gfLogoOneComponent',
+            active: true,
+            index: 1
+        }, {
+            target: 'gfHeaderMenuComponent',
             active: true,
             index: 1
         }]
@@ -24,6 +30,7 @@ module.exports = {
         code: 'gfLogoOneComponent',
         active: true,
         typeCode: 'logoComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
         subComponents: [{
             target: 'gfLogoOneImageComponent',
             active: true,
@@ -42,6 +49,7 @@ module.exports = {
         code: 'gfLogoOneImageComponent',
         active: true,
         typeCode: 'imageComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
         media: {
             name: 'Compnay logo image',
             url: 'http://nodics.com/wp-content/uploads/2018/06/Nodics_Architecture.jpg'
@@ -51,12 +59,20 @@ module.exports = {
         code: 'gfLogoOneTextComponent',
         active: true,
         typeCode: 'textComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
         text: 'Gray Frames'
     },
     record4: {
         code: 'gfLogoOneSubTextComponent',
         active: true,
         typeCode: 'textComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
         text: 'Connect with loved one'
+    },
+    record5: {
+        code: 'gfHeaderMenuComponent',
+        active: true,
+        typeCode: 'menuComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup']
     },
 };

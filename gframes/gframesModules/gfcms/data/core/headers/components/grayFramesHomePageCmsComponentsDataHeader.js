@@ -11,12 +11,12 @@
 
 module.exports = {
     cms: {
-        sampleMainCmsComponentData: {
+        grayFramesHomePageCmsComponentsData: {
             options: {
                 enabled: true,
                 schemaName: 'cmsComponent',
                 operation: 'saveAll',
-                dataFilePrefix: 'grayFramesMainCmsComponentData'
+                dataFilePrefix: 'grayFramesHomePageCmsComponentsData'
             },
             query: {
                 code: '$code'

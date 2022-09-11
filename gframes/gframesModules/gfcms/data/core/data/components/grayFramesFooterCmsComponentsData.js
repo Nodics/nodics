@@ -11,35 +11,34 @@
 
 module.exports = {
     record0: {
-        code: 'fullInfoFooterComponent',
+        code: 'gfFullInfoFooterComponent',
+        name: 'gfFullInfoFooterComponent',
         active: true,
         typeCode: 'footerComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
         subComponents: [{
             target: 'fullInfoFooterTextComponent',
+            active: true,
+            index: 1
+        }, {
+            target: 'copyrightFooterTextComponent',
             active: true,
             index: 1
         }]
     },
     record1: {
-        code: 'mediumInfoFooterComponent',
-        active: true,
-        typeCode: 'footerComponentType',
-        subComponents: [{
-            target: 'mediumInfoFooterTextComponent',
-            active: true,
-            index: 1
-        }]
-    },
-    record2: {
         code: 'fullInfoFooterTextComponent',
+        name: 'fullInfoFooterTextComponent',
         active: true,
         typeCode: 'textComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
         text: 'This is footer content with full information'
-    },
-    record3: {
-        code: 'mediumInfoFooterTextComponent',
+    }, record1: {
+        code: 'copyrightFooterTextComponent',
+        name: 'copyrightFooterTextComponent',
         active: true,
         typeCode: 'textComponentType',
-        text: 'This is footer content with medium information'
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
+        text: '2022 © Copyright by Nodics. All Rights Reserved.'
     }
 };

@@ -12,6 +12,7 @@
 const _ = require('lodash');
 const config = require('./nConfig');
 const env = require('../env');
+const util = require('util');
 
 module.exports = {
     /**
@@ -259,6 +260,7 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema(SERVICE.DefaultDatabaseConfigurationService.getRawSchema());
         }).then(() => {
+            console.log(util.inspect(SERVICE.DefaultDatabaseConfigurationService.getRawSchema(), showHidden = false, depth = 7, colorize = true));
             return config.buildModules();
         }).catch(error => {
             console.error(error);
