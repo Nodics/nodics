@@ -43,6 +43,15 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    prepareResponse: function (request, response, process) {
+        this.LOG.debug('Preparing carrier response for carrier assignmnet');
+        if (!response.success) {
+            response.success = {
+                messages: []
+            };
+        }
+        process.nextSuccess(request, response);
+    },
     releaseCarrier: function (request, response, process) {
         if (request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.RELEASED.key) {
             let carrierState = {
@@ -147,6 +156,26 @@ module.exports = {
             }
         }
         process.nextSuccess(request, response);
+    },
+    triggerAutoAction: function (request, response, process) {
+        if (SERVICE.DefaultWorkflowUtilsService.isProcessingAllowed(request.workflowCarrier) && request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key) {
+            this.LOG.debug('Triggering action for auto workflow action');
+            SERVICE.DefaultWorkflowService.performAction({
+                tenant: request.tenant,
+                workflowHead: request.workflowHead,
+                workflowAction: request.workflowAction,
+                workflowCarrier: request.workflowCarrier,
+                authData: request.authData
+            }).then(success => {
+                if (!response.success[request.workflowAction.code]) response.success[request.workflowAction.code] = [];
+                response.success[request.workflowAction.code].push(success);
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
     },
     handleSuccess: function (request, response, process) {
         let result = response.success;

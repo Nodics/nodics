@@ -16,7 +16,7 @@ module.exports = {
 
     activeModules: {
         groups: ['gCore', 'gComm', 'gContent', 'gDeap', 'gMrkty', 'gframesEnvs', 'gframes'], // Group 'framework' will be included automatically
-        modules: []
+        modules: ['kyc']
     },
 
     log: {

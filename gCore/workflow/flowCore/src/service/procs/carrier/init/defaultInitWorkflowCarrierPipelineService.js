@@ -36,7 +36,7 @@ module.exports = {
         this.LOG.debug('Validating request to init item with workflow');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
-        } else if (!request.workflowCode) {
+        } else if (!request.workflowCode && !request.carrierCode) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflowCode can not be null or empty'));
         } else if (!request.carrier && !request.carrier.code) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, carrier detail with code, can not be null or empty'));

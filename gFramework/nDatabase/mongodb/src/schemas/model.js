@@ -55,7 +55,7 @@ module.exports = {
                             },
                             this.dataBase.getOptions().modelSaveOptions || {
                                 upsert: true,
-                                returnNewDocument: true
+                                returnDocument: 'after'
                             }).then(result => {
                                 if (result && result.ok > 0 && result.value) {
                                     resolve(result.value);
@@ -158,7 +158,7 @@ module.exports = {
                                     this.dataBase.getOptions().modelRemoveOptions || {
                                         j: false
                                     }).then(success => {
-                                        let result = success.result;
+                                        let result = success.result || {};
                                         result.models = response;
                                         resolve(result);
                                     }).catch(error => {

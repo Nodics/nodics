@@ -71,8 +71,9 @@ module.exports = {
         } else {
             if (!request.workflowAction.sourceDetail) request.workflowAction.sourceDetail = {};
             if (!request.workflowHead.sourceDetail) request.workflowHead.sourceDetail = {};
+            if (!request.workflowCarrier.sourceDetail) request.workflowCarrier.sourceDetail = {};
             request.workflowAction.sourceDetail.endPoint = _.merge(request.workflowHead.sourceDetail.endPoint || {}, request.workflowAction.sourceDetail.endPoint || {});
-            if (request.workflowCarrier.event.isInternal === undefined) {
+            if (request.workflowCarrier.event.isInternal === undefined || !request.workflowCarrier.event.isInternal) {
                 let endPoint = _.merge(request.workflowAction.sourceDetail.endPoint, request.workflowCarrier.sourceDetail.endPoint || {});
                 request.workflowCarrier.event.isInternal = UTILS.isBlank(endPoint) ? true : false;
             }

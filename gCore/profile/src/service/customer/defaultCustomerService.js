@@ -31,4 +31,40 @@ module.exports = {
             });
         });
     },
+    isCustomerExist: function (request) {
+        return new Promise((resolve, reject) => {
+            this.get({
+                tenant: request.tenant,
+                options: {
+                    recursive: false,
+                },
+                query: {
+                    loginId: request.loginId
+                }
+            }).then(customers => {
+                if (customers.result.length > 1) {
+                    reject(new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid login id'));
+                } else if (customers.result.length < 1) {
+                    reject(new CLASSES.NodicsError('ERR_PRFL_00005', 'Customer not exist'));
+                } else {
+                    resolve({
+                        code: 'SUC_PRFL_00002'
+                    });
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+    signUp: function (request) {
+        let _self = this;
+        request.defaultCustomerService = _self;
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('customerRegistrationHandlerPipeline', request, {}).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(new CLASSES.NodicsError(error, null, 'ERR_PRFL_00006'));
+            });
+        });
+    },
 };

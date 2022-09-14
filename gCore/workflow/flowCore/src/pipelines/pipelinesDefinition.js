@@ -448,6 +448,11 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultWorkflowCarrierReleasePipelineService.validateRequest',
+                success: 'prepareResponse'
+            },
+            prepareResponse: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.prepareResponse',
                 success: 'prepareWorkflowProcessPipeline'
             },
             prepareWorkflowProcessPipeline: {
@@ -488,6 +493,11 @@ module.exports = {
             triggerReleasedEvent: {
                 type: 'function',
                 handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerReleasedEvent',
+                success: 'triggerAutoAction'
+            },
+            triggerAutoAction: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerAutoAction',
                 success: 'successEnd'
             },
             successEnd: {

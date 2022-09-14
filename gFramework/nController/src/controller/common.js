@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
 
@@ -45,7 +46,7 @@ module.exports = {
         }
         if (request.httpRequest.params.id) {
             request.query = {
-                _id: request.httpRequest.params.id
+                _id: ObjectId(request.httpRequest.params.id)
             };
         } else if (request.httpRequest.params.code) {
             request.query = {
@@ -81,7 +82,7 @@ module.exports = {
     removeById: function (request, callback) {
         request.ids = [];
         if (request.httpRequest.params.id) {
-            request.ids.push(request.httpRequest.params.id);
+            request.ids.push(ObjectId(request.httpRequest.params.id));
         } else {
             request = _.merge(request, request.httpRequest.body || {});
         }

@@ -112,6 +112,44 @@ module.exports = {
                     url: 'http://host:port/nodics/profile/authorize',
                 }
             }
+        },
+        customerExist: {
+            isCustomerExist: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/customer/exist',
+                method: 'POST',
+                controller: 'DefaultCustomerController',
+                operation: 'isCustomerExist',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/customer/exist',
+                    body: {
+                        loginId: ''
+                    }
+                }
+            }
+        },
+        customerSignUp: {
+            registerCustomer: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/customer/signup',
+                method: 'POST',
+                controller: 'DefaultCustomerController',
+                operation: 'signUp',
+                help: {
+                    requestType: 'secured',
+                    message: 'authToken need to set within header',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/customer/signUp',
+                    body: {
+                        //complete customer profile data
+                    }
+                }
+            }
         }
     }
 };

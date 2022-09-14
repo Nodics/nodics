@@ -10,8 +10,17 @@
  */
 
 module.exports = {
-    profile: {
-        loginIdFormat: 'email',
+    workflow: {
+        mobileNumberValidationWorkflowHead: {
+            options: {
+                enabled: true,
+                schemaName: 'workflowAction',
+                operation: 'saveAll',
+                dataFilePrefix: 'mobileNumberValidationWorkflowHeadData'
+            },
+            query: {
+                code: '$code'
+            }
+        }
     }
-
 };

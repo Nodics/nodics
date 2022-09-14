@@ -260,7 +260,6 @@ module.exports = {
         }).then(() => {
             return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema(SERVICE.DefaultDatabaseConfigurationService.getRawSchema());
         }).then(() => {
-            console.log(util.inspect(SERVICE.DefaultDatabaseConfigurationService.getRawSchema(), showHidden = false, depth = 7, colorize = true));
             return config.buildModules();
         }).catch(error => {
             console.error(error);

@@ -73,7 +73,7 @@ module.exports = {
             },
             blockCarrier: {
                 secured: true,
-                accessGroups: ['workflowUserGroup'],
+                accessGroups: ['userGroup'],
                 key: '/carrier/block/:carrierCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
@@ -90,7 +90,7 @@ module.exports = {
             },
             releaseCarrier: {
                 secured: true,
-                accessGroups: ['workflowUserGroup'],
+                accessGroups: ['userGroup'],
                 key: '/carrier/release/:carrierCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
@@ -107,7 +107,7 @@ module.exports = {
             },
             pauseCarrier: {
                 secured: true,
-                accessGroups: ['workflowUserGroup'],
+                accessGroups: ['userGroup'],
                 key: '/carrier/pause/:carrierCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
@@ -124,7 +124,7 @@ module.exports = {
             },
             resumeCarrier: {
                 secured: true,
-                accessGroups: ['workflowUserGroup'],
+                accessGroups: ['userGroup'],
                 key: '/carrier/resume/:carrierCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
@@ -143,7 +143,7 @@ module.exports = {
         workflowActionOperations: {
             performAction: {
                 secured: true,
-                accessGroups: ['workflowUserGroup'],
+                accessGroups: ['userGroup'],
                 key: '/action/process/:carrierCode',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',
@@ -163,7 +163,7 @@ module.exports = {
         retrieveWorkflow: {
             getWorkflowChain: {
                 secured: true,
-                accessGroups: ['workflowUserGroup'],
+                accessGroups: ['userGroup'],
                 key: '/chain/:workflowCode',
                 method: 'GET',
                 controller: 'DefaultWorkflowController',
@@ -177,7 +177,7 @@ module.exports = {
             },
             getWorkflowsChain: {
                 secured: true,
-                accessGroups: ['workflowUserGroup'],
+                accessGroups: ['userGroup'],
                 key: '/chain',
                 method: 'POST',
                 controller: 'DefaultWorkflowController',

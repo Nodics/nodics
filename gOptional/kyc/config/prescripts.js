@@ -10,8 +10,5 @@
  */
 
 module.exports = {
-    profile: {
-        loginIdFormat: 'email',
-    }
 
 };

@@ -18,6 +18,10 @@ module.exports = {
         code: '200',
         message: 'Request partially processed'
     },
+    SUC_PRFL_00002: {
+        code: '200',
+        message: 'Customer exist'
+    },
 
 
     ERR_PRFL_00000: {
@@ -39,5 +43,18 @@ module.exports = {
     ERR_PRFL_00004: {
         code: '404',
         message: 'Data not found'
-    }
+    },
+    ERR_PRFL_00005: {
+        code: '400',
+        message: 'Customer not exist'
+    },
+    ERR_PRFL_00006: {
+        code: '500',
+        message: 'Customer registration process break'
+    },
+    ERR_PRFL_00007: {
+        code: '400',
+        message: 'Customer already exist'
+    },
+
 };
