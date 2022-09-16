@@ -10,8 +10,7 @@
  */
 
 module.exports = {
-    workflow: {
-
+    flowSchema: {
         workflow: {
             super: 'base',
             model: false,

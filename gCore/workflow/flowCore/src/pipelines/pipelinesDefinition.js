@@ -323,6 +323,78 @@ module.exports = {
         }
     },
 
+    releaseWorkflowCarrierPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.validateRequest',
+                success: 'prepareResponse'
+            },
+            prepareResponse: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.prepareResponse',
+                success: 'prepareWorkflowProcessPipeline'
+            },
+            prepareWorkflowProcessPipeline: {
+                type: 'process',
+                handler: 'prepareWorkflowProcessPipeline',
+                success: 'releaseCarrier'
+            },
+            releaseCarrier: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.releaseCarrier',
+                success: 'preReleaseInterceptors'
+            },
+            preReleaseInterceptors: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.preReleaseInterceptors',
+                success: 'preReleaseValidators'
+            },
+            preReleaseValidators: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.preReleaseValidators',
+                success: 'updateCarrier'
+            },
+            updateCarrier: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.updateCarrier',
+                success: 'postReleaseValidators'
+            },
+            postReleaseValidators: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.postReleaseValidators',
+                success: 'postReleaseInterceptors'
+            },
+            postReleaseInterceptors: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.postReleaseInterceptors',
+                success: 'triggerReleasedEvent'
+            },
+            triggerReleasedEvent: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerReleasedEvent',
+                success: 'triggerAutoAction'
+            },
+            triggerAutoAction: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerAutoAction',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultWorkflowCarrierReleasePipelineService.handleSuccess'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultAssignWorkflowCarrierPipelineService.handleError'
+            }
+        }
+    },
+
     fillWorkflowCarrierPipeline: {
         startNode: "validateRequest",
         hardStop: true,
@@ -439,73 +511,7 @@ module.exports = {
         }
     },
 
-    releaseWorkflowCarrierPipeline: {
-        startNode: "validateRequest",
-        hardStop: true,
-        handleError: 'handleError',
 
-        nodes: {
-            validateRequest: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.validateRequest',
-                success: 'prepareResponse'
-            },
-            prepareResponse: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.prepareResponse',
-                success: 'prepareWorkflowProcessPipeline'
-            },
-            prepareWorkflowProcessPipeline: {
-                type: 'process',
-                handler: 'prepareWorkflowProcessPipeline',
-                success: 'releaseCarrier'
-            },
-            releaseCarrier: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.releaseCarrier',
-                success: 'preReleaseInterceptors'
-            },
-            preReleaseInterceptors: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.preReleaseInterceptors',
-                success: 'preReleaseValidators'
-            },
-            preReleaseValidators: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.preReleaseValidators',
-                success: 'updateCarrier'
-            },
-            updateCarrier: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.updateCarrier',
-                success: 'postReleaseValidators'
-            },
-            postReleaseValidators: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.postReleaseValidators',
-                success: 'postReleaseInterceptors'
-            },
-            postReleaseInterceptors: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.postReleaseInterceptors',
-                success: 'triggerReleasedEvent'
-            },
-            triggerReleasedEvent: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerReleasedEvent',
-                success: 'triggerAutoAction'
-            },
-            triggerAutoAction: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.triggerAutoAction',
-                success: 'successEnd'
-            },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultWorkflowCarrierReleasePipelineService.handleSuccess'
-            }
-        }
-    },
 
     pauseWorkflowCarrierPipeline: {
         startNode: "validateRequest",

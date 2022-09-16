@@ -15,8 +15,8 @@ module.exports = {
     webEnabled: false,
 
     activeModules: {
-        groups: ['gCore', 'gComm', 'gContent', 'gDeap', 'gMrkty', 'gframesEnvs', 'gframes'], // Group 'framework' will be included automatically
-        modules: ['kyc']
+        groups: ['gCore', 'gComm', 'gContent', 'gDeap', 'gMrkty', 'gframesEnvs', 'gframes', 'kyc'], // Group 'framework' will be included automatically
+        modules: []
     },
 
     log: {

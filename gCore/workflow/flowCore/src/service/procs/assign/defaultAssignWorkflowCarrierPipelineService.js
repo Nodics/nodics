@@ -50,9 +50,11 @@ module.exports = {
     },
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing carrier response for carrier assignmnet');
-        if (!response.success) response.success = {
-            messages: []
-        };
+        if (!response.success) {
+            response.success = {
+                messages: []
+            };
+        }
         process.nextSuccess(request, response);
     },
     updateSatatus: function (request, response, process) {

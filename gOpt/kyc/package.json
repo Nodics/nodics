@@ -1,18 +1,14 @@
 {
-    "name": "workflow",
-    "index": "5.30.99",
-    "type": "group",
-    "requiredModules": [
-        "flowSchema",
-        "flowCore",
-        "flowApi"
-    ],
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to workflow",
+    "name": "kyc",
+    "index": "500.50.99",
+    "type": "core",
+    "requiredModules": [],
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to kyc",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "server",
         "environment",
-        "workflow"
+        "kyc"
     ],
     "author": "Himkar Dwivedi",
     "main": "nodics.js",
