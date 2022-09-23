@@ -12,12 +12,12 @@
 module.exports = {
 
     record1: {
-        code: "mobileNumberValidationWorkflowHead",
-        name: "mobileNumberValidationWorkflowHead",
+        code: "mobileNumberKycWorkflow",
+        name: "mobileNumberKycWorkflow",
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.HEAD.key,
-        handler: 'DefaultMobileNumberValidationWorkflowService.performHeadOperation',
+        handler: 'DefaultMobileNumberKycWorkflowService.performHeadOperation',
         accessGroups: ['userGroup'],
         allowedDecisions: ['INITIATE'],
         channels: ['initializeMobileOTP']

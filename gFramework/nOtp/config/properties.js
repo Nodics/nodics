@@ -15,7 +15,8 @@ module.exports = {
         OTP: {
             rangeStart: 1000,
             rangeEnd: 9000,
-            validUpTo: 60, //this value is in secound
+            validUpTo: 300, //this value is in secound
+            attemptLimit: 5,
             tokenHandler: 'DefaultOtpHandlerService'
         }
     }

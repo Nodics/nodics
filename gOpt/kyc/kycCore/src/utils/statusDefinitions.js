@@ -10,10 +10,22 @@
  */
 
 module.exports = {
-    token: {
-        OTP: {
-            validUpTo: 500, //this value is in secound
-            attemptLimit: 5
-        }
+    SUC_KYC_00000: {
+        code: '200',
+        message: 'Request successfully processed'
+    },
+    SUC_KYC_00001: {
+        code: '200',
+        message: 'OTP has been sent to registered mobile number '
+    },
+    SUC_KYC_00002: {
+        code: '200',
+        message: 'Mobile KYC validation processed successfully'
+    },
+
+
+    ERR_KYC_00000: {
+        code: '500',
+        message: 'Facing internal server error'
     }
 };

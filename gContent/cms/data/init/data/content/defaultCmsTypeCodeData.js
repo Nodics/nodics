@@ -51,6 +51,10 @@ module.exports = {
         active: true
     },
     record10: {
+        code: 'menuLinkComponentType',
+        active: true
+    },
+    record10: {
         code: 'navigationalComponentType',
         active: true
     },
@@ -80,10 +84,6 @@ module.exports = {
     },
     record17: {
         code: 'headerStickyComponentType',
-        active: true,
-    },
-    record18: {
-        code: 'approachBoxComponentType',
         active: true,
     },
     record19: {

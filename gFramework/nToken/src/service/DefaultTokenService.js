@@ -28,7 +28,7 @@ module.exports = {
             SERVICE.DefaultPipelineService.start('generateTokenPipeline', request, {}).then(success => {
                 resolve(success);
             }).catch(error => {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
+                reject(new CLASSES.NodicsError(error));
             });
         });
     },
@@ -39,7 +39,7 @@ module.exports = {
             SERVICE.DefaultPipelineService.start('validateTokenPipeline', request, {}).then(success => {
                 resolve(success);
             }).catch(error => {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
+                reject(new CLASSES.NodicsError(error));
             });
         });
     },

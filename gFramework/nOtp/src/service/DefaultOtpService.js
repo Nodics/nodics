@@ -28,7 +28,7 @@ module.exports = {
             SERVICE.DefaultTokenService.generateToken(request).then(success => {
                 resolve(success);
             }).catch(error => {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
+                reject(new CLASSES.NodicsError(error));
             });
         });
     },
@@ -38,7 +38,7 @@ module.exports = {
             SERVICE.DefaultTokenService.validateToken(request).then(success => {
                 resolve(success);
             }).catch(error => {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_OTP_00000'));
+                reject(new CLASSES.NodicsError(error));
             });
         });
     },

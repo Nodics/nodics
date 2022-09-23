@@ -37,13 +37,37 @@ module.exports = {
     initMobileKyc: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {
-            FACADE.DefaultMobileKycWorkflowFacade.initMobileKyc(request).then(success => {
+            FACADE.DefaultKycFacade.initMobileKyc(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultMobileKycWorkflowFacade.initMobileKyc(request);
+            return FACADE.DefaultKycFacade.initMobileKyc(request);
+        }
+    },
+    validateMobileKyc: function (request, callback) {
+        request = _.merge(request || {}, request.httpRequest.body);
+        if (callback) {
+            FACADE.DefaultKycFacade.validateMobileKyc(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultKycFacade.validateMobileKyc(request);
+        }
+    },
+    initEmailKyc: function (request, callback) {
+        request = _.merge(request || {}, request.httpRequest.body);
+        if (callback) {
+            FACADE.DefaultKycFacade.initEmailKyc(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultKycFacade.initEmailKyc(request);
         }
     }
 };

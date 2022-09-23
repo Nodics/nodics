@@ -19,6 +19,20 @@ module.exports = {
             freez: false
         },
         definition: [
+            'MOBILE',
+            'EMAIL',
+            'DOCS'
+        ]
+    },
+    OPSType: {
+        _options: {
+            name: 'OPSType',
+            separator: '|',
+            endianness: 'BE',
+            ignoreCase: false,
+            freez: false
+        },
+        definition: [
             'CUST_REG',
             'EMP_REG',
             'ORDER'

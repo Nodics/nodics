@@ -4,7 +4,7 @@
     "type": "router",
     "prefix": "kyc",
     "requiredModules": [
-        "kyccore"
+        "kycCore"
     ],
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycApi",
     "homepage": "http://www.nodics.com/",

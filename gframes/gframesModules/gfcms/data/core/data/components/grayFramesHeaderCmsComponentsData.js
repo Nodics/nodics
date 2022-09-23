@@ -14,7 +14,6 @@ module.exports = {
         code: 'gfFullInfoHeaderComponent',
         active: true,
         typeCode: 'headerStickyComponentType',
-
         userGroups: ['customerUserGroup', 'employeeUserGroup'],
         subComponents: [{
             target: 'gfLogoOneComponent',
@@ -73,6 +72,115 @@ module.exports = {
         code: 'gfHeaderMenuComponent',
         active: true,
         typeCode: 'menuComponentType',
-        userGroups: ['customerUserGroup', 'employeeUserGroup']
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
+        subComponents: [{
+            target: 'gfMenuLinkHome',
+            active: true,
+            index: 1
+        }, {
+            target: 'gfMenuLinkAbout',
+            active: true,
+            index: 1
+        }, {
+            target: 'gfMenuLinkApproach',
+            active: true,
+            index: 1
+        }, {
+            target: 'gfMenuLinkServices',
+            active: true,
+            index: 1
+        }, {
+            target: 'gfMenuLinkTeam',
+            active: true,
+            index: 1
+        }, {
+            target: 'gfMenuLinkPartners',
+            active: true,
+            index: 1
+        }, {
+            target: 'gfMenuLinkTestimonial',
+            active: true,
+            index: 1
+        }, {
+            target: 'gfMenuLinkNews',
+            active: true,
+            index: 1
+        }, {
+            target: 'gfMenuLinkContactUs',
+            active: true,
+            index: 1
+        }]
     },
+    record6: {
+        code: 'gfMenuLinkHome',
+        active: true,
+        typeCode: 'menuLinkComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
+        name: 'HOME',
+        link: '#',
+        code: 'homeLink',
+    },
+    record7: {
+        code: 'gfMenuLinkApproach',
+        active: true,
+        typeCode: 'menuLinkComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
+        name: 'APPROACH',
+        link: '#',
+        code: 'approachLink',
+    },
+    record8: {
+        code: 'gfMenuLinkServices',
+        active: true,
+        typeCode: 'menuLinkComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
+        name: 'SERVICES',
+        link: '#',
+        code: 'servicesLink',
+    },
+    record9: {
+        code: 'gfMenuLinkTeam',
+        active: true,
+        typeCode: 'menuLinkComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
+        name: 'TEAM',
+        link: '#',
+        code: 'teamLink',
+    },
+    record10: {
+        code: 'gfMenuLinkPartners',
+        active: true,
+        typeCode: 'menuLinkComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
+        name: 'PARTNERS',
+        link: '#',
+        code: 'partnersLink',
+    },
+    record11: {
+        code: 'gfMenuLinkTestimonial',
+        active: true,
+        typeCode: 'menuLinkComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
+        name: 'TESTIMONIAL',
+        link: '#',
+        code: 'testimonialLink',
+    },
+    record12: {
+        code: 'gfMenuLinkNews',
+        active: true,
+        typeCode: 'menuLinkComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
+        name: 'BLOG',
+        link: '#',
+        code: 'newsLink',
+    },
+    record13: {
+        code: 'gfMenuLinkContactUs',
+        active: true,
+        typeCode: 'menuLinkComponentType',
+        userGroups: ['customerUserGroup', 'employeeUserGroup'],
+        name: 'CONTACT',
+        link: '#',
+        code: 'contactLink',
+    }
 };

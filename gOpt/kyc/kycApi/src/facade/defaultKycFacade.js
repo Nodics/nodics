@@ -33,6 +33,12 @@ module.exports = {
     },
 
     initMobileKyc: function (request) {
-        return SERVICE.DefaultMobileKycWorkflowService.initMobileKyc(request);
+        return SERVICE.DefaultKycService.initMobileKyc(request);
+    },
+    validateMobileKyc: function (request) {
+        return SERVICE.DefaultKycService.validateMobileKyc(request);
+    },
+    initEmailKyc: function (request) {
+        return SERVICE.DefaultKycService.initEmailKyc(request);
     }
 };

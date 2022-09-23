@@ -10,5 +10,8 @@
  */
 
 module.exports = {
-
+    record0: {
+        code: 'approachBoxComponentType',
+        active: true,
+    },
 };

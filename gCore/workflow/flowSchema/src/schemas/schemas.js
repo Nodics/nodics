@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    flowSchema: {
+    workflow: {
         workflow: {
             super: 'base',
             model: false,
@@ -225,7 +225,7 @@ module.exports = {
                     enabled: true,
                     schemaName: "workflowItem",
                     type: 'many',
-                    propertyName: 'code',
+                    propertyName: '_id',
                     searchOptions: {
                         projection: { _id: 0 }
                     }
@@ -351,7 +351,7 @@ module.exports = {
          * This item will hold the reference of its actuall stage, I mean, which workflow and where it is currently
          */
         workflowItem: {
-            super: 'base',
+            super: 'super',
             model: true,
             service: {
                 enabled: true

@@ -1,7 +1,7 @@
 {
     "name": "workflow",
     "index": "5.30.99",
-    "type": "group",
+    "type": "router",
     "requiredModules": [
         "flowSchema",
         "flowCore",

@@ -25,7 +25,7 @@ let assert = require('assert');
 module.exports = class NodicsError extends Error {
 
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').NodicsError) {
-        if (error && error instanceof Error) {
+        if (error && !error.code && error instanceof Error) {
             error = UTILS.extractFromError(error, message, defaultCode);
         } else if ((typeof error === 'string' || error instanceof String) && error.startsWith('ERR_')) {
             error = {

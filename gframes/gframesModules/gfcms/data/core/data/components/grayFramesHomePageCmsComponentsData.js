@@ -38,8 +38,10 @@ module.exports = {
         typeCode: 'imageComponentType',
         userGroups: ['customerUserGroup', 'employeeUserGroup'],
         media: {
-            name: 'Transperant Communication',
-            url: 'https://demo.hashthemes.com/hashone/wp-content/uploads/2020/03/banner1.jpg'
+            background: {
+                name: 'Transperant Communication',
+                url: 'https://demo.hashthemes.com/hashone/wp-content/uploads/2020/03/banner1.jpg'
+            }
         },
         title: 'This is image one title',
         subTitle: 'This is image one sub title'
@@ -51,8 +53,10 @@ module.exports = {
         typeCode: 'imageComponentType',
         userGroups: ['customerUserGroup', 'employeeUserGroup'],
         media: {
-            name: 'Transperant Communication',
-            url: 'https://demo.hashthemes.com/hashone/wp-content/uploads/2020/03/banner2.jpg'
+            background: {
+                name: 'Transperant Communication',
+                url: 'https://demo.hashthemes.com/hashone/wp-content/uploads/2020/03/banner2.jpg'
+            }
         },
         title: 'This is image two title',
         subTitle: 'This is image two sub title'
@@ -64,8 +68,10 @@ module.exports = {
         typeCode: 'imageComponentType',
         userGroups: ['customerUserGroup', 'employeeUserGroup'],
         media: {
-            name: 'Transperant Communication',
-            url: 'https://demo.hashthemes.com/hashone/wp-content/uploads/2020/03/banner3.jpg'
+            background: {
+                name: 'Transperant Communication',
+                url: 'https://demo.hashthemes.com/hashone/wp-content/uploads/2020/03/banner3.jpg'
+            }
         },
         title: 'This is image three title',
         subTitle: 'This is image three sub title'

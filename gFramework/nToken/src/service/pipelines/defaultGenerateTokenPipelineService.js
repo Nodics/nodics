@@ -48,6 +48,8 @@ module.exports = {
     },
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building Token generation query');
+        let tokenConfig = CONFIG.get('token').TOKEN;
+        request.model.limit = (request.model.limit === undefined) ? tokenConfig.attemptLimit : request.model.limit
         process.nextSuccess(request, response);
     },
     checkExistingToken: function (request, response, process) {

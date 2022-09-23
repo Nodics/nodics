@@ -37,7 +37,6 @@ module.exports = {
 
     performHeadOperation: function (request, response) {
         return new Promise((resolve, reject) => {
-            console.log('performHeadOperation : -------------------------------------------');
             resolve({
                 decision: 'INITIATE',
                 feedback: {
@@ -49,12 +48,32 @@ module.exports = {
 
     initializeMobileOTP: function (request, response) {
         return new Promise((resolve, reject) => {
-            console.log('initializeMobileOTP : -------------------------------------------');
-            resolve({
-                decision: 'VALIDATEOTP',
-                feedback: {
-                    message: 'OTP for the mobile been generated'
+            let otpModel = request.workflowCarrier.items[0];
+            SERVICE.DefaultOtpService.generateOtp({
+                tenant: request.tenant,
+                authData: request.authData,
+                model: {
+                    key: otpModel.mobileNumber,
+                    ops: otpModel.loginId,
+                    active: true,
+                    limit: otpModel.limit || CONFIG.get('token').OTP.attemptLimit || 5
                 }
+            }, response).then(success => {
+                resolve({
+                    decision: 'VALIDATEOTP',
+                    otp: success.result,
+                    feedback: {
+                        message: 'OTP for the mobile been generated'
+                    }
+                });
+            }).catch(error => {
+                reject({
+                    decision: 'ERROR',
+                    otpError: error,
+                    feedback: {
+                        message: 'OTP for the mobile been generated'
+                    }
+                });
             });
         });
     },

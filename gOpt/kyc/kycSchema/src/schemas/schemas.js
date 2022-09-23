@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-    kycSchema: {
+    kyc: {
         kyc: {
             super: 'super',
             model: true,
@@ -26,15 +26,20 @@ module.exports = {
                     required: true,
                     description: 'This is unique reference from the source, loke loginId, orderId',
                 },
-                group: {
+                description: {
                     type: 'string',
                     required: false,
-                    description: 'This will help to club type of KYCs like, order validation, initiated or customer registration',
+                    description: 'This could have detail description about the KYC model',
                 },
-                type: {
-                    enum: [ENUMS.KYCType.CUST_REG.key, ENUMS.KYCType.EMP_REG.key, ENUMS.KYCType.ORDER.key],
+                opsType: {
+                    enum: [ENUMS.OPSType.CUST_REG.key, ENUMS.OPSType.EMP_REG.key, ENUMS.OPSType.ORDER.key],
                     required: true,
                     description: 'Required value could be only in [CUST_REG, EMP_REG, ORDER]'
+                },
+                type: {
+                    enum: [ENUMS.KYCType.MOBILE.key, ENUMS.KYCType.EMAIL.key, ENUMS.KYCType.DOCS.key],
+                    required: true,
+                    description: 'Required value could be only in [MOBILE, EMAIL, DOCS]'
                 }
             }
         }

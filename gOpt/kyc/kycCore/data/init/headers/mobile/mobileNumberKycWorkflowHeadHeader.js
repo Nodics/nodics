@@ -11,12 +11,12 @@
 
 module.exports = {
     workflow: {
-        mobileNumberValidationWorkflowHead: {
+        mobileNumberKycWorkflowHeadData: {
             options: {
                 enabled: true,
                 schemaName: 'workflowAction',
                 operation: 'saveAll',
-                dataFilePrefix: 'mobileNumberValidationWorkflowHeadData'
+                dataFilePrefix: 'mobileNumberKycWorkflowHeadData'
             },
             query: {
                 code: '$code'

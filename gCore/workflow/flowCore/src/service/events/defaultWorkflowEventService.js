@@ -58,7 +58,6 @@ module.exports = {
             if ((!event.data.carrier.items || event.data.carrier.items.length <= 0) && workflowCarrier.items && workflowCarrier.items.length > 0) {
                 event.data.carrier.items = workflowCarrier.items.map(item => {
                     return {
-                        code: item.code,
                         refId: item.refId
                     };
                 });

@@ -15,10 +15,10 @@ module.exports = {
         name: "initializeMobileOTPAction",
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
-        handler: 'DefaultMobileNumberValidationWorkflowService.initializeMobileOTP',
+        handler: 'DefaultMobileNumberKycWorkflowService.initializeMobileOTP',
         accessGroups: ['userGroup'],
-        allowedDecisions: ['VALIDATEOTP', 'REJECT', 'ERROR'],
-        channels: ['verifyMobileOTP', 'defaultRejectChannel', 'defaultErrorChannel']
+        allowedDecisions: ['VALIDATEOTP', 'ERROR'],
+        channels: ['verifyMobileOTP', 'defaultErrorChannel']
     },
     record1: {
         code: "verifyMobileOTPAction",
@@ -34,7 +34,7 @@ module.exports = {
         name: "mobileOTPValidatedAction",
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
-        handler: 'DefaultMobileNumberValidationWorkflowService.updateOTPValidated',
+        handler: 'DefaultMobileNumberKycWorkflowService.updateOTPValidated',
         accessGroups: ['userGroup'],
         allowedDecisions: ['SUCCESS'],
         channels: ['defaultSuccessChannel']

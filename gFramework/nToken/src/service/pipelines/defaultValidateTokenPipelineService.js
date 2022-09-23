@@ -65,6 +65,7 @@ module.exports = {
                 }
             }
         })).then(result => {
+            let updated = false;
             if (result.count === 1 && result.result && result.result.length === 1) {
                 let tokenModel = result.result[0];
                 let currentTime = new Date;
@@ -75,8 +76,30 @@ module.exports = {
                     process.nextSuccess(request, response);
                 } else if (tokenModel.expireAt.getTime() < currentTime.getTime()) {
                     process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00001'));
+                    tokenModel.active = false;
+                    updated = true;
                 } else if (tokenModel.value != String(request.model.value)) {
                     process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00003'));
+                    tokenModel.limit = tokenModel.limit - 1;
+                    updated = true;
+                    if (tokenModel.limit === 0) tokenModel.active = false
+                }
+                if (updated) {
+                    request.tokenService.update({
+                        tenant: request.tenant,
+                        authData: request.authData,
+                        query: {
+                            '_id': tokenModel._id
+                        },
+                        model: {
+                            active: tokenModel.active,
+                            limit: tokenModel.limit
+                        }
+                    }).then(result => {
+                        this.LOG.debug('Token has been update successfully');
+                    }).catch(error => {
+                        this.LOG.debug('Error while updating token: ', error);
+                    });
                 }
             } else {
                 process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00002', 'Token data is not valid'));
