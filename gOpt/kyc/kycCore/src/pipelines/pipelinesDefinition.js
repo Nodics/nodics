@@ -43,6 +43,50 @@ module.exports = {
             }
         }
     },
+    validateMobileKycPipeline: {
+        startNode: "validateRequest",
+        hardStop: true, //default value is false
+        handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultMobileKycValidatePipelineService.validateRequest',
+                success: 'buildKycQuery'
+            },
+            buildKycQuery: {
+                type: 'function',
+                handler: 'DefaultMobileKycValidatePipelineService.buildKycQuery',
+                success: 'loadKycMode'
+            },
+            loadKycMode: {
+                type: 'function',
+                handler: 'DefaultMobileKycValidatePipelineService.loadKycMode',
+                success: 'validateMobileKyc'
+            },
+            validateMobileKyc: {
+                type: 'function',
+                handler: 'DefaultMobileKycValidatePipelineService.validateMobileKyc',
+                success: 'updateMobileKycWorkflow'
+            },
+            updateMobileKycWorkflow: {
+                type: 'function',
+                handler: 'DefaultMobileKycValidatePipelineService.updateMobileKycWorkflow',
+                success: 'buildMobileKycModel'
+            },
+            buildMobileKycModel: {
+                type: 'function',
+                handler: 'DefaultMobileKycValidatePipelineService.buildMobileKycModel',
+                success: 'updateMobileKycModel'
+            },
+            updateMobileKycModel: {
+                type: 'function',
+                handler: 'DefaultMobileKycValidatePipelineService.updateMobileKycModel',
+                success: 'successEnd'
+            }
+        }
+    },
+
     initializeEmailKycPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
@@ -76,7 +120,8 @@ module.exports = {
             }
         }
     },
-    sendKycTokenPipeline: {
+
+    validateEmailKycPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -84,33 +129,43 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultMobileKycInitPipelineService.validateRequest',
-                success: 'buildKycModel'
+                handler: 'DefaultEmailKycValidatePipelineService.validateRequest',
+                success: 'buildKycQuery'
             },
-            buildKycModel: {
+            buildKycQuery: {
                 type: 'function',
-                handler: 'DefaultMobileKycInitPipelineService.buildKycModel',
-                success: 'buildWorkflowCarrier'
+                handler: 'DefaultEmailKycValidatePipelineService.buildKycQuery',
+                success: 'loadKycMode'
             },
-            buildWorkflowCarrier: {
+            loadKycMode: {
                 type: 'function',
-                handler: 'DefaultMobileKycInitPipelineService.buildWorkflowCarrier',
-                success: 'initMobileKyc'
+                handler: 'DefaultEmailKycValidatePipelineService.loadKycMode',
+                success: 'validateMobileKyc'
             },
-            initMobileKyc: {
+            validateMobileKyc: {
                 type: 'function',
-                handler: 'DefaultMobileKycInitPipelineService.initMobileKyc',
-                success: 'updateKycModel'
+                handler: 'DefaultEmailKycValidatePipelineService.validateEmailKyc',
+                success: 'updateMobileKycWorkflow'
             },
-            updateKycModel: {
+            updateMobileKycWorkflow: {
                 type: 'function',
-                handler: 'DefaultMobileKycInitPipelineService.updateKycModel',
+                handler: 'DefaultEmailKycValidatePipelineService.updateEmailKycWorkflow',
+                success: 'buildMobileKycModel'
+            },
+            buildMobileKycModel: {
+                type: 'function',
+                handler: 'DefaultEmailKycValidatePipelineService.buildEmailKycModel',
+                success: 'updateMobileKycModel'
+            },
+            updateMobileKycModel: {
+                type: 'function',
+                handler: 'DefaultEmailKycValidatePipelineService.updateEmailKycModel',
                 success: 'successEnd'
             }
         }
     },
 
-    validateMobileKycPipeline: {
+    initKycNotificationPipeline: {
         startNode: "validateRequest",
         hardStop: true, //default value is false
         handleError: 'handleError', // define this node, within node definitions, else will take default 'handleError' one
@@ -118,34 +173,88 @@ module.exports = {
         nodes: {
             validateRequest: {
                 type: 'function',
-                handler: 'DefaultMobileKycValidatePipelineService.validateRequest',
+                handler: 'DefaultKycNotificationInitPipelineService.validateRequest',
                 success: 'buildKycQuery'
             },
             buildKycQuery: {
                 type: 'function',
-                handler: 'DefaultMobileKycValidatePipelineService.buildKycQuery',
+                handler: 'DefaultKycNotificationInitPipelineService.buildKycQuery',
                 success: 'loadKycMode'
             },
             loadKycMode: {
                 type: 'function',
-                handler: 'DefaultMobileKycValidatePipelineService.loadKycMode',
-                success: 'validateMobileKyc'
+                handler: 'DefaultKycNotificationInitPipelineService.loadKycMode',
+                success: 'checkKycType'
             },
-            validateMobileKyc: {
+            checkKycType: {
                 type: 'function',
-                handler: 'DefaultMobileKycValidatePipelineService.validateMobileKyc',
-                success: 'updateMobileKycWorkflow'
+                handler: 'DefaultKycNotificationInitPipelineService.checkKycType',
+                success: {
+                    mobileKyc: 'initMobileKycNotification',
+                    emailKyc: 'initEmailKycNotification',
+                    docKyc: 'initDocKycNotification',
+                    kycError: 'handleError' // this is not required as error hanndler is default by throwing error
+                }
             },
-            updateMobileKycWorkflow: {
-                type: 'function',
-                handler: 'DefaultMobileKycValidatePipelineService.updateMobileKycWorkflow',
-                success: 'updateMobileKycModel'
-            },
-            updateMobileKycModel: {
-                type: 'function',
-                handler: 'DefaultMobileKycValidatePipelineService.updateMobileKycModel',
+            initMobileKycNotification: {
+                type: 'process',
+                handler: 'initMobileKycNotification',
                 success: 'successEnd'
+            },
+            initEmailKycNotification: {
+                type: 'process',
+                handler: 'initEmailKycNotification',
+                success: 'successEnd'
+            },
+            initDocKycNotification: {
+                type: 'process',
+                handler: 'initDocKycNotification',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultKycNotificationInitPipelineService.handleSuccess'
             }
         }
+    },
+
+    initMobileKycNotification: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultMobileKycNotificationInitPipelineService.validateRequest',
+                success: 'successEnd'
+            }
+        },
+    },
+    initEmailKycNotification: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultEmailKycNotificationInitPipelineService.validateRequest',
+                success: 'successEnd'
+            }
+        },
+    },
+    initDocKycNotification: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultDocumentKycNotificationInitPipelineService.validateRequest',
+                success: 'successEnd'
+            }
+        },
     },
 };

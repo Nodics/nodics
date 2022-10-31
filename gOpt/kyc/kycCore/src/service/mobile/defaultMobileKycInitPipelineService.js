@@ -110,6 +110,7 @@ module.exports = {
 
     },
     updateKycModel: function (request, response, process) {
+        this.LOG.debug('Updating KYC model after operation');
         request.kycService.save(request).then(success => {
             response.success = {
                 code: 'SUC_KYC_00001',

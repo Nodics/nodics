@@ -10,7 +10,8 @@
  */
 
 module.exports = {
-    record1: {
+    // ************************************************  Mobile OTP Channels Start  ****************************************
+    record0: {
         code: "initializeMobileOTP",
         name: "initializeMobileOTP",
         active: true,
@@ -18,6 +19,15 @@ module.exports = {
             decision: 'INITIATE'
         },
         target: 'initializeMobileOTPAction'
+    },
+    record1: {
+        code: "notifyUserMobileOTP",
+        name: "notifyUserMobileOTP",
+        active: true,
+        qualifier: {
+            decision: 'NOTIFY'
+        },
+        target: 'notifyUserMobileOTPAction'
     },
     record2: {
         code: "verifyMobileOTP",
@@ -29,24 +39,15 @@ module.exports = {
         target: 'verifyMobileOTPAction'
     },
     record3: {
-        code: "handleExpiredOTP",
-        name: "handleExpiredOTP",
-        active: true,
-        qualifier: {
-            decision: 'EXPIRED'
-        },
-        target: 'initializeMobileOTPAction'
-    },
-    record4: { // this may not be needed
-        code: "handleRetryOTP",
-        name: "handleRetryOTP",
+        code: "handleMobileRetryOTP",
+        name: "handleMobileRetryOTP",
         active: true,
         qualifier: {
             decision: 'RETRY'
         },
         target: 'verifyMobileOTPAction'
     },
-    record3: {
+    record4: {
         code: "mobileOTPValidated",
         name: "mobileOTPValidated",
         active: true,
@@ -55,4 +56,52 @@ module.exports = {
         },
         target: 'mobileOTPValidatedAction'
     },
+    // ************************************************  Mobile OTP Channels End  ****************************************
+    // ************************************************  Email OTP Channels Start  ****************************************
+    record5: {
+        code: "initializeEmailOTP",
+        name: "initializeEmailOTP",
+        active: true,
+        qualifier: {
+            decision: 'INITIATE'
+        },
+        target: 'initializeEmailOTPAction'
+    },
+    record6: {
+        code: "notifyUserEmailOTP",
+        name: "notifyUserEmailOTP",
+        active: true,
+        qualifier: {
+            decision: 'NOTIFY'
+        },
+        target: 'notifyUserEmailOTPAction'
+    },
+    record7: {
+        code: "verifyEmailOTP",
+        name: "verifyEmailOTP",
+        active: true,
+        qualifier: {
+            decision: 'VALIDATEOTP'
+        },
+        target: 'verifyEmailOTPAction'
+    },
+    record8: {
+        code: "handleEmailRetryOTP",
+        name: "handleEmailRetryOTP",
+        active: true,
+        qualifier: {
+            decision: 'RETRY'
+        },
+        target: 'verifyEmailOTPAction'
+    },
+    record9: {
+        code: "emailOTPValidated",
+        name: "emailOTPValidated",
+        active: true,
+        qualifier: {
+            decision: 'SUCCESS'
+        },
+        target: 'emailOTPValidatedAction'
+    },
+    // ************************************************  Email OTP Channels End  ****************************************
 };

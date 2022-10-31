@@ -69,6 +69,7 @@ module.exports = {
                 process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00002', 'Error :: SERVICE.' + serviceName + '.' + operation + '(request, response, this)'));
             }
         } catch (error) {
+            LOG.error(error);
             process.error(request, response, new CLASSES.WorkflowError(error));
         }
     }

@@ -33,7 +33,7 @@ module.exports = {
         });
     },
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating mobile KYC validation request');
+        this.LOG.debug('Validating email KYC validation request');
         if (!request.refId || !request.opsType || !request.otp || !request.otp.key || !request.otp.ops || !request.otp.value) {
             process.error(request, response, new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid request to validate otp'));
         } else {
@@ -41,7 +41,7 @@ module.exports = {
         }
     },
     buildKycQuery: function (request, response, process) {
-        this.LOG.debug('Building mobile KYC model retrive query');
+        this.LOG.debug('Building email KYC model retrive query');
         request.kycInput = {
             searchOptions: {
                 pageSize: 1,
@@ -55,13 +55,13 @@ module.exports = {
                 opsType: request.opsType,
                 active: true,
                 'item.loginId': request.otp.ops,
-                'item.mobileNumber': request.otp.key
+                'item.email': request.otp.key
             }
         }
         process.nextSuccess(request, response);
     },
     loadKycMode: function (request, response, process) {
-        this.LOG.debug('Loading mobile KYC model');
+        this.LOG.debug('Loading email KYC model');
         request.kycService.get({
             tenant: request.tenant,
             authData: request.authData,
@@ -79,7 +79,7 @@ module.exports = {
         });
     },
     validateMobileKyc: function (request, response, process) {
-        this.LOG.debug('Initializing mobile KYC validation process');
+        this.LOG.debug('Initializing email KYC validation process');
         SERVICE.DefaultOtpService.validateOtp({
             tenant: request.tenant,
             authData: request.authData,
@@ -106,7 +106,7 @@ module.exports = {
         });
     },
     updateMobileKycWorkflow: function (request, response, process) {
-        this.LOG.debug('Updating mobile KYC workflow about validation');
+        this.LOG.debug('Updating email KYC workflow about validation');
         let responseMapping = CONFIG.get('kyc').responseMapping[response.otpResult.code];
         if (!responseMapping) {
             responseMapping = CONFIG.get('kyc').responseMapping.default;
@@ -125,10 +125,14 @@ module.exports = {
                 carrierCode: response.kycModel.workflow.carrierCode,
                 actionResponse: request.actionResponse
             }, response).then(success => {
-                response.success = success
+                response.workflowResult = {
+                    success: success
+                }
                 process.nextSuccess(request, response);
             }).catch(error => {
-                response.success = error
+                response.workflowResult = {
+                    error: error
+                }
                 process.nextSuccess(request, response);
             });
         } else {
@@ -137,15 +141,9 @@ module.exports = {
             //     tenant: tenant,
             //     requestBody: itemDetails
             // })).then(success => {
-            //     response.workflowResult = {
-            //         success: success
-            //     }
-            //     process.nextSuccess(request, response);
+            //     resolve(success);
             // }).catch(error => {
-            //     response.workflowResult = {
-            //         error: error
-            //     }
-            //     process.nextSuccess(request, response);
+            //     reject(error);
             // });
         }
     },
@@ -155,8 +153,13 @@ module.exports = {
         if (!kycModel.states) kycModel.states = [];
         kycModel.states.push({
             otp: request.actionResponse,
-            workflow: {
-                code: response.success.code
+            workflow: (response.workflowResult && response.workflowResult.success) ? {
+                success: true,
+                code: response.workflowResult.success.code,
+
+            } : {
+                success: false,
+                code: response.workflowResult.error.code
             }
         });
         process.nextSuccess(request, response);
@@ -166,11 +169,15 @@ module.exports = {
         request.kycService.save({
             tenant: request.tenant,
             authData: request.authData,
-            model: response.kycModel,
+            model: request.kycModel,
             query: {
-                _id: response.kycModel._id
+                _id: request.kycModel._id
             }
         }, {}).then(success => {
+            response.success = {
+                code: 'SUC_KYC_00001',
+                result: success.result
+            }
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, new CLASSES.NodicsError(error));

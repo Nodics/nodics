@@ -119,12 +119,11 @@ module.exports = {
                                     upsert: false,
                                     returnNewDocument: true
                                 }).then(success => {
-                                    let result = success.result;
                                     response.forEach(element => {
                                         _.merge(element, input.model);
                                     });
-                                    result.models = response;
-                                    resolve(result);
+                                    success.models = response;
+                                    resolve(success);
                                 }).catch(error => {
                                     reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                                 });
@@ -137,7 +136,7 @@ module.exports = {
                             upsert: false,
                             returnNewDocument: true
                         }).then(success => {
-                            resolve(success.result);
+                            resolve(success);
                         }).catch(error => {
                             reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                         });

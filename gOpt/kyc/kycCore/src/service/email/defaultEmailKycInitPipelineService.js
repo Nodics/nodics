@@ -34,7 +34,7 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating mobile KYC init request');
+        this.LOG.debug('Validating email KYC init request');
         if (!request.refId) {
             process.error(request, response, new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid service detail to execute'));
         } else if (!request.type) {
@@ -44,12 +44,12 @@ module.exports = {
         }
     },
     buildKycCarrierModel: function (request, response, process) {
-        this.LOG.debug('Creating KYC Carrier model for mobile validation');
+        this.LOG.debug('Creating KYC Carrier model for email validation');
         request.carrierInput = {
-            workflowCode: 'mobileNumberKycWorkflow',
+            workflowCode: 'emailKycWorkflow',
             releaseCarrier: true,
             carrier: {
-                code: request.refId + 'MobileKycCarrier_' + (new Date()).getTime(),
+                code: request.refId + 'EmailKycCarrier_' + (new Date()).getTime(),
                 sourceDetail: request.sourceDetail || {
                     schemaName: 'kyc',
                     moduleName: 'kyc'
@@ -69,7 +69,7 @@ module.exports = {
 
     },
     initEmailKyc: function (request, response, process) {
-        this.LOG.debug('Initializing mobile KYC process');
+        this.LOG.debug('Initializing email KYC process');
         if (NODICS.isModuleActive('workflow')) {
             SERVICE.DefaultWorkflowService.initCarrierItem(_.merge({
                 tenant: request.tenant,
@@ -93,7 +93,7 @@ module.exports = {
         }
     },
     buildKycModel: function (request, response, process) {
-        this.LOG.debug('Creating KYC model for mobile validation');
+        this.LOG.debug('Creating KYC model for email validation');
         request.model = {
             type: request.type,
             opsType: request.opsType,
@@ -110,6 +110,7 @@ module.exports = {
 
     },
     updateKycModel: function (request, response, process) {
+        this.LOG.debug('Updating KYC model after operation');
         request.kycService.save(request).then(success => {
             response.success = {
                 code: 'SUC_KYC_00001',

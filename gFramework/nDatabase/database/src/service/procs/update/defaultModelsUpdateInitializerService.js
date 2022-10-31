@@ -98,7 +98,7 @@ module.exports = {
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing remove query');
         request.schemaModel.updateItems(request).then(result => {
-            if (result.n && result.n > 0) {
+            if (result.modifiedCount && result.modifiedCount > 0) {
                 result.message = 'Items have been updated successfull';
             }
             response.success = {

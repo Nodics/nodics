@@ -10,26 +10,37 @@
  */
 
 module.exports = {
+    // ************************************************  Mobile OTP Actions Start  ****************************************
     record0: {
         code: "initializeMobileOTPAction",
         name: "initializeMobileOTPAction",
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
-        handler: 'DefaultMobileNumberKycWorkflowService.initializeMobileOTP',
+        handler: 'DefaultMobileNumberKycWorkflowService.initMobileOTP',
+        accessGroups: ['userGroup'],
+        allowedDecisions: ['NOTIFY', 'ERROR'],
+        channels: ['notifyUserMobileOTP', 'defaultErrorChannel']
+    },
+    record1: {
+        code: "notifyUserMobileOTPAction",
+        name: "notifyUserMobileOTPAction",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        handler: 'DefaultMobileNumberKycWorkflowService.notifyMobileOTP',
         accessGroups: ['userGroup'],
         allowedDecisions: ['VALIDATEOTP', 'ERROR'],
         channels: ['verifyMobileOTP', 'defaultErrorChannel']
     },
-    record1: {
+    record2: {
         code: "verifyMobileOTPAction",
         name: "verifyMobileOTPAction",
         active: true,
         type: ENUMS.WorkflowActionType.MANUAL.key,
         accessGroups: ['userGroup'],
-        allowedDecisions: ['SUCCESS', 'EXPIRED', 'RETRY', 'ERROR'],
-        channels: ['mobileOTPValidated', 'handleExpiredOTP', 'handleRetryOTP', 'defaultErrorChannel']
+        allowedDecisions: ['SUCCESS', 'RETRY', 'ERROR'],
+        channels: ['mobileOTPValidated', 'handleMobileRetryOTP', 'defaultErrorChannel']
     },
-    record2: {
+    record3: {
         code: "mobileOTPValidatedAction",
         name: "mobileOTPValidatedAction",
         active: true,
@@ -38,5 +49,47 @@ module.exports = {
         accessGroups: ['userGroup'],
         allowedDecisions: ['SUCCESS'],
         channels: ['defaultSuccessChannel']
-    }
+    },
+    // ************************************************  Mobile OTP Actions End  ****************************************
+    // ************************************************  Email OTP Actions Start  ****************************************
+    record4: {
+        code: "initializeEmailOTPAction",
+        name: "initializeEmailOTPAction",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        handler: 'DefaultEmailKycWorkflowService.initEmailOTP',
+        accessGroups: ['userGroup'],
+        allowedDecisions: ['NOTIFY', 'ERROR'],
+        channels: ['notifyUserEmailOTP', 'defaultErrorChannel']
+    },
+    record5: {
+        code: "notifyUserEmailOTPAction",
+        name: "notifyUserEmailOTPAction",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        handler: 'DefaultEmailKycWorkflowService.notifyMobileOTP',
+        accessGroups: ['userGroup'],
+        allowedDecisions: ['VALIDATEOTP', 'ERROR'],
+        channels: ['verifyEmailOTP', 'defaultErrorChannel']
+    },
+    record6: {
+        code: "verifyEmailOTPAction",
+        name: "verifyEmailOTPAction",
+        active: true,
+        type: ENUMS.WorkflowActionType.MANUAL.key,
+        accessGroups: ['userGroup'],
+        allowedDecisions: ['SUCCESS', 'RETRY', 'ERROR'],
+        channels: ['emailOTPValidated', 'handleEmailRetryOTP', 'defaultErrorChannel']
+    },
+    record7: {
+        code: "emailOTPValidatedAction",
+        name: "emailOTPValidatedAction",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        handler: 'DefaultEmailKycWorkflowService.updateOTPValidated',
+        accessGroups: ['userGroup'],
+        allowedDecisions: ['SUCCESS'],
+        channels: ['defaultSuccessChannel']
+    },
+    // ************************************************  Email OTP Actions End  ****************************************
 };

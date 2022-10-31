@@ -40,38 +40,63 @@ module.exports = {
             resolve({
                 decision: 'INITIATE',
                 feedback: {
-                    message: 'Mobile number OTP verification initiated'
+                    message: 'Email OTP verification initiated'
                 }
             });
         });
     },
 
-    initializeMobileOTP: function (request, response) {
+    initEmailOTP: function (request, response) {
         return new Promise((resolve, reject) => {
             let otpModel = request.workflowCarrier.items[0];
             SERVICE.DefaultOtpService.generateOtp({
                 tenant: request.tenant,
                 authData: request.authData,
                 model: {
-                    key: otpModel.mobileNumber,
+                    key: otpModel.email,
                     ops: otpModel.loginId,
                     active: true,
-                    limit: otpModel.limit || CONFIG.get('token').OTP.attemptLimit || 5
+                    limit: otpModel.limit || CONFIG.get('token').OTP.attemptLimit || 5,
+                    singleUseToken: CONFIG.get('token').OTP.singleUseToken || false
                 }
             }, response).then(success => {
                 resolve({
-                    decision: 'VALIDATEOTP',
+                    decision: 'NOTIFY',
                     otp: success.result,
                     feedback: {
-                        message: 'OTP for the mobile been generated'
+                        message: 'OTP for the email been generated'
                     }
                 });
             }).catch(error => {
-                reject({
+                resolve({
                     decision: 'ERROR',
                     otpError: error,
                     feedback: {
-                        message: 'OTP for the mobile been generated'
+                        message: 'Failed OTP generation for email verification'
+                    }
+                });
+            });
+        });
+    },
+
+    notifyMobileOTP: function (request, response) {
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('initKycNotificationPipeline', {
+                tenant: request.tenant,
+                authData: request.authData
+            }, {}).then(success => {
+                resolve({
+                    decision: 'VALIDATEOTP',
+                    feedback: {
+                        message: 'Customer notified for generated OTP'
+                    }
+                });
+            }).catch(error => {
+                resolve({
+                    decision: 'ERROR',
+                    notifyError: error,
+                    feedback: {
+                        message: 'Failed OTP generation for mobile verification'
                     }
                 });
             });
@@ -80,11 +105,10 @@ module.exports = {
 
     updateOTPValidated: function (request, response) {
         return new Promise((resolve, reject) => {
-            console.log('updateOTPValidated : -------------------------------------------');
             resolve({
                 decision: 'SUCCESS',
                 feedback: {
-                    message: 'OTP for the mobile been validated'
+                    message: 'OTP for the email been validated'
                 }
             });
         });

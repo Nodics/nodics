@@ -186,6 +186,9 @@ module.exports = {
         request.workflowCarrier.activeAction.actionResponse = {
             type: request.actionResponse.type,
             decision: request.actionResponse.decision,
+            internalResponce: request.actionResponse.internalResponce,
+            customerResponse: request.actionResponse.customerResponse,
+            notifyError: request.actionResponse.notifyError,
             feedback: request.actionResponse.feedback
         };
         request.workflowCarrier.actions.push({

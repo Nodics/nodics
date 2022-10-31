@@ -11,13 +11,24 @@
 
 module.exports = {
 
-    record1: {
+    record0: {
         code: "mobileNumberKycWorkflow",
         name: "mobileNumberKycWorkflow",
         active: true,
         type: ENUMS.WorkflowActionType.AUTO.key,
         position: ENUMS.WorkflowActionPosition.HEAD.key,
         handler: 'DefaultMobileNumberKycWorkflowService.performHeadOperation',
+        accessGroups: ['userGroup'],
+        allowedDecisions: ['INITIATE'],
+        channels: ['initializeMobileOTP']
+    },
+    record1: {
+        code: "emailKycWorkflow",
+        name: "emailKycWorkflow",
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        position: ENUMS.WorkflowActionPosition.HEAD.key,
+        handler: 'DefaultEmailKycWorkflowService.performHeadOperation',
         accessGroups: ['userGroup'],
         allowedDecisions: ['INITIATE'],
         channels: ['initializeMobileOTP']

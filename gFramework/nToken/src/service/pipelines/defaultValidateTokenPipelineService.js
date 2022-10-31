@@ -74,6 +74,10 @@ module.exports = {
                         code: 'SUC_TKN_00001'
                     };
                     process.nextSuccess(request, response);
+                    if (tokenModel.singleUseToken) {
+                        tokenModel.active = false;
+                        updated = true;
+                    }
                 } else if (tokenModel.expireAt.getTime() < currentTime.getTime()) {
                     process.error(request, response, new CLASSES.NodicsError('ERR_TKN_00001'));
                     tokenModel.active = false;
@@ -98,7 +102,7 @@ module.exports = {
                     }).then(result => {
                         this.LOG.debug('Token has been update successfully');
                     }).catch(error => {
-                        this.LOG.debug('Error while updating token: ', error);
+                        this.LOG.error('Error while updating token: ', error);
                     });
                 }
             } else {

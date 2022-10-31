@@ -132,24 +132,20 @@ module.exports = {
 
     executeChannels: function (request) {
         return new Promise((resolve, reject) => {
-            try {
-                SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
-                    tenant: request.tenant,
-                    authData: request.authData,
-                    carrierCode: request.carrierCode,
-                    workflowCarrier: request.workflowCarrier,
-                    workflowHead: request.workflowHead,
-                    workflowAction: request.workflowAction,
-                    actionResponse: request.actionResponse,
-                    channels: request.channels
-                }, {}).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
-            }
+            SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
+                tenant: request.tenant,
+                authData: request.authData,
+                carrierCode: request.carrierCode,
+                workflowCarrier: request.workflowCarrier,
+                workflowHead: request.workflowHead,
+                workflowAction: request.workflowAction,
+                actionResponse: request.actionResponse,
+                channels: request.channels
+            }, {}).then(success => {
+                resolve(success);
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
 

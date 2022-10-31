@@ -80,4 +80,18 @@ module.exports = {
             }
         });
     },
+    validateEmailKyc: function (request, response) {
+        request.kycService = this;
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultPipelineService.start('validateEmailKycPipeline', request, {}).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while validating email KYC'));
+            }
+        });
+    },
 };
