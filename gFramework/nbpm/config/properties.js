@@ -12,7 +12,7 @@
 module.exports = {
 
     defaultErrorCodes: {
-        WorkflowError: 'ERR_WF_00000'
+        workflowError: 'ERR_WF_00000'
     },
     workflow: {
         isCarrierReleased: true,

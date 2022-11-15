@@ -42,7 +42,7 @@ module.exports = {
         name: "defaultSplitEndChannel",
         active: true,
         qualifier: {
-            decision: 'SLIPTEND'
+            decision: 'SPLITEND'
         },
         target: 'defaultSplitEndAction'
     }

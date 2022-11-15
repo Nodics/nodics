@@ -37,26 +37,22 @@ module.exports = {
 
     getActionResponse: function (request) {
         return new Promise((resolve, reject) => {
-            if (request.actionResponse) {
-                resolve(request.actionResponse);
-            } else {
-                let responseId = request.workflowCarrier.activeAction.responseId;
-                this.LOG.debug('Loading workflow action response: ' + responseId);
-                this.get({
-                    tenant: request.tenant,
-                    query: {
-                        code: responseId
-                    }
-                }).then(response => {
-                    if (response.result && response.result.length > 0) {
-                        resolve(response.result[0]);
-                    } else {
-                        reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, none workflow action response found for code: ' + responseId));
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-            }
+            let responseId = request.workflowCarrier.activeAction.responseId;
+            this.LOG.debug('Loading workflow action response: ' + responseId);
+            this.get({
+                tenant: request.tenant,
+                query: {
+                    code: responseId
+                }
+            }).then(response => {
+                if (response.result && response.result.length > 0) {
+                    resolve(response.result[0]);
+                } else {
+                    reject(new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, none workflow action response found for code: ' + responseId));
+                }
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };

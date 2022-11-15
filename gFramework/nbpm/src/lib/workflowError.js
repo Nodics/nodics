@@ -10,7 +10,7 @@
  */
 
 module.exports = class WorkflowError extends CLASSES.NodicsError {
-    constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').WorkflowError) {
+    constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').workflowError) {
         super(error, message, defaultCode);
         super.name = 'WorkflowError';
     }

@@ -32,34 +32,7 @@ module.exports = {
             resolve(true);
         });
     },
-
-    /**
-    * This function is used to evaluate associated channels and process them
-    * @param {*} request 
-    */
-    processChannels: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
-                    tenant: request.tenant,
-                    authData: request.authData,
-                    carrierCode: request.carrierCode,
-                    workflowCarrier: request.workflowCarrier,
-                    workflowHead: request.workflowHead,
-                    workflowAction: request.workflowAction,
-                    actionResponse: request.actionResponse
-                }, {}).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
-            }
-        });
-    },
-
-    getQalifiedChannel: function (request) {
+    getQalifiedChannels: function (request) {
         return new Promise((resolve, reject) => {
             let workflowAction = request.workflowAction;
             this.evaluateChannels([].concat(workflowAction.channels || []), request).then(qualifiedChannels => {
@@ -73,7 +46,6 @@ module.exports = {
             });
         });
     },
-
     evaluateChannels: function (rawChannels, request, qualifiedChannels = []) {
         return new Promise((resolve, reject) => {
             if (rawChannels && rawChannels.length > 0) {
@@ -103,7 +75,6 @@ module.exports = {
             }
         });
     },
-
     getChannels: function (request) {
         return new Promise((resolve, reject) => {
             if (request.channels && request.channels.length > 0) {
@@ -126,39 +97,6 @@ module.exports = {
                 }).catch(error => {
                     reject(error);
                 });
-            }
-        });
-    },
-
-    executeChannels: function (request) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('executeChannelsPipeline', {
-                tenant: request.tenant,
-                authData: request.authData,
-                carrierCode: request.carrierCode,
-                workflowCarrier: request.workflowCarrier,
-                workflowHead: request.workflowHead,
-                workflowAction: request.workflowAction,
-                actionResponse: request.actionResponse,
-                channels: request.channels
-            }, {}).then(success => {
-                resolve(success);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    },
-
-    executeChannel: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                SERVICE.DefaultPipelineService.start('executeChannelPipeline', request, {}).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
             }
         });
     }

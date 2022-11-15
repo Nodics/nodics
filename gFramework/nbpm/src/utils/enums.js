@@ -37,6 +37,7 @@ module.exports = {
             'INIT',
             'RELEASED',
             'PROCESSING',
+            'PROCESSED',
             'PAUSED',
             'BLOCKED',
             'FINISHED',

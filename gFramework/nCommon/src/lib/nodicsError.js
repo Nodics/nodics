@@ -21,7 +21,7 @@
  */
 
 let assert = require('assert');
-
+const flatted = require('flatted');
 module.exports = class NodicsError extends Error {
 
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').NodicsError) {
@@ -52,7 +52,7 @@ module.exports = class NodicsError extends Error {
         super.name = error.name || 'NodicsError';
         this.defaultCode = defaultCode;
         this.code = error.code;
-        this.responseCode = error.responseCode;
+        this.responseCode = error.responseCode || SERVICE.DefaultStatusService.get(defaultCode).code;
         this.metadata = error.metadata;
         this.errors = error.errors || [];
         if (error.stack) {
@@ -91,12 +91,13 @@ module.exports = class NodicsError extends Error {
     }
 
     toJson(returnStack) {
-        let errorsJson = [];
-        if (this.getErrors() && this.getErrors().length > 0) {
-            this.getErrors().forEach(error => {
-                errorsJson.push(error.toJson());
-            });
-        }
+        //let errorsJson = [];
+        // if (this.getErrors() && this.getErrors().length > 0) {
+        //     this.getErrors().forEach(error => {
+        //         errorsJson.push(flatted.toJSON(error));
+        //         //errorsJson.push(error.toJson());
+        //     });
+        // }
         let errorJson = {
             responseCode: this.responseCode,
             code: this.code,
@@ -107,9 +108,9 @@ module.exports = class NodicsError extends Error {
             errorJson.metadata = this.metadata;
         }
         if (this.stack && (returnStack || CONFIG.get('returnErrorStack'))) errorJson.stack = this.stack;
-        if (errorsJson && errorsJson.length > 0) {
-            errorJson.errors = errorsJson;
-        }
+        // if (errorsJson && errorsJson.length > 0) {
+        //     errorJson.errors = errorsJson;
+        // }
         return errorJson;
     }
 };

@@ -8,7 +8,6 @@
     terms of the license agreement you entered into with Nodics.
 
  */
-
 const _ = require('lodash');
 
 module.exports = {
@@ -36,56 +35,49 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to assogn item to next action');
+        this.LOG.debug('Validating request to release workflow carrier');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
-        } else if (!request.actionCode) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, actionCode can not be null or empty'));
         } else if (!request.carrierCode && !request.workflowCarrier) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, carrier detail can not be null or empty'));
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, item detail can not be null or empty'));
         } else {
             process.nextSuccess(request, response);
         }
     },
-    preUpdateCarrier: function (request, response, process) {
-        let workflowCarrier = request.workflowCarrier;
-        if (workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.PROCESSING.key) {
+    releaseCarrier: function (request, response, process) {
+        if (request.workflowCarrier.currentState.state === ENUMS.WorkflowCarrierState.INIT.key) {
             let carrierState = {
-                state: ENUMS.WorkflowCarrierState.PROCESSING.key,
+                state: ENUMS.WorkflowCarrierState.RELEASED.key,
                 action: request.workflowAction.code,
                 time: new Date(),
-                description: 'Pushing carrier to processing state'
+                description: request.comment || 'Carrier successfully released'
             };
             request.workflowCarrier.currentState = carrierState;
             request.workflowCarrier.states.push(carrierState);
+            process.nextSuccess(request, response);
+        } else {
+            response.success.messages.push('WorkflowCarrier: ' + request.workflowCarrier.code + ' is already in released');
+            process.stop(request, response);
         }
-        workflowCarrier.activeAction = {
-            code: request.workflowAction.code,
-            state: ENUMS.WorkflowActionState.PROCESSING.key
-        };
-        if (request.workflowAction.position === ENUMS.WorkflowActionPosition.HEAD.key) {
-            workflowCarrier.activeHead = request.workflowAction.code;
-            workflowCarrier.heads.push(request.workflowAction.code);
-        }
-        process.nextSuccess(request, response);
     },
     updateCarrier: function (request, response, process) {
+        this.LOG.debug('Creating active workflow item');
         SERVICE.DefaultWorkflowCarrierService.save({
             tenant: request.tenant,
-            authData: request.authData,
+            moduleName: request.moduleName,
             options: {
                 recursive: true
             },
             model: request.workflowCarrier
         }).then(success => {
             response.success.workflowCarrier = request.workflowCarrier = success.result;
-            response.success.messages.push('Action:' + request.workflowCarrier.activeAction.code + ' been assign to carrier @: ' + new Date());
+            response.success.messages.push('WorkflowCarrier: ' + request.workflowCarrier.code + ' has been released successfully @: ' + new Date());
             process.nextSuccess(request, response);
         }).catch(error => {
-            process.error(request, response, new CLASSES.WorkflowError(error, 'Invalid request, workflowCode can not be null or empty'));
+            process.error(request, response, error);
         });
     },
-    executeNextAction: function (request, response, process) {
+    executeAction: function (request, response, process) {
         if (!SERVICE.DefaultWorkflowUtilsService.isProcessingAllowed(request.workflowCarrier)) {
             response.success.messages.push('Action: ' + request.workflowAction.code + ' processing not allowed @: ' + new Date());
         } else if (request.workflowAction.type != ENUMS.WorkflowActionType.AUTO.key) {

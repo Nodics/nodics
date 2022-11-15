@@ -32,39 +32,40 @@ module.exports = {
         });
     },
 
-    initCarrierItem: function (request) {
-        return SERVICE.DefaultWorkflowService.initCarrierItem(request);
+    initCarrier: function (request) {
+        return SERVICE.DefaultWorkflowService.initCarrier(request);
     },
-
-    addItemToCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.addItemToCarrier(request);
-    },
-
-    blockCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.blockCarrier(request);
-    },
-
     releaseCarrier: function (request) {
         return SERVICE.DefaultWorkflowService.releaseCarrier(request);
     },
-
-    pauseCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.pauseCarrier(request);
+    updateCarrier: function (request) {
+        return SERVICE.DefaultWorkflowService.updateCarrier(request);
     },
-
-    resumeCarrier: function (request) {
-        return SERVICE.DefaultWorkflowService.resumeCarrier(request);
-    },
-
-    nextAction: function (request) {
-        return SERVICE.DefaultWorkflowService.nextAction(request);
-    },
-
-    getWorkflowChain: function (request) {
-        return SERVICE.DefaultWorkflowService.getWorkflowChain(request);
-    },
-
     performAction: function (request) {
         return SERVICE.DefaultWorkflowService.performAction(request);
     },
+
+    // blockCarrier: function (request) {
+    //     return SERVICE.DefaultWorkflowService.blockCarrier(request);
+    // },
+
+
+
+    // pauseCarrier: function (request) {
+    //     return SERVICE.DefaultWorkflowService.pauseCarrier(request);
+    // },
+
+    // resumeCarrier: function (request) {
+    //     return SERVICE.DefaultWorkflowService.resumeCarrier(request);
+    // },
+
+    // nextAction: function (request) {
+    //     return SERVICE.DefaultWorkflowService.nextAction(request);
+    // },
+
+    // getWorkflowChain: function (request) {
+    //     return SERVICE.DefaultWorkflowService.getWorkflowChain(request);
+    // },
+
+
 };

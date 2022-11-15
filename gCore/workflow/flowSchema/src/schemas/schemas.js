@@ -245,8 +245,8 @@ module.exports = {
                 },
                 sourceDetail: {
                     type: 'object',
-                    required: true,
-                    description: 'Required sourceDetail of item, either internal or external'
+                    required: false,
+                    description: 'Optional sourceDetail of item, either internal or external'
                 },
                 event: {
                     type: 'object',

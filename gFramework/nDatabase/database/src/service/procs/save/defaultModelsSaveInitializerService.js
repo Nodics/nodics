@@ -75,7 +75,13 @@ module.exports = {
             if (models && models.length > 0) {
                 request.model = models.shift();
                 try {
-                    SERVICE.DefaultPipelineService.start('modelSaveInitializerPipeline', request, {}).then(success => {
+                    SERVICE.DefaultPipelineService.start('modelSaveInitializerPipeline', {
+                        tenant: request.tenant,
+                        authData: request.authData,
+                        schemaModel: request.schemaModel,
+                        query: _.merge({}, request.originalQuery),
+                        model: request.model
+                    }, {}).then(success => {
                         if (!response.success) response.success = [];
                         response.success.push(success.result);
                         this.handleModelsSave(request, response, models).then(success => {

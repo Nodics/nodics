@@ -39,7 +39,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve({
                 type: ENUMS.WorkflowActionResponseType.ERROR.key,
-                decision: 'SLIPTEND',
+                decision: 'SPLITEND',
                 feedback: {
                     message: 'Item has been splitted, so end this journey'
                 }

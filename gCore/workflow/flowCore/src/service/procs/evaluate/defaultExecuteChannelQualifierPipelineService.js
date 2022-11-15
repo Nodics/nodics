@@ -43,8 +43,8 @@ module.exports = {
      */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to evaluate channels');
-        if (!request.tenant) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
+        if (!request.tenant || !request.authData) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, mandate data can not be null or empty'));
         } else if (!request.actionResponse) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, actionResponse can not be null or empty'));
         } else {
@@ -96,13 +96,7 @@ module.exports = {
     executeScript: function (request, response, process) {
         if (request.channel.qualifier.script) {
             try {
-                let tenant = request.tenant;
-                let authData = request.authData;
-                let workflowCarrier = request.workflowCarrier;
-                let workflowHead = request.workflowHead;
-                let workflowAction = request.workflowAction;
-                let actionResponse = request.actionResponse;
-                let channel = request.channel;
+                let request = request;
                 let result = eval(request.channel.qualifier.script);
                 process.stop(request, response, result);
             } catch (error) {

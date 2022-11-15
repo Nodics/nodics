@@ -51,16 +51,8 @@ module.exports = {
             let serviceName = handler.substring(0, handler.lastIndexOf('.'));
             let operation = handler.substring(handler.lastIndexOf('.') + 1, handler.length);
             if (SERVICE[serviceName.toUpperCaseFirstChar()] && SERVICE[serviceName.toUpperCaseFirstChar()][operation]) {
-                SERVICE[serviceName.toUpperCaseFirstChar()][operation]({
-                    tenant: request.tenant,
-                    authData: request.authData,
-                    workflowCarrier: request.workflowCarrier,
-                    workflowHead: request.workflowHead,
-                    workflowAction: request.workflowAction
-                }, response).then(success => {
-                    response.success = {
-                        actionResponse: success
-                    };
+                SERVICE[serviceName.toUpperCaseFirstChar()][operation](request, response).then(success => {
+                    response.success = success;
                     process.nextSuccess(request, response);
                 }).catch(error => {
                     process.error(request, response, error);

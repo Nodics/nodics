@@ -34,11 +34,79 @@ module.exports = {
         });
     },
 
-    initCarrierItem: function (request) {
+    initCarrier: function (request) {
         return new Promise((resolve, reject) => {
             try {
                 SERVICE.DefaultPipelineService.start('initWorkflowCarrierPipeline', request, {}).then(success => {
-                    resolve(success);
+                    resolve({
+                        code: 'SUC_WF_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
+            }
+        });
+    },
+    /**
+     * This function is used to pause any carrier for process
+     * @param {*} request 
+     */
+    releaseCarrier: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultPipelineService.start('releaseWorkflowCarrierPipeline', request, {}).then(success => {
+                    resolve({
+                        code: 'SUC_WF_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while initializing pause carrier process'));
+            }
+        });
+    },
+    /**
+     * This functiona is used to update carrier items before its relesed for processing
+     * @param {*} request 
+     * @returns 
+     */
+    updateCarrier: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultPipelineService.start('updateWorkflowCarrierPipeline', request, {}).then(success => {
+                    resolve({
+                        code: 'SUC_WF_00000',
+                        result: success
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(new CLASSES.WorkflowError('Facing issue while adding item into carrier'));
+            }
+        });
+    },
+    /**
+     * This function is used to perform an action for item. If action is manual, action response is required
+     * {
+     *  decision: 'Decision that has been taken',
+     *  feedback: 'Either json object or simple message'
+     * }
+     * @param {*} request 
+     */
+    performAction: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', request, {}).then(success => {
+                    resolve({
+                        code: 'SUC_WF_00000',
+                        result: success
+                    });
                 }).catch(error => {
                     reject(error);
                 });
@@ -48,97 +116,10 @@ module.exports = {
         });
     },
 
-    addItemToCarrier: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                SERVICE.DefaultPipelineService.start('fillWorkflowCarrierPipeline', request, {}).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(new CLASSES.WorkflowError('Facing issue while adding item into carrier'));
-            }
-        });
-    },
-
     /**
-     * This function is used to pause any carrier for process
+     * This funtion is used to assign item to next qalified action, based on evaluated channels 
      * @param {*} request 
      */
-    blockCarrier: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                SERVICE.DefaultPipelineService.start('blockWorkflowCarrierPipeline', request, {}).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(new CLASSES.WorkflowError('Facing issue while initializing pause carrier process'));
-            }
-        });
-    },
-
-    /**
-     * This function is used to pause any carrier for process
-     * @param {*} request 
-     */
-    releaseCarrier: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                SERVICE.DefaultPipelineService.start('releaseWorkflowCarrierPipeline', request, {}).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(new CLASSES.WorkflowError('Facing issue while initializing pause carrier process'));
-            }
-        });
-    },
-
-    /**
-     * This function is used to pause any carrier for process
-     * @param {*} request 
-     */
-    pauseCarrier: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                SERVICE.DefaultPipelineService.start('pauseWorkflowCarrierPipeline', request, {}).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(new CLASSES.WorkflowError('Facing issue while initializing pause carrier process'));
-            }
-        });
-    },
-
-    /**
-     * This function is used to resume any paused carrier for process
-     * @param {*} request 
-     */
-    resumeCarrier: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                request.loadInActive = true;
-                SERVICE.DefaultPipelineService.start('resumeWorkflowCarrierPipeline', request, {}).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(new CLASSES.WorkflowError('Facing issue while initializing resume carrier process'));
-            }
-        });
-    },
-
-    /**
-    * This funtion is used to assign item to next qalified action, based on evaluated channels 
-    * @param {*} request 
-    */
     nextAction: function (request) {
         return new Promise((resolve, reject) => {
             try {
@@ -153,70 +134,108 @@ module.exports = {
         });
     },
 
-    getWorkflowChain: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                request.loadHead = true;
-                SERVICE.DefaultPipelineService.start('loadWorkflowChainPipeline', request, {}).then(success => {
-                    resolve({
-                        code: 'SUC_SYS_00000',
-                        result: success
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
-            }
-        });
-    },
 
-    /**
-     * This function is used to perform an action for item. If action is manual, action response is required
-     * {
-     *  decision: 'Decision that has been taken',
-     *  feedback: 'Either json object or simple message'
-     * }
-     * @param {*} request 
-     */
-    performAction: function (request) {
-        return new Promise((resolve, reject) => {
-            try {
-                SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', request, {}).then(success => {
-                    resolve(success);
-                }).catch(error => {
-                    reject(error);
-                });
-            } catch (error) {
-                reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
-            }
-        });
-    },
+    // //==============================================================================================
 
-    handleItemChangeEvent: function (request) {
-        return new Promise((resolve, reject) => {
-            let event = request.event;
-            let data = event.data;
-            let allPromises = [];
-            data.forEach(carrier => {
-                allPromises.push(this.initCarrierItem(_.merge({
-                    authData: request.authData,
-                    tenant: event.tenant || carrier.tenant || request.tenant
-                }, carrier)));
-            });
-            if (allPromises.length > 0) {
-                SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {
-                    resolve({
-                        result: success.success,
-                        errors: success.errors
-                    });
-                }).catch(error => {
-                    reject(error);
-                });
-            } else {
-                resolve({});
-            }
-        });
-    },
+
+    // /**
+    //  * This function is used to pause any carrier for process
+    //  * @param {*} request 
+    //  */
+    // blockCarrier: function (request) {
+    //     return new Promise((resolve, reject) => {
+    //         try {
+    //             SERVICE.DefaultPipelineService.start('blockWorkflowCarrierPipeline', request, {}).then(success => {
+    //                 resolve(success);
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         } catch (error) {
+    //             reject(new CLASSES.WorkflowError('Facing issue while initializing pause carrier process'));
+    //         }
+    //     });
+    // },
+    // /**
+    //  * This function is used to pause any carrier for process
+    //  * @param {*} request 
+    //  */
+    // pauseCarrier: function (request) {
+    //     return new Promise((resolve, reject) => {
+    //         try {
+    //             SERVICE.DefaultPipelineService.start('pauseWorkflowCarrierPipeline', request, {}).then(success => {
+    //                 resolve(success);
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         } catch (error) {
+    //             reject(new CLASSES.WorkflowError('Facing issue while initializing pause carrier process'));
+    //         }
+    //     });
+    // },
+
+    // /**
+    //  * This function is used to resume any paused carrier for process
+    //  * @param {*} request 
+    //  */
+    // resumeCarrier: function (request) {
+    //     return new Promise((resolve, reject) => {
+    //         try {
+    //             request.loadInActive = true;
+    //             SERVICE.DefaultPipelineService.start('resumeWorkflowCarrierPipeline', request, {}).then(success => {
+    //                 resolve(success);
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         } catch (error) {
+    //             reject(new CLASSES.WorkflowError('Facing issue while initializing resume carrier process'));
+    //         }
+    //     });
+    // },
+
+    // getWorkflowChain: function (request) {
+    //     return new Promise((resolve, reject) => {
+    //         try {
+    //             request.loadHead = true;
+    //             SERVICE.DefaultPipelineService.start('loadWorkflowChainPipeline', request, {}).then(success => {
+    //                 resolve({
+    //                     code: 'SUC_SYS_00000',
+    //                     result: success
+    //                 });
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         } catch (error) {
+    //             reject(new CLASSES.WorkflowError('Facing issue while initializing init item process'));
+    //         }
+    //     });
+    // },
+
+
+
+    // handleItemChangeEvent: function (request) {
+    //     return new Promise((resolve, reject) => {
+    //         let event = request.event;
+    //         let data = event.data;
+    //         let allPromises = [];
+    //         data.forEach(carrier => {
+    //             allPromises.push(this.initCarrierItem(_.merge({
+    //                 authData: request.authData,
+    //                 tenant: event.tenant || carrier.tenant || request.tenant
+    //             }, carrier)));
+    //         });
+    //         if (allPromises.length > 0) {
+    //             SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {
+    //                 resolve({
+    //                     result: success.success,
+    //                     errors: success.errors
+    //                 });
+    //             }).catch(error => {
+    //                 reject(error);
+    //             });
+    //         } else {
+    //             resolve({});
+    //         }
+    //     });
+    // },
 
 };

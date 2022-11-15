@@ -34,46 +34,18 @@ module.exports = {
         });
     },
 
-    initCarrierItem: function (request, callback) {
+    initCarrier: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {
-            FACADE.DefaultWorkflowFacade.initCarrierItem(request).then(success => {
+            FACADE.DefaultWorkflowFacade.initCarrier(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultWorkflowFacade.initCarrierItem(request);
+            return FACADE.DefaultWorkflowFacade.initCarrier(request);
         }
     },
-
-    addItemToCarrier: function (request, callback) {
-        request = _.merge(request || {}, request.httpRequest.body);
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.addItemToCarrier(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.addItemToCarrier(request);
-        }
-    },
-
-    blockCarrier: function (request, callback) {
-        request.carrierCode = request.httpRequest.params.carrierCode;
-        request.comment = request.httpRequest.body.comment;
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.blockCarrier(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.blockCarrier(request);
-        }
-    },
-
     releaseCarrier: function (request, callback) {
         request.carrierCode = request.httpRequest.params.carrierCode;
         request.comment = request.httpRequest.body.comment;
@@ -87,60 +59,16 @@ module.exports = {
             return FACADE.DefaultWorkflowFacade.releaseCarrier(request);
         }
     },
-
-    pauseCarrier: function (request, callback) {
-        request.carrierCode = request.httpRequest.params.carrierCode;
-        request.comment = request.httpRequest.body.comment;
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.pauseCarrier(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.pauseCarrier(request);
-        }
-    },
-
-    resumeCarrier: function (request, callback) {
-        request.carrierCode = request.httpRequest.params.carrierCode;
-        request.comment = request.httpRequest.body.comment;
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.resumeCarrier(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.resumeCarrier(request);
-        }
-    },
-
-    nextAction: function (request, callback) {
-        request.carrierCode = request.httpRequest.params.carrierCode;
-        request.actionCode = request.httpRequest.params.actionCode;
-        if (callback) {
-            FACADE.DefaultWorkflowFacade.nextAction(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultWorkflowFacade.nextAction(request);
-        }
-    },
-
-    getWorkflowChain: function (request, callback) {
-        request.workflowCode = request.httpRequest.params.workflowCode;
+    updateCarrier: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {
-            FACADE.DefaultWorkflowFacade.getWorkflowChain(request).then(success => {
+            FACADE.DefaultWorkflowFacade.updateCarrier(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultWorkflowFacade.getWorkflowChain(request);
+            return FACADE.DefaultWorkflowFacade.updateCarrier(request);
         }
     },
 
@@ -165,4 +93,78 @@ module.exports = {
             return FACADE.DefaultWorkflowFacade.performAction(request);
         }
     },
+
+    // blockCarrier: function (request, callback) {
+    //     request.carrierCode = request.httpRequest.params.carrierCode;
+    //     request.comment = request.httpRequest.body.comment;
+    //     if (callback) {
+    //         FACADE.DefaultWorkflowFacade.blockCarrier(request).then(success => {
+    //             callback(null, success);
+    //         }).catch(error => {
+    //             callback(error);
+    //         });
+    //     } else {
+    //         return FACADE.DefaultWorkflowFacade.blockCarrier(request);
+    //     }
+    // },
+
+
+
+    // pauseCarrier: function (request, callback) {
+    //     request.carrierCode = request.httpRequest.params.carrierCode;
+    //     request.comment = request.httpRequest.body.comment;
+    //     if (callback) {
+    //         FACADE.DefaultWorkflowFacade.pauseCarrier(request).then(success => {
+    //             callback(null, success);
+    //         }).catch(error => {
+    //             callback(error);
+    //         });
+    //     } else {
+    //         return FACADE.DefaultWorkflowFacade.pauseCarrier(request);
+    //     }
+    // },
+
+    // resumeCarrier: function (request, callback) {
+    //     request.carrierCode = request.httpRequest.params.carrierCode;
+    //     request.comment = request.httpRequest.body.comment;
+    //     if (callback) {
+    //         FACADE.DefaultWorkflowFacade.resumeCarrier(request).then(success => {
+    //             callback(null, success);
+    //         }).catch(error => {
+    //             callback(error);
+    //         });
+    //     } else {
+    //         return FACADE.DefaultWorkflowFacade.resumeCarrier(request);
+    //     }
+    // },
+
+    // nextAction: function (request, callback) {
+    //     request.carrierCode = request.httpRequest.params.carrierCode;
+    //     request.actionCode = request.httpRequest.params.actionCode;
+    //     if (callback) {
+    //         FACADE.DefaultWorkflowFacade.nextAction(request).then(success => {
+    //             callback(null, success);
+    //         }).catch(error => {
+    //             callback(error);
+    //         });
+    //     } else {
+    //         return FACADE.DefaultWorkflowFacade.nextAction(request);
+    //     }
+    // },
+
+    // getWorkflowChain: function (request, callback) {
+    //     request.workflowCode = request.httpRequest.params.workflowCode;
+    //     request = _.merge(request || {}, request.httpRequest.body);
+    //     if (callback) {
+    //         FACADE.DefaultWorkflowFacade.getWorkflowChain(request).then(success => {
+    //             callback(null, success);
+    //         }).catch(error => {
+    //             callback(error);
+    //         });
+    //     } else {
+    //         return FACADE.DefaultWorkflowFacade.getWorkflowChain(request);
+    //     }
+    // },
+
+
 };

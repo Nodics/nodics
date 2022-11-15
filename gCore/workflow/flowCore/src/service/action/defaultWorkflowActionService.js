@@ -35,6 +35,29 @@ module.exports = {
         });
     },
 
+    getWorkflowHead: function (code, tenant) {
+        return new Promise((resolve, reject) => {
+            this.LOG.debug('Loading workflow head: ' + code);
+            this.get({
+                tenant: tenant,
+                options: {
+                    recursive: true,
+                },
+                query: {
+                    code: code,
+                    position: ENUMS.WorkflowActionPosition.HEAD.key
+                }
+            }).then(response => {
+                if (response.result && response.result.length > 0) {
+                    resolve(response.result[0]);
+                } else {
+                    reject(new CLASSES.WorkflowError('ERR_WF_00010', 'Invalid request, none workflow head found for code: ' + code));
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
     getWorkflowAction: function (actionCode, tenant) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Loading workflow action: ' + actionCode);
