@@ -65,9 +65,6 @@ module.exports = {
             workflowCarrier.activeAction.type === ENUMS.WorkflowActionType.PARALLEL.key) &&
             (!request.actionResponse || UTILS.isBlank(request.actionResponse))) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, action response can not be null or empty'));
-        } else if ((request.workflowAction.type != ENUMS.WorkflowActionType.AUTO.key) &&
-            (request.authData.userGroups.filter(userGroup => request.workflowAction.accessGroups.includes(userGroup)).length <= 0)) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_AUTH_00003', 'Current action: ' + request.workflowAction.code + ' not accessible for this user'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -94,6 +91,7 @@ module.exports = {
             if (!request.actionResponse) {
                 process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, action response can not be null or empty'));
             } else {
+                response.success.messages.push('Item: ' + (request.workflowCarrier.activeAction.code) + ', manual processed @: ' + new Date());
                 process.nextSuccess(request, response);
             }
         } else {
@@ -127,6 +125,7 @@ module.exports = {
             actionResponse: request.actionResponse
         }, {}).then(success => {
             response.success[request.workflowAction.code] = success
+            response.success.messages.push('Item: ' + (request.workflowCarrier.activeAction.code) + ', action handler executed saved @: ' + new Date());
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -142,6 +141,7 @@ module.exports = {
             actionResponse: request.actionResponse
         }, {}).then(success => {
             response.success[request.workflowAction.code] = success
+            response.success.messages.push('Item: ' + (request.workflowCarrier.activeAction.code) + ', script handler executed saved @: ' + new Date());
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -165,7 +165,7 @@ module.exports = {
         if (!actionResponse.decision) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Decision value can not be null or empty'));
         } else if (request.workflowAction.allowedDecisions && !request.workflowAction.allowedDecisions.includes(actionResponse.decision)) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid decision value, action don not allow value: ' + response.actionResponse.decision));
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid decision value, action don not allow value: ' + actionResponse.decision));
         } else {
             process.nextSuccess(request, response);
         }
@@ -220,6 +220,24 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    validateEndAction: function (request, response, process) {
+        let actionResponse = response.success[request.workflowAction.code];
+        let qualifiedChannels = actionResponse.qualifiedChannels;
+        if (qualifiedChannels.length <= 0 && request.workflowAction.position === ENUMS.WorkflowActionPosition.END.key) {
+            response.success.messages.push('Action: ' + request.workflowAction.code + ' is END node');
+            let carrierState = {
+                state: ENUMS.WorkflowCarrierState.FINISHED.key,
+                action: request.workflowAction.code,
+                time: new Date(),
+                description: 'Pushing carrier to finished state'
+            };
+            request.workflowCarrier.currentState = carrierState;
+            request.workflowCarrier.states.push(carrierState);
+            process.nextSuccess(request, response);
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
     updateWorkflowCarrier: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];
         if (!request.workflowCarrier.actions) request.workflowCarrier.actions = [];
@@ -242,20 +260,15 @@ module.exports = {
         }).then(success => {
             response.success.workflowCarrier = request.workflowCarrier = success.result;
             response.success.messages.push('Carrier: ' + (request.workflowCarrier.code || request.workflowCarrier._id) + ', updated and saved @: ' + new Date());
-            process.nextSuccess(request, response);
+            let qualifiedChannels = actionResponse.qualifiedChannels;
+            if (qualifiedChannels.length <= 0 && request.workflowAction.position === ENUMS.WorkflowActionPosition.END.key) {
+                process.stop(request, response, response.success);
+            } else {
+                process.nextSuccess(request, response);
+            }
         }).catch(error => {
             process.error(request, response, error);
         });
-    },
-    validateEndAction: function (request, response, process) {
-        let actionResponse = response.success[request.workflowAction.code];
-        let qualifiedChannels = actionResponse.qualifiedChannels;
-        if (qualifiedChannels.length <= 0 && request.workflowAction.position === ENUMS.WorkflowActionPosition.END.key) {
-            response.success.messages.push('Action: ' + request.workflowAction.code + ' is END node');
-            process.stop(request, response, response.success);
-        } else {
-            process.nextSuccess(request, response);
-        }
     },
     prepareChannelRequests: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];

@@ -206,7 +206,8 @@ module.exports = {
                 handler: 'DefaultWorkflowActionPerformPipelineService.handleAutoAction',
                 success: {
                     executeActionHandler: 'executeActionHandler',
-                    executeActionScript: 'executeActionScript'
+                    executeActionScript: 'executeActionScript',
+                    default: 'createStepResponse'
                 }
             },
             executeActionHandler: {
@@ -242,16 +243,16 @@ module.exports = {
             updateActionResponse: {
                 type: 'function',
                 handler: 'DefaultWorkflowActionPerformPipelineService.updateActionResponse',
-                success: 'updateWorkflowCarrier'
-            },
-            updateWorkflowCarrier: {
-                type: 'function',
-                handler: 'DefaultWorkflowActionPerformPipelineService.updateWorkflowCarrier',
                 success: 'validateEndAction'
             },
             validateEndAction: {
                 type: 'function',
                 handler: 'DefaultWorkflowActionPerformPipelineService.validateEndAction',
+                success: 'updateWorkflowCarrier'
+            },
+            updateWorkflowCarrier: {
+                type: 'function',
+                handler: 'DefaultWorkflowActionPerformPipelineService.updateWorkflowCarrier',
                 success: 'prepareChannelRequests'
             },
             prepareChannelRequests: {
