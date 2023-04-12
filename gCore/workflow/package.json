@@ -5,7 +5,7 @@
     "requiredModules": [
         "flowSchema",
         "flowCore",
-        "flowRouter"
+        "flowApi"
     ],
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to workflow",
     "homepage": "http://www.nodics.com/",

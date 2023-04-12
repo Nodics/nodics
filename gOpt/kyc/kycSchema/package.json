@@ -1,0 +1,21 @@
+{
+    "name": "kycSchema",
+    "index": "500.50.3",
+    "type": "core",
+    "requiredModules": [],
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycSchema",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "kycSchema"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

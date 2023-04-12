@@ -236,7 +236,6 @@ module.exports = {
             }
         }
     },
-
     common: {
         pingMe: {
             iAmLive: {
@@ -298,23 +297,8 @@ module.exports = {
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush'
                 }
-            },
-            flushAPIKeys: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/cache/:channelName/flush',
-                method: 'POST',
-                controller: 'DefaultCacheController',
-                operation: 'flushApiCache',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush'
-                }
             }
         },
-
         updateRouterCacheConfig: {
             apiConfig: {
                 secured: true,
@@ -339,7 +323,6 @@ module.exports = {
                 }
             },
         },
-
         updateSchemaCacheConfig: {
             itemConfig: {
                 secured: true,

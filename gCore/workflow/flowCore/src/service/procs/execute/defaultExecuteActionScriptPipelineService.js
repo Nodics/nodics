@@ -48,13 +48,9 @@ module.exports = {
     executeScript: function (request, response, process) {
         this.LOG.debug('Executing action script');
         try {
-            let tenant = request.tenant;
-            let authData = request.authData;
-            let workflowAction = request.workflowAction;
-            let workflowHead = request.workflowHead;
-            let workflowCarrier = request.workflowCarrier;
+            let request = request;
             let result = eval(request.workflowAction.script);
-            response.actionResponse = {
+            response.success = {
                 type: ENUMS.WorkflowActionResponseType.SUCCESS.key,
                 decision: result,
                 feedback: {

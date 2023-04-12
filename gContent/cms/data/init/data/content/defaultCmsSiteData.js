@@ -14,6 +14,7 @@ module.exports = {
         code: 'defaultCmsSite',
         name: 'defaultCmsSite',
         catalog: 'defaultContentCatalog',
+        accessGroups: ['userGroup'],
         active: true,
     }
 };

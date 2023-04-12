@@ -45,14 +45,14 @@ module.exports = {
                 handler: 'DefaultGenerateTokenPipelineService.fatchNewToken',
                 success: 'successEnd'
             },
-            successEnd: {
-                type: 'function',
-                handler: 'DefaultGenerateTokenPipelineService.handleSucessEnd'
-            },
-            handleError: {
-                type: 'function',
-                handler: 'DefaultGenerateTokenPipelineService.handleErrorEnd'
-            }
+            // successEnd: {
+            //     type: 'function',
+            //     handler: 'DefaultGenerateTokenPipelineService.handleSucessEnd'
+            // },
+            // handleError: {
+            //     type: 'function',
+            //     handler: 'DefaultGenerateTokenPipelineService.handleErrorEnd'
+            // }
         }
     },
     validateTokenPipeline: {

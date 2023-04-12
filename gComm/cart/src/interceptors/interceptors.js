@@ -24,7 +24,7 @@ module.exports = {
         trigger: 'preSave',
         active: 'true',
         index: 1,
-        handler: 'clickoutCartCodeGeneratorInterceptorService.generateCartCode'
+        handler: 'DefaultCartCodeGeneratorInterceptorService.generateCartCode'
     },
     cartPostLoadToken: {
         type: 'schema',
@@ -32,6 +32,6 @@ module.exports = {
         trigger: 'postGet',
         active: 'true',
         index: 1,
-        handler: 'clickoutCartTokenDetailInterceptorService.loadCartToken'
+        handler: 'defaultCartTokenDetailInterceptorService.loadCartToken'
     },
 };

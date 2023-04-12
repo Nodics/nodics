@@ -44,8 +44,8 @@ module.exports = {
         request.query = request.query || {};
         request.options = request.options || {};
         request.searchOptions = request.searchOptions || {};
-        if (request.originalQuery && !UTILS.isBlank(request.originalQuery)) {
-            request.query = this.resolveQuery(_.merge({}, request.originalQuery || {}), request.model);
+        if (request.query && !UTILS.isBlank(request.query)) {
+            request.query = this.resolveQuery(_.merge({}, request.query || {}), request.model);
             process.stop(request, response);
         } else {
             process.nextSuccess(request, response);

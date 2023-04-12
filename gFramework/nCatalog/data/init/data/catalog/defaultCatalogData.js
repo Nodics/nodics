@@ -14,11 +14,13 @@ module.exports = {
     record0: {
         code: "defaultProductCatalog",
         name: "defaultProductCatalog",
+        accessGroups: ['userGroup'],
         active: true
     },
     record1: {
         code: "defaultContentCatalog",
         name: "defaultContentCatalog",
+        accessGroups: ['userGroup'],
         active: true
     }
 };

@@ -20,9 +20,9 @@ module.exports = {
             router: {
                 enabled: true
             },
-            accessGroups: {
-                employeeUserGroup: 3
-            },
+            // accessGroups: {
+            //     userGroup: 3
+            // },
             refSchema: {
                 subCatalogs: {
                     enabled: true,

@@ -11,5 +11,13 @@
 
 module.exports = {
 
+    SUC_PIPE_00000: {
+        code: '200',
+        message: 'Request successfully processed'
+    },
 
+    ERR_PIPE_00000: {
+        code: '500',
+        message: 'Invalid pipeline definition'
+    },
 };

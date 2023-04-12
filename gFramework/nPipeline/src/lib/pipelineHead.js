@@ -183,7 +183,7 @@ module.exports = function (name, pipelineDefinition) {
                 }
             } else {
                 try {
-                    SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, {}).then(result => {
+                    SERVICE.DefaultPipelineService.start(_currentNode.getHandler(), request, response).then(result => {
                         response.success = _.merge(response.success || {}, result);
                         if (result && result.error) {
                             if (!response.error) {

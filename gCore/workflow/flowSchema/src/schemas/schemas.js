@@ -11,7 +11,6 @@
 
 module.exports = {
     workflow: {
-
         workflow: {
             super: 'base',
             model: false,
@@ -226,7 +225,7 @@ module.exports = {
                     enabled: true,
                     schemaName: "workflowItem",
                     type: 'many',
-                    propertyName: 'code',
+                    propertyName: '_id',
                     searchOptions: {
                         projection: { _id: 0 }
                     }
@@ -246,8 +245,8 @@ module.exports = {
                 },
                 sourceDetail: {
                     type: 'object',
-                    required: true,
-                    description: 'Required sourceDetail of item, either internal or external'
+                    required: false,
+                    description: 'Optional sourceDetail of item, either internal or external'
                 },
                 event: {
                     type: 'object',
@@ -282,6 +281,7 @@ module.exports = {
                     enum: [ENUMS.WorkflowCarrierState.INIT.key,
                     ENUMS.WorkflowCarrierState.RELEASED.key,
                     ENUMS.WorkflowCarrierState.PROCESSING.key,
+                    ENUMS.WorkflowCarrierState.SPLITTED.key,
                     ENUMS.WorkflowCarrierState.PAUSED.key,
                     ENUMS.WorkflowCarrierState.BLOCKED.key,
                     ENUMS.WorkflowCarrierState.FINISHED.key,
@@ -289,7 +289,7 @@ module.exports = {
                     ENUMS.WorkflowCarrierState.FATAL.key],
                     required: true,
                     default: ENUMS.WorkflowCarrierState.INIT.key,
-                    description: 'Mandate workflow head state [INIT, RELEASED, PROCESSING, PAUSED, BLOCKED, FINISHED, ERROR, FATALL]'
+                    description: 'Mandate workflow head state [INIT, RELEASED, PROCESSING, SPLITTED, PAUSED, BLOCKED, FINISHED, ERROR, FATALL]'
                 },
                 errorCount: {
                     type: 'int',
@@ -352,7 +352,7 @@ module.exports = {
          * This item will hold the reference of its actuall stage, I mean, which workflow and where it is currently
          */
         workflowItem: {
-            super: 'base',
+            super: 'super',
             model: true,
             service: {
                 enabled: true

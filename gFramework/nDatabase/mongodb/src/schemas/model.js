@@ -44,6 +44,8 @@ module.exports = {
 
         saveItems: function (input) {
             return new Promise((resolve, reject) => {
+                console.log(input.query);
+                console.log(input.model);
                 if (!input.model) {
                     reject(new CLASSES.NodicsError('ERR_MDL_00001'));
                 } else if (input.query && !UTILS.isBlank(input.query)) {
@@ -54,7 +56,7 @@ module.exports = {
                             },
                             this.dataBase.getOptions().modelSaveOptions || {
                                 upsert: true,
-                                returnNewDocument: true
+                                returnDocument: 'after'
                             }).then(result => {
                                 if (result && result.ok > 0 && result.value) {
                                     resolve(result.value);
@@ -118,12 +120,11 @@ module.exports = {
                                     upsert: false,
                                     returnNewDocument: true
                                 }).then(success => {
-                                    let result = success.result;
                                     response.forEach(element => {
                                         _.merge(element, input.model);
                                     });
-                                    result.models = response;
-                                    resolve(result);
+                                    success.models = response;
+                                    resolve(success);
                                 }).catch(error => {
                                     reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                                 });
@@ -136,7 +137,7 @@ module.exports = {
                             upsert: false,
                             returnNewDocument: true
                         }).then(success => {
-                            resolve(success.result);
+                            resolve(success);
                         }).catch(error => {
                             reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                         });
@@ -157,7 +158,7 @@ module.exports = {
                                     this.dataBase.getOptions().modelRemoveOptions || {
                                         j: false
                                     }).then(success => {
-                                        let result = success.result;
+                                        let result = success.result || {};
                                         result.models = response;
                                         resolve(result);
                                     }).catch(error => {

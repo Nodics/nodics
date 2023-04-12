@@ -15,7 +15,7 @@ module.exports = {
             createCart: {
                 secured: true,
                 accessGroups: ['userGroup'],
-                key: '/cart/create',
+                key: '/create',
                 method: 'PUT',
                 controller: 'DefaultCartController',
                 operation: 'createCart',
@@ -23,7 +23,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'PUT',
-                    url: 'http://host:port/nodics/clickout/cart/create',
+                    url: 'http://host:port/nodics/cart/create',
                     body: {
                         //complete cart detail
                     }
@@ -32,7 +32,7 @@ module.exports = {
             loadCartByRefCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
-                key: '/cart/ref/:refCode',
+                key: '/ref/:refCode',
                 method: 'GET',
                 controller: 'DefaultCartController',
                 operation: 'loadCartByRefCode',
@@ -40,13 +40,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/clickout/cart/ref/:refCode',
+                    url: 'http://host:port/nodics/cart/ref/:refCode',
                 }
             },
             loadCartByCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
-                key: '/cart/code/:code',
+                key: '/code/:code',
                 method: 'GET',
                 controller: 'DefaultCartController',
                 operation: 'loadCartByCode',
@@ -54,13 +54,13 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/clickout/cart/code/:code',
+                    url: 'http://host:port/nodics/cart/code/:code',
                 }
             },
             loadCartByToken: {
                 secured: true,
                 accessGroups: ['userGroup'],
-                key: '/cart/token/:token',
+                key: '/token/:token',
                 method: 'GET',
                 controller: 'DefaultCartController',
                 operation: 'loadCartByToken',
@@ -68,33 +68,33 @@ module.exports = {
                     requestType: 'secured',
                     message: 'authToken need to set within header',
                     method: 'GET',
-                    url: 'http://host:port/nodics/clickout/cart/token/:token',
+                    url: 'http://host:port/nodics/cart/token/:token',
                 }
             },
         },
-        customerValidations: {
-            initEmailValidation: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/customer/validate',
-                method: 'POST',
-                controller: 'DefaultCustomerController',
-                operation: 'validateCustomer',
-                help: {
-                    requestType: 'secured',
-                    message: 'authToken need to set within header',
-                    method: 'POST',
-                    url: 'http://host:port/nodics/clickout/customer/validate',
-                    body: {
-                        emailId: 'Login id',
-                        orderToken: 'Token that been generated against order',
-                        otp: 'Optional entered OTP'
-                        // if order contains, validateCustomer false -> Return customer detail, without OTP validation
-                        // else send OTP in email and ask customer to enter that
-                        // once OTP generated, authenticate customer
-                    }
-                }
-            }
-        }
+        // customerValidations: {
+        //     initEmailValidation: {
+        //         secured: true,
+        //         accessGroups: ['userGroup'],
+        //         key: '/customer/validate',
+        //         method: 'POST',
+        //         controller: 'DefaultCustomerController',
+        //         operation: 'validateCustomer',
+        //         help: {
+        //             requestType: 'secured',
+        //             message: 'authToken need to set within header',
+        //             method: 'POST',
+        //             url: 'http://host:port/nodics/customer/validate',
+        //             body: {
+        //                 emailId: 'Login id',
+        //                 orderToken: 'Token that been generated against order',
+        //                 otp: 'Optional entered OTP'
+        //                 // if order contains, validateCustomer false -> Return customer detail, without OTP validation
+        //                 // else send OTP in email and ask customer to enter that
+        //                 // once OTP generated, authenticate customer
+        //             }
+        //         }
+        //     }
+        // }
     }
 };

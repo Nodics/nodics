@@ -15,7 +15,7 @@ module.exports = {
         name: "autoOneChannel",
         active: true,
         qualifier: {
-            decision: 'MultiOne'
+            decision: 'AutoOne'
         },
         target: 'autoActionOne'
     },

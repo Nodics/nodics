@@ -49,6 +49,6 @@ module.exports = {
         position: ENUMS.WorkflowActionPosition.END.key,
         handler: 'defaultSplitEndActionHandlerService.performDefaultSplitEndAction',
         accessGroups: ['workflowUserGroup', 'employeeUserGroup'],
-        allowedDecisions: ['SLIPTEND']
+        allowedDecisions: ['SPLITEND']
     }
 };

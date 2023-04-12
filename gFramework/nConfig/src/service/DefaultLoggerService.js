@@ -16,6 +16,7 @@ var elasticsearch = require('@elastic/elasticsearch');
 const splt = require('triple-beam').SPLAT;
 const utils = require('../utils/utils');
 const logform = require('logform');
+const flatted = require('flatted');
 
 module.exports = {
 
@@ -106,7 +107,8 @@ module.exports = {
 
     formatObject: function (param) {
         if (_.isObject(param)) {
-            return JSON.stringify(param);
+            return flatted.stringify(param);
+            //return JSON.stringify(param);
         }
         return param;
     },

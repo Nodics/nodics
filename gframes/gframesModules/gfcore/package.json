@@ -1,0 +1,20 @@
+{
+    "name": "gfcore",
+    "index": "2000.1.1",
+    "type": "core",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gfcore",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "gfcore"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

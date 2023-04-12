@@ -56,9 +56,10 @@ module.exports = {
         this.LOG.info('---------------------------------------------------------------------------');
         this.LOG.info('NODICS_HOME   : ' + NODICS.getNodicsHome());
         this.LOG.info('NODICS_ENV    : ' + NODICS.getEnvironmentPath());
-        this.LOG.info('SERVER_PATH   : ' + NODICS.getServerPath());
+        this.LOG.info('SERVER_ROOT   : ' + NODICS.getServerRootPath());
+        this.LOG.info('SERVER        : ' + NODICS.getServerPath());
         if (NODICS.getNodePath()) {
-            this.LOG.info('NODE_PATH     : ' + NODICS.getNodePath());
+            this.LOG.info('NODE     : ' + NODICS.getNodePath());
         }
         this.LOG.info('LOG_PATH      : ' + NODICS.getServerPath() + '/temp/logs');
         this.LOG.info('---------------------------------------------------------------------------\n');
@@ -112,11 +113,12 @@ module.exports = {
             let modules = [];
             //let appHome = NODICS.getApplicationPath();
             let envHome = NODICS.getEnvironmentPath();
+            let serverRoot = NODICS.getServerRootPath();
             let serverHome = NODICS.getServerPath();
             let nodeHome = NODICS.getNodePath();
             let serverProperties = {};
-            //serverProperties = _.merge(serverProperties, require(appHome + '/config/properties.js'));
             serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
+            serverProperties = _.merge(serverProperties, require(serverRoot + '/config/properties.js'));
             serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
             if (nodeHome) {
                 serverProperties = _.merge(serverProperties, require(nodeHome + '/config/properties.js'));
@@ -135,7 +137,6 @@ module.exports = {
                     modules.push(moduleName);
                 }
             });
-            //modules = modules.concat(serverProperties.activeModules.modules);
             modules.forEach(moduleName => {
                 this.resolveModuleHiererchy(moduleName);
             });

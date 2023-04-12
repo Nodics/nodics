@@ -45,6 +45,16 @@ module.exports = {
             });
         });
     },
+    performMixHeadOperation: function (request, response) {
+        return new Promise((resolve, reject) => {
+            resolve({
+                decision: 'mixOne',
+                feedback: {
+                    message: 'Testing Mix Single channel process'
+                }
+            });
+        });
+    },
 
     performActionOne: function (request, response) {
         return new Promise((resolve, reject) => {
@@ -63,6 +73,16 @@ module.exports = {
                 decision: 'SUCCESS',
                 feedback: {
                     message: 'Action two response .............SUCCESS'
+                }
+            });
+        });
+    },
+    performMixActionTwo: function (request, response) {
+        return new Promise((resolve, reject) => {
+            resolve({
+                decision: 'SUCCESS',
+                feedback: {
+                    message: 'Mix Action two response .............SUCCESS'
                 }
             });
         });

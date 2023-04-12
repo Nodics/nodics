@@ -48,6 +48,8 @@ module.exports = {
     },
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building Token generation query');
+        let tokenConfig = CONFIG.get('token').TOKEN;
+        request.model.limit = (request.model.limit === undefined) ? tokenConfig.attemptLimit : request.model.limit
         process.nextSuccess(request, response);
     },
     checkExistingToken: function (request, response, process) {
@@ -116,12 +118,12 @@ module.exports = {
             process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
         });
     },
-    handleSucessEnd: function (request, response, process) {
-        this.LOG.debug('Request has been processed successfully');
-        process.resolve(response.success);
-    },
-    handleErrorEnd: function (request, response, process) {
-        this.LOG.error('Request has been processed and got errors');
-        process.reject(response.error);
-    }
+    // handleSucessEnd: function (request, response, process) {
+    //     this.LOG.debug('Request has been processed successfully');
+    //     process.resolve(response.success);
+    // },
+    // handleErrorEnd: function (request, response, process) {
+    //     this.LOG.error('Request has been processed and got errors');
+    //     process.reject(response.error);
+    // }
 };

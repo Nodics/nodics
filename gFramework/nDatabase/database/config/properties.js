@@ -16,7 +16,7 @@ module.exports = {
     queryMaxTimeMS: 1000,
 
     externalSchemaLocation: CONFIG.get('externalDataLocation') + '/schema',
-    accessPoint: {
+    accessPoints: {
         readAccessPoint: 1,
         writeAccessPoint: 2,
         removeAccessPoint: 3,

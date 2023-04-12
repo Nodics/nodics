@@ -1,0 +1,22 @@
+{
+    "name": "gframesModules",
+    "index": "2000.1.99",
+    "type": "core",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gframesModules",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "server",
+        "environment",
+        "gframesModules"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}

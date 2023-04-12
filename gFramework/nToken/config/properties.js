@@ -11,6 +11,9 @@
 
 module.exports = {
     token: {
+        TOKEN: {
+            attemptLimit: 5,
+        }
         // OTP: {
         //     rangeStart: 1000,
         //     rangeEnd: 9000,

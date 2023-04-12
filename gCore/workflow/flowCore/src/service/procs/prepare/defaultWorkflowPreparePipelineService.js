@@ -36,47 +36,79 @@ module.exports = {
     },
 
     validateRequest: function (request, response, process) {
-        this.LOG.debug('Validating request to init item with workflow');
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
+        } else if (!request.carrierCode && !request.workflowCarrier) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, carrier detail can not be null or empty'));
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+    prepareResponse: function (request, response, process) {
+        if (!response.success) {
+            response.success = {
+                messages: []
+            };
+        }
+        process.nextSuccess(request, response);
+    },
+    loadWorkflowCarrier: function (request, response, process) {
+        if (!request.workflowCarrier && request.carrierCode) {
+            SERVICE.DefaultWorkflowCarrierService.getWorkflowCarrier({
+                tenant: request.tenant,
+                authData: request.authData,
+                carrierCode: request.carrierCode || request.workflowCarrier.code
+            }).then(success => {
+                request.workflowCarrier = success;
+                response.success.messages.push('Carrier: ' + (request.workflowCarrier.code || request.workflowCarrier._id) + ' Loaded @: ' + new Date());
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+    loadWorkflowAction: function (request, response, process) {
+        if (!request.workflowAction) {
+            let actionCode = request.actionCode || request.workflowCarrier.activeAction.code;
+            SERVICE.DefaultWorkflowActionService.getWorkflowAction(actionCode, request.tenant).then(workflowAction => {
+                request.workflowAction = workflowAction;
+                if (request.workflowAction.position === ENUMS.WorkflowActionPosition.HEAD.key) {
+                    request.workflowHead = workflowAction;
+                }
+                response.success.messages.push('Workflow action: ' + actionCode + ' retrived @: ' + new Date());
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
         } else {
             process.nextSuccess(request, response);
         }
     },
     loadWorkflowHead: function (request, response, process) {
         if (!request.workflowHead) {
-            request.workflowCode = request.workflowCode || request.workflowCarrier.activeHead;
-            if (request.workflowCode) {
-                SERVICE.DefaultWorkflowActionService.getWorkflowAction(request.workflowCode, request.tenant).then(workflowHead => {
-                    request.workflowHead = workflowHead;
-                    if (request.workflowHead.position === ENUMS.WorkflowActionPosition.HEAD.key) {
-                        request.workflowHead = workflowHead;
-                        process.nextSuccess(request, response);
-                    } else {
-                        process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid workflow head, workflow head : ' + request.workflowCode + ' not defined position as head'));
-                    }
-                }).catch(error => {
-                    process.error(request, response, error);
-                });
-            } else {
-                process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, could not load workflow action'));
-            }
+            let activeHeadCode = request.workflowCarrier.activeHead
+            SERVICE.DefaultWorkflowActionService.getWorkflowHead(activeHeadCode, request.tenant).then(workflowHead => {
+                request.workflowHead = workflowHead;
+                response.success.messages.push('Workflow head: ' + request.workflowHead.code + ' retrived @: ' + new Date());
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                process.error(request, response, error);
+            });
         } else {
             process.nextSuccess(request, response);
         }
     },
-    finalizeEventType: function (request, response, process) {
-        if (!request.workflowAction || !request.workflowHead) {
-            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action or head can not be null or empty'));
+    validateLoadedData: function (request, response, process) {
+        if (!request.workflowCarrier) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow carrier can not be loaded'));
+        } else if (!request.workflowAction) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow action can not be loaded'));
+        } else if (!request.workflowHead) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow head can not be loaded'));
         } else {
-            if (!request.workflowAction.sourceDetail) request.workflowAction.sourceDetail = {};
-            if (!request.workflowHead.sourceDetail) request.workflowHead.sourceDetail = {};
-            request.workflowAction.sourceDetail.endPoint = _.merge(request.workflowHead.sourceDetail.endPoint || {}, request.workflowAction.sourceDetail.endPoint || {});
-            if (request.workflowCarrier.event.isInternal === undefined) {
-                let endPoint = _.merge(request.workflowAction.sourceDetail.endPoint, request.workflowCarrier.sourceDetail.endPoint || {});
-                request.workflowCarrier.event.isInternal = UTILS.isBlank(endPoint) ? true : false;
-            }
             process.nextSuccess(request, response);
         }
-    }
+    },
 };

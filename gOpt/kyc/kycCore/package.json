@@ -1,0 +1,21 @@
+{
+    "name": "kycCore",
+    "index": "500.50.5",
+    "type": "core",
+    "requiredModules": [],
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycCore",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "kycCore"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {}
+}
