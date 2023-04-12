@@ -201,6 +201,17 @@ module.exports = {
             actionResponse: actionResponse
         }, {}).then(success => {
             response.success[request.workflowAction.code].qualifiedChannels = success.qualifiedChannels;
+            if (response.success[request.workflowAction.code].qualifiedChannels &&
+                response.success[request.workflowAction.code].qualifiedChannels.length > 1) {
+                let carrierState = {
+                    state: ENUMS.WorkflowCarrierState.SPLITTED.key,
+                    action: request.workflowAction.code,
+                    time: new Date(),
+                    description: 'Pushing carrier to SPLITTED state'
+                };
+                request.workflowCarrier.currentState = carrierState;
+                request.workflowCarrier.states.push(carrierState);
+            }
             response.success.messages = response.success.messages.concat(success.messages || []);
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -238,8 +249,26 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    prepareChannelRequests: function (request, response, process) {
+        let actionResponse = response.success[request.workflowAction.code];
+        SERVICE.DefaultPipelineService.start('prepareChannelRequestsPipeline', {
+            tenant: request.tenant,
+            authData: request.authData,
+            workflowHead: request.workflowHead,
+            workflowAction: request.workflowAction,
+            workflowCarrier: request.workflowCarrier,
+            actionResponse: actionResponse
+        }, {}).then(success => {
+            response.channelRequests = success.channelRequests;
+            response.success.messages = response.success.messages.concat(success.messages || []);
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
     updateWorkflowCarrier: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];
+        let channelRequests = response.channelRequests;
         if (!request.workflowCarrier.actions) request.workflowCarrier.actions = [];
         if (actionResponse.type === ENUMS.WorkflowActionResponseType.ERROR.key) {
             if (!request.workflowCarrier.errors) request.workflowCarrier.errors = [];
@@ -251,6 +280,12 @@ module.exports = {
             decision: actionResponse.decision,
             feedback: actionResponse.feedback
         });
+        if (channelRequests && channelRequests.length > 1) {
+            request.workflowCarrier.subCarriers = [];
+            for (let count = 0; count < channelRequests.length; count++) {
+                request.workflowCarrier.subCarriers.push(channelRequests[count].workflowCarrier.code);
+            }
+        }
         SERVICE.DefaultWorkflowCarrierService.save({
             tenant: request.tenant,
             options: {
@@ -266,23 +301,6 @@ module.exports = {
             } else {
                 process.nextSuccess(request, response);
             }
-        }).catch(error => {
-            process.error(request, response, error);
-        });
-    },
-    prepareChannelRequests: function (request, response, process) {
-        let actionResponse = response.success[request.workflowAction.code];
-        SERVICE.DefaultPipelineService.start('prepareChannelRequestsPipeline', {
-            tenant: request.tenant,
-            authData: request.authData,
-            workflowHead: request.workflowHead,
-            workflowAction: request.workflowAction,
-            workflowCarrier: request.workflowCarrier,
-            actionResponse: actionResponse
-        }, {}).then(success => {
-            response.channelRequests = success.channelRequests;
-            response.success.messages = response.success.messages.concat(success.messages || []);
-            process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
         });

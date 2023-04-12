@@ -248,16 +248,16 @@ module.exports = {
             validateEndAction: {
                 type: 'function',
                 handler: 'DefaultWorkflowActionPerformPipelineService.validateEndAction',
-                success: 'updateWorkflowCarrier'
-            },
-            updateWorkflowCarrier: {
-                type: 'function',
-                handler: 'DefaultWorkflowActionPerformPipelineService.updateWorkflowCarrier',
                 success: 'prepareChannelRequests'
             },
             prepareChannelRequests: {
                 type: 'function',
                 handler: 'DefaultWorkflowActionPerformPipelineService.prepareChannelRequests',
+                success: 'updateWorkflowCarrier'
+            },
+            updateWorkflowCarrier: {
+                type: 'function',
+                handler: 'DefaultWorkflowActionPerformPipelineService.updateWorkflowCarrier',
                 success: 'executeChannels'
             },
             executeChannels: {

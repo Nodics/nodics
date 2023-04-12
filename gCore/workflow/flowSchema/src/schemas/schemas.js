@@ -281,6 +281,7 @@ module.exports = {
                     enum: [ENUMS.WorkflowCarrierState.INIT.key,
                     ENUMS.WorkflowCarrierState.RELEASED.key,
                     ENUMS.WorkflowCarrierState.PROCESSING.key,
+                    ENUMS.WorkflowCarrierState.SPLITTED.key,
                     ENUMS.WorkflowCarrierState.PAUSED.key,
                     ENUMS.WorkflowCarrierState.BLOCKED.key,
                     ENUMS.WorkflowCarrierState.FINISHED.key,
@@ -288,7 +289,7 @@ module.exports = {
                     ENUMS.WorkflowCarrierState.FATAL.key],
                     required: true,
                     default: ENUMS.WorkflowCarrierState.INIT.key,
-                    description: 'Mandate workflow head state [INIT, RELEASED, PROCESSING, PAUSED, BLOCKED, FINISHED, ERROR, FATALL]'
+                    description: 'Mandate workflow head state [INIT, RELEASED, PROCESSING, SPLITTED, PAUSED, BLOCKED, FINISHED, ERROR, FATALL]'
                 },
                 errorCount: {
                     type: 'int',
