@@ -47,7 +47,7 @@
         "express": "^4.17.3",
         "flatted": "^3.2.7",
         "fs-extra": "^10.0.1",
-        "jsonwebtoken": "^8.5.1",
+        "jsonwebtoken": "^9.0.0",
         "kafka-node": "^5.0.0",
         "lodash": "^4.17.21",
         "logform": "^2.4.0",
