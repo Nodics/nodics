@@ -101,6 +101,11 @@ module.exports = {
 
     buildWorkflow2SchemaAssociations: function () {
         return new Promise((resolve, reject) => {
+            if (typeof SERVICE.DefaultWorkflow2SchemaService.get !== 'function') {
+                this.LOG.warn('Persisted workflow-schema association loading skipped; no workflow-schema model service is available');
+                resolve(true);
+                return;
+            }
             let allPromise = [];
             NODICS.getActiveTenants().forEach(tntCode => {
                 allPromise.push(new Promise((resolve, reject) => {

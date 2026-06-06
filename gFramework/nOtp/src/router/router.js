@@ -22,7 +22,7 @@ module.exports = {
                 operation: 'generateOtp',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'Post',
                     url: 'http://host:port/nodics/otp/generate',
                     body: {
@@ -43,7 +43,7 @@ module.exports = {
                 operation: 'validateOtp',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'Post',
                     url: 'http://host:port/nodics/otp/validate',
                     body: {

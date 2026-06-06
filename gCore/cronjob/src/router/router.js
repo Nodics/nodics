@@ -21,7 +21,7 @@ module.exports = {
                 operation: 'createJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/cronjob/job/create',
                     body: 'All active jobs will be created'
@@ -36,7 +36,7 @@ module.exports = {
                 operation: 'createJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/create',
                     body: {
@@ -58,7 +58,7 @@ module.exports = {
                 operation: 'createJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/cronjob/job/create/:jobCode',
                     body: 'Specific job will be created'
@@ -76,7 +76,7 @@ module.exports = {
                 operation: 'updateJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/cronjob/job/update',
                     body: 'All active jobs will be updated'
@@ -91,7 +91,7 @@ module.exports = {
                 operation: 'updateJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/update',
                     body: {
@@ -113,7 +113,7 @@ module.exports = {
                 operation: 'updateJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/cronjob/job/update/:jobCode',
                     body: 'Specific job will be updated'
@@ -131,7 +131,7 @@ module.exports = {
                 operation: 'runJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/cronjob/job/run/:jobCode',
                     body: 'Specific job will be executed'
@@ -149,7 +149,7 @@ module.exports = {
                 operation: 'startJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/cronjob/job/start/:jobCode',
                     body: 'Specific job will be started'
@@ -164,7 +164,7 @@ module.exports = {
                 operation: 'startJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/start',
                     body: ['job1', 'job2', 'job3', 'job...n']
@@ -182,7 +182,7 @@ module.exports = {
                 operation: 'stopJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/cronjob/job/stop/:jobCode',
                     body: 'Specific job will be stoped'
@@ -197,7 +197,7 @@ module.exports = {
                 operation: 'stopJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/stop',
                     body: ['job1', 'job2', 'job3', 'job...n']
@@ -215,7 +215,7 @@ module.exports = {
                 operation: 'removeJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/cronjob/job/remove/:jobCode',
                     body: 'Specific job will be removed'
@@ -230,7 +230,7 @@ module.exports = {
                 operation: 'removeJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/remove',
                     body: ['job1', 'job2', 'job3', 'job...n']
@@ -248,7 +248,7 @@ module.exports = {
                 operation: 'pauseJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/cronjob/job/pause/:jobCode',
                     body: 'Specific job will be paused'
@@ -263,7 +263,7 @@ module.exports = {
                 operation: 'pauseJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/pause',
                     body: ['job1', 'job2', 'job3', 'job...n']
@@ -281,7 +281,7 @@ module.exports = {
                 operation: 'resumeJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/cronjob/job/resume/:jobCode',
                     body: 'Specific job will be resumed'
@@ -296,7 +296,7 @@ module.exports = {
                 operation: 'resumeJob',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/resume',
                     body: ['job1', 'job2', 'job3', 'job...n']

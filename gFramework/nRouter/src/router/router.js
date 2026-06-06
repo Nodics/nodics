@@ -28,7 +28,7 @@ module.exports = {
                 operation: 'get',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/',
                 }
@@ -46,7 +46,7 @@ module.exports = {
                 operation: 'get',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/',
                     body: {
@@ -72,7 +72,7 @@ module.exports = {
                 operation: 'get',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
                 }
@@ -90,7 +90,7 @@ module.exports = {
                 operation: 'get',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/code/:code',
                 }
@@ -106,7 +106,7 @@ module.exports = {
                 operation: 'remove',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
                     body: {
@@ -126,7 +126,7 @@ module.exports = {
                 operation: 'removeById',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
                 }
@@ -140,7 +140,7 @@ module.exports = {
                 operation: 'removeById',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/schemaName',
                     body: {
@@ -160,7 +160,7 @@ module.exports = {
                 operation: 'removeByCode',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/id/:id',
                 }
@@ -174,7 +174,7 @@ module.exports = {
                 operation: 'removeByCode',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/code',
                     body: {
@@ -196,7 +196,7 @@ module.exports = {
                 operation: 'save',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'PUT',
                     url: 'http://host:port/nodics/{moduleName}/schemaName',
                     body: '{ complete model object }'
@@ -211,7 +211,7 @@ module.exports = {
                 operation: 'saveAll',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'PUT',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/all',
                     body: '[{}, {}] array of models'
@@ -228,7 +228,7 @@ module.exports = {
                 operation: 'update',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'PATCH',
                     url: 'http://host:port/nodics/{moduleName}/schemaName',
                     body: '{ complete model object } or [{}, {}] array of models'
@@ -247,7 +247,7 @@ module.exports = {
                 operation: 'ping',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/ping',
                     body: '{ complete model object } or [{}, {}] array of models'
@@ -265,7 +265,7 @@ module.exports = {
                 operation: 'flushCache',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush/key/:key'
                 }
@@ -279,7 +279,7 @@ module.exports = {
                 operation: 'flushCache',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush/prefix/:prefix'
                 }
@@ -293,7 +293,7 @@ module.exports = {
                 operation: 'flushCache',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush'
                 }
@@ -309,7 +309,7 @@ module.exports = {
                 operation: 'updateRouterCacheConfiguration',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/cache/api',
                     body: {
@@ -333,7 +333,7 @@ module.exports = {
                 operation: 'updateSchemaCacheConfiguration',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/cache/item',
                     body: {

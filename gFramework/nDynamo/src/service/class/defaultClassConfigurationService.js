@@ -189,6 +189,11 @@ module.exports = {
 
     loadPersistedClasses: function () {
         return new Promise((resolve, reject) => {
+            if (typeof this.get !== 'function') {
+                this.LOG.warn('Persisted class loading skipped; no class configuration model service is available');
+                resolve(true);
+                return;
+            }
             this.get({
                 tenant: 'default'
             }).then(success => {

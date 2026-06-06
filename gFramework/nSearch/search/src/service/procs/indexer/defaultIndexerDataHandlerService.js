@@ -54,7 +54,7 @@ module.exports = {
             SERVICE.DefaultProcessorHandlerService.executeSearchProcessors([].concat(indexerConfig.processors), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -70,7 +70,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.index), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -85,7 +85,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.index), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -107,7 +107,7 @@ module.exports = {
                     process.error(request, response, error);
                 });
             } catch (error) {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00000'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00000'));
             }
         } else {
             process.nextSuccess(request, response);

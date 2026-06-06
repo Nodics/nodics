@@ -36,6 +36,30 @@ module.exports = {
         });
     },
 
+    normalizeHeaders: function (headers) {
+        let normalizedHeaders = {};
+        let authToken = headers.Authorization || headers.authorization || headers.authToken;
+        let apiKey = headers['x-api-key'] || headers['X-API-Key'] || headers.apiKey;
+        let entCode = headers['x-enterprise-code'] || headers['X-Enterprise-Code'] || headers.entCode;
+
+        _.each(headers, (value, key) => {
+            if (!['Authorization', 'authorization', 'authToken', 'x-api-key', 'X-API-Key', 'apiKey', 'x-enterprise-code', 'X-Enterprise-Code', 'entCode'].includes(key)) {
+                normalizedHeaders[key] = value;
+            }
+        });
+        if (authToken) {
+            authToken = String(authToken);
+            normalizedHeaders.Authorization = authToken.match(/^Bearer\s+/i) ? authToken : 'Bearer ' + authToken;
+        }
+        if (apiKey) {
+            normalizedHeaders['x-api-key'] = apiKey;
+        }
+        if (entCode) {
+            normalizedHeaders['x-enterprise-code'] = entCode;
+        }
+        return normalizedHeaders;
+    },
+
     buildRequest: function (options) {
         this.LOG.debug('Building request url for module ', options.moduleName);
         let header = {
@@ -44,6 +68,7 @@ module.exports = {
         if (options.header) {
             _.merge(header, options.header);
         }
+        header = this.normalizeHeaders(header);
         let url = SERVICE.DefaultRouterService.prepareUrl(options);
         if (!options.apiName.startsWith('/')) {
             url += '/';
@@ -65,6 +90,7 @@ module.exports = {
         if (options.header) {
             _.merge(header, options.header);
         }
+        header = this.normalizeHeaders(header);
         let uri = options.uri;
         if (options.params && !UTILS.isBlank(options.params)) {
             uri = uri + '?';

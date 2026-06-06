@@ -62,6 +62,11 @@ module.exports = {
     loadValidators: function () {
         return new Promise((resolve, reject) => {
             try {
+                if (typeof this.get !== 'function') {
+                    this.LOG.warn('Persisted validator loading skipped; no validator model service is available');
+                    resolve(true);
+                    return;
+                }
                 this.loadTenantValidators(NODICS.getActiveTenants()).then(validators => {
                     this.loadRawValidators(validators);
                     resolve(true);

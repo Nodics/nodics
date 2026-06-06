@@ -35,9 +35,9 @@ module.exports = {
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do exist model request');
         if (!request.searchModel) {
-            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid search model or search is not active for this schema'));
+            process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid search model or search is not active for this schema'));
         } else if (!request.query || !request.query.id) {
-            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid search request, query can not be null or conatian invalid property'));
+            process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid search request, query can not be null or conatian invalid property'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -51,7 +51,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoExist), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -66,7 +66,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoExist), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -94,7 +94,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoExist), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -109,7 +109,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoExist), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);

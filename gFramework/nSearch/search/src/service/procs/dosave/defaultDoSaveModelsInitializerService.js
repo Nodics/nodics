@@ -37,13 +37,13 @@ module.exports = {
     validateInput: function (request, response, process) {
         this.LOG.debug('Validating input for doSaving models');
         if (!request.models && !request.model) {
-            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Models to be saved can not be null in request'));
+            process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Models to be saved can not be null in request'));
         } else if (!request.indexName) {
-            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid index name to process'));
+            process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid index name to process'));
         } else if (!request.tenant) {
-            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid tenant to process'));
+            process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid tenant to process'));
         } else if (!request.searchModel) {
-            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid search model or search is not active for this schema'));
+            process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid search model or search is not active for this schema'));
         } else {
             let models = [];
             if (request.models) {
@@ -68,7 +68,7 @@ module.exports = {
             SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.preDoSaveProcessor), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -130,7 +130,7 @@ module.exports = {
             SERVICE.DefaultProcessorHandlerService.executeProcessors([].concat(interceptors.postDoSaveProcessor), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);

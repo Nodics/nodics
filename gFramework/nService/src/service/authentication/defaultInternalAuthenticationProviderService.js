@@ -43,8 +43,8 @@ module.exports = {
                 requestBody: {},
                 responseType: true,
                 header: {
-                    apiKey: CONFIG.get('defaultAuthDetail').apiKey,
-                    entCode: CONFIG.get('defaultAuthDetail').entCode
+                    'x-api-key': CONFIG.get('defaultAuthDetail').apiKey,
+                    'x-enterprise-code': CONFIG.get('defaultAuthDetail').entCode
                 }
             });
             try {

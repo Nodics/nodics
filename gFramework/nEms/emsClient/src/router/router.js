@@ -21,7 +21,7 @@ module.exports = {
                 operation: 'publish',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/[moduleName]/publish',
                     body: {
@@ -43,7 +43,7 @@ module.exports = {
                 operation: 'registerConsumers',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/[moduleName]/register/consumer/:consumer',
                 }
@@ -57,7 +57,7 @@ module.exports = {
                 operation: 'registerConsumers',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/[moduleName]/register/consumers',
                     body: {
@@ -79,7 +79,7 @@ module.exports = {
                 operation: 'registerPublishers',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/[moduleName]/register/publisher/:publisher'
                 }
@@ -93,7 +93,7 @@ module.exports = {
                 operation: 'registerPublishers',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/[moduleName]/register/publishers',
                     body: {
@@ -115,7 +115,7 @@ module.exports = {
                 operation: 'closeConsumers',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/[moduleName]/close/consumer/:consumer',
                 }
@@ -129,7 +129,7 @@ module.exports = {
                 operation: 'closeConsumers',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/[moduleName]/close/consumers',
                     body: {
@@ -149,7 +149,7 @@ module.exports = {
                 operation: 'closePublishers',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/[moduleName]/close/publisher/:publisher',
                 }
@@ -163,7 +163,7 @@ module.exports = {
                 operation: 'closePublishers',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/[moduleName]/close/publishers',
                     body: {

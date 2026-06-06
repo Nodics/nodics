@@ -21,7 +21,7 @@ module.exports = {
                 operation: 'initCarrier',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'put',
                     url: 'http://host:port/nodics/workflow/carrier/init',
                     body: {
@@ -51,7 +51,7 @@ module.exports = {
                 operation: 'releaseCarrier',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/workflow/carrier/release/:carrierCode',
                     body: {
@@ -68,7 +68,7 @@ module.exports = {
                 operation: 'updateCarrier',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'put',
                     url: 'http://host:port/nodics/workflow/carrier/add',
                     body: {
@@ -96,7 +96,7 @@ module.exports = {
                 operation: 'performAction',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/workflow/action/process/:carrierCode',
                     body: {

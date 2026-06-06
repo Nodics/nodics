@@ -11,7 +11,6 @@
  */
 
 const _ = require('lodash');
-const Express = require('express');
 
 module.exports = {
 
@@ -41,22 +40,9 @@ module.exports = {
 
     registerWeb: function (moduleRouter, moduleObject) {
         if (UTILS.isWebEnabled(moduleObject.metaData.name)) {
-            try {
-                moduleObject.webRootDirName = CONFIG.get('webRootDirName');
-                moduleObject.webDistDirName = CONFIG.get('webDistDirName');
-                moduleConfig = CONFIG.get(moduleObject.metaData.name);
-                moduleObject.pages = UTILS.getPages(moduleObject.metaData.name);
-                moduleObject.entryHtmlPlugins = moduleConfig.getHtmlWebpackPlugin(moduleObject);
-                let webpackConfig = moduleConfig.getWebpackConfig(moduleObject);
-                const compiler = webpack(webpackConfig);
-                moduleRouter.use(require('webpack-dev-middleware')(compiler, {
-                    publicPath: webpackConfig.output.publicPath,
-                    writeToDisk: true
-                }));
-                moduleRouter.use('/' + CONFIG.get('server').options.contextRoot + '/' + moduleObject.metaData.name, Express.static(path.join(moduleObject.modulePath, '/' + moduleObject.webRootDirName)));
-            } catch (error) {
-                SERVICE.DefaultRouterService.LOG.error(error);
-            }
+            SERVICE.DefaultRouterService.LOG.warn(
+                'Web module registration is disabled. Nodics runtime is backend/API-only: ' + moduleObject.metaData.name
+            );
         }
     },
 

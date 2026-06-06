@@ -21,7 +21,7 @@ module.exports = {
                 operation: 'processEvents',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/nems/event/process',
                 }
@@ -35,7 +35,7 @@ module.exports = {
                 operation: 'resetEvents',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/nems/event/reset',
                 }
@@ -50,7 +50,7 @@ module.exports = {
                 operation: 'resetEvents',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/nems/event/reset',
                 }

@@ -21,7 +21,7 @@ module.exports = {
                 operation: 'validateCustomer',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/customer/validate',
                     body: {
