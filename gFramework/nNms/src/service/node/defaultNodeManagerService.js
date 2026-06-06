@@ -138,7 +138,7 @@ module.exports = {
                         requestBody: {},
                         responseType: true,
                         header: {
-                            authToken: NODICS.getInternalAuthToken('default')
+                            Authorization: 'Bearer ' + NODICS.getInternalAuthToken('default')
                         }
                     })).then(success => {
                         _self.LOG.info('Node: ' + nodeId + ' notified for node startup');
@@ -210,7 +210,7 @@ module.exports = {
                         requestBody: {},
                         responseType: true,
                         header: {
-                            authToken: NODICS.getInternalAuthToken('default')
+                            Authorization: 'Bearer ' + NODICS.getInternalAuthToken('default')
                         }
                     })).then(success => {
                         _self.checkActiveNode(moduleName, nodes).then(success => {

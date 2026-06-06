@@ -20,7 +20,7 @@ module.exports = {
     },
 
     sortModules: function (rawData) {
-        indexedData = rawData.map(a => a.split('.').map(n => +n + 100000).join('.')).sort()
+        let indexedData = rawData.map(a => a.split('.').map(n => +n + 100000).join('.')).sort()
             .map(a => a.split('.').map(n => +n - 100000).join('.'));
         return indexedData;
     },

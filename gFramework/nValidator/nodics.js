@@ -29,6 +29,18 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Collecting validator definitions');
+            let loadValidators = () => {
+                SERVICE.DefaultValidatorService.loadValidators().then(done => {
+                    resolve(done);
+                }).catch(error => {
+                    reject(error);
+                });
+            };
+            if (!SERVICE.DefaultInterceptorService || typeof SERVICE.DefaultInterceptorService.get !== 'function') {
+                this.LOG.warn('Persisted interceptor loading skipped; no interceptor model service is available');
+                loadValidators();
+                return;
+            }
             SERVICE.DefaultInterceptorService.get({
                 tenant: 'default'
             }).then(response => {
@@ -41,11 +53,7 @@ module.exports = {
                         SERVICE.DefaultInterceptorService.loadRawInterceptors(interceptors);
                         SERVICE.DefaultDatabaseConfigurationService.setSchemaInterceptors({});
                     }
-                    SERVICE.DefaultValidatorService.loadValidators().then(done => {
-                        resolve(done);
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    loadValidators();
                 } catch (error) {
                     reject(error);
                 }

@@ -21,11 +21,11 @@ module.exports = {
                 operation: 'getInternalAuthToken',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/profile/auth/token/:tntCode',
                     body: {
-                        apiKey: 'xxxxxx--xxxx---xxxx---xxxxx'
+                        'x-api-key': 'xxxxxx--xxxx---xxxx---xxxxx'
                     }
                 }
             },
@@ -42,7 +42,7 @@ module.exports = {
                 operation: 'getEnterprise',
                 help: {
                     requestType: 'secured',
-                    message: 'entCode need to set within header',
+                    message: 'x-enterprise-code header is preferred; legacy entCode header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/profile/enterprise/get',
                 }
@@ -76,7 +76,7 @@ module.exports = {
                 operation: 'authenticateEmployee',
                 help: {
                     requestType: 'secured',
-                    message: 'loginId, password and entCode need to set within header',
+                    message: 'loginId, password and x-enterprise-code header is preferred; legacy entCode header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/authenticate',
                 }
@@ -90,7 +90,7 @@ module.exports = {
                 operation: 'authenticateCustomer',
                 help: {
                     requestType: 'secured',
-                    message: 'loginId, password and entCode need to set within header',
+                    message: 'loginId, password and x-enterprise-code header is preferred; legacy entCode header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/authenticate',
                 }
@@ -107,7 +107,7 @@ module.exports = {
                 operation: 'authorizeToken',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/authorize',
                 }
@@ -123,7 +123,7 @@ module.exports = {
                 operation: 'isCustomerExist',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/customer/exist',
                     body: {
@@ -142,7 +142,7 @@ module.exports = {
                 operation: 'signUp',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/customer/signUp',
                     body: {

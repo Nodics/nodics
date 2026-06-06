@@ -22,9 +22,10 @@ module.exports = {
     },
 
     validateSecuredRequest: function (request, response, process) {
-        if (!request.apiKey && !request.authToken) {
+        let credentials = request.auth && request.auth.credentials ? request.auth.credentials : [];
+        if (credentials.length === 0) {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002'));
-        } else if (request.apiKey && request.authToken) {
+        } else if (credentials.length > 1) {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002'));
         } else {
             process.nextSuccess(request, response);

@@ -46,7 +46,7 @@ module.exports = {
                     resolve(true);
                 }
             } catch (error) {
-                reject(new CLASSES.SearchNodics(error));
+                reject(new CLASSES.SearchError(error));
             }
         });
     }

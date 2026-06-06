@@ -43,6 +43,11 @@ module.exports = {
     loadPersistedListeners: function () {
         return new Promise((resolve, reject) => {
             let listeners = {};
+            if (!SERVICE.DefaultEventListenerService || typeof SERVICE.DefaultEventListenerService.get !== 'function') {
+                this.LOG.warn('Persisted event listener loading skipped; no event listener model service is available');
+                resolve(true);
+                return;
+            }
             SERVICE.DefaultEventListenerService.get({
                 tenant: 'default'
             }).then(success => {
@@ -284,7 +289,7 @@ module.exports = {
             requestBody: eventDef,
             responseType: true,
             header: {
-                authToken: NODICS.getInternalAuthToken(eventDef.tenant)
+                Authorization: 'Bearer ' + NODICS.getInternalAuthToken(eventDef.tenant)
             }
         });
     },

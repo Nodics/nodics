@@ -10,6 +10,7 @@
  */
 
 const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 
 module.exports = {
     /**
@@ -36,7 +37,8 @@ module.exports = {
 
     authorizeToken: function (request) {
         return new Promise((resolve, reject) => {
-            jwt.verify(request.authToken, CONFIG.get('jwtSecretKey') || 'nodics', (error, payload) => {
+            let jwtVerifyOptions = _.merge({}, CONFIG.get('profile').jwtVerifyOptions || {});
+            jwt.verify(request.authToken, CONFIG.get('jwtSecretKey') || 'nodics', jwtVerifyOptions, (error, payload) => {
                 if (error) {
                     reject(new CLASSES.NodicsError(error, null, 'ERR_AUTH_00001'));
                 } else {

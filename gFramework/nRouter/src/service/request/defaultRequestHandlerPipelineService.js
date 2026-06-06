@@ -49,18 +49,89 @@ module.exports = {
         }
     },
 
+    getHeaderValue: function (httpRequest, names) {
+        let value;
+        _.each(names, name => {
+            if (!value) {
+                value = httpRequest.get(name);
+            }
+        });
+        return value;
+    },
+
+    getBearerToken: function (authorization) {
+        if (UTILS.isBlank(authorization)) {
+            return null;
+        }
+        let bearerParts = authorization.match(/^Bearer\s+(.+)$/i);
+        return bearerParts ? bearerParts[1].trim() : null;
+    },
+
+    normalizeAuthHeaders: function (request) {
+        let authorizationHeader = this.getHeaderValue(request.httpRequest, ['Authorization']);
+        let modernAuthToken = this.getBearerToken(authorizationHeader);
+        let legacyAuthToken = this.getHeaderValue(request.httpRequest, ['authToken']);
+        let modernApiKey = this.getHeaderValue(request.httpRequest, ['x-api-key', 'X-API-Key']);
+        let legacyApiKey = this.getHeaderValue(request.httpRequest, ['apiKey']);
+        let modernEntCode = this.getHeaderValue(request.httpRequest, ['x-enterprise-code', 'X-Enterprise-Code']);
+        let legacyEntCode = this.getHeaderValue(request.httpRequest, ['entCode']);
+        let authToken = modernAuthToken || legacyAuthToken;
+        let apiKey = modernApiKey || legacyApiKey;
+        let entCode = modernEntCode || legacyEntCode;
+        let credentials = [];
+        let legacyHeaders = [];
+
+        if (apiKey) {
+            credentials.push({
+                type: 'apiKey',
+                credential: apiKey,
+                source: modernApiKey ? 'x-api-key' : 'apiKey'
+            });
+        }
+        if (authToken) {
+            credentials.push({
+                type: 'bearer',
+                credential: authToken,
+                source: modernAuthToken ? 'Authorization' : 'authToken'
+            });
+        }
+        if (legacyApiKey) {
+            legacyHeaders.push('apiKey');
+        }
+        if (legacyAuthToken) {
+            legacyHeaders.push('authToken');
+        }
+        if (legacyEntCode) {
+            legacyHeaders.push('entCode');
+        }
+
+        return {
+            type: credentials.length === 1 ? credentials[0].type : null,
+            credential: credentials.length === 1 ? credentials[0].credential : null,
+            credentials: credentials,
+            entCode: entCode,
+            source: credentials.length === 1 ? credentials[0].source : null,
+            legacyHeaders: legacyHeaders,
+            deprecated: legacyHeaders.length > 0
+        };
+    },
+
     parseHeader: function (request, response, process) {
         this.LOG.debug('Parsing request header for : ' + request.originalUrl);
-        if (request.httpRequest.get('apiKey')) {
-            request.apiKey = request.httpRequest.get('apiKey');
+        request.auth = this.normalizeAuthHeaders(request);
+        if (request.auth.deprecated) {
+            this.LOG.warn('Deprecated auth header(s) used: ' + request.auth.legacyHeaders.join(', '));
         }
-        if (request.httpRequest.get('authToken')) {
-            request.authToken = request.httpRequest.get('authToken');
+        if (request.auth.type === 'apiKey') {
+            request.apiKey = request.auth.credential;
         }
-        if (request.httpRequest.get('entCode')) {
-            request.entCode = request.httpRequest.get('entCode');
+        if (request.auth.type === 'bearer') {
+            request.authToken = request.auth.credential;
         }
-        if (!request.apiKey && !request.authToken && !request.entCode) {
+        if (request.auth.entCode) {
+            request.entCode = request.auth.entCode;
+        }
+        if (!request.auth.credentials.length && !request.auth.entCode) {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002'));
         } else {
             process.nextSuccess(request, response);

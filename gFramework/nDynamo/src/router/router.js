@@ -22,7 +22,7 @@ module.exports = {
                 operation: 'getClass',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/dynamo/class/get/:className',
                 }
@@ -36,7 +36,7 @@ module.exports = {
                 operation: 'getSnapshot',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/dynamo/class/snapshot/:type/:className',
                 }
@@ -52,7 +52,7 @@ module.exports = {
                 help: {
                     requestType: 'secured',
                     contentType: 'PLAIN|TEXT',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'PUT',
                     url: 'http://host:port/nodics/dynamo/class/update/:type/:className',
                     body: 'definition of JavaScript litteral object'
@@ -68,7 +68,7 @@ module.exports = {
                 operation: 'executeClass',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/dynamo/class/execute',
                     body: {

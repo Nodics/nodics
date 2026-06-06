@@ -162,7 +162,7 @@ module.exports = {
             requestBody: jobDetail.body || {},
             responseType: true,
             header: {
-                authToken: NODICS.getInternalAuthToken(definition.tenant)
+                Authorization: 'Bearer ' + NODICS.getInternalAuthToken(definition.tenant)
             }
         });
     },

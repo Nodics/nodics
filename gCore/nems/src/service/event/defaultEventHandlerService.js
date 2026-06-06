@@ -290,7 +290,7 @@ module.exports = {
             requestBody: event,
             responseType: true,
             header: {
-                authToken: NODICS.getInternalAuthToken(event.tenant)
+                Authorization: 'Bearer ' + NODICS.getInternalAuthToken(event.tenant)
             }
         });
     }

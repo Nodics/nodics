@@ -47,7 +47,7 @@ module.exports = {
                     reject(error);
                 });
             } catch (error) {
-                reject(new CLASSES.SearchNodics(error, ' Failed preparing search schema'));
+                reject(new CLASSES.SearchError(error, ' Failed preparing search schema'));
             }
         });
     },
@@ -76,7 +76,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            throw new CLASSES.SearchNodics(error, 'While collecting properties from module: ' + moduleName);
+            throw new CLASSES.SearchError(error, 'While collecting properties from module: ' + moduleName);
         }
     },
 
@@ -142,7 +142,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            throw new CLASSES.SearchNodics(error, 'Failed while loading search schema from schema definitions');
+            throw new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions');
         }
     },
 
@@ -150,6 +150,11 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
+                if (!SERVICE.DefaultIndexService || typeof SERVICE.DefaultIndexService.get !== 'function') {
+                    _self.LOG.warn('Persisted search index loading skipped; no index model service is available');
+                    resolve(true);
+                    return;
+                }
                 tenants.forEach(tntCode => {
                     SERVICE.DefaultIndexService.get({
                         tenant: tntCode,
@@ -164,9 +169,9 @@ module.exports = {
                                         SERVICE[searchOptions.schemaHandler].prepareFromDefinitions &&
                                         typeof SERVICE[searchOptions.schemaHandler].prepareFromDefinitions === 'function') {
                                         let target = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(definition.moduleName, tntCode, definition.typeName) || {};
-                                        let mergedTypeSchema = SERVICE[searchOptions.schemaHandler].loadSearchSchemaFromDatabase(definition.moduleName, tntCode, source, target, definition.typeName);
+                                        let mergedTypeSchema = SERVICE[searchOptions.schemaHandler].loadSearchSchemaFromDatabase(definition.moduleName, tntCode, definition, target, definition.typeName);
                                         if (mergedTypeSchema && !UTILS.isBlank(mergedTypeSchema)) {
-                                            SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(moduleName, tntCode, mergedTypeSchema);
+                                            SERVICE.DefaultSearchConfigurationService.addTenantRawSearchSchema(definition.moduleName, tntCode, mergedTypeSchema);
                                         }
                                     }
                                 }
@@ -178,7 +183,7 @@ module.exports = {
                     });
                 });
             } catch (error) {
-                reject(new CLASSES.SearchNodics(error));
+                reject(new CLASSES.SearchError(error));
             }
         });
     },

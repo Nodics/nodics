@@ -53,7 +53,7 @@ module.exports = {
             requestBody: definition.requestBody,
             responseType: true,
             header: {
-                authToken: NODICS.getInternalAuthToken(definition.tenant)
+                Authorization: 'Bearer ' + NODICS.getInternalAuthToken(definition.tenant)
             }
         });
     },

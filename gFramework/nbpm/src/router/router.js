@@ -21,7 +21,7 @@ module.exports = {
                 operation: 'save',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/system/workflow/to/schema',
                     body: {
@@ -40,7 +40,7 @@ module.exports = {
                 operation: 'update',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'PATCH',
                     url: 'http://host:port/nodics/system/workflow/to/schema',
                     body: {

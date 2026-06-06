@@ -37,6 +37,11 @@ module.exports = {
     loadPipelines: function () {
         return new Promise((resolve, reject) => {
             global.PIPELINE = SERVICE.DefaultFilesLoaderService.loadFiles('/src/pipelines/pipelinesDefinition.js');
+            if (typeof this.get !== 'function') {
+                this.LOG.warn('Persisted pipeline loading skipped; no pipeline model service is available');
+                resolve(true);
+                return;
+            }
             this.get({
                 tenant: 'default'
             }).then(success => {

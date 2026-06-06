@@ -21,7 +21,7 @@ module.exports = {
                 operation: 'updateSchemaIndexes',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/schema/indexes/schema/:schema'
                 }
@@ -35,7 +35,7 @@ module.exports = {
                 operation: 'updateSchemaIndexes',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/schema/indexes'
                 }
@@ -51,7 +51,7 @@ module.exports = {
                 operation: 'updateSchemaValidator',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/schema/validator/schema/:schema'
                 }
@@ -65,7 +65,7 @@ module.exports = {
                 operation: 'updateSchemaValidator',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/schema/validator'
                 }

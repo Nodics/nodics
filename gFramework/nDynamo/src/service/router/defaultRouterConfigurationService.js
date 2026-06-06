@@ -66,6 +66,11 @@ module.exports = {
 
     loadPersistedRouters: function () {
         return new Promise((resolve, reject) => {
+            if (typeof this.get !== 'function') {
+                this.LOG.warn('Persisted router loading skipped; no router configuration model service is available');
+                resolve(true);
+                return;
+            }
             this.registerRoutersFromDatabase({
                 tenant: 'default'
             }).then(success => {

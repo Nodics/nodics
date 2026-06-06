@@ -161,7 +161,7 @@ module.exports = {
                         },
                         responseType: true,
                         header: {
-                            authToken: request.authToken
+                            Authorization: 'Bearer ' + request.authToken
                         }
                     })).then(success => {
                         _self.processData(request, options, data, resolve, reject);
@@ -235,7 +235,7 @@ module.exports = {
                 reject(data);
             }
         } catch (error) {
-            reject(new CLASSES.SearchNodics(error));
+            reject(new CLASSES.SearchError(error));
         }
     },
     importFinalizeData: function (request, response, process) {
@@ -258,7 +258,7 @@ module.exports = {
                 process.nextSuccess(request, response);
             }
         } catch (error) {
-            process.error(request, response, new CLASSES.SearchNodics(error));
+            process.error(request, response, new CLASSES.SearchError(error));
         }
     }
 };

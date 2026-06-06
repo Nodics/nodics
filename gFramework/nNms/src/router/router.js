@@ -21,7 +21,7 @@ module.exports = {
                 operation: 'handleNodeActivated',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/node/active/:nodeId',
                 }
@@ -36,7 +36,7 @@ module.exports = {
                 operation: 'requestResponsibility',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/node/request/responsibility/:nodeId',
                 }
@@ -53,7 +53,7 @@ module.exports = {
                 operation: 'stopHealthCheck',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/node/health/check/stop',
                 }

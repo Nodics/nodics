@@ -75,7 +75,7 @@ module.exports = {
                         requestBody: {},
                         responseType: true,
                         header: {
-                            authToken: NODICS.getInternalAuthToken('default')
+                            Authorization: 'Bearer ' + NODICS.getInternalAuthToken('default')
                         }
                     })));
                 }

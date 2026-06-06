@@ -22,7 +22,7 @@ module.exports = {
                 operation: 'getFileContent',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/system/file/data',
                     body: {
@@ -42,7 +42,7 @@ module.exports = {
                 responseHandler: 'fileDownloadResponseHandler',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/system/file/download',
                     body: {
@@ -63,7 +63,7 @@ module.exports = {
                 operation: 'importInitData',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/system/import/init',
                     body: {
@@ -84,7 +84,7 @@ module.exports = {
                 operation: 'importCoreData',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/system/import/core',
                     body: {
@@ -105,7 +105,7 @@ module.exports = {
                 operation: 'importSampleData',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/system/import/sample',
                     body: {
@@ -126,7 +126,7 @@ module.exports = {
                 operation: 'importLocalData',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/system/import/local',
                     body: {
@@ -152,7 +152,7 @@ module.exports = {
                 operation: 'changeLogLevel',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/log/level',
                     body: {
@@ -173,7 +173,7 @@ module.exports = {
                 operation: 'changeConfig',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/config',
                     body: 'complete configuration heirerchy '
@@ -191,7 +191,7 @@ module.exports = {
                 operation: 'updateModulesIndexes',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/schema/indexes/all'
                 }
@@ -209,7 +209,7 @@ module.exports = {
                 operation: 'runUTest',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/system/test/runUTest',
                 }
@@ -223,7 +223,7 @@ module.exports = {
                 operation: 'runNTest',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/system/test/runNTest',
                 }
@@ -241,7 +241,7 @@ module.exports = {
                 operation: 'export',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/system/export',
                 }
@@ -255,7 +255,7 @@ module.exports = {
                 operation: 'export',
                 help: {
                     requestType: 'secured',
-                    message: 'authToken need to set within header',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'POST',
                     url: 'http://host:port/nodics/system/export',
                 }

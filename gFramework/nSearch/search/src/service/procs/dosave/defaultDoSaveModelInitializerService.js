@@ -37,7 +37,7 @@ module.exports = {
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for doSaving model');
         if (!request.model) {
-            process.error(request, response, new CLASSES.SearchNodics('ERR_SRCH_00003', 'Invalid data model to save'));
+            process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid data model to save'));
         } else {
             process.nextSuccess(request, response);
         }
@@ -55,7 +55,7 @@ module.exports = {
             SERVICE.DefaultSearchValueProviderHandlerService.handleValueProviders(valueProviders, request.model).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -127,7 +127,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -142,7 +142,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -181,7 +181,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -196,7 +196,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoSave), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.SearchNodics(error, null, 'ERR_SRCH_00008'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);
