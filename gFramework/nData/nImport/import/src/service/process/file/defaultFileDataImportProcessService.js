@@ -51,7 +51,7 @@ module.exports = {
         this.LOG.debug('Processing models from file: ' + request.fileName);
         if (request.fileData.models && Object.keys(request.fileData.models).length > 0) {
             let header = request.fileData.header;
-            let tenants = header.options.tenants || NODICS.getActiveTenants();
+            let tenants = [].concat(header.options.tenants || NODICS.getActiveTenants());
             if (request.tenant) {
                 tenants = [request.tenant];
             }
@@ -73,7 +73,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (options.tenants && options.tenants.length > 0) {
                 let tenant = options.tenants.shift();
-                let activeTenants = request.fileData.header.options.tenants || NODICS.getActiveTenants();
+                let activeTenants = [].concat(request.fileData.header.options.tenants || NODICS.getActiveTenants());
                 if (activeTenants.includes(tenant) && NODICS.getActiveTenants().includes(tenant)) {
                     this.processModel(request, response, {
                         tenant: tenant,
@@ -110,15 +110,23 @@ module.exports = {
                     let modelHash = options.pendingModels.shift();
                     let dataModel = request.fileData.models[modelHash];
                     let header = request.fileData.header;
-                    if (!fileObj.processed.includes(modelHash)) {
+                    let processedKey = options.tenant + ':' + modelHash;
+                    if (!fileObj.processed.includes(processedKey)) {
+                        if (SERVICE.DefaultImportDiagnosticsService) {
+                            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsDispatched', 1);
+                        }
                         SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
                             tenant: options.tenant,
                             authData: {
                                 userGroups: header.options.userGroups
                             },
                             header: header,
-                            dataModel: dataModel
+                            dataModel: dataModel,
+                            importRun: request.importRun
                         }, {}).then(success => {
+                            if (SERVICE.DefaultImportDiagnosticsService) {
+                                SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsSucceeded', 1);
+                            }
                             if (!response.success) response.success = [];
                             if (success && UTILS.isArray(success)) {
                                 success.forEach(element => {
@@ -127,16 +135,32 @@ module.exports = {
                             } else {
                                 response.success.push(success);
                             }
-                            fileObj.processed.push(modelHash);
+                            fileObj.processed.push(processedKey);
                             _self.processModel(request, response, options).then(success => {
                                 resolve(success);
                             }).catch(error => {
                                 reject(error);
                             });
                         }).catch(error => {
+                            if (SERVICE.DefaultImportDiagnosticsService) {
+                                SERVICE.DefaultImportDiagnosticsService.addFailure(request, {
+                                    tenant: options.tenant,
+                                    owningModule: header.options.owningModule,
+                                    targetModule: header.options.moduleName,
+                                    fileName: request.fileName,
+                                    recordKey: modelHash,
+                                    schemaName: header.options.schemaName,
+                                    indexName: header.options.indexName,
+                                    operation: header.options.operation,
+                                    error: error
+                                });
+                            }
                             reject(error);
                         });
                     } else {
+                        if (SERVICE.DefaultImportDiagnosticsService) {
+                            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsSkipped', 1);
+                        }
                         resolve(true);
                     }
                 } else {

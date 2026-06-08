@@ -217,15 +217,31 @@ module.exports = {
         }
     },
 
+    enrichEventError: function (error, event, phase) {
+        return CLASSES.NodicsError.enrich(error, {
+            layer: 'event',
+            phase: phase,
+            eventName: event && event.event,
+            tenant: event && event.tenant,
+            sourceName: event && event.sourceName,
+            sourceId: event && event.sourceId,
+            target: event && event.target,
+            targetType: event && event.targetType,
+            moduleName: event && event.moduleName,
+            state: event && event.state,
+            type: event && event.type
+        }, 'ERR_EVNT_00000');
+    },
+
     handleEvent: function (request) {
         let _self = this;
         let event = request.event;
         event.moduleName = request.moduleName || event.target;
         return new Promise((resolve, reject) => {
             if (!NODICS.getModule(event.moduleName)) {
-                reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Could not find moduleName, whithin system: ' + event.moduleName));
+                reject(_self.enrichEventError(new CLASSES.NodicsError('ERR_EVNT_00003', 'Could not find moduleName, whithin system: ' + event.moduleName), event, 'handle'));
             } else if (!NODICS.getModule(event.moduleName).eventService) {
-                reject(new CLASSES.NodicsError('ERR_EVNT_00003', 'Event service has not been initialized for module: ' + event.moduleName));
+                reject(_self.enrichEventError(new CLASSES.NodicsError('ERR_EVNT_00003', 'Event service has not been initialized for module: ' + event.moduleName), event, 'handle'));
             } else {
                 let eventService = NODICS.getModule(event.moduleName).eventService;
                 if (eventService && eventService.eventNames() &&
@@ -237,7 +253,7 @@ module.exports = {
                                 if (error) {
                                     _self.LOG.error('Facing issue while handling event');
                                     _self.LOG.error(error);
-                                    reject(error);
+                                    reject(_self.enrichEventError(error, event, 'handle'));
                                 } else {
                                     _self.LOG.debug('Event has been processed successfully');
                                     resolve(success);
@@ -246,7 +262,7 @@ module.exports = {
                         } catch (error) {
                             _self.LOG.error('Facing issue while handling event');
                             _self.LOG.error(error);
-                            reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+                            reject(_self.enrichEventError(error, event, 'handle'));
                         }
                     } else {
                         try {
@@ -264,7 +280,7 @@ module.exports = {
                         } catch (error) {
                             _self.LOG.error('Facing issue while handling event');
                             _self.LOG.error(error);
-                            reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+                            reject(_self.enrichEventError(error, event, 'handle'));
                         }
                     }
 
@@ -275,7 +291,7 @@ module.exports = {
                             message: 'There is no Listener register for event ' + event.event + ' in module ' + event.target
                         });
                     } else {
-                        reject(new CLASSES.NodicsError('ERR_EVNT_00000', 'There is no Listener register for event ' + event.event + ' in module ' + event.target));
+                        reject(_self.enrichEventError(new CLASSES.NodicsError('ERR_EVNT_00000', 'There is no Listener register for event ' + event.event + ' in module ' + event.target), event, 'handle'));
                     }
                 }
             }
@@ -306,16 +322,16 @@ module.exports = {
                                 result: response.result
                             });
                         }).catch(error => {
-                            reject(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
+                            reject(this.enrichEventError(error, event, 'publish'));
                         });
                     } else {
-                        reject(new CLASSES.NodicsError('ERR_EVNT_00002', 'Currently publishing event is not allowed, please check property [event.publishAllActive]'));
+                        reject(this.enrichEventError(new CLASSES.NodicsError('ERR_EVNT_00002', 'Currently publishing event is not allowed, please check property [event.publishAllActive]'), event, 'publish'));
                     }
                 } else {
-                    reject(new CLASSES.NodicsError('ERR_EVNT_00002', 'Currently test channel is running...'));
+                    reject(this.enrichEventError(new CLASSES.NodicsError('ERR_EVNT_00002', 'Currently test channel is running...'), event, 'publish'));
                 }
             } else {
-                reject(new CLASSES.NodicsError('ERR_EVNT_00002', 'Nodics server has not been started yet, please wait..'));
+                reject(this.enrichEventError(new CLASSES.NodicsError('ERR_EVNT_00002', 'Nodics server has not been started yet, please wait..'), event, 'publish'));
             }
         });
     }

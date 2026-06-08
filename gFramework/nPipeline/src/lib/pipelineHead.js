@@ -45,6 +45,61 @@ module.exports = function (name, pipelineDefinition) {
         return _pipelineName;
     };
 
+    this.getCurrentHandler = function () {
+        if (_currentNode) {
+            return _currentNode.getHandler();
+        }
+        return null;
+    };
+
+    this.buildErrorContext = function (request) {
+        let context = {
+            layer: 'pipeline',
+            pipelineName: this.getPipelineName(),
+            pipelineId: this.getPipelineId(),
+            nodeName: this.getNodeName(),
+            handler: this.getCurrentHandler()
+        };
+        if (request) {
+            context.tenant = request.tenant;
+            context.moduleName = request.moduleName;
+            if (request.schemaModel) {
+                context.layer = 'database';
+                context.schemaName = request.schemaModel.schemaName;
+                context.modelName = request.schemaModel.modelName;
+                context.collectionName = request.schemaModel.collectionName;
+                context.moduleName = request.moduleName || request.schemaModel.moduleName;
+            }
+            if (request.searchModel) {
+                context.layer = 'search';
+                context.indexName = request.indexName || request.searchModel.indexName;
+                context.moduleName = request.moduleName || request.searchModel.moduleName;
+            }
+            if (request.event) {
+                context.layer = 'event';
+                context.eventName = request.event.event;
+                context.sourceName = request.event.sourceName;
+                context.sourceId = request.event.sourceId;
+                context.target = request.event.target;
+                context.targetType = request.event.targetType;
+            }
+            if (request.importRun && request.importRun.runId) {
+                context.importRunId = request.importRun.runId;
+            }
+            if (request.header && request.header.options) {
+                context.owningModule = request.header.options.owningModule;
+                context.targetModule = request.header.options.moduleName;
+                context.schemaName = request.header.options.schemaName;
+                context.indexName = request.header.options.indexName;
+                context.operation = request.header.options.operation;
+            }
+            if (request.fileName) {
+                context.fileName = request.fileName;
+            }
+        }
+        return context;
+    };
+
     this.buildPipeline = function () {
         try {
             _.each(_pipelineDefinition.nodes, function (value, key) {
@@ -124,9 +179,7 @@ module.exports = function (name, pipelineDefinition) {
     this.error = function (request, response, error) {
         try {
             if (error) {
-                if (error && !(error instanceof CLASSES.NodicsError)) {
-                    error = new CLASSES.NodicsError(error);
-                }
+                error = CLASSES.NodicsError.enrich(error, this.buildErrorContext(request));
                 if (!response.error) {
                     response.error = error;
                 } else {

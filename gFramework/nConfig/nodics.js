@@ -77,6 +77,7 @@ module.exports = {
                 NODICS.initEnvironment(options);
                 fse.ensureDir(NODICS.getServerPath() + '/temp/logs').then(success => {
                     initService.prepareOptions();
+                    initService.printConfigurationLoadOrder();
                     initService.loadModuleIndex();
                     initService.printInfo();
                     initService.LOG.info('Starting Utils loader process');
@@ -85,6 +86,7 @@ module.exports = {
                     initService.LOG.info('Loading modules common configurations');
                     initService.loadConfigurations();
                     initService.loadExternalProperties();
+                    initService.validateResolvedConfiguration();
                     NODICS.LOG = logger.createLogger('NODICS');
                     CONFIG.LOG = logger.createLogger('CONFIG');
                     scriptHandler.LOG = logger.createLogger('DefaultScriptHandlerService');

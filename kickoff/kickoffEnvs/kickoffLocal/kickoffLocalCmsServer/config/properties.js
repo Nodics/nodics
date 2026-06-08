@@ -13,7 +13,7 @@ module.exports = {
     activeModules: {
         groups: ['gContent', 'kickoffModules'], // Group 'framework' will be included automatically
         modules: [
-            'kickoffLocalcmsServer',
+            'kickoffLocalCmsServer',
             'kickoffLocal'
         ]
     },

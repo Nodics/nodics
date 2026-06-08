@@ -80,6 +80,7 @@ module.exports = {
 
     prepareOptions: function () {
         NODICS.setActiveModules(this.getActiveModules());
+        this.validateModuleActivationConfiguration();
         CONFIG.setProperties({});
         global.CLASSES = {};
         global.ENUMS = {};
@@ -108,28 +109,57 @@ module.exports = {
         };
     },
 
+    getConfigurationLoadOrder: function () {
+        return [
+            'gFramework/nConfig/config/properties.js',
+            'active module /config/properties.js files in module index order',
+            'externalPropertyFile entries',
+            'tenant properties loaded from active enterprise tenant records',
+            'runtime persisted configuration records'
+        ];
+    },
+    printConfigurationLoadOrder: function () {
+        this.LOG.info('###   Configuration loading contract   ###');
+        this.getConfigurationLoadOrder().forEach((entry, index) => {
+            this.LOG.info('  ' + (index + 1) + '. ' + entry);
+        });
+        this.LOG.info('###   Environment/server/node configuration precedence   ###');
+        this.getServerConfigurationLoadOrder().forEach((entry, index) => {
+            this.LOG.info('  ' + (index + 1) + '. ' + entry);
+        });
+    },
+
+    getServerConfigurationLoadOrder: function () {
+        return [
+            'environment config: ' + NODICS.getEnvironmentPath() + '/config/properties.js',
+            'server-root config: ' + NODICS.getServerRootPath() + '/config/properties.js',
+            'server config: ' + NODICS.getServerPath() + '/config/properties.js',
+            NODICS.getNodePath() ? 'node config: ' + NODICS.getNodePath() + '/config/properties.js' : null
+        ].filter(Boolean);
+    },
+
+    loadServerProperties: function () {
+        let serverProperties = {};
+        this.getServerConfigurationLoadOrder().forEach(fileDescription => {
+            let filePath = fileDescription.substring(fileDescription.indexOf(': ') + 2);
+            if (fs.existsSync(filePath)) {
+                serverProperties = _.merge(serverProperties, require(filePath));
+            }
+        });
+        return serverProperties;
+    },
+
     getActiveModules: function () {
         try {
             let modules = [];
-            //let appHome = NODICS.getApplicationPath();
-            let envHome = NODICS.getEnvironmentPath();
-            let serverRoot = NODICS.getServerRootPath();
-            let serverHome = NODICS.getServerPath();
-            let nodeHome = NODICS.getNodePath();
-            let serverProperties = {};
-            serverProperties = _.merge(serverProperties, require(envHome + '/config/properties.js'));
-            serverProperties = _.merge(serverProperties, require(serverRoot + '/config/properties.js'));
-            serverProperties = _.merge(serverProperties, require(serverHome + '/config/properties.js'));
-            if (nodeHome) {
-                serverProperties = _.merge(serverProperties, require(nodeHome + '/config/properties.js'));
-            }
+            let serverProperties = this.loadServerProperties();
             let prop = _.merge(props, serverProperties);
             this.LOG = logger.createLogger('DefaultModuleInitializerService', prop.log);
             let moduleGroups = ['gFramework'].concat(serverProperties.activeModules ? serverProperties.activeModules.groups || [] : []);
             moduleGroups.forEach((groupName) => {
                 utils.prepareActiveModuleList(prop, groupName, modules);
             });
-            if (nodeHome) {
+            if (NODICS.getNodePath()) {
                 serverProperties.activeModules.modules.push(NODICS.getNodeName());
             }
             serverProperties.activeModules.modules.forEach(moduleName => {
@@ -152,6 +182,158 @@ module.exports = {
         } catch (error) {
             console.error('While preparing active module list : ', error);
         }
+    },
+    failConfiguration: function (message) {
+        throw new Error('Invalid Nodics configuration: ' + message);
+    },
+    validateArrayProperty: function (value, propertyPath) {
+        if (!Array.isArray(value)) {
+            this.failConfiguration(propertyPath + ' must be an array');
+        }
+    },
+    validateModuleReference: function (moduleName, source) {
+        if (!moduleName || !NODICS.getRawModule(moduleName)) {
+            this.failConfiguration(source + ' references unknown module: ' + moduleName);
+        }
+    },
+    validateConfiguredModules: function (serverProperties) {
+        if (!serverProperties.activeModules) {
+            this.failConfiguration('activeModules must be defined for server: ' + NODICS.getServerName());
+        }
+        serverProperties.activeModules.groups = serverProperties.activeModules.groups || [];
+        serverProperties.activeModules.modules = serverProperties.activeModules.modules || [];
+        this.validateArrayProperty(serverProperties.activeModules.groups, 'activeModules.groups');
+        this.validateArrayProperty(serverProperties.activeModules.modules, 'activeModules.modules');
+        ['gFramework'].concat(serverProperties.activeModules.groups).forEach(groupName => {
+            let moduleName = groupName;
+            if (moduleName && moduleName.indexOf(':') > 0) {
+                moduleName = moduleName.substring(0, moduleName.indexOf(':'));
+            }
+            this.validateModuleReference(moduleName, 'activeModules.groups');
+        });
+        serverProperties.activeModules.modules.forEach(moduleName => {
+            this.validateModuleReference(moduleName, 'activeModules.modules');
+        });
+        NODICS.getActiveModules().forEach(moduleName => {
+            this.validateModuleReference(moduleName, 'resolved activeModules');
+        });
+    },
+    validateRawModuleIndexes: function () {
+        let indexes = {};
+        _.each(NODICS.getRawModules(), moduleObject => {
+            if (indexes[moduleObject.index]) {
+                this.failConfiguration('duplicate module index ' + moduleObject.index + ' for modules ' + indexes[moduleObject.index] + ' and ' + moduleObject.name);
+            }
+            indexes[moduleObject.index] = moduleObject.name;
+        });
+    },
+    isModuleIndexBefore: function (parentModule, childModule) {
+        return this.sortModules([parentModule.index, childModule.index])[0] === parentModule.index;
+    },
+    validateModuleIndexOrder: function (parentModule, childModule, relation) {
+        if (!this.isModuleIndexBefore(parentModule, childModule)) {
+            this.failConfiguration(relation + ' index order is invalid: ' + parentModule.name + ' (' + parentModule.index + ') must load before ' + childModule.name + ' (' + childModule.index + ')');
+        }
+    },
+    validateSelectedRuntimeHierarchy: function () {
+        let serverName = NODICS.getServerName();
+        let serverRootName = NODICS.getServerRootName();
+        let serverModule = NODICS.getRawModule(serverName);
+        let serverRootModule = NODICS.getRawModule(serverRootName);
+        if (!serverModule) {
+            this.failConfiguration('selected server module is not valid: ' + serverName);
+        }
+        if (!serverRootModule) {
+            this.failConfiguration('selected server root module is not valid for server ' + serverName + ': ' + serverRootName);
+        }
+        if (serverModule.parent !== serverRootName) {
+            this.failConfiguration('selected server ' + serverName + ' must be a child of server root ' + serverRootName);
+        }
+        if (!NODICS.isModuleActive(serverRootName)) {
+            this.failConfiguration('selected server root module must be active before server startup: ' + serverRootName);
+        }
+        if (!NODICS.isModuleActive(serverName)) {
+            this.failConfiguration('selected server module must be active for startup: ' + serverName);
+        }
+        this.validateModuleIndexOrder(serverRootModule, serverModule, 'server root to server');
+        if (NODICS.getNodeName()) {
+            let nodeModule = NODICS.getRawModule(NODICS.getNodeName());
+            if (!nodeModule) {
+                this.failConfiguration('selected node module is not valid: ' + NODICS.getNodeName());
+            }
+            if (nodeModule.parent !== serverName) {
+                this.failConfiguration('selected node ' + NODICS.getNodeName() + ' must be a child of selected server ' + serverName);
+            }
+            if (!NODICS.isModuleActive(NODICS.getNodeName())) {
+                this.failConfiguration('selected node module must be active for startup: ' + NODICS.getNodeName());
+            }
+            this.validateModuleIndexOrder(serverModule, nodeModule, 'server to node');
+        }
+    },
+    validateServerDefinition: function (moduleName, moduleConfig) {
+        if (!moduleConfig || !moduleConfig.server) {
+            this.failConfiguration('server.' + moduleName + '.server must be defined');
+        }
+        if (!moduleConfig.server.httpHost || !moduleConfig.server.httpPort) {
+            this.failConfiguration('server.' + moduleName + '.server requires httpHost and httpPort');
+        }
+        if (moduleConfig.nodes && !utils.isBlank(moduleConfig.nodes)) {
+            _.each(moduleConfig.nodes, (nodeConfig, nodeName) => {
+                if (!nodeConfig.httpHost || !nodeConfig.httpPort) {
+                    this.failConfiguration('server.' + moduleName + '.nodes.' + nodeName + ' requires httpHost and httpPort');
+                }
+            });
+        }
+    },
+    validateServerConfiguration: function (serverProperties) {
+        if (!serverProperties.server || !serverProperties.server.default) {
+            this.failConfiguration('server.default must be defined for server: ' + NODICS.getServerName());
+        }
+        _.each(serverProperties.server, (moduleConfig, moduleName) => {
+            if (moduleName !== 'options') {
+                this.validateServerDefinition(moduleName, moduleConfig);
+            }
+        });
+    },
+    validateNodeConfiguration: function (serverProperties) {
+        if (!NODICS.getNodeName()) {
+            return;
+        }
+        let nodeModule = NODICS.getRawModule(NODICS.getNodeName());
+        if (!nodeModule) {
+            this.failConfiguration('unknown node module: ' + NODICS.getNodeName());
+        }
+        if (nodeModule.parent !== NODICS.getServerName()) {
+            this.failConfiguration('node ' + NODICS.getNodeName() + ' does not belong to server ' + NODICS.getServerName());
+        }
+        let nodeId = serverProperties.nodeId || props.nodeId;
+        if (!serverProperties.server.default.nodes || !serverProperties.server.default.nodes[nodeId]) {
+            this.failConfiguration('server.default.nodes must define nodeId: ' + nodeId);
+        }
+    },
+    validateModularProfileConfiguration: function (serverProperties) {
+        let profileModuleName = props.profileModuleName || 'profile';
+        if (!NODICS.isModuleActive(profileModuleName)) {
+            if (!serverProperties.server || !serverProperties.server[profileModuleName]) {
+                this.failConfiguration('server.' + profileModuleName + ' must be defined when profile module is not active locally');
+            }
+            this.validateServerDefinition(profileModuleName, serverProperties.server[profileModuleName]);
+        }
+    },
+    validateResolvedConfiguration: function () {
+        let serverProperties = CONFIG.getProperties() || this.loadServerProperties();
+        this.validateRawModuleIndexes();
+        this.validateConfiguredModules(serverProperties);
+        this.validateSelectedRuntimeHierarchy();
+        this.validateServerConfiguration(serverProperties);
+        this.validateNodeConfiguration(serverProperties);
+        this.validateModularProfileConfiguration(serverProperties);
+    },
+    validateModuleActivationConfiguration: function () {
+        let serverProperties = this.loadServerProperties();
+        this.validateRawModuleIndexes();
+        this.validateConfiguredModules(serverProperties);
+        this.validateSelectedRuntimeHierarchy();
     },
     resolveModuleHiererchy: function (moduleName) {
         let moduleObject = NODICS.getRawModule(moduleName);

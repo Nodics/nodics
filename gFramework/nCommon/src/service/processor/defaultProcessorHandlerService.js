@@ -25,14 +25,27 @@ module.exports = {
                         }).catch(error => {
                             reject(error);
                         });
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    }).catch(error => reject(CLASSES.NodicsError.enrich(error, {
+                        layer: 'processor',
+                        processorType: 'search',
+                        handler: interceptor,
+                        serviceName: serviceName,
+                        operation: functionName,
+                        tenant: request && request.tenant,
+                        moduleName: request && request.moduleName,
+                        indexName: request && request.indexName
+                    })));
                 } else {
                     resolve(true);
                 }
             } catch (error) {
-                reject(error);
+                reject(CLASSES.NodicsError.enrich(error, {
+                    layer: 'processor',
+                    processorType: 'search',
+                    tenant: request && request.tenant,
+                    moduleName: request && request.moduleName,
+                    indexName: request && request.indexName
+                }));
             }
         });
     },
@@ -51,14 +64,27 @@ module.exports = {
                         }).catch(error => {
                             reject(error);
                         });
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    }).catch(error => reject(CLASSES.NodicsError.enrich(error, {
+                        layer: 'processor',
+                        processorType: 'model',
+                        handler: interceptor.handler,
+                        serviceName: serviceName,
+                        operation: functionName,
+                        tenant: request && request.tenant,
+                        moduleName: request && request.moduleName,
+                        schemaName: request && request.schemaModel && request.schemaModel.schemaName
+                    })));
                 } else {
                     resolve(true);
                 }
             } catch (error) {
-                reject(error);
+                reject(CLASSES.NodicsError.enrich(error, {
+                    layer: 'processor',
+                    processorType: 'model',
+                    tenant: request && request.tenant,
+                    moduleName: request && request.moduleName,
+                    schemaName: request && request.schemaModel && request.schemaModel.schemaName
+                }));
             }
         });
     },

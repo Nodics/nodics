@@ -1,0 +1,77 @@
+Nodics Revolution:
+
+  Data Import:
+
+    ✔ Fix system data import request validation for missing, non-array, or empty module lists. @critical @done
+    ✔ Confirm and fix init-required flag handling in profile module startup. @critical @done
+    ✔ Review `DefaultProfileService.isInitRequired()` against MongoDB init detection and correct inverted/object-shape logic. @critical @done
+    ✔ Rename `scema2Workflow` data folder to `schema2Workflow`. @done
+    ✔ Fix CSV parser options fallback from bitwise OR to logical fallback. @done
+    ✔ Add import run id for every import execution. @diagnostics @done
+    ✔ Track import type: `init`, `core`, `sample`, `local`, or `remote`. @diagnostics @done
+    ✔ Track requested tenant, active tenants, modules, and recursive module expansion. @diagnostics @tenant @done
+    ✔ Track discovered headers, enabled headers, disabled headers, and duplicate or conflicting header names. @diagnostics @done
+    ✔ Track discovered data files, files matched to headers, and unmatched files. @diagnostics @done
+    ✔ Track import start time, finish time, status, and duration. @diagnostics @done
+    ✔ Add import summary counters for records read, finalized, dispatched, succeeded, skipped, and failed. @diagnostics @done
+    ✔ Include module, header, file, tenant, schema/index, and operation context in import failures. @diagnostics @done
+    ✔ Add validation-only import mode that does not insert data. @validation @done
+    ✔ Validate schema/index names, target services, target operations, and file type processors before import. @validation @done
+    ☐ Confirm how request-level tenant overrides header-level tenants. @tenant
+    ☐ Document default tenant bootstrap separately from enterprise tenant bootstrap. @tenant @docs
+    ✔ Preserve module-owned data boundaries, including module-specific cron jobs/indexers/workflows targeting shared schemas. @module-data @docs @done
+    ✔ Ensure import diagnostics report both owning module and target schema/module. @module-data @diagnostics @done
+    ☐ Verify test tenant import does not contaminate real environment data. @tenant @testing
+    ☐ Add tests proving environment modules can contribute `data/sample` files. @sample @testing
+    ✔ Add core/sample data catalog validation so enabled headers must match data files. @sample @testing @done
+    ✔ Add multi-format processor validation for JS, JSON, CSV, and Excel import inputs. @import @testing @done
+    ✔ Add finalized import dispatch validation before model persistence. @import @testing @done
+    ☐ Add import history, file checksums, duplicate-import protection, retry support, and rollback hooks later. @governance
+
+  Testing Framework:
+
+    ☐ Re-check how `TEST.uTestPool` and `TEST.nTestPool` are populated. @critical
+    ☐ Make layered test loading explicit and observable. @critical
+    ☐ Preserve module `test/common`, environment-specific tests, server-specific tests, and node-specific tests. @layering
+    ☐ Preserve dedicated testing tenant/database isolation. @tenant
+    ☐ Add or formalize `basic` test category. @basic
+    ☐ Add or formalize `full` test category. @full
+    ☐ Basic tests should cover framework startup, module loading, route availability, internal auth token availability, profile availability, mandatory init data availability, and inter-module communication smoke checks. @basic
+    ☐ Full tests should cover module suites, init/core/sample imports, tenant scenarios, workflow, cron, NEMS/events, import/export, and distributed inter-module calls. @full
+    ☐ Add consolidated topology testing for default server startup, such as `kickoffLocalServer`. @topology @consolidated
+    ☐ Add modular/microservice topology testing with profile first, NEMS before event-dependent modules, cron after profile/NEMS where required, then business/content/workflow/data modules separately. @topology @modular
+    ☐ Verify local service calls in consolidated mode. @topology @consolidated
+    ☐ Verify API/event communication across process boundaries in modular mode. @topology @modular
+    ☐ Add import tests for mandatory init data. @testing @import
+    ☐ Add full import tests for init, core, sample, local, and remote import paths where applicable. @testing @import
+    ☐ Add sample data tests using environment module `data/sample` folders. @testing @sample
+    ☐ Add test reports for suite count, test count, pass/fail/skip counts, modules, environment, server, node, tenant, topology, and startup order. @reporting
+    ☐ Add import run summaries when tests exercise data import. @reporting @import
+    ☐ Add command surface for `test:basic`, `test:full`, consolidated topology tests, modular topology tests, and import tests. @commands
+
+  Configuration:
+
+    ✔ Make configuration loading order explicit as a formal Nodics contract. @critical @config @done
+    ✔ Add early configuration validation before module indexing and startup continue. @critical @config @done
+    ☐ Validate `activeModules.groups` and `activeModules.modules` references. @config @validation
+    ✔ Validate invalid server, environment, and node references with clear errors. @config @validation @done
+    ✔ Validate duplicate module indexes before sorted module loading. @config @validation @done
+    ✔ Validate selected environment/server/node hierarchy and index order without hardcoding project names. @config @validation @done
+    ☐ Validate required `server.default` and default server port configuration. @config @validation
+    ☐ Validate profile server coordinates when running modular servers without local profile module. @config @topology
+    ☐ Validate database configuration per tenant/module before tenant model construction. @config @tenant
+    ☐ Separate local module activation from remote module coordinates in a future config model. @config @design
+    ☐ Add validation and audit around tenant runtime config overrides. @config @tenant @governance
+    ☐ Document environment/server/node naming and override responsibilities. @config @docs
+    ☐ Fix configuration wording and typo issues gradually without changing behavior. @cleanup
+
+  Execution Order:
+
+    ☐ Finish remaining low-risk data import correctness fixes. @next
+    ☐ Add import diagnostics and summary objects. @next
+    ☐ Add data import validation-only mode.
+    ☐ Add focused data import tests.
+    ☐ Fix and formalize test discovery/execution.
+    ☐ Add basic consolidated topology tests.
+    ☐ Add basic modular topology tests.
+    ☐ Expand into full tests for import, workflow, cron, NEMS, tenants, and distributed communication.

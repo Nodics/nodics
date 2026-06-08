@@ -76,14 +76,25 @@ module.exports = {
                         }).catch(error => {
                             reject(error);
                         });
-                    }).catch(error => {
-                        reject(error);
-                    });
+                    }).catch(error => reject(CLASSES.NodicsError.enrich(error, {
+                        layer: 'interceptor',
+                        handler: interceptor.handler,
+                        serviceName: serviceName,
+                        operation: functionName,
+                        tenant: request && request.tenant,
+                        moduleName: request && request.moduleName,
+                        schemaName: request && request.schemaModel && request.schemaModel.schemaName
+                    })));
                 } else {
                     resolve(true);
                 }
             } catch (error) {
-                reject(error);
+                reject(CLASSES.NodicsError.enrich(error, {
+                    layer: 'interceptor',
+                    tenant: request && request.tenant,
+                    moduleName: request && request.moduleName,
+                    schemaName: request && request.schemaModel && request.schemaModel.schemaName
+                }));
             }
         });
     }

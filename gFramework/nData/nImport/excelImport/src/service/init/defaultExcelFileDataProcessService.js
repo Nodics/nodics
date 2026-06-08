@@ -62,13 +62,16 @@ module.exports = {
             if (files.length > 0) {
                 let file = files.shift();
                 let convertExcel = excelProcess.processFile;
-                convertExcel(file, null, CONFIG.get('data').excelTypeParserOptions, (error, jsonData) => {
+                convertExcel(file, null, CONFIG.get('data').excelTypeParserOptions || {}, (error, jsonData) => {
                     if (error) {
                         reject(error);
                     } else {
                         //console.log('======================== ');
                         //console.log(util.inspect(jsonData, showHidden = false, depth = 8, colorize = true));
                         request.models = jsonData;
+                        if (SERVICE.DefaultImportDiagnosticsService) {
+                            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsRead', request.models.length);
+                        }
                         request.outputPath.version = index + '_0';
                         SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
                             _self.handleFiles(request, response, files, ++index).then(success => {

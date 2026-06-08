@@ -36,11 +36,12 @@ module.exports = {
         request.dataType = 'init';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                if (success.code === 'SUC_IMP_00001') {
+                if (success && (success.code === 'SUC_IMP_00001' || success.validationOnly)) {
                     resolve(success);
                 } else {
                     let result = {
-                        finalizer: success
+                        finalizer: success,
+                        importRun: request.importRun
                     };
                     this.processImportData({
                         tenant: request.tenant || 'default',
@@ -51,8 +52,16 @@ module.exports = {
                         }
                     }).then(success => {
                         result.import = success;
+                        if (result.importRun) {
+                            result.importRun.status = 'COMPLETED';
+                            result.importRun.finishedAt = new Date().toISOString();
+                        }
                         resolve(result);
                     }).catch(error => {
+                        if (result.importRun) {
+                            result.importRun.status = 'FAILED';
+                            result.importRun.finishedAt = new Date().toISOString();
+                        }
                         reject(error);
                     });
                 }
@@ -66,11 +75,12 @@ module.exports = {
         request.dataType = 'core';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                if (success.code === 'SUC_IMP_00001') {
+                if (success && (success.code === 'SUC_IMP_00001' || success.validationOnly)) {
                     resolve(success);
                 } else {
                     let result = {
-                        finalizer: success
+                        finalizer: success,
+                        importRun: request.importRun
                     };
                     this.processImportData({
                         tenant: request.tenant || 'default',
@@ -81,8 +91,16 @@ module.exports = {
                         }
                     }).then(success => {
                         result.import = success;
+                        if (result.importRun) {
+                            result.importRun.status = 'COMPLETED';
+                            result.importRun.finishedAt = new Date().toISOString();
+                        }
                         resolve(result);
                     }).catch(error => {
+                        if (result.importRun) {
+                            result.importRun.status = 'FAILED';
+                            result.importRun.finishedAt = new Date().toISOString();
+                        }
                         reject(error);
                     });
                 }
@@ -96,11 +114,12 @@ module.exports = {
         request.dataType = 'sample';
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('systemDataImportInitializerPipeline', request, {}).then(success => {
-                if (success.code === 'SUC_IMP_00001') {
+                if (success && (success.code === 'SUC_IMP_00001' || success.validationOnly)) {
                     resolve(success);
                 } else {
                     let result = {
-                        finalizer: success
+                        finalizer: success,
+                        importRun: request.importRun
                     };
                     this.processImportData({
                         tenant: request.tenant || 'default',
@@ -111,8 +130,16 @@ module.exports = {
                         }
                     }).then(success => {
                         result.import = success;
+                        if (result.importRun) {
+                            result.importRun.status = 'COMPLETED';
+                            result.importRun.finishedAt = new Date().toISOString();
+                        }
                         resolve(result);
                     }).catch(error => {
+                        if (result.importRun) {
+                            result.importRun.status = 'FAILED';
+                            result.importRun.finishedAt = new Date().toISOString();
+                        }
                         reject(error);
                     });
                 }
