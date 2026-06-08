@@ -116,7 +116,8 @@ module.exports = {
                         moduleName: request.moduleName,
                         header: request.header,
                         models: request.models,
-                        outputPath: request.outputPath
+                        outputPath: request.outputPath,
+                        importRun: request.importRun
                     }, {}).then(success => {
                         process.nextSuccess(request, response);
                     }).catch(error => {
@@ -145,6 +146,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (options.pendingModels && options.pendingModels.length > 0) {
                 let model = options.pendingModels.shift();
+                if (SERVICE.DefaultImportDiagnosticsService) {
+                    SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsDispatched', 1);
+                }
                 SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
                     tenant: request.tenant,
                     authData: {
@@ -152,14 +156,30 @@ module.exports = {
                     },
                     moduleName: request.moduleName,
                     header: request.header,
-                    dataModel: model
+                    dataModel: model,
+                    importRun: request.importRun
                 }, {}).then(success => {
+                    if (SERVICE.DefaultImportDiagnosticsService) {
+                        SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsSucceeded', 1);
+                    }
                     _self.processModels(request, options).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
+                    if (SERVICE.DefaultImportDiagnosticsService) {
+                        SERVICE.DefaultImportDiagnosticsService.addFailure(request, {
+                            tenant: request.tenant,
+                            owningModule: request.header && request.header.options && request.header.options.owningModule,
+                            targetModule: request.header && request.header.options && request.header.options.moduleName,
+                            headerName: request.header && request.header.options && (request.header.options.dataFilePrefix || request.header.options.schemaName || request.header.options.indexName),
+                            schemaName: request.header && request.header.options && request.header.options.schemaName,
+                            indexName: request.header && request.header.options && request.header.options.indexName,
+                            operation: request.header && request.header.options && request.header.options.operation,
+                            error: error
+                        });
+                    }
                     reject(error);
                 });
             } else {

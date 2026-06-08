@@ -63,16 +63,23 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (files.length > 0) {
                 let file = files.shift();
-                let converter = csv(CONFIG.get('data').csvTypeParserOptions | {});
+                let converter = csv(CONFIG.get('data').csvTypeParserOptions || {});
                 let dataChunk = [];
                 let readBytes = 0;
                 let version = 0;
-                converter.fromStream(fs.createReadStream(file)).on('data', (data) => {
+                let readStream = fs.createReadStream(file);
+                readStream.on('error', (error) => {
+                    reject(error);
+                });
+                converter.fromStream(readStream).on('data', (data) => {
                     let strData = JSON.parse(data.toString(CONFIG.get('data').importDataConvertEncoding || 'utf8'));
                     converter.pause();
-                    readBytes = readBytes + sizeof(data);
+                    readBytes = readBytes + sizeof(strData);
                     if (readBytes > CONFIG.get('data').readBufferSize && dataChunk.length > 0) {
                         request.models = [].concat(dataChunk);
+                        if (SERVICE.DefaultImportDiagnosticsService) {
+                            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsRead', request.models.length);
+                        }
                         request.outputPath.version = index + '_' + version;
                         SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
                             dataChunk = [strData];
@@ -89,6 +96,9 @@ module.exports = {
                 }).on('end', (error) => {
                     if (dataChunk.length > 0) {
                         request.models = [].concat(dataChunk);
+                        if (SERVICE.DefaultImportDiagnosticsService) {
+                            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsRead', request.models.length);
+                        }
                         request.outputPath.version = index + '_' + version;
                         SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
                             _self.handleFiles(request, response, files, ++index).then(success => {

@@ -78,7 +78,13 @@ module.exports = {
             uri: url + options.apiName,
             headers: header,
             body: options.requestBody || {},
-            json: options.responseType || true
+            json: options.responseType || true,
+            nodicsContext: {
+                layer: 'remote-module',
+                moduleName: options.moduleName,
+                methodName: options.methodName || 'GET',
+                apiName: options.apiName
+            }
         };
     },
 
@@ -107,8 +113,26 @@ module.exports = {
             headers: header,
             body: options.requestBody || {},
             json: options.responseType || true,
-            rejectUnauthorized: false
+            rejectUnauthorized: false,
+            nodicsContext: {
+                layer: 'external-http',
+                methodName: options.methodName || 'GET',
+                uri: uri
+            }
         };
+    },
+
+    buildFetchErrorContext: function (requestUrl) {
+        let context = _.merge({}, requestUrl.nodicsContext || {});
+        context.uri = requestUrl.uri;
+        context.methodName = requestUrl.method;
+        if (requestUrl.body) {
+            context.tenant = requestUrl.body.tenant;
+            context.sourceName = requestUrl.body.sourceName;
+            context.target = requestUrl.body.target;
+            context.eventName = requestUrl.body.event;
+        }
+        return CLASSES.NodicsError.cleanContext(context);
     },
 
     fetch: function (requestUrl) {
@@ -118,10 +142,10 @@ module.exports = {
                 requestPromise(requestUrl).then(response => {
                     resolve(response);
                 }).catch(error => {
-                    reject(new CLASSES.NodicsError(error));
+                    reject(CLASSES.NodicsError.enrich(error, this.buildFetchErrorContext(requestUrl)));
                 });
             } catch (error) {
-                reject(new NodicsError(error));
+                reject(CLASSES.NodicsError.enrich(error, this.buildFetchErrorContext(requestUrl)));
             }
         });
     }

@@ -45,11 +45,8 @@ module.exports = {
                     NODICS.getModels('profile', 'default').EnterpriseModel.getItems({
                         tenant: 'default'
                     }).then(success => {
-                        if (success && success.length > 0) {
-                            resolve(true);
-                        } else {
-                            resolve(false);
-                        }
+                        let enterprises = UTILS.isArray(success) ? success : success.result;
+                        resolve(!enterprises || enterprises.length <= 0);
                     }).catch(error => {
                         reject(error);
                     });

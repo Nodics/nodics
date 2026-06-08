@@ -66,14 +66,18 @@ module.exports = {
                 let readBytes = 0;
                 let version = 0;
                 const jsonStream = StreamArray.withParser();
+                let readStream = fs.createReadStream(file);
                 jsonStream.on("data", function (data) {
                     jsonStream.pause();
                     readBytes = readBytes + sizeof(data.value);
                     if (readBytes > CONFIG.get('data').readBufferSize && dataChunk.length > 0) {
                         request.models = [].concat(dataChunk);
+                        if (SERVICE.DefaultImportDiagnosticsService) {
+                            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsRead', request.models.length);
+                        }
                         request.outputPath.version = index + '_' + version;
                         SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
-                            dataChunk = [data];
+                            dataChunk = [data.value];
                             readBytes = 0;
                             version = version + 1;
                             jsonStream.resume();
@@ -88,6 +92,9 @@ module.exports = {
                 jsonStream.on('end', () => {
                     if (dataChunk.length > 0) {
                         request.models = [].concat(dataChunk);
+                        if (SERVICE.DefaultImportDiagnosticsService) {
+                            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsRead', request.models.length);
+                        }
                         request.outputPath.version = index + '_' + version;
                         SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
                             _self.handleFiles(request, response, files, ++index).then(success => {
@@ -102,7 +109,13 @@ module.exports = {
                         resolve(true);
                     }
                 });
-                fs.createReadStream(file).pipe(jsonStream.input);
+                jsonStream.on('error', (error) => {
+                    reject(error);
+                });
+                readStream.on('error', (error) => {
+                    reject(error);
+                });
+                readStream.pipe(jsonStream.input);
             } else {
                 resolve(true);
             }

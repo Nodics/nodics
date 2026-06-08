@@ -29,7 +29,7 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultProfileService.isInitRequired().then(success => {
-                NODICS.isInitRequired(success);
+                NODICS.setInitRequired(success);
                 resolve(true);
             }).catch(error => {
                 reject(error);

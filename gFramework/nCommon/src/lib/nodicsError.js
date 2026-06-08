@@ -41,7 +41,13 @@ module.exports = class NodicsError extends Error {
                 code: error.code,
                 responseCode: SERVICE.DefaultStatusService.get(error.code).code,
                 message: error.message || SERVICE.DefaultStatusService.get(error.code).message,
-                metadata: error.metadata
+                name: error.name,
+                metadata: error.metadata,
+                contexts: error.contexts,
+                causes: error.causes,
+                errors: error.errors,
+                stack: error.stack,
+                traceId: error.traceId
             };
             if (message) error.message = error.message + ': ' + message;
         }
@@ -54,6 +60,9 @@ module.exports = class NodicsError extends Error {
         this.code = error.code;
         this.responseCode = error.responseCode || SERVICE.DefaultStatusService.get(defaultCode).code;
         this.metadata = error.metadata;
+        this.contexts = error.contexts || [];
+        this.causes = error.causes || [];
+        this.traceId = error.traceId;
         this.errors = error.errors || [];
         if (error.stack) {
             this.stack = error.stack;
@@ -86,31 +95,76 @@ module.exports = class NodicsError extends Error {
         }
     }
 
+    addContext(context) {
+        if (context && UTILS.isObject(context)) {
+            this.contexts.push(this.constructor.cleanContext(context));
+        }
+        return this;
+    }
+
+    addCause(error) {
+        assert.ok(error);
+        if (error instanceof CLASSES.NodicsError) {
+            this.causes.push(error);
+        } else {
+            this.causes.push(new CLASSES.NodicsError(error));
+        }
+        return this;
+    }
+
     getErrors() {
         return this.errors;
     }
 
     toJson(returnStack) {
-        //let errorsJson = [];
-        // if (this.getErrors() && this.getErrors().length > 0) {
-        //     this.getErrors().forEach(error => {
-        //         errorsJson.push(flatted.toJSON(error));
-        //         //errorsJson.push(error.toJson());
-        //     });
-        // }
         let errorJson = {
             responseCode: this.responseCode,
             code: this.code,
             name: this.name,
             message: this.message
         };
+        if (this.traceId) {
+            errorJson.traceId = this.traceId;
+        }
         if (this.metadata && !UTILS.isBlank(this.metadata)) {
             errorJson.metadata = this.metadata;
         }
+        if (this.contexts && this.contexts.length > 0) {
+            errorJson.contexts = this.contexts;
+        }
+        if (this.causes && this.causes.length > 0) {
+            errorJson.causes = this.causes.map(error => error.toJson ? error.toJson(returnStack) : flatted.toJSON(error));
+        }
+        if (this.errors && this.errors.length > 0) {
+            errorJson.errors = this.errors.map(error => error.toJson ? error.toJson(returnStack) : flatted.toJSON(error));
+        }
         if (this.stack && (returnStack || CONFIG.get('returnErrorStack'))) errorJson.stack = this.stack;
-        // if (errorsJson && errorsJson.length > 0) {
-        //     errorJson.errors = errorsJson;
-        // }
         return errorJson;
+    }
+
+    static cleanContext(context) {
+        let cleaned = {};
+        Object.keys(context || {}).forEach(key => {
+            if (context[key] !== undefined && context[key] !== null && context[key] !== '') {
+                cleaned[key] = context[key];
+            }
+        });
+        return cleaned;
+    }
+
+    static ensure(error, message, defaultCode) {
+        if (error instanceof CLASSES.NodicsError) {
+            if (message) {
+                error.message = error.message + ': ' + message;
+            }
+            return error;
+        }
+        return new CLASSES.NodicsError(error, message, defaultCode);
+    }
+
+    static enrich(error, context, defaultCode, message) {
+        error = this.ensure(error, message, defaultCode);
+        error.addContext(context);
+        return error;
     }
 };

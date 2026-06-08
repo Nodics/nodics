@@ -53,6 +53,9 @@ module.exports = {
                 Object.keys(models).forEach(key => {
                     request.models.push(models[key]);
                 });
+                if (SERVICE.DefaultImportDiagnosticsService) {
+                    SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsRead', request.models.length);
+                }
                 request.outputPath.version = '0_0';
                 SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
                     process.nextSuccess(request, response);

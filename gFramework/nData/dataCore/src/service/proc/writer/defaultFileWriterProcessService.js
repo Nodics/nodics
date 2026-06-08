@@ -53,6 +53,9 @@ module.exports = {
                 let data = request.models.shift();
                 request.finalData[UTILS.generateHash(JSON.stringify(data))] = data;
             } while (request.models.length > 0);
+            if (SERVICE.DefaultImportDiagnosticsService) {
+                SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsFinalized', Object.keys(request.finalData).length);
+            }
             process.nextSuccess(request, response);
         } catch (error) {
             process.error(request, response, new CLASSES.DataError(error, 'while generating unique identifier for the data'));

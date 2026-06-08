@@ -112,11 +112,15 @@ module.exports = {
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Pipeline: ' + process.getPipelineName() + ' with Id: ' + process.getPipelineId() + ' has error');
-        let error = response.error;
-        if (error instanceof Error && !(error instanceof CLASSES.NodicsError)) {
-            error = new CLASSES.NodicsError(error);
-        }
-        process.reject(error);
+        process.reject(CLASSES.NodicsError.enrich(response.error, {
+            layer: 'pipeline',
+            phase: 'errorEnd',
+            pipelineName: process.getPipelineName(),
+            pipelineId: process.getPipelineId(),
+            nodeName: process.getNodeName ? process.getNodeName() : undefined,
+            tenant: request && request.tenant,
+            moduleName: request && request.moduleName
+        }));
     },
 
     start: function (name, request, response) {

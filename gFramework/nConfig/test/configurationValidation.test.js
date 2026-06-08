@@ -1,0 +1,97 @@
+const assert = require('assert');
+const path = require('path');
+
+const Nodics = require('../bin/nodics');
+const Config = require('../bin/config');
+const utils = require('../src/utils/utils');
+const initService = require('../src/service/DefaultFrameworkInitializerService');
+
+const repoRoot = path.resolve(__dirname, '../../../');
+
+function initializeConfiguration(defaultServer, nodeName) {
+    let originalArgv = process.argv.slice();
+    global.NODICS = new Nodics();
+    global.CONFIG = new Config();
+    NODICS.init({
+        NODICS_HOME: repoRoot,
+        defaultServer: defaultServer
+    });
+    utils.loadRawModuleList(NODICS.getNodicsHome());
+    process.argv = process.argv.slice(0, 2);
+    if (nodeName) {
+        process.argv.push('NODE=' + nodeName);
+    }
+    NODICS.initEnvironment({
+        defaultServer: defaultServer
+    });
+    process.argv = originalArgv;
+    initService.prepareOptions();
+    initService.LOG = {
+        debug: function () { },
+        info: function () { },
+        warn: function () { },
+        error: function () { }
+    };
+    initService.loadModuleIndex();
+    initService.loadModulesMetaData();
+    initService.loadConfigurations();
+    initService.validateResolvedConfiguration();
+}
+
+let localServers = [
+    'kickoffLocalServer',
+    'kickoffLocalProfileServer',
+    'kickoffLocalCronServer',
+    'kickoffLocalDeapServer',
+    'kickoffLocalNemsServer',
+    'kickoffLocalCmsServer',
+    'kickoffLocalWorkflowServer'
+];
+
+localServers.forEach(serverName => {
+    initializeConfiguration(serverName);
+    assert.strictEqual(NODICS.getServerName(), serverName);
+    assert.strictEqual(NODICS.getEnvironmentName(), 'kickoffEnvs');
+    assert.strictEqual(NODICS.getServerRootName(), 'kickoffLocal');
+    assert(NODICS.isModuleActive('gFramework'), 'gFramework should always be active for ' + serverName);
+    assert(NODICS.isModuleActive(serverName), serverName + ' module should be active');
+});
+
+initializeConfiguration('kickoffLocalServer', 'kickoffLocalNode0');
+assert.strictEqual(NODICS.getNodeName(), 'kickoffLocalNode0');
+assert(NODICS.isModuleActive('kickoffLocalNode0'), 'selected node module should be active');
+
+initializeConfiguration('kickoffLocalServer');
+assert(NODICS.isModuleActive('profile'), 'consolidated local server should include profile');
+
+let serverProperties = CONFIG.getProperties();
+assert(serverProperties.server.default, 'server.default should be available after environment/server merge');
+assert(serverProperties.server.default.server.httpPort, 'server.default.server.httpPort should be defined');
+
+let loadOrder = initService.getConfigurationLoadOrder();
+assert(loadOrder.includes('active module /config/properties.js files in module index order'));
+
+assert.throws(() => {
+    initService.validateConfiguredModules({
+        activeModules: {
+            groups: ['missingGroup'],
+            modules: []
+        }
+    });
+}, /unknown module: missingGroup/);
+
+assert.throws(() => {
+    initService.validateServerConfiguration({
+        server: {}
+    });
+}, /server.default must be defined/);
+
+assert.throws(() => {
+    initService.validateModuleIndexOrder({
+        name: 'applicationServer',
+        index: '100.1.1'
+    }, {
+        name: 'applicationEnvironment',
+        index: '100.1'
+    }, 'server root to server');
+}, /index order is invalid/);
