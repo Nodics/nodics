@@ -39,7 +39,7 @@ module.exports = {
 
     prepareURL: function (definition) {
         let connectionType = 'abstract';
-        let nodeId = 'node0';
+        let nodeId = CONFIG.get('nodeId');
         if (definition.targetNodeId) {
             connectionType = 'node';
             nodeId = definition.targetNodeId;
@@ -47,7 +47,7 @@ module.exports = {
         return SERVICE.DefaultModuleService.buildRequest({
             connectionType: connectionType,
             nodeId: nodeId,
-            moduleName: 'workflow',
+            moduleName: CONFIG.get('workflowModuleName') || 'workflow',
             methodName: 'put',
             apiName: '/item/init',
             requestBody: definition.requestBody,

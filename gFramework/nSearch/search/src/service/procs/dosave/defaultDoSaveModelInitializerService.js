@@ -262,7 +262,7 @@ module.exports = {
                 searchModel.indexDef.event &&
                 searchModel.indexDef.event.enabled) {
                 let event = {
-                    tenant: request.tenant || 'default',
+                    tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
                     event: 'save',
                     sourceName: searchModel.moduleName,
                     sourceId: CONFIG.get('nodeId'),

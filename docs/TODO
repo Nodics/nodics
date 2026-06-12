@@ -30,6 +30,35 @@ Nodics Revolution:
 
   Testing Framework:
 
+    ☐ Convert Postman collection coverage into module-owned Nodics tests. @testing @postman
+    ☐ Migrate Postman System coverage: import/export/test runner/config/log/file endpoint behavior. @postman @system @testing
+    ✔ Add System file endpoint behavior tests. @postman @system @testing @done
+    ✔ Add System import endpoint request mapping tests. @postman @system @import @testing @done
+    ✔ Add System log level endpoint request mapping tests. @postman @system @log @testing @done
+    ✔ Add System test runner endpoint request mapping tests. @postman @system @ntest @utest @testing @done
+    ✔ Add System schema index endpoint request mapping tests. @postman @system @indexes @testing @done
+    ✔ Resolve `/system/export` controller ownership with a clear default not-configured export service. @postman @system @export @done
+    ✔ Resolve `/system/config` changeConfig route ownership and behavior. @postman @system @config @done
+    ☐ Migrate Postman Profile coverage: tenant, enterprise, auth, customer, employee, user group, API key behavior. @postman @profile @testing
+    ✔ Add Profile controller request mapping tests for auth, internal token, enterprise, tenant, customer exists, and signup. @postman @profile @testing @done
+    ✔ Add Profile enterprise service capability behavior tests for default tenant lookup and missing enterprise handling. @profile @enterprise @testing @done
+    ✔ Add marker-based capability behavior test discovery so project modules can contribute tests without editing Nodics scripts. @testing @layering @done
+    ✔ Resolve `/profile/token/authorize` controller ownership and implementation. @postman @profile @auth @done
+    ✔ Migrate generated schema CRUD coverage through effective runtime route generation. @postman @router @schema @testing @done
+    ✔ Execute guarded live generated CRUD lifecycle against a running consolidated server for one schema. @postman @router @schema @testing @done
+    ☐ Execute guarded live generated CRUD lifecycle against a dedicated test tenant. @postman @router @schema @testing @tenant
+    ✔ Fix remove pipeline workflow-init event logging `Cannot read properties of undefined (reading 'models')` after successful model delete. @pipeline @workflow @crud @done
+    ☐ Migrate Postman Data Import/Export coverage for init, core, sample, local, remote paths. @postman @import @export @testing
+    ☐ Migrate Postman Cache coverage for item/API cache and flush behavior. @postman @cache @testing
+    ☐ Migrate Postman EMS/Event coverage for publish, register, consume, close, and tenant failure paths. @postman @ems @event @testing
+    ☐ Migrate Postman CronJob coverage for create, update, run, start, stop, pause, resume, and remove. @postman @cronjob @testing
+    ☐ Migrate Postman Search coverage for schema, indexer, document, health, refresh, and delete lifecycle. @postman @search @testing
+    ☐ Migrate Postman Dynamo coverage for dynamic class, router, schema, snapshot, and execute behavior. @postman @dynamo @testing
+    ☐ Migrate Postman Workflow coverage for carrier, action, auto/manual/mixed/multi flows, pause/resume/block/release. @postman @workflow @testing
+    ☐ Migrate Postman Validator/Indexes coverage. @postman @validator @indexes @testing
+    ☐ Migrate Postman Catalog and OTP coverage. @postman @catalog @otp @testing
+    ☐ Keep project-specific Postman coverage, such as CMS/CRES/DaaS, owned by active project modules only. @postman @project-modules @testing
+    ☐ Refactor Postman collection after API/test migration stabilizes. @postman @docs
     ☐ Re-check how `TEST.uTestPool` and `TEST.nTestPool` are populated. @critical
     ☐ Make layered test loading explicit and observable. @critical
     ☐ Preserve module `test/common`, environment-specific tests, server-specific tests, and node-specific tests. @layering
@@ -64,6 +93,7 @@ Nodics Revolution:
     ☐ Add validation and audit around tenant runtime config overrides. @config @tenant @governance
     ☐ Document environment/server/node naming and override responsibilities. @config @docs
     ☐ Fix configuration wording and typo issues gradually without changing behavior. @cleanup
+    - work for the documentation of each individual files. what that file is, what are functionalities and so on.
 
   Execution Order:
 

@@ -116,7 +116,19 @@ module.exports = class NodicsError extends Error {
         return this.errors;
     }
 
-    toJson(returnStack) {
+    toJson(returnStack, visited) {
+        visited = visited || new WeakSet();
+        if (visited.has(this)) {
+            return {
+                responseCode: this.responseCode,
+                code: this.code,
+                name: this.name,
+                message: this.message,
+                circular: true
+            };
+        }
+        visited.add(this);
+
         let errorJson = {
             responseCode: this.responseCode,
             code: this.code,
@@ -127,19 +139,63 @@ module.exports = class NodicsError extends Error {
             errorJson.traceId = this.traceId;
         }
         if (this.metadata && !UTILS.isBlank(this.metadata)) {
-            errorJson.metadata = this.metadata;
+            errorJson.metadata = this.constructor.toSafeJson(this.metadata);
         }
         if (this.contexts && this.contexts.length > 0) {
-            errorJson.contexts = this.contexts;
+            errorJson.contexts = this.contexts.map(context => this.constructor.toSafeJson(context));
         }
         if (this.causes && this.causes.length > 0) {
-            errorJson.causes = this.causes.map(error => error.toJson ? error.toJson(returnStack) : flatted.toJSON(error));
+            errorJson.causes = this.causes.map(error => this.constructor.serializeNestedError(error, returnStack, visited));
         }
         if (this.errors && this.errors.length > 0) {
-            errorJson.errors = this.errors.map(error => error.toJson ? error.toJson(returnStack) : flatted.toJSON(error));
+            errorJson.errors = this.errors.map(error => this.constructor.serializeNestedError(error, returnStack, visited));
         }
         if (this.stack && (returnStack || CONFIG.get('returnErrorStack'))) errorJson.stack = this.stack;
         return errorJson;
+    }
+
+    static serializeNestedError(error, returnStack, visited) {
+        if (!error) {
+            return error;
+        }
+        if (error.toJson) {
+            return error.toJson(returnStack, visited);
+        }
+        return this.toSafeJson(error);
+    }
+
+    static toSafeJson(value) {
+        try {
+            let visited = new WeakSet();
+            return JSON.parse(JSON.stringify(value, (key, item) => {
+                if (item instanceof Error) {
+                    return {
+                        name: item.name,
+                        message: item.message,
+                        stack: item.stack
+                    };
+                }
+                if (item && typeof item === 'object') {
+                    if (visited.has(item)) {
+                        return { circular: true };
+                    }
+                    visited.add(item);
+                }
+                if (typeof item === 'function') {
+                    return undefined;
+                }
+                return item;
+            }));
+        } catch (error) {
+            try {
+                return flatted.toJSON(value);
+            } catch (flattedError) {
+                return {
+                    name: value && value.name,
+                    message: value && value.message ? value.message : String(value)
+                };
+            }
+        }
     }
 
     static cleanContext(context) {

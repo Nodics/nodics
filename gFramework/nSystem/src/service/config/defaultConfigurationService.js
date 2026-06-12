@@ -33,6 +33,24 @@ module.exports = {
         });
     },
 
+    changeConfig: function (request) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (UTILS.isBlank(request.config)) {
+                    reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Configuration payload can not be null or empty'));
+                } else {
+                    CONFIG.changeTenantProperties(request.config, request.tenant);
+                    resolve({
+                        code: 'SUC_SYS_00000',
+                        message: 'Configuration updated successfully'
+                    });
+                }
+            } catch (error) {
+                reject(new CLASSES.NodicsError(error, 'While changing runtime configuration', 'ERR_SYS_00000'));
+            }
+        });
+    },
+
     handleConfigurationChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {

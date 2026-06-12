@@ -44,7 +44,7 @@ module.exports = {
                         importRun: request.importRun
                     };
                     this.processImportData({
-                        tenant: request.tenant || 'default',
+                        tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
                         inputPath: {
                             rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
                             dataType: request.dataType,
@@ -83,7 +83,7 @@ module.exports = {
                         importRun: request.importRun
                     };
                     this.processImportData({
-                        tenant: request.tenant || 'default',
+                        tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
                         inputPath: {
                             rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
                             dataType: request.dataType,
@@ -122,7 +122,7 @@ module.exports = {
                         importRun: request.importRun
                     };
                     this.processImportData({
-                        tenant: request.tenant || 'default',
+                        tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
                         inputPath: {
                             rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
                             dataType: request.dataType,

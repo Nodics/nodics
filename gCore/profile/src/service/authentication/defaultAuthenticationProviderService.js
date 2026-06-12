@@ -182,7 +182,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             try {
                 let refreshToken = UTILS.generateHash(options.entCode + options.loginId + (new Date()).getTime());
-                this.addToken('profile', false, refreshToken, {
+                this.addToken(CONFIG.get('profileModuleName') || 'profile', false, refreshToken, {
                     entCode: options.entCode,
                     tenant: options.tenant,
                     loginId: options.loginId,

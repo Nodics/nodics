@@ -190,7 +190,7 @@ module.exports = {
             let searchModel = request.searchModel;
             if (response.success.success && searchModel.indexDef.event && searchModel.indexDef.event.enabled) {
                 let event = {
-                    tenant: request.tenant || 'default',
+                    tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
                     event: 'searchItemRemoved',
                     sourceName: searchModel.moduleName,
                     sourceId: CONFIG.get('nodeId'),

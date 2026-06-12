@@ -45,7 +45,7 @@ module.exports = {
     loadEnterprise: function (request, response, process) {
         this.LOG.debug('Loading Enterprise code : ' + request.entCode);
         try {
-            request.tenant = 'default';
+            request.tenant = CONFIG.get('defaultTenant') || 'default';
             SERVICE.DefaultEnterpriseProviderService.loadEnterprise(request).then(response => {
                 request.enterprise = response;
                 request.tenant = response.tenant.code;

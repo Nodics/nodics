@@ -33,8 +33,9 @@ module.exports = {
     },
 
     get: function (request) {
-        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        request.moduleName = request.moduleName || request.schemaModel.moduleName;
+        let moduleName = request.moduleName || 'mdulnm';
+        request.schemaModel = NODICS.getModels(moduleName, request.tenant).mdlnm;
+        request.moduleName = moduleName;
         return SERVICE.DefaultPipelineService.start('modelsGetInitializerPipeline', request, {});
     },
 
@@ -57,20 +58,23 @@ module.exports = {
     },
 
     save: function (request) {
-        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        request.moduleName = request.moduleName || request.schemaModel.moduleName;
+        let moduleName = request.moduleName || 'mdulnm';
+        request.schemaModel = NODICS.getModels(moduleName, request.tenant).mdlnm;
+        request.moduleName = moduleName;
         return SERVICE.DefaultPipelineService.start('modelSaveInitializerPipeline', request, {});
     },
 
     saveAll: function (request) {
-        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        request.moduleName = request.moduleName || request.schemaModel.moduleName;
+        let moduleName = request.moduleName || 'mdulnm';
+        request.schemaModel = NODICS.getModels(moduleName, request.tenant).mdlnm;
+        request.moduleName = moduleName;
         return SERVICE.DefaultPipelineService.start('modelsSaveInitializerPipeline', request, {});
     },
 
     remove: function (request) {
-        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        request.moduleName = request.moduleName || request.schemaModel.moduleName;
+        let moduleName = request.moduleName || 'mdulnm';
+        request.schemaModel = NODICS.getModels(moduleName, request.tenant).mdlnm;
+        request.moduleName = moduleName;
         return SERVICE.DefaultPipelineService.start('modelsRemoveInitializerPipeline', request, {});
     },
 
@@ -89,8 +93,9 @@ module.exports = {
     },
 
     update: function (request) {
-        request.schemaModel = NODICS.getModels('mdulnm', request.tenant).mdlnm;
-        request.moduleName = request.moduleName || request.schemaModel.moduleName;
+        let moduleName = request.moduleName || 'mdulnm';
+        request.schemaModel = NODICS.getModels(moduleName, request.tenant).mdlnm;
+        request.moduleName = moduleName;
         return SERVICE.DefaultPipelineService.start('modelsUpdateInitializerPipeline', request, {});
     }
 };

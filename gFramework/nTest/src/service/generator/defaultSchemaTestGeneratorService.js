@@ -1,0 +1,663 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+module.exports = {
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    cleanGeneratedTests: function (moduleObject) {
+        return new Promise((resolve, reject) => {
+            try {
+                let modulePath = this.getModulePath(moduleObject);
+                if (modulePath) {
+                    UTILS.removeDir(path.join(modulePath, 'test', 'gen'));
+                }
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    buildGeneratedTests: function () {
+        return new Promise((resolve, reject) => {
+            try {
+                let generationPromises = [];
+                let rawSchema = this.getEffectiveRawSchema();
+                Object.keys(rawSchema || {}).forEach(moduleName => {
+                    if (moduleName === 'default') {
+                        return;
+                    }
+                    generationPromises.push(this.buildModuleGeneratedTests(moduleName, rawSchema[moduleName]));
+                });
+                Promise.all(generationPromises).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    buildModuleGeneratedTests: function (moduleName, moduleSchemas) {
+        return new Promise((resolve, reject) => {
+            try {
+                let moduleObject = NODICS.getModule(moduleName);
+                let modulePath = this.getModulePath(moduleObject);
+                if (!moduleObject || !modulePath) {
+                    resolve(true);
+                    return;
+                }
+                if (UTILS.isBlank(moduleSchemas)) {
+                    resolve(true);
+                    return;
+                }
+
+                let generatedSchemaDir = path.join(modulePath, 'test', 'gen', 'schema');
+                fs.mkdirSync(generatedSchemaDir, { recursive: true });
+
+                Object.keys(moduleSchemas).forEach(schemaName => {
+                    this.writeSchemaContractTest({
+                        moduleName: moduleName,
+                        moduleObject: moduleObject,
+                        schemaName: schemaName,
+                        schemaObject: moduleSchemas[schemaName],
+                        generatedSchemaDir: generatedSchemaDir
+                    });
+                    this.writeSchemaApiContractTest({
+                        moduleName: moduleName,
+                        moduleObject: moduleObject,
+                        schemaName: schemaName,
+                        schemaObject: moduleSchemas[schemaName]
+                    });
+                    this.writeSchemaApiScenarioTest({
+                        moduleName: moduleName,
+                        moduleObject: moduleObject,
+                        schemaName: schemaName,
+                        schemaObject: moduleSchemas[schemaName]
+                    });
+                    this.writeSchemaCrudScenarioTest({
+                        moduleName: moduleName,
+                        moduleObject: moduleObject,
+                        schemaName: schemaName,
+                        schemaObject: moduleSchemas[schemaName]
+                    });
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    getEffectiveRawSchema: function () {
+        if (SERVICE.DefaultDatabaseConfigurationService &&
+            typeof SERVICE.DefaultDatabaseConfigurationService.getRawSchema === 'function') {
+            return SERVICE.DefaultDatabaseConfigurationService.getRawSchema() || {};
+        }
+        return {};
+    },
+
+    writeSchemaContractTest: function (options) {
+        let fileName = path.join(
+            options.generatedSchemaDir,
+            this.toFileSafeName(options.schemaName) + 'SchemaContract.test.js'
+        );
+        fs.writeFileSync(fileName, this.createSchemaContractTestContent(options), 'utf8');
+    },
+
+    writeSchemaApiContractTest: function (options) {
+        if (!this.isApiTestEligible(options.schemaObject)) {
+            return;
+        }
+
+        let modulePath = this.getModulePath(options.moduleObject);
+        let generatedApiDir = path.join(modulePath, 'test', 'gen', 'api');
+        fs.mkdirSync(generatedApiDir, { recursive: true });
+
+        let fileName = path.join(
+            generatedApiDir,
+            this.toFileSafeName(options.schemaName) + 'ApiContract.test.js'
+        );
+        fs.writeFileSync(fileName, this.createSchemaApiContractTestContent(options), 'utf8');
+    },
+
+    writeSchemaApiScenarioTest: function (options) {
+        if (!this.isApiTestEligible(options.schemaObject)) {
+            return;
+        }
+
+        let modulePath = this.getModulePath(options.moduleObject);
+        let generatedScenarioDir = path.join(modulePath, 'test', 'gen', 'apiScenario');
+        fs.mkdirSync(generatedScenarioDir, { recursive: true });
+
+        let fileName = path.join(
+            generatedScenarioDir,
+            this.toFileSafeName(options.schemaName) + 'ApiScenario.test.js'
+        );
+        fs.writeFileSync(fileName, this.createSchemaApiScenarioTestContent(options), 'utf8');
+    },
+
+    writeSchemaCrudScenarioTest: function (options) {
+        if (!this.isApiTestEligible(options.schemaObject)) {
+            return;
+        }
+
+        let modulePath = this.getModulePath(options.moduleObject);
+        let generatedCrudDir = path.join(modulePath, 'test', 'gen', 'crud');
+        fs.mkdirSync(generatedCrudDir, { recursive: true });
+
+        let fileName = path.join(
+            generatedCrudDir,
+            this.toFileSafeName(options.schemaName) + 'CrudScenario.test.js'
+        );
+        fs.writeFileSync(fileName, this.createSchemaCrudScenarioTestContent(options), 'utf8');
+    },
+
+    createSchemaContractTestContent: function (options) {
+        let expected = {
+            moduleName: options.moduleName,
+            schemaName: options.schemaName,
+            model: !!options.schemaObject.model,
+            serviceEnabled: !!(options.schemaObject.service && options.schemaObject.service.enabled),
+            routerEnabled: !!(options.schemaObject.router && options.schemaObject.router.enabled),
+            super: options.schemaObject.super || null
+        };
+
+        return UTILS.getCopywriteComment() +
+            '// Generated by DefaultSchemaTestGeneratorService. Do not edit directly.\n' +
+            '// Override the generator in a project module to customize generated schema tests.\n\n' +
+            'const assert = require(\'assert\');\n' +
+            'const expected = ' + JSON.stringify(expected, null, 4) + ';\n' +
+            '\n' +
+            'assert(expected.moduleName, \'Generated schema contract must include moduleName\');\n' +
+            'assert(expected.schemaName, \'Generated schema contract must include schemaName\');\n' +
+            'assert.strictEqual(typeof expected.model, \'boolean\');\n' +
+            'assert.strictEqual(typeof expected.serviceEnabled, \'boolean\');\n' +
+            'assert.strictEqual(typeof expected.routerEnabled, \'boolean\');\n\n' +
+            'console.log(`Generated schema contract validated: ${expected.moduleName}.${expected.schemaName}`);\n';
+    },
+
+    createSchemaApiContractTestContent: function (options) {
+        let alias = ((options.schemaObject.router && options.schemaObject.router.alias) || options.schemaName).toLowerCase();
+        let controller = 'Default' + options.schemaName.toUpperCaseEachWord() + 'Controller';
+        let expectedRoutes = this.createExpectedApiRoutes(alias, controller);
+        let expected = {
+            moduleName: options.moduleName,
+            schemaName: options.schemaName,
+            alias: alias,
+            controller: controller,
+            routes: expectedRoutes
+        };
+
+        return UTILS.getCopywriteComment() +
+            '// Generated by DefaultSchemaTestGeneratorService. Do not edit directly.\n' +
+            '// Override the generator in a project module to customize generated API tests.\n\n' +
+            'const assert = require(\'assert\');\n\n' +
+            'const expected = ' + JSON.stringify(expected, null, 4) + ';\n\n' +
+            'assert(expected.moduleName, \'Generated API contract must include moduleName\');\n' +
+            'assert(expected.schemaName, \'Generated API contract must include schemaName\');\n' +
+            'assert(expected.alias, \'Generated API contract must include alias\');\n' +
+            'assert(expected.controller, \'Generated API contract must include controller\');\n' +
+            'assert(Array.isArray(expected.routes), \'Generated API contract must include routes\');\n' +
+            'assert(expected.routes.length > 0, \'Generated API contract must include at least one route\');\n' +
+            'expected.routes.forEach((route) => {\n' +
+            '    assert(route.key, \'Generated API route must include key\');\n' +
+            '    assert(route.method, \'Generated API route must include method\');\n' +
+            '    assert.strictEqual(route.controller, expected.controller);\n' +
+            '    assert(route.operation, \'Generated API route must include operation\');\n' +
+            '    assert.strictEqual(typeof route.secured, \'boolean\');\n' +
+            '});\n\n' +
+            'console.log(`Generated API contract validated: ${expected.moduleName}.${expected.schemaName} (${expected.routes.length} routes)`);\n';
+    },
+
+    createSchemaApiScenarioTestContent: function (options) {
+        let alias = ((options.schemaObject.router && options.schemaObject.router.alias) || options.schemaName).toLowerCase();
+        let controller = 'Default' + options.schemaName.toUpperCaseEachWord() + 'Controller';
+        let scenarios = this.createNonDestructiveApiScenarios(alias, controller);
+        let expected = {
+            moduleName: options.moduleName,
+            schemaName: options.schemaName,
+            alias: alias,
+            controller: controller,
+            scenarios: scenarios
+        };
+
+        return UTILS.getCopywriteComment() +
+            '// Generated by DefaultSchemaTestGeneratorService. Do not edit directly.\n' +
+            '// Override the generator in a project module to customize generated API scenario tests.\n\n' +
+            'const assert = require(\'assert\');\n\n' +
+            'const expected = ' + JSON.stringify(expected, null, 4) + ';\n\n' +
+            'assert(expected.moduleName, \'Generated API scenario must include moduleName\');\n' +
+            'assert(expected.schemaName, \'Generated API scenario must include schemaName\');\n' +
+            'assert(expected.alias, \'Generated API scenario must include alias\');\n' +
+            'assert(expected.controller, \'Generated API scenario must include controller\');\n' +
+            'assert(Array.isArray(expected.scenarios), \'Generated API scenario must include scenarios\');\n' +
+            'assert(expected.scenarios.length > 0, \'Generated API scenario must include at least one non-destructive scenario\');\n' +
+            'expected.scenarios.forEach((scenario) => {\n' +
+            '    assert(scenario.name, \'Generated API scenario must include name\');\n' +
+            '    assert(scenario.route.key, \'Generated API scenario route must include key\');\n' +
+            '    assert([\'get\', \'post\'].includes(scenario.route.method), `Scenario ${scenario.name} must be non-destructive`);\n' +
+            '    assert.strictEqual(scenario.route.controller, expected.controller);\n' +
+            '    assert(scenario.route.operation, \'Generated API scenario route must include operation\');\n' +
+            '    assert.strictEqual(scenario.request.headers.Authorization, \'Bearer <token>\');\n' +
+            '    assert.strictEqual(scenario.request.headers.tenant, \'<activeTenant>\');\n' +
+            '    assert.strictEqual(scenario.request.headers[\'x-enterprise-code\'], \'<enterpriseCode>\');\n' +
+            '    assert.strictEqual(scenario.request.query.recursive, false);\n' +
+            '    assert.strictEqual(typeof scenario.request.params, \'object\');\n' +
+            '    assert.strictEqual(typeof scenario.request.body, \'object\');\n' +
+            '    assert.strictEqual(scenario.mutation, false);\n' +
+            '});\n\n' +
+            'console.log(`Generated API scenarios validated: ${expected.moduleName}.${expected.schemaName} (${expected.scenarios.length} scenarios)`);\n';
+    },
+
+    createSchemaCrudScenarioTestContent: function (options) {
+        let alias = ((options.schemaObject.router && options.schemaObject.router.alias) || options.schemaName).toLowerCase();
+        let controller = 'Default' + options.schemaName.toUpperCaseEachWord() + 'Controller';
+        let scenarios = this.createDestructiveCrudScenarios(alias, controller, options.schemaObject);
+        let lifecycle = this.createDestructiveCrudLifecycle(alias, controller, options.schemaObject);
+        let expected = {
+            moduleName: options.moduleName,
+            urlPrefix: (options.moduleObject.metaData && options.moduleObject.metaData.prefix) || options.moduleName,
+            schemaName: options.schemaName,
+            alias: alias,
+            controller: controller,
+            destructive: true,
+            execution: 'explicit-only',
+            testTenant: '<testTenant>',
+            scenarios: scenarios,
+            lifecycle: lifecycle
+        };
+
+        return UTILS.getCopywriteComment() +
+            '// Generated by DefaultSchemaTestGeneratorService. Do not edit directly.\n' +
+            '// Override the generator in a project module to customize generated destructive CRUD tests.\n' +
+            '// These tests describe mutation scenarios and must only be executed by explicit CRUD test commands.\n\n' +
+            'const assert = require(\'assert\');\n\n' +
+            'const expected = ' + JSON.stringify(expected, null, 4) + ';\n\n' +
+            'assert(expected.moduleName, \'Generated CRUD scenario must include moduleName\');\n' +
+            'assert(expected.urlPrefix, \'Generated CRUD scenario must include urlPrefix\');\n' +
+            'assert(expected.schemaName, \'Generated CRUD scenario must include schemaName\');\n' +
+            'assert(expected.alias, \'Generated CRUD scenario must include alias\');\n' +
+            'assert(expected.controller, \'Generated CRUD scenario must include controller\');\n' +
+            'assert.strictEqual(expected.destructive, true);\n' +
+            'assert.strictEqual(expected.execution, \'explicit-only\');\n' +
+            'assert.strictEqual(expected.testTenant, \'<testTenant>\');\n' +
+            'assert(Array.isArray(expected.scenarios), \'Generated CRUD scenario must include scenarios\');\n' +
+            'assert(Array.isArray(expected.lifecycle), \'Generated CRUD scenario must include lifecycle\');\n' +
+            'assert(expected.scenarios.length >= 4, \'Generated CRUD scenario must include create, update, delete, and cleanup scenarios\');\n' +
+            'assert(expected.lifecycle.length >= 7, \'Generated CRUD lifecycle must include cleanup, create, read, update, read, delete, and verify steps\');\n' +
+            'assert(expected.scenarios.some((scenario) => scenario.operation === \'save\'), \'CRUD scenarios must include save\');\n' +
+            'assert(expected.scenarios.some((scenario) => scenario.operation === \'update\'), \'CRUD scenarios must include update\');\n' +
+            'assert(expected.scenarios.some((scenario) => scenario.operation === \'removeByCode\' || scenario.operation === \'remove\'), \'CRUD scenarios must include delete\');\n' +
+            'expected.scenarios.forEach((scenario) => {\n' +
+            '    assert(scenario.name, \'Generated CRUD scenario must include name\');\n' +
+            '    assert(scenario.route.key, \'Generated CRUD route must include key\');\n' +
+            '    assert([\'put\', \'patch\', \'delete\'].includes(scenario.route.method), `Scenario ${scenario.name} must use a mutation method`);\n' +
+            '    assert.strictEqual(scenario.route.controller, expected.controller);\n' +
+            '    assert(scenario.operation, \'Generated CRUD scenario must include operation\');\n' +
+            '    assert.strictEqual(scenario.request.headers.Authorization, \'Bearer <token>\');\n' +
+            '    assert.strictEqual(scenario.request.headers.tenant, \'<testTenant>\');\n' +
+            '    assert.strictEqual(scenario.request.headers[\'x-enterprise-code\'], \'<enterpriseCode>\');\n' +
+            '    assert.strictEqual(typeof scenario.request.params, \'object\');\n' +
+            '    assert.strictEqual(typeof scenario.request.body, \'object\');\n' +
+            '    assert.strictEqual(scenario.mutation, true);\n' +
+            '});\n\n' +
+            'expected.lifecycle.forEach((step) => {\n' +
+            '    assert(step.name, \'Generated CRUD lifecycle step must include name\');\n' +
+            '    assert(step.route.key, \'Generated CRUD lifecycle step route must include key\');\n' +
+            '    assert(step.request, \'Generated CRUD lifecycle step must include request\');\n' +
+            '    assert.strictEqual(typeof step.mutation, \'boolean\');\n' +
+            '});\n\n' +
+            'module.exports = expected;\n\n' +
+            'console.log(`Generated destructive CRUD scenarios validated: ${expected.moduleName}.${expected.schemaName} (${expected.scenarios.length} scenarios)`);\n';
+    },
+
+    createExpectedApiRoutes: function (alias, controller) {
+        let defaultRouters = this.getDefaultSchemaRouters();
+        let routes = [];
+        Object.keys(defaultRouters || {}).forEach(groupName => {
+            if (groupName === 'options') {
+                return;
+            }
+            let group = defaultRouters[groupName] || {};
+            Object.keys(group).forEach(routerName => {
+                if (routerName === 'options') {
+                    return;
+                }
+                let routerDef = group[routerName];
+                if (routerDef && routerDef.key && routerDef.method) {
+                    routes.push({
+                        routerName: routerName,
+                        key: routerDef.key.replaceAll('schemaName', alias),
+                        method: String(routerDef.method).toLowerCase(),
+                        apiVersion: routerDef.apiVersion || 'v0',
+                        controller: String(routerDef.controller || '').replaceAll('DefaultctrlName', controller),
+                        operation: routerDef.operation,
+                        secured: routerDef.secured === undefined ? false : !!routerDef.secured
+                    });
+                }
+            });
+        });
+        return routes;
+    },
+
+    createNonDestructiveApiScenarios: function (alias, controller) {
+        return this.createExpectedApiRoutes(alias, controller)
+            .filter(route => this.isNonDestructiveRoute(route))
+            .map(route => {
+                return {
+                    name: route.routerName,
+                    route: route,
+                    request: this.createScenarioRequest(route),
+                    mutation: false
+                };
+            });
+    },
+
+    createDestructiveCrudScenarios: function (alias, controller, schemaObject) {
+        let mutationRoutes = this.createExpectedApiRoutes(alias, controller)
+            .filter(route => this.isDestructiveCrudRoute(route));
+        let createModel = this.createCrudModelFixture(alias, schemaObject, 'create');
+        let updateModel = this.createCrudModelFixture(alias, schemaObject, 'update');
+
+        return mutationRoutes.map(route => {
+            return {
+                name: route.routerName,
+                operation: route.operation,
+                route: route,
+                request: this.createCrudScenarioRequest(route, createModel, updateModel),
+                mutation: true,
+                cleanup: ['save', 'saveAll', 'update'].includes(route.operation)
+            };
+        });
+    },
+
+    createDestructiveCrudLifecycle: function (alias, controller, schemaObject) {
+        let routes = this.createExpectedApiRoutes(alias, controller);
+        let createModel = this.createCrudModelFixture(alias, schemaObject, 'create');
+        let updateModel = this.createCrudModelFixture(alias, schemaObject, 'update');
+        let saveRoute = this.findRoute(routes, 'save', 'put');
+        let updateRoute = this.findRoute(routes, 'update', 'patch');
+        let getByCodeRoute = this.findRouteByRouterName(routes, 'getByCode') || this.findRoute(routes, 'get', 'get');
+        let deleteRoute = this.findRouteByRouterName(routes, 'removeByCode') ||
+            this.findRouteByRouterName(routes, 'remove') ||
+            this.findRoute(routes, 'removeByCode', 'delete') ||
+            this.findRoute(routes, 'remove', 'delete');
+
+        return [
+            this.createCrudLifecycleStep('cleanupBefore', deleteRoute, createModel, updateModel, true, true),
+            this.createCrudLifecycleStep('create', saveRoute, createModel, updateModel, false, false),
+            this.createCrudLifecycleStep('readAfterCreate', getByCodeRoute, createModel, updateModel, false, false),
+            this.createCrudLifecycleStep('update', updateRoute, createModel, updateModel, false, false),
+            this.createCrudLifecycleStep('readAfterUpdate', getByCodeRoute, createModel, updateModel, false, false),
+            this.createCrudLifecycleStep('delete', deleteRoute, createModel, updateModel, false, false),
+            this.createCrudLifecycleStep('verifyDeleted', getByCodeRoute, createModel, updateModel, false, true)
+        ].filter(step => !!step);
+    },
+
+    createCrudLifecycleStep: function (name, route, createModel, updateModel, optional, expectMissing) {
+        if (!route) {
+            return null;
+        }
+        return {
+            name: name,
+            operation: route.operation,
+            route: route,
+            request: this.createCrudLifecycleRequest(route, createModel, updateModel),
+            mutation: ['put', 'patch', 'delete'].includes(route.method),
+            optional: !!optional,
+            expectMissing: !!expectMissing
+        };
+    },
+
+    createCrudLifecycleRequest: function (route, createModel, updateModel) {
+        if (['put', 'patch', 'delete'].includes(route.method)) {
+            return this.createCrudScenarioRequest(route, createModel, updateModel);
+        }
+        return {
+            headers: {
+                Authorization: 'Bearer <token>',
+                tenant: '<testTenant>',
+                'x-enterprise-code': '<enterpriseCode>'
+            },
+            params: this.createCrudRouteParams(route.key, createModel),
+            query: {
+                recursive: false
+            },
+            body: {}
+        };
+    },
+
+    findRoute: function (routes, operation, method) {
+        return (routes || []).find(route => route.operation === operation && route.method === method);
+    },
+
+    findRouteByRouterName: function (routes, routerName) {
+        return (routes || []).find(route => route.routerName === routerName);
+    },
+
+    isDestructiveCrudRoute: function (route) {
+        return route &&
+            ['put', 'patch', 'delete'].includes(route.method) &&
+            ['save', 'saveAll', 'update', 'remove', 'removeById', 'removeByCode'].includes(route.operation);
+    },
+
+    isNonDestructiveRoute: function (route) {
+        return route &&
+            ['get', 'post'].includes(route.method) &&
+            !['save', 'saveAll', 'update', 'remove', 'removeById', 'removeByCode', 'doSave', 'doBulk', 'doRemove', 'doRemoveIndex'].includes(route.operation);
+    },
+
+    createScenarioRequest: function (route) {
+        return {
+            headers: {
+                Authorization: 'Bearer <token>',
+                tenant: '<activeTenant>',
+                'x-enterprise-code': '<enterpriseCode>'
+            },
+            params: this.createRouteParams(route.key),
+            query: {
+                recursive: false
+            },
+            body: route.method === 'post' ? this.createPostScenarioBody(route) : {}
+        };
+    },
+
+    createCrudScenarioRequest: function (route, createModel, updateModel) {
+        return {
+            headers: {
+                Authorization: 'Bearer <token>',
+                tenant: '<testTenant>',
+                'x-enterprise-code': '<enterpriseCode>'
+            },
+            params: this.createCrudRouteParams(route.key, createModel),
+            query: {},
+            body: this.createCrudScenarioBody(route, createModel, updateModel)
+        };
+    },
+
+    createCrudRouteParams: function (routeKey, createModel) {
+        let params = {};
+        String(routeKey).split('/').forEach(part => {
+            if (part === ':id') {
+                params.id = '<createdModelId>';
+            } else if (part === ':code') {
+                params.code = createModel.code;
+            } else if (part.startsWith(':')) {
+                params[part.substring(1)] = '<' + part.substring(1) + '>';
+            }
+        });
+        return params;
+    },
+
+    createCrudScenarioBody: function (route, createModel, updateModel) {
+        if (route.operation === 'save') {
+            return createModel;
+        }
+        if (route.operation === 'saveAll') {
+            return [createModel];
+        }
+        if (route.operation === 'update') {
+            return {
+                options: {
+                    returnModified: true
+                },
+                query: {
+                    code: createModel.code
+                },
+                model: updateModel
+            };
+        }
+        if (route.operation === 'remove') {
+            return {
+                options: {
+                    returnModified: true
+                },
+                query: {
+                    code: createModel.code
+                }
+            };
+        }
+        if (route.operation === 'removeById' && Object.keys(this.createRouteParams(route.key)).length === 0) {
+            return {
+                options: {
+                    returnModified: true
+                },
+                ids: ['<createdModelId>']
+            };
+        }
+        if (route.operation === 'removeByCode' && Object.keys(this.createRouteParams(route.key)).length === 0) {
+            return {
+                options: {
+                    returnModified: true
+                },
+                codes: [createModel.code]
+            };
+        }
+        return {};
+    },
+
+    createRouteParams: function (routeKey) {
+        let params = {};
+        String(routeKey).split('/').forEach(part => {
+            if (part.startsWith(':')) {
+                params[part.substring(1)] = '<' + part.substring(1) + '>';
+            }
+        });
+        return params;
+    },
+
+    createPostScenarioBody: function (route) {
+        let body = {
+            options: {},
+            query: {}
+        };
+        if (route.operation === 'get') {
+            body.options = {
+                recursive: false,
+                pageSize: 10,
+                pageNumber: 0
+            };
+        } else if (route.operation === 'doExists' || route.operation === 'doGet') {
+            body.query = {
+                id: '<id>'
+            };
+        } else if (route.operation === 'doSearch') {
+            body.query = {
+                match_all: {}
+            };
+        }
+        return body;
+    },
+
+    createCrudModelFixture: function (alias, schemaObject, phase) {
+        let code = 'ntest_' + alias + '_<runId>';
+        let model = {
+            code: code,
+            active: true,
+            description: 'Generated ' + phase + ' CRUD test fixture for ' + alias
+        };
+
+        Object.keys(schemaObject.definition || {}).forEach(propertyName => {
+            let propertyObject = schemaObject.definition[propertyName] || {};
+            if (!propertyObject.required || model[propertyName] !== undefined) {
+                return;
+            }
+            model[propertyName] = this.createPropertyFixtureValue(propertyName, propertyObject, phase);
+        });
+
+        if (phase === 'update') {
+            model.description = 'Generated updated CRUD test fixture for ' + alias;
+        }
+        return model;
+    },
+
+    createPropertyFixtureValue: function (propertyName, propertyObject, phase) {
+        if (Array.isArray(propertyObject.enum) && propertyObject.enum.length > 0) {
+            return propertyObject.enum[0];
+        }
+        if (propertyObject.default !== undefined && typeof propertyObject.default !== 'function') {
+            return propertyObject.default;
+        }
+
+        let type = String(propertyObject.type || 'string').toLowerCase();
+        if (type === 'bool' || type === 'boolean') {
+            return true;
+        }
+        if (type === 'int' || type === 'integer' || type === 'number' || type === 'float' || type === 'double') {
+            return phase === 'update' ? 2 : 1;
+        }
+        if (type === 'array') {
+            return [];
+        }
+        if (type === 'object') {
+            return {};
+        }
+        if (type === 'date') {
+            return '<timestamp>';
+        }
+        return 'ntest_' + propertyName + '_<runId>';
+    },
+
+    getDefaultSchemaRouters: function () {
+        let routers = SERVICE.DefaultFilesLoaderService.loadFiles('/src/router/router.js');
+        return routers.default || {};
+    },
+
+    isApiTestEligible: function (schemaObject) {
+        return !!(schemaObject &&
+            schemaObject.service && schemaObject.service.enabled &&
+            schemaObject.router && schemaObject.router.enabled);
+    },
+
+    toFileSafeName: function (value) {
+        return String(value).replace(/[^a-zA-Z0-9_$-]/g, '_');
+    },
+
+    getModulePath: function (moduleObject) {
+        return moduleObject ? moduleObject.path || moduleObject.modulePath : null;
+    }
+};

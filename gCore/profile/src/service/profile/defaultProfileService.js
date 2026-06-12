@@ -32,18 +32,28 @@ module.exports = {
         });
     },
 
+    getProfileModuleName: function () {
+        return (typeof CONFIG !== 'undefined' && CONFIG.get && CONFIG.get('profileModuleName')) || 'profile';
+    },
+
+    getDefaultTenant: function () {
+        return (typeof CONFIG !== 'undefined' && CONFIG.get && CONFIG.get('defaultTenant')) || 'default';
+    },
+
     isInitRequired: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
-            let dbConnection = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase('profile', 'default');
+            let profileModuleName = _self.getProfileModuleName();
+            let defaultTenant = _self.getDefaultTenant();
+            let dbConnection = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(profileModuleName, defaultTenant);
             if (dbConnection) {
                 let masterDatabase = dbConnection.master;
                 if (!masterDatabase.getCollectionList() || masterDatabase.getCollectionList().length <= 0) {
                     _self.LOG.info('System requires initial data to be imported');
                     resolve(true);
                 } else {
-                    NODICS.getModels('profile', 'default').EnterpriseModel.getItems({
-                        tenant: 'default'
+                    NODICS.getModels(profileModuleName, defaultTenant).EnterpriseModel.getItems({
+                        tenant: defaultTenant
                     }).then(success => {
                         let enterprises = UTILS.isArray(success) ? success : success.result;
                         resolve(!enterprises || enterprises.length <= 0);
@@ -52,7 +62,7 @@ module.exports = {
                     });
                 }
             } else {
-                reject(new CLASSES.NodicsError('ERR_DBS_00001', 'Invalid database connection handler found for module: profile, and tenant: default'));
+                reject(new CLASSES.NodicsError('ERR_DBS_00001', 'Invalid database connection handler found for module: ' + profileModuleName + ', and tenant: ' + defaultTenant));
             }
         });
     }

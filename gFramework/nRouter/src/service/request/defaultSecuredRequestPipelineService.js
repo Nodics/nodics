@@ -40,7 +40,7 @@ module.exports = {
                     tenant: success.enterprise.tenant.code,
                     entCode: success.enterprise.code,
                     person: success.person,
-                    userGroups: success.person.userGroups
+                    userGroups: success.person.userGroupCodes || UTILS.getUserGroupCodes(success.person.userGroups)
                 };
                 request.tenant = success.enterprise.tenant.code;
                 process.nextSuccess(request, response);

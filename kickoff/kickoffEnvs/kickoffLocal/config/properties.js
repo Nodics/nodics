@@ -10,5 +10,17 @@
  */
 
 module.exports = {
-
+    test: {
+        runtimeTopology: {
+            consolidatedServer: 'kickoffLocalServer',
+            modularServers: [
+                'kickoffLocalProfileServer',
+                'kickoffLocalNemsServer',
+                'kickoffLocalDeapServer',
+                'kickoffLocalCronServer',
+                'kickoffLocalCmsServer',
+                'kickoffLocalWorkflowServer'
+            ]
+        }
+    }
 };

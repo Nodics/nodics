@@ -47,8 +47,10 @@ module.exports = {
             }).then(() => {
                 return SERVICE.DefaultDatabaseSchemaHandlerService.buildDatabaseSchema(SERVICE.DefaultDatabaseConfigurationService.getRawSchema());
             }).then(() => {
-                NODICS.addActiveEnterprise('default', 'default');
-                NODICS.addActiveTenant('default');
+                let defaultEnterprise = CONFIG.get('defaultEnterprise') || 'default';
+                let defaultTenant = CONFIG.get('defaultTenant') || 'default';
+                NODICS.addActiveEnterprise(defaultEnterprise, defaultTenant);
+                NODICS.addActiveTenant(defaultTenant);
                 return SERVICE.DefaultDatabaseModelHandlerService.buildModelsForTenant();
             }).then(() => {
                 return SERVICE.DefaultDatabaseConnectionHandlerService.isInitRequired();

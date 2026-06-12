@@ -73,6 +73,7 @@ module.exports = {
                         _self.emsClients[clientName] = {
                             clientName: clientName,
                             connection: client.connection,
+                            admin: client.admin,
                             connectionManager: client.connectionManager,
                             config: clientConfig,
                             queues: client.queues

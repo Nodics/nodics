@@ -34,7 +34,7 @@ module.exports = {
 
     prepareURL: function (input) {
         return SERVICE.DefaultModuleService.buildRequest({
-            moduleName: 'profile',
+            moduleName: CONFIG.get('profileModuleName') || 'profile',
             methodName: 'POST',
             apiName: '/enterprise',
             requestBody: {
@@ -47,7 +47,7 @@ module.exports = {
             },
             responseType: true,
             header: {
-                Authorization: 'Bearer ' + NODICS.getInternalAuthToken('default')
+                Authorization: 'Bearer ' + NODICS.getInternalAuthToken(CONFIG.get('defaultTenant') || 'default')
             }
         });
     },
@@ -56,7 +56,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (request.moduleName === CONFIG.get('profileModuleName')) {
                 SERVICE.DefaultEnterpriseService.get({
-                    tenant: 'default',
+                    tenant: CONFIG.get('defaultTenant') || 'default',
                     options: {
                         recursive: true,
                     },
@@ -67,20 +67,21 @@ module.exports = {
                     if (response && response.result.length > 0) {
                         resolve(response.result[0]);
                     } else {
-                        reject(new NodicsError('ERR_ENT_00000'));
+                        reject(new CLASSES.NodicsError('ERR_ENT_00000'));
                     }
                 }).catch(error => {
-                    reject(new NodicsError(error));
+                    reject(new CLASSES.NodicsError(error));
                 });
             } else {
+                let requestUrl = this.prepareURL(request);
                 SERVICE.DefaultModuleService.fetch(requestUrl).then(response => {
                     if (response.result && response.result.length < 1) {
                         resolve(response.result[0]);
                     } else {
-                        reject(new NodicsError('ERR_ENT_00000'));
+                        reject(new CLASSES.NodicsError('ERR_ENT_00000'));
                     }
                 }).catch(error => {
-                    reject(new NodicsError(error));
+                    reject(new CLASSES.NodicsError(error));
                 });
             }
         });

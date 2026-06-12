@@ -52,11 +52,15 @@ module.exports = {
         return 'import_' + uniqueCode;
     },
 
+    getDefaultTenant: function () {
+        return (typeof CONFIG !== 'undefined' && CONFIG.get && CONFIG.get('defaultTenant')) || 'default';
+    },
+
     initImportRun: function (request) {
         request.importRun = request.importRun || {
             runId: this.generateRunId(),
             dataType: request.dataType,
-            tenant: request.tenant || 'default',
+            tenant: request.tenant || this.getDefaultTenant(),
             modules: [].concat(request.modules),
             validationOnly: !!request.options.validateOnly,
             startedAt: new Date().toISOString(),

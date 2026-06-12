@@ -59,7 +59,7 @@ module.exports = {
                 enabled: false
             },
             kafka: {
-                enabled: false
+                enabled: true
             }
         }
     },

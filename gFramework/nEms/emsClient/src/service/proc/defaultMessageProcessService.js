@@ -73,10 +73,18 @@ module.exports = {
     validateData: function (request, response, process) {
         let queue = request.queue;
         let message = request.message;
+        let header = queue.options.header || {};
         if (queue.options.tenantRestricted) {
-            message.tenant = queue.options.header.tenant;
+            message.tenant = header.tenant;
         } else {
-            message.tenant = message.tenant || queue.options.header.tenant || 'default';
+            message.tenant = message.tenant || header.tenant;
+        }
+        if (!message.tenant && (queue.options.systemQueue || queue.options.defaultTenantFallback)) {
+            message.tenant = CONFIG.get('defaultTenant') || 'default';
+        }
+        if (!message.tenant) {
+            process.error(request, response, new CLASSES.NodicsError('ERR_EMS_00000', 'Tenant is required for queue: ' + queue.name));
+        } else {
             process.nextSuccess(request, response);
         }
     },

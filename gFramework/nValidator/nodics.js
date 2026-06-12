@@ -42,7 +42,7 @@ module.exports = {
                 return;
             }
             SERVICE.DefaultInterceptorService.get({
-                tenant: 'default'
+                tenant: CONFIG.get('defaultTenant') || 'default'
             }).then(response => {
                 try {
                     if (response.success && response.result.length > 0) {

@@ -96,5 +96,10 @@ module.exports = {
                 }
             });
         }
+    },
+
+    loadPersistedRouters: function () {
+        this.LOG.warn('Persisted router loading skipped; no router configuration model service is available');
+        return Promise.resolve(true);
     }
 };

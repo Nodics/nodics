@@ -146,7 +146,7 @@ module.exports = {
         if (request.special) {
             this.LOG.debug('Handling special request : ' + request.originalUrl);
             if (!request.tenant) {
-                request.tenant = 'default';
+                request.tenant = CONFIG.get('defaultTenant') || 'default';
             }
             try {
                 CONTROLLER[request.router.handler][request.router.operation](request, (error, success) => {

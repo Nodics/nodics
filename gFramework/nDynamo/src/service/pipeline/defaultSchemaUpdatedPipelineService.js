@@ -47,7 +47,7 @@ module.exports = {
     retrieveSchema: function (request, response, process) {
         this.LOG.debug('Fatching updated schema object : ' + request.schemaName);
         SERVICE.DefaultSchemaConfigurationService.get({
-            tenant: 'default',
+            tenant: CONFIG.get('defaultTenant') || 'default',
             query: {
                 code: request.schemaCode
             }
