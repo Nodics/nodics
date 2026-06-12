@@ -65,6 +65,8 @@ module.exports = {
             }).then(() => {
                 return _self.cleanControllers(moduleObject);
             }).then(() => {
+                return _self.cleanGeneratedTests(moduleObject);
+            }).then(() => {
                 return _self.cleanDist(moduleObject);
             }).then(() => {
                 resolve(true);
@@ -104,6 +106,27 @@ module.exports = {
             try {
                 UTILS.removeDir(path.join(module.path + '/src/controller/gen'));
                 resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    cleanGeneratedTests: function (module) {
+        return new Promise((resolve, reject) => {
+            this.LOG.debug('Cleaning generated test entities');
+            try {
+                if (SERVICE.DefaultSchemaTestGeneratorService &&
+                    typeof SERVICE.DefaultSchemaTestGeneratorService.cleanGeneratedTests === 'function') {
+                    SERVICE.DefaultSchemaTestGeneratorService.cleanGeneratedTests(module).then(() => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                } else {
+                    UTILS.removeDir(path.join(module.path + '/test/gen'));
+                    resolve(true);
+                }
             } catch (error) {
                 reject(error);
             }
@@ -171,10 +194,27 @@ module.exports = {
             }).then(() => {
                 return _self.buildControllers();
             }).then(() => {
+                return _self.buildGeneratedTests();
+            }).then(() => {
                 resolve(true);
             }).catch((error) => {
                 reject(error);
             });
+        });
+    },
+
+    buildGeneratedTests: function () {
+        return new Promise((resolve, reject) => {
+            if (SERVICE.DefaultSchemaTestGeneratorService &&
+                typeof SERVICE.DefaultSchemaTestGeneratorService.buildGeneratedTests === 'function') {
+                SERVICE.DefaultSchemaTestGeneratorService.buildGeneratedTests().then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
         });
     },
 

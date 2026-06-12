@@ -81,11 +81,13 @@ module.exports = {
 
     triggerEnterpriseUpdateEvent: function (enterprise, isRemoved) {
         return new Promise((resolve, reject) => {
+            let profileModuleName = CONFIG.get('profileModuleName') || 'profile';
+            let defaultTenant = CONFIG.get('defaultTenant') || 'default';
             let event = {
-                tenant: 'default',
-                sourceName: 'profile',
+                tenant: defaultTenant,
+                sourceName: profileModuleName,
                 sourceId: CONFIG.get('nodeId'),
-                target: 'profile',
+                target: profileModuleName,
                 state: "NEW",
                 type: "SYNC",
                 active: true,
@@ -96,7 +98,7 @@ module.exports = {
             };
             if ((isRemoved || !enterprise.active || !enterprise.tenant.active) && NODICS.getActiveTenants().includes(enterprise.tenant.code)) {
                 SERVICE.DefaultEnterpriseService.get({
-                    tenant: 'default',
+                    tenant: defaultTenant,
                     query: {
                         tenant: enterprise.tenant.code,
                         active: true

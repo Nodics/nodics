@@ -55,7 +55,13 @@ module.exports = {
     // databaseUserURI = mongodb://nonexistent.domain:27000
     dynamoEnabled: false,
     defaultContentType: 'application/json',
+    defaultTenant: 'default',
+    defaultEnterprise: 'default',
     profileModuleName: 'profile',
+    nemsModuleName: 'nems',
+    dynamoModuleName: 'dynamo',
+    systemModuleName: 'system',
+    workflowModuleName: 'workflow',
     processRetrySleepTime: 2000,
     defaultAuthDetail: {
         apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',

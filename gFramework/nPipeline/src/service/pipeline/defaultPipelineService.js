@@ -37,13 +37,13 @@ module.exports = {
     loadPipelines: function () {
         return new Promise((resolve, reject) => {
             global.PIPELINE = SERVICE.DefaultFilesLoaderService.loadFiles('/src/pipelines/pipelinesDefinition.js');
-            if (typeof this.get !== 'function') {
+            if (!this.isPersistedPipelineModelAvailable()) {
                 this.LOG.warn('Persisted pipeline loading skipped; no pipeline model service is available');
                 resolve(true);
                 return;
             }
             this.get({
-                tenant: 'default'
+                tenant: CONFIG.get('defaultTenant') || 'default'
             }).then(success => {
                 if (success.result && success.result.length > 0) {
                     success.result.forEach(pipelineObj => {
@@ -59,6 +59,18 @@ module.exports = {
                 reject(error);
             });
         });
+    },
+
+    isPersistedPipelineModelAvailable: function () {
+        if (typeof this.get !== 'function') {
+            return false;
+        }
+        try {
+            let models = NODICS.getModels(CONFIG.get('dynamoModuleName') || 'dynamo', CONFIG.get('defaultTenant') || 'default');
+            return !!(models && models.PipelineModel);
+        } catch (error) {
+            return false;
+        }
     },
 
     handlePipelineChangeEvent: function (request) {

@@ -78,7 +78,7 @@ module.exports = {
                         reject(error);
                     });
                 } else {
-                    reject(new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid queue name: ' + payloads.queue));
+                    reject(new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid queue name: ' + request.payloads.queue));
                 }
             }
         });

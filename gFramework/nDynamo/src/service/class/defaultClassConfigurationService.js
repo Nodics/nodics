@@ -40,7 +40,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let className = request.className;
             SERVICE.DefaultClassConfigurationService.get({
-                tenant: 'default',
+                tenant: CONFIG.get('defaultTenant') || 'default',
                 query: {
                     code: className
                 }
@@ -94,7 +94,7 @@ module.exports = {
             let type = request.type;
             this.finalizeClass(className, request.body).then(success => {
                 this.save({
-                    tenant: 'default',
+                    tenant: CONFIG.get('defaultTenant') || 'default',
                     model: {
                         code: className,
                         type: type,
@@ -116,7 +116,7 @@ module.exports = {
         let byteBody = null;
         return new Promise((resolve, reject) => {
             SERVICE.DefaultClassConfigurationService.get({
-                tenant: 'default',
+                tenant: CONFIG.get('defaultTenant') || 'default',
                 query: {
                     code: className
                 }
@@ -152,7 +152,7 @@ module.exports = {
                 reject(new CLASSES.NodicsError('ERR_SYS_00001', 'ClassName can not be null or empty'));
             }
             this.get({
-                tenant: 'default',
+                tenant: CONFIG.get('defaultTenant') || 'default',
                 query: {
                     code: {
                         $in: request.event.data.models
@@ -195,7 +195,7 @@ module.exports = {
                 return;
             }
             this.get({
-                tenant: 'default'
+                tenant: CONFIG.get('defaultTenant') || 'default'
             }).then(success => {
                 try {
                     if (success.result && success.result.length > 0) {

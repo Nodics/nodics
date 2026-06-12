@@ -38,9 +38,11 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
+                let profileModuleName = CONFIG.get('profileModuleName') || 'profile';
+                let defaultTenant = CONFIG.get('defaultTenant') || 'default';
+                if (NODICS.isModuleActive(profileModuleName)) {
                     SERVICE.DefaultEnterpriseService.get({
-                        tenant: 'default',
+                        tenant: defaultTenant,
                         options: {
                             recursive: true,
                         },
@@ -56,13 +58,13 @@ module.exports = {
                     });
                 } else {
                     let requestUrl = SERVICE.DefaultModuleService.buildRequest({
-                        moduleName: 'profile',
+                        moduleName: profileModuleName,
                         methodName: 'POST',
                         apiName: '/enterprise',
                         requestBody: {},
                         responseType: true,
                         header: {
-                            Authorization: 'Bearer ' + NODICS.getInternalAuthToken('default'),
+                            Authorization: 'Bearer ' + NODICS.getInternalAuthToken(defaultTenant),
                             recursive: true
                         }
                     });

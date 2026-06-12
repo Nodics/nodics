@@ -148,7 +148,7 @@ module.exports = {
     prepareInternalURL: function (definition) {
         let jobDetail = definition.jobDetail.internal;
         let connectionType = 'abstract';
-        let nodeId = 'node0';
+        let nodeId = CONFIG.get('nodeId');
         if (jobDetail.nodeId) {
             connectionType = 'node';
             nodeId = jobDetail.nodeId;

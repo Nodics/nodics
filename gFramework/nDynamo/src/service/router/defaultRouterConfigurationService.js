@@ -50,7 +50,7 @@ module.exports = {
                 $in: data.models
             };
             this.registerRoutersFromDatabase({
-                tenant: 'default'
+                tenant: CONFIG.get('defaultTenant') || 'default'
             }).then(success => {
                 if(success.code === 'ERR_SYS_00001'){
                     _self.LOG.error('Could not found any data for routers name ' + data.models);
@@ -72,7 +72,7 @@ module.exports = {
                 return;
             }
             this.registerRoutersFromDatabase({
-                tenant: 'default'
+                tenant: CONFIG.get('defaultTenant') || 'default'
             }).then(success => {
                 resolve(success.message)
             }).catch(error => {

@@ -16,7 +16,7 @@ module.exports = {
                 reject(new CLASSES.NodicsError('ERR_PRFL_00003', 'Enterprise code can not be null or empty'));
             } else {
                 this.get({
-                    tenant: 'default',
+                    tenant: CONFIG.get('defaultTenant') || 'default',
                     options: {
                         recursive: true
                     },

@@ -67,7 +67,8 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                let db = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(CONFIG.get('profileModuleName'), 'default');
+                let defaultTenant = CONFIG.get('defaultTenant') || 'default';
+                let db = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(CONFIG.get('profileModuleName'), defaultTenant);
                 if (db && db.master) {
                     if (!db.master.getCollectionList() || db.master.getCollectionList().length <= 0) {
                         _self.LOG.info('System requires initial data to be imported');
@@ -98,7 +99,8 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                let db = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase('default', 'default');
+                let defaultTenant = CONFIG.get('defaultTenant') || 'default';
+                let db = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase('default', defaultTenant);
                 if (db && db.master) {
                     db.master.getConnection().collection('SchemaConfigurationModel').find({}, {}).toArray((err, result) => {
                         if (err) {

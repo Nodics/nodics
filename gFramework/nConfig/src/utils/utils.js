@@ -48,7 +48,7 @@ module.exports = {
                     console.error('Invalid initialization, could not load module: ' + moduleName);
                     process.exit(1);
                 }
-                if (moduleName === 'dynamo' && !props.dynamoEnabled) {
+                if (moduleName === (props.dynamoModuleName || 'dynamo') && !props.dynamoEnabled) {
                     let currentdate = new Date();
                     let datetime = currentdate.getFullYear() + '-' + (currentdate.getMonth() + 1) + '-' + currentdate.getDate() +
                         ' ' + currentdate.getHours() + ':' + currentdate.getMinutes() + ":" + currentdate.getSeconds();
@@ -260,7 +260,7 @@ module.exports = {
         if (moduleObject &&
             moduleObject.metaData &&
             (moduleObject.metaData.type === 'router' || moduleObject.metaData.type === 'web') &&
-            (moduleName != 'dynamo' || CONFIG.get('dynamoEnabled'))) {
+            (moduleName !== (CONFIG.get('dynamoModuleName') || 'dynamo') || CONFIG.get('dynamoEnabled'))) {
             return true;
         }
         return false;

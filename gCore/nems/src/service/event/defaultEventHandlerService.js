@@ -276,7 +276,7 @@ module.exports = {
 
     prepareURL: function (event, target) {
         let connectionType = 'abstract';
-        let nodeId = 'node0';
+        let nodeId = CONFIG.get('nodeId');
         if (target.targetNodeId) {
             connectionType = 'node';
             nodeId = target.targetNodeId;

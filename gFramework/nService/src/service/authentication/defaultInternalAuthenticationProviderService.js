@@ -37,7 +37,7 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             let requestUrl = SERVICE.DefaultModuleService.buildRequest({
-                moduleName: 'profile',
+                moduleName: CONFIG.get('profileModuleName') || 'profile',
                 methodName: 'GET',
                 apiName: '/auth/token/' + tntCode,
                 requestBody: {},

@@ -20,7 +20,7 @@ module.exports = {
                 return Promise.reject(error);
             }
         } else {
-            if (!request.tenant) request.tenant = 'default';
+            if (!request.tenant) request.tenant = CONFIG.get('defaultTenant') || 'default';
             if (!request.options) request.options = {};
             request.options.recursive = request.options.recursive || true;
             request.query = {

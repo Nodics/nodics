@@ -126,7 +126,7 @@ module.exports = {
             let eventOnRefresh = CONFIG.get('search').eventOnRefresh;
             if (eventOnRefresh) {
                 let event = {
-                    tenant: request.tenant || 'default',
+                    tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
                     event: 'indexingPerformed',
                     sourceName: searchModel.moduleName,
                     sourceId: CONFIG.get('nodeId'),

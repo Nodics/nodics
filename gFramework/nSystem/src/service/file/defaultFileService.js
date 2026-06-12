@@ -63,7 +63,7 @@ module.exports = {
                 reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid request, File name can not be null or empty'));
             } else {
                 let filePath = NODICS.getNodicsHome() + '/' + request.path + '/' + request.fileName;
-                if (fs.existsSync) {
+                if (fs.existsSync(filePath)) {
                     resolve({
                         success: true,
                         code: 'SUC_SYS_00001',

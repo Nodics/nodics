@@ -186,7 +186,16 @@ module.exports = {
         let _self = this;
         try {
             if (CONFIG.get('emsClient').logFailedMessages) {
-                let tenant = options.queue.options.header.tenant || 'default';
+                let queueOptions = options.queue.options || {};
+                let header = queueOptions.header || {};
+                let tenant = options.message.tenant || header.tenant;
+                if (!tenant && (queueOptions.systemQueue || queueOptions.defaultTenantFallback)) {
+                    tenant = CONFIG.get('defaultTenant') || 'default';
+                }
+                if (!tenant) {
+                    _self.LOG.error('Failed to log message : ' + options.consumer.name + ' : tenant is missing');
+                    return;
+                }
                 options.message.active = true;
                 SERVICE.DefaultEmsFailedMessagesService.save({
                     tenant: tenant,

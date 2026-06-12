@@ -62,7 +62,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let model = request.model;
             SERVICE.DefaultSchemaConfigurationService.get({
-                tenant: 'default',
+                tenant: CONFIG.get('defaultTenant') || 'default',
                 searchOptions: {
                     projection: { _id: 0 }
                 },

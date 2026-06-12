@@ -54,8 +54,9 @@ module.exports = {
             }).then(() => {
                 return new Promise((resolve, reject) => {
                     if (NODICS.isInitRequired()) {
+                        let defaultTenant = CONFIG.get('defaultTenant') || 'default';
                         SERVICE.DefaultImportService.importInitData({
-                            tenant: 'default',
+                            tenant: defaultTenant,
                             modules: NODICS.getActiveModules()
                         }).then(success => {
                             resolve(success);
@@ -82,13 +83,14 @@ module.exports = {
                 });
             }).then(() => {
                 return new Promise((resolve, reject) => {
+                    let defaultTenant = CONFIG.get('defaultTenant') || 'default';
                     if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
                         let defaultAuthDetail = CONFIG.get('defaultAuthDetail') || {};
                         SERVICE.DefaultEmployeeService.findByAPIKey({
                             tenant: defaultAuthDetail.tenant,
                             apiKey: CONFIG.get('defaultAuthDetail').apiKey
                         }).then(employee => {
-                            NODICS.addInternalAuthToken('default', SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
+                            NODICS.addInternalAuthToken(defaultTenant, SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
                                 entCode: defaultAuthDetail.entCode,
                                 tenant: defaultAuthDetail.tenant,
                                 apiKey: employee.apiKey,
@@ -100,8 +102,8 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        SERVICE.DefaultInternalAuthenticationProviderService.fetchInternalAuthToken('default').then(success => {
-                            NODICS.addInternalAuthToken('default', success.authToken);
+                        SERVICE.DefaultInternalAuthenticationProviderService.fetchInternalAuthToken(defaultTenant).then(success => {
+                            NODICS.addInternalAuthToken(defaultTenant, success.authToken);
                             resolve(true);
                         }).catch(error => {
                             reject(error);
@@ -242,13 +244,14 @@ module.exports = {
             });
         }).then(() => {
             return new Promise((resolve, reject) => {
-                SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection('default', true).then(success => {
+                let defaultTenant = CONFIG.get('defaultTenant') || 'default';
+                SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection(defaultTenant, true).then(success => {
                     SERVICE.DefaultDatabaseConnectionHandlerService.getRuntimeSchema().then(runtimeSchema => {
                         SERVICE.DefaultDatabaseConfigurationService.setRawSchema(_.merge(
                             SERVICE.DefaultDatabaseConfigurationService.getRawSchema(),
                             runtimeSchema
                         ));
-                        SERVICE.DefaultDatabaseConnectionHandlerService.closeConnection('default', 'default');
+                        SERVICE.DefaultDatabaseConnectionHandlerService.closeConnection('default', defaultTenant);
                         resolve(true);
                     }).catch(error => {
                         reject(error);

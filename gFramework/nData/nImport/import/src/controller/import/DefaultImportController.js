@@ -86,7 +86,7 @@ module.exports = {
     importLocalData: function (request, callback) {
         if (!UTILS.isBlank(request.httpRequest.body) && !UTILS.isBlank(request.httpRequest.body.inputPath)) {
             request.inputPath = request.httpRequest.body.inputPath;
-            request.importFinalizeData = request.httpRequest.body.importFinalizeData || true;
+            request.importFinalizeData = request.httpRequest.body.importFinalizeData !== undefined ? request.httpRequest.body.importFinalizeData : true;
         }
         if (callback) {
             FACADE.DefaultImportFacade.importLocalData(request).then(success => {

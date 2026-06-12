@@ -42,10 +42,11 @@ module.exports = {
         });
     },
 
-    createDatabaseConnection: function (tntCode = 'default', onlyDefault = false) {
+    createDatabaseConnection: function (tntCode, onlyDefault = false) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
+                tntCode = tntCode || CONFIG.get('defaultTenant') || 'default';
                 let dbModules = SERVICE.DefaultDatabaseConfigurationService.getDatabaseActiveModules();
                 dbModules.splice(dbModules.indexOf('default'), 1);
                 _self.createDatabase('default', tntCode).then(success => {
@@ -150,7 +151,9 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             if (NODICS.isModuleActive(CONFIG.get('profileModuleName'))) {
-                let dbConnection = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(CONFIG.get('profileModuleName'), 'default');
+                let defaultTenant = CONFIG.get('defaultTenant') || 'default';
+                let profileModuleName = CONFIG.get('profileModuleName');
+                let dbConnection = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(profileModuleName, defaultTenant);
                 if (dbConnection) {
                     let masterDatabase = dbConnection.master;
                     if (SERVICE[masterDatabase.getOptions().connectionHandler] &&
@@ -164,10 +167,10 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database configuration for connection handler found for module: ' + CONFIG.get('profileModuleName') + ', and tenant: default'));
+                        reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database configuration for connection handler found for module: ' + profileModuleName + ', and tenant: ' + defaultTenant));
                     }
                 } else {
-                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database connection handler found for module: ' + CONFIG.get('profileModuleName') + ', and tenant: default'));
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database connection handler found for module: ' + profileModuleName + ', and tenant: ' + defaultTenant));
                 }
             } else {
                 resolve(true);
@@ -177,7 +180,8 @@ module.exports = {
 
     getRuntimeSchema: function () {
         return new Promise((resolve, reject) => {
-            let dbConnection = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase('default', 'default');
+            let defaultTenant = CONFIG.get('defaultTenant') || 'default';
+            let dbConnection = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase('default', defaultTenant);
             if (dbConnection) {
                 let masterDatabase = dbConnection.master;
                 if (SERVICE[masterDatabase.getOptions().connectionHandler] &&
@@ -201,10 +205,10 @@ module.exports = {
                         reject(error);
                     });
                 } else {
-                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database configuration for connection handler found for module: default, and tenant: default'));
+                    reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database configuration for connection handler found for module: default, and tenant: ' + defaultTenant));
                 }
             } else {
-                reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database connection handler found for module: default, and tenant: default'));
+                reject(new CLASSES.NodicsError('ERR_DBS_00000', 'Invalid database connection handler found for module: default, and tenant: ' + defaultTenant));
             }
         });
     },

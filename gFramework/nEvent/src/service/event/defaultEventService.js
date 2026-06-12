@@ -43,13 +43,13 @@ module.exports = {
     loadPersistedListeners: function () {
         return new Promise((resolve, reject) => {
             let listeners = {};
-            if (!SERVICE.DefaultEventListenerService || typeof SERVICE.DefaultEventListenerService.get !== 'function') {
+            if (!this.isPersistedListenerModelAvailable()) {
                 this.LOG.warn('Persisted event listener loading skipped; no event listener model service is available');
                 resolve(true);
                 return;
             }
             SERVICE.DefaultEventListenerService.get({
-                tenant: 'default'
+                tenant: CONFIG.get('defaultTenant') || 'default'
             }).then(success => {
                 if (success.result && success.result.length > 0) {
                     success.result.forEach(listener => {
@@ -71,13 +71,25 @@ module.exports = {
         });
     },
 
+    isPersistedListenerModelAvailable: function () {
+        if (!SERVICE.DefaultEventListenerService || typeof SERVICE.DefaultEventListenerService.get !== 'function') {
+            return false;
+        }
+        try {
+            let models = NODICS.getModels(CONFIG.get('systemModuleName') || 'system', CONFIG.get('defaultTenant') || 'default');
+            return !!(models && models.EventListenerModel);
+        } catch (error) {
+            return false;
+        }
+    },
+
     handleListenerUpdateEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {
                 let event = request.event;
                 let data = event.data;
                 SERVICE.DefaultEventListenerService.get({
-                    tenant: 'default',
+                    tenant: CONFIG.get('defaultTenant') || 'default',
                     query: {
                         code: {
                             $in: data.models
@@ -299,7 +311,7 @@ module.exports = {
     },
     prepareURL: function (eventDef) {
         return SERVICE.DefaultModuleService.buildRequest({
-            moduleName: 'nems',
+            moduleName: CONFIG.get('nemsModuleName') || 'nems',
             methodName: 'put',
             apiName: '/event',
             requestBody: eventDef,

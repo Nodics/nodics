@@ -38,12 +38,24 @@ module.exports = {
     handleWorkflowProcess: function (request, response, process) {
         try {
             let schemaModel = request.schemaModel;
-            let removedModels = response.success.result.models;
-            if (!request.ignoreWorkflowEvent && response.success.result && schemaModel.workflows && Object.keys(schemaModel.workflows).length > 0) {
-                if (!removedModels.workflow || UTILS.isBlank(removedModels.workflow)) {
-                    this.LOG.error('item: ' + (savedModel.code || savedModel._id) + ' is not workflow compatable');
+            let removedModels = (response.success && response.success.result && response.success.result.models) || [];
+            if (!request.ignoreWorkflowEvent && removedModels.length > 0 && schemaModel.workflows && Object.keys(schemaModel.workflows).length > 0) {
+                let workflowModels = removedModels.filter(model => model.workflow && !UTILS.isBlank(model.workflow));
+                if (workflowModels.length <= 0) {
+                    this.LOG.debug('Removed models are not workflow compatible for schema: ' + schemaModel.schemaName);
                 } else {
-                    SERVICE.DefaultWorkflowEventService.publishWorkflowEvent(request, response).then(success => {
+                    let event = {
+                        tenant: request.tenant,
+                        event: 'initiateWorkflow',
+                        sourceName: schemaModel.moduleName,
+                        sourceId: CONFIG.get('nodeId'),
+                        target: 'workflow',
+                        state: "NEW",
+                        type: "SYNC",
+                        targetType: ENUMS.TargetType.MODULE.key,
+                        active: true
+                    };
+                    SERVICE.DefaultWorkflowEventService.publishWorkflowEvent(event, schemaModel, workflowModels).then(success => {
                         this.LOG.debug('Workflow associated successfully');
                     }).catch(error => {
                         this.LOG.error('While associating workflow : ', error);

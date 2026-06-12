@@ -4,19 +4,62 @@
     Copyright (c) 2017 Nodics All rights reserved.
 
     This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
     terms of the license agreement you entered into with Nodics.
 
  */
-const _ = require('lodash');
-const kafka = require('kafka-node');
+const { Kafka, logLevel } = require('kafkajs');
+
+function toBrokerList(connectionOptions) {
+    if (connectionOptions.brokers instanceof Array && connectionOptions.brokers.length > 0) {
+        return connectionOptions.brokers;
+    }
+    if (connectionOptions.kafkaHost) {
+        return connectionOptions.kafkaHost.split(',').map(item => item.trim()).filter(item => item);
+    }
+    return [];
+}
+
+function toRetryOptions(connectionOptions) {
+    let retryOptions = connectionOptions.connectRetryOptions || connectionOptions.retry || {};
+    return {
+        retries: retryOptions.retries,
+        factor: retryOptions.factor,
+        multiplier: retryOptions.multiplier,
+        initialRetryTime: retryOptions.initialRetryTime || retryOptions.minTimeout,
+        maxRetryTime: retryOptions.maxRetryTime || retryOptions.maxTimeout
+    };
+}
+
+function toMessageList(payload) {
+    let messages = payload.messages || payload.message;
+    if (!(messages instanceof Array)) {
+        messages = [messages];
+    }
+    return messages.map(message => {
+        if (message && typeof message === 'object' && Object.prototype.hasOwnProperty.call(message, 'value')) {
+            return {
+                key: message.key,
+                value: typeof message.value === 'object' ? JSON.stringify(message.value) : String(message.value)
+            };
+        }
+        if (message && typeof message === 'object') {
+            return {
+                value: JSON.stringify(message)
+            };
+        }
+        return {
+            value: String(message)
+        };
+    });
+}
 
 module.exports = {
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading.
      * defined it that with Promise way
-     * @param {*} options 
+     * @param {*} options
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -25,9 +68,9 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading.
      * defined it that with Promise way
-     * @param {*} options 
+     * @param {*} options
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -36,63 +79,63 @@ module.exports = {
     },
 
     configureClient: function (config) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (!config.connectionOptions) {
                 reject(new CLASSES.NodicsError('ERR_EMS_00003'));
+                return;
             }
             try {
-                const connection = new kafka.KafkaClient(config.connectionOptions);
-                if (connection) {
-                    connection.loadMetadataForTopics([], function (error, results) {
-                        if (error) {
-                            reject(new CLASSES.CacheError(error, 'Kafka server is not reachable...', 'ERR_EMS_00002'));
-                        } else {
-                            let queues = _.get(results, '1.metadata');
-                            resolve({
-                                connection: connection,
-                                queues: queues
-                            });
-                        }
-                    });
-                } else {
-                    reject(new CLASSES.CacheError('ERR_EMS_00002', 'Kafka server is not reachable...'));
+                let brokers = toBrokerList(config.connectionOptions);
+                if (brokers.length === 0) {
+                    reject(new CLASSES.NodicsError('ERR_EMS_00003', 'Kafka brokers are not configured'));
+                    return;
                 }
+                let kafka = new Kafka({
+                    clientId: config.connectionOptions.clientId || CONFIG.get('applicationName') || 'nodics',
+                    brokers: brokers,
+                    connectionTimeout: config.connectionOptions.connectTimeout,
+                    requestTimeout: config.connectionOptions.requestTimeout,
+                    retry: toRetryOptions(config.connectionOptions),
+                    logLevel: logLevel.NOTHING
+                });
+                let admin = kafka.admin();
+                await admin.connect();
+                let topics = await admin.listTopics();
+                let queues = {};
+                topics.forEach(topic => {
+                    queues[topic] = {
+                        existing: true
+                    };
+                });
+                resolve({
+                    connection: kafka,
+                    admin: admin,
+                    queues: queues
+                });
             } catch (error) {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
+                reject(new CLASSES.CacheError({
+                    code: 'ERR_EMS_00002',
+                    message: 'Kafka server is not reachable',
+                    metadata: {
+                        originalCode: error.code,
+                        originalMessage: error.message
+                    }
+                }, null, 'ERR_EMS_00002'));
             }
         });
     },
 
     createProducer: function (client, options) {
         let _self = this;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
-                let clientConfig = client.config;
-                let producer;
-                if (clientConfig.publisherType === 0) {
-                    producer = new kafka.Producer(client.connection, options);
-                } else if (clientConfig.publisherType === 1) {
-                    producer = new kafka.HighLevelProducer(client.connection, options);
-                } else {
-                    _self.LOG.debug('Invalid publisher type : ' + clientConfig.publisherType);
-                    reject(new CLASSES.NodicsError('ERR_EMS_00004', 'Invalid publisher type : ' + clientConfig.publisherType));
-                }
-                if (producer) {
-                    producer.on("ready", function () {
-                        _self.LOG.debug("Kafka Producer is connected and ready.");
-                        resolve(producer);
-                    });
-                    producer.on("error", function (error) {
-                        _self.LOG.error('While creating kafka publisher : ', error);
-                        reject(new CLASSES.NodicsError(error, 'While creating kafka publisher', 'ERR_EMS_00003'));
-                    });
-                } else {
-                    _self.LOG.error('Not able to create kafka publisher');
-                    reject(new CLASSES.NodicsError('ERR_EMS_00004', 'Not able to create kafka publisher'));
-                }
+                let producer = client.connection.producer(options || {});
+                await producer.connect();
+                _self.LOG.debug('Kafka Producer is connected and ready.');
+                resolve(producer);
             } catch (error) {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
+                _self.LOG.error('While creating kafka publisher : ', error);
+                reject(new CLASSES.NodicsError(error, 'While creating kafka publisher', 'ERR_EMS_00003'));
             }
         });
     },
@@ -111,24 +154,18 @@ module.exports = {
         });
     },
 
-
     publish: function (payload) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
                 let publisher = SERVICE.DefaultEmsClientConfigurationService.getPublisher(payload.queue);
-                publisher.publisher.send([{
+                await publisher.publisher.send({
                     topic: payload.queue,
-                    messages: payload.message || payload.messages,
-                    partition: payload.partition || 0
-                }], function (err, data) {
-                    if (err) {
-                        reject(new CLASSES.NodicsError(err, null, 'ERR_EMS_00000'));
-                    } else {
-                        resolve({
-                            code: 'SUC_EMS_00000',
-                            message: 'Message published to queue: ' + payload.queue
-                        });
-                    }
+                    messages: toMessageList(payload),
+                    acks: payload.acks
+                });
+                resolve({
+                    code: 'SUC_EMS_00000',
+                    message: 'Message published to queue: ' + payload.queue
                 });
             } catch (error) {
                 reject(new CLASSES.NodicsError(error, 'Either queue name : ' + payload.queue + ' is not valid or could not created publisher', 'ERR_EMS_00000'));
@@ -138,64 +175,44 @@ module.exports = {
 
     registerConsumer: function (options) {
         let _self = this;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
-                _self.checkQueue(options).then(success => {
-                    let queueName = options.consumerName;
-                    const topics = [{
-                        topic: queueName,
-                        partition: options.consumer.partition || 0
-                    }];
-                    let consumer = new kafka.Consumer(options.client.connection, topics, options.consumer.consumerOptions);
-                    if (consumer) {
-                        options.consumer.name = queueName;
-                        consumer.on("message", function (response) {
-                            _self.onConsume(options.consumer, response, (error, success) => {
-                                if (error) {
-                                    _self.LOG.info(response);
-                                    _self.LOG.error('Failed to consume message : ' + options.consumer.name + ' : ERROR is ', error);
-                                    response.errorType = 'FAILED_CONSUMED';
-                                    response.error = error;
-                                    _self.handleConsumerError({
-                                        consumer: consumer,
-                                        queue: options.consumer,
-                                        options: options.consumer.consumerOptions,
-                                        message: response
-                                    });
-                                } else {
-                                    if (!options.consumer.consumerOptions.autoCommit) {
-                                        consumer.commit(function (error, data) {
-                                            if (error) {
-                                                _self.LOG.error('Failed to commit message : ' + options.consumer.name + ' : ERROR is ', error);
-                                                response.errorType = 'FAILED_COMMIT';
-                                                response.error = error;
-                                                _self.handleConsumerError({
-                                                    consumer: consumer,
-                                                    queue: options.consumer,
-                                                    options: options.consumer.consumerOptions,
-                                                    message: response
-                                                });
-                                            } else {
-                                                _self.LOG.debug('Message Successfully consumed and commited: ' + options.consumer.name);
-                                            }
-                                        });
-                                    } else {
-                                        _self.LOG.debug('Message Successfully consumed and commited: ' + options.consumer.name);
-                                    }
-                                }
-                            });
-                        });
-                        consumer.on("error", function (message) {
-                            _self.LOG.error(message);
-                        });
-                        resolve(consumer);
-                    } else {
-                        reject(new CLASSES.NodicsError('ERR_EMS_00004', 'While creating consumer for queue : ' + queueName));
-                    }
-                    resolve(consumer);
-                }).catch(error => {
-                    reject(error);
+                await _self.checkQueue(options);
+                let queueName = options.consumerName;
+                let consumerConfig = options.consumer.consumerOptions || {};
+                let consumer = options.client.connection.consumer({
+                    groupId: consumerConfig.groupId || queueName + '-group'
                 });
+                await consumer.connect();
+                await consumer.subscribe({
+                    topic: queueName,
+                    fromBeginning: consumerConfig.fromBeginning || false
+                });
+                options.consumer.name = queueName;
+                await consumer.run({
+                    eachMessage: async ({ message }) => {
+                        let response = {
+                            key: message.key && message.key.toString(),
+                            value: message.value && message.value.toString()
+                        };
+                        _self.onConsume(options.consumer, response, (error, success) => {
+                            if (error) {
+                                _self.LOG.error('Failed to consume message : ' + options.consumer.name + ' : ERROR is ', error);
+                                response.errorType = 'FAILED_CONSUMED';
+                                response.error = error;
+                                _self.handleConsumerError({
+                                    consumer: consumer,
+                                    queue: options.consumer,
+                                    options: options.consumer.consumerOptions,
+                                    message: response
+                                });
+                            } else {
+                                _self.LOG.debug('Message Successfully consumed and commited: ' + options.consumer.name);
+                            }
+                        });
+                    }
+                });
+                resolve(consumer);
             } catch (error) {
                 reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
@@ -203,35 +220,52 @@ module.exports = {
     },
 
     checkQueue: function (options) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
                 let queueName = options.consumerName;
                 if (options.client.queues && options.client.queues[queueName]) {
                     resolve(true);
-                } else {
-                    options.client.connection.createTopics([queueName], (error, result) => {
-                        if (error) {
-                            reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
-                        } else {
-                            options.client.queues[queueName] = {
-                                created: true
-                            };
-                            resolve(true);
-                        }
-                    });
+                    return;
                 }
+                await options.client.admin.createTopics({
+                    topics: [{
+                        topic: queueName,
+                        numPartitions: 1,
+                        replicationFactor: 1
+                    }],
+                    waitForLeaders: true
+                });
+                options.client.queues[queueName] = {
+                    created: true
+                };
+                resolve(true);
             } catch (error) {
-                reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
+                if (error.type === 'TOPIC_ALREADY_EXISTS') {
+                    options.client.queues[options.consumerName] = {
+                        existing: true
+                    };
+                    resolve(true);
+                } else {
+                    reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
+                }
             }
         });
     },
-
 
     handleConsumerError: function (options) {
         let _self = this;
         try {
             if (CONFIG.get('emsClient').logFailedMessages) {
-                let tenant = options.queue.options.header.tenant || 'default';
+                let queueOptions = options.queue.options || {};
+                let header = queueOptions.header || {};
+                let tenant = options.message.tenant || header.tenant;
+                if (!tenant && (queueOptions.systemQueue || queueOptions.defaultTenantFallback)) {
+                    tenant = CONFIG.get('defaultTenant') || 'default';
+                }
+                if (!tenant) {
+                    _self.LOG.error('Failed to log message : ' + options.consumer.name + ' : tenant is missing');
+                    return;
+                }
                 options.message.active = true;
                 SERVICE.DefaultEmsFailedMessagesService.save({
                     tenant: tenant,
@@ -249,14 +283,6 @@ module.exports = {
 
     onConsume: function (queue, response, callback) {
         try {
-            if (response.key && queue.consumerOptions.keyEncoding && queue.consumerOptions.keyEncoding === 'buffer') {
-                let buf = new Buffer(response.key, "binary");
-                response.key = buf.toString();
-            }
-            if (response.value && queue.consumerOptions.encoding && queue.consumerOptions.encoding === 'buffer') {
-                let buf = new Buffer(response.value, "binary");
-                response.value = buf.toString();
-            }
             SERVICE.DefaultPipelineService.start('processConsumedMessagePipeline', {
                 queue: queue,
                 message: response.value
@@ -283,14 +309,10 @@ module.exports = {
     },
 
     closeConsumer: function (consumerName, consumer) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
-                if (!consumer.consumer.paused) {
-                    consumer.consumer.pause();
-                    resolve('Consumer: ' + consumerName + ' closed successfully');
-                } else {
-                    resolve('Consumer: ' + consumerName + ' is already closed');
-                }
+                await consumer.consumer.disconnect();
+                resolve('Consumer: ' + consumerName + ' closed successfully');
             } catch (error) {
                 reject(new CLASSES.NodicsError(error, null, 'ERR_EMS_00000'));
             }
