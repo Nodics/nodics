@@ -11,11 +11,29 @@
 
 const _ = require('lodash');
 
+/**
+ * @module database/service/connection/DefaultDatabaseConnectionHandlerService
+ * @description Coordinates tenant and module database connection lifecycle for
+ * Nodics. It creates default and module-specific database handles, registers
+ * them in the runtime registry, detects initialization requirements, retrieves
+ * runtime schemas, and closes active connections.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override this service to customize tenant
+ * connection strategy, database bootstrap, runtime schema retrieval, or channel
+ * handling while preserving module/tenant scoped connection registration.
+ *
+ * @property {Object} SERVICE.DefaultDatabaseConfigurationService Resolves and stores tenant database handles.
+ * @property {Object} SERVICE[connectionHandler] Database-specific connection adapter.
+ * @property {Object} CONFIG.database Layered database configuration.
+ * @property {Object} CONFIG.test.uTest Test channel configuration.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the database connection handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -24,9 +42,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the database connection handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -34,7 +53,14 @@ module.exports = {
         });
     },
 
-
+    /**
+     * Removes a registered tenant database handle.
+     *
+     * @param {string} moduleName Active module name.
+     * @param {string} tntCode Tenant code.
+     * @returns {Promise<boolean>} Resolves after the registry entry is removed.
+     * @sideEffects Mutates the database configuration service registry.
+     */
     removeTenantDatabase: function (moduleName, tntCode) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultDatabaseConfigurationService.removeTenantDatabase(moduleName, tntCode);
@@ -42,13 +68,24 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates database connections for the default database and optionally all database-enabled modules.
+     *
+     * @param {string} [tntCode] Tenant code. Falls back to configured default tenant.
+     * @param {boolean} [onlyDefault=false] When true, only the default database is connected.
+     * @returns {Promise<boolean>} Resolves after connections are registered.
+     * @throws {CLASSES.NodicsError} When connection configuration or adapter execution fails.
+     */
     createDatabaseConnection: function (tntCode, onlyDefault = false) {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
                 tntCode = tntCode || CONFIG.get('defaultTenant') || 'default';
                 let dbModules = SERVICE.DefaultDatabaseConfigurationService.getDatabaseActiveModules();
-                dbModules.splice(dbModules.indexOf('default'), 1);
+                let defaultIndex = dbModules.indexOf('default');
+                if (defaultIndex >= 0) {
+                    dbModules.splice(defaultIndex, 1);
+                }
                 _self.createDatabase('default', tntCode).then(success => {
                     let allModules = [];
                     if (!onlyDefault) {
@@ -74,6 +111,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates and registers master/test database handles for one module and tenant.
+     *
+     * @param {string} moduleName Active module name.
+     * @param {string} tntCode Tenant code.
+     * @returns {Promise<void>} Resolves when the module database handles are registered.
+     * @sideEffects Adds tenant database handles to `DefaultDatabaseConfigurationService`.
+     * @throws {CLASSES.NodicsError|string} When configuration or connection creation fails.
+     */
     createDatabase: function (moduleName, tntCode) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -147,6 +193,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Detects whether database initialization is required for the default tenant.
+     *
+     * @returns {Promise<boolean>} Resolves after `NODICS.initRequired` is updated.
+     * @sideEffects Updates the global Nodics initialization-required flag.
+     * @throws {CLASSES.NodicsError} When profile database connection handler is invalid.
+     */
     isInitRequired: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -178,6 +231,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Retrieves runtime schema definitions from the default tenant database.
+     *
+     * @returns {Promise<Object>} Runtime schema map grouped by module and schema code.
+     * @throws {CLASSES.NodicsError} When the default database or handler is unavailable.
+     */
     getRuntimeSchema: function () {
         return new Promise((resolve, reject) => {
             let defaultTenant = CONFIG.get('defaultTenant') || 'default';
@@ -213,20 +272,28 @@ module.exports = {
         });
     },
 
+    /**
+     * Closes master and test database connections for one module and tenant.
+     *
+     * @param {string} moduleName Active module name.
+     * @param {string} tntCode Tenant code.
+     * @returns {undefined}
+     * @sideEffects Delegates connection closure to the configured connection handler.
+     */
     closeConnection: function (moduleName, tntCode) {
         let dbConnection = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(moduleName, tntCode);
         if (dbConnection) {
             let masterDatabase = dbConnection.master;
             if (masterDatabase && SERVICE[masterDatabase.getOptions().connectionHandler] &&
-                SERVICE[masterDatabase.getOptions().connectionHandler].getRuntimeSchema &&
-                typeof SERVICE[masterDatabase.getOptions().connectionHandler].getRuntimeSchema === 'function') {
+                SERVICE[masterDatabase.getOptions().connectionHandler].closeConnection &&
+                typeof SERVICE[masterDatabase.getOptions().connectionHandler].closeConnection === 'function') {
                 SERVICE[masterDatabase.getOptions().connectionHandler].closeConnection(masterDatabase);
             }
 
             let testDatabase = dbConnection.test;
             if (testDatabase && SERVICE[testDatabase.getOptions().connectionHandler] &&
-                SERVICE[testDatabase.getOptions().connectionHandler].getRuntimeSchema &&
-                typeof SERVICE[testDatabase.getOptions().connectionHandler].getRuntimeSchema === 'function') {
+                SERVICE[testDatabase.getOptions().connectionHandler].closeConnection &&
+                typeof SERVICE[testDatabase.getOptions().connectionHandler].closeConnection === 'function') {
                 SERVICE[testDatabase.getOptions().connectionHandler].closeConnection(testDatabase);
             }
         }

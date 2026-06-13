@@ -11,6 +11,22 @@
 
 const _ = require('lodash');
 
+/**
+ * @module database/service/procs/save/DefaultModelsSaveInitializerService
+ * @description Pipeline step service for generated bulk save operations. It
+ * validates model lists, runs bulk processors, delegates each model to the
+ * single-model save pipeline, aggregates successes/failures, and resolves a
+ * stable bulk response.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override bulk save steps to customize batching,
+ * partial failure policy, or processors while preserving generated CRUD response
+ * shape.
+ *
+ * @property {Object[]} request.models Models to save.
+ * @property {Object[]} response.success Successful saved models.
+ * @property {Object[]} response.failed Failed save errors with model metadata.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +50,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates that bulk save input contains models.
+     *
+     * @param {Object} request Nodics bulk save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     validateInput: function (request, response, process) {
         this.LOG.debug('Validating input for saving models');
         if (!request.models) {
@@ -43,6 +67,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Executes pre-save processors configured on the schema.
+     *
+     * @param {Object} request Nodics bulk save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     preProcessor: function (request, response, process) {
         this.LOG.debug('Applying pre processors in models');
         let schemaName = request.schemaModel.schemaName;
@@ -58,6 +90,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Processes each model through the single-model save pipeline.
+     *
+     * @param {Object} request Nodics bulk save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     processModels: function (request, response, process) {
         this.LOG.debug('Processing models');
         if (request.query && !UTILS.isBlank(request.query)) {
@@ -70,6 +110,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Saves models sequentially and aggregates success/failure output.
+     *
+     * @param {Object} request Nodics bulk save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object[]} models Mutable model list to process.
+     * @returns {Promise<boolean>} Resolves after all models have been attempted.
+     * @sideEffects Consumes `models`, writes `response.success`, and writes `response.failed`.
+     */
     handleModelsSave: function (request, response, models) {
         return new Promise((resolve, reject) => {
             if (models && models.length > 0) {
@@ -108,6 +157,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Executes post-save processors configured on the schema.
+     *
+     * @param {Object} request Nodics bulk save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     postProcessor: function (request, response, process) {
         this.LOG.debug('Applying post processors in models');
         let schemaName = request.schemaModel.schemaName;
@@ -123,6 +180,15 @@ module.exports = {
         }
     },
 
+    /**
+     * Resolves the final bulk save response.
+     *
+     * @param {Object} request Nodics bulk save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     * @sideEffects Calls `process.resolve` with bulk result and errors.
+     */
     handleSucessEnd: function (request, response, process) {
         let code = 'SUC_SAVE_00000';
         if (response.failed && response.failed.length > 0) {

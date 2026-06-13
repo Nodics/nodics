@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module mongodb/vMongodb/pipelines/VersionedMongoPipelinesDefinition
+ * @description Versioned MongoDB adapter pipeline extension slot.
+ * @layer pipeline
+ * @owner nDatabase
+ * @override Project modules may define versioned MongoDB-specific pipelines.
+ */
 module.exports = {
 
 };

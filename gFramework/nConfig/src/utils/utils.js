@@ -195,6 +195,7 @@ module.exports = {
                 let entityName = options.modelName + options.postFix;
                 let fileName = options.currentDir + '/Default' + entityName + '.js';
                 let data = UTILS.getCopywriteComment();
+                data += UTILS.getGeneratedDocumentation(options, entityName);
                 if (!UTILS.isBlank(options.gVar)) {
                     _.each(options.gVar, (value, key) => {
                         data = data + value.value + '\n';
@@ -231,6 +232,33 @@ module.exports = {
             '\tterms of the license agreement you entered into with Nodics\n' +
 
             '*/\n\n';
+    },
+
+    /**
+     * Builds the standard generated-file documentation header.
+     *
+     * @param {Object} options Generation options from schema walk-through.
+     * @param {string} entityName Generated entity name without `Default` prefix.
+     * @returns {string} JSDoc block marking the artifact as generated.
+     */
+    getGeneratedDocumentation: function (options, entityName) {
+        let artifactType = options.postFix ? options.postFix.toLowerCase() : 'artifact';
+        let layer = artifactType === 'controller' ? 'controller' : artifactType === 'facade' ? 'facade' : 'service';
+        let owner = options.moduleName || 'unknown';
+        let schemaCode = options.schemaName || 'unknown';
+        let schemaModel = options.modelName ? options.modelName + 'Model' : 'unknown';
+        let generatedName = 'Default' + entityName;
+        return '/**\n' +
+            ' * @generated\n' +
+            ' * @module generated/' + layer + '/' + generatedName + '\n' +
+            ' * @description Generated ' + layer + ' for schema `' + schemaCode + '` owned by module `' + owner + '`. This file is recreated by clean/build from the effective schema and common ' + layer + ' template.\n' +
+            ' * @layer ' + layer + '\n' +
+            ' * @owner ' + owner + '\n' +
+            ' * @schema ' + schemaCode + '\n' +
+            ' * @model ' + schemaModel + '\n' +
+            ' * @sourceTemplate /src/' + layer + '/common.js\n' +
+            ' * @override Do not edit generated files directly. Customize behavior by adding a later module in the hierarchy that overrides this generated artifact or its source template contract.\n' +
+            ' */\n';
     },
 
     replacePlaceholders: function (options) {

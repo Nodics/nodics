@@ -9,6 +9,25 @@
 
  */
 
+/**
+ * @module router/pipelines/RequestPipelinesDefinition
+ * @description Pipeline definitions for Nodics API request execution. These definitions
+ * compose the request handler pipeline, secured authorization pipeline, and non-secured
+ * enterprise/tenant resolution pipeline used by `DefaultRequestHandlerService`.
+ * @layer pipeline
+ * @owner nRouter
+ * @override Project modules may override these definitions in later module layers to
+ * add validation, tracing, rate limiting, custom authorization, or request transformation.
+ *
+ * @property {Object} requestHandlerPipeline Main API request pipeline.
+ * @property {string} requestHandlerPipeline.startNode First node for the main request pipeline.
+ * @property {Object} requestHandlerPipeline.nodes Ordered node graph for help, headers, body, security branch, cache, and controller dispatch.
+ * @property {Object} handleSecuredRequestPipeline Secured request branch for API-key or bearer-token authorization.
+ * @property {Object} handleNonSecuredRequestPipeline Non-secured request branch for enterprise code and tenant resolution.
+ * @property {string} node.type Pipeline node type, such as `function` or `process`.
+ * @property {string} node.handler Service method or nested pipeline invoked by the node.
+ * @property {string|Object} node.success Next node or branch map after successful execution.
+ */
 module.exports = {
     requestHandlerPipeline: {
         startNode: "helpRequest",

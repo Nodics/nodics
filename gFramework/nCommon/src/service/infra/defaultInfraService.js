@@ -10,13 +10,26 @@
  */
 const copy = require('recursive-copy');
 
+/**
+ * @module common/service/infra/DefaultInfraService
+ * @description Scaffolding service for generating Nodics applications, module groups,
+ * backend modules, and UI module templates. It copies nCommon templates and replaces
+ * placeholder names/indexes from CLI arguments.
+ * @layer service
+ * @owner nCommon
+ * @override Project modules may override this service to customize application factory
+ * templates, naming rules, or generated project structure.
+ *
+ * @property {Object} copy recursive-copy dependency used to copy template folders.
+ */
 module.exports = {
 
     /**
-    * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-    * defined it that with Promise way
-    * @param {*} options 
-    */
+     * Initializes the common infrastructure service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
+     */
     init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
@@ -24,9 +37,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the common infrastructure service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -34,6 +48,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates a full Nodics application skeleton.
+     *
+     * @returns {Promise<boolean>} Resolves after application generation is started.
+     */
     generateApp: function () {
         return new Promise((resolve, reject) => {
             let command = this.parseCommand();
@@ -45,6 +64,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates standard application groups, environments, servers, and baseline modules.
+     *
+     * @param {Object} command Parsed CLI command.
+     * @returns {Promise<boolean>} Resolves after generation commands complete.
+     */
     initAppGen: function (command) {
         return new Promise((resolve, reject) => {
             let appDetail = {
@@ -169,6 +194,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates a module group from CLI arguments.
+     *
+     * @returns {Promise<boolean>} Resolves after group generation starts.
+     */
     generateModuleGroup: function () {
         return new Promise((resolve, reject) => {
             let command = this.parseCommand();
@@ -177,6 +207,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates a backend module from CLI arguments.
+     *
+     * @returns {Promise<boolean>} Resolves after module generation starts.
+     */
     generateModule: function () {
         return new Promise((resolve, reject) => {
             let command = this.parseCommand();
@@ -185,6 +220,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates a React module from CLI arguments.
+     *
+     * @returns {Promise<boolean>} Resolves after React module generation starts.
+     */
     generateReactModule: function () {
         return new Promise((resolve, reject) => {
             let command = this.parseCommand();
@@ -193,6 +233,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates a Vue module from CLI arguments.
+     *
+     * @returns {Promise<boolean>} Resolves after Vue module generation starts.
+     */
     generateVueModule: function () {
         return new Promise((resolve, reject) => {
             let command = this.parseCommand();
@@ -201,6 +246,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Prints module generation help to stdout.
+     *
+     * @returns {void}
+     */
     moduleGenHelp: function () {
         console.log('');
         console.log('');
@@ -223,6 +273,12 @@ module.exports = {
 
     },
 
+    /**
+     * Parses module generation CLI arguments.
+     *
+     * @returns {Object} Parsed command with name, path, index, and template path.
+     * @sideEffects Exits process when required arguments are missing.
+     */
     parseCommand: function () {
         let name, path, index;
         process.argv.forEach(element => {
@@ -266,6 +322,14 @@ module.exports = {
         };
     },
 
+    /**
+     * Copies a scaffold template and replaces placeholders in copied files.
+     *
+     * @param {Object} command Parsed command.
+     * @param {string} templateName Template folder name.
+     * @returns {void}
+     * @sideEffects Creates files/directories and exits when target directory already exists.
+     */
     generateTarget: function (command, templateName) {
         let sourcePath = command.commonPath + '/' + templateName;
         let destPath = command.path + '/' + command.name;
@@ -279,13 +343,13 @@ module.exports = {
             expand: true,
             dot: true,
             junk: true,
-            filter: function (file) {
+            filter: (file) => {
                 return true;
             },
-            rename: function (filePath) {
+            rename: (filePath) => {
                 return filePath;
             },
-            transform: function (src, dest, stats) { }
+            transform: (src, dest, stats) => { }
         };
 
         copy(sourcePath, destPath, options).on(copy.events.COPY_FILE_START, function (copyOperation) {

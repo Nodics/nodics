@@ -9,6 +9,14 @@
 
  */
 
+/**
+ * @module mongodb/router/MongoRouter
+ * @description MongoDB adapter route definition extension slot.
+ * @layer router
+ * @owner nDatabase
+ * @override Project modules may expose MongoDB-specific admin or diagnostic
+ * routes without changing generic database routes.
+ */
 module.exports = {
 
 };

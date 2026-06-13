@@ -11,6 +11,24 @@
 
 const _ = require('lodash');
 
+/**
+ * @module service/enterprise/DefaultEnterpriseHandlerService
+ * @description Loads active enterprises and tenants during startup, then builds
+ * tenant-scoped runtime state: active enterprise mapping, tenant properties,
+ * database connections, generated models, search engines, cron jobs, initial
+ * data, and internal auth tokens.
+ * @layer service
+ * @owner nService
+ * @override Project modules may override enterprise bootstrap behavior to
+ * integrate external tenant registries, approval workflows, or custom startup
+ * orchestration while preserving active enterprise and tenant registry
+ * semantics.
+ *
+ * @property {string} CONFIG.defaultTenant Startup tenant used before active tenant discovery.
+ * @property {string} CONFIG.profileModuleName Module that owns enterprise and tenant records.
+ * @property {Object} NODICS.activeTenants Runtime active tenant registry.
+ * @property {Object} NODICS.internalAuthTokens Tenant-scoped internal auth token registry.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +52,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Fetches active enterprise records from the local profile module or remote profile service.
+     *
+     * @returns {Promise<Object[]>} Enterprise records with tenant details.
+     * @throws {CLASSES.NodicsError} When enterprise records cannot be loaded.
+     */
     fetchEnterprise: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -84,6 +108,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Fetches and builds all active enterprises.
+     *
+     * @returns {Promise<Object>} Success response after enterprise runtime state is built.
+     * @sideEffects May schedule retry when profile service is unavailable during startup.
+     */
     buildEnterprises: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -112,6 +142,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Retries enterprise loading after profile module connectivity failure.
+     *
+     * @returns {undefined}
+     * @sideEffects Schedules repeated retry using `profileModuleReconnectTimeout`.
+     */
     handleEnterpriseLoadFailure: function () {
         let _self = this;
         _self.fetchEnterprise().then(success => {
@@ -131,6 +167,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds runtime state for each enterprise and active tenant.
+     *
+     * @param {Object[]} enterprises Mutable enterprise list to process.
+     * @returns {Promise<boolean>} Resolves after all enterprises are processed.
+     * @sideEffects Mutates NODICS enterprise/tenant registries, tenant config,
+     * database connections, generated models, search models, cron jobs, and
+     * internal auth tokens.
+     */
     buildEnterprise: function (enterprises) {
         let _self = this;
         return new Promise((resolve, reject) => {

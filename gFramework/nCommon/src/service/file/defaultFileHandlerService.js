@@ -12,11 +12,24 @@
 const path = require('path');
 const fse = require('fs-extra');
 
+/**
+ * @module common/service/file/DefaultFileHandlerService
+ * @description Shared file movement helper for import/export and batch file workflows.
+ * It marks files as processing and moves completed files into destination folders with
+ * timestamped names.
+ * @layer service
+ * @owner nCommon
+ * @override Project modules may override this service to enforce storage, archive,
+ * naming, or audit policies for enterprise file processing.
+ *
+ * @property {Object} fse fs-extra dependency for async and sync file moves.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the file handler service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -25,9 +38,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the file handler service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -35,6 +49,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Moves a file to the same directory with `_processing` suffix.
+     *
+     * @param {string} file Source file path.
+     * @returns {Promise<string>} New processing file path.
+     */
     moveToProcessing: function (file) {
         return new Promise((resolve, reject) => {
             try {
@@ -54,6 +74,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Synchronously moves a file to the same directory with `_processing` suffix.
+     *
+     * @param {string} file Source file path.
+     * @returns {string} New processing file path.
+     */
     moveSyncToProcessing: function (file) {
         let filePath = path.dirname(file);
         let fileName = path.basename(file);
@@ -64,6 +90,13 @@ module.exports = {
         return outputFileName;
     },
 
+    /**
+     * Moves files into a destination folder with timestamped names.
+     *
+     * @param {string[]} files Source file paths to move.
+     * @param {string} destPath Destination directory.
+     * @returns {Promise<boolean>} Resolves after all files move.
+     */
     moveFile: function (files, destPath) {
         let _self = this;
         return new Promise((resolve, reject) => {

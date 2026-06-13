@@ -15,14 +15,38 @@ const Express = require('express');
 const http = require('http');
 const https = require('https');
 
+/**
+ * @module router/service/router/DefaultRouterService
+ * @description Builds and starts Nodics API routing from the effective module hierarchy.
+ * It prepares module server configuration, generates schema-driven default routers,
+ * registers common and module-specific routers, and starts HTTP/HTTPS listeners for
+ * consolidated or modular runtime topologies.
+ * @layer service
+ * @owner nRouter
+ * @override Project modules may override this service to change router generation,
+ * URL construction, module-server selection, validation rules, or server startup behavior.
+ *
+ * @property {Object} CLASSES.ModulesConfigurationContainer Module/server/node configuration container.
+ * @property {Object} CONFIG Runtime configuration registry used for server context root, cache, and exit code.
+ * @property {Object} NODICS Runtime registry for modules and effective routers.
+ * @property {Object} SERVICE.DefaultRouterConfigurationService Supplies effective router definitions.
+ * @property {Object} SERVICE.DefaultRouterOperationService Binds prepared router definitions to Express.
+ * @property {Object} serversConfigPool Prepared module server configuration container.
+ */
 module.exports = {
 
+    /**
+     * Prepared module/server/node configuration container used for URL resolution and server startup.
+     *
+     * @type {Object|string}
+     */
     serversConfigPool: '',
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the router service during service loading.
+     *
+     * @param {Object} options Nodics initialization options for the active module hierarchy.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -31,9 +55,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the router service after service loading.
+     *
+     * @param {Object} options Nodics initialization options for the active module hierarchy.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -41,6 +66,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds the module/server/node configuration pool for the selected runtime hierarchy.
+     *
+     * @returns {Promise<boolean>} Resolves after module configuration is prepared.
+     * @sideEffects Replaces `serversConfigPool` with a prepared `ModulesConfigurationContainer`.
+     */
     prepareModulesConfiguration: function () {
         return new Promise((resolve, reject) => {
             this.serversConfigPool = new CLASSES.ModulesConfigurationContainer();
@@ -49,10 +80,21 @@ module.exports = {
         });
     },
 
+    /**
+     * Returns the prepared module configuration container.
+     *
+     * @returns {Object|string} Prepared module/server/node configuration container.
+     */
     getModulesPool: function () {
         return this.serversConfigPool;
     },
 
+    /**
+     * Returns module-specific server configuration or falls back to default consolidated configuration.
+     *
+     * @param {string} moduleName Logical module name.
+     * @returns {Object} Module server configuration object.
+     */
     getModuleServerConfig: function (moduleName) {
         if (this.serversConfigPool.isAvailableModuleConfig(moduleName)) {
             return this.serversConfigPool.getModule(moduleName);
@@ -61,6 +103,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Builds the base HTTP or HTTPS URL for a node configuration.
+     *
+     * @param {Object} nodeConfig Node/server configuration with host and port accessors.
+     * @param {boolean} secured Whether to build HTTPS URL.
+     * @returns {string} Base URL for the node.
+     */
     getURL: function (nodeConfig, secured) {
         if (secured) {
             return 'https://' +
@@ -75,6 +124,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Prepares a module API base URL for internal module-to-module communication.
+     *
+     * @param {Object} options URL preparation options.
+     * @param {string} options.moduleName Logical module name.
+     * @param {string|number} [options.nodeId] Optional target node id.
+     * @returns {string} API base URL containing context root and module name.
+     */
     prepareUrl: function (options) {
         let url = '';
         try {
@@ -96,6 +153,13 @@ module.exports = {
         return url;
     },
 
+    /**
+     * Registers all active routers for router-enabled modules.
+     *
+     * @param {Object} [routers] Effective router definitions; defaults to router configuration service output.
+     * @returns {Promise<boolean>} Resolves after all routers are registered.
+     * @sideEffects Adds route definitions to `NODICS`, binds routes to Express routers, and exits process on registration failure.
+     */
     registerRouter: function (routers) {
         let _self = this;
         let modules = NODICS.getModules();
@@ -121,6 +185,16 @@ module.exports = {
         });
     },
 
+    /**
+     * Activates schema-generated, common, and module-specific routers for a module.
+     *
+     * @param {Object} moduleRouter Express router for the module.
+     * @param {Object} moduleObject Runtime module definition containing metadata and effective schema.
+     * @param {string} moduleName Logical module name.
+     * @param {Object} routers Effective router definitions grouped by default/common/module.
+     * @returns {void}
+     * @sideEffects Registers generated and configured router definitions in `NODICS`.
+     */
     activateRouters: function (moduleRouter, moduleObject, moduleName, routers) {
         let _self = this;
         let urlPrefix = moduleObject.metaData.prefix || moduleName;
@@ -195,6 +269,19 @@ module.exports = {
         }
     },
 
+    /**
+     * Creates CRUD-style default routers from a schema and default router template.
+     *
+     * @param {Object} options Default router preparation options.
+     * @param {Object} options.routers Effective router definitions.
+     * @param {string} options.urlPrefix Module URL prefix.
+     * @param {string} options.alias Public schema route alias.
+     * @param {string} options.schemaName Logical schema name.
+     * @param {string} options.moduleName Target runtime module name.
+     * @param {Object} options.moduleRouter Express router for the module.
+     * @returns {void}
+     * @sideEffects Adds default routers to `NODICS` and binds them to Express.
+     */
     prepareDefaultRouter: function (options) {
         let _self = this;
         _.each(options.routers.default, function (group, groupName) {
@@ -228,6 +315,18 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates a configured common or module-specific router definition.
+     *
+     * @param {Object} options Router preparation options.
+     * @param {string} options.routerName Router name from configuration.
+     * @param {Object} options.routerDef Router definition from effective configuration.
+     * @param {string} options.urlPrefix Module URL prefix.
+     * @param {string} options.moduleName Logical module name.
+     * @param {Object} options.moduleRouter Express router for the module.
+     * @returns {void}
+     * @sideEffects Adds router to `NODICS` and binds it to Express.
+     */
     prepareRouter: function (options) {
         let definition = _.merge({}, options.routerDef);
         definition.method = definition.method.toLowerCase();
@@ -242,6 +341,14 @@ module.exports = {
         SERVICE.DefaultRouterOperationService[definition.method](options.moduleRouter, definition);
     },
 
+    /**
+     * Validates minimum route security metadata before binding a router.
+     *
+     * @param {string} routerName Logical router name.
+     * @param {Object} routerDef Effective router definition.
+     * @returns {boolean} True when router definition can be registered.
+     * @throws {Object} Nodics error when `accessGroups` is missing or empty.
+     */
     validateRouterDefinition: function (routerName, routerDef) {
         if (routerDef && routerDef.accessGroups && routerDef.accessGroups.length > 0) {
             return true;
@@ -250,6 +357,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Starts HTTP and HTTPS listeners for the selected consolidated or modular topology.
+     *
+     * @returns {Promise<boolean>} Resolves after listener startup has been attempted for all router-enabled modules.
+     * @sideEffects Attaches Express routers to apps, starts HTTP/HTTPS servers, and marks module server config as running.
+     * @throws Rejects with startup errors not handled by listener events.
+     */
     startServers: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -290,6 +404,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Registers logging callbacks for server error and listening events.
+     *
+     * @param {string} moduleName Display module name for startup logs.
+     * @param {number|string} port Port being listened on.
+     * @param {boolean} isSecure Whether this server is HTTPS.
+     * @param {Object} server Node HTTP/HTTPS server instance.
+     * @returns {Object} Same server instance with registered listeners.
+     */
     registerListenEvents: function (moduleName, port, isSecure, server) {
         let _self = this;
         server.on('error', function (error) {

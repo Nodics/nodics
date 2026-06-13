@@ -11,6 +11,22 @@
 
 const _ = require('lodash');
 
+/**
+ * @module pipeline/service/pipeline/DefaultPipelineService
+ * @description Runtime service for loading, updating, removing, and executing
+ * Nodics pipelines. It merges static pipeline definitions from active module
+ * hierarchy with persisted pipeline models when available, then executes
+ * pipelines through `PipelineHead`.
+ * @layer service
+ * @owner nPipeline
+ * @override Project modules may override this service to customize persisted
+ * pipeline loading, dynamic update policy, execution strategy, or error
+ * terminals while preserving `start(name, request, response)` behavior.
+ *
+ * @property {Object} PIPELINE Global effective pipeline registry.
+ * @property {Object} SERVICE.DefaultFilesLoaderService Loads layered pipeline definition files.
+ * @property {Object} CLASSES.PipelineHead Runtime pipeline executor class.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +50,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Loads effective pipeline definitions from files and optional persisted models.
+     *
+     * @returns {Promise<boolean>} Resolves after the global `PIPELINE` registry is ready.
+     * @sideEffects Replaces and mutates global `PIPELINE`.
+     */
     loadPipelines: function () {
         return new Promise((resolve, reject) => {
             global.PIPELINE = SERVICE.DefaultFilesLoaderService.loadFiles('/src/pipelines/pipelinesDefinition.js');
@@ -61,6 +83,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Checks whether persisted pipeline models can be read in the current startup context.
+     *
+     * @returns {boolean} True when this service has generated model access for pipelines.
+     */
     isPersistedPipelineModelAvailable: function () {
         if (typeof this.get !== 'function') {
             return false;
@@ -73,6 +100,15 @@ module.exports = {
         }
     },
 
+    /**
+     * Applies runtime pipeline create/update events to the global registry.
+     *
+     * @param {Object} request Nodics event request.
+     * @param {Object} request.event Event payload.
+     * @param {Object} request.event.data Event data containing changed model codes.
+     * @returns {Promise<string>} Success message after registry update.
+     * @sideEffects Mutates global `PIPELINE`.
+     */
     handlePipelineChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             this.get({
@@ -105,6 +141,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Applies runtime pipeline removal events to the global registry.
+     *
+     * @param {Object} request Nodics event request.
+     * @param {Object} request.event Event payload.
+     * @param {Object} request.event.data Event data containing removed pipeline models.
+     * @returns {Promise<string>} Success message after registry removal.
+     * @sideEffects Deletes entries from global `PIPELINE`.
+     */
     handlePipelineRemovedEvent: function (request) {
         return new Promise((resolve, reject) => {
             if (request.event.data.models && request.event.data.models.length > 0) {
@@ -116,12 +161,30 @@ module.exports = {
         });
     },
 
+    /**
+     * Default success terminal for pipelines.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline head instance.
+     * @returns {undefined}
+     * @sideEffects Resolves the pipeline promise with `response.success`.
+     */
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Pipeline: ' + process.getPipelineName() + ' with Id: ' + process.getPipelineId() + ' processed successfully');
         process.resolve(response.success);
 
     },
 
+    /**
+     * Default error terminal for pipelines.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline head instance.
+     * @returns {undefined}
+     * @sideEffects Rejects the pipeline promise with enriched error context.
+     */
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Pipeline: ' + process.getPipelineName() + ' with Id: ' + process.getPipelineId() + ' has error');
         process.reject(CLASSES.NodicsError.enrich(response.error, {
@@ -135,6 +198,15 @@ module.exports = {
         }));
     },
 
+    /**
+     * Starts a named pipeline execution.
+     *
+     * @param {string} name Pipeline name from the effective `PIPELINE` registry.
+     * @param {Object} request Pipeline request object.
+     * @param {Object} response Pipeline response accumulator.
+     * @returns {Promise<*>} Resolves or rejects with the pipeline terminal output.
+     * @throws {CLASSES.NodicsError} Rejects when the pipeline name is invalid or construction fails.
+     */
     start: function (name, request, response) {
         return new Promise((resolve, reject) => {
             if ((typeof name === 'string' || name instanceof String) && name !== 'defaultPipeline' && PIPELINE[name]) {

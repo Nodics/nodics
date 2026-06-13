@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module database/vDatabase/router/VersionedDatabaseAppConfig
+ * @description Versioned database router app configuration extension slot.
+ * @layer router
+ * @owner nDatabase
+ * @override Project modules may add versioned database router app configuration.
+ */
 module.exports = {
 
 };

@@ -11,6 +11,22 @@
 
 const _ = require('lodash');
 
+/**
+ * @module database/service/procs/update/DefaultModelsUpdateInitializerService
+ * @description Pipeline step service for generated schema update operations. It
+ * validates update requests, checks write access, normalizes query options,
+ * executes schema interceptors/validators, applies updates, populates response
+ * data, invalidates cache, and publishes model change events.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override individual update pipeline steps to
+ * customize update policy while preserving the generated CRUD pipeline
+ * request/response/process contract.
+ *
+ * @property {Object} request.schemaModel Generated schema model wrapper.
+ * @property {Object} request.query Update selector.
+ * @property {Object} request.model Update payload.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +50,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates update query and model payload.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating remove request: ');
         if (!request.query || UTILS.isBlank(request.query)) {
@@ -44,6 +68,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Checks write access using schema access groups.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     checkAccess: function (request, response, process) {
         this.LOG.debug('Checking model access');
         let rawSchema = request.schemaModel.rawSchema;
@@ -53,6 +85,15 @@ module.exports = {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user do not have access to this resource'));
         }
     },
+    /**
+     * Builds update execution options.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     * @sideEffects Mutates `request.options`.
+     */
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query options');
         let inputOptions = request.options || {};
@@ -62,11 +103,19 @@ module.exports = {
 
         if (inputOptions.timeout === true) {
             inputOptions.timeout = true;
-            inputOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS');
+            inputOptions.maxTimeMS = CONFIG.get('queryMaxTimeMS');
         }
         request.options = inputOptions;
         process.nextSuccess(request, response);
     },
+    /**
+     * Executes pre-update schema interceptors.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre update model interceptors');
         let schemaName = request.schemaModel.schemaName;
@@ -81,6 +130,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes pre-update schema validators.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre model validator');
         let schemaName = request.schemaModel.schemaName;
@@ -95,6 +152,15 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes the generated model update operation.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     * @sideEffects Writes `response.success`.
+     */
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing remove query');
         request.schemaModel.updateItems(request).then(result => {
@@ -110,6 +176,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Populates referenced models in the update response when requested.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
         if (response.success.result && response.success.result.models && request.options.recursive) {
@@ -128,6 +202,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes post-update schema validators.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPostValidators: function (request, response, process) {
         this.LOG.debug('Applying post model validator');
         let schemaName = request.schemaModel.schemaName;
@@ -142,6 +224,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes post-update schema interceptors when records were updated.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post update model interceptors');
         if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0) {
@@ -160,6 +250,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Invalidates schema router cache after successful update.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     invalidateRouterCache: function (request, response, process) {
         this.LOG.debug('Invalidating router cache for modified model');
         try {
@@ -182,6 +280,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Invalidates schema item cache after successful update.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     invalidateItemCache: function (request, response, process) {
         this.LOG.debug('Invalidating item cache for removed model');
         try {
@@ -205,6 +311,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Publishes schema update events after successful update.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     triggerModelChangeEvent: function (request, response, process) {
         this.LOG.debug('Triggering event for modified model');
         try {

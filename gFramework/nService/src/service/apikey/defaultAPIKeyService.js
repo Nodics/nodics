@@ -10,6 +10,17 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module service/apikey/DefaultAPIKeyService
+ * @description API key service extension slot for profile-backed and distributed
+ * API key lifecycle behavior. The active implementation is currently provided
+ * by generated/profile services; this file preserves the core override location
+ * for future API key synchronization handlers.
+ * @layer service
+ * @owner nService
+ * @override Project modules may implement API key fetch/update/remove handlers
+ * here to synchronize API keys across modular deployments or external IAM.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 

@@ -10,11 +10,26 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module router/service/DefaultRequestHandlerService
+ * @description Entry point from Express route binding into the Nodics request pipeline.
+ * It creates the internal request context, starts `requestHandlerPipeline`, and delegates
+ * the final response to the configured response handler.
+ * @layer service
+ * @owner nRouter
+ * @override Project modules may override this service to enrich request context, add
+ * correlation metadata, or change response handler selection.
+ *
+ * @property {Object} CONFIG Runtime configuration registry for response handler lookup.
+ * @property {Object} SERVICE.DefaultPipelineService Executes the request handler pipeline.
+ * @property {Object} routerDef Effective router definition selected by `DefaultRouterOperationService`.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the request handler service during service loading.
+     *
+     * @param {Object} options Nodics initialization options for the active module hierarchy.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -23,9 +38,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the request handler service after service loading.
+     *
+     * @param {Object} options Nodics initialization options for the active module hierarchy.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -33,6 +49,16 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates Nodics request context and starts the configured request handler pipeline.
+     *
+     * @param {Object} request Express request.
+     * @param {Object} response Express response.
+     * @param {Object} routerDef Effective Nodics router definition.
+     * @returns {void}
+     * @sideEffects Generates request id, copies HTTP request metadata, starts pipeline, and writes HTTP response through handler.
+     * @throws Pipeline errors are handled by the configured response handler.
+     */
     startRequestHandler: function (request, response, routerDef) {
         let input = {
             requestId: UTILS.generateUniqueCode(),

@@ -12,11 +12,29 @@
 const _ = require('lodash');
 const util = require('util');
 
+/**
+ * @module database/service/model/DefaultDatabaseModelHandlerService
+ * @description Builds and maintains tenant/channel scoped generated database
+ * models from effective Nodics schemas. This service connects schema merging to
+ * runtime model registries and delegates database-specific model creation to the
+ * configured model handler.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override this service to customize model
+ * generation, channel handling, middleware registration, or database adapter
+ * delegation while preserving module, tenant, schema, and channel isolation.
+ *
+ * @property {Object} NODICS.modules Active module registry containing `rawSchema` and generated `models`.
+ * @property {Object} SERVICE.DefaultDatabaseConfigurationService Resolves tenant database handles.
+ * @property {Object} SERVICE[modelHandler] Database-specific model adapter.
+ * @property {Object} NODICS.rawModels Raw model middleware definitions loaded from module hierarchy.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the database model handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -25,9 +43,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the database model handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -35,6 +54,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Removes all generated models for one module and tenant.
+     *
+     * @param {string} moduleName Active module name.
+     * @param {string} tntCode Tenant code.
+     * @returns {Promise<boolean>} Resolves after model registry cleanup.
+     * @sideEffects Deletes `moduleObject.models[tntCode]`.
+     */
     removeModelsForTenant: function (moduleName, tntCode) {
         return new Promise((resolve, reject) => {
             try {
@@ -50,6 +77,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Removes one schema and its generated models from every active tenant.
+     *
+     * @param {string} moduleName Active module name.
+     * @param {string} schemaName Schema code.
+     * @returns {undefined}
+     * @sideEffects Deletes raw schema and master/test generated model entries.
+     */
     removeModelFromModule: function (moduleName, schemaName) {
         let moduleObject = NODICS.getModule(moduleName);
         let modelName = UTILS.createModelName(schemaName);
@@ -70,6 +105,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds generated models for every active module for one tenant.
+     *
+     * @param {string} [tntCode=default] Tenant code.
+     * @returns {Promise<boolean>} Resolves after all active module models are built.
+     */
     buildModelsForTenant: function (tntCode = 'default') {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -85,6 +126,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds generated models for a supplied module list sequentially.
+     *
+     * @param {string} tntCode Tenant code.
+     * @param {string[]} modules Mutable module list to process.
+     * @returns {Promise<boolean>} Resolves after all modules are processed.
+     * @sideEffects Consumes the `modules` array with `shift`.
+     */
     buildModelsForModules: function (tntCode, modules) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -105,6 +154,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds generated models for one module and tenant.
+     *
+     * @param {string} tntCode Tenant code.
+     * @param {string} moduleName Active module name.
+     * @returns {Promise<boolean>} Resolves when module models are built or skipped.
+     * @sideEffects Initializes `moduleObject.models[tntCode]`.
+     */
     buildModelsForModule: function (tntCode, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -133,6 +190,16 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds generated models for a module schema list.
+     *
+     * @param {Object} options Model build context.
+     * @param {string[]} options.schemas Mutable schema code list to process.
+     * @param {Object} options.moduleObject Active module object.
+     * @param {Object} options.dataBase Tenant database handle map.
+     * @returns {Promise<boolean>} Resolves after all schemas are processed.
+     * @sideEffects Consumes `options.schemas` with `shift`.
+     */
     buildModels: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -153,6 +220,18 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds one generated model for master and optional test channels.
+     *
+     * @param {Object} options Model build context.
+     * @param {string} options.tntCode Tenant code.
+     * @param {string} options.moduleName Active module name.
+     * @param {Object} options.moduleObject Active module object with `rawSchema`.
+     * @param {Object} options.dataBase Tenant database handle map.
+     * @param {string} options.schemaName Schema code being built.
+     * @returns {Promise<boolean>} Resolves when the model is registered or skipped.
+     * @sideEffects Writes generated model entries into `moduleObject.models`.
+     */
     buildModel: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -160,7 +239,7 @@ module.exports = {
             let schema = options.moduleObject.rawSchema[options.schemaName];
             if (options.dataBase.master) {
                 if (schema.model === true && (!schema.tenants || schema.tenants.includes(options.tntCode))) {
-                    conOptions = options.dataBase.master.getOptions();
+                    let conOptions = options.dataBase.master.getOptions();
                     SERVICE[conOptions.modelHandler].prepareDatabaseOptions(options).then(success => {
                         options.cache = _.merge({}, schema.cache || {});
                         options.channel = 'master';
@@ -202,6 +281,16 @@ module.exports = {
         });
     },
 
+    /**
+     * Applies raw model middleware definitions to a generated model.
+     *
+     * @param {Object} options Model build context.
+     * @param {string} options.moduleName Active module name.
+     * @param {string} options.schemaName Schema code.
+     * @param {Object} schemaModel Generated database model wrapper.
+     * @returns {undefined}
+     * @sideEffects Merges default, module-default, and schema-specific raw model definitions.
+     */
     registerModelMiddleWare: function (options, schemaModel) {
         let rawModels = NODICS.getRawModels();
         _.merge(schemaModel, rawModels.default);
@@ -213,6 +302,12 @@ module.exports = {
         }
     },
 
+    /**
+     * Delegates database validator refresh for one generated model.
+     *
+     * @param {Object} model Generated schema model wrapper.
+     * @returns {Promise<Object>} Database-specific validator update response.
+     */
     updateValidator: function (model) {
         return new Promise((resolve, reject) => {
             SERVICE[model.dataBase.getOptions().modelHandler].updateValidator(model).then(success => {
@@ -223,6 +318,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Delegates database index creation for one generated model.
+     *
+     * @param {Object} model Generated schema model wrapper.
+     * @param {boolean} cleanOrphan Whether the adapter should remove orphan indexes.
+     * @returns {Promise<Object>} Database-specific index creation response.
+     */
     createIndexes: function (model, cleanOrphan) {
         return new Promise((resolve, reject) => {
             SERVICE[model.dataBase.getOptions().modelHandler].createIndexes(model, cleanOrphan).then(success => {

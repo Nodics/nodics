@@ -9,6 +9,14 @@
 
  */
 
+/**
+ * @module database/vDatabase/pipelines/VersionedDatabasePipelinesDefinition
+ * @description Versioned database pipeline extension slot.
+ * @layer pipeline
+ * @owner nDatabase
+ * @override Project modules may define versioned database pipelines while
+ * preserving generic database pipeline contracts.
+ */
 module.exports = {
 
 };

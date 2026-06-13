@@ -11,14 +11,39 @@
 
 const _ = require('lodash');
 
+/**
+ * @module common/service/config/DefaultInterceptorConfigurationService
+ * @description Stores and prepares effective interceptor definitions by type, item,
+ * trigger, and index. It merges default and item-specific interceptors so dynamic
+ * behavior can be extended through layered module configuration.
+ * @layer service
+ * @owner nCommon
+ * @override Project modules may add or override interceptor definitions through module
+ * layers. Preserve trigger grouping and index ordering when replacing this service.
+ *
+ * @property {Object} rawInterceptors Effective interceptor definitions grouped by type and item.
+ * @property {Object} interceptors Prepared interceptor cache placeholder.
+ */
 module.exports = {
+    /**
+     * Prepared interceptor cache placeholder.
+     *
+     * @type {Object}
+     */
     interceptors: {},
+
+    /**
+     * Effective raw interceptor definitions grouped by type and item.
+     *
+     * @type {Object}
+     */
     rawInterceptors: {},
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the interceptor configuration service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -27,9 +52,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the interceptor configuration service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -37,14 +63,35 @@ module.exports = {
         });
     },
 
+    /**
+     * Replaces the effective raw interceptor registry.
+     *
+     * @param {Object} rawInterceptors Effective interceptor definitions.
+     * @returns {void}
+     */
     setRawInterceptors: function (rawInterceptors) {
         this.rawInterceptors = rawInterceptors;
     },
 
+    /**
+     * Returns the effective raw interceptor registry.
+     *
+     * @returns {Object} Effective interceptor definitions.
+     */
     getRawInterceptors: function () {
         return this.rawInterceptors;
     },
 
+    /**
+     * Prepares interceptors for one item and interceptor type.
+     *
+     * Default interceptors for the type are merged with item-specific interceptors,
+     * then grouped by trigger and sorted by index.
+     *
+     * @param {string} itemName Interceptor item name, commonly schema or default.
+     * @param {string} type Interceptor type.
+     * @returns {Object} Trigger-keyed interceptor arrays.
+     */
     prepareItemInterceptors: function (itemName, type) {
         let typeInterceptors = this.getRawInterceptors()[type];
         if (!typeInterceptors || UTILS.isBlank(typeInterceptors)) {
@@ -60,6 +107,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Groups interceptors by trigger name.
+     *
+     * Runtime name keeps the legacy spelling `Tigger`; semantically this means trigger.
+     *
+     * @param {Object} itemInterceptors Interceptor definitions keyed by interceptor name.
+     * @returns {Object} Trigger-keyed interceptor arrays.
+     */
     arrangeByTigger: function (itemInterceptors) {
         let interceptorList = {};
         if (itemInterceptors && !UTILS.isBlank(itemInterceptors)) {
@@ -73,6 +128,12 @@ module.exports = {
         return interceptorList;
     },
 
+    /**
+     * Sorts each trigger's interceptors by configured `index`.
+     *
+     * @param {Object} itemInterceptors Trigger-keyed interceptor arrays.
+     * @returns {Object} Trigger-keyed sorted interceptor arrays.
+     */
     sortInterceptors: function (itemInterceptors) {
         let interceptorList = {};
         if (itemInterceptors && !UTILS.isBlank(itemInterceptors)) {

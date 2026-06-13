@@ -9,6 +9,20 @@
 
  */
 
+/**
+ * @module service/vService/procs/update/DefaultModelsUpdateInitializerService
+ * @description Version-aware override for the generated update pipeline
+ * execution step. It delegates to versioned update behavior when the schema
+ * model is marked `versioned`.
+ * @layer service
+ * @owner nService
+ * @override Project modules may override this service to customize versioned
+ * update semantics while preserving the update pipeline request/response/process
+ * contract.
+ *
+ * @property {Object} request.schemaModel Generated schema model wrapper.
+ * @property {Object} request.schemaModel.versioned Enables versioned persistence.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +46,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Executes update using versioned persistence when enabled.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing remove query');
         try {

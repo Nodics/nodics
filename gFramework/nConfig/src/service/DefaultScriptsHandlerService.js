@@ -12,12 +12,25 @@
 const utils = require('../utils/utils');
 const fileLoader = require('./defaultFilesLoaderService');
 
+/**
+ * @module config/service/DefaultScriptsHandlerService
+ * @description Loads and executes layered Nodics pre-scripts and post-scripts from
+ * active modules. Scripts provide startup extension points without modifying framework code.
+ * @layer service
+ * @owner nConfig
+ * @override Project modules may contribute `/config/prescripts.js` and `/config/postscripts.js`
+ * files in later layers to customize startup behavior.
+ *
+ * @property {Object} NODICS Runtime registry that stores merged pre/post scripts.
+ * @property {Object} fileLoader Layered file loader used to merge script files.
+ */
 module.exports = {
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the scripts handler service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -26,9 +39,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the scripts handler service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -36,16 +50,34 @@ module.exports = {
         });
     },
 
+    /**
+     * Loads layered pre-scripts from active modules.
+     *
+     * @returns {void}
+     * @sideEffects Writes merged pre-scripts to `NODICS`.
+     */
     loadPreScript: function () {
         this.LOG.info('Starting Pre Scripts loader process');
         NODICS.setPreScripts(fileLoader.loadFiles('/config/prescripts.js'));
     },
 
+    /**
+     * Loads layered post-scripts from active modules.
+     *
+     * @returns {void}
+     * @sideEffects Writes merged post-scripts to `NODICS`.
+     */
     loadPostScript: function () {
         this.LOG.info("Starting pre-script execution process");
         NODICS.setPostScripts(fileLoader.loadFiles('/config/postscripts.js'));
     },
 
+    /**
+     * Executes all loaded pre-script functions.
+     *
+     * @returns {Promise<boolean>} Resolves after all pre-scripts execute.
+     * @throws Rejects when a pre-script fails.
+     */
     executePreScripts: function () {
         return new Promise((resolve, reject) => {
             try {
@@ -61,6 +93,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Executes all loaded post-script functions.
+     *
+     * @returns {Promise<boolean>} Resolves after all post-scripts execute.
+     * @throws Rejects when a post-script fails.
+     */
     executePostScripts: function () {
         return new Promise((resolve, reject) => {
             try {

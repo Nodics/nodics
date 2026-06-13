@@ -11,18 +11,56 @@
 
 const _ = require('lodash');
 
+/**
+ * @module router/service/config/DefaultRouterConfigurationService
+ * @description Holds and applies effective router configuration for the active Nodics
+ * module hierarchy. It executes layered app configuration scripts and exposes the
+ * merged router definitions used by router registration.
+ * @layer service
+ * @owner nRouter
+ * @override Project modules may override this service to load routers from persisted
+ * control-plane configuration or to change app configuration sequencing.
+ *
+ * @property {Object} rawRouters Effective router definitions merged from active modules.
+ * @property {Object} SERVICE.DefaultFilesLoaderService Loads layered router app configuration files.
+ */
 module.exports = {
 
+    /**
+     * Effective router definitions for default, common, and module-specific routes.
+     *
+     * @type {Object}
+     */
     rawRouters: {},
 
+    /**
+     * Returns effective raw router definitions.
+     *
+     * @returns {Object} Current effective router definition map.
+     */
     getRawRouters: function () {
         return this.rawRouters;
     },
 
+    /**
+     * Replaces effective raw router definitions.
+     *
+     * @param {Object} rawRouters Merged router definitions from active module hierarchy.
+     * @returns {void}
+     * @sideEffects Updates in-memory router definition state.
+     */
     setRawRouters: function (rawRouters) {
         this.rawRouters = rawRouters;
     },
 
+    /**
+     * Executes supported Express app configuration hooks in deterministic order.
+     *
+     * @param {Object} app Express application instance.
+     * @param {Object} scripts Layered router app configuration object.
+     * @returns {void}
+     * @sideEffects Mutates Express app by applying properties, sessions, logging, cache, body parsing, headers, errors, and extras.
+     */
     executeRouterConfig: function (app, scripts) {
         if (scripts.initProperties && typeof scripts.initProperties === "function") {
             scripts.initProperties(app);
@@ -50,6 +88,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Applies effective app configuration to default or module-specific Express apps.
+     *
+     * @returns {void}
+     * @sideEffects Executes layered `src/router/appConfig.js` hooks against runtime Express apps.
+     * @throws Exits or throws when required server app configuration cannot be resolved.
+     */
     configureRouters: function () {
         let _self = this;
         _self.LOG.debug('Starting server configuration');
@@ -98,6 +143,12 @@ module.exports = {
         }
     },
 
+    /**
+     * Placeholder for future persisted router loading from control-plane storage.
+     *
+     * @returns {Promise<boolean>} Resolves because router persistence is currently disabled.
+     * @override Project modules may provide persisted route loading without changing nRouter core.
+     */
     loadPersistedRouters: function () {
         this.LOG.warn('Persisted router loading skipped; no router configuration model service is available');
         return Promise.resolve(true);

@@ -11,11 +11,26 @@
 
 const _ = require('lodash');
 
+/**
+ * @module database/service/schema/DefaultDatabaseSchemaHandlerService
+ * @description Builds effective Nodics database schemas from layered schema
+ * definitions. It merges default schema contracts, resolves `super` inheritance,
+ * and supports runtime schema additions without breaking module ownership.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override this service to customize schema
+ * inheritance and runtime merge rules, but must preserve module-scoped final
+ * schema output for generated models, APIs, and validators.
+ *
+ * @property {Object} NODICS.modules Active module registry whose module objects receive `rawSchema`.
+ * @property {Object} SERVICE.DefaultDatabaseConfigurationService Stores runtime raw schema registry.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the database schema handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -24,9 +39,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the database schema handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -34,6 +50,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds effective module schemas from the merged schema registry.
+     *
+     * @param {Object} mergedSchema Merged schema map grouped by module name.
+     * @returns {Promise<boolean>} Resolves after each owning module receives its final `rawSchema`.
+     * @sideEffects Mutates active module objects by assigning `moduleObject.rawSchema`.
+     * @throws {CLASSES.NodicsError} When schema inheritance resolution fails.
+     */
     buildDatabaseSchema: function (mergedSchema) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -63,6 +87,17 @@ module.exports = {
         });
     },
 
+    /**
+     * Adds or updates a schema definition at runtime.
+     *
+     * @param {Object} runtimeSchema Runtime schema definition.
+     * @param {string} runtimeSchema.moduleName Owning module name or `default`.
+     * @param {string} runtimeSchema.code Schema code.
+     * @param {string} [runtimeSchema.super] Optional schema inherited within the owning module.
+     * @returns {Promise<boolean>} Resolves after the runtime schema is merged.
+     * @sideEffects Updates raw schema registry and the owning module raw schema.
+     * @throws {CLASSES.NodicsError} When `super` points to an unknown schema.
+     */
     buildRuntimeSchema: function (runtimeSchema) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -98,6 +133,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Resolves schema inheritance for a single module.
+     *
+     * @param {Object} options Resolution request.
+     * @param {string} options.moduleName Owning module name.
+     * @param {Object} options.rawSchema Raw schema definitions for the module.
+     * @returns {Object} Effective schema definitions keyed by schema code.
+     */
     resolveModuleSchemaDependancy: function (options) {
         let _self = this;
         let mergedSchema = {};
@@ -114,6 +157,17 @@ module.exports = {
         return mergedSchema;
     },
 
+    /**
+     * Resolves one schema and its parent chain.
+     *
+     * @param {Object} options Resolution request.
+     * @param {Object} options.mergedSchema Accumulator for resolved schemas.
+     * @param {Object} options.rawSchema Raw schema definitions in the current module.
+     * @param {string} options.schemaName Schema code being resolved.
+     * @param {Object} options.schema Raw schema definition.
+     * @returns {Object} Effective schema definition with inherited fields and `parents`.
+     * @throws {CLASSES.NodicsError} When a parent schema cannot be found.
+     */
     resolveSchemaDependancy: function (options) {
         let _self = this;
         if (options.schema.super) {

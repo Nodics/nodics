@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module elasticdb/router/ElasticAppConfig
+ * @description Elastic database adapter router app configuration extension slot.
+ * @layer router
+ * @owner nDatabase
+ * @override Project modules may add Elastic-specific router app configuration.
+ */
 module.exports = {
 
 };

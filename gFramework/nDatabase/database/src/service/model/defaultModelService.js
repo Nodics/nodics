@@ -9,12 +9,28 @@
 
  */
 
+/**
+ * @module database/service/model/DefaultModelService
+ * @description Handles schema-driven nested model operations for generated CRUD
+ * services. It traverses `refSchema` definitions to save, populate, and remove
+ * related models without hardcoding module-specific relationships.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override this service to customize reference
+ * traversal, recursive loading, or deep removal rules while preserving
+ * schema-driven reference metadata.
+ *
+ * @property {Object} request.schemaModel.rawSchema.refSchema Schema reference contract.
+ * @property {Object} SERVICE.DefaultDatabaseConfigurationService Converts database object ids.
+ * @property {Object} SERVICE.Default<SchemaName>Service Generated schema service registry.
+ */
 module.exports = {
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the nested model service.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -23,9 +39,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the nested model service.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -33,6 +50,17 @@ module.exports = {
         });
     },
 
+    /**
+     * Traverses a model list and delegates reference processing to a callback.
+     *
+     * @param {Object} options Traversal options.
+     * @param {Object[]} options.models Models to traverse.
+     * @param {number} options.index Current model index.
+     * @param {Object} options.request Nodics model request.
+     * @param {Object} options.response Aggregated operation response.
+     * @param {Function} options.callback Reference-processing callback.
+     * @returns {Promise<boolean>} Resolves after traversal completes.
+     */
     travelModels: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -60,6 +88,17 @@ module.exports = {
             }
         });
     },
+
+    /**
+     * Saves nested referenced models before the owning model is persisted.
+     *
+     * @param {Object} options Reference processing options.
+     * @param {Object} options.request Nodics model request.
+     * @param {Object} options.model Model being processed.
+     * @param {string[]} options.propertiesList Mutable reference property list.
+     * @returns {Promise<boolean>} Resolves after nested references are saved.
+     * @sideEffects Replaces nested objects with reference ids on the parent model.
+     */
     saveNestedModels: function (options) {
         return new Promise((resolve, reject) => {
             try {
@@ -129,6 +168,16 @@ module.exports = {
             }
         });
     },
+    /**
+     * Populates referenced models according to recursive request options.
+     *
+     * @param {Object} options Reference processing options.
+     * @param {Object} options.request Nodics model request.
+     * @param {Object} options.model Model being processed.
+     * @param {string[]} options.propertiesList Mutable reference property list.
+     * @returns {Promise<boolean>} Resolves after references are populated or skipped.
+     * @sideEffects Replaces reference ids with loaded model documents when requested.
+     */
     populateNestedModels: function (options) {
         return new Promise((resolve, reject) => {
             if (options.propertiesList.length > 0) {
@@ -197,6 +246,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Removes referenced models according to deep-remove request options.
+     *
+     * @param {Object} options Reference processing options.
+     * @param {Object} options.request Nodics model request.
+     * @param {Object} options.model Model being processed.
+     * @param {string[]} options.propertiesList Mutable reference property list.
+     * @returns {Promise<boolean>} Resolves after nested references are removed or skipped.
+     */
     removeNestedModels: function (options) {
         return new Promise((resolve, reject) => {
             if (options.propertiesList.length > 0) {

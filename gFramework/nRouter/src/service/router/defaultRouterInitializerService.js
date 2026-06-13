@@ -12,7 +12,27 @@
 const _ = require('lodash');
 const Express = require('express');
 
+/**
+ * @module router/service/router/DefaultRouterInitializerService
+ * @description Initializes Express application and router instances for router-enabled
+ * modules according to the selected consolidated or modular runtime topology.
+ * @layer service
+ * @owner nRouter
+ * @override Project modules may override this service to customize Express app creation,
+ * module router creation, or server topology initialization.
+ *
+ * @property {Object} SERVICE.DefaultRouterService Provides module/server configuration pool.
+ * @property {Object} NODICS Runtime registry containing active modules.
+ * @property {Object} moduleObject.app Express app assigned to a module with dedicated server config.
+ * @property {Object} moduleObject.moduleRouter Express router assigned to module route bindings.
+ */
 module.exports = {
+    /**
+     * Creates Express app/router instances for router-enabled modules.
+     *
+     * @returns {void}
+     * @sideEffects Writes `app` and `moduleRouter` to module runtime objects or shared default module.
+     */
     initializeRouters: function () {
         let _self = this;
         _self.LOG.info('Initializing servers');

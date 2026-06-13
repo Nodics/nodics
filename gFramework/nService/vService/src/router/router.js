@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module service/vService/router/VersionedServiceRouter
+ * @description Versioned service route definition extension slot.
+ * @layer router
+ * @owner nService
+ * @override Project modules may expose versioned service APIs here.
+ */
 module.exports = {
 
 };

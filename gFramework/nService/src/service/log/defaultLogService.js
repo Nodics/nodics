@@ -9,6 +9,16 @@
 
  */
 
+/**
+ * @module service/log/DefaultLogService
+ * @description Runtime log-level management service. It updates logger levels
+ * for named Nodics entities so operators can adjust diagnostics without
+ * restarting the node.
+ * @layer service
+ * @owner nService
+ * @override Project modules may override this service to add audit, persistence,
+ * tenant scoping, or control-plane approval around log-level changes.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +41,14 @@ module.exports = {
             resolve(true);
         });
     },
+    /**
+     * Changes the log level for a named runtime logger.
+     *
+     * @param {Object} request Log-level change request.
+     * @param {string} request.entityName Logger/entity name.
+     * @param {string} request.logLevel Target log level.
+     * @returns {Promise<Object>} Status response.
+     */
     changeLogLevel: function (request) {
         return new Promise((resolve, reject) => {
             let logger = NODICS.getLogger(request.entityName);

@@ -9,6 +9,14 @@
 
  */
 
+/**
+ * @module cassandradb/router/CassandraRouter
+ * @description Cassandra database adapter route definition extension slot.
+ * @layer router
+ * @owner nDatabase
+ * @override Project modules may expose Cassandra-specific admin or diagnostic
+ * routes without changing generic database routes.
+ */
 module.exports = {
 
 };

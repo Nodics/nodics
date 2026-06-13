@@ -9,14 +9,27 @@
 
  */
 
-
-
+/**
+ * @module common/service/pipeline/DefaultInterceptorUpdatedPipelineService
+ * @description Pipeline service for applying persisted interceptor changes at runtime.
+ * It validates update events, loads changed interceptor records, merges them into the
+ * effective interceptor registry, and publishes cleanup events for affected interceptor types.
+ * @layer pipeline
+ * @owner nCommon
+ * @override Project modules may override this service or the corresponding pipeline
+ * definition to add governance, audit, validation, or rollback around dynamic interceptors.
+ *
+ * @property {Object} SERVICE.DefaultInterceptorService Loads changed interceptors into effective registry.
+ * @property {Object} SERVICE.DefaultEventService Publishes cleanup/update events.
+ * @property {Object} request.interceptorList Changed interceptor records loaded from persistence.
+ */
 module.exports = {
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the interceptor update pipeline service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -25,9 +38,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the interceptor update pipeline service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -35,6 +49,16 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates interceptor update event payload.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} request.data Event data containing model ids and tenant context.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @throws Emits pipeline error when models or tenant are missing.
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating interceptor update request');
         let data = request.data;
@@ -47,6 +71,16 @@ module.exports = {
         }
     },
 
+    /**
+     * Loads changed interceptor records from persistence.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} request.event Interceptor update event.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @sideEffects Writes `request.interceptorList`.
+     */
     loadInterceptor: function (request, response, process) {
         this.LOG.debug('Fatching updated interceptor object : ' + request.code);
         try {
@@ -88,6 +122,15 @@ module.exports = {
         }
     },
 
+    /**
+     * Merges changed interceptor records into the effective runtime interceptor registry.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object[]} request.interceptorList Changed interceptor records.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     */
     mergeExisting: function (request, response, process) {
         this.LOG.debug('Adding updated interceptor with existing one');
         let rawInterceptors = {};
@@ -98,6 +141,16 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Publishes cleanup events for updated interceptor types.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object[]} request.interceptorList Changed interceptor records.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @sideEffects Publishes sync events and writes `response.success`.
+     */
     publishCleanup: function (request, response, process) {
         let allPromise = [];
         let typedInterceptors = _.groupBy(request.interceptorList, interceptor => interceptor.type);

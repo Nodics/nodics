@@ -13,6 +13,20 @@ const requestPromise = require('node-fetch');
 const _ = require('lodash');
 const util = require('util');
 
+/**
+ * @module service/module/DefaultModuleService
+ * @description Builds and executes internal module-to-module and external HTTP
+ * requests for Nodics. It normalizes authentication, API key, and enterprise
+ * headers to the modern standard while preserving legacy header compatibility.
+ * @layer service
+ * @owner nService
+ * @override Project modules may override this service to customize service
+ * discovery, header policy, timeout handling, or fetch implementation while
+ * preserving `buildRequest`, `buildExternalRequest`, and `fetch` contracts.
+ *
+ * @property {Object} SERVICE.DefaultRouterService Resolves module API URLs.
+ * @property {Object} CLASSES.NodicsError Enriches remote-call errors with request context.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -36,6 +50,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Normalizes standard auth, API key, and enterprise headers.
+     *
+     * @param {Object} headers Input header map.
+     * @returns {Object} Header map using `Authorization`, `x-api-key`, and `x-enterprise-code`.
+     */
     normalizeHeaders: function (headers) {
         let normalizedHeaders = {};
         let authToken = headers.Authorization || headers.authorization || headers.authToken;
@@ -60,6 +80,17 @@ module.exports = {
         return normalizedHeaders;
     },
 
+    /**
+     * Builds an internal module request URL and fetch options.
+     *
+     * @param {Object} options Module request options.
+     * @param {string} options.moduleName Target module name.
+     * @param {string} options.apiName API path.
+     * @param {string} [options.methodName=GET] HTTP method.
+     * @param {Object} [options.requestBody] Request body.
+     * @param {Object} [options.header] Additional headers.
+     * @returns {Object} Fetch request options with Nodics context metadata.
+     */
     buildRequest: function (options) {
         this.LOG.debug('Building request url for module ', options.moduleName);
         let header = {
@@ -88,6 +119,17 @@ module.exports = {
         };
     },
 
+    /**
+     * Builds an external HTTP request and fetch options.
+     *
+     * @param {Object} options External request options.
+     * @param {string} options.uri Absolute target URI.
+     * @param {string} [options.methodName=GET] HTTP method.
+     * @param {Object} [options.params] Query parameters.
+     * @param {Object} [options.requestBody] Request body.
+     * @param {Object} [options.header] Additional headers.
+     * @returns {Object} Fetch request options with external context metadata.
+     */
     buildExternalRequest: function (options) {
         this.LOG.debug('Building external request url');
         let header = {
@@ -122,6 +164,12 @@ module.exports = {
         };
     },
 
+    /**
+     * Builds clean error context for internal/external fetch failures.
+     *
+     * @param {Object} requestUrl Fetch request options.
+     * @returns {Object} Sanitized Nodics error context.
+     */
     buildFetchErrorContext: function (requestUrl) {
         let context = _.merge({}, requestUrl.nodicsContext || {});
         context.uri = requestUrl.uri;
@@ -135,6 +183,13 @@ module.exports = {
         return CLASSES.NodicsError.cleanContext(context);
     },
 
+    /**
+     * Executes an internal or external HTTP request.
+     *
+     * @param {Object} requestUrl Fetch request options built by this service.
+     * @returns {Promise<Object>} Fetch response body.
+     * @throws {CLASSES.NodicsError} Rejects with enriched remote-call context.
+     */
     fetch: function (requestUrl) {
         this.LOG.debug('Hitting module communication URL : ' + JSON.stringify(requestUrl));
         return new Promise((resolve, reject) => {

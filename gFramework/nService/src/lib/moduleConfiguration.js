@@ -11,6 +11,21 @@
 
 const _ = require('lodash');
 
+/**
+ * @module service/lib/ModuleConfiguration
+ * @description Runtime topology descriptor for one module in a distributed
+ * Nodics deployment. It stores module-level request options, server endpoint,
+ * abstract server endpoint, node endpoints, and server-running state.
+ * @layer lib
+ * @owner nService
+ * @override Project modules may replace this class only if they preserve the
+ * endpoint getters consumed by `DefaultRouterService` and `DefaultModuleService`.
+ *
+ * @property {string} moduleName Module represented by this topology object.
+ * @property {Object} serverConfig Concrete server endpoint configuration.
+ * @property {Object} abstractConfig Abstract/load-balanced server endpoint configuration.
+ * @property {Object} nodeConfig Individual node endpoint configuration.
+ */
 module.exports = function (moduleName) {
 
     let _moduleName = moduleName;

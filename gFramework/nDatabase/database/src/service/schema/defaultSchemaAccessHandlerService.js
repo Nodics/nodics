@@ -11,11 +11,27 @@
 
 const _ = require('lodash');
 
+/**
+ * @module database/service/schema/DefaultSchemaAccessHandlerService
+ * @description Resolves the highest schema access point allowed for an
+ * authenticated user based on schema access groups. Generated services use this
+ * contract to enforce schema-level authorization without hardcoding project
+ * roles.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override access calculation to integrate
+ * enterprise IAM, custom role hierarchies, or tenant-specific authorization
+ * while preserving schema-driven access point semantics.
+ *
+ * @property {Object} CONFIG.accessPoints.fullAccessPoint Default access point used when schema has no access groups.
+ * @property {Object} authData.userGroups Authenticated user groups from the request token.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the schema access handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -24,9 +40,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the schema access handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -34,6 +51,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Calculates the highest access point granted by matching user groups.
+     *
+     * @param {Object} authData Authentication context from the request.
+     * @param {string[]} authData.userGroups User groups resolved from token or session.
+     * @param {Object} modelAccessGroups Schema access group map where values are access points.
+     * @returns {number} Highest access point granted to the user.
+     * @throws {CLASSES.NodicsError} When access groups are configured but user groups are missing.
+     */
     getAccessPoint: function (authData, modelAccessGroups) {
         try {
             if (!modelAccessGroups || UTILS.isBlank(modelAccessGroups)) {

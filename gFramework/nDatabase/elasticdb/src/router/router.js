@@ -9,6 +9,14 @@
 
  */
 
+/**
+ * @module elasticdb/router/ElasticRouter
+ * @description Elastic database adapter route definition extension slot.
+ * @layer router
+ * @owner nDatabase
+ * @override Project modules may expose Elastic-specific admin or diagnostic
+ * routes without changing generic database routes.
+ */
 module.exports = {
 
 };

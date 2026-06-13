@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module mongodb/vMongodb/router/VersionedMongoRouter
+ * @description Versioned MongoDB adapter route definition extension slot.
+ * @layer router
+ * @owner nDatabase
+ * @override Project modules may expose versioned MongoDB-specific admin routes.
+ */
 module.exports = {
 
 };

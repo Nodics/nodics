@@ -22,8 +22,37 @@
 
 let assert = require('assert');
 const flatted = require('flatted');
+
+/**
+ * @module common/lib/NodicsError
+ * @description Standard Nodics error type used across pipelines, services, controllers,
+ * generated APIs, imports, processors, and interceptors. It preserves response code,
+ * status code, metadata, nested causes, validation errors, trace id, contexts, and
+ * safe JSON serialization.
+ * @layer lib
+ * @owner nCommon
+ * @override Project modules should enrich this error with context rather than replace it.
+ * If replacement is required, preserve `toJson`, `ensure`, `enrich`, `contexts`, `causes`,
+ * and `errors` contracts so API and pipeline error responses remain consistent.
+ *
+ * @property {string} code Nodics status/error code.
+ * @property {number} responseCode HTTP response code resolved from status service.
+ * @property {Object} metadata Optional structured diagnostic metadata.
+ * @property {Object[]} contexts Ordered execution contexts added while error propagates.
+ * @property {NodicsError[]} causes Nested causal errors.
+ * @property {NodicsError[]} errors Aggregated validation or batch errors.
+ * @property {string} traceId Optional correlation id.
+ */
 module.exports = class NodicsError extends Error {
 
+    /**
+     * Creates a normalized Nodics error from an error code, string, Error, or object.
+     *
+     * @param {string|Error|Object} error Error input.
+     * @param {string} [message] Additional message context.
+     * @param {string} [defaultCode] Fallback Nodics error code.
+     * @throws Assertion error when a code or message cannot be resolved.
+     */
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').NodicsError) {
         if (error && !error.code && error instanceof Error) {
             error = UTILS.extractFromError(error, message, defaultCode);
@@ -70,14 +99,31 @@ module.exports = class NodicsError extends Error {
         this.processed = false;
     }
 
+    /**
+     * Indicates whether this error has already been processed by an error handler.
+     *
+     * @returns {boolean} Processed flag.
+     */
     isProcessed() {
         return this.processed;
     }
 
+    /**
+     * Updates processed flag.
+     *
+     * @param {boolean} processed Processed state.
+     * @returns {void}
+     */
     setProcessed(processed) {
         this.processed = processed;
     }
 
+    /**
+     * Adds multiple nested errors to this error.
+     *
+     * @param {Array<string|Error|Object|NodicsError>} errors Errors to aggregate.
+     * @returns {void}
+     */
     addAll(errors) {
         let self = this;
         assert.ok(errors && errors.length > 0);
@@ -86,6 +132,12 @@ module.exports = class NodicsError extends Error {
         });
     }
 
+    /**
+     * Adds one nested error to this error.
+     *
+     * @param {string|Error|Object|NodicsError} error Error to aggregate.
+     * @returns {void}
+     */
     add(error) {
         assert.ok(error);
         if (error instanceof CLASSES.NodicsError) {
@@ -95,6 +147,12 @@ module.exports = class NodicsError extends Error {
         }
     }
 
+    /**
+     * Adds structured execution context after removing blank values.
+     *
+     * @param {Object} context Context details such as layer, handler, tenant, module, or schema.
+     * @returns {NodicsError} Current error for chaining.
+     */
     addContext(context) {
         if (context && UTILS.isObject(context)) {
             this.contexts.push(this.constructor.cleanContext(context));
@@ -102,6 +160,12 @@ module.exports = class NodicsError extends Error {
         return this;
     }
 
+    /**
+     * Adds a causal error to this error.
+     *
+     * @param {string|Error|Object|NodicsError} error Causal error.
+     * @returns {NodicsError} Current error for chaining.
+     */
     addCause(error) {
         assert.ok(error);
         if (error instanceof CLASSES.NodicsError) {
@@ -112,10 +176,22 @@ module.exports = class NodicsError extends Error {
         return this;
     }
 
+    /**
+     * Returns aggregated nested errors.
+     *
+     * @returns {NodicsError[]} Aggregated errors.
+     */
     getErrors() {
         return this.errors;
     }
 
+    /**
+     * Serializes this error into a safe API response payload.
+     *
+     * @param {boolean} [returnStack] Whether to include stack traces.
+     * @param {WeakSet} [visited] Internal circular-reference guard.
+     * @returns {Object} JSON-safe error payload.
+     */
     toJson(returnStack, visited) {
         visited = visited || new WeakSet();
         if (visited.has(this)) {
@@ -154,6 +230,14 @@ module.exports = class NodicsError extends Error {
         return errorJson;
     }
 
+    /**
+     * Serializes a nested error while preserving NodicsError detail when available.
+     *
+     * @param {*} error Nested error value.
+     * @param {boolean} returnStack Whether to include stack traces.
+     * @param {WeakSet} visited Circular-reference guard.
+     * @returns {*} JSON-safe nested error.
+     */
     static serializeNestedError(error, returnStack, visited) {
         if (!error) {
             return error;
@@ -164,6 +248,12 @@ module.exports = class NodicsError extends Error {
         return this.toSafeJson(error);
     }
 
+    /**
+     * Converts any value to a JSON-safe representation.
+     *
+     * @param {*} value Value to serialize.
+     * @returns {*} JSON-safe value.
+     */
     static toSafeJson(value) {
         try {
             let visited = new WeakSet();
@@ -198,6 +288,12 @@ module.exports = class NodicsError extends Error {
         }
     }
 
+    /**
+     * Removes blank values from an error context object.
+     *
+     * @param {Object} context Raw context.
+     * @returns {Object} Cleaned context.
+     */
     static cleanContext(context) {
         let cleaned = {};
         Object.keys(context || {}).forEach(key => {
@@ -208,6 +304,14 @@ module.exports = class NodicsError extends Error {
         return cleaned;
     }
 
+    /**
+     * Ensures an input is a NodicsError.
+     *
+     * @param {string|Error|Object|NodicsError} error Error input.
+     * @param {string} [message] Additional message context.
+     * @param {string} [defaultCode] Fallback Nodics error code.
+     * @returns {NodicsError} Normalized NodicsError.
+     */
     static ensure(error, message, defaultCode) {
         if (error instanceof CLASSES.NodicsError) {
             if (message) {
@@ -218,6 +322,15 @@ module.exports = class NodicsError extends Error {
         return new CLASSES.NodicsError(error, message, defaultCode);
     }
 
+    /**
+     * Ensures an error and appends execution context.
+     *
+     * @param {string|Error|Object|NodicsError} error Error input.
+     * @param {Object} context Execution context.
+     * @param {string} [defaultCode] Fallback Nodics error code.
+     * @param {string} [message] Additional message context.
+     * @returns {NodicsError} Enriched NodicsError.
+     */
     static enrich(error, context, defaultCode, message) {
         error = this.ensure(error, message, defaultCode);
         error.addContext(context);

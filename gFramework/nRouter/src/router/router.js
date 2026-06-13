@@ -12,6 +12,32 @@
 const Express = require('express');
 const path = require('path');
 
+/**
+ * @module router/router/RouterDefinitions
+ * @description Default nRouter route contract definitions. These definitions provide
+ * schema-driven CRUD route templates and common platform routes that are expanded
+ * per active schema and module by `DefaultRouterService`.
+ * @layer router
+ * @owner nRouter
+ * @override Project modules may override or extend these route definitions in later
+ * module layers to add routes, change access groups, change handlers, or adjust help metadata.
+ *
+ * @property {Object} default Default schema-driven route templates.
+ * @property {Object} default.commonGetterOperation Read operations generated for schema-enabled APIs.
+ * @property {Object} default.commonRemoveOperations Delete operations generated for schema-enabled APIs.
+ * @property {Object} default.commonSaveOperations Create/save operations generated for schema-enabled APIs.
+ * @property {Object} default.commonUpdateOperations Update operations generated for schema-enabled APIs.
+ * @property {Object} common Common platform routes registered for router-enabled modules.
+ * @property {boolean} route.secured Whether the route requires secured request pipeline execution.
+ * @property {string[]} route.accessGroups User groups allowed to invoke the route.
+ * @property {string} route.key URL key template appended under context root, module prefix, and API version.
+ * @property {string} route.method HTTP method used by `DefaultRouterOperationService`.
+ * @property {string} route.controller Generated or custom controller name.
+ * @property {string} route.handler Special route handler name when controller dispatch is bypassed.
+ * @property {string} route.operation Controller or handler operation name.
+ * @property {Object} route.cache Optional route-level API cache configuration.
+ * @property {Object} route.help Help payload returned by the `?help` request pipeline branch.
+ */
 module.exports = {
     default: {
         commonGetterOperation: {

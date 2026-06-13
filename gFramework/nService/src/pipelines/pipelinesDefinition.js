@@ -9,6 +9,16 @@
 
  */
 
+/**
+ * @module service/pipelines/ServicePipelinesDefinition
+ * @description nService pipeline extension slot. The base service module does
+ * not define additional pipelines, but this file preserves the layered location
+ * for service-level runtime orchestration.
+ * @layer pipeline
+ * @owner nService
+ * @override Project modules may add service pipelines here without changing
+ * framework pipeline loading.
+ */
 module.exports = {
 
 

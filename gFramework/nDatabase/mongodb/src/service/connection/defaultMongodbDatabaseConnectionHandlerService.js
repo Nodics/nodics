@@ -11,11 +11,27 @@
 
 const MongoClient = require('mongodb').MongoClient;
 
+/**
+ * @module mongodb/service/connection/DefaultMongodbDatabaseConnectionHandlerService
+ * @description MongoDB implementation of the Nodics database connection handler
+ * contract. It creates Mongo clients, discovers collections, detects initial
+ * data requirements, reads runtime schema configuration, and closes clients.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override this adapter to customize MongoDB
+ * connection options, readiness checks, runtime schema storage, or client
+ * lifecycle while preserving the generic database connection handler contract.
+ *
+ * @property {Object} config.URI MongoDB server URI.
+ * @property {string} config.databaseName MongoDB database name.
+ * @property {Object} config.options MongoClient options.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the MongoDB connection handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -24,9 +40,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the MongoDB connection handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -34,6 +51,16 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates a MongoDB client/database connection and lists existing collections.
+     *
+     * @param {Object} config MongoDB connection configuration.
+     * @param {string} config.URI MongoDB server URI.
+     * @param {string} config.databaseName Database name.
+     * @param {Object} [config.options] MongoClient options.
+     * @returns {Promise<Object>} Connection response containing client, db connection, and collection list.
+     * @throws {CLASSES.NodicsError} When MongoDB connection or collection discovery fails.
+     */
     createConnection: function (config) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -63,6 +90,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Checks whether initial data import is required for the profile database.
+     *
+     * @returns {Promise<boolean>} Resolves true when the profile database appears uninitialized.
+     * @throws {CLASSES.NodicsError} When the readiness check fails unexpectedly.
+     */
     isInitRequired: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -95,6 +128,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Reads runtime schema configuration from MongoDB.
+     *
+     * @returns {Promise<Object[]>} Runtime schema configuration rows.
+     * @throws {CLASSES.NodicsError} When the default database is unavailable or query fails.
+     */
     getRuntimeSchema: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -119,6 +158,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Closes a MongoDB client connection.
+     *
+     * @param {Object} connection Nodics database wrapper with a Mongo client.
+     * @returns {undefined}
+     * @sideEffects Closes the underlying Mongo client.
+     */
     closeConnection: function (connection) {
         connection.getClient().close();
     }

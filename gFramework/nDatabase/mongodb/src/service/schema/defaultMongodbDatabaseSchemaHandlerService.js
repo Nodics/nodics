@@ -11,11 +11,22 @@
 
 const _ = require('lodash');
 
+/**
+ * @module mongodb/service/schema/DefaultMongodbDatabaseSchemaHandlerService
+ * @description MongoDB schema handler placeholder for database-specific schema
+ * behavior. The generic database schema handler owns effective schema merging;
+ * this adapter exists so MongoDB-specific schema behavior can be layered later.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override this adapter to add MongoDB-specific
+ * schema normalization while preserving generic schema handler contracts.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the MongoDB schema handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -24,9 +35,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the MongoDB schema handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {

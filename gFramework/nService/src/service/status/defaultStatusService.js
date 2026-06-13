@@ -11,6 +11,19 @@
 
 let assert = require('assert');
 
+/**
+ * @module service/status/DefaultStatusService
+ * @description Loads and serves Nodics status/error definitions from active
+ * module hierarchy. It validates each status definition and provides runtime
+ * lookup for consistent error and success response messages.
+ * @layer service
+ * @owner nService
+ * @override Project modules may override status definitions through layered
+ * `statusDefinitions.js` files or override this service for alternate response
+ * catalog governance.
+ *
+ * @property {Object} statusMap Effective status definition registry.
+ */
 module.exports = {
 
     statusMap: {},
@@ -42,6 +55,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Loads layered status definitions into the runtime status map.
+     *
+     * @returns {undefined}
+     * @sideEffects Mutates `statusMap`.
+     * @throws {AssertionError} When a status code or message is missing.
+     */
     loadStatusDefinitions: function () {
         let statusCodes = SERVICE.DefaultFilesLoaderService.loadFiles('/src/utils/statusDefinitions.js');
         Object.keys(statusCodes).forEach(errorCode => {
@@ -52,10 +72,24 @@ module.exports = {
         });
     },
 
+    /**
+     * Updates one runtime status definition.
+     *
+     * @param {string} errorCode Status/error code.
+     * @param {Object} status Status definition.
+     * @returns {undefined}
+     */
     updateStatus: function (errorCode, status) {
         this.statusMap[errorCode] = status;
     },
 
+    /**
+     * Retrieves one runtime status definition.
+     *
+     * @param {string} errorCode Status/error code.
+     * @returns {Object} Status definition.
+     * @throws {CLASSES.NodicsError} When the code is unknown.
+     */
     get: function (errorCode) {
         if (!UTILS.isBlank(this.statusMap[errorCode])) {
             return this.statusMap[errorCode];

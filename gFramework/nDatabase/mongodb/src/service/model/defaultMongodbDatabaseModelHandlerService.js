@@ -14,11 +14,27 @@ const ObjectId = require('mongodb').ObjectId;
 
 const util = require('util');
 
+/**
+ * @module mongodb/service/model/DefaultMongodbDatabaseModelHandlerService
+ * @description MongoDB implementation of the Nodics database model handler
+ * contract. It converts effective schemas into MongoDB jsonSchema validators,
+ * collection options, indexes, collection wrappers, and ObjectId values.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override this adapter to customize MongoDB
+ * model generation, index reconciliation, validator updates, or id conversion
+ * while preserving generic model handler inputs and outputs.
+ *
+ * @property {Object} options.moduleObject.rawSchema Effective schema registry for the owning module.
+ * @property {Object} options.dataBase.master Master database wrapper.
+ * @property {Object} model.rawSchema Effective schema definition attached to generated collection wrappers.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the MongoDB model handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -27,9 +43,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the MongoDB model handler.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -37,6 +54,18 @@ module.exports = {
         });
     },
 
+    /**
+     * Converts an effective Nodics schema into MongoDB collection options.
+     *
+     * @param {Object} options Model build context.
+     * @param {Object} options.moduleObject Active module object with `rawSchema`.
+     * @param {string} options.schemaName Schema code.
+     * @param {string} options.tntCode Tenant code.
+     * @param {Object} options.dataBase Tenant database handle map.
+     * @returns {Promise<boolean>} Resolves after schema options are attached to the raw schema.
+     * @sideEffects Writes `schema.schemaOptions[tenant]` including validators, defaults, and indexes.
+     * @throws {CLASSES.NodicsError} When schema primary key/versioning constraints are invalid.
+     */
     prepareDatabaseOptions: function (options) {
         return new Promise((resolve, reject) => {
             try {
@@ -201,6 +230,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Retrieves an existing collection model or creates it when absent.
+     *
+     * @param {Object} options Model build context.
+     * @param {Object} dataBase Nodics database wrapper.
+     * @returns {Promise<Object>} Generated MongoDB collection wrapper.
+     * @sideEffects Creates missing indexes on existing collections.
+     */
     retrieveModel: function (options, dataBase) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -237,6 +274,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates a MongoDB collection for a generated schema model.
+     *
+     * @param {Object} options Model build context.
+     * @param {Object} dataBase Nodics database wrapper.
+     * @returns {Promise<Object>} Generated MongoDB collection wrapper.
+     * @sideEffects Creates collection and configured indexes.
+     */
     createModel: function (options, dataBase) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -278,6 +323,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Reconciles MongoDB indexes for one generated model.
+     *
+     * @param {Object} model Generated MongoDB collection wrapper.
+     * @param {boolean} cleanOrphan Whether unknown live indexes should be dropped.
+     * @returns {Promise<Object>} Aggregated index create/drop response.
+     * @throws {CLASSES.NodicsError} When index discovery or mutation fails.
+     */
     createIndexes: function (model, cleanOrphan) {
         let _self = this;
         cleanOrphan = cleanOrphan || CONFIG.get('database').default.options.cleanOrphan;
@@ -292,7 +345,7 @@ module.exports = {
                                 databaseOptions.defaultIndexes.forEach(property => {
                                     let tmpKey = {};
                                     tmpKey[property] = 1;
-                                    for (counter = 0; counter < indexes.length; counter++) {
+                                    for (let counter = 0; counter < indexes.length; counter++) {
                                         if (_.isEqual(indexes[counter].key, tmpKey)) {
                                             indexes.splice(counter, 1);
                                         }
@@ -335,6 +388,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Compares desired schema indexes with live MongoDB indexes.
+     *
+     * @param {Object[]} indexedFields Desired index definitions from schema options.
+     * @param {Object[]} indexes Live MongoDB index definitions.
+     * @param {boolean} cleanOrphan Whether remaining live indexes should be dropped.
+     * @returns {Object} Index plan containing `create` and optional `drop` entries.
+     */
     finalizeIndexes: function (indexedFields, indexes, cleanOrphan) {
         let _self = this;
         let finalIndexes = {};
@@ -350,7 +411,7 @@ module.exports = {
 
         if (cleanOrphan && indexes && indexes.length > 0) {
             finalIndexes.drop = [];
-            for (counter = 0; counter < indexes.length; counter++) {
+            for (let counter = 0; counter < indexes.length; counter++) {
                 finalIndexes.drop.push(indexes[counter].name);
             }
         }
@@ -358,10 +419,18 @@ module.exports = {
         return finalIndexes;
     },
 
+    /**
+     * Determines whether a desired index already exists in the live index list.
+     *
+     * @param {Object} key Desired MongoDB index key.
+     * @param {Object[]} liveIndex Mutable live index list.
+     * @returns {boolean} True when the desired index already exists.
+     * @sideEffects Removes matched live index entries from `liveIndex`.
+     */
     isIndexLive: function (key, liveIndex) {
         let available = false;
         if (liveIndex && liveIndex.length > 0) {
-            for (counter = 0; counter < liveIndex.length; counter++) {
+            for (let counter = 0; counter < liveIndex.length; counter++) {
                 if (_.isEqual(liveIndex[counter].key, key)) {
                     available = true;
                     liveIndex.splice(counter, 1);
@@ -372,6 +441,14 @@ module.exports = {
         return available;
     },
 
+    /**
+     * Creates one MongoDB index for a generated model.
+     *
+     * @param {Object} model Generated MongoDB collection wrapper.
+     * @param {Object} indexConfig Index fields and options.
+     * @returns {Promise<string>} Success message for the index operation.
+     * @throws {CLASSES.NodicsError} When MongoDB index creation fails.
+     */
     createIndex: function (model, indexConfig) {
         return new Promise((resolve, reject) => {
             try {
@@ -386,6 +463,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Drops one MongoDB index for a generated model.
+     *
+     * @param {Object} model Generated MongoDB collection wrapper.
+     * @param {string} indexName Live index name.
+     * @returns {Promise<string>} Success message for the drop operation.
+     * @throws {CLASSES.NodicsError} When MongoDB index removal fails.
+     */
     dropIndex: function (model, indexName) {
         return new Promise((resolve, reject) => {
             try {
@@ -400,6 +485,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Updates MongoDB collection validator options for a generated model.
+     *
+     * @param {Object} model Generated MongoDB collection wrapper.
+     * @returns {Promise<Object>} Validator update response keyed by schema/tenant/channel.
+     * @throws {CLASSES.NodicsError|Object} When model is missing or MongoDB rejects the command.
+     */
     updateValidator: function (model) {
         return new Promise((resolve, reject) => {
             if (model) {
@@ -425,6 +517,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Converts a raw id into a MongoDB ObjectId.
+     *
+     * @param {string|Object} id Raw id value.
+     * @returns {ObjectId} MongoDB ObjectId instance.
+     */
     toObjectId: function (id) {
         return ObjectId(id);
     }

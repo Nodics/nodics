@@ -9,6 +9,16 @@
 
  */
 
+/**
+ * @module service/vService/procs/remove/DefaultModelsRemoveInitializerService
+ * @description Versioned service remove pipeline extension slot. The base
+ * implementation currently inherits generic remove behavior while preserving a
+ * layered override location for version-aware removal processing.
+ * @layer service
+ * @owner nService
+ * @override Project modules may add version-aware remove behavior here without
+ * modifying the generic database remove pipeline service.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 

@@ -9,6 +9,16 @@
 
  */
 
+/**
+ * @module service/vService/procs/get/DefaultModelsGetInitializerService
+ * @description Versioned service get pipeline extension slot. The base
+ * implementation currently inherits generic get behavior while preserving a
+ * layered override location for version-aware get processing.
+ * @layer service
+ * @owner nService
+ * @override Project modules may add version-aware get behavior here without
+ * modifying the generic database get pipeline service.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 

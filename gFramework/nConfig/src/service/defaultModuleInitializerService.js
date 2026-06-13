@@ -9,12 +9,22 @@
 
  */
 
+/**
+ * @module config/service/DefaultModuleInitializerService
+ * @description Reserved module initializer service for nConfig. It keeps the standard
+ * service lifecycle contract available for future module-specific initialization logic.
+ * @layer service
+ * @owner nConfig
+ * @override Project modules may override this service to add module initialization
+ * behavior while preserving the standard `init` and `postInit` Promise contract.
+ */
 module.exports = {
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the module initializer service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -23,9 +33,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the module initializer service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {

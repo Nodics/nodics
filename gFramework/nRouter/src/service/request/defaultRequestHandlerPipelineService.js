@@ -10,11 +10,32 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module router/service/request/DefaultRequestHandlerPipelineService
+ * @description Shared request pipeline service that normalizes authentication headers,
+ * handles help and special requests, chooses secured versus non-secured flow, performs
+ * API cache lookup, and dispatches requests to generated or custom controllers.
+ * @layer pipeline
+ * @owner nRouter
+ * @override Project modules may override this service or specific pipeline definitions
+ * in a later-loaded module to change request governance without changing Nodics core code.
+ *
+ * @property {Object} CLASSES.NodicsError Standard Nodics error class used for request failures.
+ * @property {Object} CONFIG Runtime configuration registry used for default tenant fallback.
+ * @property {Object} CONTROLLER Dynamic controller registry populated from active module hierarchy.
+ * @property {Object} SERVICE.DefaultCacheConfigurationService Builds cache keys for API requests.
+ * @property {Object} SERVICE.DefaultCacheService Reads and writes API response cache entries.
+ * @property {Object} request.auth Normalized authentication contract produced by `parseHeader`.
+ * @property {string} request.entCode Enterprise code resolved from modern or legacy headers.
+ * @property {string} request.tenant Tenant resolved by secured/non-secured downstream pipelines.
+ * @property {Object} response.targetNode Pipeline branch selected by `redirectRequest`.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the request handler pipeline service during service loading.
+     *
+     * @param {Object} options Nodics initialization options for the active module hierarchy.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -23,9 +44,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the request handler pipeline service after service loading.
+     *
+     * @param {Object} options Nodics initialization options for the active module hierarchy.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -33,6 +55,18 @@ module.exports = {
         });
     },
 
+    /**
+     * Stops normal execution and returns configured router help when the caller appends `?help`.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {string} request.originalUrl Original Express URL.
+     * @param {Object} request.router Effective router definition selected from active modules.
+     * @param {Object} response Nodics response context mutated with help success payload.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @sideEffects May write `response.success` and stop the pipeline.
+     * @throws Emits `ERR_HLP_00000` through the pipeline when help metadata is not available.
+     */
     helpRequest: function (request, response, process) {
         if (request.originalUrl.endsWith('?help')) {
             if (request.router.help) {
@@ -49,6 +83,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Returns the first available request header value from a preferred-name list.
+     *
+     * @param {Object} httpRequest Express request wrapper.
+     * @param {string[]} names Header names in lookup priority order.
+     * @returns {string|undefined} First available header value.
+     */
     getHeaderValue: function (httpRequest, names) {
         let value;
         _.each(names, name => {
@@ -59,6 +100,12 @@ module.exports = {
         return value;
     },
 
+    /**
+     * Extracts a bearer token from a standard Authorization header.
+     *
+     * @param {string} authorization Raw Authorization header value.
+     * @returns {string|null} Token value without the Bearer prefix, or null when absent.
+     */
     getBearerToken: function (authorization) {
         if (UTILS.isBlank(authorization)) {
             return null;
@@ -67,6 +114,19 @@ module.exports = {
         return bearerParts ? bearerParts[1].trim() : null;
     },
 
+    /**
+     * Normalizes modern and legacy authentication headers into one request auth contract.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.httpRequest Express request wrapper.
+     * @returns {Object} Normalized auth metadata.
+     * @returns {string|null} returns.type Credential type when exactly one credential is supplied.
+     * @returns {string|null} returns.credential Credential value when exactly one credential is supplied.
+     * @returns {Object[]} returns.credentials All supplied API key and bearer credentials.
+     * @returns {string|undefined} returns.entCode Enterprise code from modern or legacy headers.
+     * @returns {string[]} returns.legacyHeaders Deprecated headers used by the caller.
+     * @override Projects may override this method to add enterprise-specific credential types.
+     */
     normalizeAuthHeaders: function (request) {
         let authorizationHeader = this.getHeaderValue(request.httpRequest, ['Authorization']);
         let modernAuthToken = this.getBearerToken(authorizationHeader);
@@ -116,6 +176,17 @@ module.exports = {
         };
     },
 
+    /**
+     * Parses authentication and enterprise headers and writes normalized fields to the request.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.httpRequest Express request wrapper.
+     * @param {Object} response Nodics response context.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @sideEffects Writes `request.auth`, `request.apiKey`, `request.authToken`, and `request.entCode`.
+     * @throws Emits `ERR_AUTH_00002` through the pipeline when neither credentials nor enterprise code are supplied.
+     */
     parseHeader: function (request, response, process) {
         this.LOG.debug('Parsing request header for : ' + request.originalUrl);
         request.auth = this.normalizeAuthHeaders(request);
@@ -138,10 +209,35 @@ module.exports = {
         }
     },
 
+    /**
+     * Placeholder body parsing pipeline step.
+     *
+     * Body parsing is normally handled by configured Express body parser handlers. This
+     * method remains as an override point for modules that need request-context body
+     * enrichment before controller dispatch.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} response Nodics response context.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @override Project modules may override this operation for product-specific body normalization.
+     */
     parseBody: function (request, response, process) {
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Executes special routes directly against the configured handler operation.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {boolean} request.special Indicates whether the selected router is a special route.
+     * @param {Object} request.router Effective router definition with handler and operation.
+     * @param {Object} response Nodics response context.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @sideEffects Sets default tenant before invoking special handlers when tenant is not already resolved.
+     * @throws Propagates controller errors through the pipeline.
+     */
     handleSpecialRequest: function (request, response, process) {
         if (request.special) {
             this.LOG.debug('Handling special request : ' + request.originalUrl);
@@ -164,6 +260,16 @@ module.exports = {
         }
     },
 
+    /**
+     * Selects the next pipeline node for secured or non-secured request handling.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {boolean} request.secured Indicates whether route security is enabled.
+     * @param {Object} response Nodics response context mutated with the next target node.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @sideEffects Writes `response.targetNode` with `securedRequest` or `nonSecureRequest`.
+     */
     redirectRequest: function (request, response, process) {
         this.LOG.debug('Redirecting secured/non-secured request  : ' + request.originalUrl);
         if (request.secured) {
@@ -176,6 +282,18 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Checks the API cache before dispatching the request to the controller.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.router Effective router definition, including cache settings.
+     * @param {Object} request.httpRequest Express request wrapper used to build cache key.
+     * @param {Object} response Nodics response context.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @sideEffects Writes `request.apiCacheKeyHash` and may stop the pipeline with cached data.
+     * @throws Propagates non-cache-miss cache errors through the pipeline.
+     */
     lookupCache: function (request, response, process) {
         let _self = this;
         this.LOG.debug('Looking up result in cache system  : ' + request.originalUrl);
@@ -212,6 +330,17 @@ module.exports = {
         }
     },
 
+    /**
+     * Dispatches the request to the selected controller and operation.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.router Effective router definition with controller and operation names.
+     * @param {Object} response Nodics response context mutated with controller success result.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @sideEffects Calls dynamic controller registry and asynchronously stores cacheable results.
+     * @throws Propagates controller dispatch errors through the pipeline.
+     */
     handleRequest: function (request, response, process) {
         let _self = this;
         _self.LOG.debug('processing your request : ' + request.originalUrl);

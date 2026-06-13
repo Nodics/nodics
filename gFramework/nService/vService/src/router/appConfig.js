@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module service/vService/router/VersionedServiceAppConfig
+ * @description Versioned service router app configuration extension slot.
+ * @layer router
+ * @owner nService
+ * @override Project modules may add versioned service router app configuration.
+ */
 module.exports = {
 
 };

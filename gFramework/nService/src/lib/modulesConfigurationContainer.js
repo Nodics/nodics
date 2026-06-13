@@ -11,6 +11,19 @@
 
 const _ = require('lodash');
 
+/**
+ * @module service/lib/ModulesConfigurationContainer
+ * @description Runtime container for module topology configuration loaded from
+ * layered `server` properties. It builds `ModuleConfiguration` objects used for
+ * internal module communication and distributed node routing.
+ * @layer lib
+ * @owner nService
+ * @override Project modules may replace this container to integrate service
+ * discovery systems, but should preserve module lookup and availability
+ * semantics.
+ *
+ * @property {Object} CONFIG.server Layered server/module topology configuration.
+ */
 module.exports = function () {
 
     let _modules = {};

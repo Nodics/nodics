@@ -9,6 +9,20 @@
 
  */
 
+/**
+ * @module database/router/DatabaseRouter
+ * @description Secured router definitions for schema index and schema validator
+ * maintenance APIs. These routes expose admin operations used to refresh
+ * generated database structures after schema changes.
+ * @layer router
+ * @owner nDatabase
+ * @override Project modules may override these route definitions to adjust
+ * access groups, API paths, or controller operations while preserving schema
+ * maintenance capability.
+ *
+ * @property {Object} common.schemaIndexes Schema index refresh routes.
+ * @property {Object} common.schemaValidation Schema validator refresh routes.
+ */
 module.exports = {
     common: {
         schemaIndexes: {

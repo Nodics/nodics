@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module database/vDatabase/router/VersionedDatabaseRouter
+ * @description Versioned database route definition extension slot.
+ * @layer router
+ * @owner nDatabase
+ * @override Project modules may expose versioned database admin routes.
+ */
 module.exports = {
 
 };

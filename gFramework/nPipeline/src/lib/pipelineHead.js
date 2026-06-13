@@ -11,6 +11,22 @@
 
 const _ = require('lodash');
 
+/**
+ * @module pipeline/lib/PipelineHead
+ * @description Runtime pipeline executor for Nodics. A pipeline head builds
+ * node instances from the effective pipeline definition, tracks execution state,
+ * moves through success/error links, executes nested pipelines, and enriches
+ * errors with contextual metadata for database, search, event, and import flows.
+ * @layer lib
+ * @owner nPipeline
+ * @override Project modules may override pipeline definitions and handlers;
+ * replacing this class should preserve `start`, `nextSuccess`, `stop`, `error`,
+ * `resolve`, and `reject` contracts used by all generated runtime pipelines.
+ *
+ * @property {string} pipelineDefinition.startNode First node name.
+ * @property {Object} pipelineDefinition.nodes Pipeline node definitions.
+ * @property {string} pipelineDefinition.handleError Optional error handler node.
+ */
 module.exports = function (name, pipelineDefinition) {
     let _pipelineId = 'id';
     let _pipelineDefinition = pipelineDefinition;
@@ -18,6 +34,7 @@ module.exports = function (name, pipelineDefinition) {
     let _startNode = pipelineDefinition.startNode;
     let _hardStop = pipelineDefinition.hardStop || false;
     let _currentNode = {};
+    let _preNode = {};
     let _handleError = {};
     let _nodeList = {};
     let _nextSuccessNode = {};
@@ -26,14 +43,30 @@ module.exports = function (name, pipelineDefinition) {
     let _reject = null;
     let _nodeLog = SERVICE.DefaultLoggerService.createLogger('PipelineNode');
 
+    /**
+     * Sets the runtime pipeline execution id.
+     *
+     * @param {string} id Pipeline execution id.
+     * @returns {undefined}
+     */
     this.setPipelineId = function (id) {
         _pipelineId = id;
     };
 
+    /**
+     * Returns the runtime pipeline execution id.
+     *
+     * @returns {string} Pipeline execution id.
+     */
     this.getPipelineId = function () {
         return _pipelineId;
     };
 
+    /**
+     * Returns the currently executing node name.
+     *
+     * @returns {string|null} Current node name.
+     */
     this.getNodeName = function () {
         if (_currentNode) {
             return _currentNode.getName();
@@ -41,10 +74,20 @@ module.exports = function (name, pipelineDefinition) {
         return null;
     };
 
+    /**
+     * Returns the pipeline definition name.
+     *
+     * @returns {string} Pipeline name.
+     */
     this.getPipelineName = function () {
         return _pipelineName;
     };
 
+    /**
+     * Returns the current node handler reference.
+     *
+     * @returns {string|null} Handler reference in `Service.operation` or pipeline-name form.
+     */
     this.getCurrentHandler = function () {
         if (_currentNode) {
             return _currentNode.getHandler();
@@ -52,6 +95,12 @@ module.exports = function (name, pipelineDefinition) {
         return null;
     };
 
+    /**
+     * Builds contextual metadata for errors raised inside this pipeline.
+     *
+     * @param {Object} request Nodics pipeline request.
+     * @returns {Object} Error context including pipeline, node, tenant, module, schema, event, or import details.
+     */
     this.buildErrorContext = function (request) {
         let context = {
             layer: 'pipeline',
@@ -100,6 +149,12 @@ module.exports = function (name, pipelineDefinition) {
         return context;
     };
 
+    /**
+     * Builds executable pipeline nodes from the effective pipeline definition.
+     *
+     * @returns {undefined}
+     * @sideEffects Initializes node list, success end node, and error handler node.
+     */
     this.buildPipeline = function () {
         try {
             _.each(_pipelineDefinition.nodes, function (value, key) {
@@ -127,6 +182,16 @@ module.exports = function (name, pipelineDefinition) {
         }
     };
 
+    /**
+     * Starts pipeline execution.
+     *
+     * @param {string} id Runtime pipeline execution id.
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Function} resolve Promise resolver supplied by `DefaultPipelineService.start`.
+     * @param {Function} reject Promise rejecter supplied by `DefaultPipelineService.start`.
+     * @returns {undefined}
+     */
     this.start = function (id, request, response, resolve, reject) {
         _resolve = resolve;
         _reject = reject;
@@ -145,6 +210,13 @@ module.exports = function (name, pipelineDefinition) {
         this.next(request, response);
     };
 
+    /**
+     * Moves execution to the next success node.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response accumulator.
+     * @returns {undefined}
+     */
     this.nextSuccess = function (request, response) {
         _preNode = _currentNode;
         if (!_nextSuccessNode || _nextSuccessNode === null) {
@@ -167,6 +239,14 @@ module.exports = function (name, pipelineDefinition) {
         }
     };
 
+    /**
+     * Stops normal processing and routes to the success end node.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {*} [success] Optional success payload to assign to `response.success`.
+     * @returns {undefined}
+     */
     this.stop = function (request, response, success) {
         if (success !== undefined) {
             response.success = success;
@@ -176,6 +256,15 @@ module.exports = function (name, pipelineDefinition) {
         this.next(request, response);
     };
 
+    /**
+     * Routes execution to the configured error handler after enriching the error.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {*} error Error raised by the current node.
+     * @returns {undefined}
+     * @sideEffects Writes or appends `response.error`.
+     */
     this.error = function (request, response, error) {
         try {
             if (error) {
@@ -199,14 +288,33 @@ module.exports = function (name, pipelineDefinition) {
         }
     };
 
+    /**
+     * Resolves the outer pipeline promise.
+     *
+     * @param {*} response Final response payload.
+     * @returns {undefined}
+     */
     this.resolve = function (response) {
         _resolve(response);
     };
 
+    /**
+     * Rejects the outer pipeline promise.
+     *
+     * @param {*} response Final error payload.
+     * @returns {undefined}
+     */
     this.reject = function (response) {
         _reject(response);
     };
 
+    /**
+     * Prepares the next success node from the current node definition.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response accumulator.
+     * @returns {undefined}
+     */
     this.prepareNextNode = function (request, response) {
         if (_currentNode.getSuccess() && !UTILS.isObject(_currentNode.getSuccess())) {
             if (_nodeList[_currentNode.getSuccess()]) {
@@ -220,6 +328,13 @@ module.exports = function (name, pipelineDefinition) {
         }
     };
 
+    /**
+     * Executes the current node as either a service operation or nested pipeline.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response accumulator.
+     * @returns {undefined}
+     */
     this.next = function (request, response) {
         let _self = this;
         if (_currentNode) {

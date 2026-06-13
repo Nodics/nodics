@@ -9,12 +9,25 @@
 
  */
 
+/**
+ * @module system/controller/DefaultConfigurationController
+ * @description Controller for runtime configuration changes in the Nodics control plane.
+ * @layer controller
+ * @owner system
+ * @override Project modules may override this controller in a later-loaded module to govern
+ * runtime configuration changes without changing Nodics core code.
+ *
+ * @property {Object} FACADE.DefaultConfigurationFacade Facade responsible for validating and applying configuration changes.
+ * @property {Object} request.httpRequest Express request wrapper supplied by the router pipeline.
+ * @property {Object} request.config Normalized runtime configuration payload added by this controller.
+ */
 module.exports = {
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the configuration controller during entity loading.
+     *
+     * @param {Object} options Nodics initialization options for the active module hierarchy.
+     * @returns {Promise<boolean>} Resolves when controller initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -23,9 +36,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the configuration controller after entity loading.
+     *
+     * @param {Object} options Nodics initialization options for the active module hierarchy.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -33,6 +47,17 @@ module.exports = {
         });
     },
 
+    /**
+     * Applies a runtime configuration change request.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.httpRequest Express request wrapper.
+     * @param {Object} request.httpRequest.body Configuration payload supplied by the caller.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     * @sideEffects Writes `request.config` and delegates persistence to `DefaultConfigurationFacade`.
+     * @throws Propagates facade errors through the callback or rejected promise.
+     */
     changeConfig: function (request, callback) {
         request.config = request.httpRequest.body || {};
         if (callback) {

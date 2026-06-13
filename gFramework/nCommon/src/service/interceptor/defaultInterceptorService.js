@@ -11,8 +11,29 @@
 const _ = require('lodash');
 const util = require('util');
 
+/**
+ * @module common/service/interceptor/DefaultInterceptorService
+ * @description Loads, validates, merges, and executes Nodics interceptors. Interceptors
+ * are dynamic extension points for model, schema, and process behavior and are executed
+ * in configured trigger/index order.
+ * @layer service
+ * @owner nCommon
+ * @override Project modules may contribute interceptor definitions or override this
+ * service to customize dynamic behavior governance. Preserve error enrichment context.
+ *
+ * @property {Object} ENUMS.InterceptorType Interceptor type enum used for validation.
+ * @property {Object} SERVICE.DefaultInterceptorConfigurationService Stores effective interceptor definitions.
+ * @property {Object} SERVICE Dynamic service registry used to invoke interceptor handlers.
+ */
 module.exports = {
 
+    /**
+     * Validates raw interceptor definitions and merges them into the effective registry.
+     *
+     * @param {Object} rawInterceptors Raw interceptor definitions keyed by interceptor code/name.
+     * @returns {void}
+     * @throws NodicsError when interceptor type or trigger is invalid.
+     */
     loadRawInterceptors: function (rawInterceptors) {
         let interceptors = {};
         Object.keys(rawInterceptors).forEach(interceptorName => {
@@ -46,6 +67,13 @@ module.exports = {
         ));
     },
 
+    /**
+     * Starts the interceptor update pipeline after a persisted interceptor change event.
+     *
+     * @param {Object} interceptor Updated interceptor payload.
+     * @returns {Promise<string>} Resolves when interceptor update processing completes.
+     * @throws Rejects when update pipeline fails.
+     */
     handleInterceptorChangeEvent: function (interceptor) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('interceptorUpdatedPipeline', {
@@ -62,6 +90,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Executes interceptor handlers sequentially.
+     *
+     * @param {Object[]} interceptorList Interceptors to execute in order.
+     * @param {Object} request Nodics request context.
+     * @param {Object} response Nodics response context.
+     * @returns {Promise<boolean>} Resolves after all interceptors execute.
+     * @throws Rejects with enriched NodicsError containing interceptor layer context.
+     */
     executeInterceptors: function (interceptorList, request, response) {
         let _self = this;
         return new Promise((resolve, reject) => {

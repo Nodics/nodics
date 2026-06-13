@@ -10,6 +10,20 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module service/authentication/DefaultInternalAuthenticationProviderService
+ * @description Fetches tenant-scoped internal auth tokens from the profile
+ * module when the profile module is deployed separately. This supports modular
+ * deployment where non-profile nodes still need internal service credentials.
+ * @layer service
+ * @owner nService
+ * @override Project modules may override this service to integrate external IAM,
+ * service accounts, or secret managers while preserving tenant-scoped internal
+ * token retrieval.
+ *
+ * @property {Object} CONFIG.defaultAuthDetail Bootstrap API key and enterprise code.
+ * @property {Object} SERVICE.DefaultModuleService Internal module HTTP client.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +47,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Fetches an internal auth token for a tenant from the profile module.
+     *
+     * @param {string} tntCode Tenant code.
+     * @returns {Promise<Object|Object[]>} Internal token response or empty list when unavailable.
+     */
     fetchInternalAuthToken: function (tntCode) {
         let _self = this;
         return new Promise((resolve, reject) => {

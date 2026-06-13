@@ -9,6 +9,25 @@
 
  */
 
+/**
+ * @module database/pipelines/DatabasePipelinesDefinition
+ * @description Pipeline definitions for schema-driven database operations:
+ * query building, get, single save, bulk save, remove, update, and model value
+ * validation. Generated services and admin/runtime flows use these names as
+ * stable contracts.
+ * @layer pipeline
+ * @owner nDatabase
+ * @override Project modules may override pipeline definitions, node order, or
+ * handlers by layering later pipeline files while preserving public pipeline
+ * names consumed by generated CRUD services.
+ *
+ * @property {Object} modelQueryBuilderPipeline Builds id, primary-key, and custom queries.
+ * @property {Object} modelsGetInitializerPipeline Executes schema get lifecycle.
+ * @property {Object} modelSaveInitializerPipeline Executes single model save lifecycle.
+ * @property {Object} modelsSaveInitializerPipeline Executes bulk model save lifecycle.
+ * @property {Object} modelsRemoveInitializerPipeline Executes schema remove lifecycle.
+ * @property {Object} modelsUpdateInitializerPipeline Executes schema update lifecycle.
+ */
 module.exports = {
     validateModelValuesPipeline: {
         startNode: "validateRequest",

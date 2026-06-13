@@ -11,12 +11,25 @@
 const _ = require('lodash');
 const fileLoader = require('./defaultFilesLoaderService');
 
+/**
+ * @module config/service/DefaultClassesHandlerService
+ * @description Loads class exports from active module `src/lib` folders into the global
+ * `CLASSES` registry and executes class generalization scripts.
+ * @layer service
+ * @owner nConfig
+ * @override Project modules may add or override classes in later module layers by
+ * providing files under `src/lib` or class generalizers in `src/lib/classes.js`.
+ *
+ * @property {Object} CLASSES Global class registry.
+ * @property {Object} fileLoader Layered file loader and recursive file processor.
+ */
 module.exports = {
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the classes handler service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -25,9 +38,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the classes handler service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -35,6 +49,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Loads class files for all indexed active modules and then runs generalizers.
+     *
+     * @returns {void}
+     * @sideEffects Populates and merges global `CLASSES`.
+     */
     loadClasses: function () {
         let _self = this;
         NODICS.getIndexedModules().forEach((value, key) => {
@@ -43,6 +63,13 @@ module.exports = {
         _self.generalizeClasses();
     },
 
+    /**
+     * Loads class files from one module's `src/lib` directory.
+     *
+     * @param {Object} module Indexed module object containing module path.
+     * @returns {void}
+     * @sideEffects Adds or merges class exports into global `CLASSES`.
+     */
     loadModuleClasses: function (module) {
         let _self = this;
         let path = module.path + '/src/lib';
@@ -58,6 +85,12 @@ module.exports = {
         }, 'classes.js');
     },
 
+    /**
+     * Executes layered class generalization scripts.
+     *
+     * @returns {void}
+     * @sideEffects Runs methods exported from merged `src/lib/classes.js` files.
+     */
     generalizeClasses: function () {
         let _self = this;
         let classesScripts = {};

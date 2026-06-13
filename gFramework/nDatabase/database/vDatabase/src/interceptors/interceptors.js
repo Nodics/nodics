@@ -9,6 +9,17 @@
 
  */
 
+/**
+ * @module database/vDatabase/interceptors/VersionedDatabaseInterceptors
+ * @description Versioned schema interceptor registry. It attaches version id
+ * initialization to generated save operations for version-aware database models.
+ * @layer interceptor
+ * @owner nDatabase
+ * @override Project modules may override or extend these definitions to
+ * implement stricter optimistic locking or version mutation policies.
+ *
+ * @property {Object} publishPreSave preSave version id initialization interceptor.
+ */
 module.exports = {
     publishPreSave: {
         type: 'schema',

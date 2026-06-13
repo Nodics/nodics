@@ -12,12 +12,25 @@ const _ = require('lodash');
 const Enum = require('../../bin/enum');
 const fileLoader = require('./defaultFilesLoaderService');
 
+/**
+ * @module config/service/DefaultEnumService
+ * @description Loads layered enum definitions from active modules and creates runtime
+ * Enum instances in the global `ENUMS` registry.
+ * @layer service
+ * @owner nConfig
+ * @override Project modules may add or override enum definitions through
+ * `src/utils/enums.js` in later module layers.
+ *
+ * @property {Object} ENUMS Global enum registry.
+ * @property {Object} fileLoader Layered file loader used to merge enum definition files.
+ */
 module.exports = {
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the enum service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -26,9 +39,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the enum service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -36,6 +50,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Loads enum definitions from all active modules.
+     *
+     * @returns {void}
+     * @sideEffects Populates global `ENUMS` with Enum instances.
+     */
     loadEnums: function () {
         let _self = this;
         let enums = global.ENUMS;
@@ -51,6 +71,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates constructor options for an enum definition.
+     *
+     * @param {string} key Enum registry key.
+     * @param {Object} enumValue Enum definition export.
+     * @returns {Object|undefined} Enum options when `_options` is supplied.
+     */
     createEnumOptions: function (key, enumValue) {
         if (enumValue._options) {
             let _option = {

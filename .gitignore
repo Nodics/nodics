@@ -36,3 +36,4 @@ yarn-error.log*
 
 **/rrldataengine/**
 **/config/modules.js
+**/generated/openapi/*.openapi.json

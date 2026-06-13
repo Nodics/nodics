@@ -9,6 +9,22 @@
 
  */
 
+/**
+ * @module database/interceptors/DatabaseInterceptors
+ * @description Default schema interceptor registry for generated database CRUD
+ * flows. These definitions attach timestamp mutation and nTest write guards to
+ * schema save/update lifecycle triggers.
+ * @layer interceptor
+ * @owner nDatabase
+ * @override Project modules may override or extend interceptor definitions by
+ * layering later interceptor files, changing index/order, active state, or
+ * handler implementations.
+ *
+ * @property {Object} updateModifiedTimeOnSave preSave timestamp interceptor.
+ * @property {Object} updateModifiedTimeOnUpdate preUpdate timestamp interceptor.
+ * @property {Object} blockNTestSave preSave nTest guard.
+ * @property {Object} blockNTestUpdate preUpdate nTest guard.
+ */
 module.exports = {
     updateModifiedTimeOnSave: {
         type: 'schema',

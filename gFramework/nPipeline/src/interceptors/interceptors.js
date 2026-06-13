@@ -9,6 +9,16 @@
 
  */
 
+/**
+ * @module pipeline/interceptors/PipelineInterceptors
+ * @description Pipeline interceptor registry extension slot. The base pipeline
+ * module currently ships no active interceptors, but this file preserves the
+ * layered configuration location for pipeline persistence or governance hooks.
+ * @layer interceptor
+ * @owner nPipeline
+ * @override Project modules may add pipeline schema interceptors here without
+ * changing the core pipeline executor.
+ */
 module.exports = {
 
     // preSavePipeline: {

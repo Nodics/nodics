@@ -9,6 +9,14 @@
 
  */
 
+/**
+ * @module elasticdb/pipelines/ElasticPipelinesDefinition
+ * @description Elastic database adapter pipeline extension slot.
+ * @layer pipeline
+ * @owner nDatabase
+ * @override Project modules may define Elastic-specific indexing or search
+ * synchronization pipelines here.
+ */
 module.exports = {
 
 };

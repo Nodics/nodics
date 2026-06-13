@@ -9,6 +9,16 @@
 
  */
 
+/**
+ * @module cassandradb/pipelines/CassandraPipelinesDefinition
+ * @description Cassandra database adapter pipeline extension slot. The base
+ * adapter does not define custom pipelines, but layered modules can add
+ * Cassandra-specific database behavior here.
+ * @layer pipeline
+ * @owner nDatabase
+ * @override Project modules may define Cassandra-specific pipelines without
+ * changing generic database pipeline definitions.
+ */
 module.exports = {
 
 };

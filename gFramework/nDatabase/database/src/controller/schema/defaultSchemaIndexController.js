@@ -9,8 +9,29 @@
 
  */
 
+/**
+ * @module database/controller/schema/DefaultSchemaIndexController
+ * @description Controller for secured schema index maintenance routes. It
+ * delegates module-wide and schema-specific index refresh requests to the schema
+ * index facade.
+ * @layer controller
+ * @owner nDatabase
+ * @override Project modules may override this controller to customize admin
+ * authorization, request shape, or response handling while preserving facade
+ * delegation contracts.
+ *
+ * @property {Object} request.httpRequest.params Route parameters supplied by router pipeline.
+ * @property {string} request.moduleName Module owning the schema indexes.
+ */
 module.exports = {
 
+    /**
+     * Updates indexes for one schema when `:schema` is present, otherwise for the request module.
+     *
+     * @param {Object} request Nodics controller request.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise|undefined} Promise when no callback is supplied.
+     */
     updateSchemaIndexes: function (request, callback) {
         let moduleName = request.moduleName;
         if (request.httpRequest.params.schema) {
@@ -31,11 +52,18 @@ module.exports = {
                     callback(error);
                 });
             } else {
-                return FACADE.DefaultSchemaIndexFacade.updateSchemaIndexes(moduleName);
+                return FACADE.DefaultSchemaIndexFacade.updateModuleIndexes(moduleName);
             }
         }
     },
 
+    /**
+     * Updates indexes for all active modules.
+     *
+     * @param {Object} request Nodics controller request.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise|undefined} Promise when no callback is supplied.
+     */
     updateModulesIndexes: function (request, callback) {
         if (callback) {
             return FACADE.DefaultSchemaIndexFacade.updateModulesIndexes().then(success => {

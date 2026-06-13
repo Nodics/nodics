@@ -11,6 +11,22 @@
 
 const _ = require('lodash');
 
+/**
+ * @module database/service/procs/get/DefaultModelsGetInitializerService
+ * @description Pipeline step service for generated schema get operations. It
+ * validates request shape, checks schema access, prepares query options,
+ * applies schema interceptors/validators, executes database reads, populates
+ * nested/virtual properties, and maintains item cache.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override individual pipeline steps by layering a
+ * service with the same name, preserving the request/response/process contract.
+ *
+ * @property {Object} request.schemaModel Generated schema model wrapper.
+ * @property {Object} request.searchOptions Query projection, sort, paging, and timeout options.
+ * @property {Object} response.success Generated get response payload.
+ * @property {Object} process Pipeline controller with `nextSuccess`, `stop`, and `error`.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +50,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates get request prerequisites and search option shape.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating get request ');
         let searchOptions = request.searchOptions || {};
@@ -47,6 +71,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Checks read access using schema access groups.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     checkAccess: function (request, response, process) {
         this.LOG.debug('Checking model access');
         let rawSchema = request.schemaModel.rawSchema;
@@ -56,11 +88,28 @@ module.exports = {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user do not have access to this resource'));
         }
     },
+    /**
+     * Ensures query options exist before query option normalization.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query');
         request.options = request.options || {};
         process.nextSuccess(request, response);
     },
+    /**
+     * Builds paging and timeout search options for the database query.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     * @sideEffects Mutates `request.searchOptions`.
+     */
     buildOptions: function (request, response, process) {
         this.LOG.debug('Building query searchOptions');
         let inputOptions = request.searchOptions || {};
@@ -74,11 +123,19 @@ module.exports = {
         inputOptions.snapshot = inputOptions.snapshot || false;
         if (inputOptions.timeout === true) {
             inputOptions.timeout = true;
-            inputOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS');
+            inputOptions.maxTimeMS = CONFIG.get('queryMaxTimeMS');
         }
         request.searchOptions = inputOptions;
         process.nextSuccess(request, response);
     },
+    /**
+     * Attempts to fulfill a get request from schema item cache.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     lookupCache: function (request, response, process) {
         if (request.schemaModel.cache &&
             request.schemaModel.cache.enabled) {
@@ -106,6 +163,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes pre-get interceptors from schema and parent schema definitions.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre get model interceptors');
         let interceptors = {};
@@ -128,6 +193,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes pre-get validators from schema and parent schema definitions.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre model validator');
         let validators = {};
@@ -150,6 +223,15 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes the generated model get operation.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     * @sideEffects Writes `response.success`.
+     */
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
         request.schemaModel.getItems(request).then(success => {
@@ -166,6 +248,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Recursively populates referenced models when requested.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
         if (response.success.result.length > 0 && request.options.recursive) {
@@ -184,6 +274,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Populates schema-defined virtual properties on get results.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
         let virtualProperties = request.schemaModel.rawSchema.virtualProperties;
@@ -194,6 +292,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes post-get validators from schema and parent schema definitions.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPostValidators: function (request, response, process) {
         this.LOG.debug('Applying post model validator');
         let validators = {};
@@ -216,6 +322,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes post-get interceptors from schema and parent schema definitions.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post model interceptors');
         let interceptors = {};
@@ -238,6 +352,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Stores cacheable get results in schema item cache.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
         if (UTILS.isItemCashable(response.success.result, request.schemaModel)) {

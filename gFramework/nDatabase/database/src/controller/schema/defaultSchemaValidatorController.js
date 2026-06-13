@@ -9,18 +9,39 @@
 
  */
 
+/**
+ * @module database/controller/schema/DefaultSchemaValidatorController
+ * @description Controller for secured schema validator maintenance routes. It
+ * delegates module-wide and schema-specific validator refresh requests to the
+ * schema validator facade.
+ * @layer controller
+ * @owner nDatabase
+ * @override Project modules may override this controller to customize admin
+ * authorization, request shape, or response handling while preserving facade
+ * delegation contracts.
+ *
+ * @property {Object} request.httpRequest.params Route parameters supplied by router pipeline.
+ * @property {string} request.moduleName Module owning the schema validators.
+ */
 module.exports = {
+    /**
+     * Updates validators for one schema when `:schema` is present, otherwise for the request module.
+     *
+     * @param {Object} request Nodics controller request.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise|undefined} Promise when no callback is supplied.
+     */
     updateSchemaValidator: function (request, callback) {
         let moduleName = request.moduleName;
         if (request.httpRequest.params.schema) {
             if (callback) {
-                FACADE.DefaultSchemaValidatorFacade.updateSchemaValidator(moduleName, request.httpRequest.schema).then(success => {
+                FACADE.DefaultSchemaValidatorFacade.updateSchemaValidator(moduleName, request.httpRequest.params.schema).then(success => {
                     callback(null, success);
                 }).catch(error => {
                     callback(error);
                 });
             } else {
-                return FACADE.DefaultSchemaValidatorFacade.updateSchemaValidator(moduleName, request.httpRequest.schema);
+                return FACADE.DefaultSchemaValidatorFacade.updateSchemaValidator(moduleName, request.httpRequest.params.schema);
             }
         } else {
             if (callback) {
@@ -35,6 +56,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Updates validators for all active modules.
+     *
+     * @param {Object} request Nodics controller request.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise|undefined} Promise when no callback is supplied.
+     */
     updateModulesSchemaValidators: function (request, callback) {
         if (callback) {
             FACADE.DefaultSchemaValidatorFacade.updateModulesSchemaValidators().then(success => {

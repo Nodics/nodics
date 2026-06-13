@@ -11,6 +11,23 @@
 
 const _ = require('lodash');
 
+/**
+ * @module database/service/procs/remove/DefaultModelsRemoveInitializerService
+ * @description Pipeline step service for generated schema remove operations. It
+ * validates delete requests, checks schema access, builds remove queries,
+ * applies interceptors/validators, removes items, handles recursive/deep
+ * removal, invalidates cache, and publishes schema change events.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override individual remove pipeline steps to
+ * customize deletion policy while preserving the request/response/process
+ * contract used by generated services.
+ *
+ * @property {Object} request.schemaModel Generated schema model wrapper.
+ * @property {Object} request.query Remove query.
+ * @property {string[]} request.ids Optional ids to remove.
+ * @property {string[]} request.codes Optional codes to remove.
+ */
 module.exports = {
 
     /**
@@ -35,6 +52,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates that the remove request identifies target records.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating remove request: ');
         if (request.query || (request.ids && request.ids.length > 0) || (request.codes && request.codes.length > 0)) {
@@ -44,6 +69,14 @@ module.exports = {
         }
 
     },
+    /**
+     * Checks remove access using schema access groups.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     checkAccess: function (request, response, process) {
         this.LOG.debug('Checking model access');
         let rawSchema = request.schemaModel.rawSchema;
@@ -53,6 +86,15 @@ module.exports = {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user do not have access to this resource'));
         }
     },
+    /**
+     * Builds the remove query and search options.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     * @sideEffects Mutates `request.query` and `request.searchOptions`.
+     */
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building search query & searchOptions');
         request.options = request.options || {};
@@ -82,12 +124,20 @@ module.exports = {
 
         if (inputOptions.timeout === true) {
             inputOptions.timeout = true;
-            inputOptions.maxTimeMS = maxTimeMS || CONFIG.get('queryMaxTimeMS');
+            inputOptions.maxTimeMS = CONFIG.get('queryMaxTimeMS');
         }
         request.searchOptions = inputOptions;
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Executes pre-remove schema interceptors.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre update model interceptors');
         let schemaName = request.schemaModel.schemaName;
@@ -103,6 +153,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Executes pre-remove schema validators.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre model validator');
         let schemaName = request.schemaModel.schemaName;
@@ -118,6 +176,15 @@ module.exports = {
         }
     },
 
+    /**
+     * Executes the generated model remove operation.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     * @sideEffects Writes `response.success`.
+     */
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing remove query');
         request.schemaModel.removeItems(request).then(result => {
@@ -131,6 +198,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Populates removed sub-models when recursive response loading is requested.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
         if (response.success && response.success.result && response.success.result.n &&
@@ -151,6 +226,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Executes post-remove schema validators.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPostValidators: function (request, response, process) {
         this.LOG.debug('Applying post model validator');
         let schemaName = request.schemaModel.schemaName;
@@ -166,6 +249,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Executes post-remove schema interceptors when records were removed.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post remove model interceptors');
         if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0) {
@@ -185,6 +276,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Invalidates schema router cache after successful removal.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     invalidateRouterCache: function (request, response, process) {
         this.LOG.debug('Invalidating router cache for removed model');
         try {
@@ -208,6 +307,14 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Invalidates schema item cache after successful removal.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     invalidateItemCache: function (request, response, process) {
         this.LOG.debug('Invalidating item cache for removed model');
         try {
@@ -232,6 +339,14 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Publishes schema remove events after successful removal.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     triggerModelChangeEvent: function (request, response, process) {
         this.LOG.debug('Triggering event for removed models');
         try {
@@ -267,6 +382,14 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Removes nested referenced models when deep-remove is requested.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     handleDeepRemove: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         if (request.options.deepRemove && response.success.result && response.success.result.models) {

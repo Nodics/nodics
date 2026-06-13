@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module service/vService/pipelines/VersionedServicePipelinesDefinition
+ * @description Versioned service pipeline extension slot.
+ * @layer pipeline
+ * @owner nService
+ * @override Project modules may define versioned service pipelines here.
+ */
 module.exports = {
 
 };

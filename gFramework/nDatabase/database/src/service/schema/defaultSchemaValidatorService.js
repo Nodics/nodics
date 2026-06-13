@@ -11,10 +11,28 @@
 
 const _ = require('lodash');
 
+/**
+ * @module database/service/schema/DefaultSchemaValidatorService
+ * @description Refreshes database validators for generated schema models across
+ * active tenants and channels. This keeps database-level validation aligned with
+ * the effective schema produced by layered module configuration.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override validator refresh behavior to support
+ * custom database engines, channel policies, or tenant filtering while preserving
+ * module and schema scoped operations.
+ *
+ * @property {Object} SERVICE.DefaultDatabaseModelHandlerService Updates validators on concrete models.
+ * @property {Object} NODICS.models Tenant and channel scoped generated model registry.
+ */
 module.exports = {
     /**
-     * This function is used to update indexes for given Schema name. I will update for all active tenants schema
-     * @param {*} schemaName 
+     * Updates database validators for one schema across active tenants and supported channels.
+     *
+     * @param {string} moduleName Owning module name.
+     * @param {string} schemaName Schema code.
+     * @returns {Promise<Object[]>} Resolves with validator update responses.
+     * @throws {CLASSES.NodicsError|Object[]} Rejects when no model is found or validator update fails.
      */
     updateSchemaValidator: function (moduleName, schemaName) {
         return new Promise((resolve, reject) => {
@@ -47,8 +65,11 @@ module.exports = {
     },
 
     /**
-     * This functions is used to update schema indexes for given module
-     * @param {*} schemaName 
+     * Updates database validators for every generated model in one module.
+     *
+     * @param {string} moduleName Owning module name.
+     * @returns {Promise<Object[]>} Resolves with validator update responses.
+     * @throws {CLASSES.NodicsError|Object[]} Rejects when no models are found or validator update fails.
      */
     updateModuleSchemaValidators: function (moduleName) {
         return new Promise((resolve, reject) => {
@@ -90,8 +111,10 @@ module.exports = {
     },
 
     /**
-     * This functions is used to update schema indexes for all module
-     * @param {*} schemaName 
+     * Updates database validators for every generated model in every active module.
+     *
+     * @returns {Promise<Object[]>} Resolves with validator update responses.
+     * @throws {CLASSES.NodicsError|Object[]} Rejects when no models are found or validator update fails.
      */
     updateModulesSchemaValidators: function () {
         return new Promise((resolve, reject) => {

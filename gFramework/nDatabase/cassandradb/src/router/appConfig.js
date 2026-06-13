@@ -9,6 +9,14 @@
 
  */
 
+/**
+ * @module cassandradb/router/CassandraAppConfig
+ * @description Cassandra database adapter router app configuration extension
+ * slot.
+ * @layer router
+ * @owner nDatabase
+ * @override Project modules may add Cassandra-specific router app configuration.
+ */
 module.exports = {
 
 };

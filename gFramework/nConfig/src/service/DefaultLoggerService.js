@@ -18,13 +18,34 @@ const utils = require('../utils/utils');
 const logform = require('logform');
 const flatted = require('flatted');
 
+/**
+ * @module config/service/DefaultLoggerService
+ * @description Central logger factory for Nodics runtime entities. It creates and
+ * registers Winston loggers using layered configuration and supports console, file,
+ * and Elasticsearch transports.
+ * @layer service
+ * @owner nConfig
+ * @override Project modules may override logger configuration through properties or
+ * replace this service to integrate an enterprise observability platform.
+ *
+ * @property {Object} NODICS Logger registry owner.
+ * @property {Object} CONFIG Layered configuration registry for log settings.
+ * @property {Object|null} elasticClient Cached Elasticsearch logger client.
+ */
 module.exports = {
 
-    elasticClient: null,
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Cached Elasticsearch client used by elastic logger transport.
+     *
+     * @type {Object|null}
+     */
+    elasticClient: null,
+
+    /**
+     * Initializes the logger service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -33,9 +54,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the logger service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -43,6 +65,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Changes the level of a registered logger at runtime.
+     *
+     * @param {Object} input Log level change request.
+     * @param {string} input.entityName Registered logger/entity name.
+     * @param {string} input.logLevel New log level.
+     * @returns {boolean} True when logger exists and level is changed.
+     */
     changeLogLevel: function (input) {
         let logger = NODICS.getLogger(input.entityName);
         if (logger) {
@@ -52,6 +82,14 @@ module.exports = {
         return false;
     },
 
+    /**
+     * Creates and registers a Winston logger for a Nodics runtime entity.
+     *
+     * @param {string} entityName Service, facade, controller, module, or framework entity name.
+     * @param {Object} [logConfig] Optional log configuration; defaults to `CONFIG.log`.
+     * @returns {Object} Winston logger instance.
+     * @sideEffects Adds logger to `NODICS` logger registry.
+     */
     createLogger: function (entityName, logConfig) {
         logConfig = logConfig || CONFIG.get('log');
         let entityLevel = logConfig['logLevel' + entityName];
@@ -61,6 +99,14 @@ module.exports = {
         return logger;
     },
 
+    /**
+     * Builds Winston logger configuration for an entity.
+     *
+     * @param {string} entityName Entity/logger label.
+     * @param {string} level Explicit entity log level.
+     * @param {Object} logConfig Layered log configuration.
+     * @returns {Object} Winston logger configuration.
+     */
     getLoggerConfiguration: function (entityName, level, logConfig) {
         return {
             level: level || logConfig.level || 'info',
@@ -73,6 +119,12 @@ module.exports = {
         };
     },
 
+    /**
+     * Returns configured log format.
+     *
+     * @param {Object} logConfig Transport log configuration.
+     * @returns {Object} Winston format.
+     */
     getLogFormat: function (logConfig) {
         if (logConfig.format == 'json') {
             return winston.format.json();
@@ -81,6 +133,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Creates all enabled logger transports from layered configuration.
+     *
+     * @param {string} labelName Logger label.
+     * @param {Object} logConfig Layered log transport configuration.
+     * @returns {Object[]} Winston transport instances.
+     */
     createTransports: function (labelName, logConfig) {
         let transports = [];
         Object.keys(logConfig.transports).forEach(channel => {
@@ -105,6 +164,12 @@ module.exports = {
         return transports;
     },
 
+    /**
+     * Serializes objects safely for log output.
+     *
+     * @param {*} param Value to format.
+     * @returns {*} Serialized object string or original scalar value.
+     */
     formatObject: function (param) {
         if (_.isObject(param)) {
             return flatted.stringify(param);
@@ -113,6 +178,13 @@ module.exports = {
         return param;
     },
 
+    /**
+     * Creates a colorized console transport.
+     *
+     * @param {string} labelName Logger label.
+     * @param {Object} config Console transport configuration.
+     * @returns {Object} Winston console transport.
+     */
     createConsoleTransport: function (labelName, config) {
         let _self = this;
         let options = {};
@@ -139,6 +211,13 @@ module.exports = {
         return new winston.transports.Console(options);
     },
 
+    /**
+     * Creates a file transport rooted under the selected server log directory.
+     *
+     * @param {string} labelName Logger label.
+     * @param {Object} config File transport configuration.
+     * @returns {Object} Winston file transport.
+     */
     createFileTransport: function (labelName, config) {
         let _self = this;
         let options = _.merge({}, config.options);
@@ -166,6 +245,13 @@ module.exports = {
         return new winston.transports.File(options);
     },
 
+    /**
+     * Creates an Elasticsearch transport.
+     *
+     * @param {string} labelName Logger label.
+     * @param {Object} config Elasticsearch transport configuration.
+     * @returns {Object} Winston Elasticsearch transport.
+     */
     createElasticTransport: function (labelName, config) {
         let options = _.merge({}, config.options);
         options.label = labelName;
@@ -173,6 +259,13 @@ module.exports = {
         return new wElasticsearch(options);
     },
 
+    /**
+     * Creates or reuses the Elasticsearch logger client.
+     *
+     * @param {Object} options Elasticsearch client options.
+     * @returns {Object} Elasticsearch client.
+     * @sideEffects Caches client in `elasticClient`.
+     */
     createElasticLoggerClient: function (options) {
         if (this.elasticClient === null) {
             this.elasticClient = new elasticsearch.Client(options);

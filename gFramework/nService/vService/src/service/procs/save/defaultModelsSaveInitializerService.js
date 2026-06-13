@@ -9,6 +9,16 @@
 
  */
 
+/**
+ * @module service/vService/procs/save/DefaultModelsSaveInitializerService
+ * @description Versioned service bulk-save pipeline extension slot. The base
+ * implementation currently inherits generic bulk-save behavior while preserving
+ * a layered override location for version-aware bulk save processing.
+ * @layer service
+ * @owner nService
+ * @override Project modules may add version-aware bulk save behavior here
+ * without modifying the generic database bulk-save pipeline service.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 

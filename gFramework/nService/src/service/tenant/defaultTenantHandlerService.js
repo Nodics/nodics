@@ -11,6 +11,21 @@
 
 const _ = require('lodash');
 
+/**
+ * @module service/tenant/DefaultTenantHandlerService
+ * @description Deactivates tenants from the runtime node by removing tenant
+ * registry entries, stopping tenant cron jobs, dropping tenant database handles,
+ * removing generated models, and cleaning search runtime state.
+ * @layer service
+ * @owner nService
+ * @override Project modules may override tenant removal to add audit, graceful
+ * draining, cache cleanup, or external platform deprovisioning while preserving
+ * active tenant registry semantics.
+ *
+ * @property {Object} NODICS.activeTenants Runtime active tenant registry.
+ * @property {Object} SERVICE.DefaultDatabaseConnectionHandlerService Removes tenant database handles.
+ * @property {Object} SERVICE.DefaultDatabaseModelHandlerService Removes tenant generated models.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +49,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Removes runtime state for a list of tenants.
+     *
+     * @param {string[]} tenants Tenant codes to deactivate from this node.
+     * @returns {Promise<Object>} Tenant deactivation response.
+     * @sideEffects Mutates tenant, job, database, model, and search registries.
+     */
     removeTenants: function (tenants) {
         let _self = this;
         return new Promise((resolve, reject) => {

@@ -9,12 +9,26 @@
 
  */
 
+/**
+ * @module database/service/model/DefaultModelValidatorService
+ * @description Default model validation extension point for generated save and
+ * update flows. The base implementation is intentionally permissive and exists
+ * so project modules can layer stricter mandatory-field and datatype checks.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override these validators to enforce
+ * enterprise-specific rules while preserving generated CRUD validator contracts.
+ *
+ * @property {Object} model Model being validated.
+ * @property {Object} schemaDef Effective schema definition for the model.
+ */
 module.exports = {
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the model validator service.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -23,9 +37,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the model validator service.
+     *
+     * @param {Object} options Startup options supplied by the module initializer.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -33,6 +48,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates mandatory schema values.
+     *
+     * @param {Object} model Model being validated.
+     * @param {Object} schemaDef Effective schema definition.
+     * @returns {Promise<boolean>} Resolves true in the default implementation.
+     */
     validateMandate: function (model, schemaDef) {
         this.LOG.debug('Validating mandate values for model');
         return new Promise((resolve, reject) => {
@@ -40,6 +62,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates model value datatypes.
+     *
+     * @param {Object} model Model being validated.
+     * @param {Object} schemaDef Effective schema definition.
+     * @returns {Promise<boolean>} Resolves true in the default implementation.
+     */
     validateDataType: function (model, schemaDef) {
         this.LOG.debug('Validating value type for model');
         return new Promise((resolve, reject) => {

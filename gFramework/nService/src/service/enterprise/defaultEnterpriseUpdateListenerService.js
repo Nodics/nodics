@@ -9,6 +9,19 @@
 
  */
 
+/**
+ * @module service/enterprise/DefaultEnterpriseUpdateListenerService
+ * @description Event listener for enterprise activation and deactivation. It
+ * turns enterprise update events into tenant bootstrap or tenant runtime cleanup
+ * on the current node.
+ * @layer service
+ * @owner nService
+ * @override Project modules may override this listener to add approval,
+ * rollback, audit, or delayed tenant draining while preserving event callback
+ * semantics.
+ *
+ * @property {Object} event.data.enterprise Enterprise payload from event bus.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +45,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Handles enterprise activation events.
+     *
+     * @param {Object} event Enterprise event.
+     * @param {Function} callback Node-style event callback.
+     * @param {Object} request Original event request.
+     * @returns {undefined}
+     */
     handleAddEnterprise: function (event, callback, request) {
         if (event.data.enterprise) {
             let enterprise = event.data.enterprise;
@@ -79,6 +100,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Handles enterprise deactivation events.
+     *
+     * @param {Object} event Enterprise event.
+     * @param {Function} callback Node-style event callback.
+     * @param {Object} request Original event request.
+     * @returns {undefined}
+     */
     handleRemoveEnterprise: function (event, callback, request) {
         if (event.data.enterprise) {
             let enterprise = event.data.enterprise;

@@ -9,6 +9,16 @@
 
  */
 
+/**
+ * @module mongodb/pipelines/MongoPipelinesDefinition
+ * @description MongoDB adapter pipeline extension slot. The generic database
+ * module owns core CRUD pipelines; MongoDB-specific projects may add adapter
+ * pipelines here.
+ * @layer pipeline
+ * @owner nDatabase
+ * @override Project modules may define MongoDB-specific pipelines without
+ * changing generic database pipeline definitions.
+ */
 module.exports = {
 
 };

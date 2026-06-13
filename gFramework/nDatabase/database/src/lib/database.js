@@ -9,6 +9,18 @@
 
  */
 
+/**
+ * @module database/lib/Database
+ * @description Lightweight runtime database wrapper used by Nodics connection
+ * handlers. It stores module name, URI, adapter options, client, connection,
+ * collection metadata, and schema metadata without binding the framework to a
+ * specific database driver.
+ * @layer lib
+ * @owner nDatabase
+ * @override Project modules may provide an alternate database wrapper class when
+ * a database adapter needs additional state, while preserving getter/setter
+ * methods consumed by generated model handlers.
+ */
 module.exports = function () {
     let _name = '';
     let _uri = '';

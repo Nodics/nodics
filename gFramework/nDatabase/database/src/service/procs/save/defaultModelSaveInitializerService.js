@@ -12,6 +12,23 @@
 const _ = require('lodash');
 const util = require('util');
 
+/**
+ * @module database/service/procs/save/DefaultModelSaveInitializerService
+ * @description Pipeline step service for generated single-model save operations.
+ * It validates input, checks write access, applies schema defaults, strips
+ * virtual properties, executes schema interceptors/validators, saves nested
+ * references, persists the model, populates response data, invalidates cache,
+ * and publishes model change events.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override individual save pipeline steps to
+ * customize write behavior while preserving the generated CRUD pipeline
+ * request/response/process contract.
+ *
+ * @property {Object} request.schemaModel Generated schema model wrapper.
+ * @property {Object} request.model Model being saved.
+ * @property {Object} response.success Save response payload.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -35,6 +52,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates that a model is present for save.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for saving model');
         if (!request.model) {
@@ -43,6 +68,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Checks write access using schema access groups.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     checkAccess: function (request, response, process) {
         this.LOG.debug('Checking model access');
         let rawSchema = request.schemaModel.rawSchema;
@@ -52,6 +85,15 @@ module.exports = {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user do not have access to this resource'));
         }
     },
+    /**
+     * Applies schema configured default values before persistence.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     * @sideEffects Mutates `request.model`.
+     */
     applyDefaultValues: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
         let defaultValues = request.schemaModel.rawSchema.schemaOptions[request.tenant].defaultValues;
@@ -62,6 +104,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Resolves one default value into a possibly nested model property.
+     *
+     * @param {string[]} properties Mutable property path.
+     * @param {Object} model Model or nested model object.
+     * @param {*} value Static value or `Service.method` provider reference.
+     * @returns {Object} Mutated model object.
+     */
     resolveDefaultProperty: function (properties, model, value) {
         if (properties && properties.length > 1) {
             let prop = properties.shift();
@@ -78,6 +128,15 @@ module.exports = {
         }
         return model;
     },
+    /**
+     * Removes virtual properties before saving the physical model.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     * @sideEffects Mutates `request.model`.
+     */
     removeVirtualProperties: function (request, response, process) {
         this.LOG.debug('Removing virtual properties from model');
         let rawSchema = request.schemaModel.rawSchema;
@@ -86,6 +145,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Recursively removes virtual properties from a model object.
+     *
+     * @param {Object} model Model or nested model object.
+     * @param {Object} virtualProperties Virtual property map from schema.
+     * @returns {undefined}
+     * @sideEffects Deletes virtual properties from `model`.
+     */
     excludeProperty: function (model, virtualProperties) {
         let _self = this;
         _.each(virtualProperties, (value, property) => {
@@ -105,6 +172,14 @@ module.exports = {
             }
         });
     },
+    /**
+     * Executes pre-save schema interceptors.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre save model interceptors');
         let schemaName = request.schemaModel.schemaName;
@@ -119,6 +194,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes pre-save schema validators.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre model validator');
         let schemaName = request.schemaModel.schemaName;
@@ -133,6 +216,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes property-level validators configured by schema options.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyValidators: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
         let validators = request.schemaModel.rawSchema.schemaOptions[request.tenant].validators;
@@ -151,6 +242,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Saves nested referenced models before saving the owning model.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     handleNestedModelsSave: function (request, response, process) {
         this.LOG.debug('Saving nexted models');
         let rawSchema = request.schemaModel.rawSchema;
@@ -170,6 +269,15 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Persists the model through the generated schema model wrapper.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     * @sideEffects Writes `response.success`.
+     */
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model ');
         request.schemaModel.saveItems(request).then(success => {
@@ -183,6 +291,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Recursively populates referenced models in the save response when requested.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
         if (response.success.result && request.options.recursive) {
@@ -201,6 +317,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Populates schema-defined virtual properties on the saved model response.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     populateVirtualProperties: function (request, response, process) {
         let virtualProperties = request.schemaModel.rawSchema.virtualProperties;
         if (response.success.result && virtualProperties && !UTILS.isBlank(virtualProperties)) {
@@ -211,6 +335,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes post-save schema validators.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPostValidators: function (request, response, process) {
         let schemaName = request.schemaModel.schemaName;
         let validators = SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName);
@@ -225,6 +357,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes post-save schema interceptors.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     applyPostInterceptors: function (request, response, process) {
         let schemaName = request.schemaModel.schemaName;
         let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
@@ -239,6 +379,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Invalidates schema router cache after save.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     invalidateRouterCache: function (request, response, process) {
         try {
             let schemaModel = request.schemaModel;
@@ -260,6 +408,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Invalidates schema item cache after save.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     invalidateItemCache: function (request, response, process) {
         try {
             let schemaModel = request.schemaModel;
@@ -281,6 +437,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Publishes schema save events after successful persistence.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     triggerModelChangeEvent: function (request, response, process) {
         try {
             let schemaModel = request.schemaModel;

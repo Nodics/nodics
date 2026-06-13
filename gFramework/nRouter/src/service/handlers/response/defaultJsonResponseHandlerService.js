@@ -9,12 +9,25 @@
 
  */
 
+/**
+ * @module router/service/handlers/response/DefaultJsonResponseHandlerService
+ * @description Default JSON response handler for Nodics APIs. It normalizes success
+ * payloads with status metadata and converts errors to standard Nodics error JSON.
+ * @layer service
+ * @owner nRouter
+ * @override Project modules may override this handler through router configuration to
+ * customize response envelopes, headers, tracing, masking, or API version behavior.
+ *
+ * @property {Object} CLASSES.NodicsError Standard error wrapper used for unknown failures.
+ * @property {Object} SERVICE.DefaultStatusService Resolves response code and message by status code.
+ */
 module.exports = {
 
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the JSON response handler during service loading.
+     *
+     * @param {Object} options Nodics initialization options for the active module hierarchy.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -23,9 +36,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the JSON response handler after service loading.
+     *
+     * @param {Object} options Nodics initialization options for the active module hierarchy.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -33,6 +47,16 @@ module.exports = {
         });
     },
 
+    /**
+     * Sends a normalized JSON success response.
+     *
+     * @param {Object} request Express request.
+     * @param {Object} response Express response.
+     * @param {Object} success Successful pipeline result.
+     * @returns {void}
+     * @sideEffects Writes HTTP status and JSON body.
+     * @throws Delegates formatting failures to `handleError`.
+     */
     handleSuccess: function (request, response, success) {
         try {
             success.code = success.code || 'SUC_SYS_00000';
@@ -46,6 +70,15 @@ module.exports = {
 
     },
 
+    /**
+     * Sends a normalized Nodics JSON error response.
+     *
+     * @param {Object} request Express request.
+     * @param {Object} response Express response.
+     * @param {Error|Object} error Error produced by pipeline execution.
+     * @returns {void}
+     * @sideEffects Wraps non-Nodics errors, logs, and writes HTTP status plus JSON error body.
+     */
     handleError: function (request, response, error) {
         if (!(error instanceof CLASSES.NodicsError)) {
             error = new CLASSES.NodicsError(error);

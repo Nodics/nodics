@@ -9,6 +9,20 @@
 
  */
 
+/**
+ * @module service/vService/procs/save/DefaultModelSaveInitializerService
+ * @description Version-aware override for the single-model save pipeline step.
+ * It delegates to versioned persistence when the schema model is marked
+ * `versioned`, otherwise it preserves the default save behavior.
+ * @layer service
+ * @owner nService
+ * @override Project modules may override this service to customize versioned
+ * save semantics while preserving the save pipeline request/response/process
+ * contract.
+ *
+ * @property {Object} request.schemaModel Generated schema model wrapper.
+ * @property {Object} request.schemaModel.versioned Enables versioned persistence.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +46,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Saves a model using versioned persistence when enabled.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
     saveModel: function (request, response, process) {
         this.LOG.debug('Saving model ');
         if (request.schemaModel.versioned) {

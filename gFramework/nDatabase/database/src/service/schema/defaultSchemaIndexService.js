@@ -11,11 +11,28 @@
 
 const _ = require('lodash');
 
+/**
+ * @module database/service/schema/DefaultSchemaIndexService
+ * @description Rebuilds database indexes for generated schema models across
+ * active tenants and channels. This service supports admin-triggered schema
+ * index maintenance after schema changes or deployment-time generation.
+ * @layer service
+ * @owner nDatabase
+ * @override Project modules may override index refresh behavior to support
+ * alternate channel lists, tenant filtering, or database-specific scheduling
+ * while preserving module and schema scoped operations.
+ *
+ * @property {Object} SERVICE.DefaultDatabaseModelHandlerService Creates indexes on concrete models.
+ * @property {Object} NODICS.models Tenant and channel scoped generated model registry.
+ */
 module.exports = {
     /**
-     * This function is used to update indexes for given Schema name. I will update for all active tenants schema
-     * @param {*} modelName
-     * @param {*} schemaName 
+     * Updates indexes for one schema across all active tenants and supported channels.
+     *
+     * @param {string} moduleName Owning module name.
+     * @param {string} schemaName Schema code.
+     * @returns {Promise<Object[]>} Resolves with database index creation responses.
+     * @throws {CLASSES.NodicsError|Object[]} Rejects when no model is found or index creation fails.
      */
     updateSchemaIndexes: function (moduleName, schemaName) {
         return new Promise((resolve, reject) => {
@@ -60,8 +77,11 @@ module.exports = {
     },
 
     /**
-     * This functions is used to update schema indexes for given module
-     * @param {*} moduleName 
+     * Updates indexes for every generated model in one module.
+     *
+     * @param {string} moduleName Owning module name.
+     * @returns {Promise<Object[]>} Resolves with database index creation responses.
+     * @throws {CLASSES.NodicsError|Object[]} Rejects when no models are found or index creation fails.
      */
     updateModuleIndexes: function (moduleName) {
         return new Promise((resolve, reject) => {
@@ -103,7 +123,10 @@ module.exports = {
     },
 
     /**
-     * This functions is used to update schema indexes for all module
+     * Updates indexes for every generated model in every active module.
+     *
+     * @returns {Promise<Object[]>} Resolves with database index creation responses.
+     * @throws {CLASSES.NodicsError|Object[]} Rejects when no models are found or index creation fails.
      */
     updateModulesIndexes: function () {
         return new Promise((resolve, reject) => {

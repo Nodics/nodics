@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module mongodb/vMongodb/router/VersionedMongoAppConfig
+ * @description Versioned MongoDB adapter router app configuration extension slot.
+ * @layer router
+ * @owner nDatabase
+ * @override Project modules may add versioned MongoDB-specific router app configuration.
+ */
 module.exports = {
 
 };

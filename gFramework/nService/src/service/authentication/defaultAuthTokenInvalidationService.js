@@ -9,6 +9,17 @@
 
  */
 
+/**
+ * @module service/authentication/DefaultAuthTokenInvalidationService
+ * @description Cache listener callbacks for auth token expiration, deletion,
+ * and flush events. The default implementation logs token invalidation state and
+ * keeps the extension point for distributed token invalidation events.
+ * @layer service
+ * @owner nService
+ * @override Project modules may override these callbacks to publish cluster-wide
+ * invalidation events, audit auth lifecycle changes, or synchronize external
+ * identity providers.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +43,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Handles auth token expiration notifications.
+     *
+     * @param {string} key Cache key.
+     * @param {Object} value Cached token payload.
+     * @param {Object} options Cache listener options.
+     * @returns {undefined}
+     */
     publishTokenExpiredEvent: function (key, value, options) {
         key = key.substring(key.lastIndexOf('_') + 1, key.length);
         this.LOG.debug('Auth token has been expired: ' + key);
@@ -58,11 +77,25 @@ module.exports = {
         });*/
     },
 
+    /**
+     * Handles auth token deletion notifications.
+     *
+     * @param {string} key Cache key.
+     * @param {Object} value Cached token payload.
+     * @param {Object} options Cache listener options.
+     * @returns {undefined}
+     */
     publishTokenDeletedEvent: function (key, value, options) {
         key = key.substring(key.lastIndexOf('_') + 1, key.length);
         this.LOG.debug('Auth token has been deleted: ' + key);
     },
 
+    /**
+     * Handles auth token cache flush notifications.
+     *
+     * @param {Object} options Cache listener options.
+     * @returns {undefined}
+     */
     publishTokenFlushedEvent: function (options) {
         this.LOG.debug('Auth tokens has been flushed');
     }
