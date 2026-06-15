@@ -42,5 +42,31 @@ module.exports = {
                 reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Invalid moduleName, it should not be null or inactive for routers'));
             }
         });
+    },
+
+    /**
+     * Validates and normalizes a persisted runtime route before activation.
+     *
+     * @param {Object} request Save request containing `model`.
+     * @param {Object} response Response context.
+     * @returns {Promise<boolean>} Resolves when the route definition is valid.
+     * @sideEffects Defaults missing `groupName` to `runtime`.
+     */
+    validateRouterConfiguration: function (request, response) {
+        return new Promise((resolve, reject) => {
+            let model = request.model || {};
+            let missingProperties = ['code', 'key', 'method', 'controller', 'operation'].filter(propertyName => {
+                return model[propertyName] === undefined || model[propertyName] === null || model[propertyName] === '';
+            });
+            if (missingProperties.length > 0) {
+                reject(new CLASSES.NodicsError(
+                    'ERR_RTR_00003',
+                    'Invalid router configuration, missing properties: ' + missingProperties.join(', ')
+                ));
+                return;
+            }
+            model.groupName = model.groupName || model.routerGroup || model.group || 'runtime';
+            resolve(true);
+        });
     }
 };

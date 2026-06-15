@@ -181,6 +181,213 @@ module.exports = {
             }
         },
 
+        runtimeConfigurationRollback: {
+            getRuntimeConfigurationHistory: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.history.view',
+                key: '/config/runtime/history',
+                method: 'GET',
+                controller: 'DefaultConfigurationController',
+                operation: 'getRuntimeConfigurationHistory',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/config/runtime/history'
+                }
+            },
+            getRuntimeConfigurationGovernanceSummary: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.summary.view',
+                key: '/config/runtime/summary',
+                method: 'GET',
+                controller: 'DefaultConfigurationController',
+                operation: 'getRuntimeConfigurationGovernanceSummary',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/config/runtime/summary'
+                }
+            },
+            previewRuntimeConfigurationGovernanceCleanupPost: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.cleanup.preview',
+                key: '/config/runtime/cleanup/preview',
+                method: 'POST',
+                controller: 'DefaultConfigurationController',
+                operation: 'previewRuntimeConfigurationGovernanceCleanup',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/config/runtime/cleanup/preview',
+                    body: {
+                        cleanupTarget: 'all, requests, or logs',
+                        olderThanDays: 'Optional retention age in days',
+                        allowPending: 'Defaults to false',
+                        allowHighRisk: 'Defaults to false'
+                    }
+                }
+            },
+            cleanupRuntimeConfigurationGovernancePost: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.cleanup.execute',
+                key: '/config/runtime/cleanup',
+                method: 'POST',
+                controller: 'DefaultConfigurationController',
+                operation: 'cleanupRuntimeConfigurationGovernance',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/config/runtime/cleanup',
+                    body: {
+                        dryRun: 'Must be false to apply cleanup',
+                        confirmCleanup: 'Must be true to apply cleanup',
+                        cleanupTarget: 'all, requests, or logs',
+                        olderThanDays: 'Optional retention age in days',
+                        allowPending: 'Defaults to false',
+                        allowHighRisk: 'Defaults to false'
+                    }
+                }
+            },
+            previewRuntimeConfigurationPost: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.preview',
+                key: '/config/runtime/preview',
+                method: 'POST',
+                controller: 'DefaultConfigurationController',
+                operation: 'previewRuntimeConfiguration',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/config/runtime/preview',
+                    body: {
+                        configurationType: 'schemaConfiguration or routerConfiguration',
+                        configurationCode: 'Optional code to fetch persisted runtime configuration',
+                        configuration: 'Optional proposed runtime configuration payload'
+                    }
+                }
+            },
+            createRuntimeConfigurationActivationRequestPost: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.request.create',
+                key: '/config/runtime/request',
+                method: 'POST',
+                controller: 'DefaultConfigurationController',
+                operation: 'createRuntimeConfigurationActivationRequest',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/config/runtime/request'
+                }
+            },
+            getRuntimeConfigurationActivationRequests: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.request.view',
+                key: '/config/runtime/request',
+                method: 'GET',
+                controller: 'DefaultConfigurationController',
+                operation: 'getRuntimeConfigurationActivationRequests',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/config/runtime/request'
+                }
+            },
+            approveRuntimeConfigurationActivationRequestPost: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.request.approve',
+                key: '/config/runtime/request/approve',
+                method: 'POST',
+                controller: 'DefaultConfigurationController',
+                operation: 'approveRuntimeConfigurationActivationRequest',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/config/runtime/request/approve'
+                }
+            },
+            rejectRuntimeConfigurationActivationRequestPost: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.request.reject',
+                key: '/config/runtime/request/reject',
+                method: 'POST',
+                controller: 'DefaultConfigurationController',
+                operation: 'rejectRuntimeConfigurationActivationRequest',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/config/runtime/request/reject'
+                }
+            },
+            activateRuntimeConfigurationActivationRequestPost: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.request.activate',
+                key: '/config/runtime/request/activate',
+                method: 'POST',
+                controller: 'DefaultConfigurationController',
+                operation: 'activateRuntimeConfigurationActivationRequest',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/config/runtime/request/activate'
+                }
+            },
+            rollbackRuntimeConfigurationPost: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'runtime.config.rollback',
+                key: '/config/runtime/rollback',
+                method: 'POST',
+                controller: 'DefaultConfigurationController',
+                operation: 'rollbackRuntimeConfiguration',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/config/runtime/rollback',
+                    body: {
+                        activationCode: 'Code of configurationActivationLog entry to rollback'
+                    }
+                }
+            }
+        },
+
+        apiContracts: {
+            getOpenApiContract: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/contract/openapi',
+                method: 'GET',
+                controller: 'DefaultApiContractController',
+                operation: 'getOpenApiContract',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/contract/openapi'
+                }
+            }
+        },
+
         updateAllIndexes: {
             updateAllModulesIndexes: {
                 secured: true,

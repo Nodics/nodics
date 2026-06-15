@@ -9,8 +9,6 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
@@ -32,10 +30,10 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.LOG.info('Starting database configuration process');
             SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection().then(() => {
-                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/schemas.js', null));
+                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadSchemaFiles('/src/schemas/schemas.js', null));
                 return new Promise((resolve, reject) => {
                     SERVICE.DefaultDatabaseConnectionHandlerService.getRuntimeSchema().then(runtimeSchema => {
-                        SERVICE.DefaultDatabaseConfigurationService.setRawSchema(_.merge(
+                        SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.mergeRuntimeSchemaFiles(
                             SERVICE.DefaultDatabaseConfigurationService.getRawSchema(),
                             runtimeSchema
                         ));

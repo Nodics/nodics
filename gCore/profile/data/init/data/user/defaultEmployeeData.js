@@ -25,7 +25,7 @@ module.exports = {
             active: true
         },
         apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bfg',
-        userGroups: ['employeeUserGroup'],
+        userGroups: ['employeeUserGroup', 'runtimeConfigAdminUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
@@ -44,7 +44,7 @@ module.exports = {
             active: true
         },
         apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
-        userGroups: ['employeeUserGroup'],
+        userGroups: ['employeeUserGroup', 'runtimeConfigAdminUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },

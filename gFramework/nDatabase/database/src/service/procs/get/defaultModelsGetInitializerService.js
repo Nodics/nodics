@@ -148,7 +148,11 @@ module.exports = {
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
                 value.cache = 'item hit';
-                process.stop(request, response, value);
+                response.success = value;
+                let cachePolicyProcess = {};
+                cachePolicyProcess.nextSuccess = () => process.stop(request, response, response.success);
+                cachePolicyProcess.error = (req, res, error) => process.error(req, res, error);
+                this.applyReadAccessPolicies(request, response, cachePolicyProcess);
             }).catch(error => {
                 if (error.code === 'ERR_CACHE_00001') {
                     process.nextSuccess(request, response);
@@ -376,5 +380,25 @@ module.exports = {
             });
         }
         process.nextSuccess(request, response);
+    },
+    /**
+     * Applies runtime schema/property read policies after cache storage and before response.
+     *
+     * @param {Object} request Nodics get request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
+    applyReadAccessPolicies: function (request, response, process) {
+        if (!SERVICE.DefaultSchemaReadAccessPolicyService ||
+            typeof SERVICE.DefaultSchemaReadAccessPolicyService.applyReadPolicies !== 'function') {
+            process.nextSuccess(request, response);
+            return;
+        }
+        SERVICE.DefaultSchemaReadAccessPolicyService.applyReadPolicies(request, response).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, new CLASSES.NodicsError(error, null, error.code || 'ERR_FIND_00006'));
+        });
     }
 };

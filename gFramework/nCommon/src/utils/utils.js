@@ -229,5 +229,26 @@ module.exports = {
             });
         }
         return codes;
+    },
+
+    getUserGroupPermissions: function (userGroups, permissions = []) {
+        let _self = this;
+        if (userGroups && userGroups.length > 0) {
+            userGroups.forEach(userGroup => {
+                if (UTILS.isObject(userGroup)) {
+                    if (Array.isArray(userGroup.permissions)) {
+                        userGroup.permissions.forEach(permission => {
+                            if (!permissions.includes(permission)) {
+                                permissions.push(permission);
+                            }
+                        });
+                    }
+                    if (userGroup.parentGroups) {
+                        _self.getUserGroupPermissions(userGroup.parentGroups, permissions);
+                    }
+                }
+            });
+        }
+        return permissions;
     }
 };

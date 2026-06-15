@@ -156,6 +156,11 @@ module.exports = {
             updateCache: {
                 type: 'function',
                 handler: 'DefaultModelsGetInitializerService.updateCache',
+                success: 'applyReadAccessPolicies'
+            },
+            applyReadAccessPolicies: {
+                type: 'function',
+                handler: 'DefaultModelsGetInitializerService.applyReadAccessPolicies',
                 success: 'successEnd'
             }
         }
@@ -208,6 +213,11 @@ module.exports = {
             checkAccess: {
                 type: 'function',
                 handler: 'DefaultModelSaveInitializerService.checkAccess',
+                success: 'enforceCreateAccessPolicies'
+            },
+            enforceCreateAccessPolicies: {
+                type: 'function',
+                handler: 'DefaultModelSaveInitializerService.enforceCreateAccessPolicies',
                 success: 'buildQuery'
             },
             buildQuery: {
@@ -381,6 +391,11 @@ module.exports = {
             buildQuery: {
                 type: 'function',
                 handler: 'DefaultModelsUpdateInitializerService.buildQuery',
+                success: 'enforceUpdateAccessPolicies'
+            },
+            enforceUpdateAccessPolicies: {
+                type: 'function',
+                handler: 'DefaultModelsUpdateInitializerService.enforceUpdateAccessPolicies',
                 success: 'applyPreInterceptors'
             },
             applyPreInterceptors: {

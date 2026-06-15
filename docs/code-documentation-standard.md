@@ -107,6 +107,56 @@ Use runtime persisted schemas only when the backing database is intentionally av
 npm run docs:openapi -- --runtime-schemas
 ```
 
+## Layered Schema Customization
+
+Schema fragments are merged through the active module hierarchy. A later project, environment, server, or node module may extend an out-of-box schema without changing the original Nodics module. This is the preferred customization path for customer applications.
+
+Default schema behavior is additive. New modules should add properties, validators, routes, or metadata by contributing another schema fragment under the same `moduleName -> schemaName` path.
+
+Breaking or subtractive changes must be explicit:
+
+- Use `$override.mode: 'replace'` when a later module intentionally replaces the full schema definition.
+- Use `$override.removeProperties` when a later module intentionally removes inherited properties.
+- Use `$override.allowBreakingChanges: true` when a later module intentionally changes an inherited property type or required behavior.
+
+The effective schema records override trace metadata so admin tooling, generated documentation, and diagnostics can explain which module contributed the final contract. Do not remove this traceability when adding new schema loaders or generators.
+
+## Layered Router Customization
+
+Router fragments follow the same enterprise layering rule. A project module may add routes to an existing route group without modifying the original Nodics module.
+
+Default router behavior is additive. Breaking route changes must be explicit:
+
+- Use `$override.mode: 'replace'` when a later module intentionally replaces a route or route group.
+- Use `$override.removeRoutes` when a later module intentionally removes inherited routes from a group.
+- Use `$override.allowBreakingChanges: true` when a later module intentionally changes a route key, method, controller, operation, security flag, or access groups.
+
+The effective route records override trace metadata so OpenAPI generation, admin tooling, diagnostics, and reviews can explain final API ownership.
+
+## Runtime Override Governance
+
+Runtime contributions from persisted control-plane configuration must follow the same governance contract as file-based module layers.
+
+- Runtime schemas from `SchemaConfigurationModel` are merged with schema override governance.
+- Runtime routers from `RouterConfigurationModel` are merged with router override governance.
+- Runtime sources should keep module ownership as `moduleName -> schemaName` or `moduleName -> groupName -> routeName`.
+- Runtime trace metadata uses source labels such as `runtime:schemaConfiguration` and `runtime:routerConfiguration`.
+- Do not introduce runtime-only merge behavior unless it can be overridden by a later project module service.
+
+This keeps admin-driven configuration compatible with Nodics layering. A project-specific module can still override the runtime loader service, but the default implementation must preserve traceability, warnings, and explicit breaking-change metadata.
+
+## Governance Report
+
+Build-time governance reporting summarizes the effective module hierarchy, schema contracts, explicit routes, service/facade/controller/pipeline artifacts, generated files, and override counts.
+
+Generate it with:
+
+```bash
+npm run governance:report
+```
+
+The normal build runs this report after generated artifacts are rebuilt. The report is written under the active server or node module at `generated/governance`, and should be treated as disposable generated output.
+
 ## Generated Files
 
 Generated artifacts are disposable build output and must not be hand-documented directly. Their documentation comes from the generator, effective schema metadata, and the common source template.

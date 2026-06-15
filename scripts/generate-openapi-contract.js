@@ -425,13 +425,13 @@ function collectRoutes(rawRouters, rawSchema, components) {
 }
 
 async function loadEffectiveSchemas(options, warnings) {
-    SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/schemas.js', null));
+    SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadSchemaFiles('/src/schemas/schemas.js', null));
     if (options.includeRuntimeSchemas && SERVICE.DefaultDatabaseConnectionHandlerService) {
         const defaultTenant = CONFIG.get('defaultTenant') || 'default';
         try {
             await SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection(defaultTenant, true);
             const runtimeSchema = await SERVICE.DefaultDatabaseConnectionHandlerService.getRuntimeSchema();
-            SERVICE.DefaultDatabaseConfigurationService.setRawSchema(_.merge(
+            SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.mergeRuntimeSchemaFiles(
                 SERVICE.DefaultDatabaseConfigurationService.getRawSchema(),
                 runtimeSchema
             ));
@@ -464,7 +464,7 @@ async function initialize(options, warnings) {
     }
     const rawSchema = await loadEffectiveSchemas(options, warnings);
     await SERVICE.DefaultRouterService.prepareModulesConfiguration();
-    const rawRouters = SERVICE.DefaultFilesLoaderService.loadFiles('/src/router/router.js');
+    const rawRouters = SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/router.js');
     SERVICE.DefaultRouterConfigurationService.setRawRouters(rawRouters);
     return {
         rawRouters: rawRouters,

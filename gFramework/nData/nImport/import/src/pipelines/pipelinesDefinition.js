@@ -250,6 +250,11 @@ module.exports = {
             loadRawSchema: {
                 type: 'function',
                 handler: 'DefaultModelImportProcessService.loadRawSchema',
+                success: 'enforceImportAccessPolicies'
+            },
+            enforceImportAccessPolicies: {
+                type: 'function',
+                handler: 'DefaultModelImportProcessService.enforceImportAccessPolicies',
                 success: 'populateSchemaDependancies'
             },
             populateSchemaDependancies: {

@@ -56,6 +56,42 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Enforces runtime schema/property import policies before relation resolution and insert.
+     *
+     * @param {Object} request Nodics import request containing header and dataModel.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
+    enforceImportAccessPolicies: function (request, response, process) {
+        this.LOG.debug('Applying import access policies');
+        let header = request.header;
+        if (!header.options.schemaName || !header.rawSchema ||
+            !SERVICE.DefaultSchemaWriteAccessPolicyService ||
+            typeof SERVICE.DefaultSchemaWriteAccessPolicyService.enforceImportPolicies !== 'function') {
+            process.nextSuccess(request, response);
+            return;
+        }
+        SERVICE.DefaultSchemaWriteAccessPolicyService.enforceImportPolicies({
+            tenant: request.tenant,
+            authData: {
+                userGroups: header.options.userGroups
+            },
+            schemaModel: {
+                moduleName: header.options.moduleName,
+                schemaName: header.options.schemaName,
+                rawSchema: header.rawSchema
+            },
+            model: request.dataModel,
+            importRun: request.importRun
+        }, response).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, new CLASSES.DataImportError(error, 'Import payload violates schema access policy', 'ERR_IMP_00003'));
+        });
+    },
+
     populateSchemaDependancies: function (request, response, process) {
         this.LOG.debug('Populating all schema dependancies');
         let header = request.header;

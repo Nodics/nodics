@@ -36,5 +36,23 @@ module.exports = {
         active: 'true',
         index: 0,
         handler: 'DefaultSchemaConfigurationSaveInterceptorService.assignDefaultAccessGroup'
+    },
+
+    checkModuleRouterConfiguration: {
+        type: 'schema',
+        item: 'routerConfiguration',
+        trigger: 'preSave',
+        active: 'true',
+        index: 0,
+        handler: 'DefaultRouterConfigurationSaveInterceptorService.checkIfModuleActiveForRouter'
+    },
+
+    validateRouterConfiguration: {
+        type: 'schema',
+        item: 'routerConfiguration',
+        trigger: 'preSave',
+        active: 'true',
+        index: 10,
+        handler: 'DefaultRouterConfigurationSaveInterceptorService.validateRouterConfiguration'
     }
 };

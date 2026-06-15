@@ -50,5 +50,59 @@ module.exports = {
         name: 'contentApproverUserGroup',
         active: true,
         parentGroups: ['contentUserGroup']
+    },
+    record7: {
+        code: 'runtimeConfigViewerUserGroup',
+        name: 'runtimeConfigViewerUserGroup',
+        active: true,
+        parentGroups: ['employeeUserGroup'],
+        permissions: [
+            'runtime.config.history.view',
+            'runtime.config.summary.view',
+            'runtime.config.request.view'
+        ]
+    },
+    record8: {
+        code: 'runtimeConfigRequesterUserGroup',
+        name: 'runtimeConfigRequesterUserGroup',
+        active: true,
+        parentGroups: ['runtimeConfigViewerUserGroup'],
+        permissions: [
+            'runtime.config.preview',
+            'runtime.config.request.create'
+        ]
+    },
+    record9: {
+        code: 'runtimeConfigApproverUserGroup',
+        name: 'runtimeConfigApproverUserGroup',
+        active: true,
+        parentGroups: ['runtimeConfigViewerUserGroup'],
+        permissions: [
+            'runtime.config.request.approve',
+            'runtime.config.request.reject'
+        ]
+    },
+    record10: {
+        code: 'runtimeConfigOperatorUserGroup',
+        name: 'runtimeConfigOperatorUserGroup',
+        active: true,
+        parentGroups: ['runtimeConfigRequesterUserGroup'],
+        permissions: [
+            'runtime.config.request.activate',
+            'runtime.config.rollback',
+            'runtime.config.cleanup.preview'
+        ]
+    },
+    record11: {
+        code: 'runtimeConfigAdminUserGroup',
+        name: 'runtimeConfigAdminUserGroup',
+        active: true,
+        parentGroups: [
+            'runtimeConfigOperatorUserGroup',
+            'runtimeConfigApproverUserGroup'
+        ],
+        permissions: [
+            'runtime.config.cleanup.execute'
+        ]
     }
 };

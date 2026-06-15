@@ -42,5 +42,17 @@ module.exports = {
     ERR_JOB_00004: {
         code: '404',
         message: 'Job not found'
+    },
+    ERR_JOB_00005: {
+        code: '400',
+        message: 'Invalid job schedule, end date has already passed'
+    },
+    ERR_JOB_00006: {
+        code: '409',
+        message: 'Job is already running'
+    },
+    ERR_JOB_00007: {
+        code: '400',
+        message: 'Invalid job tenant'
     }
 };

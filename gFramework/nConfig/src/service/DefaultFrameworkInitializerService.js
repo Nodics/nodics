@@ -854,11 +854,26 @@ module.exports = {
             try {
                 fileLoader.processFiles(path, "Service.js", (file) => {
                     let serviceName = UTILS.getFileNameWithoutExtension(file);
+                    let artifact = require(file);
                     if (SERVICE[serviceName]) {
-                        SERVICE[serviceName] = _.merge(SERVICE[serviceName], require(file));
+                        SERVICE[serviceName] = _.merge(SERVICE[serviceName], artifact);
+                        fileLoader.recordArtifactContribution(SERVICE[serviceName], {
+                            name: serviceName,
+                            layer: 'service',
+                            sourceModule: module.name,
+                            action: 'override',
+                            filePath: file
+                        });
                     } else {
-                        SERVICE[serviceName] = require(file);
+                        SERVICE[serviceName] = artifact;
                         SERVICE[serviceName].LOG = logger.createLogger(serviceName);
+                        fileLoader.recordArtifactContribution(SERVICE[serviceName], {
+                            name: serviceName,
+                            layer: 'service',
+                            sourceModule: module.name,
+                            action: 'create',
+                            filePath: file
+                        });
                     }
                 });
                 resolve(true);
@@ -883,10 +898,25 @@ module.exports = {
             try {
                 fileLoader.processFiles(path, "Definition.js", (file) => {
                     let processName = UTILS.getFileNameWithoutExtension(file);
+                    let artifact = require(file);
                     if (PIPELINE[processName]) {
-                        PIPELINE[processName] = _.merge(PIPELINE[processName], require(file));
+                        PIPELINE[processName] = _.merge(PIPELINE[processName], artifact);
+                        fileLoader.recordArtifactContribution(PIPELINE[processName], {
+                            name: processName,
+                            layer: 'pipeline',
+                            sourceModule: module.name,
+                            action: 'override',
+                            filePath: file
+                        });
                     } else {
-                        PIPELINE[processName] = require(file);
+                        PIPELINE[processName] = artifact;
+                        fileLoader.recordArtifactContribution(PIPELINE[processName], {
+                            name: processName,
+                            layer: 'pipeline',
+                            sourceModule: module.name,
+                            action: 'create',
+                            filePath: file
+                        });
                     }
                 });
                 resolve(true);
@@ -911,11 +941,26 @@ module.exports = {
             try {
                 fileLoader.processFiles(path, "Facade.js", (file) => {
                     let facadeName = UTILS.getFileNameWithoutExtension(file);
+                    let artifact = require(file);
                     if (FACADE[facadeName]) {
-                        FACADE[facadeName] = _.merge(FACADE[facadeName], require(file));
+                        FACADE[facadeName] = _.merge(FACADE[facadeName], artifact);
+                        fileLoader.recordArtifactContribution(FACADE[facadeName], {
+                            name: facadeName,
+                            layer: 'facade',
+                            sourceModule: module.name,
+                            action: 'override',
+                            filePath: file
+                        });
                     } else {
-                        FACADE[facadeName] = require(file);
+                        FACADE[facadeName] = artifact;
                         FACADE[facadeName].LOG = logger.createLogger(facadeName);
+                        fileLoader.recordArtifactContribution(FACADE[facadeName], {
+                            name: facadeName,
+                            layer: 'facade',
+                            sourceModule: module.name,
+                            action: 'create',
+                            filePath: file
+                        });
                     }
                 });
                 resolve(true);
@@ -940,11 +985,26 @@ module.exports = {
             try {
                 fileLoader.processFiles(path, "Controller.js", (file) => {
                     let controllerName = UTILS.getFileNameWithoutExtension(file);
+                    let artifact = require(file);
                     if (CONTROLLER[controllerName]) {
-                        CONTROLLER[controllerName] = _.merge(CONTROLLER[controllerName], require(file));
+                        CONTROLLER[controllerName] = _.merge(CONTROLLER[controllerName], artifact);
+                        fileLoader.recordArtifactContribution(CONTROLLER[controllerName], {
+                            name: controllerName,
+                            layer: 'controller',
+                            sourceModule: module.name,
+                            action: 'override',
+                            filePath: file
+                        });
                     } else {
-                        CONTROLLER[controllerName] = require(file);
+                        CONTROLLER[controllerName] = artifact;
                         CONTROLLER[controllerName].LOG = logger.createLogger(controllerName);
+                        fileLoader.recordArtifactContribution(CONTROLLER[controllerName], {
+                            name: controllerName,
+                            layer: 'controller',
+                            sourceModule: module.name,
+                            action: 'create',
+                            filePath: file
+                        });
                     }
                 });
                 resolve(true);

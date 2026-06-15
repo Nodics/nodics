@@ -105,7 +105,7 @@ module.exports = {
                 let schema = {};
                 schema[runtimeSchema.moduleName] = {};
                 schema[runtimeSchema.moduleName][runtimeSchema.code] = runtimeSchema;
-                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(_.merge(
+                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.mergeRuntimeSchemaFiles(
                     SERVICE.DefaultDatabaseConfigurationService.getRawSchema(), schema
                 ));
                 if (runtimeSchema.moduleName === 'default') {

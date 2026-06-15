@@ -1,5 +1,6 @@
 const assert = require('assert');
 const fs = require('fs');
+const http = require('http');
 const net = require('net');
 const path = require('path');
 const { spawn } = require('child_process');
@@ -13,6 +14,7 @@ const SHUTDOWN_TIMEOUT_MS = 5000;
 const TOPOLOGY_CONFIG = _.get(environmentProperties, 'test.runtimeTopology', {});
 const CONSOLIDATED_SERVER = TOPOLOGY_CONFIG.consolidatedServer;
 const SERVER_ORDER = TOPOLOGY_CONFIG.modularServers || [];
+const COMMUNICATION_CHECKS = TOPOLOGY_CONFIG.communicationChecks || [];
 
 assert(CONSOLIDATED_SERVER, 'test.runtimeTopology.consolidatedServer is required');
 assert(SERVER_ORDER.length > 0, 'test.runtimeTopology.modularServers must define at least one server');
@@ -66,6 +68,39 @@ function waitForPort(port, timeoutMs) {
             });
         }
         tryConnect();
+    });
+}
+
+function requestModuleEndpoint(options) {
+    let port = getServerNodePort(options.server, options.node);
+    let modulePath = options.path || '/ping?help';
+    let requestPath = '/nodics/' + options.moduleName + modulePath;
+    let requestOptions = {
+        host: '127.0.0.1',
+        port: port,
+        path: requestPath,
+        method: options.method || 'GET'
+    };
+    return new Promise((resolve, reject) => {
+        let request = http.request(requestOptions, response => {
+            let body = '';
+            response.on('data', chunk => {
+                body += chunk.toString();
+            });
+            response.on('end', () => {
+                if (response.statusCode === 200) {
+                    resolve({
+                        statusCode: response.statusCode,
+                        body: body,
+                        url: 'http://127.0.0.1:' + port + requestPath
+                    });
+                } else {
+                    reject(new Error('Unexpected status ' + response.statusCode + ' from ' + requestPath + ': ' + body));
+                }
+            });
+        });
+        request.on('error', reject);
+        request.end();
     });
 }
 
@@ -152,7 +187,10 @@ async function runModularSmoke() {
             let runtime = await startServer(serverName);
             runtimes.push(runtime);
         }
-        return runtimes.slice();
+        return {
+            runtimes: runtimes.slice(),
+            communication: await runModularCommunicationSmoke()
+        };
     } finally {
         for (let runtime of runtimes.reverse()) {
             await stopServer(runtime);
@@ -160,15 +198,26 @@ async function runModularSmoke() {
     }
 }
 
+async function runModularCommunicationSmoke() {
+    let results = [];
+    for (let check of COMMUNICATION_CHECKS) {
+        assert(check.server, 'communication check server is required');
+        assert(check.moduleName, 'communication check moduleName is required for ' + check.server);
+        results.push(await requestModuleEndpoint(check));
+    }
+    return results;
+}
+
 (async function () {
     let consolidated = await runConsolidatedSmoke();
 
     let modular = await runModularSmoke();
-    assert.deepStrictEqual(modular.map(item => item.label), SERVER_ORDER);
+    assert.deepStrictEqual(modular.runtimes.map(item => item.label), SERVER_ORDER);
 
     console.log('Runtime topology smoke passed');
     console.log('Consolidated:', consolidated.label + ':' + consolidated.port);
-    console.log('Modular:', modular.map(item => item.label + ':' + item.port).join(', '));
+    console.log('Modular:', modular.runtimes.map(item => item.label + ':' + item.port).join(', '));
+    console.log('Communication:', modular.communication.map(item => item.url + ' -> ' + item.statusCode).join(', '));
 })().catch(error => {
     console.error(error.message || error);
     process.exit(1);

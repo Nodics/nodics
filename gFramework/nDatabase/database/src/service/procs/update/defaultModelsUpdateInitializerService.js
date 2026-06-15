@@ -109,6 +109,27 @@ module.exports = {
         process.nextSuccess(request, response);
     },
     /**
+     * Enforces runtime property-level update policies before mutation.
+     *
+     * @param {Object} request Nodics update request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
+    enforceUpdateAccessPolicies: function (request, response, process) {
+        this.LOG.debug('Applying update access policies');
+        if (!SERVICE.DefaultSchemaWriteAccessPolicyService ||
+            typeof SERVICE.DefaultSchemaWriteAccessPolicyService.enforceUpdatePolicies !== 'function') {
+            process.nextSuccess(request, response);
+            return;
+        }
+        SERVICE.DefaultSchemaWriteAccessPolicyService.enforceUpdatePolicies(request, response).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+    /**
      * Executes pre-update schema interceptors.
      *
      * @param {Object} request Nodics update request.

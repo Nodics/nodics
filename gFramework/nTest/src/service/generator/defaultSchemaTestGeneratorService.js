@@ -643,7 +643,7 @@ module.exports = {
     },
 
     getDefaultSchemaRouters: function () {
-        let routers = SERVICE.DefaultFilesLoaderService.loadFiles('/src/router/router.js');
+        let routers = SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/router.js');
         return routers.default || {};
     },
 

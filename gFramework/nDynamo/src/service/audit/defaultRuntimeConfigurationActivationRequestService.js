@@ -1,0 +1,490 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
+/**
+ * @module dynamo/service/audit/DefaultRuntimeConfigurationActivationRequestService
+ * @description Manages runtime configuration activation request lifecycle:
+ * request, approve, reject, and activate approved schema/router changes.
+ * @layer service
+ * @owner dynamo
+ * @override Project modules may override this service to integrate enterprise
+ * workflow engines, ticketing, approval matrices, or release governance while
+ * preserving the control-plane request lifecycle contract.
+ */
+module.exports = {
+
+    /**
+     * Initializes the runtime activation request service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
+     */
+    init: function (options) {
+        return Promise.resolve(true);
+    },
+
+    /**
+     * Finalizes the runtime activation request service.
+     *
+     * @param {Object} options Startup options.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
+     */
+    postInit: function (options) {
+        return Promise.resolve(true);
+    },
+
+    /**
+     * Creates a persisted activation request with captured preview impact.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Activation request response.
+     */
+    createActivationRequest: function (request) {
+        return new Promise((resolve, reject) => {
+            let payload = this.getPayload(request);
+            this.previewActivationRequest(request, payload).then(preview => {
+                let model = this.createRequestModel(request, payload, preview);
+                this.persistRequestModel(request, model).then(success => {
+                    resolve({
+                        code: 'SUC_SYS_00000',
+                        message: 'Runtime configuration activation request created successfully',
+                        data: model,
+                        result: success
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    /**
+     * Approves a pending activation request.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Approval response.
+     */
+    approveActivationRequest: function (request) {
+        return this.transitionActivationRequest(request, 'APPROVED', 'APPROVED');
+    },
+
+    /**
+     * Rejects a pending activation request.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Rejection response.
+     */
+    rejectActivationRequest: function (request) {
+        return this.transitionActivationRequest(request, 'REJECTED', 'REJECTED');
+    },
+
+    /**
+     * Activates an approved runtime configuration request.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Activation response.
+     */
+    activateApprovedRequest: function (request) {
+        return new Promise((resolve, reject) => {
+            this.resolveActivationRequest(request).then(activationRequest => {
+                if (activationRequest.approvalStatus !== 'APPROVED') {
+                    reject(new CLASSES.NodicsError('ERR_SYS_00002', 'Activation request must be approved before activation'));
+                    return;
+                }
+                this.activateConfiguration(request, activationRequest).then(success => {
+                    let updatedRequest = Object.assign({}, activationRequest, {
+                        status: 'ACTIVATED'
+                    });
+                    this.persistRequestModel(request, updatedRequest).then(() => {
+                        resolve({
+                            code: 'SUC_SYS_00000',
+                            message: 'Approved runtime configuration request activated successfully',
+                            data: updatedRequest,
+                            result: success
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    /**
+     * Queries activation requests for the control-plane work queue.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Activation request query response.
+     */
+    getActivationRequests: function (request) {
+        return new Promise((resolve, reject) => {
+            let requestService = this.getActivationRequestModelService();
+            if (!requestService || typeof requestService.get !== 'function') {
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Configuration activation request service is not available'));
+                return;
+            }
+            let query = this.prepareActivationRequestQuery(request);
+            requestService.get({
+                tenant: this.getTenant(request),
+                query: query,
+                searchOptions: request.searchOptions || this.prepareActivationRequestSearchOptions(request)
+            }).then(success => {
+                resolve({
+                    code: 'SUC_SYS_00000',
+                    message: 'Runtime configuration activation requests fetched successfully',
+                    data: success.result || [],
+                    metadata: {
+                        query: query,
+                        count: success.result ? success.result.length : 0,
+                        tenant: this.getTenant(request)
+                    }
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    /**
+     * Transitions approval status for an activation request.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {string} approvalStatus New approval status.
+     * @param {string} status New lifecycle status.
+     * @returns {Promise<Object>} Transition response.
+     */
+    transitionActivationRequest: function (request, approvalStatus, status) {
+        return new Promise((resolve, reject) => {
+            this.resolveActivationRequest(request).then(activationRequest => {
+                let payload = this.getPayload(request);
+                let updatedRequest = Object.assign({}, activationRequest, {
+                    approvalStatus: approvalStatus,
+                    status: status,
+                    approvedBy: payload.approvedBy || this.resolveRequestedBy(request),
+                    approvalReason: payload.approvalReason || payload.reason
+                });
+                this.persistRequestModel(request, updatedRequest).then(success => {
+                    resolve({
+                        code: 'SUC_SYS_00000',
+                        message: 'Runtime configuration activation request ' + approvalStatus.toLowerCase() + ' successfully',
+                        data: updatedRequest,
+                        result: success
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    /**
+     * Runs preview for the requested runtime activation.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} payload Activation request payload.
+     * @returns {Promise<Object>} Preview data.
+     */
+    previewActivationRequest: function (request, payload) {
+        if (!SERVICE.DefaultRuntimeConfigurationPreviewService ||
+            typeof SERVICE.DefaultRuntimeConfigurationPreviewService.previewActivation !== 'function') {
+            return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Runtime configuration preview service is not available'));
+        }
+        return SERVICE.DefaultRuntimeConfigurationPreviewService.previewActivation({
+            tenant: this.getTenant(request),
+            authData: request.authData,
+            autData: request.autData,
+            correlationId: request.correlationId,
+            preview: {
+                configurationType: payload.configurationType,
+                configurationCode: payload.configurationCode,
+                configuration: payload.configuration
+            }
+        }).then(success => success.data);
+    },
+
+    /**
+     * Activates schema or router configuration for an approved request.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} activationRequest Activation request model.
+     * @returns {Promise<Object>} Activation result.
+     */
+    activateConfiguration: function (request, activationRequest) {
+        let activationContext = this.createActivationContext(request, activationRequest);
+        if (activationRequest.configurationType === 'schemaConfiguration') {
+            if (!SERVICE.DefaultSchemaConfigurationService ||
+                typeof SERVICE.DefaultSchemaConfigurationService.handleSchemaUpdate !== 'function') {
+                return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Schema configuration service is not available for activation request'));
+            }
+            return SERVICE.DefaultSchemaConfigurationService.handleSchemaUpdate(activationContext, [activationRequest.configurationCode]);
+        }
+        if (activationRequest.configurationType === 'routerConfiguration') {
+            if (!SERVICE.DefaultRouterConfigurationService ||
+                typeof SERVICE.DefaultRouterConfigurationService.registerRoutersFromDatabase !== 'function') {
+                return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Router configuration service is not available for activation request'));
+            }
+            return SERVICE.DefaultRouterConfigurationService.registerRoutersFromDatabase(activationContext);
+        }
+        return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00002', 'Activation request is not supported for configuration type: ' + activationRequest.configurationType));
+    },
+
+    /**
+     * Creates runtime activation context from approved request.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} activationRequest Activation request model.
+     * @returns {Object} Activation context.
+     */
+    createActivationContext: function (request, activationRequest) {
+        return {
+            tenant: this.getTenant(request),
+            authData: request.authData,
+            autData: request.autData,
+            correlationId: request.correlationId || activationRequest.correlationId,
+            activationRequestCode: activationRequest.code,
+            activationApproval: {
+                approved: true,
+                approvedBy: activationRequest.approvedBy,
+                approvalReason: activationRequest.approvalReason,
+                activationRequestCode: activationRequest.code
+            },
+            query: {
+                code: activationRequest.configurationCode
+            },
+            event: {
+                data: {
+                    models: [activationRequest.configurationCode],
+                    activationApproval: {
+                        approved: true,
+                        approvedBy: activationRequest.approvedBy,
+                        approvalReason: activationRequest.approvalReason,
+                        activationRequestCode: activationRequest.code
+                    }
+                }
+            }
+        };
+    },
+
+    /**
+     * Builds the activation request model from payload and preview.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} payload Request payload.
+     * @param {Object} preview Preview data.
+     * @returns {Object} Activation request model.
+     */
+    createRequestModel: function (request, payload, preview) {
+        return {
+            code: payload.code || this.createActivationRequestCode(payload),
+            active: true,
+            configurationType: payload.configurationType,
+            configurationCode: payload.configurationCode || preview.configurationCode,
+            moduleName: payload.moduleName || preview.moduleName,
+            requestedBy: payload.requestedBy || this.resolveRequestedBy(request),
+            requestReason: payload.requestReason || payload.reason,
+            approvalStatus: 'PENDING',
+            riskLevel: preview.destructive ? 'HIGH' : 'LOW',
+            preview: preview,
+            status: 'REQUESTED',
+            correlationId: request.correlationId
+        };
+    },
+
+    /**
+     * Resolves an activation request by code.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Activation request model.
+     */
+    resolveActivationRequest: function (request) {
+        return new Promise((resolve, reject) => {
+            let requestCode = this.getActivationRequestCode(request);
+            if (!requestCode) {
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'activationRequestCode is required'));
+                return;
+            }
+            let requestService = this.getActivationRequestModelService();
+            if (!requestService || typeof requestService.get !== 'function') {
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Configuration activation request service is not available'));
+                return;
+            }
+            requestService.get({
+                tenant: this.getTenant(request),
+                query: {
+                    code: requestCode
+                }
+            }).then(success => {
+                let activationRequest = success.result && success.result.length > 0 ? success.result[0] : undefined;
+                if (!activationRequest) {
+                    reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Activation request not found for code: ' + requestCode));
+                } else {
+                    resolve(activationRequest);
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    /**
+     * Builds query filters for activation request lookup.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Object} Query filters.
+     */
+    prepareActivationRequestQuery: function (request) {
+        let filters = this.getPayload(request);
+        let query = {};
+        [
+            'code',
+            'configurationType',
+            'configurationCode',
+            'moduleName',
+            'requestedBy',
+            'approvalStatus',
+            'approvedBy',
+            'riskLevel',
+            'status',
+            'correlationId',
+            'activationLogCode'
+        ].forEach(property => {
+            if (filters[property]) {
+                query[property] = filters[property];
+            }
+        });
+        if (filters.activationRequestCode && !query.code) {
+            query.code = filters.activationRequestCode;
+        }
+        return query;
+    },
+
+    /**
+     * Builds generated-service search options for activation request queries.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Object} Search options.
+     */
+    prepareActivationRequestSearchOptions: function (request) {
+        let filters = this.getPayload(request);
+        let options = {};
+        if (filters.limit) {
+            options.limit = Number(filters.limit);
+        }
+        if (filters.skip) {
+            options.skip = Number(filters.skip);
+        }
+        if (filters.projection) {
+            options.projection = filters.projection;
+        }
+        options.sort = filters.sort || {
+            creationTime: -1
+        };
+        return options;
+    },
+
+    /**
+     * Persists an activation request model.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} model Activation request model.
+     * @returns {Promise<Object>} Persistence result.
+     */
+    persistRequestModel: function (request, model) {
+        let requestService = this.getActivationRequestModelService();
+        if (!requestService || typeof requestService.save !== 'function') {
+            return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Configuration activation request service is not available'));
+        }
+        return requestService.save({
+            tenant: this.getTenant(request),
+            authData: request.authData,
+            model: model
+        });
+    },
+
+    /**
+     * Returns the generated activation request model service.
+     *
+     * @returns {Object|undefined} Generated service.
+     */
+    getActivationRequestModelService: function () {
+        return SERVICE.DefaultConfigurationActivationRequestService;
+    },
+
+    /**
+     * Returns payload from request body, query, or direct request fields.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Object} Payload map.
+     */
+    getPayload: function (request) {
+        let body = request.httpRequest && request.httpRequest.body ? request.httpRequest.body : {};
+        let query = request.httpRequest && request.httpRequest.query ? request.httpRequest.query : {};
+        return Object.assign({}, request.activationRequest || {}, query, body);
+    },
+
+    /**
+     * Returns activation request code from request.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {string|undefined} Activation request code.
+     */
+    getActivationRequestCode: function (request) {
+        let payload = this.getPayload(request);
+        return payload.activationRequestCode || payload.code;
+    },
+
+    /**
+     * Creates a unique activation request code.
+     *
+     * @param {Object} payload Request payload.
+     * @returns {string} Request code.
+     */
+    createActivationRequestCode: function (payload) {
+        return [
+            'activationRequest',
+            payload.configurationType || 'runtimeConfiguration',
+            payload.configurationCode || 'unknown',
+            Date.now()
+        ].join('_');
+    },
+
+    /**
+     * Resolves tenant for activation request persistence.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {string} Tenant code.
+     */
+    getTenant: function (request) {
+        return request.tenant || CONFIG.get('defaultTenant') || 'default';
+    },
+
+    /**
+     * Extracts a user/process identifier from a runtime request.
+     *
+     * @param {Object} request Runtime request.
+     * @returns {string|undefined} Requesting user or process.
+     */
+    resolveRequestedBy: function (request) {
+        let authData = request && (request.authData || request.autData);
+        if (!authData) {
+            return undefined;
+        }
+        return authData.code || authData.userId || authData.uid || authData.email || authData.apiKey;
+    }
+};

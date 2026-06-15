@@ -86,6 +86,27 @@ module.exports = {
         }
     },
     /**
+     * Enforces runtime property-level create policies before defaults and persistence.
+     *
+     * @param {Object} request Nodics save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
+    enforceCreateAccessPolicies: function (request, response, process) {
+        this.LOG.debug('Applying create access policies');
+        if (!SERVICE.DefaultSchemaWriteAccessPolicyService ||
+            typeof SERVICE.DefaultSchemaWriteAccessPolicyService.enforceCreatePolicies !== 'function') {
+            process.nextSuccess(request, response);
+            return;
+        }
+        SERVICE.DefaultSchemaWriteAccessPolicyService.enforceCreatePolicies(request, response).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+    /**
      * Applies schema configured default values before persistence.
      *
      * @param {Object} request Nodics save request.

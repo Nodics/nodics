@@ -32,6 +32,14 @@ module.exports = {
         textResponseHandler: 'DefaultTextResponseHandlerService',
         fileDownloadResponseHandler: 'DefaultFileDownloadResponseHandlerService'
     },
+    routeActionAuthorization: {
+        enabled: true,
+        strict: false,
+        superPermissions: ['*', 'runtime.config.*'],
+        groupPermissions: {
+            userGroup: ['*']
+        }
+    },
     server: {
         options: {
             contextRoot: 'nodics'

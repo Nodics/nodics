@@ -78,6 +78,21 @@ Nodics Revolution:
     ☐ Add import run summaries when tests exercise data import. @reporting @import
     ☐ Add command surface for `test:basic`, `test:full`, consolidated topology tests, modular topology tests, and import tests. @commands
 
+  Control Plane Governance:
+
+    ✔ Add route/action-level permissions for runtime configuration control-plane APIs. @security @runtime @done
+    ✔ Add runtime governance summary endpoint for admin control-plane dashboards. @runtime @admin @done
+    ✔ Add runtime governance cleanup preview/apply endpoints with safe defaults. @runtime @retention @done
+    ✔ Add default runtime control-plane permission catalog and user groups. @security @profile @done
+    ✔ Add admin-managed runtime schema/property access policy model. @security @admin @schema-access @done
+    ✔ Define schema/property access policy action and effect contract. @security @admin @schema-access @done
+    ✔ Add schema/property access policy resolution service. @security @admin @schema-access @done
+    ✔ Enforce property-level read masking/removal in generated CRUD/read APIs. @security @schema-access @read @done
+    ✔ Enforce property-level create/update protection in generated CRUD/write APIs. @security @schema-access @write @done
+    ✔ Extend import/export to honor schema/property access policies. @security @schema-access @import @export @done
+    ☐ Make generated admin UI consume effective property access policy for hide/mask/read-only states. @admin @schema-access @ui
+    ☐ Add preview/activate/audit/rollback lifecycle for schema/property access policy changes. @runtime @governance @schema-access
+
   Configuration:
 
     ✔ Make configuration loading order explicit as a formal Nodics contract. @critical @config @done
@@ -105,3 +120,4 @@ Nodics Revolution:
     ☐ Add basic consolidated topology tests.
     ☐ Add basic modular topology tests.
     ☐ Expand into full tests for import, workflow, cron, NEMS, tenants, and distributed communication.
+- Can you check if we are still align with design principle "Nodics is an enterprise application platform and application factory, designed to let teams build large, customizable business systems without modifying the core framework. The core rule is: capabilities are sacred, implementations are negotiable. Every feature must respect the layered module hierarchy, where framework modules provide default behavior and project/environment/server/node modules can override schemas, services, routers, pipelines, data, tests, configuration, and runtime behavior without changing out-of-the-box Nodics code. Nothing should be hardcoded to a specific project like kickoff; behavior must come from active modules, configuration, tenant context, schema definitions, and runtime governance. Generated artifacts must be recreated from source definitions during build and cleaned safely during clean. Security, access control, validation, audit, rollback, diagnostics, and test coverage are not optional add-ons; they are platform contracts. Any new code should preserve multi-tenancy, modular deployment, runtime configurability, traceability, and backward compatibility while making the system cleaner, safer, and easier to customize." do validated end to end.

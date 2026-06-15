@@ -51,24 +51,144 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (schemaList && schemaList.length > 0) {
                 let schemaCode = schemaList.shift();
-                SERVICE.DefaultPipelineService.start('schemaUpdatedPipeline', {
-                    tenant: request.tenant,
-                    autData: request.autData,
-                    event: request.event,
-                    schemaCode: schemaCode
-                }, {}).then(success => {
-                    this.handleSchemaUpdate(request, schemaList).then(success => {
-                        resolve(success);
+                this.evaluateSchemaActivationPolicy(request, schemaCode).then(policyDecision => {
+                    request.runtimeActivationPolicyDecisions = request.runtimeActivationPolicyDecisions || {};
+                    request.runtimeActivationPolicyDecisions[schemaCode] = policyDecision;
+                    return SERVICE.DefaultPipelineService.start('schemaUpdatedPipeline', {
+                        tenant: request.tenant,
+                        autData: request.autData,
+                        event: request.event,
+                        schemaCode: schemaCode
+                    }, {});
+                }).then(success => {
+                    this.auditSchemaActivation({
+                        request: request,
+                        schemaCode: schemaCode,
+                        status: 'SUCCESS',
+                        result: success
+                    }).then(() => {
+                        this.handleSchemaUpdate(request, schemaList).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
                     }).catch(error => {
                         reject(error);
                     });
                 }).catch(error => {
-                    reject(error);
+                    this.auditSchemaActivation({
+                        request: request,
+                        schemaCode: schemaCode,
+                        status: 'FAILED',
+                        error: error
+                    }).then(() => {
+                        reject(error);
+                    }).catch(error => {
+                        reject(error);
+                    });
                 });
             } else {
                 resolve('Updated all schemas');
             }
         });
+    },
+
+    /**
+     * Evaluates activation policy before a runtime schema update.
+     *
+     * @param {Object} request Runtime activation request.
+     * @param {string} schemaCode Runtime schema code.
+     * @returns {Promise<Object>} Policy decision.
+     */
+    evaluateSchemaActivationPolicy: function (request, schemaCode) {
+        if (!SERVICE.DefaultRuntimeConfigurationActivationPolicyService) {
+            return Promise.resolve({});
+        }
+        return SERVICE.DefaultRuntimeConfigurationActivationPolicyService.evaluateActivation(request, {
+            configurationType: 'schemaConfiguration',
+            configurationCode: schemaCode
+        });
+    },
+
+    /**
+     * Records schema activation history without blocking activation.
+     *
+     * @param {Object} options Audit options.
+     * @returns {Promise<boolean>} Resolves after the audit attempt.
+     */
+    auditSchemaActivation: function (options) {
+        if (!SERVICE.DefaultRuntimeConfigurationAuditService) {
+            return Promise.resolve(true);
+        }
+        let auditService = SERVICE.DefaultRuntimeConfigurationAuditService;
+        return this.get({
+            tenant: CONFIG.get('defaultTenant') || 'default',
+            query: {
+                code: options.schemaCode
+            }
+        }).then(success => {
+            let runtimeSchema = success.result && success.result.length > 0 ? success.result[0] : undefined;
+            return auditService.recordActivation({
+                configurationType: 'schemaConfiguration',
+                configurationCode: options.schemaCode,
+                moduleName: runtimeSchema ? runtimeSchema.moduleName : undefined,
+                action: runtimeSchema && runtimeSchema.active === false ? 'deactivate' : 'activate',
+                status: options.status,
+                tenant: options.request.tenant || CONFIG.get('defaultTenant') || 'default',
+                requestedBy: auditService.resolveRequestedBy(options.request),
+                correlationId: auditService.resolveCorrelationId(options.request),
+                approvalStatus: options.request.runtimeActivationPolicyDecisions &&
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode] ?
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode].approvalStatus : options.error && options.error.approvalStatus,
+                approvedBy: options.request.runtimeActivationPolicyDecisions &&
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode] ?
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode].approvedBy : undefined,
+                approvalReason: options.request.runtimeActivationPolicyDecisions &&
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode] ?
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode].approvalReason : undefined,
+                riskLevel: options.request.runtimeActivationPolicyDecisions &&
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode] ?
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode].riskLevel : options.error && options.error.riskLevel,
+                activationRequestCode: options.request.runtimeActivationPolicyDecisions &&
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode] ?
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode].activationRequestCode : options.request.activationRequestCode,
+                warnings: options.request.runtimeActivationPolicyDecisions &&
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode] &&
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode].preview ?
+                    options.request.runtimeActivationPolicyDecisions[options.schemaCode].preview.warnings : options.error && options.error.warnings,
+                previousSnapshot: runtimeSchema && runtimeSchema.moduleName && NODICS.getModule(runtimeSchema.moduleName) ?
+                    this.getRawSchemaSnapshot(runtimeSchema.moduleName, runtimeSchema.code) : undefined,
+                nextSnapshot: runtimeSchema,
+                error: options.error
+            });
+        }).catch(error => {
+            return auditService.recordActivation({
+                configurationType: 'schemaConfiguration',
+                configurationCode: options.schemaCode,
+                action: 'activate',
+                status: 'FAILED',
+                tenant: options.request.tenant || CONFIG.get('defaultTenant') || 'default',
+                requestedBy: auditService.resolveRequestedBy(options.request),
+                correlationId: auditService.resolveCorrelationId(options.request),
+                approvalStatus: options.error && options.error.approvalStatus,
+                riskLevel: options.error && options.error.riskLevel,
+                activationRequestCode: options.request.activationRequestCode,
+                warnings: options.error && options.error.warnings,
+                error: options.error || error
+            });
+        }).then(() => true);
+    },
+
+    /**
+     * Safely resolves current effective schema snapshot.
+     *
+     * @param {string} moduleName Owning module.
+     * @param {string} schemaCode Schema code.
+     * @returns {Object|undefined} Current schema snapshot.
+     */
+    getRawSchemaSnapshot: function (moduleName, schemaCode) {
+        let module = moduleName && NODICS.getModule ? NODICS.getModule(moduleName) : undefined;
+        return module && module.rawSchema ? module.rawSchema[schemaCode] : undefined;
     },
 
     remove: function (request) {

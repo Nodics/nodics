@@ -345,6 +345,11 @@ module.exports = {
                     required: false,
                     description: 'List of parent groups'
                 },
+                permissions: {
+                    type: 'array',
+                    required: false,
+                    description: 'List of action permissions granted by this user group'
+                },
             }
         },
 

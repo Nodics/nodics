@@ -22,6 +22,7 @@ module.exports = {
             if (response.success.result && response.success.result.length > 0) {
                 response.success.result.forEach(itemModel => {
                     itemModel.userGroupCodes = UTILS.getUserGroupCodes(itemModel.userGroups);
+                    itemModel.userGroupPermissions = UTILS.getUserGroupPermissions(itemModel.userGroups);
                 });
             }
             resolve(true);

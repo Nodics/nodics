@@ -18,5 +18,10 @@ module.exports = {
     ERR_HLP_00000: {
         code: '500',
         message: 'Failed to serve help notation',
+    },
+
+    ERR_RTR_00003: {
+        code: '400',
+        message: 'Invalid router override definition',
     }
 };

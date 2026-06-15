@@ -69,5 +69,218 @@ module.exports = {
         } else {
             return FACADE.DefaultConfigurationFacade.changeConfig(request);
         }
+    },
+
+    /**
+     * Restores a runtime configuration from activation history.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.httpRequest Express request wrapper.
+     * @param {Object} request.httpRequest.body Rollback payload with activationCode.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    rollbackRuntimeConfiguration: function (request, callback) {
+        let body = request.httpRequest && request.httpRequest.body ? request.httpRequest.body : {};
+        request.activationCode = body.activationCode || request.activationCode;
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.rollbackRuntimeConfiguration(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.rollbackRuntimeConfiguration(request);
+        }
+    },
+
+    /**
+     * Returns runtime configuration activation history.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    getRuntimeConfigurationHistory: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.getRuntimeConfigurationHistory(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.getRuntimeConfigurationHistory(request);
+        }
+    },
+
+    /**
+     * Returns runtime configuration governance summary for admin dashboards.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    getRuntimeConfigurationGovernanceSummary: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.getRuntimeConfigurationGovernanceSummary(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.getRuntimeConfigurationGovernanceSummary(request);
+        }
+    },
+
+    /**
+     * Returns a non-destructive runtime governance cleanup preview.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    previewRuntimeConfigurationGovernanceCleanup: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.previewRuntimeConfigurationGovernanceCleanup(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.previewRuntimeConfigurationGovernanceCleanup(request);
+        }
+    },
+
+    /**
+     * Applies runtime governance cleanup when explicitly confirmed.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    cleanupRuntimeConfigurationGovernance: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.cleanupRuntimeConfigurationGovernance(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.cleanupRuntimeConfigurationGovernance(request);
+        }
+    },
+
+    /**
+     * Returns a non-destructive runtime configuration activation preview.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    previewRuntimeConfiguration: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.previewRuntimeConfiguration(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.previewRuntimeConfiguration(request);
+        }
+    },
+
+    /**
+     * Creates a runtime configuration activation request.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    createRuntimeConfigurationActivationRequest: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.createRuntimeConfigurationActivationRequest(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.createRuntimeConfigurationActivationRequest(request);
+        }
+    },
+
+    /**
+     * Returns runtime configuration activation requests for admin work queues.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    getRuntimeConfigurationActivationRequests: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.getRuntimeConfigurationActivationRequests(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.getRuntimeConfigurationActivationRequests(request);
+        }
+    },
+
+    /**
+     * Approves a runtime configuration activation request.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    approveRuntimeConfigurationActivationRequest: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.approveRuntimeConfigurationActivationRequest(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.approveRuntimeConfigurationActivationRequest(request);
+        }
+    },
+
+    /**
+     * Rejects a runtime configuration activation request.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    rejectRuntimeConfigurationActivationRequest: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.rejectRuntimeConfigurationActivationRequest(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.rejectRuntimeConfigurationActivationRequest(request);
+        }
+    },
+
+    /**
+     * Activates an approved runtime configuration activation request.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
+     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
+     */
+    activateRuntimeConfigurationActivationRequest: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultConfigurationFacade.activateRuntimeConfigurationActivationRequest(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultConfigurationFacade.activateRuntimeConfigurationActivationRequest(request);
+        }
     }
 };

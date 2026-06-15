@@ -240,6 +240,8 @@ module.exports = {
                                                             entCode: enterprise.code,
                                                             tenant: enterprise.tenant.code,
                                                             apiKey: success.result[0].apiKey,
+                                                            userGroups: success.result[0].userGroupCodes,
+                                                            permissions: success.result[0].userGroupPermissions,
                                                             lifetime: true
                                                         });
                                                         NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
@@ -263,6 +265,8 @@ module.exports = {
                                                 entCode: enterprise.code,
                                                 tenant: enterprise.tenant.code,
                                                 apiKey: success.result[0].apiKey,
+                                                userGroups: success.result[0].userGroupCodes,
+                                                permissions: success.result[0].userGroupPermissions,
                                                 lifetime: true
                                             });
                                             NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);

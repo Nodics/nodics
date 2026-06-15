@@ -20,6 +20,28 @@ module.exports = {
                 'kickoffLocalCronServer',
                 'kickoffLocalCmsServer',
                 'kickoffLocalWorkflowServer'
+            ],
+            communicationChecks: [
+                {
+                    server: 'kickoffLocalProfileServer',
+                    moduleName: 'profile',
+                    path: '/v0/ping?help'
+                },
+                {
+                    server: 'kickoffLocalNemsServer',
+                    moduleName: 'nems',
+                    path: '/v0/ping?help'
+                },
+                {
+                    server: 'kickoffLocalCronServer',
+                    moduleName: 'cronjob',
+                    path: '/v0/ping?help'
+                },
+                {
+                    server: 'kickoffLocalWorkflowServer',
+                    moduleName: 'workflow',
+                    path: '/v0/ping?help'
+                }
             ]
         }
     }

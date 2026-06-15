@@ -9,7 +9,6 @@
 
  */
 
-const _ = require('lodash');
 const config = require('./nConfig');
 const env = require('../env');
 const util = require('util');
@@ -95,6 +94,7 @@ module.exports = {
                                 tenant: defaultAuthDetail.tenant,
                                 apiKey: employee.apiKey,
                                 userGroups: employee.userGroupCodes,
+                                permissions: employee.userGroupPermissions,
                                 lifetime: true
                             }));
                             resolve(true);
@@ -239,7 +239,7 @@ module.exports = {
             });
         }).then(() => {
             return new Promise((resolve, reject) => {
-                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/schemas.js', null));
+                SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadSchemaFiles('/src/schemas/schemas.js', null));
                 resolve(true);
             });
         }).then(() => {
@@ -247,7 +247,7 @@ module.exports = {
                 let defaultTenant = CONFIG.get('defaultTenant') || 'default';
                 SERVICE.DefaultDatabaseConnectionHandlerService.createDatabaseConnection(defaultTenant, true).then(success => {
                     SERVICE.DefaultDatabaseConnectionHandlerService.getRuntimeSchema().then(runtimeSchema => {
-                        SERVICE.DefaultDatabaseConfigurationService.setRawSchema(_.merge(
+                        SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.mergeRuntimeSchemaFiles(
                             SERVICE.DefaultDatabaseConfigurationService.getRawSchema(),
                             runtimeSchema
                         ));

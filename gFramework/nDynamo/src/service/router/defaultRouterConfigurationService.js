@@ -72,7 +72,8 @@ module.exports = {
                 return;
             }
             this.registerRoutersFromDatabase({
-                tenant: CONFIG.get('defaultTenant') || 'default'
+                tenant: CONFIG.get('defaultTenant') || 'default',
+                runtimeActivationSource: 'startup'
             }).then(success => {
                 resolve(success.message)
             }).catch(error => {
@@ -82,28 +83,65 @@ module.exports = {
     },
 
     registerRoutersFromDatabase: function(query){
-        let _self = this;
         return new Promise((resolve, reject) => {
             this.get(query).then(success => {
                 try {
-                    let routers = {};
-                    if (success.result && success.result.length > 0) {
-                        success.result.forEach(routerDefinition => {
-                            routers[routerDefinition.moduleName] = {};
-                            routers[routerDefinition.moduleName].tempGroup = {};
-                            routers[routerDefinition.moduleName].tempGroup[routerDefinition.code] = routerDefinition;
-                            SERVICE.DefaultRouterService.registerRouter(routers).then(success => {
-                                resolve('Routers successfully activated');
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        });
-                    }else{
+                    if (!success.result || success.result.length <= 0) {
                         resolve({
                             code:'ERR_SYS_00001',
                             message: 'None routers found to update'
                         });
+                        return;
                     }
+
+                    let runtimeRouters = this.prepareRuntimeRouterRegistry(success.result);
+                    let previousSnapshots = this.collectPreviousRouterSnapshots(success.result);
+                    this.evaluateRouterActivationPolicy(query, success.result).then(policyDecisions => {
+                        let effectiveRouters = SERVICE.DefaultFilesLoaderService.mergeRuntimeRouterFiles(
+                            SERVICE.DefaultRouterConfigurationService.getRawRouters(),
+                            runtimeRouters
+                        );
+                        let runtimeContribution = SERVICE.DefaultFilesLoaderService.mergeRuntimeRouterFiles(
+                            {},
+                            runtimeRouters
+                        );
+                        SERVICE.DefaultRouterConfigurationService.setRawRouters(effectiveRouters);
+                        SERVICE.DefaultRouterService.registerRouter(runtimeContribution).then(() => {
+                            this.auditRouterActivations({
+                                request: query,
+                                routerDefinitions: success.result,
+                                previousSnapshots: previousSnapshots,
+                                policyDecisions: policyDecisions,
+                                status: 'SUCCESS'
+                            }).then(() => {
+                                resolve({
+                                    message: 'Routers successfully activated',
+                                    count: success.result.length
+                                });
+                            });
+                        }).catch(error => {
+                            this.auditRouterActivations({
+                                request: query,
+                                routerDefinitions: success.result,
+                                previousSnapshots: previousSnapshots,
+                                policyDecisions: policyDecisions,
+                                status: 'FAILED',
+                                error: error
+                            }).then(() => {
+                                reject(error);
+                            });
+                        });
+                    }).catch(error => {
+                        this.auditRouterActivations({
+                            request: query,
+                            routerDefinitions: success.result,
+                            previousSnapshots: previousSnapshots,
+                            status: 'FAILED',
+                            error: error
+                        }).then(() => {
+                            reject(error);
+                        });
+                    });
                 } catch (error) {
                     reject(error);
                 }
@@ -111,6 +149,114 @@ module.exports = {
                 reject(error);
             });
         });
+    },
+
+    /**
+     * Evaluates activation policy for runtime router definitions.
+     *
+     * @param {Object} request Runtime activation request.
+     * @param {Object[]} routerDefinitions Runtime router definitions.
+     * @returns {Promise<Object>} Policy decisions keyed by route code.
+     */
+    evaluateRouterActivationPolicy: function (request, routerDefinitions) {
+        if (!SERVICE.DefaultRuntimeConfigurationActivationPolicyService) {
+            return Promise.resolve({});
+        }
+        let policyService = SERVICE.DefaultRuntimeConfigurationActivationPolicyService;
+        let decisions = {};
+        let tasks = (routerDefinitions || []).map(routerDefinition => {
+            return policyService.evaluateActivation(request, {
+                configurationType: 'routerConfiguration',
+                configurationCode: routerDefinition.code,
+                configuration: routerDefinition
+            }).then(decision => {
+                decisions[routerDefinition.code] = decision;
+            });
+        });
+        return Promise.all(tasks).then(() => decisions);
+    },
+
+    /**
+     * Converts persisted route rows into the standard module -> group -> route map.
+     *
+     * @param {Object[]} routerDefinitions Persisted router definitions.
+     * @returns {Object} Runtime router registry.
+     */
+    prepareRuntimeRouterRegistry: function (routerDefinitions) {
+        let routers = {};
+        routerDefinitions.forEach(routerDefinition => {
+            let moduleName = routerDefinition.moduleName;
+            let groupName = routerDefinition.groupName || routerDefinition.routerGroup || routerDefinition.group || 'runtime';
+            routers[moduleName] = routers[moduleName] || {};
+            routers[moduleName][groupName] = routers[moduleName][groupName] || {};
+            routers[moduleName][groupName][routerDefinition.code] = routerDefinition;
+        });
+        return routers;
+    },
+
+    /**
+     * Collects existing effective route definitions before runtime activation.
+     *
+     * @param {Object[]} routerDefinitions Runtime router definitions.
+     * @returns {Object} Previous route snapshots keyed by module/group/code.
+     */
+    collectPreviousRouterSnapshots: function (routerDefinitions) {
+        let snapshots = {};
+        let rawRouters = SERVICE.DefaultRouterConfigurationService.getRawRouters() || {};
+        routerDefinitions.forEach(routerDefinition => {
+            let moduleName = routerDefinition.moduleName;
+            let groupName = routerDefinition.groupName || routerDefinition.routerGroup || routerDefinition.group || 'runtime';
+            snapshots[moduleName] = snapshots[moduleName] || {};
+            snapshots[moduleName][groupName] = snapshots[moduleName][groupName] || {};
+            snapshots[moduleName][groupName][routerDefinition.code] =
+                rawRouters[moduleName] && rawRouters[moduleName][groupName] ? rawRouters[moduleName][groupName][routerDefinition.code] : undefined;
+        });
+        return snapshots;
+    },
+
+    /**
+     * Records router activation history without blocking activation.
+     *
+     * @param {Object} options Audit options.
+     * @returns {Promise<boolean>} Resolves after audit attempts complete.
+     */
+    auditRouterActivations: function (options) {
+        if (!SERVICE.DefaultRuntimeConfigurationAuditService) {
+            return Promise.resolve(true);
+        }
+        let auditService = SERVICE.DefaultRuntimeConfigurationAuditService;
+        let records = (options.routerDefinitions || []).map(routerDefinition => {
+            let groupName = routerDefinition.groupName || routerDefinition.routerGroup || routerDefinition.group || 'runtime';
+            return auditService.recordActivation({
+                configurationType: 'routerConfiguration',
+                configurationCode: routerDefinition.code,
+                moduleName: routerDefinition.moduleName,
+                action: 'activate',
+                status: options.status,
+                tenant: options.request.tenant || CONFIG.get('defaultTenant') || 'default',
+                requestedBy: auditService.resolveRequestedBy(options.request),
+                correlationId: auditService.resolveCorrelationId(options.request),
+                approvalStatus: options.policyDecisions && options.policyDecisions[routerDefinition.code] ?
+                    options.policyDecisions[routerDefinition.code].approvalStatus : options.error && options.error.approvalStatus,
+                approvedBy: options.policyDecisions && options.policyDecisions[routerDefinition.code] ?
+                    options.policyDecisions[routerDefinition.code].approvedBy : undefined,
+                approvalReason: options.policyDecisions && options.policyDecisions[routerDefinition.code] ?
+                    options.policyDecisions[routerDefinition.code].approvalReason : undefined,
+                riskLevel: options.policyDecisions && options.policyDecisions[routerDefinition.code] ?
+                    options.policyDecisions[routerDefinition.code].riskLevel : options.error && options.error.riskLevel,
+                activationRequestCode: options.policyDecisions && options.policyDecisions[routerDefinition.code] ?
+                    options.policyDecisions[routerDefinition.code].activationRequestCode : options.request.activationRequestCode,
+                warnings: options.policyDecisions && options.policyDecisions[routerDefinition.code] &&
+                    options.policyDecisions[routerDefinition.code].preview ?
+                    options.policyDecisions[routerDefinition.code].preview.warnings : options.error && options.error.warnings,
+                previousSnapshot: options.previousSnapshots[routerDefinition.moduleName] &&
+                    options.previousSnapshots[routerDefinition.moduleName][groupName] ?
+                    options.previousSnapshots[routerDefinition.moduleName][groupName][routerDefinition.code] : undefined,
+                nextSnapshot: routerDefinition,
+                error: options.error
+            });
+        });
+        return Promise.all(records).then(() => true);
     },
     remove: function (request) {
         return new Promise((resolve, reject) => {

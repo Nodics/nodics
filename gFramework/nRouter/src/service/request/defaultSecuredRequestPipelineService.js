@@ -1,8 +1,8 @@
 /**
  * @module router/service/request/DefaultSecuredRequestPipelineService
  * @description Secured API request pipeline that validates credentials, authorizes API
- * keys or bearer tokens, resolves active tenant context, and checks route access groups
- * before controller execution.
+ * keys or bearer tokens, resolves active tenant context, checks route access groups,
+ * and optionally checks action-level route permissions before controller execution.
  * @layer pipeline
  * @owner nRouter
  * @override Project modules may override this service or secured request pipeline
@@ -14,6 +14,7 @@
  * @property {Object} request.authData Authenticated principal, enterprise, tenant, and user group context.
  * @property {string} request.tenant Active tenant resolved from the authorized credential.
  * @property {string[]} request.router.accessGroups Groups allowed to access the selected router.
+ * @property {string|string[]} request.router.permission Action permission required by the selected router.
  */
 module.exports = {
     /**
@@ -81,7 +82,8 @@ module.exports = {
                     tenant: success.enterprise.tenant.code,
                     entCode: success.enterprise.code,
                     person: success.person,
-                    userGroups: success.person.userGroupCodes || UTILS.getUserGroupCodes(success.person.userGroups)
+                    userGroups: success.person.userGroupCodes || UTILS.getUserGroupCodes(success.person.userGroups),
+                    permissions: success.person.userGroupPermissions || UTILS.getUserGroupPermissions(success.person.userGroups)
                 };
                 request.tenant = success.enterprise.tenant.code;
                 process.nextSuccess(request, response);
@@ -149,7 +151,8 @@ module.exports = {
     },
 
     /**
-     * Verifies that the authenticated principal belongs to at least one router access group.
+     * Verifies that the authenticated principal belongs to at least one router access group
+     * and, when configured, has the route action permission.
      *
      * @param {Object} request Nodics request context.
      * @param {Object} request.authData Authenticated principal context.
@@ -162,11 +165,138 @@ module.exports = {
      * @throws Emits `ERR_AUTH_00003` when the principal cannot access the route.
      */
     checkAccess: function (request, response, process) {
-        if (request.authData.userGroups.filter(userGroup => request.router.accessGroups.includes(userGroup)).length > 0) {
-            process.nextSuccess(request, response);
-        } else {
+        if (!this.hasAccessGroup(request)) {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user do not have access to this resource'));
+            return;
         }
-
+        if (!this.hasRoutePermission(request)) {
+            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user does not have permission to execute this action'));
+            return;
+        }
+        process.nextSuccess(request, response);
     },
+
+    /**
+     * Checks route access-group compatibility.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {boolean} True when user has one allowed access group.
+     */
+    hasAccessGroup: function (request) {
+        let userGroups = request.authData && request.authData.userGroups ? request.authData.userGroups : [];
+        let accessGroups = request.router && request.router.accessGroups ? request.router.accessGroups : [];
+        return userGroups.filter(userGroup => accessGroups.includes(userGroup)).length > 0;
+    },
+
+    /**
+     * Checks action-level route permission when route metadata asks for it.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {boolean} True when route permission check passes.
+     */
+    hasRoutePermission: function (request) {
+        let requiredPermissions = this.getRoutePermissions(request.router || {});
+        if (requiredPermissions.length === 0) {
+            return true;
+        }
+        let config = this.getRouteActionAuthorizationConfig();
+        if (config.enabled === false) {
+            return true;
+        }
+        let grantedPermissions = this.getGrantedPermissions(request);
+        if (grantedPermissions.length === 0 && config.strict !== true) {
+            return true;
+        }
+        return requiredPermissions.some(permission => this.isPermissionGranted(permission, grantedPermissions, config));
+    },
+
+    /**
+     * Returns route permission metadata as a normalized list.
+     *
+     * @param {Object} router Effective router definition.
+     * @returns {string[]} Required route permissions.
+     */
+    getRoutePermissions: function (router) {
+        let permissions = router.permissions || router.permission || [];
+        if (typeof permissions === 'string') {
+            return [permissions];
+        }
+        return Array.isArray(permissions) ? permissions : [];
+    },
+
+    /**
+     * Returns principal and group-derived permissions.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {string[]} Granted permission list.
+     */
+    getGrantedPermissions: function (request) {
+        let authData = request.authData || {};
+        let permissions = [];
+        ['permissions', 'actionPermissions', 'authorities', 'scopes'].forEach(property => {
+            if (Array.isArray(authData[property])) {
+                permissions = permissions.concat(authData[property]);
+            }
+        });
+        permissions = permissions.concat(this.getGroupPermissions(authData.userGroups || []));
+        return Array.from(new Set(permissions));
+    },
+
+    /**
+     * Returns permissions granted by authenticated user groups.
+     *
+     * @param {string[]} userGroups Authenticated user group codes.
+     * @returns {string[]} Group-derived permissions.
+     */
+    getGroupPermissions: function (userGroups) {
+        let groupPermissions = this.getRouteActionAuthorizationConfig().groupPermissions || {};
+        return userGroups.reduce((permissions, userGroup) => {
+            if (Array.isArray(groupPermissions[userGroup])) {
+                return permissions.concat(groupPermissions[userGroup]);
+            }
+            return permissions;
+        }, []);
+    },
+
+    /**
+     * Determines if a required permission is granted.
+     *
+     * @param {string} requiredPermission Required permission.
+     * @param {string[]} grantedPermissions Granted permissions.
+     * @param {Object} config Route action authorization config.
+     * @returns {boolean} True when permission is granted.
+     */
+    isPermissionGranted: function (requiredPermission, grantedPermissions, config) {
+        let superPermissions = config.superPermissions || [];
+        let grants = grantedPermissions.concat(superPermissions.filter(permission => grantedPermissions.includes(permission)));
+        return grants.some(grantedPermission => {
+            return grantedPermission === requiredPermission ||
+                grantedPermission === '*' ||
+                this.matchesWildcardPermission(requiredPermission, grantedPermission);
+        });
+    },
+
+    /**
+     * Matches a wildcard permission such as runtime.config.*.
+     *
+     * @param {string} requiredPermission Required permission.
+     * @param {string} grantedPermission Granted permission.
+     * @returns {boolean} True when wildcard grant matches.
+     */
+    matchesWildcardPermission: function (requiredPermission, grantedPermission) {
+        if (!grantedPermission || grantedPermission.indexOf('*') === -1) {
+            return false;
+        }
+        let prefix = grantedPermission.replace(/\*$/, '');
+        return requiredPermission.indexOf(prefix) === 0;
+    },
+
+    /**
+     * Returns route action authorization configuration.
+     *
+     * @returns {Object} Authorization configuration.
+     */
+    getRouteActionAuthorizationConfig: function () {
+        return CONFIG.get('routeActionAuthorization') || {};
+    }
 };

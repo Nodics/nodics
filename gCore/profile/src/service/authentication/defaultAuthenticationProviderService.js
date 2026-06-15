@@ -131,6 +131,8 @@ module.exports = {
                     } else {
                         UTILS.compareHash(options.request.password, options.person.password.password).then(match => {
                             if (match) {
+                                let userGroupCodes = options.person.userGroupCodes || UTILS.getUserGroupCodes(options.person.userGroups);
+                                let userGroupPermissions = options.person.userGroupPermissions || UTILS.getUserGroupPermissions(options.person.userGroups);
                                 state.attempts = 0;
                                 _self.updateAuthData({
                                     state: state,
@@ -142,7 +144,8 @@ module.exports = {
                                     loginId: options.person.loginId,
                                     password: options.request.password,
                                     type: options.type,
-                                    userGroups: options.person.userGroupCodes
+                                    userGroups: userGroupCodes,
+                                    permissions: userGroupPermissions
                                 }).then(refreshToken => {
                                     let authToken = _self.generateAuthToken({
                                         entCode: options.enterprise.code,
@@ -150,7 +153,8 @@ module.exports = {
                                         loginId: options.person.loginId,
                                         tokenLife: options.person.tokenLife,
                                         refreshToken: refreshToken,
-                                        userGroups: options.person.userGroupCodes
+                                        userGroups: userGroupCodes,
+                                        permissions: userGroupPermissions
                                     });
                                     resolve({
                                         authToken: authToken
@@ -188,7 +192,8 @@ module.exports = {
                     loginId: options.loginId,
                     password: options.password,
                     type: options.type,
-                    userGroups: options.userGroups
+                    userGroups: options.userGroups,
+                    permissions: options.permissions
                 }).then(success => {
                     resolve(refreshToken);
                 }).catch(error => {

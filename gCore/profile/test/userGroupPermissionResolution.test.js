@@ -1,0 +1,72 @@
+const assert = require('assert');
+
+// @nodics-capability-behavior @nodics-area profile
+global.CONFIG = {
+    get: function () {
+        return undefined;
+    }
+};
+
+const commonUtils = require('../../../gFramework/nCommon/src/utils/utils');
+global.UTILS = Object.assign({}, commonUtils, {
+    isObject: function (value) {
+        return value !== null && typeof value === 'object' && !Array.isArray(value);
+    }
+});
+
+const userGroupsData = require('../data/init/data/groups/defaultUserGroupsData');
+const employeeData = require('../data/init/data/user/defaultEmployeeData');
+
+let groupTree = [{
+    code: 'runtimeConfigAdminUserGroup',
+    permissions: ['runtime.config.cleanup.execute'],
+    parentGroups: [{
+        code: 'runtimeConfigOperatorUserGroup',
+        permissions: [
+            'runtime.config.request.activate',
+            'runtime.config.rollback',
+            'runtime.config.cleanup.preview'
+        ],
+        parentGroups: [{
+            code: 'runtimeConfigRequesterUserGroup',
+            permissions: [
+                'runtime.config.preview',
+                'runtime.config.request.create'
+            ],
+            parentGroups: [{
+                code: 'runtimeConfigViewerUserGroup',
+                permissions: [
+                    'runtime.config.history.view',
+                    'runtime.config.summary.view',
+                    'runtime.config.request.view'
+                ]
+            }]
+        }]
+    }, {
+        code: 'runtimeConfigApproverUserGroup',
+        permissions: [
+            'runtime.config.request.approve',
+            'runtime.config.request.reject'
+        ]
+    }]
+}];
+
+let permissions = global.UTILS.getUserGroupPermissions(groupTree);
+assert(permissions.includes('runtime.config.cleanup.execute'));
+assert(permissions.includes('runtime.config.cleanup.preview'));
+assert(permissions.includes('runtime.config.preview'));
+assert(permissions.includes('runtime.config.request.view'));
+assert(permissions.includes('runtime.config.request.approve'));
+assert.strictEqual(permissions.filter(permission => permission === 'runtime.config.request.view').length, 1);
+
+let runtimeAdminGroup = Object.values(userGroupsData).find(group => group.code === 'runtimeConfigAdminUserGroup');
+assert(runtimeAdminGroup, 'Default runtime config admin group should be seeded');
+assert(runtimeAdminGroup.permissions.includes('runtime.config.cleanup.execute'));
+assert(!runtimeAdminGroup.permissions.includes('*'), 'Runtime admin data should avoid broad wildcard permissions');
+
+let adminEmployee = employeeData.record0;
+let apiAdminEmployee = employeeData.record1;
+assert(adminEmployee.userGroups.includes('runtimeConfigAdminUserGroup'));
+assert(apiAdminEmployee.userGroups.includes('runtimeConfigAdminUserGroup'));
+
+console.log('Profile user group permission resolution validated');

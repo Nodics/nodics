@@ -35,5 +35,115 @@ module.exports = {
 
     changeConfig: function (request) {
         return SERVICE.DefaultConfigurationService.changeConfig(request);
+    },
+
+    /**
+     * Delegates runtime configuration rollback to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Rollback response.
+     */
+    rollbackRuntimeConfiguration: function (request) {
+        return SERVICE.DefaultConfigurationService.rollbackRuntimeConfiguration(request);
+    },
+
+    /**
+     * Delegates runtime configuration activation history lookup to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Activation history response.
+     */
+    getRuntimeConfigurationHistory: function (request) {
+        return SERVICE.DefaultConfigurationService.getRuntimeConfigurationHistory(request);
+    },
+
+    /**
+     * Delegates runtime configuration governance summary lookup to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Runtime governance summary response.
+     */
+    getRuntimeConfigurationGovernanceSummary: function (request) {
+        return SERVICE.DefaultConfigurationService.getRuntimeConfigurationGovernanceSummary(request);
+    },
+
+    /**
+     * Delegates runtime governance cleanup preview to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Cleanup preview response.
+     */
+    previewRuntimeConfigurationGovernanceCleanup: function (request) {
+        return SERVICE.DefaultConfigurationService.previewRuntimeConfigurationGovernanceCleanup(request);
+    },
+
+    /**
+     * Delegates runtime governance cleanup to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Cleanup response.
+     */
+    cleanupRuntimeConfigurationGovernance: function (request) {
+        return SERVICE.DefaultConfigurationService.cleanupRuntimeConfigurationGovernance(request);
+    },
+
+    /**
+     * Delegates runtime configuration preview to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Activation preview response.
+     */
+    previewRuntimeConfiguration: function (request) {
+        return SERVICE.DefaultConfigurationService.previewRuntimeConfiguration(request);
+    },
+
+    /**
+     * Delegates activation request creation to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Activation request response.
+     */
+    createRuntimeConfigurationActivationRequest: function (request) {
+        return SERVICE.DefaultConfigurationService.createRuntimeConfigurationActivationRequest(request);
+    },
+
+    /**
+     * Delegates activation request lookup to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Activation request query response.
+     */
+    getRuntimeConfigurationActivationRequests: function (request) {
+        return SERVICE.DefaultConfigurationService.getRuntimeConfigurationActivationRequests(request);
+    },
+
+    /**
+     * Delegates activation request approval to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Approval response.
+     */
+    approveRuntimeConfigurationActivationRequest: function (request) {
+        return SERVICE.DefaultConfigurationService.approveRuntimeConfigurationActivationRequest(request);
+    },
+
+    /**
+     * Delegates activation request rejection to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Rejection response.
+     */
+    rejectRuntimeConfigurationActivationRequest: function (request) {
+        return SERVICE.DefaultConfigurationService.rejectRuntimeConfigurationActivationRequest(request);
+    },
+
+    /**
+     * Delegates approved activation request execution to the system service.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Activation response.
+     */
+    activateRuntimeConfigurationActivationRequest: function (request) {
+        return SERVICE.DefaultConfigurationService.activateRuntimeConfigurationActivationRequest(request);
     }
 };
