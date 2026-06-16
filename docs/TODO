@@ -48,7 +48,7 @@ Nodics Revolution:
     ✔ Execute guarded live generated CRUD lifecycle against a running consolidated server for one schema. @postman @router @schema @testing @done
     ✔ Add guarded live generated access-policy runner for read/create/update/delete runtime behavior. @schema-access @runtime @testing @done
     ☐ Execute guarded live generated CRUD lifecycle against a dedicated test tenant. @postman @router @schema @testing @tenant
-    ☐ Make generated live CRUD fixtures inheritance-aware so schemas extending `user` or other super schemas get required parent fields. @generated-tests @schema @inheritance @testing
+    ✔ Make generated live CRUD fixtures inheritance-aware so schemas extending `user` or other super schemas get required parent fields. @generated-tests @schema @inheritance @testing @done
     ✔ Fix remove pipeline workflow-init event logging `Cannot read properties of undefined (reading 'models')` after successful model delete. @pipeline @workflow @crud @done
     ☐ Migrate Postman Data Import/Export coverage for init, core, sample, local, remote paths. @postman @import @export @testing
     ☐ Migrate Postman Cache coverage for item/API cache and flush behavior. @postman @cache @testing

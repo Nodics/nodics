@@ -11,6 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const _ = require('lodash');
 
 module.exports = {
     init: function (options) {
@@ -78,31 +79,38 @@ module.exports = {
                 let generatedSchemaDir = path.join(modulePath, 'test', 'gen', 'schema');
                 fs.mkdirSync(generatedSchemaDir, { recursive: true });
 
+                let effectiveModuleSchemas = this.resolveModuleSchemasForGeneration(moduleName, moduleSchemas);
                 Object.keys(moduleSchemas).forEach(schemaName => {
+                    let schemaObject = moduleSchemas[schemaName];
+                    let effectiveSchemaObject = effectiveModuleSchemas[schemaName] || schemaObject;
                     this.writeSchemaContractTest({
                         moduleName: moduleName,
                         moduleObject: moduleObject,
                         schemaName: schemaName,
-                        schemaObject: moduleSchemas[schemaName],
+                        schemaObject: schemaObject,
+                        effectiveSchemaObject: effectiveSchemaObject,
                         generatedSchemaDir: generatedSchemaDir
                     });
                     this.writeSchemaApiContractTest({
                         moduleName: moduleName,
                         moduleObject: moduleObject,
                         schemaName: schemaName,
-                        schemaObject: moduleSchemas[schemaName]
+                        schemaObject: schemaObject,
+                        effectiveSchemaObject: effectiveSchemaObject
                     });
                     this.writeSchemaApiScenarioTest({
                         moduleName: moduleName,
                         moduleObject: moduleObject,
                         schemaName: schemaName,
-                        schemaObject: moduleSchemas[schemaName]
+                        schemaObject: schemaObject,
+                        effectiveSchemaObject: effectiveSchemaObject
                     });
                     this.writeSchemaCrudScenarioTest({
                         moduleName: moduleName,
                         moduleObject: moduleObject,
                         schemaName: schemaName,
-                        schemaObject: moduleSchemas[schemaName]
+                        schemaObject: schemaObject,
+                        effectiveSchemaObject: effectiveSchemaObject
                     });
                 });
                 resolve(true);
@@ -118,6 +126,51 @@ module.exports = {
             return SERVICE.DefaultDatabaseConfigurationService.getRawSchema() || {};
         }
         return {};
+    },
+
+    resolveModuleSchemasForGeneration: function (moduleName, moduleSchemas) {
+        let rawSchema = this.getEffectiveRawSchema();
+        let schemaMap = _.merge(_.merge({}, rawSchema.default || {}), moduleSchemas || {});
+        let resolvedSchemas = {};
+        Object.keys(schemaMap || {}).forEach(schemaName => {
+            this.resolveSchemaForGeneration(moduleName, schemaName, schemaMap, resolvedSchemas, []);
+        });
+        return resolvedSchemas;
+    },
+
+    resolveSchemaForGeneration: function (moduleName, schemaName, schemaMap, resolvedSchemas, stack) {
+        if (resolvedSchemas[schemaName]) {
+            return resolvedSchemas[schemaName];
+        }
+
+        let schemaObject = schemaMap[schemaName];
+        if (!schemaObject) {
+            throw new Error('Invalid super schema definition for generated tests: ' + moduleName + '.' + schemaName);
+        }
+        if (stack.includes(schemaName)) {
+            throw new Error('Circular super schema definition for generated tests: ' + moduleName + '.' + stack.concat([schemaName]).join(' -> '));
+        }
+
+        if (schemaObject.super) {
+            let parentSchema = this.resolveSchemaForGeneration(moduleName, schemaObject.super, schemaMap, resolvedSchemas, stack.concat([schemaName]));
+            let parents = [];
+            if (parentSchema.parents && parentSchema.parents.length > 0) {
+                parentSchema.parents.forEach(parent => {
+                    if (!parents.includes(parent)) {
+                        parents.push(parent);
+                    }
+                });
+            }
+            if (!parents.includes(schemaObject.super)) {
+                parents.push(schemaObject.super);
+            }
+            resolvedSchemas[schemaName] = _.merge(_.merge({}, parentSchema), schemaObject);
+            resolvedSchemas[schemaName].parents = parents;
+            return resolvedSchemas[schemaName];
+        }
+
+        resolvedSchemas[schemaName] = _.merge({}, schemaObject);
+        return resolvedSchemas[schemaName];
     },
 
     writeSchemaContractTest: function (options) {
@@ -276,9 +329,10 @@ module.exports = {
     createSchemaCrudScenarioTestContent: function (options) {
         let alias = ((options.schemaObject.router && options.schemaObject.router.alias) || options.schemaName).toLowerCase();
         let controller = 'Default' + options.schemaName.toUpperCaseEachWord() + 'Controller';
-        let scenarios = this.createDestructiveCrudScenarios(alias, controller, options.schemaObject);
-        let lifecycle = this.createDestructiveCrudLifecycle(alias, controller, options.schemaObject);
-        let accessPolicyScenarios = this.createCrudAccessPolicyScenarios(options.moduleName, options.schemaName, alias, controller, options.schemaObject);
+        let fixtureSchemaObject = options.effectiveSchemaObject || options.schemaObject;
+        let scenarios = this.createDestructiveCrudScenarios(alias, controller, fixtureSchemaObject);
+        let lifecycle = this.createDestructiveCrudLifecycle(alias, controller, fixtureSchemaObject);
+        let accessPolicyScenarios = this.createCrudAccessPolicyScenarios(options.moduleName, options.schemaName, alias, controller, fixtureSchemaObject);
         let expected = {
             moduleName: options.moduleName,
             urlPrefix: (options.moduleObject.metaData && options.moduleObject.metaData.prefix) || options.moduleName,
@@ -689,16 +743,49 @@ module.exports = {
 
         Object.keys(schemaObject.definition || {}).forEach(propertyName => {
             let propertyObject = schemaObject.definition[propertyName] || {};
-            if (!propertyObject.required || model[propertyName] !== undefined) {
+            if (!propertyObject.required ||
+                propertyObject.default !== undefined ||
+                this.hasFixturePropertyValue(model, propertyName)) {
                 return;
             }
-            model[propertyName] = this.createPropertyFixtureValue(propertyName, propertyObject, phase);
+            this.setFixturePropertyValue(
+                model,
+                propertyName,
+                this.createPropertyFixtureValue(propertyName, propertyObject, phase, schemaObject, alias)
+            );
         });
 
         if (phase === 'update') {
             model.description = 'Generated updated CRUD test fixture for ' + alias;
         }
         return model;
+    },
+
+    hasFixturePropertyValue: function (model, propertyPath) {
+        let parts = String(propertyPath).split('.');
+        let current = model;
+        for (let index = 0; index < parts.length; index++) {
+            if (current === undefined || current === null || current[parts[index]] === undefined) {
+                return false;
+            }
+            current = current[parts[index]];
+        }
+        return true;
+    },
+
+    setFixturePropertyValue: function (model, propertyPath, value) {
+        let parts = String(propertyPath).split('.');
+        let current = model;
+        parts.forEach((part, index) => {
+            if (index === parts.length - 1) {
+                current[part] = value;
+                return;
+            }
+            if (!current[part] || typeof current[part] !== 'object' || Array.isArray(current[part])) {
+                current[part] = {};
+            }
+            current = current[part];
+        });
     },
 
     getAccessPolicyFixtureProperty: function (schemaObject) {
@@ -713,12 +800,15 @@ module.exports = {
         return properties.length > 0 ? properties[0] : '<policyControlledProperty>';
     },
 
-    createPropertyFixtureValue: function (propertyName, propertyObject, phase) {
+    createPropertyFixtureValue: function (propertyName, propertyObject, phase, schemaObject, alias) {
         if (Array.isArray(propertyObject.enum) && propertyObject.enum.length > 0) {
             return propertyObject.enum[0];
         }
         if (propertyObject.default !== undefined && typeof propertyObject.default !== 'function') {
             return propertyObject.default;
+        }
+        if (schemaObject && schemaObject.refSchema && schemaObject.refSchema[propertyName]) {
+            return this.createReferenceFixtureValue(propertyName, schemaObject.refSchema[propertyName], phase, alias);
         }
 
         let type = String(propertyObject.type || 'string').toLowerCase();
@@ -738,6 +828,26 @@ module.exports = {
             return '<timestamp>';
         }
         return 'ntest_' + propertyName + '_<runId>';
+    },
+
+    createReferenceFixtureValue: function (propertyName, refObject, phase, alias) {
+        if (refObject.type === 'many') {
+            if (propertyName === 'userGroups') {
+                return ['userGroup'];
+            }
+            return [];
+        }
+
+        let nestedModel = {
+            code: 'ntest_' + propertyName + '_' + alias + '_<runId>',
+            active: true,
+            description: 'Generated ' + phase + ' referenced fixture for ' + propertyName
+        };
+        if (propertyName === 'password' || refObject.schemaName === 'password') {
+            nestedModel.loginId = 'ntest_' + alias + '_<runId>';
+            nestedModel.password = 'nodics';
+        }
+        return nestedModel;
     },
 
     getDefaultSchemaRouters: function () {
