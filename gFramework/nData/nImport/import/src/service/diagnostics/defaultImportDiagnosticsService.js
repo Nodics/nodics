@@ -31,11 +31,70 @@ module.exports = {
         return request.importRun.summary;
     },
 
+    ensureRun: function (request) {
+        if (!request.importRun) {
+            return null;
+        }
+        this.ensureSummary(request);
+        request.importRun.headers = request.importRun.headers || [];
+        request.importRun.failures = request.importRun.failures || [];
+        request.importRun.validationErrors = request.importRun.validationErrors || [];
+        request.importRun.dataFiles = request.importRun.dataFiles || {
+            discovered: [],
+            matched: [],
+            unmatched: []
+        };
+        request.importRun.dataFiles.discovered = request.importRun.dataFiles.discovered || [];
+        request.importRun.dataFiles.matched = request.importRun.dataFiles.matched || [];
+        request.importRun.dataFiles.unmatched = request.importRun.dataFiles.unmatched || [];
+        return request.importRun;
+    },
+
     increment: function (request, key, count) {
         let summary = this.ensureSummary(request);
         if (summary) {
             summary[key] = (summary[key] || 0) + (count || 0);
         }
+    },
+
+    finalizeRun: function (request, status, options) {
+        let importRun = this.ensureRun(request);
+        if (!importRun) {
+            return null;
+        }
+        let summary = importRun.summary;
+        let failures = importRun.failures || [];
+        let validationErrors = importRun.validationErrors || [];
+        let finishedAt = (options && options.finishedAt) || new Date().toISOString();
+
+        importRun.status = this.resolveStatus(importRun, status);
+        importRun.finishedAt = finishedAt;
+        importRun.durationMs = importRun.startedAt ? Math.max(0, new Date(finishedAt).getTime() - new Date(importRun.startedAt).getTime()) : undefined;
+        importRun.failureCount = failures.length;
+        importRun.validationErrorCount = validationErrors.length;
+        summary.recordsFailed = summary.recordsFailed || failures.length;
+        summary.validationErrors = summary.validationErrors || validationErrors.length;
+        summary.totalRecordsHandled = (summary.recordsSucceeded || 0) + (summary.recordsFailed || 0) + (summary.recordsSkipped || 0);
+        summary.totalFilesDiscovered = summary.dataFilesDiscovered || (importRun.dataFiles.discovered || []).length;
+        summary.totalHeaders = (summary.enabledHeaders || 0) + (summary.disabledHeaders || 0);
+
+        return importRun;
+    },
+
+    resolveStatus: function (importRun, requestedStatus) {
+        if (!importRun) {
+            return 'UNKNOWN';
+        }
+        if ((importRun.failures || []).length > 0 || (importRun.validationErrors || []).length > 0) {
+            return 'FAILED';
+        }
+        if (requestedStatus) {
+            return requestedStatus;
+        }
+        if (importRun.validationOnly) {
+            return 'VALIDATED';
+        }
+        return 'COMPLETED';
     },
 
     addFailure: function (request, failure) {

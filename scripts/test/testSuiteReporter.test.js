@@ -29,6 +29,34 @@ assert.deepStrictEqual(parsed.topology.consolidated, ['kickoffLocalServer:3000']
 assert.deepStrictEqual(parsed.topology.modular, ['kickoffLocalProfileServer:3000', 'kickoffLocalNemsServer:3020']);
 assert.strictEqual(parsed.topology.communication.length, 2);
 
+let importParsed = parseOutput([
+    '> nodics@0.0.1 test:import',
+    '> nodics@0.0.1 test:import-validation',
+    '> nodics@0.0.1 test:import-run-summary'
+].join('\n'));
+
+assert.strictEqual(importParsed.summary.suiteCount, 3);
+assert.strictEqual(importParsed.summary.testCount, 3);
+assert.strictEqual(importParsed.summary.passedCount, 3);
+assert(importParsed.modules.includes('import'));
+
+let importReport = createReport({
+    suiteName: 'import',
+    command: ['npm', 'run', 'test:import'],
+    output: [
+        '> nodics@0.0.1 test:import',
+        '> nodics@0.0.1 test:import-validation',
+        '> nodics@0.0.1 test:import-run-summary'
+    ].join('\n'),
+    exitCode: 0,
+    startedAt: new Date('2026-06-16T00:00:00.000Z'),
+    endedAt: new Date('2026-06-16T00:00:01.000Z'),
+    env: {}
+});
+
+assert.deepStrictEqual(importReport.modules, ['import']);
+assert(importReport.tests.every(test => test.moduleName === 'import'));
+
 let report = createReport({
     suiteName: 'basic',
     command: ['npm', 'run', 'test:basic'],

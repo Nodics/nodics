@@ -96,6 +96,10 @@ module.exports = {
     },
 
     finishImportRun: function (request, status) {
+        if (SERVICE.DefaultImportDiagnosticsService && typeof SERVICE.DefaultImportDiagnosticsService.finalizeRun === 'function') {
+            SERVICE.DefaultImportDiagnosticsService.finalizeRun(request, status);
+            return;
+        }
         if (request.importRun) {
             request.importRun.status = status;
             request.importRun.finishedAt = new Date().toISOString();

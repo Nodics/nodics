@@ -43,29 +43,17 @@ module.exports = {
                         finalizer: success,
                         importRun: request.importRun
                     };
-                    this.processImportData({
-                        tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
-                        inputPath: {
-                            rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
-                            dataType: request.dataType,
-                            postFix: 'data'
-                        }
-                    }).then(success => {
+                    this.processImportData(this.createSystemProcessRequest(request)).then(success => {
                         result.import = success;
-                        if (result.importRun) {
-                            result.importRun.status = 'COMPLETED';
-                            result.importRun.finishedAt = new Date().toISOString();
-                        }
+                        this.finalizeImportRun(request, 'COMPLETED');
                         resolve(result);
                     }).catch(error => {
-                        if (result.importRun) {
-                            result.importRun.status = 'FAILED';
-                            result.importRun.finishedAt = new Date().toISOString();
-                        }
+                        this.finalizeImportRun(request, 'FAILED');
                         reject(error);
                     });
                 }
             }).catch(error => {
+                this.finalizeImportRun(request, 'FAILED');
                 reject(error);
             });
         });
@@ -82,29 +70,17 @@ module.exports = {
                         finalizer: success,
                         importRun: request.importRun
                     };
-                    this.processImportData({
-                        tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
-                        inputPath: {
-                            rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
-                            dataType: request.dataType,
-                            postFix: 'data'
-                        }
-                    }).then(success => {
+                    this.processImportData(this.createSystemProcessRequest(request)).then(success => {
                         result.import = success;
-                        if (result.importRun) {
-                            result.importRun.status = 'COMPLETED';
-                            result.importRun.finishedAt = new Date().toISOString();
-                        }
+                        this.finalizeImportRun(request, 'COMPLETED');
                         resolve(result);
                     }).catch(error => {
-                        if (result.importRun) {
-                            result.importRun.status = 'FAILED';
-                            result.importRun.finishedAt = new Date().toISOString();
-                        }
+                        this.finalizeImportRun(request, 'FAILED');
                         reject(error);
                     });
                 }
             }).catch(error => {
+                this.finalizeImportRun(request, 'FAILED');
                 reject(error);
             });
         });
@@ -121,32 +97,43 @@ module.exports = {
                         finalizer: success,
                         importRun: request.importRun
                     };
-                    this.processImportData({
-                        tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
-                        inputPath: {
-                            rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
-                            dataType: request.dataType,
-                            postFix: 'data'
-                        }
-                    }).then(success => {
+                    this.processImportData(this.createSystemProcessRequest(request)).then(success => {
                         result.import = success;
-                        if (result.importRun) {
-                            result.importRun.status = 'COMPLETED';
-                            result.importRun.finishedAt = new Date().toISOString();
-                        }
+                        this.finalizeImportRun(request, 'COMPLETED');
                         resolve(result);
                     }).catch(error => {
-                        if (result.importRun) {
-                            result.importRun.status = 'FAILED';
-                            result.importRun.finishedAt = new Date().toISOString();
-                        }
+                        this.finalizeImportRun(request, 'FAILED');
                         reject(error);
                     });
                 }
             }).catch(error => {
+                this.finalizeImportRun(request, 'FAILED');
                 reject(error);
             });
         });
+    },
+
+    createSystemProcessRequest: function (request) {
+        return {
+            tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
+            importRun: request.importRun,
+            inputPath: {
+                rootPath: NODICS.getServerPath() + '/' + CONFIG.get('data').dataDirName + '/import',
+                dataType: request.dataType,
+                postFix: 'data'
+            }
+        };
+    },
+
+    finalizeImportRun: function (request, status) {
+        if (SERVICE.DefaultImportDiagnosticsService && typeof SERVICE.DefaultImportDiagnosticsService.finalizeRun === 'function') {
+            return SERVICE.DefaultImportDiagnosticsService.finalizeRun(request, status);
+        }
+        if (request.importRun) {
+            request.importRun.status = status;
+            request.importRun.finishedAt = new Date().toISOString();
+        }
+        return request.importRun;
     },
 
     importLocalData: function (request) {
@@ -157,7 +144,8 @@ module.exports = {
                         resolve(success);
                     } else {
                         let result = {
-                            finalizer: success
+                            finalizer: success,
+                            importRun: request.importRun
                         };
                         let inputPath = {};
                         if (request.outputPath && request.outputPath.rootPath) {
@@ -178,15 +166,19 @@ module.exports = {
                         }
                         SERVICE.DefaultImportService.processImportData({
                             tenant: request.tenant,
+                            importRun: request.importRun,
                             inputPath: inputPath
                         }).then(success => {
                             result.import = success;
+                            this.finalizeImportRun(request, 'COMPLETED');
                             resolve(result);
                         }).catch(error => {
+                            this.finalizeImportRun(request, 'FAILED');
                             reject(error);
                         });
                     }
                 }).catch(error => {
+                    this.finalizeImportRun(request, 'FAILED');
                     reject(error);
                 });
             });

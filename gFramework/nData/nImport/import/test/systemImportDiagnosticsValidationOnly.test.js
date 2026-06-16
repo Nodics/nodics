@@ -51,6 +51,7 @@ global.NODICS = {
 };
 
 const initializer = require('../src/service/system/defaultSystemDataImportInitializerService');
+const diagnostics = require('../src/service/diagnostics/defaultImportDiagnosticsService');
 
 function createService() {
     return Object.assign({}, initializer, {
@@ -124,6 +125,7 @@ function invoke(service, methodName, request) {
                 });
             }
         },
+        DefaultImportDiagnosticsService: diagnostics,
         DefaultSampleSchemaService: {
             saveAll: function () {}
         }
@@ -158,6 +160,10 @@ function invoke(service, methodName, request) {
     assert.strictEqual(result.success.importRun.summary.dataFilesDiscovered, 1);
     assert.strictEqual(result.success.importRun.summary.matchedDataFiles, 1);
     assert.strictEqual(result.success.importRun.summary.headersWithoutDataFiles, 1);
+    assert.strictEqual(result.success.importRun.summary.totalFilesDiscovered, 1);
+    assert.strictEqual(result.success.importRun.summary.totalHeaders, 2);
+    assert.strictEqual(result.success.importRun.failureCount, 0);
+    assert.strictEqual(result.success.importRun.validationErrorCount, 0);
     assert.strictEqual(result.success.importRun.headers[0].owningModule, 'sampleModule');
     assert.strictEqual(result.success.importRun.headers[0].targetModule, 'sampleModule');
     assert.strictEqual(result.success.importRun.headers[0].schemaName, 'sampleSchema');

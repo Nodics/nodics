@@ -72,7 +72,9 @@ function parseArgs(argv) {
 }
 
 function createReport(options) {
-    let parsed = parseOutput(options.output || '');
+    let parsed = parseOutput(options.output || '', {
+        fallbackModuleName: options.suiteName
+    });
     return {
         reportType: 'nodics-test-suite',
         reportVersion: 1,
@@ -93,7 +95,7 @@ function createReport(options) {
     };
 }
 
-function parseOutput(output) {
+function parseOutput(output, options) {
     let lines = String(output || '').split(/\r?\n/);
     let suites = [];
     let tests = [];
@@ -151,6 +153,21 @@ function parseOutput(output) {
             modules.add(moduleName);
         }
     });
+    if (tests.length === 0 && suites.length > 0) {
+        suites.forEach(suite => {
+            let moduleName = (options && options.fallbackModuleName) || inferModuleNameFromSuite(suite.name);
+            tests.push({
+                name: suite.name,
+                path: undefined,
+                moduleName: moduleName,
+                status: 'PASSED',
+                aggregate: true
+            });
+            if (moduleName) {
+                modules.add(moduleName);
+            }
+        });
+    }
 
     return {
         summary: {
@@ -256,6 +273,12 @@ function inferModuleName(testPath) {
 
 function inferModuleNameFromUrl(value) {
     let match = String(value || '').match(/\/nodics\/([^/]+)\//);
+    return match ? match[1] : undefined;
+}
+
+function inferModuleNameFromSuite(suiteName) {
+    let value = String(suiteName || '');
+    let match = value.match(/^test:([^:\s]+)/);
     return match ? match[1] : undefined;
 }
 

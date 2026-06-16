@@ -79,7 +79,7 @@ Nodics Revolution:
     ☐ Add full import tests for init, core, sample, local, and remote import paths where applicable. @testing @import
     ☐ Add sample data tests using environment module `data/sample` folders. @testing @sample
     ✔ Add test reports for suite count, test count, pass/fail/skip counts, modules, environment, server, node, tenant, topology, and startup order. @reporting @done
-    ☐ Add import run summaries when tests exercise data import. @reporting @import
+    ✔ Add import run summaries when tests exercise data import. @reporting @import @done
     ✔ Add command surface for `test:basic`, `test:full`, consolidated topology tests, modular topology tests, and import tests. @commands @done
 
   Control Plane Governance:
