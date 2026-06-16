@@ -17,6 +17,8 @@
         "test:generated-api-scenarios": "node scripts/run-generated-tests.js --type=apiScenario",
         "test:generated-crud": "node scripts/run-generated-tests.js --type=crud",
         "test:generated-crud-live": "node scripts/run-generated-crud-live-tests.js",
+        "test:access-policy-live": "node scripts/run-generated-access-policy-live-tests.js",
+        "test:access-policy-contract": "node scripts/run-generated-access-policy-live-tests.js --dry-run-contract",
         "test:status-catalog": "node gFramework/nService/test/statusDefinitionCatalog.test.js",
         "test:system": "node scripts/run-capability-behavior-tests.js --area=system",
         "test:import": "npm run test:import-validation && npm run test:core-sample-data-catalog && npm run test:import-formats && npm run test:import-diagnostics && npm run test:duplicate-header-diagnostics && npm run test:finalized-record-counter && npm run test:finalized-import-dispatch && npm run test:import-failure-traceability && npm run test:import-export-access-policy",

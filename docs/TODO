@@ -46,7 +46,9 @@ Nodics Revolution:
     ✔ Resolve `/profile/token/authorize` controller ownership and implementation. @postman @profile @auth @done
     ✔ Migrate generated schema CRUD coverage through effective runtime route generation. @postman @router @schema @testing @done
     ✔ Execute guarded live generated CRUD lifecycle against a running consolidated server for one schema. @postman @router @schema @testing @done
+    ✔ Add guarded live generated access-policy runner for read/create/update/delete runtime behavior. @schema-access @runtime @testing @done
     ☐ Execute guarded live generated CRUD lifecycle against a dedicated test tenant. @postman @router @schema @testing @tenant
+    ☐ Make generated live CRUD fixtures inheritance-aware so schemas extending `user` or other super schemas get required parent fields. @generated-tests @schema @inheritance @testing
     ✔ Fix remove pipeline workflow-init event logging `Cannot read properties of undefined (reading 'models')` after successful model delete. @pipeline @workflow @crud @done
     ☐ Migrate Postman Data Import/Export coverage for init, core, sample, local, remote paths. @postman @import @export @testing
     ☐ Migrate Postman Cache coverage for item/API cache and flush behavior. @postman @cache @testing
@@ -89,6 +91,7 @@ Nodics Revolution:
     ✔ Add schema/property access policy resolution service. @security @admin @schema-access @done
     ✔ Enforce property-level read masking/removal in generated CRUD/read APIs. @security @schema-access @read @done
     ✔ Enforce property-level create/update protection in generated CRUD/write APIs. @security @schema-access @write @done
+    ✔ Enforce schema-level delete protection in generated CRUD/remove APIs. @security @schema-access @delete @done
     ✔ Extend import/export to honor schema/property access policies. @security @schema-access @import @export @done
     ☐ Make generated admin UI consume effective property access policy for hide/mask/read-only states. @admin @schema-access @ui
     ☐ Add preview/activate/audit/rollback lifecycle for schema/property access policy changes. @runtime @governance @schema-access
