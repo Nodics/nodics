@@ -77,6 +77,28 @@ module.exports = {
     },
 
     /**
+     * Enforces delete policies before generated remove operations mutate data.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @returns {Promise<Object>} Resolves when delete is allowed.
+     */
+    enforceDeletePolicies: function (request, response) {
+        if (!this.isPolicyResolverAvailable() || !request || !request.schemaModel) {
+            return Promise.resolve(response);
+        }
+        return this.resolvePropertyDecisions(request, ['*'], 'delete').then(decisions => {
+            let violations = this.findWriteViolations(decisions);
+            if (violations.length > 0) {
+                return Promise.reject(this.createPolicyError('delete', violations));
+            }
+            response.policy = response.policy || {};
+            response.policy.delete = this.buildPolicyMetadata('delete', decisions);
+            return response;
+        });
+    },
+
+    /**
      * Enforces runtime write policies for the requested action.
      *
      * @param {Object} request Nodics write request.

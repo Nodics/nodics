@@ -13,6 +13,7 @@ global.CLASSES = {
 const writePolicyService = require('../src/service/schema/defaultSchemaWriteAccessPolicyService');
 const saveInitializerService = require('../src/service/procs/save/defaultModelSaveInitializerService');
 const updateInitializerService = require('../src/service/procs/update/defaultModelsUpdateInitializerService');
+const removeInitializerService = require('../src/service/procs/remove/defaultModelsRemoveInitializerService');
 const pipelines = require('../src/pipelines/pipelinesDefinition');
 
 let request = {
@@ -96,6 +97,33 @@ writePolicyService.enforceCreatePolicies(request, {}).then(() => {
     assert.deepStrictEqual(error.metadata.violations.map(violation => violation.propertyName), ['internalCost']);
     assert(requestedContexts.some(context => context.action === 'update' && context.propertyName === 'internalCost'));
 
+    requestedContexts = [];
+    global.SERVICE.DefaultSchemaAccessPolicyResolverService = {
+        resolveAccess: function (policyRequest, context) {
+            requestedContexts.push(context);
+            return Promise.resolve({
+                allowed: false,
+                effect: context.action === 'delete' && context.propertyName === '*' ? 'DENY' : 'ALLOW',
+                policyCode: context.action === 'delete' ? 'denyProductDelete' : undefined
+            });
+        }
+    };
+    return writePolicyService.enforceDeletePolicies(Object.assign({}, request, {
+        query: {
+            code: 'product-001'
+        }
+    }), {});
+}).then(() => {
+    throw new Error('Delete should fail when schema-level delete policy denies access');
+}).catch(error => {
+    assert.strictEqual(error.code, 'ERR_AUTH_00003');
+    assert.deepStrictEqual(error.metadata.violations, [{
+        propertyName: '*',
+        effect: 'DENY',
+        policyCode: 'denyProductDelete'
+    }]);
+    assert(requestedContexts.some(context => context.action === 'delete' && context.propertyName === '*'));
+
     delete global.SERVICE.DefaultSchemaAccessPolicyResolverService;
     let noOpRequest = Object.assign({}, request, {
         model: {
@@ -121,6 +149,14 @@ writePolicyService.enforceCreatePolicies(request, {}).then(() => {
             pipelines.modelsUpdateInitializerPipeline.nodes.enforceUpdateAccessPolicies.handler,
             'DefaultModelsUpdateInitializerService.enforceUpdateAccessPolicies'
         );
+        assert.strictEqual(
+            pipelines.modelsRemoveInitializerPipeline.nodes.checkAccess.success,
+            'enforceDeleteAccessPolicies'
+        );
+        assert.strictEqual(
+            pipelines.modelsRemoveInitializerPipeline.nodes.enforceDeleteAccessPolicies.handler,
+            'DefaultModelsRemoveInitializerService.enforceDeleteAccessPolicies'
+        );
 
         let createStepAdvanced = false;
         global.SERVICE.DefaultSchemaWriteAccessPolicyService = {
@@ -144,6 +180,34 @@ writePolicyService.enforceCreatePolicies(request, {}).then(() => {
         }).then(() => {
             assert.strictEqual(createStepAdvanced, true);
 
+            let deleteStepFailed = false;
+            global.SERVICE.DefaultSchemaWriteAccessPolicyService = {
+                enforceDeletePolicies: function () {
+                    return Promise.reject(new CLASSES.NodicsError('ERR_AUTH_00003', 'blocked'));
+                }
+            };
+            removeInitializerService.LOG = {
+                debug: function () {}
+            };
+            return new Promise((resolve, reject) => {
+                removeInitializerService.enforceDeleteAccessPolicies(Object.assign({}, noOpRequest, {
+                    query: {
+                        code: 'product-002'
+                    }
+                }), {}, {
+                    nextSuccess: function () {
+                        reject(new Error('Blocked delete should not advance'));
+                    },
+                    error: function (req, res, stepError) {
+                        deleteStepFailed = true;
+                        assert.strictEqual(stepError.code, 'ERR_AUTH_00003');
+                        resolve(true);
+                    }
+                });
+            }).then(() => {
+                assert.strictEqual(deleteStepFailed, true);
+            });
+        }).then(() => {
             let updateStepFailed = false;
             global.SERVICE.DefaultSchemaWriteAccessPolicyService = {
                 enforceUpdatePolicies: function () {

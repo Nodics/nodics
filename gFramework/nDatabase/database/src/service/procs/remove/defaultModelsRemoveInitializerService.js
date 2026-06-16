@@ -87,6 +87,27 @@ module.exports = {
         }
     },
     /**
+     * Enforces runtime schema-level delete policies before query construction.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
+    enforceDeleteAccessPolicies: function (request, response, process) {
+        this.LOG.debug('Applying delete access policies');
+        if (!SERVICE.DefaultSchemaWriteAccessPolicyService ||
+            typeof SERVICE.DefaultSchemaWriteAccessPolicyService.enforceDeletePolicies !== 'function') {
+            process.nextSuccess(request, response);
+            return;
+        }
+        SERVICE.DefaultSchemaWriteAccessPolicyService.enforceDeletePolicies(request, response).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+    /**
      * Builds the remove query and search options.
      *
      * @param {Object} request Nodics remove request.

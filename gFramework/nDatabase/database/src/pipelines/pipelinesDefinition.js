@@ -312,6 +312,11 @@ module.exports = {
             checkAccess: {
                 type: 'function',
                 handler: 'DefaultModelsRemoveInitializerService.checkAccess',
+                success: 'enforceDeleteAccessPolicies'
+            },
+            enforceDeleteAccessPolicies: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.enforceDeleteAccessPolicies',
                 success: 'buildQuery'
             },
             buildQuery: {
