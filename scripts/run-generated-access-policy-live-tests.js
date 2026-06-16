@@ -9,6 +9,9 @@ const baseUrl = process.env.NODICS_TEST_BASE_URL;
 const token = process.env.NODICS_TEST_TOKEN;
 const tenant = process.env.NODICS_TEST_TENANT;
 const enterprise = process.env.NODICS_TEST_ENTERPRISE;
+const policyTenant = process.env.NODICS_TEST_POLICY_TENANT || process.env.NODICS_TEST_CONTROL_TENANT || 'default';
+const policyEnterprise = process.env.NODICS_TEST_POLICY_ENTERPRISE || process.env.NODICS_TEST_CONTROL_ENTERPRISE || policyTenant;
+const policyToken = process.env.NODICS_TEST_POLICY_TOKEN || process.env.NODICS_TEST_CONTROL_TOKEN || token;
 const contextRoot = process.env.NODICS_TEST_CONTEXT_ROOT || process.env.NODICS_TEST_API_PREFIX || '/nodics';
 const restrictedUserGroup = process.env.NODICS_TEST_RESTRICTED_USER_GROUP || 'userGroup';
 const selectedModule = getArgValue('--module=');
@@ -87,7 +90,8 @@ function validateSpecContract(spec) {
 }
 
 async function runLiveSpec(spec, policySpec) {
-    console.log(`\nRunning live access policy scenarios for ${spec.moduleName}.${spec.schemaName}`);
+    console.log(`\nRunning live access policy scenarios for ${spec.moduleName}.${spec.schemaName} ` +
+        `(targetTenant=${tenant}, policyTenant=${policyTenant})`);
     let state = {};
     await cleanupPolicies(spec, policySpec);
     await runOptionalLifecycleStep(spec, 'cleanupBefore', state);
@@ -136,7 +140,7 @@ async function savePolicy(policySpec, spec, scenario, policyCode) {
         reason: 'Generated live access policy test ' + runId
     };
     let response = await executeRequest(route.method, createUrl(policySpec, route, {}), {
-        headers: createHeaders(),
+        headers: createPolicyHeaders(),
         body: policy
     });
     let body = await parseBody(response);
@@ -148,7 +152,7 @@ async function savePolicy(policySpec, spec, scenario, policyCode) {
 async function removePolicy(policySpec, policyCode) {
     let scenario = findScenario(policySpec.scenarios, 'removeByCode') || findScenario(policySpec.scenarios, 'remove');
     let request = {
-        headers: createHeaders(),
+        headers: createPolicyHeaders(),
         params: scenario.route.key.includes(':code') ? { code: policyCode } : {},
         body: scenario.route.key.includes(':code') ? {} : {
             options: {
@@ -291,6 +295,14 @@ function createHeaders() {
     };
 }
 
+function createPolicyHeaders() {
+    return {
+        Authorization: 'Bearer ' + policyToken,
+        tenant: policyTenant,
+        'x-enterprise-code': policyEnterprise
+    };
+}
+
 function replacePlaceholders(value, state) {
     if (Array.isArray(value)) {
         return value.map(item => replacePlaceholders(item, state));
@@ -309,6 +321,8 @@ function replacePlaceholders(value, state) {
         .replaceAll('<token>', token)
         .replaceAll('<testTenant>', tenant)
         .replaceAll('<enterpriseCode>', enterprise)
+        .replaceAll('<policyTenant>', policyTenant)
+        .replaceAll('<policyEnterpriseCode>', policyEnterprise)
         .replaceAll('<restrictedUserGroup>', restrictedUserGroup)
         .replaceAll('<runId>', runId)
         .replaceAll('<createdModelId>', state.createdModelId || '<createdModelId>')
@@ -416,6 +430,18 @@ function validateGuard() {
     }).forEach(failure => missing.push(failure));
     if (!enterprise) {
         missing.push('NODICS_TEST_ENTERPRISE');
+    }
+    if (!policyToken) {
+        missing.push('NODICS_TEST_POLICY_TOKEN or NODICS_TEST_TOKEN');
+    }
+    if (policyTenant !== tenant && policyToken === token) {
+        missing.push('NODICS_TEST_POLICY_TOKEN is required when policy tenant differs from test tenant');
+    }
+    if (!policyTenant) {
+        missing.push('NODICS_TEST_POLICY_TENANT or NODICS_TEST_CONTROL_TENANT');
+    }
+    if (!policyEnterprise) {
+        missing.push('NODICS_TEST_POLICY_ENTERPRISE or NODICS_TEST_CONTROL_ENTERPRISE');
     }
     if (missing.length > 0) {
         console.error('Live generated access policy tests mutate test-tenant data and require explicit settings.');

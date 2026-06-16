@@ -4,7 +4,7 @@ const _ = require('lodash');
 const path = require('path');
 
 const repoRoot = path.resolve(__dirname, '../../../../../');
-const dataTypes = ['core', 'sample'];
+const dataTypes = ['init', 'core', 'sample'];
 
 function subFolders(folder) {
     return fs.readdirSync(folder)

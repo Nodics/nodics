@@ -2,6 +2,11 @@ const assert = require('assert');
 
 global.CONFIG = {
     get: function (key) {
+        if (key === 'schemaAccessPolicy') {
+            return {
+                policyTenant: 'default'
+            };
+        }
         if (key === 'defaultTenant') {
             return 'default';
         }
@@ -157,7 +162,7 @@ assert.strictEqual(decision.matchedPolicies.length, 0);
 
 global.SERVICE.DefaultSchemaAccessPolicyService = {
     get: function (request) {
-        assert.strictEqual(request.tenant, 'electronics');
+        assert.strictEqual(request.tenant, 'default');
         assert.deepStrictEqual(request.query, {
             moduleName: 'catalog',
             schemaName: 'product'
@@ -169,7 +174,8 @@ global.SERVICE.DefaultSchemaAccessPolicyService = {
                 schemaName: 'product',
                 propertyName: 'productDescription',
                 actions: ['read'],
-                effect: 'MASK'
+                effect: 'MASK',
+                appliesToTenants: ['electronics']
             }]
         });
     }
@@ -180,6 +186,47 @@ service.resolveAccess({}, Object.assign({}, context, {
 })).then(dbDecision => {
     assert.strictEqual(dbDecision.effect, 'MASK');
     assert.strictEqual(dbDecision.policyCode, 'dbMask');
+    assert.strictEqual(dbDecision.context.tenant, 'electronics');
+    global.CONFIG = {
+        get: function (key) {
+            if (key === 'schemaAccessPolicy') {
+                return {
+                    policyTenant: 'policyStore'
+                };
+            }
+            if (key === 'defaultTenant') {
+                return 'default';
+            }
+            return undefined;
+        }
+    };
+    global.NODICS = {
+        getActiveChannel: function () {
+            return 'master';
+        },
+        getModule: function () {
+            return {
+                models: {
+                    policyStore: {
+                        master: {}
+                    }
+                }
+            };
+        }
+    };
+    global.SERVICE.DefaultSchemaAccessPolicyService = {
+        get: function () {
+            throw new Error('Policy service should not be queried before tenant model is available');
+        }
+    };
+    return service.resolveAccess({}, Object.assign({}, context, {
+        tenant: 'newTenant',
+        propertyName: 'productDescription'
+    }));
+}).then(bootstrapDecision => {
+    assert.strictEqual(bootstrapDecision.allowed, true);
+    assert.strictEqual(bootstrapDecision.effect, 'ALLOW');
+    assert.strictEqual(bootstrapDecision.policyCode, undefined);
     console.log('Schema access policy resolver service validated');
 }).catch(error => {
     console.error(error);

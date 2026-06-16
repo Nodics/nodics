@@ -11,6 +11,7 @@ const LOCAL_ENV = path.join(ROOT, 'kickoff/kickoffEnvs/kickoffLocal');
 const environmentProperties = require(path.join(LOCAL_ENV, 'config/properties.js'));
 const STARTUP_TIMEOUT_MS = Number(process.env.NODICS_TOPOLOGY_TIMEOUT_MS || 60000);
 const SHUTDOWN_TIMEOUT_MS = 5000;
+const TOPOLOGY_MODE = getTopologyMode();
 const TOPOLOGY_CONFIG = _.get(environmentProperties, 'test.runtimeTopology', {});
 const CONSOLIDATED_SERVER = TOPOLOGY_CONFIG.consolidatedServer;
 const SERVER_ORDER = TOPOLOGY_CONFIG.modularServers || [];
@@ -176,8 +177,14 @@ function stopServer(runtime) {
 
 async function runConsolidatedSmoke() {
     let runtime = await startServer(CONSOLIDATED_SERVER);
-    await stopServer(runtime);
-    return runtime;
+    try {
+        return {
+            runtime: runtime,
+            communication: await runConsolidatedCommunicationSmoke()
+        };
+    } finally {
+        await stopServer(runtime);
+    }
 }
 
 async function runModularSmoke() {
@@ -208,17 +215,47 @@ async function runModularCommunicationSmoke() {
     return results;
 }
 
+async function runConsolidatedCommunicationSmoke() {
+    let results = [];
+    for (let check of COMMUNICATION_CHECKS) {
+        assert(check.moduleName, 'communication check moduleName is required for consolidated topology');
+        results.push(await requestModuleEndpoint(Object.assign({}, check, {
+            server: CONSOLIDATED_SERVER,
+            node: undefined
+        })));
+    }
+    return results;
+}
+
 (async function () {
-    let consolidated = await runConsolidatedSmoke();
-
-    let modular = await runModularSmoke();
-    assert.deepStrictEqual(modular.runtimes.map(item => item.label), SERVER_ORDER);
-
     console.log('Runtime topology smoke passed');
-    console.log('Consolidated:', consolidated.label + ':' + consolidated.port);
-    console.log('Modular:', modular.runtimes.map(item => item.label + ':' + item.port).join(', '));
-    console.log('Communication:', modular.communication.map(item => item.url + ' -> ' + item.statusCode).join(', '));
+    console.log('Mode:', TOPOLOGY_MODE);
+
+    if (TOPOLOGY_MODE === 'all' || TOPOLOGY_MODE === 'consolidated') {
+        let consolidated = await runConsolidatedSmoke();
+        console.log('Consolidated:', consolidated.runtime.label + ':' + consolidated.runtime.port);
+        console.log('Consolidated communication:', consolidated.communication.map(item => item.url + ' -> ' + item.statusCode).join(', '));
+    }
+
+    if (TOPOLOGY_MODE === 'all' || TOPOLOGY_MODE === 'modular') {
+        let modular = await runModularSmoke();
+        assert.deepStrictEqual(modular.runtimes.map(item => item.label), SERVER_ORDER);
+        console.log('Modular:', modular.runtimes.map(item => item.label + ':' + item.port).join(', '));
+        console.log('Communication:', modular.communication.map(item => item.url + ' -> ' + item.statusCode).join(', '));
+    }
 })().catch(error => {
     console.error(error.message || error);
     process.exit(1);
 });
+
+function getTopologyMode() {
+    let mode = process.env.NODICS_TOPOLOGY_MODE || getArgValue('--mode=') || 'all';
+    assert(['all', 'consolidated', 'modular'].includes(mode),
+        'NODICS_TOPOLOGY_MODE/--mode must be one of: all, consolidated, modular');
+    return mode;
+}
+
+function getArgValue(prefix) {
+    let arg = process.argv.find(item => item.startsWith(prefix));
+    return arg ? arg.substring(prefix.length) : null;
+}

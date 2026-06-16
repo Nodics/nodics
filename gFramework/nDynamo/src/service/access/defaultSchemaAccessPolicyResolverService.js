@@ -67,8 +67,12 @@ module.exports = {
         if (!SERVICE.DefaultSchemaAccessPolicyService || typeof SERVICE.DefaultSchemaAccessPolicyService.get !== 'function') {
             return Promise.resolve([]);
         }
+        let policyTenant = this.getPolicyTenant(request, context);
+        if (!this.isPolicyModelAvailable(policyTenant)) {
+            return Promise.resolve([]);
+        }
         return SERVICE.DefaultSchemaAccessPolicyService.get({
-            tenant: context.tenant || request.tenant || CONFIG.get('defaultTenant') || 'default',
+            tenant: policyTenant,
             options: {
                 recursive: true
             },
@@ -79,6 +83,47 @@ module.exports = {
         }).then(success => {
             return success && Array.isArray(success.result) ? success.result : [];
         });
+    },
+
+    /**
+     * Resolves the tenant where schema access policy records are stored.
+     *
+     * Runtime requests still match against context.tenant/request.tenant through
+     * appliesToTenants; this value only controls the governance data store.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} context Policy lookup context.
+     * @returns {string} Policy store tenant.
+     */
+    getPolicyTenant: function (request, context) {
+        let configured = CONFIG.get('schemaAccessPolicy');
+        if (configured && configured.policyTenant) {
+            return configured.policyTenant;
+        }
+        return CONFIG.get('schemaAccessPolicyTenant') ||
+            CONFIG.get('runtimeSchemaAccessPolicyTenant') ||
+            CONFIG.get('defaultTenant') ||
+            'default';
+    },
+
+    /**
+     * Checks whether the generated schema access policy model is available for
+     * the target tenant before invoking the generated CRUD service.
+     *
+     * @param {string} tenant Tenant code.
+     * @returns {boolean} True when the policy model can be queried.
+     */
+    isPolicyModelAvailable: function (tenant) {
+        if (typeof NODICS === 'undefined' || !NODICS || typeof NODICS.getModule !== 'function') {
+            return true;
+        }
+        let moduleObject = NODICS.getModule('dynamo');
+        let channel = typeof NODICS.getActiveChannel === 'function' ? NODICS.getActiveChannel() : 'master';
+        return !!(moduleObject &&
+            moduleObject.models &&
+            moduleObject.models[tenant] &&
+            moduleObject.models[tenant][channel] &&
+            moduleObject.models[tenant][channel].SchemaAccessPolicyModel);
     },
 
     /**

@@ -48,7 +48,8 @@ Nodics Revolution:
     ✔ Execute guarded live generated CRUD lifecycle against a running consolidated server for one schema. @postman @router @schema @testing @done
     ✔ Add guarded live generated access-policy runner for read/create/update/delete runtime behavior. @schema-access @runtime @testing @done
     ✔ Add guard so live generated CRUD/access-policy tests require a dedicated test tenant unless explicitly overridden. @postman @router @schema @testing @tenant @done
-    ☐ Execute guarded live generated CRUD lifecycle against a dedicated test tenant. @postman @router @schema @testing @tenant
+    ✔ Execute guarded live generated CRUD lifecycle against a dedicated test tenant. @postman @router @schema @testing @tenant @done
+    ✔ Execute guarded live generated access-policy scenarios against a dedicated test tenant with default control-plane policy storage. @schema-access @runtime @testing @tenant @done
     ✔ Make generated live CRUD fixtures inheritance-aware so schemas extending `user` or other super schemas get required parent fields. @generated-tests @schema @inheritance @testing @done
     ✔ Fix remove pipeline workflow-init event logging `Cannot read properties of undefined (reading 'models')` after successful model delete. @pipeline @workflow @crud @done
     ☐ Migrate Postman Data Import/Export coverage for init, core, sample, local, remote paths. @postman @import @export @testing
@@ -70,16 +71,16 @@ Nodics Revolution:
     ☐ Add or formalize `full` test category. @full
     ☐ Basic tests should cover framework startup, module loading, route availability, internal auth token availability, profile availability, mandatory init data availability, and inter-module communication smoke checks. @basic
     ☐ Full tests should cover module suites, init/core/sample imports, tenant scenarios, workflow, cron, NEMS/events, import/export, and distributed inter-module calls. @full
-    ☐ Add consolidated topology testing for default server startup, such as `kickoffLocalServer`. @topology @consolidated
-    ☐ Add modular/microservice topology testing with profile first, NEMS before event-dependent modules, cron after profile/NEMS where required, then business/content/workflow/data modules separately. @topology @modular
-    ☐ Verify local service calls in consolidated mode. @topology @consolidated
-    ☐ Verify API/event communication across process boundaries in modular mode. @topology @modular
+    ✔ Add consolidated topology testing for default server startup, such as `kickoffLocalServer`. @topology @consolidated @done
+    ✔ Add modular/microservice topology testing with profile first, NEMS before event-dependent modules, cron after profile/NEMS where required, then business/content/workflow/data modules separately. @topology @modular @done
+    ✔ Verify local service calls in consolidated mode. @topology @consolidated @done
+    ✔ Verify API/event communication across process boundaries in modular mode. @topology @modular @done
     ☐ Add import tests for mandatory init data. @testing @import
     ☐ Add full import tests for init, core, sample, local, and remote import paths where applicable. @testing @import
     ☐ Add sample data tests using environment module `data/sample` folders. @testing @sample
     ☐ Add test reports for suite count, test count, pass/fail/skip counts, modules, environment, server, node, tenant, topology, and startup order. @reporting
     ☐ Add import run summaries when tests exercise data import. @reporting @import
-    ☐ Add command surface for `test:basic`, `test:full`, consolidated topology tests, modular topology tests, and import tests. @commands
+    ✔ Add command surface for `test:basic`, `test:full`, consolidated topology tests, modular topology tests, and import tests. @commands @done
 
   Control Plane Governance:
 
@@ -121,7 +122,7 @@ Nodics Revolution:
     ☐ Add data import validation-only mode.
     ☐ Add focused data import tests.
     ☐ Fix and formalize test discovery/execution.
-    ☐ Add basic consolidated topology tests.
-    ☐ Add basic modular topology tests.
+    ✔ Add basic consolidated topology tests. @done
+    ✔ Add basic modular topology tests. @done
     ☐ Expand into full tests for import, workflow, cron, NEMS, tenants, and distributed communication.
 - Can you check if we are still align with design principle "Nodics is an enterprise application platform and application factory, designed to let teams build large, customizable business systems without modifying the core framework. The core rule is: capabilities are sacred, implementations are negotiable. Every feature must respect the layered module hierarchy, where framework modules provide default behavior and project/environment/server/node modules can override schemas, services, routers, pipelines, data, tests, configuration, and runtime behavior without changing out-of-the-box Nodics code. Nothing should be hardcoded to a specific project like kickoff; behavior must come from active modules, configuration, tenant context, schema definitions, and runtime governance. Generated artifacts must be recreated from source definitions during build and cleaned safely during clean. Security, access control, validation, audit, rollback, diagnostics, and test coverage are not optional add-ons; they are platform contracts. Any new code should preserve multi-tenancy, modular deployment, runtime configurability, traceability, and backward compatibility while making the system cleaner, safer, and easier to customize." do validated end to end.
