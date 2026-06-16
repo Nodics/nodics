@@ -1,5 +1,6 @@
 const path = require('path');
 const { collectGeneratedTests } = require('./run-generated-tests');
+const { collectTenantGuardFailures } = require('./live-test-tenant-guard');
 
 const rootPath = path.resolve(__dirname, '..');
 const enabled = process.env.NODICS_TEST_ENABLE_ACCESS_POLICY_LIVE === 'true';
@@ -409,9 +410,10 @@ function validateGuard() {
     if (!token) {
         missing.push('NODICS_TEST_TOKEN');
     }
-    if (!tenant) {
-        missing.push('NODICS_TEST_TENANT');
-    }
+    collectTenantGuardFailures({
+        tenant: tenant,
+        env: process.env
+    }).forEach(failure => missing.push(failure));
     if (!enterprise) {
         missing.push('NODICS_TEST_ENTERPRISE');
     }
